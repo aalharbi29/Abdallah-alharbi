@@ -7,6 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Upload,
   FileText,
@@ -20,6 +21,7 @@ import {
   Save,
   Plus,
   Trash2,
+  Check,
   FileImage,
   X,
   FileArchive,
@@ -49,6 +51,8 @@ import PDFSecurity from "../components/pdf_editor/PDFSecurity";
 import PDFConverter from "../components/pdf_editor/PDFConverter";
 import PDFPageManager from "../components/pdf_editor/PDFPageManager";
 import SaveToLocationDialog from "../components/pdf_editor/SaveToLocationDialog";
+import PDFCropTool from "../components/pdf_editor/PDFCropTool";
+import SharedFilesManager from "../components/pdf_editor/SharedFilesManager";
 
 export default function PDFEditor() {
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -88,31 +92,13 @@ export default function PDFEditor() {
       return;
     }
 
-    const shouldReplace = ['split', 'convert', 'compress', 'sign', 'verify'].includes(activeTab);
-    const filesToProcess = shouldReplace ? [pdfFiles[0]] : pdfFiles;
-
-    if (shouldReplace && filesToProcess.length === 0) {
-      alert('الرجاء اختيار ملف PDF واحد فقط لهذا التبويب');
-      return;
-    }
-    if (shouldReplace && pdfFiles.length > 1) {
-      alert('تم اختيار أول ملف PDF فقط لهذا التبويب.');
-    }
-
     setIsUploading(true);
     setUploadProgress(0);
 
-    if (shouldReplace) {
-      setSplitResults([]);
-      setConvertedImages([]);
-      setCompressionResult(null);
-      setResultPdf(null);
-    }
-
     try {
       const uploadedList = [];
-      for (let i = 0; i < filesToProcess.length; i++) {
-        const file = filesToProcess[i];
+      for (let i = 0; i < pdfFiles.length; i++) {
+        const file = pdfFiles[i];
         const result = await base44.integrations.Core.UploadFile({ file });
         uploadedList.push({
           id: Date.now() + i,
@@ -122,11 +108,11 @@ export default function PDFEditor() {
           selected: false,
           selectedPages: []
         });
-        setUploadProgress(((i + 1) / filesToProcess.length) * 100);
+        setUploadProgress(((i + 1) / pdfFiles.length) * 100);
       }
 
-      setUploadedFiles(prev => shouldReplace ? uploadedList : [...prev, ...uploadedList]);
-      alert(`تم رفع ${uploadedList.length} ملف بنجاح`);
+      setUploadedFiles(prev => [...prev, ...uploadedList]);
+      alert(`تم رفع ${uploadedList.length} ملف بنجاح - متاح الآن في جميع التبويبات`);
     } catch (error) {
       console.error('Upload error:', error);
       alert('حدث خطأ أثناء رفع الملفات');
@@ -775,6 +761,10 @@ export default function PDFEditor() {
               <Layers className="w-3 h-3" />
               إدارة الصفحات
             </TabsTrigger>
+            <TabsTrigger value="crop" className="gap-1 text-xs px-2 py-1.5">
+              <Scissors className="w-3 h-3" />
+              قص وتعديل
+            </TabsTrigger>
             <TabsTrigger value="annotate" className="gap-1 text-xs px-2 py-1.5">
               <Palette className="w-3 h-3" />
               تحرير
@@ -819,6 +809,14 @@ export default function PDFEditor() {
 
           <TabsContent value="merge" className="mt-6">
             <div className="space-y-6">
+              {/* مدير الملفات المشترك */}
+              <SharedFilesManager 
+                files={uploadedFiles}
+                onRemove={handleRemoveFile}
+                onNavigateTo={setActiveTab}
+                currentTab={activeTab}
+              />
+
               <Card>
                 <CardHeader>
                   <CardTitle>رفع ملفات PDF للدمج</CardTitle>
@@ -921,6 +919,16 @@ export default function PDFEditor() {
           </TabsContent>
 
           <TabsContent value="split" className="mt-6">
+            <div className="space-y-6">
+              {/* مدير الملفات المشترك */}
+              <SharedFilesManager 
+                files={uploadedFiles}
+                onRemove={handleRemoveFile}
+                onNavigateTo={setActiveTab}
+                currentTab={activeTab}
+              />
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <Card className="lg:col-span-1">
                 <CardHeader>
@@ -1064,6 +1072,16 @@ export default function PDFEditor() {
           </TabsContent>
 
           <TabsContent value="convert" className="mt-6">
+            <div className="space-y-6">
+              {/* مدير الملفات المشترك */}
+              <SharedFilesManager 
+                files={uploadedFiles}
+                onRemove={handleRemoveFile}
+                onNavigateTo={setActiveTab}
+                currentTab={activeTab}
+              />
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <Card className="lg:col-span-1">
                 <CardHeader>
@@ -1156,6 +1174,16 @@ export default function PDFEditor() {
           </TabsContent>
 
           <TabsContent value="compress" className="mt-6">
+            <div className="space-y-6">
+              {/* مدير الملفات المشترك */}
+              <SharedFilesManager 
+                files={uploadedFiles}
+                onRemove={handleRemoveFile}
+                onNavigateTo={setActiveTab}
+                currentTab={activeTab}
+              />
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <Card className="lg:col-span-1">
                 <CardHeader>
@@ -1362,33 +1390,105 @@ export default function PDFEditor() {
           </TabsContent>
 
           <TabsContent value="pages" className="mt-6">
-            <PDFPageManager onComplete={(pdfData) => {
-              setResultPdf(pdfData);
-            }} />
+            <div className="space-y-6">
+              <SharedFilesManager 
+                files={uploadedFiles}
+                onRemove={handleRemoveFile}
+                onNavigateTo={setActiveTab}
+                currentTab={activeTab}
+              />
+              <PDFPageManager 
+                uploadedFiles={uploadedFiles}
+                onComplete={(pdfData) => {
+                  setResultPdf(pdfData);
+                }} 
+              />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="crop" className="mt-6">
+            <div className="space-y-6">
+              <SharedFilesManager 
+                files={uploadedFiles}
+                onRemove={handleRemoveFile}
+                onNavigateTo={setActiveTab}
+                currentTab={activeTab}
+              />
+              <PDFCropTool 
+                file={uploadedFiles[0]}
+                onComplete={(pdfData) => {
+                  setResultPdf(pdfData);
+                }} 
+              />
+            </div>
           </TabsContent>
 
           <TabsContent value="annotate" className="mt-6">
-            <PDFAnnotator onComplete={(pdfData) => {
-              setResultPdf(pdfData);
-            }} />
+            <div className="space-y-6">
+              <SharedFilesManager 
+                files={uploadedFiles}
+                onRemove={handleRemoveFile}
+                onNavigateTo={setActiveTab}
+                currentTab={activeTab}
+              />
+              <PDFAnnotator 
+                uploadedFiles={uploadedFiles}
+                onComplete={(pdfData) => {
+                  setResultPdf(pdfData);
+                }} 
+              />
+            </div>
           </TabsContent>
 
           <TabsContent value="forms" className="mt-6">
-            <PDFFormFiller onComplete={(pdfData) => {
-              setResultPdf(pdfData);
-            }} />
+            <div className="space-y-6">
+              <SharedFilesManager 
+                files={uploadedFiles}
+                onRemove={handleRemoveFile}
+                onNavigateTo={setActiveTab}
+                currentTab={activeTab}
+              />
+              <PDFFormFiller 
+                uploadedFiles={uploadedFiles}
+                onComplete={(pdfData) => {
+                  setResultPdf(pdfData);
+                }} 
+              />
+            </div>
           </TabsContent>
 
           <TabsContent value="security" className="mt-6">
-            <PDFSecurity onComplete={(pdfData) => {
-              setResultPdf(pdfData);
-            }} />
+            <div className="space-y-6">
+              <SharedFilesManager 
+                files={uploadedFiles}
+                onRemove={handleRemoveFile}
+                onNavigateTo={setActiveTab}
+                currentTab={activeTab}
+              />
+              <PDFSecurity 
+                uploadedFiles={uploadedFiles}
+                onComplete={(pdfData) => {
+                  setResultPdf(pdfData);
+                }} 
+              />
+            </div>
           </TabsContent>
 
           <TabsContent value="convert-formats" className="mt-6">
-            <PDFConverter onComplete={(pdfData) => {
-              setResultPdf(pdfData);
-            }} />
+            <div className="space-y-6">
+              <SharedFilesManager 
+                files={uploadedFiles}
+                onRemove={handleRemoveFile}
+                onNavigateTo={setActiveTab}
+                currentTab={activeTab}
+              />
+              <PDFConverter 
+                uploadedFiles={uploadedFiles}
+                onComplete={(pdfData) => {
+                  setResultPdf(pdfData);
+                }} 
+              />
+            </div>
           </TabsContent>
         </Tabs>
       </div>
