@@ -1,11 +1,31 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
-import { User, Phone, Mail, Calendar, Hash, Briefcase, Download, Share2, Printer } from 'lucide-react';
+import { User, Phone, Mail, Calendar, Hash, Briefcase, Download, Share2, Printer, QrCode } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import QRCode from 'qrcode';
 
 export default function EmployeeIDCard({ employee, onClose }) {
   const cardRef = useRef(null);
+  const [qrCodeDataUrl, setQrCodeDataUrl] = useState('');
+
+  useEffect(() => {
+    generateQRCode();
+  }, [employee]);
+
+  const generateQRCode = async () => {
+    try {
+      const profileUrl = `${window.location.origin}/EmployeeProfile?id=${employee.id}`;
+      const qrData = await QRCode.toDataURL(profileUrl, {
+        width: 200,
+        margin: 1,
+        color: { dark: '#1e40af', light: '#ffffff' }
+      });
+      setQrCodeDataUrl(qrData);
+    } catch (error) {
+      console.error('Error generating QR code:', error);
+    }
+  };
 
   const handlePrint = () => {
     const printContent = cardRef.current;
@@ -37,8 +57,11 @@ export default function EmployeeIDCard({ employee, onClose }) {
       const ctx = canvas.getContext('2d');
       const card = cardRef.current;
       
-      canvas.width = 1400;
-      canvas.height = 2000;
+      // High resolution: 2x scale
+      const scale = 2;
+      canvas.width = 1400 * scale;
+      canvas.height = 2000 * scale;
+      ctx.scale(scale, scale);
       
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -102,21 +125,33 @@ export default function EmployeeIDCard({ employee, onClose }) {
         }
       });
       
+      // QR Code
+      if (qrCodeDataUrl) {
+        const qrImage = new Image();
+        qrImage.src = qrCodeDataUrl;
+        await new Promise((resolve) => {
+          qrImage.onload = () => {
+            ctx.drawImage(qrImage, 100, yPos, 150, 150);
+            resolve();
+          };
+        });
+      }
+      
       // الفوتر
-      const footerY = canvas.height - 120;
+      const footerY = 2000 - 120;
       ctx.fillStyle = gradient;
-      ctx.fillRect(0, footerY, canvas.width, 120);
+      ctx.fillRect(0, footerY, 1400, 120);
       
       ctx.fillStyle = '#ffffff';
       ctx.textAlign = 'center';
       ctx.font = '35px Arial';
-      ctx.fillText('المركز الصحي: ' + (employee.المركز_الصحي || 'غير محدد'), canvas.width / 2, footerY + 50);
+      ctx.fillText('المركز الصحي: ' + (employee.المركز_الصحي || 'غير محدد'), 700, footerY + 50);
       ctx.font = '25px Arial';
-      ctx.fillText('تاريخ الإصدار: ' + new Date().toLocaleDateString('ar-SA'), canvas.width / 2, footerY + 90);
+      ctx.fillText('تاريخ الإصدار: ' + new Date().toLocaleDateString('ar-SA'), 700, footerY + 90);
       
       const link = document.createElement('a');
       link.download = `بطاقة_تعريف_${employee.full_name_arabic || 'موظف'}.png`;
-      link.href = canvas.toDataURL('image/png');
+      link.href = canvas.toDataURL('image/png', 1.0);
       link.click();
     } catch (error) {
       console.error('خطأ في حفظ البطاقة:', error);
@@ -136,6 +171,109 @@ ${employee.birth_date ? `🎂 *تاريخ الميلاد:* ${format(new Date(emp
     
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(whatsappUrl, '_blank');
+  };
+
+  const handleSystemShare = async () => {
+    try {
+      // Generate high-res image as blob
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const scale = 2;
+      canvas.width = 1400 * scale;
+      canvas.height = 2000 * scale;
+      ctx.scale(scale, scale);
+      
+      // Render card content (simplified version)
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 1400, 2000);
+      
+      const gradient = ctx.createLinearGradient(0, 0, 1400, 0);
+      gradient.addColorStop(0, '#2563eb');
+      gradient.addColorStop(1, '#1e40af');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 1400, 250);
+      
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 40px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('وزارة الصحة', 700, 60);
+      ctx.font = '50px Arial';
+      ctx.fillText('بطاقة تعريف الموظف', 700, 120);
+      
+      ctx.fillStyle = '#111827';
+      ctx.font = 'bold 60px Arial';
+      ctx.fillText(employee.full_name_arabic || '', 700, 350);
+      
+      ctx.fillStyle = '#2563eb';
+      ctx.font = '40px Arial';
+      ctx.fillText(employee.position || 'غير محدد', 700, 410);
+      
+      // Data
+      let yPos = 500;
+      const data = [
+        { label: 'رقم الهوية', value: employee.رقم_الهوية },
+        { label: 'رقم الموظف', value: employee.رقم_الموظف },
+        { label: 'تاريخ الميلاد', value: employee.birth_date ? format(new Date(employee.birth_date), 'dd/MM/yyyy') : null },
+        { label: 'رقم الجوال', value: employee.phone },
+        { label: 'البريد الإلكتروني', value: employee.email }
+      ];
+      
+      ctx.textAlign = 'right';
+      data.forEach(item => {
+        if (item.value) {
+          ctx.fillStyle = '#6b7280';
+          ctx.font = '30px Arial';
+          ctx.fillText(item.label + ':', 1300, yPos);
+          ctx.fillStyle = '#111827';
+          ctx.font = 'bold 35px Arial';
+          ctx.fillText(item.value, 1300, yPos + 40);
+          yPos += 120;
+        }
+      });
+      
+      // QR Code
+      if (qrCodeDataUrl) {
+        const qrImage = new Image();
+        qrImage.src = qrCodeDataUrl;
+        await new Promise((resolve) => {
+          qrImage.onload = () => {
+            ctx.drawImage(qrImage, 100, yPos, 150, 150);
+            resolve();
+          };
+        });
+      }
+      
+      // Footer
+      const footerY = 2000 - 120;
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, footerY, 1400, 120);
+      ctx.fillStyle = '#ffffff';
+      ctx.textAlign = 'center';
+      ctx.font = '35px Arial';
+      ctx.fillText('المركز الصحي: ' + (employee.المركز_الصحي || 'غير محدد'), 700, footerY + 50);
+      ctx.font = '25px Arial';
+      ctx.fillText('تاريخ الإصدار: ' + new Date().toLocaleDateString('ar-SA'), 700, footerY + 90);
+      
+      // Convert to blob
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1.0));
+      const file = new File([blob], `بطاقة_تعريف_${employee.full_name_arabic || 'موظف'}.png`, { type: 'image/png' });
+      
+      if (navigator.share && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          title: `بطاقة تعريف - ${employee.full_name_arabic}`,
+          text: `بطاقة تعريف الموظف: ${employee.full_name_arabic}`,
+          files: [file]
+        });
+      } else {
+        alert('المشاركة غير مدعومة في هذا المتصفح. استخدم خيار "حفظ كصورة" بدلاً من ذلك.');
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+      if (error.name === 'AbortError') {
+        return;
+      }
+      alert('فشلت عملية المشاركة. حاول استخدام خيار "حفظ كصورة".');
+    }
   };
 
   if (!employee) return null;
@@ -162,12 +300,20 @@ ${employee.birth_date ? `🎂 *تاريخ الميلاد:* ${format(new Date(emp
             حفظ كصورة
           </Button>
           <Button
+            onClick={handleSystemShare}
+            className="bg-purple-600 hover:bg-purple-700 text-white"
+            size="sm"
+          >
+            <Share2 className="w-4 h-4 ml-2" />
+            مشاركة
+          </Button>
+          <Button
             onClick={handleWhatsAppShare}
             className="bg-emerald-600 hover:bg-emerald-700 text-white"
             size="sm"
           >
             <Share2 className="w-4 h-4 ml-2" />
-            مشاركة واتساب
+            واتساب
           </Button>
           <Button
             onClick={onClose}
@@ -273,6 +419,19 @@ ${employee.birth_date ? `🎂 *تاريخ الميلاد:* ${format(new Date(emp
                 </div>
               )}
             </div>
+
+            {/* QR Code */}
+            {qrCodeDataUrl && (
+              <div className="mt-6 flex justify-center">
+                <div className="bg-white p-3 rounded-lg border-2 border-blue-200 shadow-sm">
+                  <img src={qrCodeDataUrl} alt="QR Code" className="w-32 h-32" />
+                  <div className="text-xs text-center text-gray-500 mt-2 flex items-center justify-center gap-1">
+                    <QrCode className="w-3 h-3" />
+                    مسح للملف الشخصي
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Footer */}
