@@ -1,0 +1,1031 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { Employee } from "@/entities/Employee";
+import { HealthCenter } from "@/entities/HealthCenter";
+import { Assignment } from "@/entities/Assignment";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Command, CommandInput, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { ArrowRight, Save, ChevronsUpDown, Settings2, Table, List, Loader2, Plus, Trash2 } from "lucide-react";
+import { createPageUrl } from "@/utils";
+import { differenceInDays } from "date-fns";
+import FlexibleAssignmentTemplate from "@/components/assignments/FlexibleAssignmentTemplate";
+import StandardAssignmentTemplate from "@/components/assignments/StandardAssignmentTemplate";
+import MultipleAssignmentTemplate from "@/components/assignments/MultipleAssignmentTemplate";
+
+// Assuming base44 is a global object or imported
+const base44 = {
+  functions: {
+    invoke: async (functionName, payload) => {
+      // Mock function for demo
+      return { data: { success: true } };
+    }
+  },
+  integrations: {
+    Core: {
+      UploadFile: async ({ file }) => {
+        return { file_url: "https://example.com/file.pdf", file_name: file.name };
+      }
+    }
+  },
+  entities: {
+    EmployeeDocument: {
+      create: async (docData) => {
+        return { id: "123", ...docData };
+      }
+    }
+  }
+};
+
+export default function CreateAssignment() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [employees, setEmployees] = useState([]);
+  const [healthCenters, setHealthCenters] = useState([]);
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const urlParams = new URLSearchParams(location.search);
+  const assignmentType = urlParams.get('type') || 'standard'; // standard, flexible, or multiple
+
+  // Multiple assignment state
+  const [multipleAssignments, setMultipleAssignments] = useState([]);
+
+  const [assignmentData, setAssignmentData] = useState({
+    employee_record_id: "",
+    employee_name: "",
+    employee_national_id: "",
+    employee_position: "",
+    from_health_center: "",
+    gender: "",
+    assigned_to_health_center: "",
+    start_date: "",
+    end_date: "",
+    duration_days: 0,
+    issue_date: new Date().toISOString().split("T")[0],
+  });
+
+  // State for specific days selection in multiple assignment
+  const [useSpecificDays, setUseSpecificDays] = useState(false);
+  const [selectedDays, setSelectedDays] = useState([]);
+  const daysOfWeek = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+
+  const toggleDay = (day) => {
+    setSelectedDays(prev => 
+      prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]
+    );
+  };
+
+  const [templateOptions, setTemplateOptions] = useState({
+    customTitle: 'تكليف',
+    tableLayout: 'horizontal',
+    showDurationInTable: true,
+    showDurationInParagraph: true,
+    customDurationText: '',
+    customParagraph1: '',
+    customAssignmentType: '',
+    customParagraph2: 'لا يترتب على هذا القرار أي ميزة مالية إلا ما يقره النظام.',
+    customParagraph3: '',
+    customParagraph4: '',
+    customParagraph5: 'يتم تنفيذ هذا القرار كلاً فيما يخصه.',
+    customClosing: 'خالص التحايا ،،،',
+    customTableHeaders: {
+      name: 'الاسم',
+      position: 'المسمى الوظيفي',
+      assignmentType: 'نوع التكليف',
+      fromCenter: 'جهة العمل',
+      toCenter: 'جهة التكليف',
+      duration: 'مدة التكليف'
+    },
+    multiplePeriods: false,
+    additionalPeriods: [],
+    // Multiple template specific options
+    decisionPoints: [
+      'تكليف الموضح بياناتهم أعلاه بالعمل في الجهات الموضحة قرين اسم كل منهم خلال الفترة المحددة.',
+      'لا يترتب على هذا التكليف أي ميزة مالية إلا ما يقره النظام.',
+      'يتم تنفيذ هذا القرار كلاً فيما يخصه.'
+    ],
+    customIntro: 'إن مدير شؤون المراكز الصحية بالحناكية وبناء على الصلاحيات الممنوحة لنا نظاماً\nعليه يقرر ما يلي:'
+    });
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [empData, centerData] = await Promise.all([
+          Employee.list("-created_date", 200),
+          HealthCenter.list()
+        ]);
+        setEmployees(Array.isArray(empData) ? empData : []);
+        setHealthCenters(Array.isArray(centerData) ? centerData : []);
+      } catch (error) {
+        console.error("Error fetching initial data:", error);
+        setEmployees([]);
+        setHealthCenters([]);
+      }
+    }
+    fetchData();
+  }, []);
+
+  const handleEmployeeSelect = (employee) => {
+    setSelectedEmployee(employee);
+    setAssignmentData(prev => ({
+      ...prev,
+      employee_record_id: employee.id,
+      employee_name: employee.full_name_arabic,
+      employee_national_id: employee.رقم_الهوية,
+      employee_position: employee.position,
+      from_health_center: employee.المركز_الصحي,
+      gender: employee.gender,
+    }));
+    setPopoverOpen(false);
+  };
+
+  const handleChange = (field, value) => {
+    setAssignmentData(prev => {
+      const updated = { ...prev, [field]: value };
+      
+      if (field === 'start_date' || field === 'end_date') {
+        const startDate = field === 'start_date' ? value : updated.start_date;
+        const endDate = field === 'end_date' ? value : updated.end_date;
+        
+        if (startDate && endDate) {
+          const start = new Date(startDate);
+          const end = new Date(endDate);
+          if (start <= end) {
+            updated.duration_days = differenceInDays(end, start) + 1;
+          } else {
+            updated.duration_days = 0;
+          }
+        } else {
+          updated.duration_days = 0;
+        }
+      }
+      
+      return updated;
+    });
+  };
+
+  const handleSubmit = async () => {
+    const requiredFields = [
+      { field: 'assigned_to_health_center', name: 'المركز المكلف به', value: assignmentData.assigned_to_health_center },
+      { field: 'start_date', name: 'تاريخ البداية', value: assignmentData.start_date },
+      { field: 'end_date', name: 'تاريخ النهاية', value: assignmentData.end_date }
+    ];
+
+    if (assignmentType !== 'multiple') {
+      requiredFields.push({ field: 'employee_record_id', name: 'الموظف', value: assignmentData.employee_record_id });
+    }
+
+    const missingFields = requiredFields.filter(field => !field.value || field.value.toString().trim() === '');
+    
+    if (missingFields.length > 0) {
+      const missingFieldNames = missingFields.map(f => f.name).join('، ');
+      alert(`الرجاء تعبئة الحقول التالية: ${missingFieldNames}`);
+      return;
+    }
+
+    const startDate = new Date(assignmentData.start_date);
+    const endDate = new Date(assignmentData.end_date);
+    
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+      alert("يرجى إدخال تواريخ صحيحة.");
+      return;
+    }
+    
+    if (startDate > endDate) {
+      alert("تاريخ البداية يجب أن يكون قبل أو يساوي تاريخ النهاية.");
+      return;
+    }
+
+    let duration = parseInt(assignmentData.duration_days, 10);
+    if (isNaN(duration) || duration <= 0) {
+      duration = Math.max(1, differenceInDays(endDate, startDate) + 1);
+    }
+
+    setIsSaving(true); 
+    try {
+      // Handle Multiple Assignments
+      if (assignmentType === 'multiple') {
+        if (multipleAssignments.length === 0) {
+          alert('الرجاء إضافة موظف واحد على الأقل');
+          setIsSaving(false);
+          return;
+        }
+
+        // Create records for each employee
+        const groupId = crypto.randomUUID();
+        const templateOptionsJSON = JSON.stringify({
+            customTitle: templateOptions.customTitle,
+            customIntro: templateOptions.customIntro,
+            decisionPoints: templateOptions.decisionPoints,
+            customClosing: templateOptions.customClosing
+        });
+
+        const createdIds = [];
+        for (const item of multipleAssignments) {
+          const res = await Assignment.create({
+            employee_record_id: item.employee_record_id,
+            employee_name: item.name,
+            employee_position: item.position,
+            employee_national_id: item.national_id,
+            employee_job_id: item.employee_id,
+            from_health_center: item.current_work,
+            assigned_to_health_center: item.assigned_work,
+            start_date: item.start_date,
+            end_date: item.end_date,
+            duration_days: parseInt(item.duration, 10) || 0,
+            issue_date: assignmentData.issue_date,
+            assignment_template_type: 'multiple',
+            group_id: groupId,
+            status: 'active',
+            notes: item.full_duration ? `المدة: ${item.full_duration}` : 'جزء من تكليف جماعي', // Save full duration in notes for now
+            template_options: templateOptionsJSON
+          });
+          createdIds.push(res.id);
+        }
+        
+        navigate(createPageUrl(`ViewAssignment?id=${createdIds[0]}`));
+        return;
+      }
+
+      // Handle Single Assignment
+      const finalAssignmentData = {
+        ...assignmentData,
+        duration_days: duration,
+        employee_name: assignmentData.employee_name || selectedEmployee?.full_name_arabic || '',
+        employee_position: assignmentData.employee_position || selectedEmployee?.position || '',
+        from_health_center: assignmentData.from_health_center || selectedEmployee?.المركز_الصحي || '',
+        gender: assignmentData.gender || selectedEmployee?.gender || '',
+        template_options: assignmentType === 'flexible' ? JSON.stringify(templateOptions) : null,
+        assignment_template_type: assignmentType
+      };
+      
+      const newAssignment = await Assignment.create(finalAssignmentData);
+      navigate(createPageUrl(`ViewAssignment?id=${newAssignment.id}`));
+    } catch (error) {
+      console.error("❌ فشل في إنشاء التكليف:", error);
+      alert(`حدث خطأ أثناء إنشاء التكليف: ${error.message || 'خطأ غير معروف'}`);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <div className="max-w-5xl mx-auto">
+        <div className="flex items-center gap-4 mb-8">
+          <Button variant="outline" onClick={() => navigate(createPageUrl("Assignments"))} size="icon">
+            <ArrowRight className="w-4 h-4" />
+          </Button>
+          <div>
+            <div className="flex items-center gap-3">
+              <h1 className="text-3xl font-bold text-gray-900">إنشاء تكليف جديد</h1>
+              {assignmentType === 'flexible' && (
+                <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">قالب مرن</Badge>
+              )}
+              {assignmentType === 'standard' && (
+                <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">قالب قياسي</Badge>
+              )}
+              {assignmentType === 'multiple' && (
+                <Badge className="bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200">تكليف متعدد</Badge>
+              )}
+            </div>
+            <p className="text-gray-600 mt-1">
+              {assignmentType === 'flexible' 
+                ? 'قالب قابل للتخصيص الكامل مع خيارات متقدمة' 
+                : assignmentType === 'multiple'
+                ? 'قالب يسمح بتكليف عدة موظفين في قائمة واحدة'
+                : 'قالب موحد بتنسيق ثابت وجاهز'}
+            </p>
+          </div>
+        </div>
+
+        <Tabs defaultValue="basic" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="basic">البيانات الأساسية</TabsTrigger>
+            {assignmentType === 'flexible' && (
+              <TabsTrigger value="advanced">
+                <Settings2 className="w-4 h-4 ml-2" />
+                التخصيص المتقدم
+              </TabsTrigger>
+            )}
+          </TabsList>
+
+          <TabsContent value="basic">
+            <Card className="shadow-lg">
+              <CardHeader><CardTitle>بيانات التكليف</CardTitle></CardHeader>
+              <CardContent className="p-6">
+                {assignmentType === 'multiple' ? (
+                  <div className="space-y-6">
+                    <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                      <h3 className="font-bold mb-4 flex items-center gap-2">
+                        <Plus className="w-4 h-4" /> إضافة موظفين للقائمة
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div className="md:col-span-1">
+                          <Label>الموظف</Label>
+                          <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                            <PopoverTrigger asChild>
+                              <Button variant="outline" role="combobox" aria-expanded={popoverOpen} className="w-full justify-between h-10">
+                                {selectedEmployee ? selectedEmployee.full_name_arabic : "اختر موظف..."}
+                                <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-[300px] p-0">
+                              <Command>
+                                <CommandInput placeholder="ابحث..." />
+                                <CommandEmpty>لا يوجد</CommandEmpty>
+                                <CommandGroup className="max-h-64 overflow-auto">
+                                  {(employees || []).map((employee) => (
+                                    <CommandItem 
+                                      key={employee.id} 
+                                      onSelect={() => {
+                                        setSelectedEmployee(employee);
+                                        setPopoverOpen(false);
+                                        setAssignmentData(prev => ({...prev, from_health_center: employee.المركز_الصحي || ''}));
+                                      }}
+                                    >
+                                      {employee.full_name_arabic}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </Command>
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                        
+                        <div>
+                          <Label>جهة التكليف</Label>
+                          <Select 
+                            value={assignmentData.assigned_to_health_center} 
+                            onValueChange={(v) => setAssignmentData(prev => ({...prev, assigned_to_health_center: v}))}
+                          >
+                            <SelectTrigger><SelectValue placeholder="اختر المركز..." /></SelectTrigger>
+                            <SelectContent>
+                              {(healthCenters || []).map(center => (
+                                <SelectItem key={center.id} value={center.اسم_المركز}>{center.اسم_المركز}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div>
+                          <Label>المدة (أيام)</Label>
+                          <Input 
+                            type="number" 
+                            value={assignmentData.duration_days} 
+                            onChange={(e) => setAssignmentData(prev => ({...prev, duration_days: e.target.value}))}
+                            placeholder="مثال: 5"
+                          />
+                        </div>
+
+                        <div className="md:col-span-3 border p-3 rounded bg-gray-50">
+                          <div className="flex items-center space-x-2 space-x-reverse mb-2">
+                            <Checkbox 
+                              id="useSpecificDays" 
+                              checked={useSpecificDays} 
+                              onCheckedChange={setUseSpecificDays} 
+                            />
+                            <Label htmlFor="useSpecificDays" className="cursor-pointer font-medium text-blue-700">
+                              تحديد أيام محددة (مثال: كل أحد وثلاثاء)
+                            </Label>
+                          </div>
+                          
+                          {useSpecificDays && (
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              {daysOfWeek.map(day => (
+                                <div key={day} className="flex items-center space-x-1 space-x-reverse bg-white px-2 py-1 rounded border">
+                                  <Checkbox 
+                                    id={`day-${day}`} 
+                                    checked={selectedDays.includes(day)} 
+                                    onCheckedChange={() => toggleDay(day)} 
+                                  />
+                                  <Label htmlFor={`day-${day}`} className="cursor-pointer text-sm">{day}</Label>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+
+                        <div>
+                          <Label>تاريخ البداية</Label>
+                          <Input 
+                            type="date" 
+                            value={assignmentData.start_date} 
+                            onChange={(e) => setAssignmentData(prev => ({...prev, start_date: e.target.value}))} 
+                          />
+                        </div>
+
+                        <div>
+                          <Label>تاريخ النهاية</Label>
+                          <Input 
+                            type="date" 
+                            value={assignmentData.end_date} 
+                            onChange={(e) => setAssignmentData(prev => ({...prev, end_date: e.target.value}))} 
+                          />
+                        </div>
+
+                        <div className="flex items-end">
+                          <Button 
+                            onClick={() => {
+                              if (!selectedEmployee) return alert('اختر موظفاً');
+                              
+                              let fullDuration = '';
+                              if (useSpecificDays && selectedDays.length > 0) {
+                                const daysStr = selectedDays.join(' و ');
+                                fullDuration = `كل ${daysStr} خلال الفترة من\n${assignmentData.start_date} إلى ${assignmentData.end_date}`;
+                              }
+
+                              setMultipleAssignments(prev => [...prev, {
+                                id: Date.now(),
+                                name: selectedEmployee.full_name_arabic,
+                                position: selectedEmployee.position,
+                                national_id: selectedEmployee.رقم_الهوية,
+                                employee_id: selectedEmployee.رقم_الموظف,
+                                current_work: assignmentData.from_health_center || selectedEmployee.المركز_الصحي,
+                                assigned_work: assignmentData.assigned_to_health_center,
+                                duration: assignmentData.duration_days,
+                                start_date: assignmentData.start_date,
+                                end_date: assignmentData.end_date,
+                                full_duration: fullDuration, // Add constructed full duration string
+                                employee_record_id: selectedEmployee.id,
+                                gender: selectedEmployee.gender
+                                }]);
+                              setSelectedEmployee(null);
+                              // Optional: Reset days if needed, or keep for next addition
+                            }}
+                            className="w-full bg-blue-600"
+                          >
+                            <Plus className="w-4 h-4 ml-2" /> إضافة للقائمة
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border rounded-lg overflow-hidden">
+                      <table className="w-full text-sm text-right">
+                        <thead className="bg-gray-100">
+                          <tr>
+                            <th className="p-3 border-b">الاسم</th>
+                            <th className="p-3 border-b">جهة العمل</th>
+                            <th className="p-3 border-b">المكلف بها</th>
+                            <th className="p-3 border-b">المدة</th>
+                            <th className="p-3 border-b">تاريخ البداية</th>
+                            <th className="p-3 border-b">تاريخ النهاية</th>
+                            <th className="p-3 border-b w-10"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {multipleAssignments.map((item, idx) => (
+                            <tr key={item.id} className="border-b last:border-0 hover:bg-gray-50">
+                              <td className="p-3">{item.name}</td>
+                              <td className="p-3">{item.current_work}</td>
+                              <td className="p-3">{item.assigned_work}</td>
+                              <td className="p-3">{item.duration} يوم</td>
+                              <td className="p-3">{item.start_date}</td>
+                              <td className="p-3">{item.end_date}</td>
+                              <td className="p-3 text-center">
+                                <button 
+                                  onClick={() => setMultipleAssignments(prev => prev.filter(i => i.id !== item.id))}
+                                  className="text-red-500 hover:text-red-700"
+                                  >
+                                  <Trash2 className="w-4 h-4" />
+                                  </button>
+                                  </td>
+                                  </tr>
+                                  ))}
+                                  {multipleAssignments.length === 0 && (
+                                  <tr>
+                                  <td colSpan="7" className="p-8 text-center text-gray-500">لم يتم إضافة موظفين بعد</td>
+                                  </tr>
+                                  )}
+                                  </tbody>
+                                  </table>
+                                  </div>
+
+                                  {/* Multiple Template Customization */}
+                                  <div className="mt-6 p-4 bg-gray-50 border border-gray-200 rounded-lg space-y-4">
+                                  <h3 className="font-bold text-gray-900 flex items-center gap-2">
+                                  <Settings2 className="w-4 h-4" />
+                                  تخصيص نص القرار
+                                  </h3>
+
+                                  <div>
+                                  <Label>المقدمة</Label>
+                                  <Textarea 
+                                  value={templateOptions.customIntro}
+                                  onChange={(e) => setTemplateOptions(prev => ({...prev, customIntro: e.target.value}))}
+                                  className="mt-1 h-20"
+                                  />
+                                  </div>
+
+                                  <div>
+                                  <Label className="mb-2 block">نقاط القرار</Label>
+                                  {templateOptions.decisionPoints.map((point, idx) => (
+                                  <div key={idx} className="flex gap-2 mb-2 items-center">
+                                  <Badge variant="outline" className="h-8 w-8 flex justify-center items-center shrink-0">{idx + 1}</Badge>
+                                  <Input 
+                                  value={point}
+                                  onChange={(e) => {
+                                  const newPoints = [...templateOptions.decisionPoints];
+                                  newPoints[idx] = e.target.value;
+                                  setTemplateOptions(prev => ({...prev, decisionPoints: newPoints}));
+                                  }}
+                                  />
+                                  <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                  const newPoints = templateOptions.decisionPoints.filter((_, i) => i !== idx);
+                                  setTemplateOptions(prev => ({...prev, decisionPoints: newPoints}));
+                                  }}
+                                  className="text-red-500"
+                                  >
+                                  <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                  </div>
+                                  ))}
+                                  <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => setTemplateOptions(prev => ({...prev, decisionPoints: [...prev.decisionPoints, '']}))}
+                                  className="mt-2"
+                                  >
+                                  <Plus className="w-4 h-4 ml-2" /> إضافة نقطة
+                                  </Button>
+                                  </div>
+                                  </div>
+                                  </div>
+                                  ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="md:col-span-2">
+                      <Label>اختر الموظف *</Label>
+                      <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" role="combobox" aria-expanded={popoverOpen} className="w-full justify-between">
+                            {selectedEmployee ? selectedEmployee.full_name_arabic : "اختر موظف..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                          <Command>
+                            <CommandInput placeholder="ابحث عن موظف..." />
+                            <CommandEmpty>لم يتم العثور على موظف.</CommandEmpty>
+                            <CommandGroup>
+                              {(employees || []).map((employee) => (
+                                <CommandItem key={employee.id} onSelect={() => handleEmployeeSelect(employee)}>
+                                  {employee.full_name_arabic}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+
+                    {selectedEmployee && (
+                      <>
+                        <Card className="bg-gray-50 p-4 md:col-span-2">
+                            <p><strong>المركز الحالي:</strong> {selectedEmployee.المركز_الصحي}</p>
+                            <p><strong>المنصب:</strong> {selectedEmployee.position}</p>
+                        </Card>
+
+                        <div className="md:col-span-2">
+                          <Label htmlFor="assigned_to_health_center">المركز المكلف به *</Label>
+                          <Select value={assignmentData.assigned_to_health_center} onValueChange={(value) => handleChange('assigned_to_health_center', value)}>
+                            <SelectTrigger><SelectValue placeholder="اختر المركز..." /></SelectTrigger>
+                            <SelectContent>
+                              {(healthCenters || []).filter(c => c.اسم_المركز !== selectedEmployee.المركز_الصحي).map(center => (
+                                <SelectItem key={center.id} value={center.اسم_المركز}>{center.اسم_المركز}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="start_date">تاريخ بداية التكليف *</Label>
+                          <Input 
+                            id="start_date" 
+                            type="date" 
+                            value={assignmentData.start_date} 
+                            onChange={(e) => handleChange('start_date', e.target.value)} 
+                          />
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="end_date">تاريخ نهاية التكليف *</Label>
+                          <Input 
+                            id="end_date" 
+                            type="date" 
+                            value={assignmentData.end_date} 
+                            onChange={(e) => handleChange('end_date', e.target.value)} 
+                          />
+                        </div>
+
+                        <div>
+                          <Label htmlFor="duration_days">مدة التكليف (أيام)</Label>
+                          <Input 
+                            id="duration_days" 
+                            type="number" 
+                            value={assignmentData.duration_days || 0} 
+                            readOnly 
+                            className="bg-gray-100" 
+                          />
+                        </div>
+
+                        {/* فترات التكليف المتعددة */}
+                        <div className="md:col-span-2">
+                          <div className="flex items-center space-x-2 space-x-reverse mb-3">
+                            <Checkbox 
+                              id="multiplePeriods" 
+                              checked={templateOptions.multiplePeriods} 
+                              onCheckedChange={(checked) => setTemplateOptions(prev => ({...prev, multiplePeriods: checked}))} 
+                            />
+                            <Label htmlFor="multiplePeriods" className="cursor-pointer font-medium">📅 فترات تكليف متعددة (غير متصلة)</Label>
+                          </div>
+                          
+                          {templateOptions.multiplePeriods && (
+                            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 space-y-3">
+                              <div className="flex items-center justify-between">
+                                <Label className="text-sm font-bold text-blue-800">الفترات الإضافية:</Label>
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setTemplateOptions(prev => ({
+                                    ...prev, 
+                                    additionalPeriods: [...prev.additionalPeriods, { start_date: '', end_date: '' }]
+                                  }))}
+                                  className="h-8 text-xs"
+                                >
+                                  + إضافة فترة
+                                </Button>
+                              </div>
+                              
+                              <p className="text-xs text-blue-700">
+                                الفترة الأساسية: من {assignmentData.start_date || '---'} إلى {assignmentData.end_date || '---'}
+                              </p>
+                              
+                              {templateOptions.additionalPeriods.map((period, index) => (
+                                <div key={index} className="flex items-center gap-2 bg-white p-3 rounded border">
+                                  <span className="text-sm text-gray-700 font-medium min-w-[60px]">فترة {index + 2}:</span>
+                                  <div className="flex-1">
+                                    <Label className="text-xs text-gray-500">من</Label>
+                                    <Input
+                                      type="date"
+                                      value={period.start_date}
+                                      onChange={(e) => {
+                                        const newPeriods = [...templateOptions.additionalPeriods];
+                                        newPeriods[index].start_date = e.target.value;
+                                        setTemplateOptions(prev => ({...prev, additionalPeriods: newPeriods}));
+                                      }}
+                                      className="h-8 text-sm"
+                                    />
+                                  </div>
+                                  <div className="flex-1">
+                                    <Label className="text-xs text-gray-500">إلى</Label>
+                                    <Input
+                                      type="date"
+                                      value={period.end_date}
+                                      onChange={(e) => {
+                                        const newPeriods = [...templateOptions.additionalPeriods];
+                                        newPeriods[index].end_date = e.target.value;
+                                        setTemplateOptions(prev => ({...prev, additionalPeriods: newPeriods}));
+                                      }}
+                                      className="h-8 text-sm"
+                                    />
+                                  </div>
+                                  <Button
+                                    type="button"
+                                    size="sm"
+                                    variant="ghost"
+                                    onClick={() => {
+                                      const newPeriods = templateOptions.additionalPeriods.filter((_, i) => i !== index);
+                                      setTemplateOptions(prev => ({...prev, additionalPeriods: newPeriods}));
+                                    }}
+                                    className="h-8 w-8 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                  >
+                                    ×
+                                  </Button>
+                                </div>
+                              ))}
+                              
+                              {templateOptions.additionalPeriods.length === 0 && (
+                                <p className="text-xs text-gray-500 text-center py-2">اضغط "إضافة فترة" لإضافة فترات تكليف إضافية</p>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        
+                        <div>
+                          <Label htmlFor="issue_date">تاريخ إصدار الخطاب</Label>
+                          <Input 
+                            id="issue_date" 
+                            type="date" 
+                            value={assignmentData.issue_date} 
+                            onChange={(e) => handleChange('issue_date', e.target.value)} 
+                          />
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {assignmentType === 'flexible' && (
+            <TabsContent value="advanced">
+              <Card className="shadow-lg">
+                <CardHeader>
+                  <CardTitle>التخصيص المتقدم للخطاب</CardTitle>
+                </CardHeader>
+                <CardContent className="p-6 space-y-6">
+                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-3">
+                    <h3 className="font-bold text-blue-900 flex items-center gap-2">
+                      <Settings2 className="w-4 h-4" />
+                      تخصيص العنوان
+                    </h3>
+                    <div>
+                      <Label>عنوان الخطاب</Label>
+                      <Textarea
+                        placeholder="مثال: تكليف، خطاب تكليف، قرار تكليف"
+                        value={templateOptions.customTitle}
+                        onChange={(e) => setTemplateOptions(prev => ({...prev, customTitle: e.target.value}))}
+                        rows={1}
+                        className="resize-y"
+                      />
+                    </div>
+                  </div>
+
+                  {/* ... existing flexible options ... */}
+                  <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg space-y-4">
+                    <h3 className="font-bold text-purple-900 flex items-center gap-2">
+                      <Table className="w-4 h-4" />
+                      تخصيص الجدول
+                    </h3>
+                    
+                    <div>
+                      <Label className="mb-2 block">طريقة عرض الجدول</Label>
+                      <RadioGroup 
+                        value={templateOptions.tableLayout} 
+                        onValueChange={(value) => setTemplateOptions(prev => ({...prev, tableLayout: value}))}
+                        className="flex gap-4"
+                      >
+                        <div className="flex items-center space-x-2 space-x-reverse border rounded-lg p-3 hover:bg-purple-100 cursor-pointer">
+                          <RadioGroupItem value="horizontal" id="horizontal" />
+                          <Label htmlFor="horizontal" className="cursor-pointer flex items-center gap-2">
+                            <Table className="w-4 h-4" />
+                            عرضي (الافتراضي)
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2 space-x-reverse border rounded-lg p-3 hover:bg-purple-100 cursor-pointer">
+                          <RadioGroupItem value="vertical" id="vertical" />
+                          <Label htmlFor="vertical" className="cursor-pointer flex items-center gap-2">
+                            <List className="w-4 h-4" />
+                            طولي
+                          </Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <Label>عنوان خانة الاسم</Label>
+                        <Textarea
+                          value={templateOptions.customTableHeaders.name}
+                          onChange={(e) => setTemplateOptions(prev => ({
+                            ...prev, 
+                            customTableHeaders: {...prev.customTableHeaders, name: e.target.value}
+                          }))}
+                          rows={1}
+                          className="resize-y"
+                        />
+                      </div>
+                      <div>
+                        <Label>عنوان خانة المسمى الوظيفي</Label>
+                        <Textarea
+                          value={templateOptions.customTableHeaders.position}
+                          onChange={(e) => setTemplateOptions(prev => ({
+                            ...prev, 
+                            customTableHeaders: {...prev.customTableHeaders, position: e.target.value}
+                          }))}
+                          rows={1}
+                          className="resize-y"
+                        />
+                      </div>
+                      <div>
+                        <Label>عنوان خانة نوع التكليف</Label>
+                        <Textarea
+                          value={templateOptions.customTableHeaders.assignmentType}
+                          onChange={(e) => setTemplateOptions(prev => ({
+                            ...prev, 
+                            customTableHeaders: {...prev.customTableHeaders, assignmentType: e.target.value}
+                          }))}
+                          rows={1}
+                          className="resize-y"
+                        />
+                      </div>
+                      <div>
+                        <Label>عنوان خانة جهة العمل</Label>
+                        <Textarea
+                          value={templateOptions.customTableHeaders.fromCenter}
+                          onChange={(e) => setTemplateOptions(prev => ({
+                            ...prev, 
+                            customTableHeaders: {...prev.customTableHeaders, fromCenter: e.target.value}
+                          }))}
+                          rows={1}
+                          className="resize-y"
+                        />
+                      </div>
+                      <div>
+                        <Label>عنوان خانة جهة التكليف</Label>
+                        <Textarea
+                          value={templateOptions.customTableHeaders.toCenter}
+                          onChange={(e) => setTemplateOptions(prev => ({
+                            ...prev, 
+                            customTableHeaders: {...prev.customTableHeaders, toCenter: e.target.value}
+                          }))}
+                          rows={1}
+                          className="resize-y"
+                        />
+                      </div>
+                      <div>
+                        <Label>عنوان خانة مدة التكليف</Label>
+                        <Textarea
+                          value={templateOptions.customTableHeaders.duration}
+                          onChange={(e) => setTemplateOptions(prev => ({
+                            ...prev, 
+                            customTableHeaders: {...prev.customTableHeaders, duration: e.target.value}
+                          }))}
+                          rows={1}
+                          className="resize-y"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                      <div className="flex items-center space-x-2 space-x-reverse">
+                        <Checkbox 
+                          id="showTableDuration" 
+                          checked={templateOptions.showDurationInTable} 
+                          onCheckedChange={(checked) => setTemplateOptions(prev => ({...prev, showDurationInTable: checked}))} 
+                        />
+                        <Label htmlFor="showTableDuration" className="cursor-pointer">إظهار المدة في الجدول</Label>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2 space-x-reverse">
+                        <Checkbox 
+                          id="showParaDuration" 
+                          checked={templateOptions.showDurationInParagraph} 
+                          onCheckedChange={(checked) => setTemplateOptions(prev => ({...prev, showDurationInParagraph: checked}))} 
+                        />
+                        <Label htmlFor="showParaDuration" className="cursor-pointer">إظهار المدة في الفقرة الأولى</Label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label>نوع التكليف المخصص (اتركه فارغاً للنوع الافتراضي)</Label>
+                    <Textarea
+                      placeholder="مثال: تكليف داخلي - مؤقت"
+                      value={templateOptions.customAssignmentType}
+                      onChange={(e) => setTemplateOptions(prev => ({...prev, customAssignmentType: e.target.value}))}
+                      rows={1}
+                      className="resize-y"
+                    />
+                  </div>
+
+                  <div>
+                    <Label>صيغة مدة التكليف المخصصة (اتركه فارغاً للصيغة الافتراضية)</Label>
+                    <Textarea
+                      placeholder="مثال: لمدة 15 يوماً، اعتباراً من..."
+                      value={templateOptions.customDurationText}
+                      onChange={(e) => setTemplateOptions(prev => ({...prev, customDurationText: e.target.value}))}
+                      rows={2}
+                    />
+                  </div>
+
+                  <div>
+                    <Label>الفقرة الأولى (اتركه فارغاً للنص الافتراضي)</Label>
+                    <Textarea
+                      placeholder="تكليف الموضح بياناته أعلاه لتغطية العمل في..."
+                      value={templateOptions.customParagraph1}
+                      onChange={(e) => setTemplateOptions(prev => ({...prev, customParagraph1: e.target.value}))}
+                      rows={3}
+                    />
+                  </div>
+
+                  <div>
+                    <Label>الفقرة الثانية</Label>
+                    <Textarea
+                      value={templateOptions.customParagraph2}
+                      onChange={(e) => setTemplateOptions(prev => ({...prev, customParagraph2: e.target.value}))}
+                      rows={2}
+                    />
+                  </div>
+
+                  <div>
+                    <Label>الفقرة الثالثة (اتركه فارغاً لعدم الإظهار)</Label>
+                    <Textarea
+                      placeholder="نسخة للمركز الأصلي لإبلاغ المذكور..."
+                      value={templateOptions.customParagraph3}
+                      onChange={(e) => setTemplateOptions(prev => ({...prev, customParagraph3: e.target.value}))}
+                      rows={2}
+                    />
+                  </div>
+
+                  <div>
+                    <Label>الفقرة الرابعة (اتركه فارغاً لعدم الإظهار)</Label>
+                    <Textarea
+                      placeholder="نسخة للمركز المكلف به..."
+                      value={templateOptions.customParagraph4}
+                      onChange={(e) => setTemplateOptions(prev => ({...prev, customParagraph4: e.target.value}))}
+                      rows={2}
+                    />
+                  </div>
+
+                  <div>
+                    <Label>الفقرة الخامسة</Label>
+                    <Textarea
+                      value={templateOptions.customParagraph5}
+                      onChange={(e) => setTemplateOptions(prev => ({...prev, customParagraph5: e.target.value}))}
+                      rows={2}
+                    />
+                  </div>
+
+                  <div>
+                    <Label>الختام</Label>
+                    <Textarea
+                      value={templateOptions.customClosing}
+                      onChange={(e) => setTemplateOptions(prev => ({...prev, customClosing: e.target.value}))}
+                      rows={1}
+                      className="resize-y"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
+        </Tabs>
+
+        {(selectedEmployee || (assignmentType === 'multiple' && multipleAssignments.length > 0)) && (
+          <div className="flex justify-end mt-6">
+            <Button 
+              onClick={handleSubmit} 
+              disabled={isSaving} 
+              className="bg-green-600 hover:bg-green-700 gap-2"
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  جاري الحفظ...
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  حفظ وإنشاء الخطاب
+                </>
+              )}
+            </Button>
+          </div>
+        )}
+
+        {/* Preview Section */}
+        <div className="mt-8">
+          <h2 className="text-xl font-bold mb-4">معاينة الخطاب</h2>
+          {assignmentType === 'flexible' ? (
+            <FlexibleAssignmentTemplate 
+              assignment={{...assignmentData, employee_name: selectedEmployee?.full_name_arabic, employee_position: selectedEmployee?.position, gender: selectedEmployee?.gender}} 
+              employee={selectedEmployee} 
+              {...templateOptions}
+            />
+          ) : assignmentType === 'multiple' ? (
+            <MultipleAssignmentTemplate 
+              assignments={multipleAssignments}
+              customTitle={templateOptions.customTitle}
+              customIntro={templateOptions.customIntro}
+              decisionPoints={templateOptions.decisionPoints}
+              customClosing={templateOptions.customClosing}
+            />
+          ) : (
+            <StandardAssignmentTemplate 
+              assignment={{...assignmentData, employee_name: selectedEmployee?.full_name_arabic, employee_position: selectedEmployee?.position, gender: selectedEmployee?.gender}} 
+              employee={selectedEmployee} 
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

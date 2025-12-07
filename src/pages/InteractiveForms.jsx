@@ -1,0 +1,171 @@
+
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { Card, CardContent } from '@/components/ui/card';
+import { Edit, ClipboardList, DollarSign, Award, Package } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { createPageUrl } from '@/utils';
+
+const interactiveForms = [
+  {
+    title: "نموذج 205 - جزء أول",
+    description: "تعبئة نموذج 205 لتقييم الوظائف (الجزء الأول)",
+    icon: ClipboardList,
+    color: "from-blue-500 to-blue-600",
+    link: createPageUrl("Fill205Form"),
+    category: "تقييم الوظائف"
+  },
+  {
+    title: "نموذج 205 - جزء ثاني",
+    description: "تعبئة نموذج 205 لتقييم الوظائف (الجزء الثاني)",
+    icon: ClipboardList,
+    color: "from-indigo-500 to-indigo-600",
+    link: createPageUrl("Fill205FormPart2"),
+    category: "تقييم الوظائف"
+  },
+  {
+    title: "نموذج 205 - كامل",
+    description: "تعبئة نموذج 205 الكامل (جزء واحد)",
+    icon: ClipboardList,
+    color: "from-purple-500 to-purple-600",
+    link: createPageUrl("Fill205FormComplete"),
+    category: "تقييم الوظائف"
+  },
+  {
+    title: "نموذج طلب البدلات",
+    description: "تعبئة نموذج طلب بدل العدوى أو بدل الضرر",
+    icon: DollarSign,
+    color: "from-green-500 to-green-600",
+    link: createPageUrl("FillAllowanceForm"),
+    category: "البدلات"
+  },
+  {
+    title: "شهادة تقييم ممتاز",
+    description: "إصدار شهادة تقدير للموظف المتميز",
+    icon: Award,
+    color: "from-yellow-500 to-orange-600",
+    link: createPageUrl("FillExcellentEmployeeCertificate"),
+    category: "الشهادات"
+  },
+  {
+    title: "طلب التجهيزات الطبية",
+    description: "نموذج احتياج من التجهيزات الطبية والغير طبية",
+    icon: Package,
+    color: "from-teal-500 to-cyan-600",
+    link: createPageUrl("FillEquipmentRequestForm"),
+    category: "التجهيزات"
+  },
+  {
+    title: "محرر النماذج التفاعلي",
+    description: "أنشئ نماذجك الخاصة بتحكم كامل مثل برامج التصميم",
+    icon: Edit, // Changed from FilePenLine to Edit
+    color: "from-red-500 to-orange-600",
+    link: createPageUrl("FormEditor"),
+    category: "أدوات متقدمة"
+  }
+];
+
+export default function InteractiveForms() {
+  return (
+    <div className="min-h-screen p-4 md:p-6 bg-gradient-to-br from-gray-50 via-white to-indigo-50">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="text-center space-y-4 mb-8">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-xl mb-4">
+            <Edit className="w-10 h-10 text-white" />
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900">النماذج التفاعلية</h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            تعبئة وإنشاء النماذج الرسمية إلكترونياً بطريقة سهلة وسريعة
+          </p>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+            <CardContent className="p-6 text-center">
+              <div className="text-3xl font-bold text-blue-600 mb-1">{interactiveForms.length}</div>
+              <div className="text-sm text-blue-700">نموذج متاح</div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+            <CardContent className="p-6 text-center">
+              <div className="text-3xl font-bold text-green-600 mb-1">100%</div>
+              <div className="text-sm text-green-700">رقمي تماماً</div>
+            </CardContent>
+          </Card>
+          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+            <CardContent className="p-6 text-center">
+              <div className="text-3xl font-bold text-purple-600 mb-1">⚡</div>
+              <div className="text-sm text-purple-700">فوري وسريع</div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Forms Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {interactiveForms.map((form) => {
+            const Icon = form.icon;
+            return (
+              <Link key={form.title} to={form.link}>
+                <Card className="group h-full hover:shadow-2xl transition-all duration-300 border-2 hover:border-indigo-300 cursor-pointer hover:scale-105">
+                  <CardContent className="p-6">
+                    <div className="flex flex-col items-center text-center space-y-5">
+                      {/* Icon */}
+                      <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${form.color} flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform`}>
+                        <Icon className="w-10 h-10 text-white" />
+                      </div>
+                      
+                      {/* Category Badge */}
+                      <div className="inline-block px-3 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-600">
+                        {form.category}
+                      </div>
+                      
+                      {/* Title & Description */}
+                      <div className="space-y-2">
+                        <h3 className="font-bold text-lg text-gray-900 leading-tight">
+                          {form.title}
+                        </h3>
+                        <p className="text-sm text-gray-600 leading-relaxed">
+                          {form.description}
+                        </p>
+                      </div>
+                      
+                      {/* Button */}
+                      <Button 
+                        variant="outline" 
+                        size="lg"
+                        className="w-full group-hover:bg-indigo-50 group-hover:text-indigo-700 group-hover:border-indigo-300 transition-all"
+                      >
+                        <Edit className="w-4 h-4 ml-2" />
+                        تعبئة النموذج
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            );
+          })}
+        </div>
+
+        {/* Footer Info */}
+        <Card className="mt-12 bg-gradient-to-r from-indigo-50 to-purple-50 border-indigo-200">
+          <CardContent className="p-6">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center flex-shrink-0">
+                <Edit className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="font-bold text-lg text-gray-900 mb-2">💡 نصيحة</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  جميع النماذج التفاعلية تدعم الحفظ التلقائي، التصدير إلى PDF، والطباعة المباشرة. 
+                  يمكنك أيضاً حفظ النماذج المعبأة في ملفات الموظفين للرجوع إليها لاحقاً.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
