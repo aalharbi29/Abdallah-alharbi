@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Download, FileSpreadsheet, Award, TrendingUp, Users } from 'lucide-react';
+import { Download, FileSpreadsheet, Award, TrendingUp, Users, Calendar } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 export default function PerformanceMetricsReport({ employees, leaves, assignments, healthCenters }) {
