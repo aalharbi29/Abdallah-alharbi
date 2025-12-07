@@ -45,6 +45,7 @@ import FillNonMedicalEquipmentForm from './pages/FillNonMedicalEquipmentForm';
 import Settings from './pages/Settings';
 import ClinicManagement from './pages/ClinicManagement';
 import FillClearanceForm from './pages/FillClearanceForm';
+import HRAnalytics from './pages/HRAnalytics';
 import __Layout from './Layout.jsx';
 
 
@@ -96,6 +97,7 @@ export const PAGES = {
     "Settings": Settings,
     "ClinicManagement": ClinicManagement,
     "FillClearanceForm": FillClearanceForm,
+    "HRAnalytics": HRAnalytics,
 }
 
 export const pagesConfig = {

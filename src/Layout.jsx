@@ -11,6 +11,7 @@ import {
   FileSignature,
   Menu,
   X,
+  Bell,
   ChevronDown,
   DollarSign,
   Activity,
@@ -21,18 +22,21 @@ import {
   Archive,
   Building2,
   Edit,
+  Mail,
   Settings,
   FileCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import InstallPrompt from "./components/pwa/InstallPrompt";
 import Notifications from "./components/notifications/Notifications";
-import ThemeProvider from "./components/theme/ThemeProvider";
+import ThemeProvider, { useTheme } from "./components/theme/ThemeProvider";
 import ThemeSwitcher from "./components/theme/ThemeSwitcher";
 
 const navigationItems = [
   { name: "لوحة التحكم", href: createPageUrl("Dashboard"), icon: Home },
   { name: "الموارد البشرية", href: createPageUrl("HumanResources"), icon: Users },
+  { name: "تحليلات الموارد البشرية", href: createPageUrl("HRAnalytics"), icon: BarChart3 },
   { name: "المراكز الصحية", href: createPageUrl("HealthCenters"), icon: Building2 },
   { name: "الإجازات", href: createPageUrl("Leaves"), icon: Calendar },
   { name: "ملاحظات سريعة", href: createPageUrl("QuickNotes"), icon: FileSignature },
