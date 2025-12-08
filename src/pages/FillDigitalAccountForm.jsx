@@ -6,10 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowRight, Save, Printer, Download, CheckCircle } from 'lucide-react';
+import { ArrowRight, Save, Printer, Download, CheckCircle, Edit3 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import SmartDateInput from '../components/ui/smart-date-input';
+import FormElementEditor from '../components/form_builder/FormElementEditor';
 
 export default function FillDigitalAccountForm() {
   const navigate = useNavigate();
@@ -17,6 +18,10 @@ export default function FillDigitalAccountForm() {
   const [healthCenters, setHealthCenters] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedElement, setSelectedElement] = useState(null);
+  const [elementStyles, setElementStyles] = useState({});
 
   const [formData, setFormData] = useState({
     system_type: [],
@@ -124,9 +129,38 @@ export default function FillDigitalAccountForm() {
     window.print();
   };
 
+  const handleElementClick = (e, elementId) => {
+    if (!isEditMode) return;
+    e.stopPropagation();
+    setSelectedElement(elementId);
+  };
+
+  const handleStyleUpdate = (elementId, styles) => {
+    setElementStyles(prev => ({
+      ...prev,
+      [elementId]: styles
+    }));
+  };
+
+  const getElementStyle = (elementId) => {
+    return elementStyles[elementId] || {};
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-4 md:p-6" dir="rtl">
-      <div className="max-w-5xl mx-auto">
+      <div className="flex gap-4 max-w-7xl mx-auto">
+        {/* لوحة التحكم */}
+        {isEditMode && selectedElement && (
+          <div className="fixed left-4 top-20 z-50">
+            <FormElementEditor
+              element={getElementStyle(selectedElement)}
+              onUpdate={(styles) => handleStyleUpdate(selectedElement, styles)}
+              onClose={() => setSelectedElement(null)}
+            />
+          </div>
+        )}
+
+        <div className="flex-1 max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6 no-print">
           <Button variant="outline" onClick={() => navigate(createPageUrl('InteractiveForms'))} size="icon">
@@ -137,6 +171,14 @@ export default function FillDigitalAccountForm() {
             <p className="text-gray-600 text-sm">رقيم - ميديكا كلاود - موعد</p>
           </div>
           <div className="flex gap-2">
+            <Button 
+              onClick={() => setIsEditMode(!isEditMode)} 
+              variant={isEditMode ? 'default' : 'outline'}
+              className={isEditMode ? 'bg-purple-600 hover:bg-purple-700' : ''}
+            >
+              <Edit3 className="w-4 h-4 ml-2" />
+              {isEditMode ? 'إيقاف التحرير' : 'تحرير التصميم'}
+            </Button>
             <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700">
               <Save className="w-4 h-4 ml-2" />
               حفظ
@@ -170,7 +212,11 @@ export default function FillDigitalAccountForm() {
         </Card>
 
         {/* الشعار والعنوان - خارج الجدول */}
-        <div className="text-center mb-4 print-area-header">
+        <div 
+          className={`text-center mb-4 print-area-header ${isEditMode ? 'cursor-pointer hover:ring-2 hover:ring-purple-400 rounded p-2' : ''}`}
+          onClick={(e) => handleElementClick(e, 'header')}
+          style={getElementStyle('header')}
+        >
           <div className="flex items-center justify-center gap-3 mb-2">
             <svg viewBox="0 0 100 100" className="w-16 h-16">
               <defs>
@@ -183,29 +229,59 @@ export default function FillDigitalAccountForm() {
               <path d="M50 20 L60 40 L80 40 L65 55 L70 75 L50 60 L30 75 L35 55 L20 40 L40 40 Z" fill="white" />
             </svg>
           </div>
-          <h1 className="text-sky-600 font-bold mb-1" style={{ fontSize: '16px' }}>
+          <h1 
+            className={`text-sky-600 font-bold mb-1 ${isEditMode ? 'cursor-pointer hover:bg-purple-50' : ''}`}
+            style={{ fontSize: '16px', ...getElementStyle('title') }}
+            onClick={(e) => handleElementClick(e, 'title')}
+          >
             الخدمات المشتركة للصحة الرقمية والتقنية
           </h1>
-          <p className="text-gray-400" style={{ fontSize: '12px' }}>
+          <p 
+            className={`text-gray-400 ${isEditMode ? 'cursor-pointer hover:bg-purple-50' : ''}`}
+            style={{ fontSize: '12px', ...getElementStyle('subtitle') }}
+            onClick={(e) => handleElementClick(e, 'subtitle')}
+          >
             Shared Services for Digital Health & Technology
           </p>
         </div>
 
         {/* النموذج الرسمي */}
-        <div className="bg-white border-2 border-black print-area" style={{ width: '210mm', margin: '0 auto', padding: '0' }}>
+        <div 
+          className={`bg-white border-2 border-black print-area ${isEditMode ? 'cursor-pointer' : ''}`}
+          style={{ width: '210mm', margin: '0 auto', padding: '0', ...getElementStyle('main-container') }}
+          onClick={(e) => handleElementClick(e, 'main-container')}
+        >
           {/* عنوان النموذج */}
-          <div className="border-b-2 border-black text-center py-1">
-            <h2 className="font-bold" style={{ fontSize: '13px' }}>نموذج إنشاء إيقاف حساب</h2>
+          <div 
+            className={`border-b-2 border-black text-center py-1 ${isEditMode ? 'cursor-pointer hover:bg-purple-50' : ''}`}
+            style={getElementStyle('form-title-container')}
+            onClick={(e) => handleElementClick(e, 'form-title-container')}
+          >
+            <h2 
+              className={`font-bold ${isEditMode ? 'cursor-pointer' : ''}`}
+              style={{ fontSize: '13px', ...getElementStyle('form-title') }}
+              onClick={(e) => handleElementClick(e, 'form-title')}
+            >
+              نموذج إنشاء إيقاف حساب
+            </h2>
           </div>
 
           <div style={{ fontSize: '10px' }}>
             {/* جدول النظام ونوع الطلب */}
-            <table className="w-full border-collapse border-2 border-black">
+            <table 
+              className={`w-full border-collapse border-2 border-black ${isEditMode ? 'cursor-pointer hover:ring-2 hover:ring-purple-400' : ''}`}
+              style={getElementStyle('table-system-request')}
+              onClick={(e) => handleElementClick(e, 'table-system-request')}
+            >
               <tbody>
                 <tr>
                   {/* يمين - إنجليزي - النظام */}
-                  <td className="border-2 border-black p-2 align-top" style={{ width: '50%' }}>
-                    <strong style={{ fontSize: '11px' }}>*System:</strong>
+                  <td 
+                    className={`border-2 border-black p-2 align-top ${isEditMode ? 'cursor-pointer hover:bg-purple-50' : ''}`}
+                    style={{ width: '50%', ...getElementStyle('cell-system-en') }}
+                    onClick={(e) => handleElementClick(e, 'cell-system-en')}
+                  >
+                    <strong style={{ fontSize: '11px', ...getElementStyle('label-system-en') }} onClick={(e) => handleElementClick(e, 'label-system-en')}>*System:</strong>
                     <table className="w-full border-collapse mt-1">
                       <tbody>
                         <tr>
@@ -567,7 +643,14 @@ export default function FillDigitalAccountForm() {
             <p className="text-gray-400" style={{ fontSize: '8px' }}>Empowered by Health Holding co.</p>
           </div>
         </div>
+        </div>
       </div>
+
+      {isEditMode && (
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-purple-600 text-white px-6 py-3 rounded-full shadow-2xl z-50">
+          <p className="text-sm font-medium">🎨 وضع التحرير نشط - اضغط على أي عنصر لتعديله</p>
+        </div>
+      )}
 
       <style>{`
         @media print {
@@ -586,6 +669,12 @@ export default function FillDigitalAccountForm() {
             margin: 15mm;
           }
         }
+        ${isEditMode ? `
+          .cursor-pointer:hover {
+            outline: 2px dashed #a855f7;
+            outline-offset: 2px;
+          }
+        ` : ''}
       `}</style>
     </div>
   );
