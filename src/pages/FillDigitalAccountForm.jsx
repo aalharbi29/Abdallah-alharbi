@@ -285,16 +285,10 @@ export default function FillDigitalAccountForm() {
                     <table className="w-full border-collapse mt-1">
                       <tbody>
                         <tr>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
                           <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Raqeem</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Medica cloud</td>
-                        </tr>
-                        <tr>
                           <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Raqeem')} onCheckedChange={() => handleSystemToggle('Raqeem')} className="scale-75" /></td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Medica cloud</td>
                           <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Medica cloud')} onCheckedChange={() => handleSystemToggle('Medica cloud')} className="scale-75" /></td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
                         </tr>
                       </tbody>
                     </table>
@@ -303,11 +297,7 @@ export default function FillDigitalAccountForm() {
                         <tr>
                           <td className="border border-black text-center p-0.5" colSpan="2" style={{ fontSize: '9px' }}></td>
                           <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Mawid</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
-                        </tr>
-                        <tr>
-                          <td className="border border-black text-center p-0.5" colSpan="2" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Mawid')} onCheckedChange={() => handleSystemToggle('Mawid')} className="scale-75" /></td>
-                          <td className="border border-black text-center p-0.5" colSpan="2" style={{ fontSize: '9px' }}></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Mawid')} onCheckedChange={() => handleSystemToggle('Mawid')} className="scale-75" /></td>
                         </tr>
                       </tbody>
                     </table>
@@ -345,32 +335,20 @@ export default function FillDigitalAccountForm() {
                     <table className="w-full border-collapse mt-1">
                       <tbody>
                         <tr>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Create a new user name</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
                           <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Restore password</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
-                        </tr>
-                        <tr>
-                          <td className="border border-black text-center p-0.5"><Checkbox checked={formData.request_type === 'انشاء مستخدم جديد'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'انشاء مستخدم جديد' }))} className="scale-75" /></td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
-                          <td className="border border-black text-center p-0.5"><Checkbox checked={formData.request_type === 'استعادة كلمة مرور'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'استعادة كلمة مرور' }))} className="scale-75" /></td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'استعادة كلمة مرور'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'استعادة كلمة مرور' }))} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Create a new user name</td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'انشاء مستخدم جديد'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'انشاء مستخدم جديد' }))} className="scale-75" /></td>
                         </tr>
                       </tbody>
                     </table>
                     <table className="w-full border-collapse mt-1">
                       <tbody>
                         <tr>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Delete a user name</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
                           <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Relocate a user name</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
-                        </tr>
-                        <tr>
-                          <td className="border border-black text-center p-0.5"><Checkbox checked={formData.request_type === 'الغاء اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'الغاء اسم مستخدم' }))} className="scale-75" /></td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
-                          <td className="border border-black text-center p-0.5"><Checkbox checked={formData.request_type === 'نقل اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'نقل اسم مستخدم' }))} className="scale-75" /></td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'نقل اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'نقل اسم مستخدم' }))} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Delete a user name</td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'الغاء اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'الغاء اسم مستخدم' }))} className="scale-75" /></td>
                         </tr>
                       </tbody>
                     </table>
@@ -608,27 +586,50 @@ export default function FillDigitalAccountForm() {
             </table>
 
             {/* بيانات الجهة */}
-            {[
-              { en: 'Organization:', ar: 'المنشأة:', key: 'organization' },
-              { en: 'Department:', ar: 'القسم :', key: 'department' },
-              { en: 'Specialization:', ar: 'التخصص:', key: 'specialization' },
-              { en: 'Recruitment privilege:', ar: 'الصلاحيات المطلوبة :', key: 'recruitment_privilege' }
-            ].map((field, idx) => (
-              <table key={idx} className="w-full border-collapse border-2 border-black">
-                <tbody>
-                  <tr>
-                    <td className="border-2 border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
-                      <strong>{field.en} </strong>
-                      <span className="border-b border-dotted border-gray-600 inline-block w-2/3 mx-1"></span>
-                    </td>
-                    <td className="border-2 border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
-                      <strong>{field.ar} </strong>
-                      <Input value={formData[field.key]} onChange={(e) => setFormData(p => ({ ...p, [field.key]: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-600 w-2/3 h-5 px-1 text-right" style={{ fontSize: '9px' }} />
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            ))}
+            <table className="w-full border-collapse border-2 border-black">
+              <tbody>
+                <tr>
+                  <td className="border-2 border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
+                    <strong>Organization: </strong>
+                    <Input value={formData.organization} onChange={(e) => setFormData(p => ({ ...p, organization: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1" style={{ fontSize: '9px' }} />
+                  </td>
+                  <td className="border-2 border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
+                    <strong>المنشأة: </strong>
+                    <Input value={formData.organization} onChange={(e) => setFormData(p => ({ ...p, organization: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1 text-right" style={{ fontSize: '9px' }} />
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border-2 border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
+                    <strong>Department: </strong>
+                    <Input value={formData.department} onChange={(e) => setFormData(p => ({ ...p, department: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1" style={{ fontSize: '9px' }} />
+                  </td>
+                  <td className="border-2 border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
+                    <strong>القسم : </strong>
+                    <Input value={formData.department} onChange={(e) => setFormData(p => ({ ...p, department: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1 text-right" style={{ fontSize: '9px' }} />
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border-2 border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
+                    <strong>Specialization: </strong>
+                    <Input value={formData.specialization} onChange={(e) => setFormData(p => ({ ...p, specialization: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1" style={{ fontSize: '9px' }} />
+                  </td>
+                  <td className="border-2 border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
+                    <strong>التخصص: </strong>
+                    <Input value={formData.specialization} onChange={(e) => setFormData(p => ({ ...p, specialization: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1 text-right" style={{ fontSize: '9px' }} />
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border-2 border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
+                    <strong>Recruitment privilege: </strong>
+                    <Input value={formData.recruitment_privilege} onChange={(e) => setFormData(p => ({ ...p, recruitment_privilege: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1" style={{ fontSize: '9px' }} />
+                  </td>
+                  <td className="border-2 border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
+                    <strong>الصلاحيات المطلوبة : </strong>
+                    <Input value={formData.recruitment_privilege} onChange={(e) => setFormData(p => ({ ...p, recruitment_privilege: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1 text-right" style={{ fontSize: '9px' }} />
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
             {/* التعهد */}
             <table className="w-full border-collapse border-2 border-black">
