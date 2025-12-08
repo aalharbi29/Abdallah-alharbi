@@ -170,319 +170,366 @@ export default function FillDigitalAccountForm() {
         </Card>
 
         {/* النموذج الرسمي */}
-        <div className="bg-white border-4 border-blue-600 rounded-lg p-8 print-area">
+        <div className="bg-white border-2 border-gray-400 p-0 print-area" style={{ width: '210mm', minHeight: '297mm', margin: '0 auto' }}>
           {/* Header */}
-          <div className="text-center mb-8 border-b-2 border-blue-600 pb-4">
-            <div className="flex items-center justify-between mb-4">
-              <div className="text-left">
-                <p className="text-sm font-medium">Shared Services for Digital Health & Technology</p>
-                <p className="text-xs text-gray-600">Med-hc-digital@moh.gov.sa</p>
-              </div>
-              <div className="w-16 h-16 bg-blue-600 rounded-full"></div>
-              <div className="text-right">
-                <p className="text-sm font-bold">الخدمات المشتركة للصحة الرقمية والتقنية</p>
-                <p className="text-xs text-gray-600">Med-hc-digital@moh.gov.sa</p>
-              </div>
+          <div className="flex items-start justify-between p-4 border-b border-gray-300">
+            <div className="text-left flex-1" style={{ fontSize: '10px', lineHeight: '1.3' }}>
+              <p className="font-medium">Med-hc-digital@moh.gov.sa</p>
+              <p className="font-medium">Shared Services for Digital Health & Technology</p>
             </div>
-            <h2 className="text-xl font-bold text-gray-900">نموذج إنشاء إيقاف حساب</h2>
+            <div className="w-12 h-12 mx-4" style={{ marginTop: '-10px' }}>
+              <svg viewBox="0 0 100 100" className="w-full h-full">
+                <circle cx="50" cy="50" r="45" fill="#0066cc" />
+              </svg>
+            </div>
+            <div className="text-right flex-1" style={{ fontSize: '10px', lineHeight: '1.3' }}>
+              <p className="font-bold">الخدمات المشتركة للصحة الرقمية والتقنية</p>
+              <p>Med-hc-digital@moh.gov.sa</p>
+            </div>
           </div>
 
-          {/* النظام ونوع الطلب */}
-          <div className="grid grid-cols-2 gap-6 mb-6">
-            {/* النظام */}
-            <div className="border-2 border-gray-300 p-4 rounded">
-              <Label className="font-bold mb-3 block">*النظام: System:</Label>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      checked={formData.system_type.includes('Raqeem')}
-                      onCheckedChange={() => handleSystemToggle('Raqeem')}
-                    />
-                    <span>رقيم</span>
-                  </div>
-                  <span>Raqeem</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      checked={formData.system_type.includes('Medica cloud')}
-                      onCheckedChange={() => handleSystemToggle('Medica cloud')}
-                    />
-                    <span>ميديكا كلاود</span>
-                  </div>
-                  <span>Medica cloud</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      checked={formData.system_type.includes('Mawid')}
-                      onCheckedChange={() => handleSystemToggle('Mawid')}
-                    />
-                    <span>موعد</span>
-                  </div>
-                  <span>Mawid</span>
-                </div>
-              </div>
-            </div>
+          <h2 className="text-center font-bold py-2 bg-blue-100 border-b border-gray-300" style={{ fontSize: '14px' }}>
+            نموذج إنشاء إيقاف حساب
+          </h2>
 
-            {/* نوع الطلب */}
-            <div className="border-2 border-gray-300 p-4 rounded">
-              <Label className="font-bold mb-3 block">*نوع الطلب: Type of Request:</Label>
-              <div className="space-y-2">
-                {[
-                  { ar: 'استعادة كلمة مرور', en: 'Restore password' },
-                  { ar: 'انشاء مستخدم جديد', en: 'Create a new user name' },
-                  { ar: 'الغاء اسم مستخدم', en: 'Delete a user name' },
-                  { ar: 'نقل اسم مستخدم', en: 'Relocate a user name' }
-                ].map(option => (
-                  <div key={option.ar} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        checked={formData.request_type === option.ar}
-                        onCheckedChange={(checked) => {
-                          if (checked) setFormData(prev => ({ ...prev, request_type: option.ar }));
-                        }}
-                      />
-                      <span>{option.ar}</span>
+          <div className="p-4" style={{ fontSize: '11px' }}>
+            {/* الصف الأول: النظام ونوع الطلب */}
+            <table className="w-full border-collapse mb-3" style={{ tableLayout: 'fixed' }}>
+              <tbody>
+                <tr>
+                  <td className="border border-gray-400 p-2 align-top" style={{ width: '50%' }}>
+                    <div className="flex justify-between items-start mb-2">
+                      <strong>*System:</strong>
+                      <strong className="mr-auto">النظام:</strong>
                     </div>
-                    <span className="text-sm text-gray-600">{option.en}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+                    <table className="w-full">
+                      <tbody>
+                        <tr>
+                          <td className="border border-gray-300 p-1 text-left" style={{ width: '50%' }}>Raqeem</td>
+                          <td className="border border-gray-300 p-1">
+                            <Checkbox checked={formData.system_type.includes('Raqeem')} onCheckedChange={() => handleSystemToggle('Raqeem')} />
+                          </td>
+                          <td className="border border-gray-300 p-1 text-right" style={{ width: '50%' }}>رقيم</td>
+                        </tr>
+                        <tr>
+                          <td className="border border-gray-300 p-1 text-left">Medica cloud</td>
+                          <td className="border border-gray-300 p-1">
+                            <Checkbox checked={formData.system_type.includes('Medica cloud')} onCheckedChange={() => handleSystemToggle('Medica cloud')} />
+                          </td>
+                          <td className="border border-gray-300 p-1 text-right">ميديكا كلاود</td>
+                        </tr>
+                        <tr>
+                          <td className="border border-gray-300 p-1 text-left">Mawid</td>
+                          <td className="border border-gray-300 p-1">
+                            <Checkbox checked={formData.system_type.includes('Mawid')} onCheckedChange={() => handleSystemToggle('Mawid')} />
+                          </td>
+                          <td className="border border-gray-300 p-1 text-right">موعد</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                  <td className="border border-gray-400 p-2 align-top" style={{ width: '50%' }}>
+                    <div className="flex justify-between items-start mb-2">
+                      <strong>*Type of Request:</strong>
+                      <strong className="mr-auto">نوع الطلب:</strong>
+                    </div>
+                    <table className="w-full">
+                      <tbody>
+                        {[
+                          { ar: 'استعادة كلمة مرور', en: 'Restore password' },
+                          { ar: 'انشاء مستخدم جديد', en: 'Create a new user name' }
+                        ].map(opt => (
+                          <tr key={opt.ar}>
+                            <td className="border border-gray-300 p-1 text-left" style={{ width: '45%' }}>{opt.en}</td>
+                            <td className="border border-gray-300 p-1 text-center" style={{ width: '10%' }}>
+                              <Checkbox checked={formData.request_type === opt.ar} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: opt.ar }))} />
+                            </td>
+                            <td className="border border-gray-300 p-1 text-right" style={{ width: '45%' }}>{opt.ar}</td>
+                          </tr>
+                        ))}
+                        {[
+                          { ar: 'الغاء اسم مستخدم', en: 'Delete a user name' },
+                          { ar: 'نقل اسم مستخدم', en: 'Relocate a user name' }
+                        ].map(opt => (
+                          <tr key={opt.ar}>
+                            <td className="border border-gray-300 p-1 text-left">{opt.en}</td>
+                            <td className="border border-gray-300 p-1 text-center">
+                              <Checkbox checked={formData.request_type === opt.ar} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: opt.ar }))} />
+                            </td>
+                            <td className="border border-gray-300 p-1 text-right">{opt.ar}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
-          {/* السبب */}
-          <div className="mb-6">
-            <Label className="font-bold mb-2 block">*السبب: Reason:</Label>
-            <Input
-              value={formData.reason}
-              onChange={(e) => setFormData(prev => ({ ...prev, reason: e.target.value }))}
-              className="border-2 border-gray-300"
-              placeholder="اذكر السبب..."
-            />
-          </div>
+            {/* السبب */}
+            <table className="w-full border-collapse mb-3">
+              <tbody>
+                <tr>
+                  <td className="border border-gray-400 p-2" style={{ width: '50%' }}>
+                    <strong>*Reason: </strong>
+                    <Input value={formData.reason} onChange={(e) => setFormData(p => ({ ...p, reason: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-500 w-3/4 h-6 px-1" style={{ fontSize: '11px' }} />
+                  </td>
+                  <td className="border border-gray-400 p-2 text-right" style={{ width: '50%' }}>
+                    <strong>السبب: </strong>
+                    <span className="border-b border-dotted border-gray-500 inline-block w-3/4"></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
-          {/* اسم الموظف */}
-          <div className="mb-6 border-2 border-gray-300 p-4 rounded">
-            <Label className="font-bold mb-3 block">*اسم الموظف: Staff Name:</Label>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label className="text-sm mb-1 block">الأول: First</Label>
-                <Input
-                  value={formData.employee_name_first}
-                  onChange={(e) => setFormData(prev => ({ ...prev, employee_name_first: e.target.value }))}
-                  className="border-b-2 border-dotted border-gray-400"
-                />
-              </div>
-              <div>
-                <Label className="text-sm mb-1 block">الثاني: Second</Label>
-                <Input
-                  value={formData.employee_name_second}
-                  onChange={(e) => setFormData(prev => ({ ...prev, employee_name_second: e.target.value }))}
-                  className="border-b-2 border-dotted border-gray-400"
-                />
-              </div>
-              <div>
-                <Label className="text-sm mb-1 block">الثالث: Third</Label>
-                <Input
-                  value={formData.employee_name_third}
-                  onChange={(e) => setFormData(prev => ({ ...prev, employee_name_third: e.target.value }))}
-                  className="border-b-2 border-dotted border-gray-400"
-                />
-              </div>
-              <div>
-                <Label className="text-sm mb-1 block">العائلة: Family</Label>
-                <Input
-                  value={formData.employee_name_family}
-                  onChange={(e) => setFormData(prev => ({ ...prev, employee_name_family: e.target.value }))}
-                  className="border-b-2 border-dotted border-gray-400"
-                />
-              </div>
-            </div>
-          </div>
+            {/* اسم الموظف */}
+            <table className="w-full border-collapse mb-3">
+              <tbody>
+                <tr>
+                  <td className="border border-gray-400 p-2" style={{ width: '50%' }}>
+                    <strong>*Staff Name:</strong>
+                    <div className="mt-1 space-y-1" style={{ fontSize: '10px' }}>
+                      <div>First: <Input value={formData.employee_name_first} onChange={(e) => setFormData(p => ({ ...p, employee_name_first: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-500 w-2/3 h-5 px-1" /></div>
+                      <div>Second: <Input value={formData.employee_name_second} onChange={(e) => setFormData(p => ({ ...p, employee_name_second: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-500 w-2/3 h-5 px-1" /></div>
+                      <div>Third: <Input value={formData.employee_name_third} onChange={(e) => setFormData(p => ({ ...p, employee_name_third: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-500 w-2/3 h-5 px-1" /></div>
+                      <div>Family: <Input value={formData.employee_name_family} onChange={(e) => setFormData(p => ({ ...p, employee_name_family: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-500 w-2/3 h-5 px-1" /></div>
+                    </div>
+                  </td>
+                  <td className="border border-gray-400 p-2 text-right" style={{ width: '50%' }}>
+                    <strong>اسم الموظف:</strong>
+                    <div className="mt-1 space-y-1" style={{ fontSize: '10px' }}>
+                      <div className="text-right">الأول : <span className="border-b border-dotted border-gray-500 inline-block w-2/3"></span></div>
+                      <div className="text-right">الثاني : <span className="border-b border-dotted border-gray-500 inline-block w-2/3"></span></div>
+                      <div className="text-right">الثالث: <span className="border-b border-dotted border-gray-500 inline-block w-2/3"></span></div>
+                      <div className="text-right">العائلة : <span className="border-b border-dotted border-gray-500 inline-block w-2/3"></span></div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
-          {/* البيانات الشخصية */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div>
-              <Label className="text-sm mb-1 block">رقم الهوية/ الإقامة: ID NO:</Label>
-              <Input
-                value={formData.national_id}
-                onChange={(e) => setFormData(prev => ({ ...prev, national_id: e.target.value }))}
-                className="border-b-2 border-dotted border-gray-400"
-              />
-            </div>
-            <div>
-              <Label className="text-sm mb-1 block">تاريخ الميلاد: Date of birth:</Label>
-              <SmartDateInput
-                value={formData.birth_date}
-                onChange={(date) => setFormData(prev => ({ ...prev, birth_date: date }))}
-              />
-            </div>
-            <div>
-              <Label className="text-sm mb-1 block">البريد الوزاري: MOH email:</Label>
-              <Input
-                type="email"
-                value={formData.moh_email}
-                onChange={(e) => setFormData(prev => ({ ...prev, moh_email: e.target.value }))}
-                className="border-b-2 border-dotted border-gray-400"
-              />
-            </div>
-            <div>
-              <Label className="text-sm mb-1 block">رقم التصنيف إن وجد: SCFHS number:</Label>
-              <Input
-                value={formData.scfhs_number}
-                onChange={(e) => setFormData(prev => ({ ...prev, scfhs_number: e.target.value }))}
-                className="border-b-2 border-dotted border-gray-400"
-              />
-            </div>
-            <div>
-              <Label className="text-sm mb-1 block">تاريخ انتهاء (التدريب/العقد): End date:</Label>
-              <SmartDateInput
-                value={formData.contract_end_date}
-                onChange={(date) => setFormData(prev => ({ ...prev, contract_end_date: date }))}
-              />
-            </div>
-            <div>
-              <Label className="text-sm mb-1 block">رقم التواصل: Contact Phone:</Label>
-              <Input
-                value={formData.contact_phone}
-                onChange={(e) => setFormData(prev => ({ ...prev, contact_phone: e.target.value }))}
-                className="border-b-2 border-dotted border-gray-400"
-              />
-            </div>
-          </div>
+            {/* البيانات الشخصية - صفين */}
+            <table className="w-full border-collapse mb-3">
+              <tbody>
+                <tr>
+                  <td className="border border-gray-400 p-1.5" style={{ width: '50%', fontSize: '10px' }}>
+                    <strong>ID NO: </strong>
+                    <Input value={formData.national_id} onChange={(e) => setFormData(p => ({ ...p, national_id: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-500 w-2/3 h-5 px-1" style={{ fontSize: '10px' }} />
+                  </td>
+                  <td className="border border-gray-400 p-1.5 text-right" style={{ width: '50%', fontSize: '10px' }}>
+                    <strong>رقم الهوية/ الإقامة: </strong>
+                    <span className="border-b border-dotted border-gray-500 inline-block w-1/2"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-400 p-1.5" style={{ fontSize: '10px' }}>
+                    <strong>Date of birth: </strong>
+                    <Input value={formData.birth_date ? formData.birth_date.toLocaleDateString('en-GB') : ''} onChange={(e) => {}} className="inline-block border-0 border-b border-dotted border-gray-500 w-1/2 h-5 px-1" style={{ fontSize: '10px' }} />
+                  </td>
+                  <td className="border border-gray-400 p-1.5 text-right" style={{ fontSize: '10px' }}>
+                    <strong>تاريخ الميلاد: </strong>
+                    <span className="border-b border-dotted border-gray-500 inline-block w-1/2"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-400 p-1.5" style={{ fontSize: '10px' }}>
+                    <strong>MOH email: </strong>
+                    <Input value={formData.moh_email} onChange={(e) => setFormData(p => ({ ...p, moh_email: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-500 w-1/2 h-5 px-1" style={{ fontSize: '10px' }} />
+                  </td>
+                  <td className="border border-gray-400 p-1.5 text-right" style={{ fontSize: '10px' }}>
+                    <strong>البريد الوزاري: </strong>
+                    <span className="border-b border-dotted border-gray-500 inline-block w-1/2"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-400 p-1.5" style={{ fontSize: '10px' }}>
+                    <strong>SCFHS number: </strong>
+                    <Input value={formData.scfhs_number} onChange={(e) => setFormData(p => ({ ...p, scfhs_number: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-500 w-1/2 h-5 px-1" style={{ fontSize: '10px' }} />
+                  </td>
+                  <td className="border border-gray-400 p-1.5 text-right" style={{ fontSize: '10px' }}>
+                    <strong>رقم التصنيف إن وجد: </strong>
+                    <span className="border-b border-dotted border-gray-500 inline-block w-1/2"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-400 p-1.5" style={{ fontSize: '10px' }}>
+                    <strong>End date of (internship\contract): </strong>
+                    <Input value={formData.contract_end_date ? formData.contract_end_date.toLocaleDateString('en-GB') : ''} className="inline-block border-0 border-b border-dotted border-gray-500 w-1/3 h-5 px-1" style={{ fontSize: '10px' }} />
+                  </td>
+                  <td className="border border-gray-400 p-1.5 text-right" style={{ fontSize: '10px' }}>
+                    <strong>تاريخ انتهاء (التدريب/ العقد): </strong>
+                    <span className="border-b border-dotted border-gray-500 inline-block w-1/3"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-400 p-1.5" style={{ fontSize: '10px' }}>
+                    <strong>Contact Phone: </strong>
+                    <Input value={formData.contact_phone} onChange={(e) => setFormData(p => ({ ...p, contact_phone: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-500 w-1/2 h-5 px-1" style={{ fontSize: '10px' }} />
+                  </td>
+                  <td className="border border-gray-400 p-1.5 text-right" style={{ fontSize: '10px' }}>
+                    <strong>رقم التواصل: </strong>
+                    <span className="border-b border-dotted border-gray-500 inline-block w-1/2"></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
-          {/* المهنة */}
-          <div className="mb-6 border-2 border-gray-300 p-4 rounded">
-            <Label className="font-bold mb-3 block">*المهنة: Occupation:</Label>
-            <div className="grid grid-cols-3 gap-3">
-              {[
-                { ar: 'استقبال', en: 'Receptionist' },
-                { ar: 'تمريض', en: 'Nurse' },
-                { ar: 'طبيب', en: 'physician' },
-                { ar: 'مدير منشأة', en: 'Facility Manger' },
-                { ar: 'صيدلي', en: 'Pharmacist' },
-                { ar: 'مختبر', en: 'Lab Technician' }
-              ].map(option => (
-                <div key={option.ar} className="flex items-center justify-between border p-2 rounded">
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      checked={formData.occupation.includes(option.ar)}
-                      onCheckedChange={() => handleOccupationToggle(option.ar)}
-                    />
-                    <span className="text-sm">{option.ar}</span>
-                  </div>
-                  <span className="text-xs text-gray-600">{option.en}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+            {/* المهنة */}
+            <table className="w-full border-collapse mb-3">
+              <tbody>
+                <tr>
+                  <td className="border border-gray-400 p-2" style={{ width: '50%' }}>
+                    <strong className="block mb-2">*Occupation:</strong>
+                    <table className="w-full">
+                      <tbody>
+                        <tr>
+                          <td className="border border-gray-300 p-1 text-left" style={{ width: '40%', fontSize: '10px' }}>Receptionist</td>
+                          <td className="border border-gray-300 p-1 text-center" style={{ width: '10%' }}><Checkbox checked={formData.occupation.includes('استقبال')} onCheckedChange={() => handleOccupationToggle('استقبال')} /></td>
+                          <td className="border border-gray-300 p-1 text-left" style={{ width: '40%', fontSize: '10px' }}>Nurse</td>
+                          <td className="border border-gray-300 p-1 text-center" style={{ width: '10%' }}><Checkbox checked={formData.occupation.includes('تمريض')} onCheckedChange={() => handleOccupationToggle('تمريض')} /></td>
+                        </tr>
+                        <tr>
+                          <td className="border border-gray-300 p-1 text-left" style={{ fontSize: '10px' }}>Facility Manger</td>
+                          <td className="border border-gray-300 p-1 text-center"><Checkbox checked={formData.occupation.includes('مدير منشأة')} onCheckedChange={() => handleOccupationToggle('مدير منشأة')} /></td>
+                          <td className="border border-gray-300 p-1 text-left" style={{ fontSize: '10px' }}>Pharmacist</td>
+                          <td className="border border-gray-300 p-1 text-center"><Checkbox checked={formData.occupation.includes('صيدلي')} onCheckedChange={() => handleOccupationToggle('صيدلي')} /></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                  <td className="border border-gray-400 p-2 text-right" style={{ width: '50%' }}>
+                    <strong className="block mb-2">المهنة :</strong>
+                    <table className="w-full" dir="rtl">
+                      <tbody>
+                        <tr>
+                          <td className="border border-gray-300 p-1 text-center" style={{ width: '10%' }}><Checkbox checked={formData.occupation.includes('طبيب')} onCheckedChange={() => handleOccupationToggle('طبيب')} /></td>
+                          <td className="border border-gray-300 p-1 text-right" style={{ width: '40%', fontSize: '10px' }}>طبيب</td>
+                          <td className="border border-gray-300 p-1 text-center" style={{ width: '10%' }}><Checkbox checked={formData.occupation.includes('تمريض')} onCheckedChange={() => handleOccupationToggle('تمريض')} /></td>
+                          <td className="border border-gray-300 p-1 text-right" style={{ width: '40%', fontSize: '10px' }}>استقبال</td>
+                        </tr>
+                        <tr>
+                          <td className="border border-gray-300 p-1 text-center"><Checkbox checked={formData.occupation.includes('مختبر')} onCheckedChange={() => handleOccupationToggle('مختبر')} /></td>
+                          <td className="border border-gray-300 p-1 text-right" style={{ fontSize: '10px' }}>مختبر</td>
+                          <td className="border border-gray-300 p-1 text-center"><Checkbox checked={formData.occupation.includes('صيدلي')} onCheckedChange={() => handleOccupationToggle('صيدلي')} /></td>
+                          <td className="border border-gray-300 p-1 text-right" style={{ fontSize: '10px' }}>مدير منشأة</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
-          {/* بيانات الجهة */}
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div>
-              <Label className="text-sm mb-1 block">المنشأة: Organization:</Label>
-              <Input
-                value={formData.organization}
-                onChange={(e) => setFormData(prev => ({ ...prev, organization: e.target.value }))}
-                className="border-b-2 border-dotted border-gray-400"
-              />
-            </div>
-            <div>
-              <Label className="text-sm mb-1 block">القسم: Department:</Label>
-              <Input
-                value={formData.department}
-                onChange={(e) => setFormData(prev => ({ ...prev, department: e.target.value }))}
-                className="border-b-2 border-dotted border-gray-400"
-              />
-            </div>
-            <div>
-              <Label className="text-sm mb-1 block">التخصص: Specialization:</Label>
-              <Input
-                value={formData.specialization}
-                onChange={(e) => setFormData(prev => ({ ...prev, specialization: e.target.value }))}
-                className="border-b-2 border-dotted border-gray-400"
-              />
-            </div>
-            <div>
-              <Label className="text-sm mb-1 block">الصلاحيات المطلوبة: Recruitment privilege:</Label>
-              <Input
-                value={formData.recruitment_privilege}
-                onChange={(e) => setFormData(prev => ({ ...prev, recruitment_privilege: e.target.value }))}
-                className="border-b-2 border-dotted border-gray-400"
-              />
-            </div>
-          </div>
+            {/* بيانات الجهة */}
+            <table className="w-full border-collapse mb-3">
+              <tbody>
+                <tr>
+                  <td className="border border-gray-400 p-1.5" style={{ width: '50%', fontSize: '10px' }}>
+                    <strong>Organization: </strong>
+                    <Input value={formData.organization} onChange={(e) => setFormData(p => ({ ...p, organization: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-500 w-2/3 h-5 px-1" style={{ fontSize: '10px' }} />
+                  </td>
+                  <td className="border border-gray-400 p-1.5 text-right" style={{ width: '50%', fontSize: '10px' }}>
+                    <strong>المنشأة: </strong>
+                    <span className="border-b border-dotted border-gray-500 inline-block w-2/3"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-400 p-1.5" style={{ fontSize: '10px' }}>
+                    <strong>Department: </strong>
+                    <Input value={formData.department} onChange={(e) => setFormData(p => ({ ...p, department: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-500 w-2/3 h-5 px-1" style={{ fontSize: '10px' }} />
+                  </td>
+                  <td className="border border-gray-400 p-1.5 text-right" style={{ fontSize: '10px' }}>
+                    <strong>القسم : </strong>
+                    <span className="border-b border-dotted border-gray-500 inline-block w-2/3"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-400 p-1.5" style={{ fontSize: '10px' }}>
+                    <strong>Specialization: </strong>
+                    <Input value={formData.specialization} onChange={(e) => setFormData(p => ({ ...p, specialization: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-500 w-2/3 h-5 px-1" style={{ fontSize: '10px' }} />
+                  </td>
+                  <td className="border border-gray-400 p-1.5 text-right" style={{ fontSize: '10px' }}>
+                    <strong>التخصص: </strong>
+                    <span className="border-b border-dotted border-gray-500 inline-block w-2/3"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border border-gray-400 p-1.5" style={{ fontSize: '10px' }}>
+                    <strong>Recruitment privilege: </strong>
+                    <Input value={formData.recruitment_privilege} onChange={(e) => setFormData(p => ({ ...p, recruitment_privilege: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-500 w-1/2 h-5 px-1" style={{ fontSize: '10px' }} />
+                  </td>
+                  <td className="border border-gray-400 p-1.5 text-right" style={{ fontSize: '10px' }}>
+                    <strong>الصلاحيات المطلوبة : </strong>
+                    <span className="border-b border-dotted border-gray-500 inline-block w-1/2"></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
-          {/* التعهد */}
-          <div className="mb-6 border-2 border-gray-300 p-4 rounded bg-yellow-50">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="text-sm leading-relaxed">
-                <p className="mb-2 font-medium">I Will safeguard and will not disclose my username and password. Any access to information system by my username and password is my responsibility. If I believe someone else has logged into my account, I will immediately report the breach to digital health & technology department and will immediately change my password.</p>
-                <p className="text-xs text-gray-600">med-hc-digital@moh.gov.sa</p>
-              </div>
-              <div className="text-sm leading-relaxed text-right">
-                <p className="mb-2 font-medium">اتعهد بالمحافظة على اسم وكلمة السر الخاصة بي ولن اعطيها لأي شخص اخر، أي وصول إلى نظام المعلومات باستخدام اسم المستخدم. وكلمة المرور الخاصين بي هو مسؤوليتي وإذا علمت ان هناك شخص اخر استخدم حسابي فسوف أقوم بإبلاغ المسؤول بقسم الصحة الرقمية والتكنولوجيا عن ذلك وتغير كلمة السر.</p>
-                <p className="text-xs text-gray-600">med-hc-digital@moh.gov.sa</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 mt-4 justify-center">
-              <Checkbox
-                checked={formData.commitment_accepted}
-                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, commitment_accepted: checked }))}
-              />
-              <Label className="font-medium cursor-pointer">أوافق على التعهد / I accept the commitment</Label>
-            </div>
-          </div>
+            {/* التعهد */}
+            <table className="w-full border-collapse mb-3">
+              <tbody>
+                <tr>
+                  <td className="border border-gray-400 p-2" colSpan="2">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div style={{ fontSize: '9px', lineHeight: '1.4' }}>
+                        <p>I Will safeguard and will not disclose my username and password. Any access to informatio system by my username and password is my responsibility. If I believe someone else has logged into my account, I will immediately report the breach to digital health & technology department and will immediately change my password.</p>
+                        <p className="mt-1 text-blue-600">med-hc-digital@moh.gov.sa</p>
+                      </div>
+                      <div className="text-right" style={{ fontSize: '9px', lineHeight: '1.4' }}>
+                        <p>اتعهد بالمحافظة على اسم وكلمة السر الخاصة بي ولن اعطيها لأي شخص اخر، أي وصول إلى نظام المعلومات باستخدام اسم المستخدم. وكلمة المرور الخاصين بي هو مسؤوليتي وإذا علمت ان هناك شخص اخر استخدم حسابي فسوف أقوم بإبلاغ المسؤول بقسم الصحة الرقمية والتكنولوجيا عن ذلك وتغير كلمة السر .</p>
+                        <p className="mt-1 text-blue-600">med-hc-digital@moh.gov.sa</p>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
-          {/* ملاحظة للرئيس المباشر */}
-          <div className="mb-6 bg-blue-50 border-2 border-blue-300 p-4 rounded">
-            <p className="text-sm font-medium text-center mb-2">
-              *The direct manager must provide us with the employee's data in the event of assignment or transfer outside the center or hospital.
-            </p>
-            <p className="text-sm font-bold text-center">
-              * على الرئيس المباشر تزويدنا ببيانات الموظف في حال التكليف او النقل خارج المركز أو المستشفى
-            </p>
-          </div>
+            {/* ملاحظة */}
+            <table className="w-full border-collapse mb-3">
+              <tbody>
+                <tr>
+                  <td className="border border-gray-400 p-2 bg-blue-50" colSpan="2">
+                    <p className="text-center font-bold mb-1" style={{ fontSize: '10px' }}>
+                      *The direct manager must provide us with the employee's data in the event of assignment or transfer outside the center or hospital.
+                    </p>
+                    <p className="text-center font-bold" style={{ fontSize: '10px' }}>
+                      * على الرئيس المباشر تزويدنا ببيانات الموظف في حال التكليف او النقل خارج المركز أو المستشفى
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
-          {/* اعتماد الرئيس المباشر */}
-          <div className="grid grid-cols-2 gap-6">
-            <div className="border-2 border-gray-300 p-4 rounded">
-              <Label className="font-bold mb-2 block">اسم الموظف:</Label>
-              <Input
-                value={`${formData.employee_name_first} ${formData.employee_name_second} ${formData.employee_name_third} ${formData.employee_name_family}`.trim()}
-                readOnly
-                className="border-b-2 border-dotted border-gray-400 bg-gray-50"
-              />
-            </div>
-            <div className="border-2 border-gray-300 p-4 rounded">
-              <Label className="font-bold mb-2 block">اعتماد الرئيس المباشر:</Label>
-              <Input
-                value={formData.direct_manager_name}
-                onChange={(e) => setFormData(prev => ({ ...prev, direct_manager_name: e.target.value }))}
-                placeholder="اسم الرئيس المباشر"
-                className="border-b-2 border-dotted border-gray-400 mb-2"
-              />
-              <div className="flex items-center gap-2">
-                <Label className="text-sm">التاريخ:</Label>
-                <SmartDateInput
-                  value={formData.direct_manager_approval_date}
-                  onChange={(date) => setFormData(prev => ({ ...prev, direct_manager_approval_date: date }))}
-                />
-              </div>
-              <div className="mt-4 text-center">
-                <Label className="text-sm text-gray-600">الختم</Label>
-              </div>
-            </div>
+            {/* التوقيع */}
+            <table className="w-full border-collapse">
+              <tbody>
+                <tr>
+                  <td className="border border-gray-400 p-2 text-center align-top" style={{ width: '33%', fontSize: '10px' }}>
+                    <strong className="block mb-1">اسم الموظف:</strong>
+                    <div className="h-12 flex items-center justify-center">
+                      <span className="text-xs">{`${formData.employee_name_first} ${formData.employee_name_family}`.trim()}</span>
+                    </div>
+                  </td>
+                  <td className="border border-gray-400 p-2 text-center align-top" style={{ width: '33%', fontSize: '10px' }}>
+                    <strong className="block mb-1">اعتماد الرئيس المباشر</strong>
+                    <div className="h-12"></div>
+                  </td>
+                  <td className="border border-gray-400 p-2 text-center align-top" style={{ width: '33%', fontSize: '10px' }}>
+                    <strong className="block mb-1">الختم</strong>
+                    <div className="h-12"></div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           {/* Footer */}
-          <div className="mt-8 text-center border-t-2 border-blue-600 pt-4">
-            <p className="text-sm font-bold text-blue-800">تجمع المدينة الصحي</p>
-            <p className="text-xs text-gray-600">Madinah Health Cluster</p>
-            <p className="text-xs text-gray-500">Empowered by Health Holding co.</p>
+          <div className="text-center py-2 border-t border-gray-300 bg-blue-50" style={{ fontSize: '11px' }}>
+            <p className="font-bold text-blue-800">تجمع المدينة الصحي</p>
+            <p style={{ fontSize: '10px' }}>Madinah Health Cluster</p>
+            <p className="text-gray-500" style={{ fontSize: '9px' }}>Empowered by Health Holding co.</p>
           </div>
         </div>
       </div>
