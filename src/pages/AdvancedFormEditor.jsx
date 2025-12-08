@@ -18,7 +18,8 @@ import {
   Square,
   Printer,
   Eye,
-  Settings
+  Settings,
+  Palette
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
@@ -67,30 +68,38 @@ export default function AdvancedFormEditor() {
   };
 
   const addTable = () => {
-    const newTable = {
-      id: Date.now().toString(),
-      type: 'table',
-      rows: 3,
-      cols: 3,
-      cells: Array(3).fill(null).map(() => 
-        Array(3).fill(null).map(() => ({
-          content: '',
-          style: {
-            border: '1px solid #000',
-            padding: '8px',
-            minWidth: '100px',
-            minHeight: '40px',
-            textAlign: 'right'
-          }
-        }))
-      ),
-      style: {
-        width: '100%',
-        borderCollapse: 'collapse',
-        margin: '8px 0'
-      }
-    };
-    setElements([...elements, newTable]);
+    const rows = parseInt(prompt('عدد الصفوف:', '3'));
+    const cols = parseInt(prompt('عدد الأعمدة:', '3'));
+    
+    if (rows && cols) {
+      const newTable = {
+        id: Date.now().toString(),
+        type: 'table',
+        rows: rows,
+        cols: cols,
+        cells: Array(rows).fill(null).map(() => 
+          Array(cols).fill(null).map(() => ({
+            content: '',
+            style: {
+              padding: '8px',
+              minWidth: '100px',
+              minHeight: '40px',
+              textAlign: 'right',
+              fontSize: '11px'
+            }
+          }))
+        ),
+        style: {
+          width: '100%',
+          borderCollapse: 'collapse',
+          margin: '8px 0',
+          borderColor: '#000000',
+          borderWidth: '1px',
+          borderStyle: 'solid'
+        }
+      };
+      setElements([...elements, newTable]);
+    }
   };
 
   const updateElement = (id, updates) => {
@@ -597,11 +606,55 @@ export default function AdvancedFormEditor() {
                                 )}
 
                                 {element.type === 'line' && (
-                                  <div style={element.style}>
+                                  <div className="relative group" style={element.style}>
                                     <hr style={{ 
-                                      borderTop: `${element.style.borderWidth || '1px'} solid ${element.style.borderColor || '#000'}`,
+                                      borderTop: element.style.borderTop || '1px solid #000',
                                       margin: element.style.margin || '8px 0'
                                     }} />
+                                    <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 flex gap-1 p-1 bg-white border shadow-lg rounded">
+                                      <select
+                                        value={element.style.borderTop?.split(' ')[0] || '1px'}
+                                        onChange={(e) => {
+                                          const [_, style, color] = (element.style.borderTop || '1px solid #000000').split(' ');
+                                          updateElement(element.id, { 
+                                            style: { ...element.style, borderTop: `${e.target.value} ${style || 'solid'} ${color || '#000000'}` }
+                                          });
+                                        }}
+                                        className="border rounded px-1 h-6 text-xs"
+                                      >
+                                        <option value="0.5px">شعري</option>
+                                        <option value="1px">رفيع</option>
+                                        <option value="2px">متوسط</option>
+                                        <option value="3px">سميك</option>
+                                      </select>
+                                      <select
+                                        value={element.style.borderTop?.split(' ')[1] || 'solid'}
+                                        onChange={(e) => {
+                                          const [width, _, color] = (element.style.borderTop || '1px solid #000000').split(' ');
+                                          updateElement(element.id, { 
+                                            style: { ...element.style, borderTop: `${width || '1px'} ${e.target.value} ${color || '#000000'}` }
+                                          });
+                                        }}
+                                        className="border rounded px-1 h-6 text-xs"
+                                      >
+                                        <option value="solid">متصل</option>
+                                        <option value="dashed">متقطع</option>
+                                        <option value="dotted">نقطي</option>
+                                        <option value="double">مزدوج</option>
+                                      </select>
+                                      <Input
+                                        type="color"
+                                        value={element.style.borderTop?.split(' ')[2] || '#000000'}
+                                        onChange={(e) => {
+                                          const [width, style] = (element.style.borderTop || '1px solid #000000').split(' ');
+                                          updateElement(element.id, { 
+                                            style: { ...element.style, borderTop: `${width || '1px'} ${style || 'solid'} ${e.target.value}` }
+                                          });
+                                        }}
+                                        className="w-12 h-6"
+                                        title="لون الخط"
+                                      />
+                                    </div>
                                   </div>
                                 )}
 
