@@ -272,7 +272,16 @@ export default function FillDigitalAccountForm() {
         {/* النموذج الرسمي */}
         <div 
           className={`bg-white border-2 border-black print-area ${isEditMode ? 'cursor-pointer' : ''}`}
-          style={{ width: '210mm', margin: '0 auto', padding: '0', ...getElementStyle('main-container') }}
+          style={{ 
+            width: '210mm', 
+            margin: '0 auto', 
+            padding: '0', 
+            backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/31531eba4_xps_scannedcopy_00.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            ...getElementStyle('main-container') 
+          }}
           onClick={(e) => handleElementClick(e, 'main-container')}
         >
           {/* عنوان النموذج */}
