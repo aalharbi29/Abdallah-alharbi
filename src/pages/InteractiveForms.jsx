@@ -55,11 +55,11 @@ const interactiveForms = [
     category: "التجهيزات"
   },
   {
-    title: "محرر النماذج التفاعلي",
-    description: "أنشئ نماذجك الخاصة بتحكم كامل مثل برامج التصميم",
+    title: "محرر النماذج الاحترافي",
+    description: "سحب وإفلات، تحرير جداول، تغيير أحجام، حفظ قوالب",
     icon: Edit,
     color: "from-red-500 to-orange-600",
-    link: createPageUrl("FormEditor"),
+    link: createPageUrl("AdvancedFormEditor"),
     category: "أدوات متقدمة"
   },
   {
