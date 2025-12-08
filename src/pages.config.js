@@ -46,6 +46,7 @@ import Settings from './pages/Settings';
 import ClinicManagement from './pages/ClinicManagement';
 import FillClearanceForm from './pages/FillClearanceForm';
 import HRAnalytics from './pages/HRAnalytics';
+import FillDigitalAccountForm from './pages/FillDigitalAccountForm';
 import __Layout from './Layout.jsx';
 
 
@@ -98,6 +99,7 @@ export const PAGES = {
     "ClinicManagement": ClinicManagement,
     "FillClearanceForm": FillClearanceForm,
     "HRAnalytics": HRAnalytics,
+    "FillDigitalAccountForm": FillDigitalAccountForm,
 }
 
 export const pagesConfig = {
