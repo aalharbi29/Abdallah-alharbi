@@ -413,10 +413,10 @@ export default function AdvancedFormEditor() {
                         cells: Array(2).fill(null).map(() => 
                           Array(4).fill(null).map(() => ({
                             content: '',
-                            style: { border: '1px solid #000', padding: '8px', minWidth: '80px', minHeight: '35px', textAlign: 'right', fontSize: '10px' }
+                            style: { padding: '8px', minWidth: '80px', minHeight: '35px', textAlign: 'right', fontSize: '10px' }
                           }))
                         ),
-                        style: { width: '100%', borderCollapse: 'collapse', margin: '4px 0', borderColor: '#000000', borderWidth: '1px' }
+                        style: { width: '100%', borderCollapse: 'collapse', margin: '4px 0', borderColor: '#000000', borderWidth: '1px', borderStyle: 'solid' }
                       };
                       setElements([...elements, table]);
                     }} 
@@ -424,7 +424,7 @@ export default function AdvancedFormEditor() {
                     size="sm" 
                     className="w-full justify-start text-xs"
                   >
-                    جدول 2×4
+                    جدول عادي 2×4
                   </Button>
                   <Button 
                     onClick={() => {
@@ -436,10 +436,10 @@ export default function AdvancedFormEditor() {
                         cells: Array(4).fill(null).map(() => 
                           Array(2).fill(null).map(() => ({
                             content: '',
-                            style: { border: '1px solid #000', padding: '8px', minWidth: '150px', minHeight: '40px', textAlign: 'right', fontSize: '10px' }
+                            style: { padding: '8px', minWidth: '150px', minHeight: '40px', textAlign: 'right', fontSize: '10px' }
                           }))
                         ),
-                        style: { width: '100%', borderCollapse: 'collapse', margin: '4px 0', borderColor: '#000000', borderWidth: '1px' }
+                        style: { width: '100%', borderCollapse: 'collapse', margin: '4px 0', borderColor: '#000000', borderWidth: '1px', borderStyle: 'solid' }
                       };
                       setElements([...elements, table]);
                     }} 
@@ -447,7 +447,61 @@ export default function AdvancedFormEditor() {
                     size="sm" 
                     className="w-full justify-start text-xs"
                   >
-                    جدول 4×2
+                    جدول عادي 4×2
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      const table = {
+                        id: Date.now().toString(),
+                        type: 'table',
+                        rows: 3,
+                        cols: 3,
+                        cells: Array(3).fill(null).map(() => 
+                          Array(3).fill(null).map(() => ({
+                            content: '',
+                            style: { padding: '6px', minWidth: '100px', minHeight: '35px', textAlign: 'right', fontSize: '9px' }
+                          }))
+                        ),
+                        style: { width: '100%', borderCollapse: 'collapse', margin: '4px 0', borderColor: '#000000', borderWidth: '0.5px', borderStyle: 'solid' }
+                      };
+                      setElements([...elements, table]);
+                    }} 
+                    variant="ghost" 
+                    size="sm" 
+                    className="w-full justify-start text-xs"
+                  >
+                    جدول شعري 3×3
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      const table = {
+                        id: Date.now().toString(),
+                        type: 'table',
+                        rows: 5,
+                        cols: 4,
+                        cells: Array(5).fill(null).map((_, rIdx) => 
+                          Array(4).fill(null).map((_, cIdx) => ({
+                            content: '',
+                            style: { 
+                              padding: '8px', 
+                              minWidth: '100px', 
+                              minHeight: '40px', 
+                              textAlign: 'center', 
+                              fontSize: '10px',
+                              backgroundColor: rIdx === 0 ? '#f3f4f6' : '#ffffff',
+                              fontWeight: rIdx === 0 ? 'bold' : 'normal'
+                            }
+                          }))
+                        ),
+                        style: { width: '100%', borderCollapse: 'collapse', margin: '4px 0', borderColor: '#1f2937', borderWidth: '1.5px', borderStyle: 'solid' }
+                      };
+                      setElements([...elements, table]);
+                    }} 
+                    variant="ghost" 
+                    size="sm" 
+                    className="w-full justify-start text-xs"
+                  >
+                    جدول بترويسة 5×4
                   </Button>
                 </div>
               </CardContent>
@@ -553,33 +607,53 @@ export default function AdvancedFormEditor() {
 
                                 {element.type === 'table' && (
                                   <div>
-                                    <div className="flex gap-2 mb-2 flex-wrap">
-                                      <Button size="sm" onClick={() => addRow(element.id)} variant="outline">
-                                        + صف
-                                      </Button>
-                                      <Button size="sm" onClick={() => addColumn(element.id)} variant="outline">
-                                        + عمود
-                                      </Button>
-                                      <Input
-                                        type="color"
-                                        value={element.style.borderColor || '#000000'}
-                                        onChange={(e) => updateTableStyle(element.id, { borderColor: e.target.value })}
-                                        className="w-12 h-8"
-                                        title="لون حدود الجدول"
-                                      />
-                                      <select
-                                        value={element.style.borderWidth || '1px'}
-                                        onChange={(e) => updateTableStyle(element.id, { borderWidth: e.target.value })}
-                                        className="border rounded px-2 h-8 text-xs"
-                                      >
-                                        <option value="0.5px">0.5px</option>
-                                        <option value="1px">1px</option>
-                                        <option value="2px">2px</option>
-                                        <option value="3px">3px</option>
-                                      </select>
+                                    <div className="space-y-2 mb-3">
+                                      <div className="flex gap-2 flex-wrap">
+                                        <Button size="sm" onClick={() => addRow(element.id)} variant="outline">
+                                          + صف
+                                        </Button>
+                                        <Button size="sm" onClick={() => addColumn(element.id)} variant="outline">
+                                          + عمود
+                                        </Button>
+                                      </div>
+                                      <div className="flex gap-2 items-center flex-wrap">
+                                        <span className="text-xs text-gray-600">حدود الجدول:</span>
+                                        <Input
+                                          type="color"
+                                          value={element.style.borderColor || '#000000'}
+                                          onChange={(e) => updateTableStyle(element.id, { borderColor: e.target.value })}
+                                          className="w-12 h-8"
+                                          title="لون الحدود"
+                                        />
+                                        <select
+                                          value={element.style.borderWidth || '1px'}
+                                          onChange={(e) => updateTableStyle(element.id, { borderWidth: e.target.value })}
+                                          className="border rounded px-2 h-8 text-xs"
+                                        >
+                                          <option value="0.5px">شعري (0.5px)</option>
+                                          <option value="1px">رفيع (1px)</option>
+                                          <option value="1.5px">متوسط (1.5px)</option>
+                                          <option value="2px">سميك (2px)</option>
+                                          <option value="3px">سميك جداً (3px)</option>
+                                        </select>
+                                        <select
+                                          value={element.style.borderStyle || 'solid'}
+                                          onChange={(e) => updateTableStyle(element.id, { borderStyle: e.target.value })}
+                                          className="border rounded px-2 h-8 text-xs"
+                                        >
+                                          <option value="solid">متصل</option>
+                                          <option value="dashed">متقطع</option>
+                                          <option value="dotted">نقطي</option>
+                                          <option value="double">مزدوج</option>
+                                        </select>
+                                      </div>
                                     </div>
                                     <div className="overflow-x-auto">
-                                      <table style={{ ...element.style, border: `${element.style.borderWidth || '1px'} solid ${element.style.borderColor || '#000'}` }} className="w-full">
+                                      <table style={{ 
+                                        ...element.style, 
+                                        border: `${element.style.borderWidth || '1px'} ${element.style.borderStyle || 'solid'} ${element.style.borderColor || '#000'}`,
+                                        borderCollapse: 'collapse'
+                                      }} className="w-full">
                                         <tbody>
                                           {element.cells.map((row, rowIndex) => (
                                             <tr key={rowIndex}>
@@ -588,13 +662,13 @@ export default function AdvancedFormEditor() {
                                                   key={`${rowIndex}-${colIndex}`}
                                                   style={{
                                                     ...cell.style,
-                                                    border: `${element.style.borderWidth || '1px'} solid ${element.style.borderColor || '#000'}`,
+                                                    border: `${element.style.borderWidth || '1px'} ${element.style.borderStyle || 'solid'} ${element.style.borderColor || '#000'}`,
                                                     resize: 'both',
                                                     overflow: 'auto'
                                                   }}
                                                   rowSpan={cell.rowspan || 1}
                                                   colSpan={cell.colspan || 1}
-                                                  className="relative group"
+                                                  className="relative group hover:bg-blue-50/30 transition-colors"
                                                   onDoubleClick={() => {
                                                     const newWidth = prompt('عرض الخلية (مثال: 150px):', cell.style.minWidth || '100px');
                                                     const newHeight = prompt('ارتفاع الخلية (مثال: 60px):', cell.style.minHeight || '40px');
@@ -608,32 +682,96 @@ export default function AdvancedFormEditor() {
                                                     onChange={(e) => updateCellContent(element.id, rowIndex, colIndex, e.target.value)}
                                                     className="w-full h-full border-none focus:outline-none bg-transparent resize-none p-1"
                                                     rows={2}
-                                                    style={{ fontSize: cell.style.fontSize || '12px' }}
+                                                    style={{ 
+                                                      fontSize: cell.style.fontSize || '12px',
+                                                      color: cell.style.color,
+                                                      fontWeight: cell.style.fontWeight,
+                                                      textAlign: cell.style.textAlign
+                                                    }}
                                                   />
-                                                  <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 flex gap-1 p-1 bg-white border shadow-lg z-10">
-                                                    <Input
-                                                      type="color"
-                                                      value={cell.style.backgroundColor || '#ffffff'}
-                                                      onChange={(e) => updateCellStyle(element.id, rowIndex, colIndex, { backgroundColor: e.target.value })}
-                                                      className="w-8 h-6"
-                                                      title="لون الخلفية"
-                                                    />
-                                                    <Input
-                                                      type="color"
-                                                      value={cell.style.color || '#000000'}
-                                                      onChange={(e) => updateCellStyle(element.id, rowIndex, colIndex, { color: e.target.value })}
-                                                      className="w-8 h-6"
-                                                      title="لون النص"
-                                                    />
-                                                    <Button
-                                                      size="sm"
-                                                      variant="ghost"
-                                                      onClick={() => removeRow(element.id, rowIndex)}
-                                                      className="h-6 w-6 p-0"
-                                                      title="حذف الصف"
-                                                    >
-                                                      ×
-                                                    </Button>
+                                                  <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 flex flex-col gap-1 p-1 bg-white border shadow-lg z-10 rounded">
+                                                    <div className="flex gap-1">
+                                                      <Input
+                                                        type="color"
+                                                        value={cell.style.backgroundColor || '#ffffff'}
+                                                        onChange={(e) => updateCellStyle(element.id, rowIndex, colIndex, { backgroundColor: e.target.value })}
+                                                        className="w-8 h-6"
+                                                        title="لون الخلفية"
+                                                      />
+                                                      <Input
+                                                        type="color"
+                                                        value={cell.style.color || '#000000'}
+                                                        onChange={(e) => updateCellStyle(element.id, rowIndex, colIndex, { color: e.target.value })}
+                                                        className="w-8 h-6"
+                                                        title="لون النص"
+                                                      />
+                                                      <select
+                                                        value={cell.style.fontSize || '12px'}
+                                                        onChange={(e) => updateCellStyle(element.id, rowIndex, colIndex, { fontSize: e.target.value })}
+                                                        className="border rounded px-1 h-6 text-xs w-16"
+                                                      >
+                                                        <option value="8px">8px</option>
+                                                        <option value="9px">9px</option>
+                                                        <option value="10px">10px</option>
+                                                        <option value="11px">11px</option>
+                                                        <option value="12px">12px</option>
+                                                        <option value="14px">14px</option>
+                                                      </select>
+                                                    </div>
+                                                    <div className="flex gap-1">
+                                                      <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        onClick={() => {
+                                                          const newWeight = cell.style.fontWeight === 'bold' ? 'normal' : 'bold';
+                                                          updateCellStyle(element.id, rowIndex, colIndex, { fontWeight: newWeight });
+                                                        }}
+                                                        className="h-6 px-2 text-xs"
+                                                        title="غامق"
+                                                      >
+                                                        B
+                                                      </Button>
+                                                      <select
+                                                        value={cell.style.textAlign || 'right'}
+                                                        onChange={(e) => updateCellStyle(element.id, rowIndex, colIndex, { textAlign: e.target.value })}
+                                                        className="border rounded px-1 h-6 text-xs w-16"
+                                                      >
+                                                        <option value="right">يمين</option>
+                                                        <option value="center">وسط</option>
+                                                        <option value="left">يسار</option>
+                                                      </select>
+                                                    </div>
+                                                    <div className="flex gap-1 border-t pt-1">
+                                                      <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        onClick={() => mergeCells(element.id, rowIndex, colIndex, 'right')}
+                                                        className="h-6 px-2 text-xs"
+                                                        title="دمج يمين"
+                                                        disabled={colIndex >= element.cols - 1}
+                                                      >
+                                                        →
+                                                      </Button>
+                                                      <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        onClick={() => mergeCells(element.id, rowIndex, colIndex, 'down')}
+                                                        className="h-6 px-2 text-xs"
+                                                        title="دمج أسفل"
+                                                        disabled={rowIndex >= element.rows - 1}
+                                                      >
+                                                        ↓
+                                                      </Button>
+                                                      <Button
+                                                        size="sm"
+                                                        variant="destructive"
+                                                        onClick={() => removeRow(element.id, rowIndex)}
+                                                        className="h-6 px-2 text-xs"
+                                                        title="حذف الصف"
+                                                      >
+                                                        ×
+                                                      </Button>
+                                                    </div>
                                                   </div>
                                                 </td>
                                               ))}
@@ -782,18 +920,124 @@ export default function AdvancedFormEditor() {
                           onChange={(e) => updateTableStyle(selectedElement.id, { borderWidth: e.target.value })}
                           className="w-full border rounded p-2"
                         >
-                          <option value="0.5px">0.5px</option>
-                          <option value="1px">1px</option>
-                          <option value="2px">2px</option>
-                          <option value="3px">3px</option>
-                          <option value="4px">4px</option>
+                          <option value="0.5px">شعري (0.5px)</option>
+                          <option value="1px">رفيع (1px)</option>
+                          <option value="1.5px">متوسط (1.5px)</option>
+                          <option value="2px">سميك (2px)</option>
+                          <option value="3px">سميك جداً (3px)</option>
+                          <option value="4px">سميك للغاية (4px)</option>
                         </select>
+                      </div>
+                      <div>
+                        <Label>نمط حدود الجدول</Label>
+                        <select
+                          value={selectedElement.style.borderStyle || 'solid'}
+                          onChange={(e) => updateTableStyle(selectedElement.id, { borderStyle: e.target.value })}
+                          className="w-full border rounded p-2"
+                        >
+                          <option value="solid">متصل</option>
+                          <option value="dashed">متقطع</option>
+                          <option value="dotted">نقطي</option>
+                          <option value="double">مزدوج</option>
+                          <option value="groove">محفور</option>
+                          <option value="ridge">بارز</option>
+                        </select>
+                      </div>
+                      <div>
+                        <Label>تباعد الخلايا</Label>
+                        <Input
+                          type="number"
+                          min="0"
+                          max="10"
+                          value={parseInt(selectedElement.style.borderSpacing) || 0}
+                          onChange={(e) => updateTableStyle(selectedElement.id, { borderSpacing: e.target.value + 'px' })}
+                          placeholder="0"
+                        />
                       </div>
                     </>
                   )}
                 </CardContent>
               </Card>
             )}
+
+            {/* لوحة الألوان السريعة */}
+            <Card className="shadow-lg">
+              <CardHeader className="py-3">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Palette className="w-4 h-4" />
+                  ألوان سريعة
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div>
+                  <Label className="text-xs">ألوان النصوص</Label>
+                  <div className="grid grid-cols-5 gap-1 mt-1">
+                    {['#000000', '#1f2937', '#dc2626', '#2563eb', '#16a34a', '#ea580c', '#8b5cf6', '#0891b2', '#be123c', '#7c3aed'].map(color => (
+                      <button
+                        key={color}
+                        onClick={() => {
+                          if (selectedElement) {
+                            if (selectedElement.type === 'text') {
+                              updateElement(selectedElement.id, { style: { ...selectedElement.style, color } });
+                            }
+                          }
+                        }}
+                        className="w-8 h-8 rounded border-2 hover:scale-110 transition-transform"
+                        style={{ backgroundColor: color }}
+                        title={color}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-xs">ألوان الخلفيات</Label>
+                  <div className="grid grid-cols-5 gap-1 mt-1">
+                    {['#ffffff', '#f3f4f6', '#dbeafe', '#fef3c7', '#dcfce7', '#fee2e2', '#f3e8ff', '#e0f2fe', '#fce7f3', '#fef9c3'].map(color => (
+                      <button
+                        key={color}
+                        onClick={() => {
+                          if (selectedElement) {
+                            updateElement(selectedElement.id, { style: { ...selectedElement.style, backgroundColor: color } });
+                          }
+                        }}
+                        className="w-8 h-8 rounded border-2 hover:scale-110 transition-transform"
+                        style={{ backgroundColor: color }}
+                        title={color}
+                      />
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-xs">حدود شعرية</Label>
+                  <div className="space-y-1">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full justify-start text-xs"
+                      onClick={() => {
+                        if (selectedElement?.type === 'table') {
+                          updateTableStyle(selectedElement.id, { borderWidth: '0.5px', borderStyle: 'solid', borderColor: '#000000' });
+                        }
+                      }}
+                    >
+                      تطبيق حدود شعرية
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="w-full justify-start text-xs"
+                      onClick={() => {
+                        if (selectedElement?.type === 'table') {
+                          updateTableStyle(selectedElement.id, { borderWidth: '1.5px', borderStyle: 'double', borderColor: '#1f2937' });
+                        }
+                      }}
+                    >
+                      حدود مزدوجة
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
