@@ -330,114 +330,57 @@ export default function FillDigitalAccountForm() {
                   </td>
                 </tr>
                 
-                <tbody>
-                  <tr>
-                    {/* يمين - عربي - النظام */}
-                    <td className="border-2 border-black p-2 align-top text-right" style={{ width: '50%' }}>
-                      <strong style={{ fontSize: '11px' }}>النظام:</strong>
-                      <table className="w-full border-collapse mt-1">
-                        <tbody>
-                          <tr>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>ميديكا كلاود</td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Medica cloud')} onCheckedChange={() => handleSystemToggle('Medica cloud')} className="scale-75" /></td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>رقيم</td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Raqeem')} onCheckedChange={() => handleSystemToggle('Raqeem')} className="scale-75" /></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <table className="w-full border-collapse mt-1">
-                        <tbody>
-                          <tr>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>موعد</td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Mawid')} onCheckedChange={() => handleSystemToggle('Mawid')} className="scale-75" /></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </td>
+                <tr>
+                  {/* يمين - عربي - نوع الطلب */}
+                  <td className="border-2 border-black p-2 align-top text-right">
+                    <strong style={{ fontSize: '11px' }}>نوع الطلب:</strong>
+                    <table className="w-full border-collapse mt-1">
+                      <tbody>
+                        <tr>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>استعادة كلمة مرور</td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'استعادة كلمة مرور'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'استعادة كلمة مرور' }))} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>انشاء مستخدم جديد</td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'انشاء مستخدم جديد'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'انشاء مستخدم جديد' }))} className="scale-75" /></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <table className="w-full border-collapse mt-1">
+                      <tbody>
+                        <tr>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>نقل اسم مستخدم</td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'نقل اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'نقل اسم مستخدم' }))} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>الغاء اسم مستخدم</td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'الغاء اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'الغاء اسم مستخدم' }))} className="scale-75" /></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
 
-                    {/* يسار - إنجليزي - النظام */}
-                    <td 
-                      className={`border-2 border-black p-2 align-top ${isEditMode ? 'cursor-pointer hover:bg-purple-50' : ''}`}
-                      style={{ width: '50%', ...getElementStyle('cell-system-en') }}
-                      onClick={(e) => handleElementClick(e, 'cell-system-en')}
-                    >
-                      <strong style={{ fontSize: '11px', ...getElementStyle('label-system-en') }} onClick={(e) => handleElementClick(e, 'label-system-en')}>*System:</strong>
-                      <table className="w-full border-collapse mt-1">
-                        <tbody>
-                          <tr>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Raqeem')} onCheckedChange={() => handleSystemToggle('Raqeem')} className="scale-75" /></td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Raqeem</td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Medica cloud')} onCheckedChange={() => handleSystemToggle('Medica cloud')} className="scale-75" /></td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Medica cloud</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <table className="w-full border-collapse mt-1">
-                        <tbody>
-                          <tr>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Mawid')} onCheckedChange={() => handleSystemToggle('Mawid')} className="scale-75" /></td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Mawid</td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </td>
-                  </tr>
-
-                  <tr>
-                    {/* يمين - عربي - نوع الطلب */}
-                    <td className="border-2 border-black p-2 align-top text-right">
-                      <strong style={{ fontSize: '11px' }}>نوع الطلب:</strong>
-                      <table className="w-full border-collapse mt-1">
-                        <tbody>
-                          <tr>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>استعادة كلمة مرور</td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'استعادة كلمة مرور'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'استعادة كلمة مرور' }))} className="scale-75" /></td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>انشاء مستخدم جديد</td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'انشاء مستخدم جديد'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'انشاء مستخدم جديد' }))} className="scale-75" /></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <table className="w-full border-collapse mt-1">
-                        <tbody>
-                          <tr>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>نقل اسم مستخدم</td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'نقل اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'نقل اسم مستخدم' }))} className="scale-75" /></td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>الغاء اسم مستخدم</td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'الغاء اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'الغاء اسم مستخدم' }))} className="scale-75" /></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </td>
-
-                    {/* يسار - إنجليزي - نوع الطلب */}
-                    <td className="border-2 border-black p-2 align-top">
-                      <strong style={{ fontSize: '11px' }}>*Type of Request:</strong>
-                      <table className="w-full border-collapse mt-1">
-                        <tbody>
-                          <tr>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Restore password</td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'استعادة كلمة مرور'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'استعادة كلمة مرور' }))} className="scale-75" /></td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Create a new user name</td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'انشاء مستخدم جديد'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'انشاء مستخدم جديد' }))} className="scale-75" /></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <table className="w-full border-collapse mt-1">
-                        <tbody>
-                          <tr>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Relocate a user name</td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'نقل اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'نقل اسم مستخدم' }))} className="scale-75" /></td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Delete a user name</td>
-                            <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'الغاء اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'الغاء اسم مستخدم' }))} className="scale-75" /></td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </td>
-                  </tr>
+                  {/* يسار - إنجليزي - نوع الطلب */}
+                  <td className="border-2 border-black p-2 align-top">
+                    <strong style={{ fontSize: '11px' }}>*Type of Request:</strong>
+                    <table className="w-full border-collapse mt-1">
+                      <tbody>
+                        <tr>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Restore password</td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'استعادة كلمة مرور'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'استعادة كلمة مرور' }))} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Create a new user name</td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'انشاء مستخدم جديد'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'انشاء مستخدم جديد' }))} className="scale-75" /></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <table className="w-full border-collapse mt-1">
+                      <tbody>
+                        <tr>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Relocate a user name</td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'نقل اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'نقل اسم مستخدم' }))} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Delete a user name</td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'الغاء اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'الغاء اسم مستخدم' }))} className="scale-75" /></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
               </tbody>
             </table>
 
