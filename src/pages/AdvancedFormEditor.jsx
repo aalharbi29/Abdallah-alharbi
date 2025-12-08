@@ -323,6 +323,29 @@ export default function AdvancedFormEditor() {
     });
   };
 
+  const mergeCells = (tableId, rowIndex, colIndex, direction) => {
+    setElements(elements.map(el => {
+      if (el.id === tableId && el.type === 'table') {
+        const newCells = JSON.parse(JSON.stringify(el.cells));
+        if (direction === 'right' && colIndex < el.cols - 1) {
+          newCells[rowIndex][colIndex].colspan = (newCells[rowIndex][colIndex].colspan || 1) + 1;
+          newCells[rowIndex].splice(colIndex + 1, 1);
+        } else if (direction === 'down' && rowIndex < el.rows - 1) {
+          newCells[rowIndex][colIndex].rowspan = (newCells[rowIndex][colIndex].rowspan || 1) + 1;
+          newCells[rowIndex + 1].splice(colIndex, 1);
+        }
+        return { ...el, cells: newCells };
+      }
+      return el;
+    }));
+  };
+
+  const updateTableStyle = (tableId, styleUpdates) => {
+    setElements(elements.map(el => 
+      el.id === tableId ? { ...el, style: { ...el.style, ...styleUpdates } } : el
+    ));
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-4">
       <div className="max-w-7xl mx-auto">
@@ -362,22 +385,71 @@ export default function AdvancedFormEditor() {
                 <CardTitle className="text-sm">العناصر</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <Button onClick={() => addElement('text')} variant="outline" size="sm" className="w-full">
+                <Button onClick={() => addElement('text')} variant="outline" size="sm" className="w-full justify-start">
                   <Type className="w-4 h-4 ml-2" />
                   نص
                 </Button>
-                <Button onClick={addTable} variant="outline" size="sm" className="w-full">
+                <Button onClick={addTable} variant="outline" size="sm" className="w-full justify-start">
                   <TableIcon className="w-4 h-4 ml-2" />
                   جدول
                 </Button>
-                <Button onClick={() => addElement('image')} variant="outline" size="sm" className="w-full">
+                <Button onClick={() => addElement('image')} variant="outline" size="sm" className="w-full justify-start">
                   <ImageIcon className="w-4 h-4 ml-2" />
                   صورة
                 </Button>
-                <Button onClick={() => addElement('line')} variant="outline" size="sm" className="w-full">
+                <Button onClick={() => addElement('line')} variant="outline" size="sm" className="w-full justify-start">
                   <Square className="w-4 h-4 ml-2" />
                   خط أفقي
                 </Button>
+                <div className="pt-2 border-t mt-2">
+                  <p className="text-xs text-gray-600 mb-2">جداول سريعة:</p>
+                  <Button 
+                    onClick={() => {
+                      const table = {
+                        id: Date.now().toString(),
+                        type: 'table',
+                        rows: 2,
+                        cols: 4,
+                        cells: Array(2).fill(null).map(() => 
+                          Array(4).fill(null).map(() => ({
+                            content: '',
+                            style: { border: '1px solid #000', padding: '8px', minWidth: '80px', minHeight: '35px', textAlign: 'right', fontSize: '10px' }
+                          }))
+                        ),
+                        style: { width: '100%', borderCollapse: 'collapse', margin: '4px 0', borderColor: '#000000', borderWidth: '1px' }
+                      };
+                      setElements([...elements, table]);
+                    }} 
+                    variant="ghost" 
+                    size="sm" 
+                    className="w-full justify-start text-xs"
+                  >
+                    جدول 2×4
+                  </Button>
+                  <Button 
+                    onClick={() => {
+                      const table = {
+                        id: Date.now().toString(),
+                        type: 'table',
+                        rows: 4,
+                        cols: 2,
+                        cells: Array(4).fill(null).map(() => 
+                          Array(2).fill(null).map(() => ({
+                            content: '',
+                            style: { border: '1px solid #000', padding: '8px', minWidth: '150px', minHeight: '40px', textAlign: 'right', fontSize: '10px' }
+                          }))
+                        ),
+                        style: { width: '100%', borderCollapse: 'collapse', margin: '4px 0', borderColor: '#000000', borderWidth: '1px' }
+                      };
+                      setElements([...elements, table]);
+                    }} 
+                    variant="ghost" 
+                    size="sm" 
+                    className="w-full justify-start text-xs"
+                  >
+                    جدول 4×2
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
@@ -433,57 +505,143 @@ export default function AdvancedFormEditor() {
                                 </div>
 
                                 {element.type === 'text' && (
-                                  <textarea
-                                    value={element.content}
-                                    onChange={(e) => updateElement(element.id, { content: e.target.value })}
-                                    style={element.style}
-                                    className="w-full border-none focus:outline-none"
-                                    rows={3}
-                                  />
+                                  <div style={element.style}>
+                                    <textarea
+                                      value={element.content}
+                                      onChange={(e) => updateElement(element.id, { content: e.target.value })}
+                                      className="w-full border-none focus:outline-none bg-transparent"
+                                      rows={3}
+                                      style={{ color: element.style.color, fontSize: element.style.fontSize }}
+                                    />
+                                  </div>
+                                )}
+
+                                {element.type === 'image' && (
+                                  <div style={element.style} className="border-2 border-dashed border-gray-300 p-4 text-center">
+                                    <input
+                                      type="file"
+                                      accept="image/*"
+                                      onChange={async (e) => {
+                                        const file = e.target.files[0];
+                                        if (file) {
+                                          const result = await base44.integrations.Core.UploadFile({ file });
+                                          updateElement(element.id, { content: result.file_url });
+                                        }
+                                      }}
+                                      className="hidden"
+                                      id={`image-${element.id}`}
+                                    />
+                                    {element.content ? (
+                                      <img src={element.content} alt="صورة" className="max-w-full h-auto" />
+                                    ) : (
+                                      <label htmlFor={`image-${element.id}`} className="cursor-pointer">
+                                        <ImageIcon className="w-12 h-12 mx-auto text-gray-400" />
+                                        <p className="text-sm text-gray-500 mt-2">اضغط لرفع صورة</p>
+                                      </label>
+                                    )}
+                                  </div>
+                                )}
+
+                                {element.type === 'line' && (
+                                  <div style={element.style}>
+                                    <hr style={{ 
+                                      borderTop: `${element.style.borderWidth || '1px'} solid ${element.style.borderColor || '#000'}`,
+                                      margin: element.style.margin || '8px 0'
+                                    }} />
+                                  </div>
                                 )}
 
                                 {element.type === 'table' && (
                                   <div>
-                                    <div className="flex gap-2 mb-2">
+                                    <div className="flex gap-2 mb-2 flex-wrap">
                                       <Button size="sm" onClick={() => addRow(element.id)} variant="outline">
                                         + صف
                                       </Button>
                                       <Button size="sm" onClick={() => addColumn(element.id)} variant="outline">
                                         + عمود
                                       </Button>
+                                      <Input
+                                        type="color"
+                                        value={element.style.borderColor || '#000000'}
+                                        onChange={(e) => updateTableStyle(element.id, { borderColor: e.target.value })}
+                                        className="w-12 h-8"
+                                        title="لون حدود الجدول"
+                                      />
+                                      <select
+                                        value={element.style.borderWidth || '1px'}
+                                        onChange={(e) => updateTableStyle(element.id, { borderWidth: e.target.value })}
+                                        className="border rounded px-2 h-8 text-xs"
+                                      >
+                                        <option value="0.5px">0.5px</option>
+                                        <option value="1px">1px</option>
+                                        <option value="2px">2px</option>
+                                        <option value="3px">3px</option>
+                                      </select>
                                     </div>
-                                    <table style={element.style} className="w-full">
-                                      <tbody>
-                                        {element.cells.map((row, rowIndex) => (
-                                          <tr key={rowIndex}>
-                                            {row.map((cell, colIndex) => (
-                                              <td
-                                                key={`${rowIndex}-${colIndex}`}
-                                                style={cell.style}
-                                                className="relative group"
-                                              >
-                                                <textarea
-                                                  value={cell.content}
-                                                  onChange={(e) => updateCellContent(element.id, rowIndex, colIndex, e.target.value)}
-                                                  className="w-full h-full border-none focus:outline-none bg-transparent resize-none"
-                                                  rows={2}
-                                                />
-                                                <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 flex gap-1 p-1 bg-white border">
-                                                  <Button
-                                                    size="sm"
-                                                    variant="ghost"
-                                                    onClick={() => removeRow(element.id, rowIndex)}
-                                                    className="h-6 w-6 p-0"
-                                                  >
-                                                    ×
-                                                  </Button>
-                                                </div>
-                                              </td>
-                                            ))}
-                                          </tr>
-                                        ))}
-                                      </tbody>
-                                    </table>
+                                    <div className="overflow-x-auto">
+                                      <table style={{ ...element.style, border: `${element.style.borderWidth || '1px'} solid ${element.style.borderColor || '#000'}` }} className="w-full">
+                                        <tbody>
+                                          {element.cells.map((row, rowIndex) => (
+                                            <tr key={rowIndex}>
+                                              {row.map((cell, colIndex) => (
+                                                <td
+                                                  key={`${rowIndex}-${colIndex}`}
+                                                  style={{
+                                                    ...cell.style,
+                                                    border: `${element.style.borderWidth || '1px'} solid ${element.style.borderColor || '#000'}`,
+                                                    resize: 'both',
+                                                    overflow: 'auto'
+                                                  }}
+                                                  rowSpan={cell.rowspan || 1}
+                                                  colSpan={cell.colspan || 1}
+                                                  className="relative group"
+                                                  onDoubleClick={() => {
+                                                    const newWidth = prompt('عرض الخلية (مثال: 150px):', cell.style.minWidth || '100px');
+                                                    const newHeight = prompt('ارتفاع الخلية (مثال: 60px):', cell.style.minHeight || '40px');
+                                                    if (newWidth) updateCellStyle(element.id, rowIndex, colIndex, { minWidth: newWidth });
+                                                    if (newHeight) updateCellStyle(element.id, rowIndex, colIndex, { minHeight: newHeight });
+                                                  }}
+                                                >
+                                                  <div className="resize-handle absolute bottom-0 left-0 w-3 h-3 bg-blue-500 opacity-0 group-hover:opacity-50 cursor-se-resize"></div>
+                                                  <textarea
+                                                    value={cell.content}
+                                                    onChange={(e) => updateCellContent(element.id, rowIndex, colIndex, e.target.value)}
+                                                    className="w-full h-full border-none focus:outline-none bg-transparent resize-none p-1"
+                                                    rows={2}
+                                                    style={{ fontSize: cell.style.fontSize || '12px' }}
+                                                  />
+                                                  <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 flex gap-1 p-1 bg-white border shadow-lg z-10">
+                                                    <Input
+                                                      type="color"
+                                                      value={cell.style.backgroundColor || '#ffffff'}
+                                                      onChange={(e) => updateCellStyle(element.id, rowIndex, colIndex, { backgroundColor: e.target.value })}
+                                                      className="w-8 h-6"
+                                                      title="لون الخلفية"
+                                                    />
+                                                    <Input
+                                                      type="color"
+                                                      value={cell.style.color || '#000000'}
+                                                      onChange={(e) => updateCellStyle(element.id, rowIndex, colIndex, { color: e.target.value })}
+                                                      className="w-8 h-6"
+                                                      title="لون النص"
+                                                    />
+                                                    <Button
+                                                      size="sm"
+                                                      variant="ghost"
+                                                      onClick={() => removeRow(element.id, rowIndex)}
+                                                      className="h-6 w-6 p-0"
+                                                      title="حذف الصف"
+                                                    >
+                                                      ×
+                                                    </Button>
+                                                  </div>
+                                                </td>
+                                              ))}
+                                            </tr>
+                                          ))}
+                                        </tbody>
+                                      </table>
+                                    </div>
                                   </div>
                                 )}
                               </div>
@@ -577,6 +735,62 @@ export default function AdvancedFormEditor() {
                       })}
                     />
                   </div>
+                  <div>
+                    <Label>الحدود</Label>
+                    <Input
+                      value={selectedElement.style.border}
+                      onChange={(e) => updateElement(selectedElement.id, {
+                        style: { ...selectedElement.style, border: e.target.value }
+                      })}
+                      placeholder="1px solid #000"
+                    />
+                  </div>
+                  <div>
+                    <Label>العرض</Label>
+                    <Input
+                      value={selectedElement.style.width}
+                      onChange={(e) => updateElement(selectedElement.id, {
+                        style: { ...selectedElement.style, width: e.target.value }
+                      })}
+                      placeholder="100%"
+                    />
+                  </div>
+                  <div>
+                    <Label>الارتفاع</Label>
+                    <Input
+                      value={selectedElement.style.height}
+                      onChange={(e) => updateElement(selectedElement.id, {
+                        style: { ...selectedElement.style, height: e.target.value }
+                      })}
+                      placeholder="auto"
+                    />
+                  </div>
+                  {selectedElement.type === 'table' && (
+                    <>
+                      <div>
+                        <Label>لون حدود الجدول</Label>
+                        <Input
+                          type="color"
+                          value={selectedElement.style.borderColor || '#000000'}
+                          onChange={(e) => updateTableStyle(selectedElement.id, { borderColor: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <Label>سمك حدود الجدول</Label>
+                        <select
+                          value={selectedElement.style.borderWidth || '1px'}
+                          onChange={(e) => updateTableStyle(selectedElement.id, { borderWidth: e.target.value })}
+                          className="w-full border rounded p-2"
+                        >
+                          <option value="0.5px">0.5px</option>
+                          <option value="1px">1px</option>
+                          <option value="2px">2px</option>
+                          <option value="3px">3px</option>
+                          <option value="4px">4px</option>
+                        </select>
+                      </div>
+                    </>
+                  )}
                 </CardContent>
               </Card>
             )}
