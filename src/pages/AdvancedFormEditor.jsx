@@ -388,7 +388,7 @@ export default function AdvancedFormEditor() {
 
         <div className="grid grid-cols-12 gap-4">
           {/* Toolbar */}
-          <div className="col-span-2">
+          <div className="col-span-2 space-y-4">
             <Card>
               <CardHeader>
                 <CardTitle className="text-sm">العناصر</CardTitle>
@@ -539,8 +539,14 @@ export default function AdvancedFormEditor() {
           </div>
 
           {/* Canvas */}
-          <div className="col-span-7">
+          <div className="col-span-5">
             <Card>
+              <CardHeader className="py-3">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Settings className="w-4 h-4" />
+                  منطقة التحرير
+                </CardTitle>
+              </CardHeader>
               <CardContent className="p-6 min-h-[600px] bg-white" ref={containerRef}>
                 <DragDropContext onDragEnd={onDragEnd}>
                   <Droppable droppableId="elements">
@@ -848,8 +854,77 @@ export default function AdvancedFormEditor() {
             </Card>
           </div>
 
-          {/* Properties Panel */}
+          {/* Live Preview */}
           <div className="col-span-3">
+            <Card className="sticky top-4">
+              <CardHeader className="py-3 bg-gradient-to-r from-blue-50 to-indigo-50">
+                <CardTitle className="text-sm flex items-center gap-2">
+                  <Eye className="w-4 h-4 text-blue-600" />
+                  المعاينة المباشرة
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 bg-white max-h-[600px] overflow-y-auto">
+                <div className="space-y-2" style={{ fontSize: '10px' }}>
+                  {elements.map((element) => (
+                    <div key={element.id} className={selectedElement?.id === element.id ? 'ring-2 ring-blue-400 rounded' : ''}>
+                      {element.type === 'text' && (
+                        <div style={element.style}>{element.content}</div>
+                      )}
+                      
+                      {element.type === 'image' && element.content && (
+                        <img src={element.content} alt="صورة" style={element.style} className="max-w-full h-auto" />
+                      )}
+                      
+                      {element.type === 'line' && (
+                        <hr style={{ 
+                          borderTop: element.style.borderTop || '1px solid #000',
+                          margin: element.style.margin || '8px 0'
+                        }} />
+                      )}
+                      
+                      {element.type === 'table' && (
+                        <table style={{ 
+                          ...element.style, 
+                          border: `${element.style.borderWidth || '1px'} ${element.style.borderStyle || 'solid'} ${element.style.borderColor || '#000'}`,
+                          borderCollapse: 'collapse'
+                        }} className="w-full">
+                          <tbody>
+                            {element.cells.map((row, rowIndex) => (
+                              <tr key={rowIndex}>
+                                {row.map((cell, colIndex) => (
+                                  <td
+                                    key={`${rowIndex}-${colIndex}`}
+                                    style={{
+                                      ...cell.style,
+                                      border: `${element.style.borderWidth || '1px'} ${element.style.borderStyle || 'solid'} ${element.style.borderColor || '#000'}`
+                                    }}
+                                    rowSpan={cell.rowspan || 1}
+                                    colSpan={cell.colspan || 1}
+                                  >
+                                    {cell.content}
+                                  </td>
+                                ))}
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      )}
+                    </div>
+                  ))}
+                  
+                  {elements.length === 0 && (
+                    <div className="text-center py-12 text-gray-400">
+                      <Eye className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                      <p className="text-sm">المعاينة ستظهر هنا</p>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Properties Panel */}
+          <div className="col-span-2">
             {selectedElement && (
               <Card>
                 <CardHeader>
@@ -1014,7 +1089,7 @@ export default function AdvancedFormEditor() {
             )}
 
             {/* لوحة الألوان السريعة */}
-            <Card className="shadow-lg">
+            <Card className="shadow-lg mt-4">
               <CardHeader className="py-3">
                 <CardTitle className="text-sm flex items-center gap-2">
                   <Palette className="w-4 h-4" />
