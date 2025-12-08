@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent } from '@/components/ui/card';
-import { Edit, ClipboardList, DollarSign, Award, Package } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, MonitorSmartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 
@@ -58,10 +57,18 @@ const interactiveForms = [
   {
     title: "محرر النماذج التفاعلي",
     description: "أنشئ نماذجك الخاصة بتحكم كامل مثل برامج التصميم",
-    icon: Edit, // Changed from FilePenLine to Edit
+    icon: Edit,
     color: "from-red-500 to-orange-600",
     link: createPageUrl("FormEditor"),
     category: "أدوات متقدمة"
+  },
+  {
+    title: "طلب حساب رقمي",
+    description: "نموذج إنشاء/إيقاف حساب في أنظمة رقيم وميديكا وموعد",
+    icon: MonitorSmartphone,
+    color: "from-cyan-500 to-blue-600",
+    link: createPageUrl("FillDigitalAccountForm"),
+    category: "الحسابات الرقمية"
   }
 ];
 
