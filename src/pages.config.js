@@ -47,6 +47,7 @@ import ClinicManagement from './pages/ClinicManagement';
 import FillClearanceForm from './pages/FillClearanceForm';
 import HRAnalytics from './pages/HRAnalytics';
 import FillDigitalAccountForm from './pages/FillDigitalAccountForm';
+import AdvancedFormEditor from './pages/AdvancedFormEditor';
 import __Layout from './Layout.jsx';
 
 
@@ -100,6 +101,7 @@ export const PAGES = {
     "FillClearanceForm": FillClearanceForm,
     "HRAnalytics": HRAnalytics,
     "FillDigitalAccountForm": FillDigitalAccountForm,
+    "AdvancedFormEditor": AdvancedFormEditor,
 }
 
 export const pagesConfig = {
