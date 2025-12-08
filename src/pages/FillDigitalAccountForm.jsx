@@ -281,20 +281,16 @@ export default function FillDigitalAccountForm() {
                     <table className="w-full border-collapse mt-1">
                       <tbody>
                         <tr>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>ميديكا كلاود</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Medica cloud')} onCheckedChange={() => handleSystemToggle('Medica cloud')} className="scale-75" /></td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>رقيم</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Raqeem')} onCheckedChange={() => handleSystemToggle('Raqeem')} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px', width: '30%' }}>ميديكا كلاود</td>
+                          <td className="border border-black text-center p-0.5" style={{ width: '10%' }}><Checkbox checked={formData.system_type.includes('Medica cloud')} onCheckedChange={() => handleSystemToggle('Medica cloud')} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px', width: '30%' }}>رقيم</td>
+                          <td className="border border-black text-center p-0.5" style={{ width: '10%' }}><Checkbox checked={formData.system_type.includes('Raqeem')} onCheckedChange={() => handleSystemToggle('Raqeem')} className="scale-75" /></td>
                         </tr>
-                      </tbody>
-                    </table>
-                    <table className="w-full border-collapse mt-1">
-                      <tbody>
                         <tr>
                           <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
+                          <td className="border border-black text-center p-0.5"></td>
                           <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>موعد</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Mawid')} onCheckedChange={() => handleSystemToggle('Mawid')} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5"><Checkbox checked={formData.system_type.includes('Mawid')} onCheckedChange={() => handleSystemToggle('Mawid')} className="scale-75" /></td>
                         </tr>
                       </tbody>
                     </table>
@@ -310,20 +306,16 @@ export default function FillDigitalAccountForm() {
                     <table className="w-full border-collapse mt-1">
                       <tbody>
                         <tr>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Raqeem')} onCheckedChange={() => handleSystemToggle('Raqeem')} className="scale-75" /></td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Raqeem</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Medica cloud')} onCheckedChange={() => handleSystemToggle('Medica cloud')} className="scale-75" /></td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Medica cloud</td>
+                          <td className="border border-black text-center p-0.5" style={{ width: '10%' }}><Checkbox checked={formData.system_type.includes('Raqeem')} onCheckedChange={() => handleSystemToggle('Raqeem')} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px', width: '30%' }}>Raqeem</td>
+                          <td className="border border-black text-center p-0.5" style={{ width: '10%' }}><Checkbox checked={formData.system_type.includes('Medica cloud')} onCheckedChange={() => handleSystemToggle('Medica cloud')} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px', width: '30%' }}>Medica cloud</td>
                         </tr>
-                      </tbody>
-                    </table>
-                    <table className="w-full border-collapse mt-1">
-                      <tbody>
                         <tr>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Mawid')} onCheckedChange={() => handleSystemToggle('Mawid')} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5"><Checkbox checked={formData.system_type.includes('Mawid')} onCheckedChange={() => handleSystemToggle('Mawid')} className="scale-75" /></td>
                           <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Mawid</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
+                          <td className="border border-black text-center p-0.5"></td>
+                          <td className="border border-black text-center p-0.5"></td>
                         </tr>
                       </tbody>
                     </table>
@@ -337,20 +329,16 @@ export default function FillDigitalAccountForm() {
                     <table className="w-full border-collapse mt-1">
                       <tbody>
                         <tr>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>استعادة كلمة مرور</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'استعادة كلمة مرور'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'استعادة كلمة مرور' }))} className="scale-75" /></td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>انشاء مستخدم جديد</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'انشاء مستخدم جديد'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'انشاء مستخدم جديد' }))} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px', width: '30%' }}>استعادة كلمة مرور</td>
+                          <td className="border border-black text-center p-0.5" style={{ width: '10%' }}><Checkbox checked={formData.request_type === 'استعادة كلمة مرور'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'استعادة كلمة مرور' }))} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px', width: '30%' }}>انشاء مستخدم جديد</td>
+                          <td className="border border-black text-center p-0.5" style={{ width: '10%' }}><Checkbox checked={formData.request_type === 'انشاء مستخدم جديد'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'انشاء مستخدم جديد' }))} className="scale-75" /></td>
                         </tr>
-                      </tbody>
-                    </table>
-                    <table className="w-full border-collapse mt-1">
-                      <tbody>
                         <tr>
                           <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>نقل اسم مستخدم</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'نقل اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'نقل اسم مستخدم' }))} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5"><Checkbox checked={formData.request_type === 'نقل اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'نقل اسم مستخدم' }))} className="scale-75" /></td>
                           <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>الغاء اسم مستخدم</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'الغاء اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'الغاء اسم مستخدم' }))} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5"><Checkbox checked={formData.request_type === 'الغاء اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'الغاء اسم مستخدم' }))} className="scale-75" /></td>
                         </tr>
                       </tbody>
                     </table>
@@ -362,20 +350,16 @@ export default function FillDigitalAccountForm() {
                     <table className="w-full border-collapse mt-1">
                       <tbody>
                         <tr>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Restore password</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'استعادة كلمة مرور'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'استعادة كلمة مرور' }))} className="scale-75" /></td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Create a new user name</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'انشاء مستخدم جديد'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'انشاء مستخدم جديد' }))} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5" style={{ width: '10%' }}><Checkbox checked={formData.request_type === 'استعادة كلمة مرور'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'استعادة كلمة مرور' }))} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px', width: '30%' }}>Restore password</td>
+                          <td className="border border-black text-center p-0.5" style={{ width: '10%' }}><Checkbox checked={formData.request_type === 'انشاء مستخدم جديد'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'انشاء مستخدم جديد' }))} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px', width: '30%' }}>Create a new user name</td>
                         </tr>
-                      </tbody>
-                    </table>
-                    <table className="w-full border-collapse mt-1">
-                      <tbody>
                         <tr>
+                          <td className="border border-black text-center p-0.5"><Checkbox checked={formData.request_type === 'نقل اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'نقل اسم مستخدم' }))} className="scale-75" /></td>
                           <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Relocate a user name</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'نقل اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'نقل اسم مستخدم' }))} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5"><Checkbox checked={formData.request_type === 'الغاء اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'الغاء اسم مستخدم' }))} className="scale-75" /></td>
                           <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Delete a user name</td>
-                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.request_type === 'الغاء اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'الغاء اسم مستخدم' }))} className="scale-75" /></td>
                         </tr>
                       </tbody>
                     </table>
