@@ -295,8 +295,9 @@ export default function FillDigitalAccountForm() {
                     <table className="w-full border-collapse mt-1">
                       <tbody>
                         <tr>
-                          <td className="border border-black text-center p-0.5" colSpan="2" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Mawid')} onCheckedChange={() => handleSystemToggle('Mawid')} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Mawid')} onCheckedChange={() => handleSystemToggle('Mawid')} className="scale-75" /></td>
                           <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Mawid</td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
                           <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
                         </tr>
                       </tbody>
@@ -320,8 +321,9 @@ export default function FillDigitalAccountForm() {
                       <tbody>
                         <tr>
                           <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
                           <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>موعد</td>
-                          <td className="border border-black text-center p-0.5" colSpan="2" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Mawid')} onCheckedChange={() => handleSystemToggle('Mawid')} className="scale-75" /></td>
+                          <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}><Checkbox checked={formData.system_type.includes('Mawid')} onCheckedChange={() => handleSystemToggle('Mawid')} className="scale-75" /></td>
                         </tr>
                       </tbody>
                     </table>
