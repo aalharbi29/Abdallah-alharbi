@@ -19,7 +19,9 @@ import {
   Printer,
   Eye,
   Settings,
-  Palette
+  Palette,
+  Maximize2,
+  Minimize2
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
@@ -30,6 +32,7 @@ export default function AdvancedFormEditor() {
   const [templateName, setTemplateName] = useState('نموذج جديد');
   const [templates, setTemplates] = useState([]);
   const [resizing, setResizing] = useState(null);
+  const [tablePosition, setTablePosition] = useState({});
   const containerRef = useRef(null);
 
   useEffect(() => {
@@ -355,6 +358,49 @@ export default function AdvancedFormEditor() {
     ));
   };
 
+  const updateColumnWidth = (tableId, colIndex, newWidth) => {
+    setElements(elements.map(el => {
+      if (el.id === tableId && el.type === 'table') {
+        const newCells = el.cells.map(row => 
+          row.map((cell, idx) => 
+            idx === colIndex ? { ...cell, style: { ...cell.style, minWidth: newWidth + 'px', width: newWidth + 'px' } } : cell
+          )
+        );
+        return { ...el, cells: newCells };
+      }
+      return el;
+    }));
+  };
+
+  const updateRowHeight = (tableId, rowIndex, newHeight) => {
+    setElements(elements.map(el => {
+      if (el.id === tableId && el.type === 'table') {
+        const newCells = [...el.cells];
+        newCells[rowIndex] = newCells[rowIndex].map(cell => ({
+          ...cell,
+          style: { ...cell.style, minHeight: newHeight + 'px', height: newHeight + 'px' }
+        }));
+        return { ...el, cells: newCells };
+      }
+      return el;
+    }));
+  };
+
+  const moveTable = (tableId, x, y) => {
+    setTablePosition(prev => ({
+      ...prev,
+      [tableId]: { x, y }
+    }));
+    updateElement(tableId, { 
+      style: { 
+        ...elements.find(e => e.id === tableId)?.style,
+        position: 'relative',
+        left: x + 'px',
+        top: y + 'px'
+      } 
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-4">
       <div className="max-w-7xl mx-auto">
@@ -673,6 +719,36 @@ export default function AdvancedFormEditor() {
                                         </Button>
                                         <Button size="sm" onClick={() => addColumn(element.id)} variant="outline">
                                           + عمود
+                                        </Button>
+                                        <Button 
+                                          size="sm" 
+                                          variant="outline"
+                                          onClick={() => {
+                                            const colIdx = parseInt(prompt('رقم العمود (1, 2, 3...):', '1')) - 1;
+                                            const newWidth = parseInt(prompt('العرض الجديد (بكسل):', '100'));
+                                            if (!isNaN(colIdx) && !isNaN(newWidth) && colIdx >= 0) {
+                                              updateColumnWidth(element.id, colIdx, newWidth);
+                                            }
+                                          }}
+                                          className="text-xs"
+                                        >
+                                          <Maximize2 className="w-3 h-3 ml-1" />
+                                          توسيع عمود
+                                        </Button>
+                                        <Button 
+                                          size="sm" 
+                                          variant="outline"
+                                          onClick={() => {
+                                            const rowIdx = parseInt(prompt('رقم الصف (1, 2, 3...):', '1')) - 1;
+                                            const newHeight = parseInt(prompt('الارتفاع الجديد (بكسل):', '40'));
+                                            if (!isNaN(rowIdx) && !isNaN(newHeight) && rowIdx >= 0) {
+                                              updateRowHeight(element.id, rowIdx, newHeight);
+                                            }
+                                          }}
+                                          className="text-xs"
+                                        >
+                                          <Minimize2 className="w-3 h-3 ml-1" />
+                                          تعريض صف
                                         </Button>
                                       </div>
                                       <div className="flex gap-2 items-center flex-wrap">
@@ -1033,7 +1109,41 @@ export default function AdvancedFormEditor() {
                   </div>
                   {selectedElement.type === 'table' && (
                     <>
-                      <div>
+                      <div className="border-t pt-3 space-y-3">
+                        <Label className="font-bold text-sm block">⚙️ تحكم متقدم</Label>
+                        <div>
+                          <Label className="text-xs">توسيع عمود</Label>
+                          <div className="flex gap-1 mt-1">
+                            <Input type="number" placeholder="رقم" className="w-12 text-xs h-8" id={`col-idx-${selectedElement.id}`} />
+                            <Input type="number" placeholder="عرض" className="w-16 text-xs h-8" id={`col-w-${selectedElement.id}`} />
+                            <Button size="sm" className="h-8 text-xs" onClick={() => {
+                              const idx = parseInt(document.getElementById(`col-idx-${selectedElement.id}`).value) - 1;
+                              const w = parseInt(document.getElementById(`col-w-${selectedElement.id}`).value);
+                              if (!isNaN(idx) && !isNaN(w) && idx >= 0) updateColumnWidth(selectedElement.id, idx, w);
+                            }}>تطبيق</Button>
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="text-xs">تعريض صف</Label>
+                          <div className="flex gap-1 mt-1">
+                            <Input type="number" placeholder="رقم" className="w-12 text-xs h-8" id={`row-idx-${selectedElement.id}`} />
+                            <Input type="number" placeholder="ارتفاع" className="w-16 text-xs h-8" id={`row-h-${selectedElement.id}`} />
+                            <Button size="sm" className="h-8 text-xs" onClick={() => {
+                              const idx = parseInt(document.getElementById(`row-idx-${selectedElement.id}`).value) - 1;
+                              const h = parseInt(document.getElementById(`row-h-${selectedElement.id}`).value);
+                              if (!isNaN(idx) && !isNaN(h) && idx >= 0) updateRowHeight(selectedElement.id, idx, h);
+                            }}>تطبيق</Button>
+                          </div>
+                        </div>
+                        <div>
+                          <Label className="text-xs">موضع الجدول</Label>
+                          <div className="grid grid-cols-2 gap-1 mt-1">
+                            <Input type="number" placeholder="X" className="text-xs h-8" value={tablePosition[selectedElement.id]?.x || 0} onChange={(e) => moveTable(selectedElement.id, parseInt(e.target.value) || 0, tablePosition[selectedElement.id]?.y || 0)} />
+                            <Input type="number" placeholder="Y" className="text-xs h-8" value={tablePosition[selectedElement.id]?.y || 0} onChange={(e) => moveTable(selectedElement.id, tablePosition[selectedElement.id]?.x || 0, parseInt(e.target.value) || 0)} />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="border-t pt-3">
                         <Label>لون حدود الجدول</Label>
                         <Input
                           type="color"
