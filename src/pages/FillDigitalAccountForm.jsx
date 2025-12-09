@@ -171,17 +171,26 @@ export default function FillDigitalAccountForm() {
   };
 
   return (
-    <div 
-      className="min-h-screen p-4 md:p-6" 
-      dir="rtl"
-      style={{
-        backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/44e7acbe3_page_1.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundColor: '#f5f5f5'
-      }}
-    >
+    <>
+      {/* خلفية الشعار المستقلة */}
+      <div 
+        className="fixed inset-0 pointer-events-none print-background"
+        style={{
+          backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/44e7acbe3_page_1.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          zIndex: -1
+        }}
+      />
+
+      <div 
+        className="min-h-screen p-4 md:p-6" 
+        dir="rtl"
+        style={{
+          backgroundColor: 'transparent'
+        }}
+      >
       <div className="flex gap-4 max-w-7xl mx-auto">
         {/* لوحة التحكم */}
         {isEditMode && selectedElement && (
