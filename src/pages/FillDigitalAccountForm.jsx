@@ -187,11 +187,13 @@ export default function FillDigitalAccountForm() {
         <div 
           className="flex-1 max-w-5xl mx-auto"
           style={{
-            backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/31531eba4_xps_scannedcopy_00.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/1fdded5f0_.jpg)',
+            backgroundSize: 'contain',
+            backgroundPosition: 'center top',
             backgroundRepeat: 'no-repeat',
-            minHeight: '100vh',
+            minHeight: '297mm',
+            width: '210mm',
+            margin: '0 auto',
             padding: '20px'
           }}
         >
