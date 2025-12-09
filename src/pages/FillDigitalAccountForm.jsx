@@ -747,9 +747,194 @@ export default function FillDigitalAccountForm() {
           </div>
         </div>
         </div>
-      </div>
+        </div>
+        </div>
+        </>
+        );
+        }
 
-      {isEditMode && (
+        export default function FillDigitalAccountForm() {
+        return <FormContent />;
+        }
+
+        function FormContent() {
+        const navigate = useNavigate();
+        const [employees, setEmployees] = useState([]);
+        const [healthCenters, setHealthCenters] = useState([]);
+        const [selectedEmployee, setSelectedEmployee] = useState(null);
+        const [isLoading, setIsLoading] = useState(true);
+
+        const [isEditMode, setIsEditMode] = useState(false);
+        const [selectedElement, setSelectedElement] = useState(null);
+        const [elementStyles, setElementStyles] = useState({});
+
+        const [formData, setFormData] = useState({
+        system_type: [],
+        request_type: '',
+        reason: '',
+        employee_id: '',
+        employee_name_first: '',
+        employee_name_second: '',
+        employee_name_third: '',
+        employee_name_family: '',
+        employee_name_arabic: '',
+        employee_name_english: '',
+        national_id: '',
+        birth_date: null,
+        moh_email: '',
+        scfhs_number: '',
+        contract_end_date: null,
+        contact_phone: '',
+        occupation: [],
+        organization: '',
+        department: '',
+        specialization: '',
+        recruitment_privilege: '',
+        commitment_accepted: false,
+        direct_manager_name: '',
+        direct_manager_name_english: '',
+        direct_manager_approval_date: null,
+        status: 'مسودة'
+        });
+
+        useEffect(() => {
+        loadData();
+        }, []);
+
+        const loadData = async () => {
+        setIsLoading(true);
+        try {
+        const [employeesData, centersData] = await Promise.all([
+        base44.entities.Employee.list('-updated_date', 500),
+        base44.entities.HealthCenter.list()
+        ]);
+        setEmployees(Array.isArray(employeesData) ? employeesData : []);
+        setHealthCenters(Array.isArray(centersData) ? centersData : []);
+        } catch (error) {
+        console.error('Error loading data:', error);
+        } finally {
+        setIsLoading(false);
+        }
+        };
+
+        const handleEmployeeSelect = async (employeeId) => {
+        const employee = employees.find(e => e.id === employeeId);
+        if (employee) {
+        setSelectedEmployee(employee);
+
+        const nameParts = (employee.full_name_arabic || '').split(' ');
+
+        let managerName = '';
+        let managerNameEnglish = '';
+
+        const healthCenter = healthCenters.find(c => c.اسم_المركز === employee.المركز_الصحي);
+        if (healthCenter && healthCenter.المدير) {
+        const manager = employees.find(e => e.رقم_الموظف === healthCenter.المدير);
+        if (manager) {
+          managerName = manager.full_name_arabic || '';
+          managerNameEnglish = manager.full_name_arabic || '';
+        }
+        }
+
+        setFormData(prev => ({
+        ...prev,
+        employee_id: employee.id,
+        employee_name_first: nameParts[0] || '',
+        employee_name_second: nameParts[1] || '',
+        employee_name_third: nameParts[2] || '',
+        employee_name_family: nameParts[3] || nameParts[nameParts.length - 1] || '',
+        employee_name_arabic: employee.full_name_arabic || '',
+        employee_name_english: employee.full_name_arabic || '',
+        national_id: employee.رقم_الهوية || '',
+        birth_date: employee.birth_date ? new Date(employee.birth_date) : null,
+        moh_email: employee.email || '',
+        contact_phone: employee.phone || '',
+        occupation: employee.position ? [employee.position] : [],
+        organization: employee.المركز_الصحي || '',
+        department: employee.department || '',
+        specialization: employee.position || '',
+        recruitment_privilege: '',
+        contract_end_date: employee.contract_end_date ? new Date(employee.contract_end_date) : null,
+        direct_manager_name: managerName,
+        direct_manager_name_english: managerNameEnglish
+        }));
+        }
+        };
+
+        const handleSystemToggle = (system) => {
+        setFormData(prev => {
+        const newSystems = prev.system_type.includes(system)
+        ? prev.system_type.filter(s => s !== system)
+        : [...prev.system_type, system];
+        return { ...prev, system_type: newSystems };
+        });
+        };
+
+        const handleOccupationToggle = (occupation) => {
+        setFormData(prev => {
+        const newOccupations = prev.occupation.includes(occupation)
+        ? prev.occupation.filter(o => o !== occupation)
+        : [...prev.occupation, occupation];
+        return { ...prev, occupation: newOccupations };
+        });
+        };
+
+        const handleSave = async () => {
+        try {
+        await base44.entities.DigitalAccountRequest.create(formData);
+        alert('✅ تم حفظ الطلب بنجاح');
+        navigate(createPageUrl('InteractiveForms'));
+        } catch (error) {
+        console.error('Error saving:', error);
+        alert('حدث خطأ أثناء حفظ الطلب');
+        }
+        };
+
+        const handlePrint = () => {
+        window.print();
+        };
+
+        const handleElementClick = (e, elementId) => {
+        if (!isEditMode) return;
+        e.stopPropagation();
+        setSelectedElement(elementId);
+        };
+
+        const handleStyleUpdate = (elementId, styles) => {
+        setElementStyles(prev => ({
+        ...prev,
+        [elementId]: styles
+        }));
+        };
+
+        const getElementStyle = (elementId) => {
+        return elementStyles[elementId] || {};
+        };
+
+        return (
+        <>
+        {/* خلفية الشعار المستقلة */}
+        <div 
+        className="fixed inset-0 pointer-events-none print-background"
+        style={{
+          backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/44e7acbe3_page_1.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          zIndex: -1
+        }}
+        />
+
+        <div 
+        className="min-h-screen p-4 md:p-6" 
+        dir="rtl"
+        style={{
+          backgroundColor: 'transparent'
+        }}
+        >
+        {/* باقي الكود... */}
+
+        {isEditMode && (
         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-purple-600 text-white px-6 py-3 rounded-full shadow-2xl z-50">
           <p className="text-sm font-medium">🎨 وضع التحرير نشط - اضغط على أي عنصر لتعديله</p>
         </div>
