@@ -112,7 +112,7 @@ export default function PDFConverter({ onComplete }) {
 
       if (['jpg', 'png', 'webp'].includes(format.id)) {
         // تحويل PDF إلى صور
-        const response = await base44.functions.invoke('pdfToImages', {
+        const response = await base44.functions.invoke('convertPDFToImages', {
           fileUrl: uploadedFile.url,
           format: format.id,
           quality: 95
