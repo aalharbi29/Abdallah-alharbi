@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
         const { task, server } = await taskResponse.json();
 
         // 3. رفع الملف من URL
-        const uploadResponse = await fetch(`${server}/v1/upload`, {
+        const uploadResponse = await fetch(`https://${server}/v1/upload`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -79,7 +79,7 @@ Deno.serve(async (req) => {
         const { server_filename } = await uploadResponse.json();
 
         // 4. معالجة التحويل
-        const processResponse = await fetch(`${server}/v1/process`, {
+        const processResponse = await fetch(`https://${server}/v1/process`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -102,7 +102,7 @@ Deno.serve(async (req) => {
         await processResponse.json();
 
         // 5. تحميل النتائج
-        const downloadResponse = await fetch(`${server}/v1/download/${task}`, {
+        const downloadResponse = await fetch(`https://${server}/v1/download/${task}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });
