@@ -184,7 +184,17 @@ export default function FillDigitalAccountForm() {
           </div>
         )}
 
-        <div className="flex-1 max-w-5xl mx-auto">
+        <div 
+          className="flex-1 max-w-5xl mx-auto"
+          style={{
+            backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/31531eba4_xps_scannedcopy_00.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            minHeight: '100vh',
+            padding: '20px'
+          }}
+        >
         {/* Header */}
         <div className="flex items-center gap-4 mb-6 no-print">
           <Button variant="outline" onClick={() => navigate(createPageUrl('InteractiveForms'))} size="icon">
@@ -271,22 +281,18 @@ export default function FillDigitalAccountForm() {
 
         {/* النموذج الرسمي */}
         <div 
-          className={`bg-white border-2 border-black print-area ${isEditMode ? 'cursor-pointer' : ''}`}
+          className={`bg-white border border-black print-area ${isEditMode ? 'cursor-pointer' : ''}`}
           style={{ 
             width: '210mm', 
-            margin: '0 auto', 
-            padding: '0', 
-            backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/31531eba4_xps_scannedcopy_00.jpg)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
+            margin: '80px auto 0', 
+            padding: '0',
             ...getElementStyle('main-container') 
           }}
           onClick={(e) => handleElementClick(e, 'main-container')}
         >
           {/* عنوان النموذج */}
           <div 
-            className={`border-b-2 border-black text-center py-1 ${isEditMode ? 'cursor-pointer hover:bg-purple-50' : ''}`}
+            className={`border-b border-black text-center py-1 ${isEditMode ? 'cursor-pointer hover:bg-purple-50' : ''}`}
             style={getElementStyle('form-title-container')}
             onClick={(e) => handleElementClick(e, 'form-title-container')}
           >
@@ -302,14 +308,14 @@ export default function FillDigitalAccountForm() {
           <div style={{ fontSize: '10px' }}>
             {/* جدول النظام ونوع الطلب */}
             <table 
-              className={`w-full border-collapse border-2 border-black ${isEditMode ? 'cursor-pointer hover:ring-2 hover:ring-purple-400' : ''}`}
+              className={`w-full border-collapse border border-black ${isEditMode ? 'cursor-pointer hover:ring-2 hover:ring-purple-400' : ''}`}
               style={getElementStyle('table-system-request')}
               onClick={(e) => handleElementClick(e, 'table-system-request')}
             >
               <tbody>
                 <tr>
                   {/* يمين - عربي - النظام */}
-                  <td className="border-2 border-black p-2 align-top text-right" style={{ width: '50%' }}>
+                  <td className="border border-black p-2 align-top text-right" style={{ width: '50%' }}>
                     <strong style={{ fontSize: '11px' }}>النظام:</strong>
                     <table className="w-full border-collapse mt-1">
                       <tbody>
@@ -331,7 +337,7 @@ export default function FillDigitalAccountForm() {
 
                   {/* يسار - إنجليزي - النظام */}
                   <td 
-                    className={`border-2 border-black p-2 align-top ${isEditMode ? 'cursor-pointer hover:bg-purple-50' : ''}`}
+                    className={`border border-black p-2 align-top ${isEditMode ? 'cursor-pointer hover:bg-purple-50' : ''}`}
                     style={{ width: '50%', ...getElementStyle('cell-system-en') }}
                     onClick={(e) => handleElementClick(e, 'cell-system-en')}
                   >
@@ -357,7 +363,7 @@ export default function FillDigitalAccountForm() {
                 
                 <tr>
                   {/* يمين - عربي - نوع الطلب */}
-                  <td className="border-2 border-black p-2 align-top text-right">
+                  <td className="border border-black p-2 align-top text-right">
                     <strong style={{ fontSize: '11px' }}>نوع الطلب:</strong>
                     <table className="w-full border-collapse mt-1">
                       <tbody>
@@ -378,7 +384,7 @@ export default function FillDigitalAccountForm() {
                   </td>
 
                   {/* يسار - إنجليزي - نوع الطلب */}
-                  <td className="border-2 border-black p-2 align-top">
+                  <td className="border border-black p-2 align-top">
                     <strong style={{ fontSize: '11px' }}>*Type of Request:</strong>
                     <table className="w-full border-collapse mt-1">
                       <tbody>
@@ -402,14 +408,14 @@ export default function FillDigitalAccountForm() {
             </table>
 
             {/* السبب */}
-            <table className="w-full border-collapse border-2 border-black">
+            <table className="w-full border-collapse border border-black">
               <tbody>
                 <tr>
-                  <td className="border-2 border-black p-1" style={{ width: '50%', fontSize: '10px' }}>
+                  <td className="border border-black p-1" style={{ width: '50%', fontSize: '10px' }}>
                     <strong style={{ fontWeight: 'bold' }}>*Reason: </strong>
                     <span className="border-b border-dotted border-gray-600 inline-block w-3/4 mx-1"></span>
                   </td>
-                  <td className="border-2 border-black p-1 text-right" style={{ width: '50%', fontSize: '10px' }}>
+                  <td className="border border-black p-1 text-right" style={{ width: '50%', fontSize: '10px' }}>
                     <strong style={{ fontWeight: 'bold' }}>السبب: </strong>
                     <Input value={formData.reason} onChange={(e) => setFormData(p => ({ ...p, reason: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-600 w-3/4 h-5 px-1 text-right" style={{ fontSize: '10px' }} />
                   </td>
@@ -418,10 +424,10 @@ export default function FillDigitalAccountForm() {
             </table>
 
             {/* اسم الموظف */}
-            <table className="w-full border-collapse border-2 border-black">
+            <table className="w-full border-collapse border border-black">
               <tbody>
                 <tr>
-                  <td className="border-2 border-black p-2" style={{ width: '50%' }}>
+                  <td className="border border-black p-2" style={{ width: '50%' }}>
                     <strong style={{ fontSize: '10px', fontWeight: 'bold' }}>*Staff Name:</strong>
                     <div className="space-y-0.5 mt-1" style={{ fontSize: '9px' }}>
                       <div>First: <span className="border-b border-dotted border-gray-600 inline-block w-3/4 mx-1"></span></div>
@@ -430,7 +436,7 @@ export default function FillDigitalAccountForm() {
                       <div>Family: <span className="border-b border-dotted border-gray-600 inline-block w-3/4 mx-1"></span></div>
                     </div>
                   </td>
-                  <td className="border-2 border-black p-2 text-right" style={{ width: '50%' }}>
+                  <td className="border border-black p-2 text-right" style={{ width: '50%' }}>
                     <strong style={{ fontSize: '10px', fontWeight: 'bold' }}>اسم الموظف:</strong>
                     <div className="space-y-0.5 mt-1" style={{ fontSize: '9px' }}>
                       <div>الأول : <Input value={formData.employee_name_first} onChange={(e) => setFormData(p => ({ ...p, employee_name_first: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-600 w-3/4 h-5 px-1 text-right" style={{ fontSize: '9px' }} /></div>
@@ -444,10 +450,10 @@ export default function FillDigitalAccountForm() {
             </table>
 
             {/* البيانات الشخصية */}
-            <table className="w-full border-collapse border-2 border-black">
+            <table className="w-full border-collapse border border-black">
               <tbody>
                 <tr>
-                  <td className="border-2 border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="border-l border-black p-1" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
                     <strong style={{ fontWeight: 'bold' }}>ID NO: </strong>
                     <Input 
                       value={formData.national_id} 
@@ -456,7 +462,7 @@ export default function FillDigitalAccountForm() {
                       style={{ fontSize: '9px' }} 
                     />
                   </td>
-                  <td className="border-2 border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="p-1 text-right" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
                     <strong style={{ fontWeight: 'bold' }}>رقم الهوية/ الإقامة: </strong>
                     <Input 
                       value={formData.national_id} 
@@ -467,17 +473,17 @@ export default function FillDigitalAccountForm() {
                   </td>
                 </tr>
                 <tr>
-                  <td className="border-2 border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="border-l border-black p-1" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
                     <strong style={{ fontWeight: 'bold' }}>Date of birth: </strong>
                     <span className="inline-block w-2/3 mx-1">{formData.birth_date ? new Date(formData.birth_date).toLocaleDateString('en-GB') : ''}</span>
                   </td>
-                  <td className="border-2 border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="p-1 text-right" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
                     <strong style={{ fontWeight: 'bold' }}>تاريخ الميلاد: </strong>
                     <span className="inline-block w-2/3 mx-1">{formData.birth_date ? new Date(formData.birth_date).toLocaleDateString('ar-SA') : ''}</span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="border-2 border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="border-l border-black p-1" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
                     <strong style={{ fontWeight: 'bold' }}>MOH email: </strong>
                     <Input 
                       value={formData.moh_email} 
@@ -486,7 +492,7 @@ export default function FillDigitalAccountForm() {
                       style={{ fontSize: '9px' }} 
                     />
                   </td>
-                  <td className="border-2 border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="p-1 text-right" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
                     <strong style={{ fontWeight: 'bold' }}>البريد الوزاري: </strong>
                     <Input 
                       value={formData.moh_email} 
@@ -497,7 +503,7 @@ export default function FillDigitalAccountForm() {
                   </td>
                 </tr>
                 <tr>
-                  <td className="border-2 border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="border-l border-black p-1" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
                     <strong style={{ fontWeight: 'bold' }}>SCFHS number: </strong>
                     <Input 
                       value={formData.scfhs_number} 
@@ -506,7 +512,7 @@ export default function FillDigitalAccountForm() {
                       style={{ fontSize: '9px' }} 
                     />
                   </td>
-                  <td className="border-2 border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="p-1 text-right" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
                     <strong style={{ fontWeight: 'bold' }}>رقم التصنيف إن وجد: </strong>
                     <Input 
                       value={formData.scfhs_number} 
@@ -517,17 +523,17 @@ export default function FillDigitalAccountForm() {
                   </td>
                 </tr>
                 <tr>
-                  <td className="border-2 border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="border-l border-black p-1" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
                     <strong style={{ fontWeight: 'bold' }}>End date of (internship\contract): </strong>
                     <span className="inline-block w-2/3 mx-1">{formData.contract_end_date ? new Date(formData.contract_end_date).toLocaleDateString('en-GB') : ''}</span>
                   </td>
-                  <td className="border-2 border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="p-1 text-right" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
                     <strong style={{ fontWeight: 'bold' }}>تاريخ انتهاء (التدريب/ العقد): </strong>
                     <span className="inline-block w-2/3 mx-1">{formData.contract_end_date ? new Date(formData.contract_end_date).toLocaleDateString('ar-SA') : ''}</span>
                   </td>
                 </tr>
                 <tr>
-                  <td className="border-2 border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="border-l border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
                     <strong style={{ fontWeight: 'bold' }}>Contact Phone: </strong>
                     <Input 
                       value={formData.contact_phone} 
@@ -536,7 +542,7 @@ export default function FillDigitalAccountForm() {
                       style={{ fontSize: '9px' }} 
                     />
                   </td>
-                  <td className="border-2 border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
                     <strong style={{ fontWeight: 'bold' }}>رقم التواصل: </strong>
                     <Input 
                       value={formData.contact_phone} 
@@ -550,7 +556,7 @@ export default function FillDigitalAccountForm() {
             </table>
 
             {/* المهنة */}
-            <table className="w-full border-collapse border-2 border-black">
+            <table className="w-full border-collapse border border-black">
               <tbody>
                 <tr>
                   <td className="border-2 border-black p-2 align-top" style={{ width: '50%' }}>
@@ -605,7 +611,7 @@ export default function FillDigitalAccountForm() {
             </table>
 
             {/* بيانات الجهة */}
-            <table className="w-full border-collapse border-2 border-black">
+            <table className="w-full border-collapse border border-black">
               <tbody>
                 <tr>
                   <td className="border-2 border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
@@ -651,7 +657,7 @@ export default function FillDigitalAccountForm() {
             </table>
 
             {/* التعهد */}
-            <table className="w-full border-collapse border-2 border-black">
+            <table className="w-full border-collapse border border-black">
               <tbody>
                 <tr>
                   <td className="border-2 border-black p-2 align-top" style={{ width: '50%' }}>
@@ -671,13 +677,13 @@ export default function FillDigitalAccountForm() {
             </table>
 
             {/* ملاحظة الرئيس المباشر */}
-            <table className="w-full border-collapse border-2 border-black">
+            <table className="w-full border-collapse border border-black">
               <tbody>
                 <tr>
-                  <td className="border-2 border-black p-1.5" style={{ width: '50%', fontSize: '8px', lineHeight: '1.3' }}>
+                  <td className="border border-black p-1.5" style={{ width: '50%', fontSize: '8px', lineHeight: '1.3' }}>
                     <strong style={{ fontWeight: 'bold' }}>*The direct manager must provide us with the employee's data in the event of assignment or transfer outside the center or hospital.</strong>
                   </td>
-                  <td className="border-2 border-black p-1.5 text-right" style={{ width: '50%', fontSize: '8px', lineHeight: '1.3' }}>
+                  <td className="border border-black p-1.5 text-right" style={{ width: '50%', fontSize: '8px', lineHeight: '1.3' }}>
                     <strong style={{ fontWeight: 'bold' }}>* على الرئيس المباشر تزويدنا ببيانات الموظف في حال التكليف او النقل خارج المركز أو المستشفى</strong>
                   </td>
                 </tr>
@@ -685,14 +691,14 @@ export default function FillDigitalAccountForm() {
             </table>
 
             {/* التوقيعات */}
-            <table className="w-full border-collapse border-2 border-black">
+            <table className="w-full border-collapse border border-black">
               <tbody>
                 <tr>
-                  <td className="border-2 border-black p-2 text-center align-top" style={{ fontSize: '10px', width: '33%' }}>
+                  <td className="border border-black p-2 text-center align-top" style={{ fontSize: '10px', width: '33%' }}>
                     <strong style={{ fontWeight: 'bold' }}>الختم</strong>
                     <div className="mt-8"></div>
                   </td>
-                  <td className="border-2 border-black p-2 text-center align-top" style={{ fontSize: '10px', width: '34%' }}>
+                  <td className="border border-black p-2 text-center align-top" style={{ fontSize: '10px', width: '34%' }}>
                     <div>
                       <strong style={{ fontWeight: 'bold' }}>اعتماد الرئيس المباشر</strong>
                       <div className="mt-1 text-right px-2" style={{ fontSize: '9px' }}>
@@ -705,7 +711,7 @@ export default function FillDigitalAccountForm() {
                       <div className="text-xs text-gray-500 mt-1">التوقيع</div>
                     </div>
                   </td>
-                  <td className="border-2 border-black p-2 text-center align-top" style={{ fontSize: '10px', width: '33%' }}>
+                  <td className="border border-black p-2 text-center align-top" style={{ fontSize: '10px', width: '33%' }}>
                     <div>
                       <strong style={{ fontWeight: 'bold' }}>اسم الموظف</strong>
                       <div className="mt-1 text-right px-2" style={{ fontSize: '9px' }}>
