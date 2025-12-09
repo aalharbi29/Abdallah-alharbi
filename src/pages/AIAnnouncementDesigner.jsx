@@ -32,6 +32,99 @@ export default function AIAnnouncementDesigner() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedDesign, setGeneratedDesign] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showTemplates, setShowTemplates] = useState(false);
+
+  // القوالب الجاهزة
+  const templates = [
+    {
+      id: 'training',
+      name: 'دعوة تدريب',
+      icon: '🎓',
+      title: 'المرشحين لحضور دورة [اسم الدورة]',
+      description: 'يسر القطاع دعوتكم لحضور الدورة التدريبية',
+      designStyle: 'professional',
+      colorScheme: 'blue',
+      additionalInfo: 'يرجى الحضور في الموعد المحدد والالتزام بالزي الرسمي',
+      suggestedFields: ['full_name_arabic', 'position', 'المركز_الصحي']
+    },
+    {
+      id: 'event',
+      name: 'إعلان حدث',
+      icon: '🎉',
+      title: 'المدعوين لحضور [اسم الحدث]',
+      description: 'يشرفنا دعوتكم لحضور الحدث الخاص',
+      designStyle: 'elegant',
+      colorScheme: 'gold',
+      additionalInfo: 'نتطلع لحضوركم الكريم',
+      suggestedFields: ['full_name_arabic', 'position', 'المركز_الصحي']
+    },
+    {
+      id: 'meeting',
+      name: 'دعوة اجتماع',
+      icon: '👥',
+      title: 'جدول أعمال اجتماع [موضوع الاجتماع]',
+      description: 'الرجاء الحضور للاجتماع الدوري',
+      designStyle: 'simple',
+      colorScheme: 'blue',
+      additionalInfo: 'يرجى الاطلاع على جدول الأعمال المرفق',
+      suggestedFields: ['full_name_arabic', 'position', 'department']
+    },
+    {
+      id: 'safety',
+      name: 'إعلان أمن وسلامة',
+      icon: '🛡️',
+      title: 'المشاركين في برنامج الأمن والسلامة',
+      description: 'ضمن جهود تعزيز بيئة العمل الآمنة',
+      designStyle: 'professional',
+      colorScheme: 'green',
+      additionalInfo: 'الالتزام بحضور جميع الجلسات إلزامي',
+      suggestedFields: ['full_name_arabic', 'position', 'المركز_الصحي', 'phone']
+    },
+    {
+      id: 'recognition',
+      name: 'شهادة تقدير',
+      icon: '🏆',
+      title: 'تكريم الموظفين المتميزين',
+      description: 'تقديراً لجهودكم المتميزة وإنجازاتكم',
+      designStyle: 'elegant',
+      colorScheme: 'gold',
+      additionalInfo: 'نشكركم على تفانيكم وإخلاصكم في العمل',
+      suggestedFields: ['full_name_arabic', 'position', 'المركز_الصحي']
+    },
+    {
+      id: 'notice',
+      name: 'إشعار رسمي',
+      icon: '📢',
+      title: 'إشعار هام - [الموضوع]',
+      description: 'نود إشعاركم بما يلي',
+      designStyle: 'professional',
+      colorScheme: 'blue',
+      additionalInfo: 'للاستفسار يرجى التواصل مع إدارة الموارد البشرية',
+      suggestedFields: ['full_name_arabic', 'رقم_الموظف', 'المركز_الصحي']
+    },
+    {
+      id: 'health',
+      name: 'برنامج صحي',
+      icon: '⚕️',
+      title: 'المشاركين في البرنامج الصحي',
+      description: 'ضمن المبادرات الصحية والوقائية',
+      designStyle: 'modern',
+      colorScheme: 'green',
+      additionalInfo: 'الفحوصات مجانية لجميع المشاركين',
+      suggestedFields: ['full_name_arabic', 'position', 'المركز_الصحي', 'phone']
+    },
+    {
+      id: 'committee',
+      name: 'تشكيل لجنة',
+      icon: '📋',
+      title: 'أعضاء لجنة [اسم اللجنة]',
+      description: 'تم تشكيل اللجنة من الأعضاء التالية أسماؤهم',
+      designStyle: 'professional',
+      colorScheme: 'blue',
+      additionalInfo: 'يرجى من الأعضاء الاطلاع على اختصاصات اللجنة',
+      suggestedFields: ['full_name_arabic', 'position', 'المركز_الصحي', 'phone']
+    }
+  ];
 
   // بيانات الإعلان
   const [announcementData, setAnnouncementData] = useState({
@@ -85,6 +178,26 @@ export default function AIAnnouncementDesigner() {
 
   const toggleField = (field) => {
     setDisplayFields(prev => ({ ...prev, [field]: !prev[field] }));
+  };
+
+  const applyTemplate = (template) => {
+    setAnnouncementData(prev => ({
+      ...prev,
+      title: template.title,
+      description: template.description,
+      designStyle: template.designStyle,
+      colorScheme: template.colorScheme,
+      additionalInfo: template.additionalInfo
+    }));
+
+    // تطبيق الحقول المقترحة
+    const newDisplayFields = {};
+    Object.keys(displayFields).forEach(field => {
+      newDisplayFields[field] = template.suggestedFields.includes(field);
+    });
+    setDisplayFields(newDisplayFields);
+
+    setShowTemplates(false);
   };
 
   const generateDesign = async () => {
@@ -189,6 +302,54 @@ ${JSON.stringify(employeesData, null, 2)}
             صمم إعلانات احترافية في ثوانٍ باستخدام الذكاء الاصطناعي
           </p>
         </div>
+
+        {/* القوالب الجاهزة */}
+        <Card className="mb-6 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
+          <CardHeader>
+            <CardTitle className="flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-purple-600" />
+                ابدأ بقالب جاهز
+              </span>
+              <Button
+                variant={showTemplates ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setShowTemplates(!showTemplates)}
+              >
+                {showTemplates ? 'إخفاء القوالب' : 'عرض القوالب'}
+              </Button>
+            </CardTitle>
+          </CardHeader>
+          {showTemplates && (
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {templates.map(template => (
+                  <button
+                    key={template.id}
+                    onClick={() => applyTemplate(template)}
+                    className="p-4 border-2 rounded-xl hover:border-purple-400 hover:shadow-lg transition-all text-center group bg-white"
+                  >
+                    <div className="text-3xl mb-2">{template.icon}</div>
+                    <div className="font-semibold text-sm text-gray-900 group-hover:text-purple-700">
+                      {template.name}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {template.designStyle === 'professional' ? 'رسمي' :
+                       template.designStyle === 'modern' ? 'عصري' :
+                       template.designStyle === 'elegant' ? 'أنيق' : 'بسيط'}
+                    </div>
+                  </button>
+                ))}
+              </div>
+              <div className="mt-4 p-3 bg-white rounded-lg border border-purple-200">
+                <p className="text-sm text-gray-600 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-purple-500" />
+                  اختر قالب لملء البيانات تلقائياً - يمكنك التعديل على كل شيء لاحقاً
+                </p>
+              </div>
+            </CardContent>
+          )}
+        </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* لوحة الإدخال */}
