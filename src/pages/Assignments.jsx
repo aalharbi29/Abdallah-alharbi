@@ -266,6 +266,37 @@ export default function AssignmentsPage() {
   };
 
 
+  const saveAssignmentToEmployeeFile = async (assignment, htmlContent) => {
+    try {
+      const safeEmployeeName = (assignment.employee_name || 'unknown')
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '_')
+        .substring(0, 30);
+
+      const htmlBlob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      const fileName = `قرار_تكليف_${safeEmployeeName}_${new Date().toISOString().split('T')[0]}.html`;
+      const htmlFile = new File([htmlBlob], fileName, { type: 'text/html' });
+
+      const uploadResult = await UploadFile({ file: htmlFile });
+      
+      await EmployeeDocument.create({
+        employee_id: assignment.employee_record_id,
+        employee_name: assignment.employee_name,
+        document_title: `قرار تكليف - ${assignment.assigned_to_health_center}`,
+        document_type: 'official',
+        description: `تكليف من ${assignment.start_date ? format(new Date(assignment.start_date), "yyyy-MM-dd") : ''} إلى ${assignment.end_date ? format(new Date(assignment.end_date), "yyyy-MM-dd") : ''} - تم حفظه تلقائياً عند الاعتماد`,
+        file_url: uploadResult.file_url,
+        file_name: fileName,
+        tags: ['تكليف', 'معتمد', 'رسمي']
+      });
+
+      return true;
+    } catch (error) {
+      console.error('Failed to save to employee file:', error);
+      return false;
+    }
+  };
+
   const handleStatusUpdate = async (assignmentId, newStatus) => {
     try {
         const assignmentToUpdate = safeAssignments.find(a => a.id === assignmentId);
