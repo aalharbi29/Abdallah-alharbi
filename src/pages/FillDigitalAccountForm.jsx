@@ -171,7 +171,17 @@ export default function FillDigitalAccountForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-4 md:p-6" dir="rtl">
+    <div 
+      className="min-h-screen p-4 md:p-6" 
+      dir="rtl"
+      style={{
+        backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/7fe190ebb_.pdf)',
+        backgroundSize: 'contain',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundColor: '#f5f5f5'
+      }}
+    >
       <div className="flex gap-4 max-w-7xl mx-auto">
         {/* لوحة التحكم */}
         {isEditMode && selectedElement && (
@@ -184,19 +194,7 @@ export default function FillDigitalAccountForm() {
           </div>
         )}
 
-        <div 
-          className="flex-1 max-w-5xl mx-auto"
-          style={{
-            backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/1fdded5f0_.jpg)',
-            backgroundSize: 'contain',
-            backgroundPosition: 'center top',
-            backgroundRepeat: 'no-repeat',
-            minHeight: '297mm',
-            width: '210mm',
-            margin: '0 auto',
-            padding: '20px'
-          }}
-        >
+        <div className="flex-1 max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6 no-print">
           <Button variant="outline" onClick={() => navigate(createPageUrl('InteractiveForms'))} size="icon">
