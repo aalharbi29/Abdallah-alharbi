@@ -9,8 +9,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import {
   Wand2, Download, Printer, RefreshCw, Users, Calendar,
-  MapPin, Info, Sparkles, Image as ImageIcon, Loader2
+  MapPin, Info, Sparkles, Image as ImageIcon, Loader2,
+  Upload, Library, Edit2, Maximize2
 } from 'lucide-react';
+import ImageLibrary from '../components/announcement/ImageLibrary';
+import ImageEditor from '../components/announcement/ImageEditor';
 import {
   Select,
   SelectContent,
@@ -39,6 +42,10 @@ export default function AIAnnouncementDesigner() {
   const [imageStyle, setImageStyle] = useState('realistic');
   const [generatedImage, setGeneratedImage] = useState(null);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [showImageLibrary, setShowImageLibrary] = useState(false);
+  const [showImageEditor, setShowImageEditor] = useState(false);
+  const [imageToEdit, setImageToEdit] = useState(null);
+  const [imageFilters, setImageFilters] = useState(null);
 
   // القوالب الجاهزة
   const templates = [
@@ -230,6 +237,16 @@ export default function AIAnnouncementDesigner() {
 
       if (response && response.url) {
         setGeneratedImage(response.url);
+        
+        // حفظ الصورة في المكتبة تلقائياً
+        await base44.entities.AnnouncementImage.create({
+          title: imagePrompt.substring(0, 50),
+          description: imagePrompt,
+          image_url: response.url,
+          source: 'generated',
+          style: imageStyle,
+          tags: [imageStyle, 'مولد']
+        });
       } else {
         throw new Error('فشل في توليد الصورة');
       }
@@ -239,6 +256,57 @@ export default function AIAnnouncementDesigner() {
     } finally {
       setIsGeneratingImage(false);
     }
+  };
+
+  const handleSelectFromLibrary = (image) => {
+    setGeneratedImage(image.image_url);
+    setShowImageLibrary(false);
+  };
+
+  const handleUploadCustomImage = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      alert('الرجاء اختيار ملف صورة');
+      return;
+    }
+
+    setIsGeneratingImage(true);
+    try {
+      const uploadResult = await base44.integrations.Core.UploadFile({ file });
+      
+      await base44.entities.AnnouncementImage.create({
+        title: file.name,
+        description: 'صورة مرفوعة من المستخدم',
+        image_url: uploadResult.file_url,
+        source: 'uploaded',
+        tags: ['مرفوع', 'مخصص']
+      });
+
+      setGeneratedImage(uploadResult.file_url);
+      alert('تم رفع الصورة بنجاح');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('فشل في رفع الصورة');
+    } finally {
+      setIsGeneratingImage(false);
+    }
+  };
+
+  const handleEditImage = () => {
+    if (!generatedImage) {
+      alert('لا توجد صورة للتعديل');
+      return;
+    }
+    setImageToEdit(generatedImage);
+    setShowImageEditor(true);
+  };
+
+  const handleSaveEditedImage = (editedData) => {
+    setGeneratedImage(editedData.url);
+    setImageFilters(editedData.filters);
+    setShowImageEditor(false);
   };
 
   const generateDesign = async () => {
@@ -260,8 +328,12 @@ export default function AIAnnouncementDesigner() {
         return empData;
       });
 
+      const filterStyle = imageFilters 
+        ? `filter: brightness(${imageFilters.brightness}%) contrast(${imageFilters.contrast}%) saturate(${imageFilters.saturation}%); transform: rotate(${imageFilters.rotation}deg);`
+        : '';
+
       const imageInstruction = generatedImage 
-        ? `\n\nصورة مضمنة (يجب استخدامها في التصميم):\n<img src="${generatedImage}" alt="صورة الإعلان" style="max-width: 100%; height: auto; border-radius: 10px; margin: 20px 0;">\nاستخدم هذه الصورة بشكل جذاب في أعلى أو جانب التصميم.`
+        ? `\n\nصورة مضمنة (يجب استخدامها في التصميم):\n<img src="${generatedImage}" alt="صورة الإعلان" style="max-width: 100%; height: auto; border-radius: 10px; margin: 20px 0; ${filterStyle}">\nاستخدم هذه الصورة بشكل جذاب في أعلى أو جانب التصميم.`
         : '';
 
       const prompt = `أنت مصمم جرافيك محترف. قم بإنشاء تصميم HTML/CSS جميل واحترافي لإعلان رسمي.
@@ -544,46 +616,92 @@ ${generatedImage ? '9. تأكد من دمج الصورة المضمنة بشكل
                   </Select>
                 </div>
 
-                <Button
-                  onClick={generateImage}
-                  disabled={isGeneratingImage}
-                  className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
-                >
-                  {isGeneratingImage ? (
-                    <>
-                      <Loader2 className="w-4 h-4 ml-2 animate-spin" />
-                      جاري التوليد...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4 ml-2" />
-                      توليد الصورة
-                    </>
-                  )}
-                </Button>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    onClick={generateImage}
+                    disabled={isGeneratingImage}
+                    className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
+                  >
+                    {isGeneratingImage ? (
+                      <>
+                        <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                        جاري...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4 ml-2" />
+                        توليد
+                      </>
+                    )}
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowImageLibrary(true)}
+                  >
+                    <Library className="w-4 h-4 ml-2" />
+                    المكتبة
+                  </Button>
+                </div>
+
+                <label htmlFor="custom-upload">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    disabled={isGeneratingImage}
+                    asChild
+                  >
+                    <span className="cursor-pointer">
+                      <Upload className="w-4 h-4 ml-2" />
+                      رفع صورة خاصة
+                    </span>
+                  </Button>
+                </label>
+                <input
+                  id="custom-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleUploadCustomImage}
+                  className="hidden"
+                />
 
                 {generatedImage && (
                   <div className="mt-4 space-y-2">
                     <div className="border-2 border-pink-200 rounded-lg overflow-hidden">
-                      <img src={generatedImage} alt="Generated" className="w-full h-auto" />
+                      <img 
+                        src={generatedImage} 
+                        alt="Generated" 
+                        className="w-full h-auto"
+                        style={imageFilters ? {
+                          filter: `brightness(${imageFilters.brightness}%) contrast(${imageFilters.contrast}%) saturate(${imageFilters.saturation}%)`,
+                          transform: `rotate(${imageFilters.rotation}deg)`
+                        } : {}}
+                      />
                     </div>
-                    <div className="flex gap-2">
+                    <div className="grid grid-cols-3 gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleEditImage}
+                      >
+                        <Edit2 className="w-3 h-3 ml-1" />
+                        تعديل
+                      </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => setGeneratedImage(null)}
-                        className="flex-1"
                       >
-                        حذف الصورة
+                        <X className="w-3 h-3 ml-1" />
+                        حذف
                       </Button>
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={generateImage}
-                        className="flex-1"
                       >
                         <RefreshCw className="w-3 h-3 ml-1" />
-                        توليد مرة أخرى
+                        جديدة
                       </Button>
                     </div>
                   </div>
@@ -825,6 +943,27 @@ ${generatedImage ? '9. تأكد من دمج الصورة المضمنة بشكل
             )}
           </div>
         </div>
+
+        {/* مكتبة الصور */}
+        {showImageLibrary && (
+          <ImageLibrary
+            onSelectImage={handleSelectFromLibrary}
+            onClose={() => setShowImageLibrary(false)}
+          />
+        )}
+
+        {/* محرر الصور */}
+        {showImageEditor && imageToEdit && (
+          <Dialog open={showImageEditor} onOpenChange={setShowImageEditor}>
+            <DialogContent className="max-w-4xl">
+              <ImageEditor
+                imageUrl={imageToEdit}
+                onSave={handleSaveEditedImage}
+                onClose={() => setShowImageEditor(false)}
+              />
+            </DialogContent>
+          </Dialog>
+        )}
 
         {/* معلومات مفيدة */}
         <Card className="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
