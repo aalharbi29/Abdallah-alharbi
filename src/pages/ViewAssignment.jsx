@@ -1033,9 +1033,39 @@ export default function ViewAssignmentPage() {
                 {(!assignment.approval_status || assignment.approval_status === 'draft') && (
                   <Button 
                     onClick={async () => {
-                      if (confirm('هل أنت متأكد من اعتماد هذا القرار؟ سيصبح القرار رسمياً ولن يمكن التعديل عليه إلا بعد تأكيد خاص.')) {
+                      if (confirm('هل أنت متأكد من اعتماد هذا القرار؟ سيصبح القرار رسمياً وسيتم حفظه في ملف الموظف بالشكل النهائي.')) {
                         try {
                           const user = await base44.auth.me();
+                          
+                          // توليد محتوى HTML للحفظ
+                          const response = await exportAssignment({ 
+                            assignmentId: assignment.id,
+                            templateMode,
+                            showDurationInTable,
+                            showDurationInParagraph,
+                            customDurationText,
+                            customParagraph1,
+                            customParagraph2,
+                            customParagraph3,
+                            customParagraph4,
+                            customParagraph5,
+                            customAssignmentType,
+                            customClosing,
+                            customTitle,
+                            customIntro,
+                            decisionPoints: multipleDecisionPoints,
+                            tableLayout,
+                            customTableHeaders,
+                            signaturePosition,
+                            stampPosition,
+                            managerNamePosition,
+                            stampSize,
+                            textStyles,
+                            pdfMargins,
+                            showHeaderFooter,
+                            customHeader,
+                            customFooter
+                          });
                           
                           if (templateMode === 'multiple' && multipleAssignmentsList.length > 0) {
                             // Approve ALL assignments in the group
@@ -1046,14 +1076,31 @@ export default function ViewAssignmentPage() {
                                 approved_by: user.email
                               })
                             ));
-                            alert(`✅ تم اعتماد ${multipleAssignmentsList.length} قرارات في المجموعة بنجاح`);
+                            
+                            // حفظ نسخة واحدة للتكليف الجماعي
+                            if (response.data?.success && assignment.employee_record_id) {
+                              await saveAssignmentToEmployeeFile(response.data.html_content);
+                            }
+                            
+                            alert(`✅ تم اعتماد ${multipleAssignmentsList.length} قرارات في المجموعة وحفظ نسخة رسمية`);
                           } else {
                             await base44.entities.Assignment.update(assignment.id, {
                               approval_status: 'approved',
                               approved_date: new Date().toISOString(),
                               approved_by: user.email
                             });
-                            alert('✅ تم اعتماد القرار بنجاح');
+                            
+                            // حفظ في ملف الموظف
+                            if (response.data?.success) {
+                              const saved = await saveAssignmentToEmployeeFile(response.data.html_content);
+                              if (saved) {
+                                alert('✅ تم اعتماد القرار وحفظه في ملف الموظف بالشكل النهائي');
+                              } else {
+                                alert('✅ تم اعتماد القرار (لم يتم الحفظ في الملف)');
+                              }
+                            } else {
+                              alert('✅ تم اعتماد القرار بنجاح');
+                            }
                           }
                           window.location.reload();
                         } catch (error) {
@@ -1063,7 +1110,7 @@ export default function ViewAssignmentPage() {
                     }}
                     className="bg-green-600 hover:bg-green-700"
                   >
-                    <CheckCircle className="w-4 h-4 ml-2" />اعتماد
+                    <CheckCircle className="w-4 h-4 ml-2" />اعتماد وحفظ
                   </Button>
                 )}
                 <Button onClick={handleExportPDF} className="bg-red-600 hover:bg-red-700" disabled={isLoading}>
