@@ -559,7 +559,7 @@ export default function FillDigitalAccountForm() {
             <table className="w-full border-collapse border border-black">
               <tbody>
                 <tr>
-                  <td className="border-2 border-black p-2 align-top" style={{ width: '50%' }}>
+                  <td className="border border-black p-2 align-top" style={{ width: '50%' }}>
                     <strong style={{ fontSize: '10px', fontWeight: 'bold' }}>*Occupation:</strong>
                     <table className="w-full border-collapse mt-1">
                       <tbody>
@@ -583,7 +583,7 @@ export default function FillDigitalAccountForm() {
                     </table>
                   </td>
 
-                  <td className="border-2 border-black p-2 align-top text-right" style={{ width: '50%' }}>
+                  <td className="border border-black p-2 align-top text-right" style={{ width: '50%' }}>
                     <strong style={{ fontSize: '10px', fontWeight: 'bold' }}>المهنة :</strong>
                     <table className="w-full border-collapse mt-1" dir="rtl">
                       <tbody>
@@ -614,41 +614,41 @@ export default function FillDigitalAccountForm() {
             <table className="w-full border-collapse border border-black">
               <tbody>
                 <tr>
-                  <td className="border-2 border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="border border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
                     <strong style={{ fontWeight: 'bold' }}>Organization: </strong>
                     <Input value={formData.organization} onChange={(e) => setFormData(p => ({ ...p, organization: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1" style={{ fontSize: '9px' }} />
                   </td>
-                  <td className="border-2 border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="border border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
                     <strong style={{ fontWeight: 'bold' }}>المنشأة: </strong>
                     <Input value={formData.organization} onChange={(e) => setFormData(p => ({ ...p, organization: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1 text-right" style={{ fontSize: '9px' }} />
                   </td>
                 </tr>
                 <tr>
-                  <td className="border-2 border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="border border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
                     <strong style={{ fontWeight: 'bold' }}>Department: </strong>
                     <Input value={formData.department} onChange={(e) => setFormData(p => ({ ...p, department: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1" style={{ fontSize: '9px' }} />
                   </td>
-                  <td className="border-2 border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="border border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
                     <strong style={{ fontWeight: 'bold' }}>القسم : </strong>
                     <Input value={formData.department} onChange={(e) => setFormData(p => ({ ...p, department: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1 text-right" style={{ fontSize: '9px' }} />
                   </td>
                 </tr>
                 <tr>
-                  <td className="border-2 border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="border border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
                     <strong style={{ fontWeight: 'bold' }}>Specialization: </strong>
                     <Input value={formData.specialization} onChange={(e) => setFormData(p => ({ ...p, specialization: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1" style={{ fontSize: '9px' }} />
                   </td>
-                  <td className="border-2 border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="border border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
                     <strong style={{ fontWeight: 'bold' }}>التخصص: </strong>
                     <Input value={formData.specialization} onChange={(e) => setFormData(p => ({ ...p, specialization: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1 text-right" style={{ fontSize: '9px' }} />
                   </td>
                 </tr>
                 <tr>
-                  <td className="border-2 border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="border border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
                     <strong style={{ fontWeight: 'bold' }}>Recruitment privilege: </strong>
                     <Input value={formData.recruitment_privilege} onChange={(e) => setFormData(p => ({ ...p, recruitment_privilege: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1" style={{ fontSize: '9px' }} />
                   </td>
-                  <td className="border-2 border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
+                  <td className="border border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
                     <strong style={{ fontWeight: 'bold' }}>الصلاحيات المطلوبة : </strong>
                     <Input value={formData.recruitment_privilege} onChange={(e) => setFormData(p => ({ ...p, recruitment_privilege: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1 text-right" style={{ fontSize: '9px' }} />
                   </td>
@@ -660,13 +660,13 @@ export default function FillDigitalAccountForm() {
             <table className="w-full border-collapse border border-black">
               <tbody>
                 <tr>
-                  <td className="border-2 border-black p-2 align-top" style={{ width: '50%' }}>
+                  <td className="border border-black p-2 align-top" style={{ width: '50%' }}>
                     <div className="border border-black p-2" style={{ fontSize: '8px', lineHeight: '1.3' }}>
                       <p className="mb-1">I Will safeguard and will not disclose my username and password. Any access to informatio system by my username and password is my responsibility. If I believe someone else has logged into my account, I will immediately report the breach to digital health & technology department and will immediately change my password.</p>
                       <p className="text-blue-600 text-center">med-hc-digital@moh.gov.sa</p>
                     </div>
                   </td>
-                  <td className="border-2 border-black p-2 align-top text-right" style={{ width: '50%' }}>
+                  <td className="border border-black p-2 align-top text-right" style={{ width: '50%' }}>
                     <div className="border border-black p-2" style={{ fontSize: '8px', lineHeight: '1.3' }}>
                       <p className="mb-1">اتعهد بالمحافظة على اسم وكلمة السر الخاصة بي ولن اعطيها لأي شخص اخر، أي وصول إلى نظام المعلومات باستخدام اسم المستخدم. وكلمة المرور الخاصين بي هو مسؤوليتي وإذا علمت ان هناك شخص اخر استخدم حسابي فسوف أقوم بإبلاغ المسؤول بقسم الصحة الرقمية والتكنولوجيا عن ذلك وتغير كلمة السر .</p>
                       <p className="text-blue-600 text-center">med-hc-digital@moh.gov.sa</p>
