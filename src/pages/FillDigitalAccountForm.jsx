@@ -748,6 +748,14 @@ export default function FillDigitalAccountForm() {
 
       <style>{`
         @media print {
+          body {
+            background-image: url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/44e7acbe3_page_1.jpg) !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
           body * { visibility: hidden; }
           .print-area, .print-area * { visibility: visible; }
           .print-area {
@@ -756,6 +764,7 @@ export default function FillDigitalAccountForm() {
             top: 0;
             width: 100%;
             padding: 20mm;
+            background: transparent !important;
           }
           .no-print { display: none !important; }
           @page {
