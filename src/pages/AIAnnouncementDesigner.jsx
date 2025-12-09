@@ -33,6 +33,12 @@ export default function AIAnnouncementDesigner() {
   const [generatedDesign, setGeneratedDesign] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showTemplates, setShowTemplates] = useState(false);
+  
+  // توليد الصور
+  const [imagePrompt, setImagePrompt] = useState('');
+  const [imageStyle, setImageStyle] = useState('realistic');
+  const [generatedImage, setGeneratedImage] = useState(null);
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
 
   // القوالب الجاهزة
   const templates = [
@@ -200,6 +206,41 @@ export default function AIAnnouncementDesigner() {
     setShowTemplates(false);
   };
 
+  const generateImage = async () => {
+    if (!imagePrompt.trim()) {
+      alert('الرجاء إدخال وصف للصورة');
+      return;
+    }
+
+    setIsGeneratingImage(true);
+    try {
+      const styleDescriptions = {
+        realistic: 'photorealistic, high quality, professional photography',
+        illustration: 'digital illustration, modern art style, clean design',
+        minimalist: 'minimalist design, simple shapes, clean lines, flat design',
+        corporate: 'corporate style, professional, business environment, saudi arabia',
+        medical: 'medical illustration, healthcare setting, clean and professional'
+      };
+
+      const fullPrompt = `${imagePrompt}, ${styleDescriptions[imageStyle]}, Saudi Arabian context, professional medical environment, high quality, 4k`;
+
+      const response = await base44.integrations.Core.GenerateImage({
+        prompt: fullPrompt
+      });
+
+      if (response && response.url) {
+        setGeneratedImage(response.url);
+      } else {
+        throw new Error('فشل في توليد الصورة');
+      }
+    } catch (error) {
+      console.error('Error generating image:', error);
+      alert('فشل في توليد الصورة: ' + error.message);
+    } finally {
+      setIsGeneratingImage(false);
+    }
+  };
+
   const generateDesign = async () => {
     if (!announcementData.title || selectedEmployees.length === 0) {
       alert('الرجاء إدخال عنوان الإعلان واختيار موظف واحد على الأقل');
@@ -219,6 +260,10 @@ export default function AIAnnouncementDesigner() {
         return empData;
       });
 
+      const imageInstruction = generatedImage 
+        ? `\n\nصورة مضمنة (يجب استخدامها في التصميم):\n<img src="${generatedImage}" alt="صورة الإعلان" style="max-width: 100%; height: auto; border-radius: 10px; margin: 20px 0;">\nاستخدم هذه الصورة بشكل جذاب في أعلى أو جانب التصميم.`
+        : '';
+
       const prompt = `أنت مصمم جرافيك محترف. قم بإنشاء تصميم HTML/CSS جميل واحترافي لإعلان رسمي.
 
 معلومات الإعلان:
@@ -227,7 +272,7 @@ export default function AIAnnouncementDesigner() {
 - التاريخ: ${announcementData.date || 'غير محدد'}
 - الوقت: ${announcementData.time || 'غير محدد'}
 - الموقع: ${announcementData.location || 'غير محدد'}
-- معلومات إضافية: ${announcementData.additionalInfo || 'لا يوجد'}
+- معلومات إضافية: ${announcementData.additionalInfo || 'لا يوجد'}${imageInstruction}
 
 أسماء المرشحين وبياناتهم:
 ${JSON.stringify(employeesData, null, 2)}
@@ -244,6 +289,7 @@ ${JSON.stringify(employeesData, null, 2)}
 6. استخدم خطوط عربية واضحة ومقروءة
 7. أضف عناصر تصميمية جميلة (أيقونات، إطارات، خلفيات)
 8. اجعل التصميم جاهز للطباعة
+${generatedImage ? '9. تأكد من دمج الصورة المضمنة بشكل جذاب في التصميم' : ''}
 
 أرجع ONLY كود HTML كامل متضمن CSS inline بدون أي نص إضافي أو شروحات.`;
 
@@ -460,6 +506,95 @@ ${JSON.stringify(employeesData, null, 2)}
               </CardContent>
             </Card>
 
+            {/* توليد صورة بالذكاء الاصطناعي */}
+            <Card className="border-2 border-pink-200">
+              <CardHeader className="bg-gradient-to-r from-pink-50 to-purple-50">
+                <CardTitle className="flex items-center gap-2">
+                  <ImageIcon className="w-5 h-5 text-pink-600" />
+                  توليد صورة بالذكاء الاصطناعي
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label>وصف الصورة المطلوبة</Label>
+                  <Textarea
+                    value={imagePrompt}
+                    onChange={(e) => setImagePrompt(e.target.value)}
+                    placeholder="مثال: أطباء يتعاونون في مستشفى حديث، فريق طبي متنوع، بيئة صحية احترافية..."
+                    rows={3}
+                  />
+                </div>
+
+                <div>
+                  <Label>نمط الصورة</Label>
+                  <Select
+                    value={imageStyle}
+                    onValueChange={setImageStyle}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="realistic">واقعي (تصوير فوتوغرافي)</SelectItem>
+                      <SelectItem value="illustration">رسم توضيحي (Illustration)</SelectItem>
+                      <SelectItem value="minimalist">بسيط (Minimalist)</SelectItem>
+                      <SelectItem value="corporate">مؤسسي احترافي</SelectItem>
+                      <SelectItem value="medical">طبي متخصص</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <Button
+                  onClick={generateImage}
+                  disabled={isGeneratingImage}
+                  className="w-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
+                >
+                  {isGeneratingImage ? (
+                    <>
+                      <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                      جاري التوليد...
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-4 h-4 ml-2" />
+                      توليد الصورة
+                    </>
+                  )}
+                </Button>
+
+                {generatedImage && (
+                  <div className="mt-4 space-y-2">
+                    <div className="border-2 border-pink-200 rounded-lg overflow-hidden">
+                      <img src={generatedImage} alt="Generated" className="w-full h-auto" />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setGeneratedImage(null)}
+                        className="flex-1"
+                      >
+                        حذف الصورة
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={generateImage}
+                        className="flex-1"
+                      >
+                        <RefreshCw className="w-3 h-3 ml-1" />
+                        توليد مرة أخرى
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="text-xs text-gray-500 bg-pink-50 p-3 rounded-lg border border-pink-200">
+                  💡 الصورة المولدة ستُدمج تلقائياً في التصميم النهائي
+                </div>
+              </CardContent>
+            </Card>
+
             {/* البيانات المراد إظهارها */}
             <Card>
               <CardHeader>
@@ -578,7 +713,7 @@ ${JSON.stringify(employeesData, null, 2)}
             <Button
               onClick={generateDesign}
               disabled={isGenerating}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-6 text-lg"
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-6 text-lg shadow-lg hover:shadow-xl transition-all"
             >
               {isGenerating ? (
                 <>
@@ -588,10 +723,22 @@ ${JSON.stringify(employeesData, null, 2)}
               ) : (
                 <>
                   <Wand2 className="w-5 h-5 ml-2" />
-                  توليد التصميم بالذكاء الاصطناعي
+                  توليد التصميم {generatedImage ? 'مع الصورة' : 'بالذكاء الاصطناعي'}
                 </>
               )}
             </Button>
+
+            {generatedImage && (
+              <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl">
+                <div className="flex items-center gap-2 text-green-700">
+                  <Badge className="bg-green-100 text-green-700">✓</Badge>
+                  <span className="font-semibold">صورة جاهزة للدمج</span>
+                </div>
+                <p className="text-sm text-gray-600 mt-1">
+                  سيتم تضمين الصورة المولدة في التصميم النهائي
+                </p>
+              </div>
+            )}
           </div>
 
           {/* لوحة المعاينة */}
