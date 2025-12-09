@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { Assignment } from "@/entities/Assignment";
 import { Employee } from "@/entities/Employee";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Download, Edit, Printer, FileText, AlertCircle, Settings2, MessageCircle, Star, Save, CheckCircle } from "lucide-react";
+import { ArrowRight, Download, Edit, Printer, FileText, AlertCircle, Settings, Settings2, MessageCircle, Star, Save, CheckCircle } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,7 @@ import MultipleAssignmentTemplate from '../components/assignments/MultipleAssign
 import TemplateStyleManager from '../components/assignments/TemplateStyleManager';
 import { exportAssignment } from "@/functions/exportAssignment";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { EmployeeDocument } from "@/entities/EmployeeDocument";
 import {
   Dialog,
   DialogContent,
