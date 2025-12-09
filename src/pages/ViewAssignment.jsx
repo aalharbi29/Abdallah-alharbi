@@ -551,6 +551,42 @@ export default function ViewAssignmentPage() {
     }
   };
 
+  const saveAssignmentToEmployeeFile = async (htmlContent) => {
+    try {
+      if (!assignment.employee_record_id) {
+        console.warn('لا يوجد معرف موظف لحفظ المستند');
+        return false;
+      }
+
+      const safeEmployeeName = (assignment.employee_name || 'unknown')
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, '_')
+        .substring(0, 30);
+
+      const htmlBlob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      const fileName = `قرار_تكليف_${safeEmployeeName}_${new Date().toISOString().split('T')[0]}.html`;
+      const htmlFile = new File([htmlBlob], fileName, { type: 'text/html' });
+
+      const uploadResult = await base44.integrations.Core.UploadFile({ file: htmlFile });
+      
+      await EmployeeDocument.create({
+        employee_id: assignment.employee_record_id,
+        employee_name: assignment.employee_name,
+        document_title: `قرار تكليف معتمد - ${assignment.assigned_to_health_center}`,
+        document_type: 'official',
+        description: `تكليف من ${assignment.start_date ? format(new Date(assignment.start_date), "yyyy-MM-dd") : ''} إلى ${assignment.end_date ? format(new Date(assignment.end_date), "yyyy-MM-dd") : ''} - نسخة رسمية معتمدة بالتنسيق النهائي`,
+        file_url: uploadResult.file_url,
+        file_name: fileName,
+        tags: ['تكليف', 'معتمد', 'رسمي', 'نهائي']
+      });
+
+      return true;
+    } catch (error) {
+      console.error('Failed to save to employee file:', error);
+      return false;
+    }
+  };
+
   const handleExportPDF = async () => {
     if (!assignment) return;
     setIsLoading(true);
@@ -578,8 +614,8 @@ export default function ViewAssignmentPage() {
         customAssignmentType,
         customClosing,
         customTitle,
-        customIntro, // Pass customIntro for single templates as well if needed, but definitely for multiple
-        decisionPoints: multipleDecisionPoints, // Pass decision points for multiple template
+        customIntro,
+        decisionPoints: multipleDecisionPoints,
         tableLayout,
         customTableHeaders,
         signaturePosition,
@@ -596,13 +632,20 @@ export default function ViewAssignmentPage() {
       if (response.data && response.data.success) {
         const { html_content } = response.data;
         
+        // إذا كان التكليف معتمداً، احفظه في ملف الموظف بالتنسيق النهائي
+        if (assignment.approval_status === 'approved') {
+          const saved = await saveAssignmentToEmployeeFile(html_content);
+          if (saved) {
+            alert('✅ تم حفظ نسخة رسمية من التكليف المعتمد في ملف الموظف بالتنسيق النهائي. سيتم فتح نافذة الطباعة...');
+          }
+        }
+        
         const printWindow = window.open('', '_blank');
         
         if (printWindow && printWindow.document) {
           printWindow.document.write(html_content);
           printWindow.document.close();
           
-          // انتظر تحميل الصور قبل الطباعة
           setTimeout(() => {
             printWindow.focus();
             printWindow.print();
@@ -623,13 +666,6 @@ export default function ViewAssignmentPage() {
           
           alert('تم تحميل الملف بصيغة HTML. يمكنك فتحه والطباعة منه أو حفظه كـ PDF من المتصفح.');
         }
-
-        // Save copy to employee file automatically
-        // TODO: Add logic here to create EmployeeDocument using the generated file URL if available, 
-        // or prompt user that it's ready to print.
-        // Since we are generating on the fly for print, we might not have a stored URL yet.
-        // To save to employee file, we'd ideally use html2pdf or backend pdf generation that returns a URL.
-        // Current implementation returns HTML content.
 
       } else {
         throw new Error('فشل تحميل محتوى التقرير للتصدير.');
