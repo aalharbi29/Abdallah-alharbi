@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { Assignment } from "@/entities/Assignment";
 import { HealthCenter } from "@/entities/HealthCenter";
 import { Button } from "@/components/ui/button";
-import { Eye, Printer, Trash2, Search, AlertTriangle, RefreshCw, Archive, CheckCircle, XCircle, Download, FileText, Loader2, Plus, Settings2, Edit, X, SlidersHorizontal, Users, Layers } from "lucide-react";
+import { Eye, Printer, Trash2, Filter, Search, AlertTriangle, RefreshCw, Archive, CheckCircle, XCircle, Calendar, Download, FileText, Loader2, Plus, Settings2, Edit, X, SlidersHorizontal, Users, Layers } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
+import { ar } from "date-fns/locale";
 import ExportManager from "../components/export/ExportManager";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -37,6 +38,7 @@ import { exportAssignment } from "@/functions/exportAssignment";
 
 import { UploadFile } from "@/integrations/Core";
 import { ArchivedFile } from "@/entities/ArchivedFile";
+import { EmployeeDocument } from "@/entities/EmployeeDocument";
 
 export default function AssignmentsPage() {
   const navigate = useNavigate();
