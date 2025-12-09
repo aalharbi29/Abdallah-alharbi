@@ -175,8 +175,8 @@ export default function FillDigitalAccountForm() {
       className="min-h-screen p-4 md:p-6" 
       dir="rtl"
       style={{
-        backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/7fe190ebb_.pdf)',
-        backgroundSize: 'contain',
+        backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/44e7acbe3_page_1.jpg)',
+        backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
         backgroundColor: '#f5f5f5'
