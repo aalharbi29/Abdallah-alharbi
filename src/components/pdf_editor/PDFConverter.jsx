@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import {
   Upload, FileText, Loader2, Download, 
   FileSpreadsheet, Presentation, Image as ImageIcon,
-  CheckCircle, AlertCircle, ArrowRight
+  CheckCircle, AlertCircle, ArrowRight, FileImage
 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 
@@ -21,20 +21,44 @@ export default function PDFConverter({ onComplete }) {
 
   const formats = [
     {
+      id: 'jpg',
+      name: 'JPG',
+      extension: '.jpg',
+      icon: ImageIcon,
+      color: 'bg-blue-500',
+      description: 'صور JPG - جودة عالية وحجم متوسط'
+    },
+    {
+      id: 'png',
+      name: 'PNG',
+      extension: '.png',
+      icon: ImageIcon,
+      color: 'bg-green-500',
+      description: 'صور PNG - أعلى جودة مع شفافية'
+    },
+    {
+      id: 'webp',
+      name: 'WebP',
+      extension: '.webp',
+      icon: ImageIcon,
+      color: 'bg-purple-500',
+      description: 'صور WebP - حجم صغير وجودة ممتازة'
+    },
+    {
       id: 'word',
       name: 'Word',
       extension: '.docx',
       icon: FileText,
-      color: 'bg-blue-500',
-      description: 'مستند Microsoft Word قابل للتحرير'
+      color: 'bg-blue-600',
+      description: 'مستند Word قابل للتحرير'
     },
     {
       id: 'excel',
       name: 'Excel',
       extension: '.xlsx',
       icon: FileSpreadsheet,
-      color: 'bg-green-500',
-      description: 'جدول بيانات Microsoft Excel'
+      color: 'bg-green-600',
+      description: 'جدول Excel للبيانات'
     },
     {
       id: 'powerpoint',
@@ -42,15 +66,7 @@ export default function PDFConverter({ onComplete }) {
       extension: '.pptx',
       icon: Presentation,
       color: 'bg-orange-500',
-      description: 'عرض تقديمي Microsoft PowerPoint'
-    },
-    {
-      id: 'images',
-      name: 'صور',
-      extension: '.jpg/.png',
-      icon: ImageIcon,
-      color: 'bg-purple-500',
-      description: 'تحويل كل صفحة إلى صورة منفصلة'
+      description: 'عرض تقديمي PowerPoint'
     }
   ];
 
@@ -90,39 +106,49 @@ export default function PDFConverter({ onComplete }) {
     setConversionProgress(0);
 
     try {
-      // محاكاة التقدم
       const progressInterval = setInterval(() => {
-        setConversionProgress(prev => {
-          if (prev >= 90) {
-            clearInterval(progressInterval);
-            return prev;
-          }
-          return prev + 10;
+        setConversionProgress(prev => Math.min(prev + 10, 90));
+      }, 400);
+
+      if (['jpg', 'png', 'webp'].includes(format.id)) {
+        // تحويل PDF إلى صور
+        const response = await base44.functions.invoke('pdfToImages', {
+          fileUrl: uploadedFile.url,
+          format: format.id,
+          quality: 95
         });
-      }, 300);
 
-      // في التطبيق الفعلي سيتم استدعاء backend function للتحويل
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
-      clearInterval(progressInterval);
-      setConversionProgress(100);
+        clearInterval(progressInterval);
+        setConversionProgress(100);
 
-      setResult({
-        format: format,
-        filename: uploadedFile.name.replace('.pdf', format.extension),
-        message: `تم تحويل الملف إلى ${format.name} بنجاح`
-      });
+        if (response.data?.success) {
+          setResult({
+            format: format,
+            images: response.data.images,
+            filename: uploadedFile.name.replace('.pdf', ''),
+            message: `تم تحويل ${response.data.images.length} صفحة إلى ${format.name}`
+          });
 
-      if (onComplete) {
-        onComplete({
-          base64: '',
+          alert(`✅ تم تحويل ${response.data.images.length} صفحة إلى صور ${format.name}`);
+        } else {
+          throw new Error(response.data?.error || 'فشل التحويل');
+        }
+      } else {
+        // تحويلات أخرى (Word, Excel, PowerPoint) - قريباً
+        clearInterval(progressInterval);
+        setConversionProgress(100);
+        
+        alert('⚠️ التحويل إلى ' + format.name + ' سيكون متاحاً قريباً');
+        
+        setResult({
+          format: format,
           filename: uploadedFile.name.replace('.pdf', format.extension),
-          message: `تم التحويل إلى ${format.name}`
+          message: `التحويل إلى ${format.name} قيد التطوير`
         });
       }
     } catch (error) {
       console.error('Conversion error:', error);
-      alert('حدث خطأ أثناء تحويل الملف');
+      alert('❌ حدث خطأ أثناء تحويل الملف');
     } finally {
       setIsConverting(false);
     }
@@ -220,22 +246,84 @@ export default function PDFConverter({ onComplete }) {
       {/* نتيجة التحويل */}
       {result && (
         <Card className="bg-green-50 border-green-200">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <div className={`w-12 h-12 ${result.format.color} rounded-lg flex items-center justify-center`}>
-                  <result.format.icon className="w-6 h-6 text-white" />
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-green-900">
+              <CheckCircle className="w-5 h-5" />
+              {result.message}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            {result.images && result.images.length > 0 ? (
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                  {result.images.map((image, index) => (
+                    <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
+                      <div className="aspect-[3/4] bg-gray-100 flex items-center justify-center p-2">
+                        <iframe
+                          src={image.imageDataUrl}
+                          className="w-full h-full border-0"
+                          title={`صفحة ${image.pageNumber}`}
+                        />
+                      </div>
+                      <CardContent className="p-3 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <p className="text-xs font-medium truncate">
+                            صفحة {image.pageNumber}
+                          </p>
+                          <Badge variant="outline" className="text-xs">
+                            {result.format.name}
+                          </Badge>
+                        </div>
+                        <Button
+                          size="sm"
+                          className="w-full"
+                          onClick={() => {
+                            const link = document.createElement('a');
+                            link.href = image.imageDataUrl;
+                            link.download = image.filename;
+                            link.click();
+                          }}
+                        >
+                          <Download className="w-3 h-3 ml-1" />
+                          تحميل
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
-                <div>
-                  <h4 className="font-bold text-green-900">{result.message}</h4>
-                  <p className="text-sm text-green-700">{result.filename}</p>
-                </div>
+                <Button
+                  className="w-full bg-green-600 hover:bg-green-700"
+                  onClick={() => {
+                    result.images.forEach(image => {
+                      setTimeout(() => {
+                        const link = document.createElement('a');
+                        link.href = image.imageDataUrl;
+                        link.download = image.filename;
+                        link.click();
+                      }, 100);
+                    });
+                  }}
+                >
+                  <Download className="w-4 h-4 ml-2" />
+                  تحميل جميع الصور ({result.images.length})
+                </Button>
               </div>
-              <Button className="bg-green-600 hover:bg-green-700">
-                <Download className="w-4 h-4 ml-2" />
-                تحميل الملف
-              </Button>
-            </div>
+            ) : (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className={`w-12 h-12 ${result.format.color} rounded-lg flex items-center justify-center`}>
+                    <result.format.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-green-700">{result.filename}</p>
+                  </div>
+                </div>
+                <Button className="bg-green-600 hover:bg-green-700">
+                  <Download className="w-4 h-4 ml-2" />
+                  تحميل الملف
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
