@@ -947,21 +947,24 @@ export default function FillDigitalAccountForm() {
             margin: 0;
           }
 
-          html, body {
-            width: 210mm;
-            height: 297mm;
-            margin: 0;
-            padding: 0;
-            background-image: url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/44e7acbe3_page_1.jpg) !important;
+          .print-background {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 210mm !important;
+            height: 297mm !important;
             background-size: 210mm 297mm !important;
             background-position: center !important;
             background-repeat: no-repeat !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+            z-index: -1 !important;
+            visibility: visible !important;
           }
 
           body * { visibility: hidden; }
           .print-area, .print-area * { visibility: visible; }
+          .print-background { visibility: visible !important; }
           .print-area {
             position: absolute;
             left: 0;
