@@ -10,9 +10,9 @@ Deno.serve(async (req) => {
         }
 
         const body = await req.json();
-        const { fileUrl, format = 'png', quality = 95, scale = 2 } = body;
+        const { fileUrl, format = 'png', quality = 95 } = body;
 
-        console.log('📥 طلب تحويل PDF إلى صور:', fileUrl, 'نسق:', format);
+        console.log('📥 طلب تحويل PDF إلى صور:', fileUrl, 'صيغة:', format);
 
         if (!fileUrl) {
             return Response.json({ 
@@ -21,147 +21,137 @@ Deno.serve(async (req) => {
             }, { status: 400 });
         }
 
-        // استخدام iLovePDF API للتحويل
-        const iLoveAPIKey = Deno.env.get('iLoveAPI');
+        const iLoveAPIKey = Deno.env.get('publickeylovepdf');
         
         if (!iLoveAPIKey) {
             return Response.json({ 
                 success: false, 
-                error: 'API key غير متوفر' 
+                error: 'مفتاح API غير متوفر - تواصل مع المسؤول' 
             }, { status: 500 });
         }
 
-        // 1. طلب رمز المهمة
+        // 1. المصادقة والحصول على token
         const authResponse = await fetch('https://api.ilovepdf.com/v1/auth', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                public_key: iLoveAPIKey
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ public_key: iLoveAPIKey })
         });
 
         if (!authResponse.ok) {
-            throw new Error('فشل المصادقة مع iLovePDF');
+            const authError = await authResponse.text();
+            console.error('Auth error:', authError);
+            throw new Error('فشل المصادقة');
         }
 
-        const authData = await authResponse.json();
-        const token = authData.token;
+        const { token } = await authResponse.json();
 
-        // 2. بدء مهمة التحويل
+        // 2. إنشاء مهمة التحويل
         const taskResponse = await fetch('https://api.ilovepdf.com/v1/start/pdfjpg', {
             method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+            headers: { 'Authorization': `Bearer ${token}` }
         });
 
         if (!taskResponse.ok) {
-            throw new Error('فشل إنشاء مهمة التحويل');
+            throw new Error('فشل إنشاء المهمة');
         }
 
-        const taskData = await taskResponse.json();
-        const taskId = taskData.task;
-        const serverUrl = taskData.server;
+        const { task, server } = await taskResponse.json();
 
-        // 3. رفع الملف
-        const uploadResponse = await fetch(`${serverUrl}/v1/upload`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({
-                task: taskId,
-                cloud_file: fileUrl
-            })
-        });
-
-        if (!uploadResponse.ok) {
-            throw new Error('فشل رفع الملف');
-        }
-
-        const uploadData = await uploadResponse.json();
-        const serverFilename = uploadData.server_filename;
-
-        // 4. تطبيق عملية التحويل
-        const processResponse = await fetch(`${serverUrl}/v1/process`, {
+        // 3. رفع الملف من URL
+        const uploadResponse = await fetch(`${server}/v1/upload`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                task: taskId,
+                task: task,
+                cloud_file: fileUrl
+            })
+        });
+
+        if (!uploadResponse.ok) {
+            const uploadError = await uploadResponse.text();
+            console.error('Upload error:', uploadError);
+            throw new Error('فشل رفع الملف');
+        }
+
+        const { server_filename } = await uploadResponse.json();
+
+        // 4. معالجة التحويل
+        const processResponse = await fetch(`${server}/v1/process`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                task: task,
                 tool: 'pdfjpg',
-                files: [{
-                    server_filename: serverFilename,
-                    filename: 'document.pdf'
-                }]
+                files: [{ server_filename: server_filename, filename: 'document.pdf' }],
+                pdfjpg_mode: 'pages'
             })
         });
 
         if (!processResponse.ok) {
-            throw new Error('فشل معالجة الملف');
+            const processError = await processResponse.text();
+            console.error('Process error:', processError);
+            throw new Error('فشل المعالجة');
         }
 
-        const processData = await processResponse.json();
+        await processResponse.json();
 
-        // 5. تحميل الملفات الناتجة
-        const downloadResponse = await fetch(`${serverUrl}/v1/download/${taskId}`, {
+        // 5. تحميل النتائج
+        const downloadResponse = await fetch(`${server}/v1/download/${task}`, {
             method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+            headers: { 'Authorization': `Bearer ${token}` }
         });
 
         if (!downloadResponse.ok) {
-            throw new Error('فشل تحميل النتيجة');
+            throw new Error('فشل تحميل النتائج');
         }
 
-        // تحميل ملف ZIP الذي يحتوي على الصور
         const zipBytes = await downloadResponse.arrayBuffer();
         
-        // فك ضغط ZIP (استخدام JSZip)
+        // فك ضغط الملفات
         const JSZip = (await import('npm:jszip@3.10.1')).default;
         const zip = await JSZip.loadAsync(zipBytes);
         
         const images = [];
-        let pageNumber = 1;
+        const entries = Object.entries(zip.files).sort((a, b) => a[0].localeCompare(b[0]));
         
-        for (const [filename, file] of Object.entries(zip.files)) {
-            if (!file.dir && (filename.endsWith('.jpg') || filename.endsWith('.png'))) {
+        for (const [filename, file] of entries) {
+            if (!file.dir && (filename.endsWith('.jpg') || filename.endsWith('.jpeg'))) {
                 const imageBytes = await file.async('uint8array');
                 
-                // تحويل إلى Base64
-                const base64 = btoa(
-                    Array.from(imageBytes)
-                        .map(byte => String.fromCharCode(byte))
-                        .join('')
-                );
+                const chunks = [];
+                const chunkSize = 8192;
+                for (let i = 0; i < imageBytes.length; i += chunkSize) {
+                    const chunk = imageBytes.slice(i, i + chunkSize);
+                    chunks.push(String.fromCharCode(...chunk));
+                }
+                const base64 = btoa(chunks.join(''));
                 
-                // رفع الصورة
-                const imageBlob = new Blob([imageBytes], { type: `image/${format}` });
-                const imageFile = new File([imageBlob], `page_${pageNumber}.${format}`, { type: `image/${format}` });
+                const ext = format === 'png' ? 'png' : format === 'webp' ? 'webp' : 'jpg';
+                const mimeType = `image/${ext === 'jpg' ? 'jpeg' : ext}`;
                 
-                const uploadResult = await base44.integrations.Core.UploadFile({ 
-                    file: imageFile 
-                });
+                const imageBlob = new Blob([imageBytes], { type: mimeType });
+                const imageFile = new File([imageBlob], `page_${images.length + 1}.${ext}`, { type: mimeType });
+                
+                const uploadResult = await base44.integrations.Core.UploadFile({ file: imageFile });
                 
                 images.push({
-                    pageNumber: pageNumber,
-                    imageDataUrl: `data:image/${format};base64,${base64}`,
+                    pageNumber: images.length + 1,
+                    imageDataUrl: `data:${mimeType};base64,${base64}`,
                     base64: base64,
-                    filename: `page_${pageNumber}.${format}`,
+                    filename: `page_${images.length + 1}.${ext}`,
                     downloadUrl: uploadResult.file_url,
-                    format: format
+                    format: ext
                 });
-                
-                pageNumber++;
             }
         }
 
-        console.log('✅ تم تحويل ' + images.length + ' صفحة إلى صور');
+        console.log('✅ تم تحويل', images.length, 'صفحة');
 
         return Response.json({
             success: true,
@@ -172,12 +162,11 @@ Deno.serve(async (req) => {
         });
 
     } catch (error) {
-        console.error('❌ خطأ في تحويل PDF:', error);
+        console.error('❌ خطأ:', error);
         
         return Response.json({ 
             success: false, 
-            error: error.message || 'حدث خطأ أثناء التحويل',
-            details: error.stack
+            error: error.message || 'حدث خطأ أثناء التحويل'
         }, { status: 500 });
     }
 });
