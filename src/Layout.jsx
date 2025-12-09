@@ -82,6 +82,7 @@ const navigationItems = [
   },
   { name: "الإعدادات", href: createPageUrl("Settings"), icon: Settings },
   { name: "إدارة العيادات", href: createPageUrl("ClinicManagement"), icon: Hospital },
+  { name: "مصمم الإعلانات AI", href: createPageUrl("AIAnnouncementDesigner"), icon: FileSignature },
   ];
 
 function LayoutContent({ children, currentPageName }) {
