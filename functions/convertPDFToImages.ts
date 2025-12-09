@@ -99,7 +99,9 @@ Deno.serve(async (req) => {
             throw new Error('فشل المعالجة');
         }
 
-        await processResponse.json();
+        const processData = await processResponse.json();
+        
+        console.log('✅ تمت المعالجة:', processData);
 
         // 5. تحميل النتائج
         const downloadResponse = await fetch(`https://${server}/v1/download/${task}`, {
@@ -108,26 +110,71 @@ Deno.serve(async (req) => {
         });
 
         if (!downloadResponse.ok) {
+            const dlError = await downloadResponse.text();
+            console.error('Download error:', dlError);
             throw new Error('فشل تحميل النتائج');
         }
 
+        const contentType = downloadResponse.headers.get('content-type');
+        console.log('Content-Type:', contentType);
+        
         const zipBytes = await downloadResponse.arrayBuffer();
+        console.log('Downloaded bytes:', zipBytes.byteLength);
         
         // فك ضغط الملفات
         const JSZip = (await import('npm:jszip@3.10.1')).default;
-        const zip = await JSZip.loadAsync(zipBytes);
+        
+        let zip;
+        try {
+            zip = await JSZip.loadAsync(zipBytes);
+        } catch (zipError) {
+            console.error('JSZip error:', zipError);
+            
+            // إذا لم يكن ZIP، نحاول استخدامه كصورة مباشرة
+            const chunks = [];
+            const uint8 = new Uint8Array(zipBytes);
+            for (let i = 0; i < uint8.length; i += 8192) {
+                const chunk = uint8.slice(i, i + 8192);
+                chunks.push(String.fromCharCode(...chunk));
+            }
+            const base64 = btoa(chunks.join(''));
+            
+            const ext = format === 'png' ? 'png' : format === 'webp' ? 'webp' : 'jpg';
+            const mimeType = `image/${ext === 'jpg' ? 'jpeg' : ext}`;
+            
+            const imageBlob = new Blob([zipBytes], { type: mimeType });
+            const imageFile = new File([imageBlob], `page_1.${ext}`, { type: mimeType });
+            
+            const uploadResult = await base44.integrations.Core.UploadFile({ file: imageFile });
+            
+            return Response.json({
+                success: true,
+                images: [{
+                    pageNumber: 1,
+                    imageDataUrl: `data:${mimeType};base64,${base64}`,
+                    base64: base64,
+                    filename: `page_1.${ext}`,
+                    downloadUrl: uploadResult.file_url,
+                    format: ext
+                }],
+                totalPages: 1,
+                processedPages: 1,
+                message: 'تم التحويل بنجاح'
+            });
+        }
         
         const images = [];
         const entries = Object.entries(zip.files).sort((a, b) => a[0].localeCompare(b[0]));
         
+        console.log('Files in ZIP:', entries.map(e => e[0]));
+        
         for (const [filename, file] of entries) {
-            if (!file.dir && (filename.endsWith('.jpg') || filename.endsWith('.jpeg'))) {
+            if (!file.dir && (filename.endsWith('.jpg') || filename.endsWith('.jpeg') || filename.endsWith('.png'))) {
                 const imageBytes = await file.async('uint8array');
                 
                 const chunks = [];
-                const chunkSize = 8192;
-                for (let i = 0; i < imageBytes.length; i += chunkSize) {
-                    const chunk = imageBytes.slice(i, i + chunkSize);
+                for (let i = 0; i < imageBytes.length; i += 8192) {
+                    const chunk = imageBytes.slice(i, i + 8192);
                     chunks.push(String.fromCharCode(...chunk));
                 }
                 const base64 = btoa(chunks.join(''));
