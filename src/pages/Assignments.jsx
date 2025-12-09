@@ -361,6 +361,14 @@ export default function AssignmentsPage() {
       if (response.data && response.data.success) {
         const { html_content } = response.data;
         
+        // إذا كان التكليف معتمداً، احفظه في ملف الموظف
+        if (assignment.approval_status === 'approved') {
+          const saved = await saveAssignmentToEmployeeFile(assignment, html_content);
+          if (saved) {
+            alert('تم حفظ التكليف المعتمد في ملف الموظف بنجاحً. سيتم فتح نافذة الطباعة الآن...');
+          }
+        }
+        
         const printWindow = window.open('', '_blank');
         
         if (printWindow && printWindow.document) {
