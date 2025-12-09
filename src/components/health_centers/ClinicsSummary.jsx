@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { 
-  Stethoscope, Users, Plus, Settings, 
+  Stethoscope, Users, Clock, Plus, Settings, 
   CheckCircle, XCircle, DoorOpen 
 } from 'lucide-react';
 
@@ -24,6 +24,12 @@ export default function ClinicsSummary({ healthCenterId, healthCenterName }) {
   const loadClinics = async () => {
     setIsLoading(true);
     try {
+      if (!base44.entities.Clinic) {
+        console.warn('Clinic entity not found');
+        setClinics([]);
+        setIsLoading(false);
+        return;
+      }
       const data = await base44.entities.Clinic.filter({ health_center_id: healthCenterId });
       setClinics(Array.isArray(data) ? data : []);
     } catch (error) {
