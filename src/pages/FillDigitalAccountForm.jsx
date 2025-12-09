@@ -12,7 +12,7 @@ import { createPageUrl } from '@/utils';
 import SmartDateInput from '../components/ui/smart-date-input';
 import FormElementEditor from '../components/form_builder/FormElementEditor';
 
-export default function FillDigitalAccountForm() {
+function FillDigitalAccountForm() {
   const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
   const [healthCenters, setHealthCenters] = useState([]);
