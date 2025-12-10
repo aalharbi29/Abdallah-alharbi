@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Trash2, Plus, X, Type } from "lucide-react";
+import { Trash2, Plus, GripVertical, X, AlignCenter, AlignRight, AlignLeft, Image as ImageIcon, Type } from "lucide-react";
 
 // Shared styles
 const getInputStyle = (isEditMode) => 
@@ -34,7 +35,7 @@ export const ParagraphBlock = ({ block, isEditMode, formData, onInputChange, onU
 
   return (
     <div className="mb-6 relative">
-      <div className={`flex flex-wrap items-center gap-2 leading-loose text-lg ${isEditMode ? 'p-4 border border-dashed border-gray-200 rounded' : ''}`}>
+      <div className={`flex flex-wrap items-center gap-2 leading-loose text-base md:text-lg ${isEditMode ? 'p-4 border border-dashed border-gray-200 rounded' : ''}`}>
         {(block.data.items || []).map((item, idx) => (
           <div key={item.id} className="relative group flex items-center">
             {item.type === 'text' ? (
@@ -122,8 +123,8 @@ export const GenericGridBlock = ({ block, isEditMode, formData, onInputChange, o
   };
 
   return (
-    <div className="mb-8 overflow-x-auto">
-      <table className="w-full border-collapse border border-black">
+    <div className="mb-8 overflow-x-auto -mx-2 md:mx-0">
+      <table className="w-full border-collapse border border-black text-xs md:text-sm lg:text-base">
         <thead>
           <tr className="bg-gray-100">
             {(block.data.columns || []).map((col, idx) => (
@@ -184,32 +185,32 @@ export const LayoutRowBlock = ({ block, isEditMode, onUpdateBlock }) => {
   };
 
   return (
-    <div className="flex justify-between items-start mb-8">
+    <div className="flex flex-col md:flex-row justify-between items-center md:items-start mb-8 md:mb-8 gap-4 md:gap-0">
       {/* Right Section */}
-      <div className="w-1/3 text-right">
+      <div className="w-full md:w-1/3 text-right order-2 md:order-1">
         <textarea
           value={block.data.rightContent || ''}
           onChange={(e) => updateContent('rightContent', e.target.value)}
           disabled={!isEditMode}
-          className={`w-full h-full min-h-[60px] resize-none bg-transparent font-bold text-blue-600 ${getInputStyle(isEditMode)}`}
+          className={`w-full h-full min-h-[60px] resize-none bg-transparent font-bold text-blue-600 text-xs md:text-sm lg:text-base ${getInputStyle(isEditMode)}`}
           placeholder="النص الأيمن..."
         />
       </div>
 
       {/* Center Section */}
-      <div className="w-1/3 text-center">
+      <div className="w-full md:w-1/3 text-center order-3 md:order-2 mt-8 md:mt-0">
         <textarea
           value={block.data.centerContent || ''}
           onChange={(e) => updateContent('centerContent', e.target.value)}
           disabled={!isEditMode}
-          className={`w-full h-full min-h-[60px] resize-none bg-transparent font-bold text-2xl underline decoration-2 underline-offset-4 text-center ${getInputStyle(isEditMode)}`}
+          className={`w-full h-full min-h-[60px] resize-none bg-transparent font-bold text-xl md:text-2xl underline decoration-2 underline-offset-4 text-center ${getInputStyle(isEditMode)}`}
           placeholder="العنوان..."
         />
       </div>
 
       {/* Left Section (Image/Logo) */}
-      <div className="w-1/3 flex justify-end">
-        <div className="w-24 h-24 relative group">
+      <div className="w-full md:w-1/3 flex justify-center md:justify-end order-1 md:order-3">
+        <div className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 relative group">
           <img 
             src={block.data.imageUrl || "https://cdn.worldvectorlogo.com/logos/ministry-of-health-saudi-arabia-1.svg"} 
             alt="Logo" 
@@ -326,14 +327,14 @@ export const CenterTextBlock = ({ block, isEditMode, onUpdateBlock }) => {
           value={block.data.text || ''}
           onChange={(e) => onUpdateBlock(block.id, { ...block.data, text: e.target.value })}
           disabled={!isEditMode}
-          className={`text-xl font-bold mb-2 text-center w-full resize-none bg-transparent ${getInputStyle(isEditMode)}`}
+          className={`text-base md:text-xl font-bold mb-2 text-center w-full resize-none bg-transparent ${getInputStyle(isEditMode)}`}
           rows={2}
         />
         <textarea
           value={block.data.subText || ''}
           onChange={(e) => onUpdateBlock(block.id, { ...block.data, subText: e.target.value })}
           disabled={!isEditMode}
-          className={`text-lg text-center w-full resize-none bg-transparent ${getInputStyle(isEditMode)}`}
+          className={`text-sm md:text-lg text-center w-full resize-none bg-transparent ${getInputStyle(isEditMode)}`}
           rows={1}
         />
       </div>
