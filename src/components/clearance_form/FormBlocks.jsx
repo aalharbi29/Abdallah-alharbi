@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { Trash2, Plus, GripVertical, X, AlignCenter, AlignRight, AlignLeft, Image as ImageIcon, Type } from "lucide-react";
+import { Trash2, Plus, GripVertical, X, AlignCenter, AlignRight, AlignLeft, Image as ImageIcon, Type, Bold, Italic, Underline } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
 
 // Shared styles
 const getInputStyle = (isEditMode) => 
