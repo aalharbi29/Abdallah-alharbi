@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Employee } from '@/entities/Employee';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Loader2, Printer, Save, ArrowRight, Settings2, Plus, GripVertical, Trash2, Eye, Download } from "lucide-react";
+import { Loader2, Printer, Save, ArrowRight, Settings2, Plus, GripVertical, Trash2, Eye, Download, AlignCenter, Type } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import EmployeeSelector from '@/components/health_centers/EmployeeSelector';
@@ -22,6 +22,7 @@ import {
   SignatureGridBlock,
   CenterTextBlock
 } from "@/components/clearance_form/FormBlocks";
+import { FreeTextBlock } from "@/components/clearance_form/FreeTextBlock";
 
 // Re-defined Initial Blocks using Granular Components
 const initialBlocks = [
@@ -221,6 +222,7 @@ export default function FillClearanceForm() {
       case 'generic_grid': return { columns: [{ label: 'عمود 1', name: 'col1' }] };
       case 'signature_grid': return { title: 'التوقيعات', rows: [{ role: 'دور جديد', nameField: `sig_${Date.now()}` }] };
       case 'center_text': return { text: 'نص مركزي', subText: '' };
+      case 'free_text': return { text: 'اكتب نصك الحر هنا...', fontSize: 16, align: 'right', bold: false, italic: false, underline: false };
       default: return {};
     }
   };
@@ -241,6 +243,7 @@ export default function FillClearanceForm() {
       case 'paragraph': Component = ParagraphBlock; break;
       case 'signature_grid': Component = SignatureGridBlock; break;
       case 'center_text': Component = CenterTextBlock; break;
+      case 'free_text': Component = FreeTextBlock; break;
       default: return null;
     }
 
@@ -280,25 +283,59 @@ export default function FillClearanceForm() {
 
             {/* Add Button Between Blocks */}
             {isEditMode && (
-              <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity flex gap-1">
-                <Button 
-                  variant="secondary" 
-                  size="sm" 
-                  onClick={() => addBlock('paragraph', index)}
-                  className="rounded-full h-8 w-8 p-0 shadow-md bg-blue-50 hover:bg-blue-100 text-blue-600"
-                  title="إضافة نص"
-                >
-                  <Plus className="w-4 h-4" />
-                </Button>
-                <Button 
-                  variant="secondary" 
-                  size="sm" 
-                  onClick={() => addBlock('generic_grid', index)}
-                  className="rounded-full h-8 w-8 p-0 shadow-md bg-green-50 hover:bg-green-100 text-green-600"
-                  title="إضافة جدول"
-                >
-                  <GripVertical className="w-4 h-4" />
-                </Button>
+              <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button 
+                      variant="default" 
+                      size="sm" 
+                      className="rounded-full h-9 px-4 shadow-lg bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
+                    >
+                      <Plus className="w-4 h-4 ml-1" />
+                      إضافة عنصر
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64">
+                    <div className="grid grid-cols-2 gap-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => addBlock('free_text', index)}
+                        className="flex-col h-auto py-3"
+                      >
+                        <Type className="w-5 h-5 mb-1" />
+                        <span className="text-xs">نص حر</span>
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => addBlock('paragraph', index)}
+                        className="flex-col h-auto py-3"
+                      >
+                        <Plus className="w-5 h-5 mb-1" />
+                        <span className="text-xs">فقرة</span>
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => addBlock('generic_grid', index)}
+                        className="flex-col h-auto py-3"
+                      >
+                        <GripVertical className="w-5 h-5 mb-1" />
+                        <span className="text-xs">جدول</span>
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => addBlock('center_text', index)}
+                        className="flex-col h-auto py-3"
+                      >
+                        <AlignCenter className="w-5 h-5 mb-1" />
+                        <span className="text-xs">نص مركزي</span>
+                      </Button>
+                    </div>
+                  </PopoverContent>
+                </Popover>
               </div>
             )}
           </div>
@@ -363,11 +400,19 @@ export default function FillClearanceForm() {
 
         {/* Warning for Edit Mode */}
         {isEditMode && (
-          <div className="mb-4 bg-blue-50 border border-blue-200 text-blue-800 px-3 md:px-4 py-2 md:py-3 rounded-md flex items-center gap-2 print:hidden">
-            <Settings2 className="w-4 h-4 md:w-5 md:h-5" />
-            <p className="text-xs md:text-sm font-medium">
-              وضع التعديل - اسحب الأقسام لتغيير ترتيبها
-            </p>
+          <div className="mb-4 bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-300 text-blue-900 px-3 md:px-4 py-3 md:py-4 rounded-lg flex items-start gap-3 print:hidden shadow-md">
+            <Settings2 className="w-5 h-5 md:w-6 md:h-6 flex-shrink-0 mt-0.5" />
+            <div className="flex-1">
+              <p className="text-sm md:text-base font-bold mb-1">
+                وضع التحرير المتقدم نشط
+              </p>
+              <ul className="text-xs md:text-sm space-y-1 text-blue-700">
+                <li>• اسحب الأقسام لتغيير ترتيبها</li>
+                <li>• انقر على أيقونات التنسيق لتعديل الخطوط والأحجام</li>
+                <li>• استخدم زر "إضافة عنصر" بين الأقسام لإدراج نصوص وجداول جديدة</li>
+                <li>• يمكنك تعديل أي نص مباشرة في النموذج</li>
+              </ul>
+            </div>
           </div>
         )}
 
