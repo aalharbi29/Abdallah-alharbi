@@ -4,10 +4,11 @@ import { Employee } from '@/entities/Employee';
 import { HealthCenter } from '@/entities/HealthCenter';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, Copy, Printer, X, UserPlus, Download, User, Sparkles, Loader2, FileText } from 'lucide-react';
+import { Search, Copy, Printer, X, UserPlus, Download, User, Sparkles, Loader2, FileText, Send } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
@@ -750,20 +751,26 @@ export default function EmployeeDataRequest() {
               <div className="space-y-6">
                 {/* بعد التحية */}
                 <div className="text-right">
-                  <p className="text-lg font-semibold">بعد التحية</p>
+                  <p style={{ color: '#000', fontSize: '18px', fontWeight: '600' }}>بعد التحية</p>
                 </div>
 
                 {/* الجدول */}
                 <div className="overflow-x-auto">
-                  <table className="w-full border-collapse border border-gray-300">
+                  <table className="w-full border-collapse" style={{ border: '1px solid #000' }}>
                     <thead>
-                      <tr className="bg-gray-100">
+                      <tr style={{ backgroundColor: '#f3f4f6' }}>
                         {selectedFields.map(key => {
                           const field = availableFields.find(f => f.key === key);
                           return (
                             <th
                               key={key}
-                              className="border border-gray-300 px-4 py-2 text-center font-semibold"
+                              style={{ 
+                                border: '1px solid #000',
+                                padding: '8px 16px',
+                                textAlign: 'center',
+                                fontWeight: 'bold',
+                                color: '#000'
+                              }}
                             >
                               {field?.label || key}
                             </th>
@@ -774,11 +781,16 @@ export default function EmployeeDataRequest() {
                     <tbody>
                       {displayMode === 'normal' ? (
                         selectedEmployees.map((emp, idx) => (
-                          <tr key={emp.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                          <tr key={emp.id} style={{ backgroundColor: idx % 2 === 0 ? '#fff' : '#f9fafb' }}>
                             {selectedFields.map(key => (
                               <td
                                 key={key}
-                                className="border border-gray-300 px-4 py-2 text-center"
+                                style={{ 
+                                  border: '1px solid #000',
+                                  padding: '8px 16px',
+                                  textAlign: 'center',
+                                  color: '#000'
+                                }}
                               >
                                 {emp[key] || '-'}
                               </td>
@@ -790,11 +802,17 @@ export default function EmployeeDataRequest() {
                           const rows = [];
                           selectedEmployees.forEach((emp) => {
                             rows.push(
-                              <tr key={`emp-${emp.id}`} className="bg-blue-50">
+                              <tr key={`emp-${emp.id}`} style={{ backgroundColor: '#dbeafe' }}>
                                 {selectedFields.map(key => (
                                   <td
                                     key={key}
-                                    className="border border-gray-300 px-4 py-2 text-center font-medium"
+                                    style={{ 
+                                      border: '1px solid #000',
+                                      padding: '8px 16px',
+                                      textAlign: 'center',
+                                      fontWeight: '500',
+                                      color: '#000'
+                                    }}
                                   >
                                     {emp[key] || '-'}
                                   </td>
@@ -809,21 +827,32 @@ export default function EmployeeDataRequest() {
                               const manager = getManagerWithCenters(managerId, employeeIds);
                               if (manager) {
                                 rows.push(
-                                  <tr key={`manager-header-${managerId}`} className="bg-green-100">
+                                  <tr key={`manager-header-${managerId}`} style={{ backgroundColor: '#d1fae5' }}>
                                     <td
                                       colSpan={selectedFields.length}
-                                      className="border border-gray-300 px-4 py-2 text-center font-bold"
+                                      style={{ 
+                                        border: '1px solid #000',
+                                        padding: '8px 16px',
+                                        textAlign: 'center',
+                                        fontWeight: 'bold',
+                                        color: '#000'
+                                      }}
                                     >
                                       بيانات المدير المباشر
                                     </td>
                                   </tr>
                                 );
                                 rows.push(
-                                  <tr key={`manager-data-${managerId}`} className="bg-green-50">
+                                  <tr key={`manager-data-${managerId}`} style={{ backgroundColor: '#ecfdf5' }}>
                                     {selectedFields.map(key => (
                                       <td
                                         key={key}
-                                        className="border border-gray-300 px-4 py-2 text-center"
+                                        style={{ 
+                                          border: '1px solid #000',
+                                          padding: '8px 16px',
+                                          textAlign: 'center',
+                                          color: '#000'
+                                        }}
                                       >
                                         {manager[key] || '-'}
                                       </td>
@@ -844,7 +873,7 @@ export default function EmployeeDataRequest() {
                 {/* نص الطلب */}
                 {finalRequest && (
                   <div className="p-4 bg-yellow-50 border-2 border-yellow-200 rounded-lg">
-                    <p className="text-gray-800 whitespace-pre-wrap leading-relaxed text-right">
+                    <p style={{ color: '#000' }} className="whitespace-pre-wrap leading-relaxed text-right">
                       {finalRequest}
                     </p>
                   </div>
@@ -852,8 +881,8 @@ export default function EmployeeDataRequest() {
 
                 {/* الخاتمة */}
                 <div className="text-right space-y-4">
-                  <p className="text-lg">نأمل التكرم بالاطلاع وإكمال اللازم.</p>
-                  <p className="text-lg font-semibold mt-6">أطيب التحايا.</p>
+                  <p style={{ color: '#000', fontSize: '18px' }}>نأمل التكرم بالاطلاع وإكمال اللازم.</p>
+                  <p style={{ color: '#000', fontSize: '18px', fontWeight: '600' }} className="mt-6">أطيب التحايا.</p>
                 </div>
               </div>
             </CardContent>
