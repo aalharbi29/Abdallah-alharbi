@@ -1,4 +1,3 @@
-
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 import { Statistic } from "@/entities/Statistic";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -71,9 +70,9 @@ export default function StatisticsHijri() {
           </CardHeader>
           <CardContent className="p-6">
             {loading ? (
-              <div className="text-center text-gray-500 py-16">
-                <RefreshCw className="w-12 h-12 mx-auto mb-4 animate-spin text-purple-600" />
-                <p className="text-lg">جاري التحميل...</p>
+              <div className="text-center text-gray-500 py-8 md:py-16">
+                <RefreshCw className="w-8 h-8 md:w-12 md:h-12 mx-auto mb-2 md:mb-4 animate-spin text-purple-600" />
+                <p className="text-sm md:text-lg mobile-text">جاري التحميل...</p>
               </div>
             ) : (
               <MonthGrid months={months} items={items} />

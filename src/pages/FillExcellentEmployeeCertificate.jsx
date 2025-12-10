@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
@@ -8,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowRight, Save, Eye, Award, Printer, FileImage, FileText, Upload } from 'lucide-react';
+import { ArrowRight, Save, Eye, Award, Printer, Download, FileImage, FileText, Upload } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { format } from 'date-fns';
 
@@ -103,143 +102,132 @@ export default function FillExcellentEmployeeCertificate() {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-2 md:p-6 bg-gray-50 min-h-screen">
       <div className="max-w-4xl mx-auto">
-        <div className="flex items-center gap-4 mb-8">
-          <Button variant="outline" onClick={() => navigate(createPageUrl('Forms?type=interactive'))} size="icon">
+        <div className="flex items-center gap-2 md:gap-4 mb-4 md:mb-8">
+          <Button variant="outline" onClick={() => navigate(createPageUrl('Forms?type=interactive'))} size="icon" className="touch-target">
             <ArrowRight className="w-4 h-4" />
           </Button>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-              <Award className="w-8 h-8 text-yellow-500" />
-              مشهد إنجاز موظف حاصل تقييم ممتاز
+          <div className="flex-1">
+            <h1 className="text-lg md:text-3xl font-bold text-gray-900 flex items-center gap-2">
+              <Award className="w-5 h-5 md:w-8 md:h-8 text-yellow-500" />
+              <span className="mobile-title">شهادة تقييم ممتاز</span>
             </h1>
-            <p className="text-gray-600 mt-1">تعبئة شهادة تقييم موظف ممتاز</p>
+            <p className="text-gray-600 mt-1 text-xs md:text-base hidden md:block">تعبئة شهادة تقييم موظف ممتاز</p>
           </div>
         </div>
 
         <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle>بيانات الشهادة</CardTitle>
+          <CardHeader className="p-3 md:p-6">
+            <CardTitle className="text-base md:text-lg">بيانات الشهادة</CardTitle>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <CardContent className="p-3 md:p-6">
+            <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
               <div className="relative">
-                <Label htmlFor="employee_search">البحث عن موظف (بالاسم)</Label>
+                <Label htmlFor="employee_search" className="text-sm md:text-base">البحث عن موظف (بالاسم)</Label>
                 <Input
                   id="employee_search"
                   placeholder="ابحث بالاسم..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  className="h-11 md:h-10 text-base"
                 />
                 {filteredEmployees.length > 0 && (
                   <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
                     {filteredEmployees.map((emp) => (
                       <div
                         key={emp.id}
-                        className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        className="px-3 py-3 md:px-4 md:py-2 hover:bg-gray-100 cursor-pointer text-sm md:text-base border-b last:border-0 touch-target"
                         onClick={() => handleEmployeeSelect(emp)}
                       >
-                        {emp.full_name_arabic} - {emp.رقم_الموظف}
+                        <div className="font-semibold">{emp.full_name_arabic}</div>
+                        <div className="text-xs text-gray-500">{emp.رقم_الموظف}</div>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <div>
-                  <Label htmlFor="employee_name">اسم الموظف *</Label>
+                  <Label htmlFor="employee_name" className="text-sm md:text-base">اسم الموظف *</Label>
                   <Input
                     id="employee_name"
                     value={formData.employee_name}
                     onChange={(e) => setFormData(prev => ({ ...prev, employee_name: e.target.value }))}
                     required
-                    className="bg-gray-100"
+                    className="bg-gray-100 h-11 md:h-10 text-base"
                     readOnly
                   />
                 </div>
                 <div>
-                  <Label htmlFor="employee_number">رقم الموظف *</Label>
+                  <Label htmlFor="employee_number" className="text-sm md:text-base">رقم الموظف *</Label>
                   <Input
                     id="employee_number"
                     value={formData.employee_number}
                     onChange={(e) => setFormData(prev => ({ ...prev, employee_number: e.target.value }))}
                     required
-                    className="bg-gray-100"
+                    className="bg-gray-100 h-11 md:h-10 text-base"
                     readOnly
                   />
                 </div>
                 <div>
-                  <Label htmlFor="work_place">جهة العمل *</Label>
+                  <Label htmlFor="work_place" className="text-sm md:text-base">جهة العمل *</Label>
                   <Input
                     id="work_place"
                     value={formData.work_place}
                     onChange={(e) => setFormData(prev => ({ ...prev, work_place: e.target.value }))}
                     required
-                    className="bg-gray-100"
+                    className="bg-gray-100 h-11 md:h-10 text-base"
                     readOnly
                   />
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="achievement_description">وصف الإنجاز</Label>
+                <Label htmlFor="achievement_description" className="text-sm md:text-base">وصف الإنجاز</Label>
                 <Textarea
                   id="achievement_description"
                   value={formData.achievement_description}
                   onChange={(e) => setFormData(prev => ({ ...prev, achievement_description: e.target.value }))}
                   rows={4}
+                  className="text-base"
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <div>
-                  <Label htmlFor="supervisor_name">اسم الرئيس المباشر</Label>
+                  <Label htmlFor="supervisor_name" className="text-sm md:text-base">اسم الرئيس المباشر</Label>
                   <Input
                     id="supervisor_name"
                     value={formData.supervisor_name}
                     onChange={(e) => setFormData(prev => ({ ...prev, supervisor_name: e.target.value }))}
+                    className="h-11 md:h-10 text-base"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="hijri_date">التاريخ الهجري</Label>
+                  <Label htmlFor="hijri_date" className="text-sm md:text-base">التاريخ الهجري</Label>
                   <Input
                     id="hijri_date"
                     value={formData.hijri_date}
                     onChange={(e) => setFormData(prev => ({ ...prev, hijri_date: e.target.value }))}
+                    className="h-11 md:h-10 text-base"
                   />
-                </div>
-                <div>
-                  <Label htmlFor="font_weight">سمك الخط</Label>
-                  <Select
-                    value={formData.font_weight}
-                    onValueChange={(value) => setFormData(prev => ({ ...prev, font_weight: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="normal">عادي</SelectItem>
-                      <SelectItem value="bold">سميك</SelectItem>
-                      <SelectItem value="bolder">سميك جداً</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
               </div>
 
-              <div className="flex justify-between pt-6">
-                <Button type="button" variant="outline" onClick={() => setShowPreview(true)}>
+              <div className="flex flex-col sm:flex-row justify-between gap-3 pt-6">
+                <Button type="button" variant="outline" onClick={() => setShowPreview(true)} className="w-full sm:w-auto touch-target">
                   <Eye className="w-4 h-4 ml-2" />
                   معاينة الشهادة
                 </Button>
-                <div className="flex gap-3">
-                  <Button type="button" variant="ghost" onClick={() => navigate(createPageUrl('Forms?type=interactive'))}>
+                <div className="flex gap-2 md:gap-3 w-full sm:w-auto">
+                  <Button type="button" variant="ghost" onClick={() => navigate(createPageUrl('Forms?type=interactive'))} className="flex-1 sm:flex-initial touch-target">
                     إلغاء
                   </Button>
-                  <Button type="submit" disabled={isSubmitting} className="bg-blue-600 hover:bg-blue-700">
+                  <Button type="submit" disabled={isSubmitting} className="bg-blue-600 hover:bg-blue-700 flex-1 sm:flex-initial touch-target">
                     <Save className="w-4 h-4 ml-2" />
-                    {isSubmitting ? 'جاري الحفظ...' : 'حفظ الشهادة'}
+                    {isSubmitting ? 'جاري...' : 'حفظ'}
                   </Button>
                 </div>
               </div>
@@ -493,8 +481,12 @@ const CertificatePreview = ({ formData, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-100 z-50 overflow-auto">
+    <div className="fixed inset-0 bg-gray-100 z-50 overflow-auto safe-area-inset">
       <style>{`
+        .touch-target {
+          min-width: 44px;
+          min-height: 44px;
+        }
         @media print {
           body * { visibility: hidden; }
           #certificate-content, #certificate-content * { visibility: visible; }
@@ -556,51 +548,53 @@ const CertificatePreview = ({ formData, onClose }) => {
       `}</style>
       
       {/* شريط الأدوات */}
-      <div className="sticky top-0 bg-white border-b shadow-sm p-4 flex justify-between items-center z-50 no-print">
-        <h2 className="text-xl font-bold">معاينة وتعديل الشهادة</h2>
-        <div className="flex gap-2 flex-wrap items-center">
+      <div className="sticky top-0 bg-white border-b shadow-sm p-2 md:p-4 z-50 no-print safe-top">
+        <h2 className="text-base md:text-xl font-bold mb-2 md:mb-3">معاينة وتعديل الشهادة</h2>
+        <div className="grid grid-cols-3 md:flex gap-1 md:gap-2 items-center">
           <Button 
             onClick={() => setShowBorder(!showBorder)} 
             variant={showBorder ? "default" : "outline"}
             size="sm"
+            className="text-xs md:text-sm touch-target col-span-1"
           >
-            {showBorder ? '✓ إطار' : 'إطار'}
+            {showBorder ? '✓' : 'إطار'}
           </Button>
-          <Button onClick={handlePrint} className="bg-blue-600 hover:bg-blue-700 text-white" disabled={isExporting}>
-            <Printer className="w-4 h-4 ml-2" />
-            طباعة
+          <Button onClick={handlePrint} className="bg-blue-600 hover:bg-blue-700 text-white text-xs md:text-sm touch-target col-span-1" disabled={isExporting}>
+            <Printer className="w-3 h-3 md:w-4 md:h-4 ml-1" />
+            <span className="hidden md:inline">طباعة</span>
           </Button>
-          <Button onClick={handleExportPDF} variant="outline" disabled={isExporting}>
-            <FileText className="w-4 h-4 ml-2" />
-            {isExporting ? 'جاري...' : 'PDF'}
+          <Button onClick={handleExportPDF} variant="outline" disabled={isExporting} size="sm" className="text-xs md:text-sm touch-target col-span-1">
+            <FileText className="w-3 h-3 md:w-4 md:h-4 ml-1" />
+            {isExporting ? '...' : 'PDF'}
           </Button>
-          <Button onClick={handleExportImage} variant="outline" disabled={isExporting}>
-            <FileImage className="w-4 h-4 ml-2" />
-            {isExporting ? 'جاري...' : 'صورة'}
+          <Button onClick={handleExportImage} variant="outline" disabled={isExporting} size="sm" className="text-xs md:text-sm touch-target col-span-1">
+            <FileImage className="w-3 h-3 md:w-4 md:h-4 ml-1" />
+            {isExporting ? '...' : 'صورة'}
           </Button>
-          <Button onClick={handleSaveToEmployeeFile} className="bg-green-600 hover:bg-green-700 text-white" disabled={isExporting}>
-            <Upload className="w-4 h-4 ml-2" />
+          <Button onClick={handleSaveToEmployeeFile} className="bg-green-600 hover:bg-green-700 text-white text-xs md:text-sm touch-target col-span-2" disabled={isExporting}>
+            <Upload className="w-3 h-3 md:w-4 md:h-4 ml-1" />
             {isExporting ? 'جاري...' : 'حفظ في الملف'}
           </Button>
-          <Button onClick={onClose} variant="outline" disabled={isExporting}>إغلاق</Button>
+          <Button onClick={onClose} variant="outline" disabled={isExporting} size="sm" className="touch-target col-span-1">إغلاق</Button>
         </div>
       </div>
 
       {/* تعليمات */}
-      <div className="bg-blue-50 border-b border-blue-200 p-3 text-center text-sm text-blue-800 no-print">
-        💡 اسحب العناصر (اسم المدير، التوقيع، الختم) لتغيير موضعها على الشهادة
+      <div className="bg-blue-50 border-b border-blue-200 p-2 md:p-3 text-center text-xs md:text-sm text-blue-800 no-print">
+        💡 اسحب العناصر لتغيير موضعها
       </div>
 
       {/* صفحة A4 */}
-      <div className="flex justify-center py-8 bg-gray-200">
+      <div className="flex justify-center py-2 md:py-8 bg-gray-200">
         <div 
           id="certificate-content" 
-          className="relative bg-white shadow-2xl"
+          className="relative bg-white shadow-2xl mx-2 md:mx-0"
           style={{
-            width: '210mm',
-            height: '297mm',
+            width: '100%',
+            maxWidth: '210mm',
+            height: 'auto',
             minHeight: '297mm',
-            maxHeight: '297mm',
+            aspectRatio: '210/297',
             position: 'relative',
             overflow: 'hidden',
             boxSizing: 'border-box'
