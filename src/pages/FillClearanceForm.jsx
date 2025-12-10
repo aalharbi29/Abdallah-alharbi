@@ -29,7 +29,7 @@ const initialBlocks = [
     id: 'header_layout',
     type: 'layout_row',
     data: {
-      rightContent: 'إدارة الموارد البشرية بالرعاية الأولية بتجمع المدينة المنورة',
+      rightContent: 'إدارة الموارد البشرية بالرعاية الأولية\nتجمع المدينة المنورة الصحي',
       centerContent: 'براءة ذمة',
       imageUrl: 'https://cdn.worldvectorlogo.com/logos/ministry-of-health-saudi-arabia-1.svg'
     }
@@ -53,7 +53,7 @@ const initialBlocks = [
     type: 'paragraph',
     data: {
       items: [
-        { id: 1, type: 'text', value: 'تشهد الموارد البشرية بالرعاية الاولية بتجمع المدينة المنورة بأن الموضح اسمه وبياناته أعلاه برئ الذمة من الناحية الإدارية والمالية وقد سلم جميع ما بعهدته وذلك نظراً .' },
+        { id: 1, type: 'text', value: 'تشهد الموارد البشرية بالرعاية الاولية بتجمع المدينة المنورة الصحي بأن الموضح اسمه وبياناته أعلاه برئ الذمة من الناحية الإدارية والمالية وقد سلم جميع ما بعهدته وذلك نظراً' },
       ]
     }
   },
@@ -70,7 +70,7 @@ const initialBlocks = [
         { id: 6, type: 'field', key: 'decision_date', width: '80px', placeholder: 'DD/MM' },
         { id: 7, type: 'text', value: '/' },
         { id: 8, type: 'field', key: 'decision_year', width: '60px', placeholder: '1445' },
-        { id: 9, type: 'text', value: 'هـ' },
+        { id: 9, type: 'text', value: 'هـ .' },
       ]
     }
   },
@@ -308,30 +308,30 @@ export default function FillClearanceForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8 print:bg-white print:p-0">
+    <div className="min-h-screen bg-gray-50 p-2 md:p-4 lg:p-8 print:bg-white print:p-0">
       <div className="max-w-4xl mx-auto print:max-w-none">
         {/* Actions Bar - Hidden in Print */}
-        <div className="mb-6 flex justify-between items-center print:hidden bg-white p-4 rounded-lg shadow-sm border">
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={() => navigate(-1)} className="gap-2">
+        <div className="mb-4 md:mb-6 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3 print:hidden bg-white p-3 md:p-4 rounded-lg shadow-sm border">
+          <div className="flex gap-2 w-full md:w-auto">
+            <Button variant="outline" onClick={() => navigate(-1)} className="gap-2 touch-target flex-1 md:flex-initial">
               <ArrowRight className="w-4 h-4" />
-              عودة
+              <span className="text-xs md:text-sm">عودة</span>
             </Button>
             <Button 
               variant={isEditMode ? "default" : "outline"}
               onClick={() => setIsEditMode(!isEditMode)} 
-              className={`gap-2 ${isEditMode ? 'bg-blue-600 hover:bg-blue-700' : ''}`}
+              className={`gap-2 touch-target flex-1 md:flex-initial ${isEditMode ? 'bg-blue-600 hover:bg-blue-700' : ''}`}
             >
               {isEditMode ? <Eye className="w-4 h-4" /> : <Settings2 className="w-4 h-4" />}
-              {isEditMode ? 'معاينة النموذج' : 'تعديل النموذج'}
+              <span className="text-xs md:text-sm">{isEditMode ? 'معاينة' : 'تعديل'}</span>
             </Button>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 w-full md:w-auto">
             <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
               <DialogTrigger asChild>
-                <Button variant="outline" className="gap-2">
+                <Button variant="outline" className="gap-2 touch-target flex-1 md:flex-initial">
                   <Download className="w-4 h-4" />
-                  استيراد بيانات
+                  <span className="text-xs md:text-sm">استيراد</span>
                 </Button>
               </DialogTrigger>
               <DialogContent>
@@ -350,34 +350,56 @@ export default function FillClearanceForm() {
                 </div>
               </DialogContent>
             </Dialog>
-            <Button variant="outline" onClick={handlePrint} className="gap-2">
+            <Button variant="outline" onClick={handlePrint} className="gap-2 touch-target flex-1 md:flex-initial">
               <Printer className="w-4 h-4" />
-              طباعة
+              <span className="text-xs md:text-sm">طباعة</span>
             </Button>
-            <Button onClick={handleSubmit} disabled={isSubmitting || isEditMode} className="gap-2 bg-green-600 hover:bg-green-700">
+            <Button onClick={handleSubmit} disabled={isSubmitting || isEditMode} className="gap-2 bg-green-600 hover:bg-green-700 touch-target flex-1 md:flex-initial">
               {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              حفظ
+              <span className="text-xs md:text-sm">حفظ</span>
             </Button>
           </div>
         </div>
 
         {/* Warning for Edit Mode */}
         {isEditMode && (
-          <div className="mb-4 bg-blue-50 border border-blue-200 text-blue-800 px-4 py-3 rounded-md flex items-center gap-2 print:hidden">
-            <Settings2 className="w-5 h-5" />
-            <p className="text-sm font-medium">
-              أنت الآن في وضع التعديل. يمكنك سحب الأقسام لتغيير ترتيبها، الضغط على النصوص لتعديلها، أو إضافة وحذف الأجزاء.
+          <div className="mb-4 bg-blue-50 border border-blue-200 text-blue-800 px-3 md:px-4 py-2 md:py-3 rounded-md flex items-center gap-2 print:hidden">
+            <Settings2 className="w-4 h-4 md:w-5 md:h-5" />
+            <p className="text-xs md:text-sm font-medium">
+              وضع التعديل - اسحب الأقسام لتغيير ترتيبها
             </p>
           </div>
         )}
 
         {/* Form Container */}
-        <Card className={`bg-white p-8 md:p-12 shadow-lg print:shadow-none print:border-0 print:p-0 transition-all ${isEditMode ? 'ring-4 ring-blue-50/50 scale-[0.99]' : ''}`} id="clearance-form">
+        <Card 
+          className={`bg-white p-8 md:p-12 shadow-lg print:shadow-none print:border-0 print:p-0 transition-all ${isEditMode ? 'ring-4 ring-blue-50/50 scale-[0.99]' : ''} relative`} 
+          id="clearance-form"
+          style={{
+            backgroundImage: `url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/c0d0cb403_.png)`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
+          }}
+        >
           <style>{`
             @media print {
               body * { visibility: hidden; }
               #clearance-form, #clearance-form * { visibility: visible; }
-              #clearance-form { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 20mm; transform: none !important; }
+              #clearance-form { 
+                position: absolute; 
+                left: 0; 
+                top: 0; 
+                width: 100%; 
+                margin: 0; 
+                padding: 20mm; 
+                transform: none !important;
+                background-image: url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/c0d0cb403_.png) !important;
+                background-size: cover !important;
+                background-position: center !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+              }
               .no-print { display: none !important; }
               /* Make inputs look like text in print */
               input, textarea { border: none !important; background: transparent !important; resize: none; }
