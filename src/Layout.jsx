@@ -32,60 +32,64 @@ import InstallPrompt from "./components/pwa/InstallPrompt";
 import Notifications from "./components/notifications/Notifications";
 import ThemeProvider, { useTheme } from "./components/theme/ThemeProvider";
 import ThemeSwitcher from "./components/theme/ThemeSwitcher";
+import { LanguageProvider, useLanguage } from "./components/language/LanguageProvider";
+import LanguageSwitcher from "./components/language/LanguageSwitcher";
 
-const navigationItems = [
-  { name: "لوحة التحكم", href: createPageUrl("Dashboard"), icon: Home },
-  { name: "الموارد البشرية", href: createPageUrl("HumanResources"), icon: Users },
-  { name: "تحليلات الموارد البشرية", href: createPageUrl("HRAnalytics"), icon: BarChart3 },
-  { name: "المراكز الصحية", href: createPageUrl("HealthCenters"), icon: Building2 },
-  { name: "الإجازات", href: createPageUrl("Leaves"), icon: Calendar },
-  { name: "ملاحظات سريعة", href: createPageUrl("QuickNotes"), icon: FileSignature },
-  { name: "طلب بيانات", href: createPageUrl("EmployeeDataRequest"), icon: FileBarChart },
-  { name: "تقارير المراكز", href: createPageUrl("HealthCentersReport"), icon: BarChart3 },
-  { name: "تحديث بيانات المراكز", href: createPageUrl("BulkUpdateCenterData"), icon: RefreshCw },
-  { name: "مستخرج البيانات الذكي", href: createPageUrl("DataExtractor"), icon: FileText },
-  { name: "النماذج التفاعلية", href: createPageUrl("InteractiveForms"), icon: Edit },
+const getNavigationItems = (t) => [
+  { name: t('nav.dashboard'), href: createPageUrl("Dashboard"), icon: Home },
+  { name: t('nav.humanResources'), href: createPageUrl("HumanResources"), icon: Users },
+  { name: t('nav.hrAnalytics'), href: createPageUrl("HRAnalytics"), icon: BarChart3 },
+  { name: t('nav.healthCenters'), href: createPageUrl("HealthCenters"), icon: Building2 },
+  { name: t('nav.leaves'), href: createPageUrl("Leaves"), icon: Calendar },
+  { name: t('nav.quickNotes'), href: createPageUrl("QuickNotes"), icon: FileSignature },
+  { name: t('nav.employeeDataRequest'), href: createPageUrl("EmployeeDataRequest"), icon: FileBarChart },
+  { name: t('nav.healthCentersReport'), href: createPageUrl("HealthCentersReport"), icon: BarChart3 },
+  { name: t('nav.bulkUpdateCenterData'), href: createPageUrl("BulkUpdateCenterData"), icon: RefreshCw },
+  { name: t('nav.dataExtractor'), href: createPageUrl("DataExtractor"), icon: FileText },
+  { name: t('nav.interactiveForms'), href: createPageUrl("InteractiveForms"), icon: Edit },
   {
-    name: "النماذج",
+    name: t('nav.forms'),
     icon: FileSignature,
     subItems: [
-      { name: "نماذج الإجازات", href: createPageUrl("Forms?type=leaves"), icon: Calendar },
-      { name: "نماذج التكاليف", href: createPageUrl("Forms?type=assignments"), icon: DollarSign },
-      { name: "نماذج الاستقصاء الوبائي", href: createPageUrl("Forms?type=epidemiology"), icon: Activity },
-      { name: "نماذج الإحصائيات", href: createPageUrl("Forms?type=statistics"), icon: FileBarChart },
-      { name: "نماذج تجديد العقد", href: createPageUrl("Forms?type=contract_renewal"), icon: RefreshCw },
-      { name: "طلب أجهزة غير طبية", href: createPageUrl("FillNonMedicalEquipmentForm"), icon: FilePlus },
-      { name: "نماذج إضافية", href: createPageUrl("Forms?type=additional"), icon: FilePlus },
-      { name: "نموذج براءة ذمة", href: createPageUrl("FillClearanceForm"), icon: FileCheck },
+      { name: t('nav.forms') + " - " + t('nav.leaves'), href: createPageUrl("Forms?type=leaves"), icon: Calendar },
+      { name: t('nav.forms') + " - " + t('nav.assignments'), href: createPageUrl("Forms?type=assignments"), icon: DollarSign },
+      { name: t('nav.forms') + " - " + t('reports.statisticsReport'), href: createPageUrl("Forms?type=epidemiology"), icon: Activity },
+      { name: t('nav.forms') + " - " + t('nav.statistics'), href: createPageUrl("Forms?type=statistics"), icon: FileBarChart },
+      { name: t('nav.forms') + " - " + t('forms.formTemplates'), href: createPageUrl("Forms?type=contract_renewal"), icon: RefreshCw },
+      { name: "Equipment Request", href: createPageUrl("FillNonMedicalEquipmentForm"), icon: FilePlus },
+      { name: "Additional Forms", href: createPageUrl("Forms?type=additional"), icon: FilePlus },
+      { name: "Clearance Form", href: createPageUrl("FillClearanceForm"), icon: FileCheck },
     ]
   },
-  { name: "التقارير", href: createPageUrl("Reports"), icon: BarChart3 },
+  { name: t('nav.reports'), href: createPageUrl("Reports"), icon: BarChart3 },
   {
-    name: "التكاليف",
+    name: t('nav.assignments'),
     icon: FileText,
     subItems: [
-      { name: "سجل التكاليف", href: createPageUrl("Assignments"), icon: FileText },
-      { name: "تقويم التكاليف", href: createPageUrl("AssignmentsCalendar"), icon: Calendar },
-      { name: "تحليلات التكاليف", href: createPageUrl("AssignmentsAnalytics"), icon: BarChart3 }
+      { name: t('nav.assignments') + " - " + t('common.view'), href: createPageUrl("Assignments"), icon: FileText },
+      { name: t('nav.assignmentsCalendar'), href: createPageUrl("AssignmentsCalendar"), icon: Calendar },
+      { name: t('nav.assignmentsAnalytics'), href: createPageUrl("AssignmentsAnalytics"), icon: BarChart3 }
     ]
   },
-  { name: "تكليف الإجازات", href: createPageUrl("HolidayAssignments"), icon: Briefcase },
-  { name: "محرر PDF", href: createPageUrl("PDFEditor"), icon: FileText },
-  { name: "الأرشيف", href: createPageUrl("Archive"), icon: Archive },
+  { name: t('nav.holidayAssignments'), href: createPageUrl("HolidayAssignments"), icon: Briefcase },
+  { name: t('nav.pdfEditor'), href: createPageUrl("PDFEditor"), icon: FileText },
+  { name: t('nav.archive'), href: createPageUrl("Archive"), icon: Archive },
   {
-    name: "الاحصائيات",
+    name: t('nav.statistics'),
     icon: BarChart3,
     subItems: [
-      { name: "الاحصائيات الميلادية", href: createPageUrl("StatisticsGregorian"), icon: BarChart3 },
-      { name: "الاحصائيات الهجرية", href: createPageUrl("StatisticsHijri"), icon: BarChart3 }
+      { name: t('nav.statisticsGregorian'), href: createPageUrl("StatisticsGregorian"), icon: BarChart3 },
+      { name: t('nav.statisticsHijri'), href: createPageUrl("StatisticsHijri"), icon: BarChart3 }
     ]
   },
-  { name: "الإعدادات", href: createPageUrl("Settings"), icon: Settings },
-  { name: "إدارة العيادات", href: createPageUrl("ClinicManagement"), icon: Hospital },
-  { name: "مصمم الإعلانات AI", href: createPageUrl("AIAnnouncementDesigner"), icon: FileSignature },
+  { name: t('nav.settings'), href: createPageUrl("Settings"), icon: Settings },
+  { name: t('nav.clinicManagement'), href: createPageUrl("ClinicManagement"), icon: Hospital },
+  { name: t('nav.aiAnnouncementDesigner'), href: createPageUrl("AIAnnouncementDesigner"), icon: FileSignature },
   ];
 
 function LayoutContent({ children, currentPageName }) {
+  const { t } = useLanguage();
+  const navigationItems = getNavigationItems(t);
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -452,8 +456,8 @@ function LayoutContent({ children, currentPageName }) {
                   <Hospital className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900">المراكز الصحية</h2>
-                  <p className="text-xs text-gray-500">الحناكية</p>
+                  <h2 className="text-lg font-bold text-gray-900">{t('header.healthCenters')}</h2>
+                  <p className="text-xs text-gray-500">{t('header.alHanakiyah')}</p>
                 </div>
               </div>
             </header>
@@ -464,8 +468,8 @@ function LayoutContent({ children, currentPageName }) {
 
             <footer className="border-t border-gray-200 p-4 bg-gradient-to-r from-gray-50 to-green-50">
               <div className="text-center text-xs text-gray-500">
-                <p className="font-medium">نظام إدارة المراكز الصحية</p>
-                <p className="text-xs mt-1">الإصدار 3.0 | وزارة الصحة</p>
+                <p className="font-medium">{t('footer.systemName')}</p>
+                <p className="text-xs mt-1">{t('footer.version')}</p>
               </div>
             </footer>
           </aside>
@@ -486,14 +490,15 @@ function LayoutContent({ children, currentPageName }) {
                 <div className="w-6 h-6 md:w-7 md:h-7 bg-gradient-to-br from-green-600 to-green-700 rounded-lg flex items-center justify-center">
                   <Hospital className="w-3 h-3 md:w-4 md:h-4 text-white" />
                 </div>
-                <h1 className="text-sm md:text-base font-bold text-gray-900 mobile-title">المراكز الصحية</h1>
-              </div>
-            </div>
+                <h1 className="text-sm md:text-base font-bold text-gray-900 mobile-title">{t('header.healthCenters')}</h1>
+                </div>
+                </div>
 
-            <div className="flex items-center gap-1">
-              <ThemeSwitcher variant="compact" />
-              <Notifications />
-            </div>
+                <div className="flex items-center gap-1">
+                <LanguageSwitcher variant="ghost" size="sm" />
+                <ThemeSwitcher variant="compact" />
+                <Notifications />
+                </div>
             </header>
 
           {isMobileMenuOpen && (
@@ -506,13 +511,13 @@ function LayoutContent({ children, currentPageName }) {
                       <Hospital className="w-4 h-4 text-white" />
                     </div>
                     <div>
-                      <h2 className="text-sm font-bold text-gray-900">المراكز الصحية</h2>
-                      <p className="text-xs text-gray-500">الحناكية</p>
+                      <h2 className="text-sm font-bold text-gray-900">{t('header.healthCenters')}</h2>
+                      <p className="text-xs text-gray-500">{t('header.alHanakiyah')}</p>
                     </div>
-                  </div>
-                  <Button variant="ghost" size="sm" onClick={closeMobileMenu} className="p-2">
+                    </div>
+                    <Button variant="ghost" size="sm" onClick={closeMobileMenu} className="p-2">
                     <X className="w-4 h-4" />
-                  </Button>
+                    </Button>
                 </header>
 
                 <nav className="p-3 space-y-1 safe-bottom">
@@ -560,10 +565,12 @@ function LayoutContent({ children, currentPageName }) {
 
 export default function Layout({ children, currentPageName }) {
   return (
-    <ThemeProvider>
-      <LayoutContent currentPageName={currentPageName}>
-        {children}
-      </LayoutContent>
-    </ThemeProvider>
+    <LanguageProvider>
+      <ThemeProvider>
+        <LayoutContent currentPageName={currentPageName}>
+          {children}
+        </LayoutContent>
+      </ThemeProvider>
+    </LanguageProvider>
   );
 }
