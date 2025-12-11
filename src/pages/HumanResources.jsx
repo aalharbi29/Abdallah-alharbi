@@ -1,18 +1,21 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Printer, RefreshCw, Loader2, Users, UserPlus, Award, X, WifiOff, MessageCircle } from "lucide-react";
+import { Plus, Search, Printer, AlertTriangle, RefreshCw, Loader2, Users, UserPlus, Calendar, FileText, Filter, Award, CheckSquare, Square, Pin, X, WifiOff, MessageCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 import EmployeeList from "../components/employees/EmployeeList";
 import EmployeeForm from "../components/employees/EmployeeForm";
 import EmployeeFilters from "../components/employees/EmployeeFilters";
 import ExportManager from "../components/export/ExportManager";
 import CustomExportManager from "../components/export/CustomExportManager";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 import {
   Dialog,
   DialogContent,
@@ -487,17 +490,20 @@ export default function HumanResources() {
 
   // العرض الرئيسي
   return (
-    <div className="p-4 md:p-6 space-y-6">
+    <div className="p-4 md:p-6 space-y-6 bg-gradient-to-br from-gray-50 via-white to-blue-50/30 min-h-screen">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 animate-fade-in">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-              <Users className="w-8 h-8 text-blue-600" />
+            <h1 className="text-3xl md:text-4xl font-display text-gray-900 flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg">
+                <Users className="w-6 h-6 md:w-7 md:h-7 text-white" />
+              </div>
               إدارة الموارد البشرية
             </h1>
-            <p className="text-gray-600 mt-1">
-              إجمالي الموظفين: {employees.length} • المعروض: {filteredEmployees.length}
+            <p className="text-gray-600 text-base md:text-lg font-medium mr-16 md:mr-0">
+              <span className="text-blue-600 font-bold">{employees.length}</span> موظف • 
+              <span className="text-green-600 font-bold mr-2">{filteredEmployees.length}</span> معروض
             </p>
           </div>
           
@@ -517,16 +523,16 @@ export default function HumanResources() {
         </div>
 
         {/* Search and Actions */}
-        <Card className="mb-6 no-print">
-          <CardContent className="p-4">
+        <Card className="mb-6 no-print shadow-medium border-0 bg-white">
+          <CardContent className="p-5 md:p-6">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1 relative">
-                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <Input
                   placeholder="ابحث بالاسم، رقم الهوية، رقم الموظف، الجوال..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pr-10"
+                  className="pr-12 h-12 text-base border-gray-200 focus:border-green-500 focus:ring-green-500"
                 />
               </div>
               

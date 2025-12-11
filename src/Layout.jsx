@@ -157,7 +157,7 @@ function LayoutContent({ children, currentPageName }) {
         const subItemSearch = subItem.href.split('?')[1] || '';
         const currentLocationPath = location.pathname;
         const currentLocationSearch = location.search;
-        
+
         return currentLocationPath === subItemPath && (subItemSearch ? currentLocationSearch.includes(subItemSearch) : true);
       });
 
@@ -165,31 +165,33 @@ function LayoutContent({ children, currentPageName }) {
         <div key={item.name}>
           <button
             onClick={() => toggleSubmenu(item.name)}
-            className={`flex w-full items-center justify-between gap-3 p-3 rounded-lg hover:bg-green-50 hover:text-green-700 transition-all duration-200 ${
-              isExpanded || hasActiveSubItem ? "bg-green-100 text-green-700 shadow-sm" : "text-gray-700"
-            } ${isMobileLayout ? 'text-sm' : ''}`}
+            className={`flex w-full items-center justify-between gap-3 px-4 py-3 rounded-xl font-semibold transition-all duration-300 ${
+              isExpanded || hasActiveSubItem 
+                ? "bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg" 
+                : "text-gray-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:text-green-700"
+            } ${isMobileLayout ? 'text-sm' : 'text-base'}`}
           >
             <div className="flex items-center gap-3">
-              <item.icon className={isMobileLayout ? "w-4 h-4" : "w-5 h-5"} />
-              <span className="font-medium">{item.name}</span>
+              <item.icon className={`${isMobileLayout ? "w-4 h-4" : "w-5 h-5"} ${isExpanded || hasActiveSubItem ? 'text-white' : ''}`} />
+              <span>{item.name}</span>
             </div>
-            <ChevronDown className={`w-3 h-3 transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+            <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`} />
           </button>
 
           {isExpanded && (
-            <div className="mr-6 mt-1 space-y-1">
+            <div className="mr-7 mt-2 space-y-1 animate-fade-in">
               {(item.subItems || []).map((subItem) => (
                 <Link
                   key={subItem.name}
                   to={subItem.href}
                   onClick={isMobileLayout ? closeMobileMenu : undefined}
-                  className={`flex items-center gap-3 p-2 rounded-md hover:bg-green-50 hover:text-green-700 transition-all duration-200 ${
+                  className={`flex items-center gap-3 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 ${
                     location.pathname === subItem.href.split('?')[0] && (subItem.href.split('?')[1] ? location.search.includes(subItem.href.split('?')[1]) : true)
-                      ? "bg-green-100 text-green-700 shadow-sm"
-                      : "text-gray-600"
+                      ? "bg-green-100 text-green-800 shadow-sm border-r-4 border-green-600"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-green-700"
                   } ${isMobileLayout ? 'text-xs' : 'text-sm'}`}
                 >
-                  <subItem.icon className={isMobileLayout ? "w-3 h-3" : "w-4 h-4"} />
+                  <subItem.icon className={isMobileLayout ? "w-3.5 h-3.5" : "w-4 h-4"} />
                   <span>{subItem.name}</span>
                 </Link>
               ))}
@@ -204,14 +206,14 @@ function LayoutContent({ children, currentPageName }) {
         key={item.name}
         to={item.href}
         onClick={isMobileLayout ? closeMobileMenu : undefined}
-        className={`flex items-center gap-3 p-3 rounded-lg hover:bg-green-50 hover:text-green-700 transition-all duration-200 group ${
+        className={`flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all duration-300 group ${
           isActive
-            ? "bg-green-100 text-green-700 border border-green-200 shadow-md"
-            : "text-gray-700 hover:shadow-md"
-        } ${isMobileLayout ? 'text-sm' : ''}`}
+            ? "bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg"
+            : "text-gray-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:text-green-700 hover:shadow-md"
+        } ${isMobileLayout ? 'text-sm' : 'text-base'}`}
       >
-        <item.icon className={`${isMobileLayout ? "w-4 h-4" : "w-5 h-5"} group-hover:scale-110 transition-transform`} />
-        <span className="font-medium">{item.name}</span>
+        <item.icon className={`${isMobileLayout ? "w-4 h-4" : "w-5 h-5"} group-hover:scale-110 transition-transform duration-200`} />
+        <span>{item.name}</span>
       </Link>
     );
   };
@@ -449,52 +451,52 @@ function LayoutContent({ children, currentPageName }) {
         <InstallPrompt />
 
         {!isMobile && (
-          <aside className="w-64 bg-gradient-to-b from-white to-gray-50 border-l border-gray-200 flex flex-col shadow-xl no-print">
-            <header className="border-b border-gray-200 p-4 bg-gradient-to-r from-green-50 to-gray-50">
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-green-700 rounded-xl flex items-center justify-center shadow-lg">
-                  <Hospital className="w-5 h-5 text-white" />
+          <aside className="w-72 bg-gradient-to-br from-gray-50 via-white to-green-50/30 border-l border-gray-200/50 flex flex-col shadow-2xl no-print backdrop-blur-sm">
+            <header className="border-b border-gray-200/50 p-6 bg-gradient-to-r from-green-600 to-emerald-600">
+              <div className="flex items-center gap-3">
+                <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-xl border border-white/30">
+                  <Hospital className="w-7 h-7 text-white drop-shadow-lg" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-gray-900">{t('header.healthCenters')}</h2>
-                  <p className="text-xs text-gray-500">{t('header.alHanakiyah')}</p>
+                  <h2 className="text-xl font-bold text-white drop-shadow-md">{t('header.healthCenters')}</h2>
+                  <p className="text-sm text-green-50 font-medium">{t('header.alHanakiyah')}</p>
                 </div>
               </div>
             </header>
 
-            <nav className="flex-1 p-3 space-y-1 overflow-y-auto bg-gradient-to-b from-gray-50 to-white">
+            <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
               {(navigationItems || []).map((item) => renderNavigationItem(item))}
             </nav>
 
-            <footer className="border-t border-gray-200 p-4 bg-gradient-to-r from-gray-50 to-green-50">
-              <div className="text-center text-xs text-gray-500">
-                <p className="font-medium">{t('footer.systemName')}</p>
-                <p className="text-xs mt-1">{t('footer.version')}</p>
+            <footer className="border-t border-gray-200/50 p-5 bg-gradient-to-br from-gray-50 to-green-50">
+              <div className="text-center">
+                <p className="font-bold text-sm text-gray-700">{t('footer.systemName')}</p>
+                <p className="text-xs mt-1.5 text-gray-500 font-medium">{t('footer.version')}</p>
               </div>
             </footer>
           </aside>
         )}
 
         <div className="flex-1 flex flex-col">
-          <header className="bg-white border-b border-gray-200 px-2 md:px-3 py-2 flex items-center justify-between shadow-sm safe-top no-print">
-            <div className="flex items-center gap-2">
+          <header className="bg-white/95 backdrop-blur-md border-b border-gray-200/60 px-3 md:px-6 py-3 md:py-4 flex items-center justify-between shadow-soft safe-top no-print">
+            <div className="flex items-center gap-3">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={toggleMobileMenu}
-                className="md:hidden hover:bg-gray-100 rounded-md p-2 touch-target"
+                className="md:hidden hover:bg-green-50 rounded-xl p-2 touch-target"
               >
-                <Menu className="w-4 h-4 md:w-5 md:h-5" />
+                <Menu className="w-5 h-5 text-gray-700" />
               </Button>
-              <div className="flex items-center gap-1 md:gap-2">
-                <div className="w-6 h-6 md:w-7 md:h-7 bg-gradient-to-br from-green-600 to-green-700 rounded-lg flex items-center justify-center">
-                  <Hospital className="w-3 h-3 md:w-4 md:h-4 text-white" />
+              <div className="flex items-center gap-2 md:gap-3">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-green-600 to-green-700 rounded-xl flex items-center justify-center shadow-md">
+                  <Hospital className="w-4 h-4 md:w-5 md:h-5 text-white" />
                 </div>
-                <h1 className="text-sm md:text-base font-bold text-gray-900 mobile-title">{t('header.healthCenters')}</h1>
+                <h1 className="text-base md:text-xl font-bold text-gray-900 mobile-title">{t('header.healthCenters')}</h1>
                 </div>
                 </div>
 
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-2">
                 <LanguageSwitcher variant="ghost" size="sm" />
                 <ThemeSwitcher variant="compact" />
                 <Notifications />

@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Employee } from "@/entities/Employee";
 import { HealthCenter } from "@/entities/HealthCenter";
 import { Leave } from "@/entities/Leave";
 import { Assignment } from "@/entities/Assignment";
-// Added import
+import { Notification } from "@/entities/Notification"; // Added import
 import { Users, Building2, UserX, Briefcase, AlertTriangle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -147,11 +146,11 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="bg-gradient-to-br from-gray-50 via-white to-green-50/30 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-4 mobile-card">
-          <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-1 mobile-title">لوحة التحكم</h1>
-          <p className="text-gray-600 text-sm mobile-text">نظرة عامة على أداء النظام والمهام الشخصية</p>
+        <div className="mb-6 md:mb-8 animate-fade-in">
+          <h1 className="text-2xl md:text-4xl font-display text-gray-900 mb-2">لوحة التحكم</h1>
+          <p className="text-gray-600 text-base md:text-lg font-medium">نظرة عامة شاملة على النظام والمهام</p>
         </div>
 
         {endedAssignmentsAlert.length > 0 && (
@@ -168,21 +167,20 @@ export default function Dashboard() {
           </Alert>
         )}
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8 animate-slide-up">
           <StatsCard title="الموظفين" value={stats.totalEmployees} icon={Users} color="blue" isMobile={true} />
           <StatsCard title="المراكز" value={stats.totalDepartments} icon={Building2} color="green" isMobile={true} />
           <StatsCard title="مجازون" value={stats.onLeaveEmployees} icon={UserX} color="orange" isMobile={true} />
           <StatsCard title="مكلفون" value={stats.onAssignmentEmployees} icon={Briefcase} color="purple" isMobile={true} />
         </div>
 
-        <div className="grid lg:grid-cols-5 gap-3 md:gap-6">
-            <div className="lg:col-span-3 grid grid-cols-1 gap-3 md:gap-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
+        <div className="grid lg:grid-cols-5 gap-4 md:gap-6">
+            <div className="lg:col-span-3 grid grid-cols-1 gap-4 md:gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                     <CurrentLeaves leaves={employeesOnLeave || []} />
                     <CurrentAssignments assignments={currentAssignments || []} />
                 </div>
                 <GoalsWidget />
-                {/* REMOVED: <NotesWidget /> */}
             </div>
             <div className="lg:col-span-2">
                  <MonthlyStatistics />

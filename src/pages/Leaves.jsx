@@ -1,21 +1,29 @@
-
 import React, { useState, useEffect } from "react";
 import { Leave } from "@/entities/Leave";
 import { Employee } from "@/entities/Employee";
 import { Button } from "@/components/ui/button";
-import { Plus, Printer, Filter, AlertTriangle, RefreshCw, Archive } from "lucide-react";
+import { Plus, Printer, PlayCircle, Trash2, Filter, AlertTriangle, RefreshCw, Archive, Search } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import LeaveList from "../components/leaves/LeaveList";
 import LeaveForm from "../components/leaves/LeaveForm";
 import ExportManager from "../components/export/ExportManager";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-
-
+import QuickLeaveForm from "../components/leaves/QuickLeaveForm";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 export default function Leaves() {
   const [leaves, setLeaves] = useState([]);
@@ -178,10 +186,13 @@ export default function Leaves() {
   if (showForm) return <LeaveForm leave={editingLeave} onSubmit={handleSubmit} onCancel={() => { setShowForm(false); setEditingLeave(null); }} employees={employees} />;
 
   return (
-    <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
+    <div className="p-4 md:p-6 bg-gradient-to-br from-gray-50 via-white to-orange-50/30 min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 print-hide">
-          <div><h1 className="text-3xl font-bold">سجل الإجازات</h1><p className="text-gray-600">إدارة وتتبع جميع إجازات الموظفين والأرشيف</p></div>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 print-hide animate-fade-in">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-display text-gray-900 mb-2">سجل الإجازات</h1>
+            <p className="text-gray-600 text-base md:text-lg font-medium">إدارة وتتبع جميع إجازات الموظفين والأرشيف</p>
+          </div>
           <div className="flex gap-2">
             <ExportManager data={filteredLeaves} filename="تقرير_الإجازات" />
             <Button onClick={() => window.print()} variant="outline"><Printer className="w-4 h-4 ml-2"/>طباعة</Button>
@@ -213,16 +224,18 @@ export default function Leaves() {
             </TabsList>
           </div>
 
-          <Card className="p-4 mb-6 bg-white no-print print-hide shadow-sm border">
-            <CardHeader className="p-2 pt-0">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Filter className="w-5 h-5 text-gray-400"/>
+          <Card className="p-5 md:p-6 mb-6 bg-white no-print print-hide shadow-medium border-0">
+            <CardHeader className="p-0 pb-4">
+              <CardTitle className="text-xl flex items-center gap-3 font-bold text-gray-800">
+                <div className="w-10 h-10 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl flex items-center justify-center">
+                  <Filter className="w-5 h-5 text-gray-600"/>
+                </div>
                 خيارات الفلترة والبحث
               </CardTitle>
             </CardHeader>
-            <CardContent className="p-2">
-              <div className="flex flex-wrap items-center gap-3">
-                  <Input placeholder="بحث بالاسم أو الرقم..." value={filters.searchQuery} onChange={e => setFilters({...filters, searchQuery: e.target.value})} className="flex-1 min-w-[150px] max-w-xs"/>
+            <CardContent className="p-0">
+              <div className="flex flex-wrap items-center gap-4">
+                  <Input placeholder="بحث بالاسم أو الرقم..." value={filters.searchQuery} onChange={e => setFilters({...filters, searchQuery: e.target.value})} className="flex-1 min-w-[200px] max-w-md h-11 text-base border-gray-200 focus:border-orange-500 focus:ring-orange-500"/>
                   <Select value={filters.center} onValueChange={val => setFilters({...filters, center: val})}><SelectTrigger className="flex-1 min-w-[150px]"><SelectValue placeholder="المركز الصحي"/></SelectTrigger><SelectContent><SelectItem value="all">كل المراكز</SelectItem>{healthCenters.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent></Select>
                   <Select value={filters.type} onValueChange={val => setFilters({...filters, type: val})}><SelectTrigger className="flex-1 min-w-[150px]"><SelectValue placeholder="نوع الإجازة"/></SelectTrigger><SelectContent><SelectItem value="all">كل الأنواع</SelectItem>{leaveTypes.map(t => <SelectItem key={t} value={t}>{t}</SelectItem>)}</SelectContent></Select>
                   {activeTab === "active" && (
@@ -238,10 +251,15 @@ export default function Leaves() {
           </Card>
 
           <TabsContent value="active">
-            <Card className="shadow-md">
-              <CardHeader className="border-b">
-                <CardTitle>الإجازات النشطة</CardTitle>
-                <p className="text-sm text-gray-600">عرض جميع الإجازات الجارية والقادمة</p>
+            <Card className="shadow-medium border-0">
+              <CardHeader className="border-b border-blue-200/50 p-5 md:p-7 bg-gradient-to-r from-blue-50 to-cyan-50">
+                <CardTitle className="text-lg md:text-xl flex items-center gap-3 font-bold text-gray-800">
+                  <div className="w-11 h-11 bg-blue-100 rounded-xl flex items-center justify-center shadow-md">
+                    <PlayCircle className="w-6 h-6 text-blue-600" />
+                  </div>
+                  الإجازات النشطة
+                </CardTitle>
+                <p className="text-sm md:text-base text-gray-600 mt-2 leading-relaxed">عرض جميع الإجازات الجارية والقادمة</p>
               </CardHeader>
               <CardContent className="p-0">
                 <LeaveList 
@@ -256,13 +274,15 @@ export default function Leaves() {
           </TabsContent>
 
           <TabsContent value="archive">
-            <Card className="shadow-md">
-              <CardHeader className="border-b">
-                <CardTitle className="flex items-center gap-2">
-                  <Archive className="w-5 h-5" />
+            <Card className="shadow-medium border-0">
+              <CardHeader className="border-b border-gray-200/50 p-5 md:p-7 bg-gradient-to-r from-gray-50 to-slate-50">
+                <CardTitle className="flex items-center gap-3 text-lg md:text-xl font-bold text-gray-800">
+                  <div className="w-11 h-11 bg-gray-100 rounded-xl flex items-center justify-center shadow-md">
+                    <Archive className="w-6 h-6 text-gray-600" />
+                  </div>
                   أرشيف الإجازات
                 </CardTitle>
-                <p className="text-sm text-gray-600">عرض جميع الإجازات المكتملة والمُلغاة</p>
+                <p className="text-sm md:text-base text-gray-600 mt-2 leading-relaxed">عرض جميع الإجازات المكتملة والمُلغاة</p>
               </CardHeader>
               <CardContent className="p-0">
                 <LeaveList 
