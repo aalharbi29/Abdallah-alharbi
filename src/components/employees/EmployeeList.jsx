@@ -1,9 +1,8 @@
-
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Trash2, Calendar, Briefcase, Award, Eye, Pin, MessageCircle } from "lucide-react";
+import { Edit, Trash2, Calendar, Briefcase, Award, Eye, Pin, MessageCircle, CheckSquare, Square } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -140,6 +139,21 @@ export default function EmployeeList({
                     />
                   </div>
                 )}
+
+                {/* الصورة الشخصية */}
+                <div className="flex-shrink-0">
+                  {employee.profile_image_url ? (
+                    <img 
+                      src={employee.profile_image_url} 
+                      alt={employee.full_name_arabic || 'صورة الموظف'} 
+                      className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover border-4 border-gray-100 shadow-md"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border-4 border-gray-100 flex items-center justify-center shadow-md">
+                      <User className="w-8 h-8 md:w-10 md:h-10 text-gray-400" />
+                    </div>
+                  )}
+                </div>
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-4 mb-3">

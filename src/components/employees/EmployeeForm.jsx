@@ -4,11 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, Save, User, ShieldCheck, Briefcase, Plus, X } from "lucide-react";
+import { ArrowRight, Save, User, ShieldCheck, Phone, Mail, Briefcase, Calendar as CalendarIcon, Plus, X, Upload, Image as ImageIcon, Loader2 } from "lucide-react";
 import { HealthCenter } from "@/entities/HealthCenter";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import SmartDateInput from "@/components/ui/smart-date-input";
+import { base44 } from "@/api/base44Client";
 
 const specialRolesOptions = [
     { key: "مدير مركز", label: "مدير مركز" },
@@ -137,11 +138,13 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
     contract_end_date: "",
     special_roles: [],
     assigned_tasks: [],
+    profile_image_url: "",
   });
 
   const [healthCenters, setHealthCenters] = useState([]);
   const [customRole, setCustomRole] = useState("");
   const [customTask, setCustomTask] = useState("");
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   useEffect(() => {
     HealthCenter.list().then(data => {
@@ -199,6 +202,34 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
     }
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // التحقق من نوع الملف
+    if (!file.type.startsWith('image/')) {
+      alert('يرجى اختيار صورة فقط');
+      return;
+    }
+
+    // التحقق من حجم الملف (أقل من 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('حجم الصورة كبير جداً. يرجى اختيار صورة أقل من 5 ميجابايت');
+      return;
+    }
+
+    setIsUploadingImage(true);
+    try {
+      const result = await base44.integrations.Core.UploadFile({ file });
+      handleChange("profile_image_url", result.file_url);
+    } catch (error) {
+      console.error('فشل رفع الصورة:', error);
+      alert('فشل رفع الصورة. يرجى المحاولة مرة أخرى.');
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
   return (
     <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
       <div className="max-w-4xl mx-auto">
@@ -219,7 +250,65 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
             <CardHeader className="bg-gray-50 border-b">
                 <CardTitle className="flex items-center gap-3 text-lg"><User className="text-blue-600"/> البيانات الشخصية</CardTitle>
             </CardHeader>
-            <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <CardContent className="p-6">
+              {/* قسم الصورة الشخصية */}
+              <div className="mb-8 flex flex-col items-center gap-4 pb-6 border-b">
+                <div className="relative group">
+                  {formData.profile_image_url ? (
+                    <div className="relative">
+                      <img 
+                        src={formData.profile_image_url} 
+                        alt="صورة شخصية" 
+                        className="w-32 h-32 rounded-full object-cover border-4 border-gray-200 shadow-lg"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleChange("profile_image_url", "")}
+                        className="absolute -top-2 -left-2 bg-red-500 text-white rounded-full p-2 shadow-lg hover:bg-red-600 transition-all"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="w-32 h-32 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border-4 border-gray-200 flex items-center justify-center shadow-lg">
+                      <User className="w-16 h-16 text-gray-400" />
+                    </div>
+                  )}
+                </div>
+                
+                <div className="flex flex-col items-center gap-2">
+                  <Label 
+                    htmlFor="profile_image" 
+                    className="cursor-pointer"
+                  >
+                    <div className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all shadow-md">
+                      {isUploadingImage ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          <span>جاري الرفع...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-4 h-4" />
+                          <span>{formData.profile_image_url ? 'تغيير الصورة' : 'رفع صورة شخصية'}</span>
+                        </>
+                      )}
+                    </div>
+                  </Label>
+                  <input
+                    id="profile_image"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                    disabled={isUploadingImage}
+                  />
+                  <p className="text-xs text-gray-500 text-center">الحد الأقصى 5 ميجابايت • PNG, JPG, JPEG</p>
+                </div>
+              </div>
+
+              {/* حقول البيانات الشخصية */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div><Label htmlFor="full_name_arabic">الاسم بالعربية *</Label><Input id="full_name_arabic" value={formData.full_name_arabic} onChange={(e) => handleChange("full_name_arabic", e.target.value)} required /></div>
                 <div><Label htmlFor="employee_id">الرقم الوظيفي *</Label><Input id="employee_id" value={formData.رقم_الموظف} onChange={(e) => handleChange("رقم_الموظف", e.target.value)} required /></div>
                 <div><Label htmlFor="national_id">رقم الهوية</Label><Input id="national_id" value={formData.رقم_الهوية} onChange={(e) => handleChange("رقم_الهوية", e.target.value)} /></div>
@@ -234,6 +323,7 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
                 <div><Label htmlFor="nationality">الجنسية</Label><Input id="nationality" value={formData.nationality} onChange={(e) => handleChange("nationality", e.target.value)} /></div>
                 <div><Label htmlFor="phone">رقم الجوال</Label><Input id="phone" value={formData.phone} onChange={(e) => handleChange("phone", e.target.value)} /></div>
                 <div className="lg:col-span-2"><Label htmlFor="email">البريد الإلكتروني</Label><Input id="email" type="email" value={formData.email} onChange={(e) => handleChange("email", e.target.value)} /></div>
+              </div>
             </CardContent>
           </Card>
 
