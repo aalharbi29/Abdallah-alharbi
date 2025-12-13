@@ -257,6 +257,16 @@ export default function EmployeeList({
                         <span className="font-extrabold text-gray-500">ت.التعيين:</span> {employee.hire_date}
                       </div>
                     )}
+                    {(employee.rank || employee.sequence) && (
+                      <div>
+                        <span className="font-extrabold text-gray-500">المرتبة/التسلسل:</span> {employee.rank}{employee.sequence && `/${employee.sequence}`}
+                      </div>
+                    )}
+                    {employee.level_and_grade && (
+                      <div>
+                        <span className="font-extrabold text-gray-500">المستوى والدرجة:</span> {employee.level_and_grade}
+                      </div>
+                    )}
                   </div>
 
                   <div className="flex flex-wrap gap-1">
