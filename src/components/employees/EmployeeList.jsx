@@ -232,24 +232,24 @@ export default function EmployeeList({
                   </div>
 
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm text-gray-600 mb-3">
-                    {employee.رقم_الموظف && (
+                    {employee.رقم_الهوية && (
                       <div>
-                        <span className="font-medium">رقم الموظف:</span> {employee.رقم_الموظف}
+                        <span className="font-medium">السجل المدني:</span> {employee.رقم_الهوية}
+                      </div>
+                    )}
+                    {employee.birth_date && (
+                      <div>
+                        <span className="font-medium">تاريخ الميلاد:</span> {employee.birth_date}
+                      </div>
+                    )}
+                    {employee.hire_date && (
+                      <div>
+                        <span className="font-medium">تاريخ التعيين:</span> {employee.hire_date}
                       </div>
                     )}
                     {employee.phone && (
                       <div>
                         <span className="font-medium">الجوال:</span> {employee.phone}
-                      </div>
-                    )}
-                    {employee.nationality && (
-                      <div>
-                        <span className="font-medium">الجنسية:</span> {employee.nationality}
-                      </div>
-                    )}
-                    {employee.qualification && (
-                      <div>
-                        <span className="font-medium">المؤهل:</span> {employee.qualification}
                       </div>
                     )}
                   </div>
