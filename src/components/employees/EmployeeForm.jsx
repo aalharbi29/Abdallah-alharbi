@@ -133,7 +133,8 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
     qualification: "",
     rank: "",
     sequence: "",
-    level_and_grade: "",
+    level: "",
+    grade: "",
     hire_date: "",
     contract_type: "خدمة مدنية",
     contract_end_date: "",
@@ -370,7 +371,8 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
                 <div><Label htmlFor="qualification">المؤهل</Label><Select value={formData.qualification} onValueChange={(v) => handleChange("qualification", v)}><SelectTrigger><SelectValue placeholder="اختر المؤهل" /></SelectTrigger><SelectContent><SelectItem value="ابتدائي">ابتدائي</SelectItem><SelectItem value="متوسط">متوسط</SelectItem><SelectItem value="ثانوي">ثانوي</SelectItem><SelectItem value="دبلوم">دبلوم</SelectItem><SelectItem value="بكالوريوس">بكالوريوس</SelectItem><SelectItem value="ماجستير">ماجستير</SelectItem><SelectItem value="دكتوراه">دكتوراه</SelectItem><SelectItem value="أخرى">أخرى</SelectItem></SelectContent></Select></div>
                 <div><Label htmlFor="rank">المرتبة</Label><Input id="rank" value={formData.rank} onChange={(e) => handleChange("rank", e.target.value)} placeholder="مثال: 86، 87، 31" /></div>
                 <div><Label htmlFor="sequence">التسلسل</Label><Input id="sequence" value={formData.sequence} onChange={(e) => handleChange("sequence", e.target.value)} placeholder="مثال: 1، 2، 3" /></div>
-                <div><Label htmlFor="level_and_grade">المستوى والدرجة</Label><Input id="level_and_grade" value={formData.level_and_grade} onChange={(e) => handleChange("level_and_grade", e.target.value)} placeholder="مثال: المستوى 3 - الدرجة 2" /></div>
+                <div><Label htmlFor="level">المستوى</Label><Input id="level" value={formData.level} onChange={(e) => handleChange("level", e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('grade')?.focus(); }}} placeholder="مثال: 3" /></div>
+                <div><Label htmlFor="grade">الدرجة</Label><Input id="grade" value={formData.grade} onChange={(e) => handleChange("grade", e.target.value)} placeholder="مثال: 2" /></div>
                 <div>
                   <SmartDateInput
                     label="تاريخ التوظيف"

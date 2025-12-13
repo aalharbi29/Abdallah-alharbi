@@ -262,9 +262,9 @@ export default function EmployeeList({
                         <span className="font-extrabold text-gray-500">المرتبة/التسلسل:</span> {employee.rank}{employee.sequence && `/${employee.sequence}`}
                       </div>
                     )}
-                    {employee.level_and_grade && (
+                    {(employee.level || employee.grade) && (
                       <div>
-                        <span className="font-extrabold text-gray-500">المستوى والدرجة:</span> {employee.level_and_grade}
+                        <span className="font-extrabold text-gray-500">المستوى/الدرجة:</span> {employee.level}{employee.grade && `/${employee.grade}`}
                       </div>
                     )}
                   </div>
