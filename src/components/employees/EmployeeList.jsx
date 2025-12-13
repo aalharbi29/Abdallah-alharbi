@@ -128,11 +128,11 @@ export default function EmployeeList({
               isSelected ? 'ring-2 ring-blue-400' : ''
             }`}
           >
-            <CardContent className="p-4">
-              <div className="flex items-start gap-4">
+            <CardContent className="p-2 md:p-3">
+              <div className="flex items-start gap-2 md:gap-3">
                 {/* Checkbox للتحديد */}
                 {onToggleSelection && (
-                  <div className="pt-1">
+                  <div className="pt-0.5">
                     <Checkbox
                       checked={isSelected}
                       onCheckedChange={() => onToggleSelection(employee.id)}
@@ -146,46 +146,46 @@ export default function EmployeeList({
                     <img 
                       src={employee.profile_image_url} 
                       alt={employee.full_name_arabic || 'صورة الموظف'} 
-                      className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover border-4 border-gray-100 shadow-md"
+                      className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover border-2 border-gray-100 shadow-sm"
                     />
                   ) : (
-                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border-4 border-gray-100 flex items-center justify-center shadow-md">
-                      <User className="w-8 h-8 md:w-10 md:h-10 text-gray-400" />
+                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border-2 border-gray-100 flex items-center justify-center shadow-sm">
+                      <User className="w-6 h-6 md:w-7 md:h-7 text-gray-400" />
                     </div>
                   )}
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-4 mb-3">
+                  <div className="flex items-start justify-between gap-2 mb-1.5">
                     <div className="flex-1">
                       <Link
                         to={createPageUrl(`EmployeeProfile?id=${employee.id}`)}
-                        className="text-lg font-bold text-gray-900 hover:text-blue-600 transition-colors"
+                        className="text-sm md:text-base font-extrabold text-gray-900 hover:text-blue-600 transition-colors"
                       >
                         {employee.full_name_arabic || 'غير محدد'}
                       </Link>
-                      <div className="flex flex-wrap items-center gap-2 mt-1 text-sm text-gray-600">
+                      <div className="flex flex-wrap items-center gap-1.5 mt-0.5 text-xs font-semibold text-gray-600">
                         {employee.position && <span>{employee.position}</span>}
                         {employee.position && employee.المركز_الصحي && <span>•</span>}
                         {employee.المركز_الصحي && <span>{employee.المركز_الصحي}</span>}
                         {employee.contract_type && (employee.position || employee.المركز_الصحي) && (
                           <>
                             <span>•</span>
-                            <Badge variant="outline" className="text-xs">{employee.contract_type}</Badge>
+                            <Badge variant="outline" className="text-[10px] py-0 px-1.5 h-4">{employee.contract_type}</Badge>
                           </>
                         )}
                       </div>
                     </div>
 
-                    <div className="flex gap-1 flex-shrink-0">
+                    <div className="flex gap-0.5 flex-shrink-0">
                       {onPinEmployee && (
                         <Button
                           variant="ghost"
                           size="icon"
                           onClick={() => onPinEmployee(employee.id)}
-                          className={isPinned ? 'text-yellow-600' : 'text-gray-400'}
+                          className={`h-7 w-7 ${isPinned ? 'text-yellow-600' : 'text-gray-400'}`}
                         >
-                          <Pin className={`w-4 h-4 ${isPinned ? 'fill-current' : ''}`} />
+                          <Pin className={`w-3.5 h-3.5 ${isPinned ? 'fill-current' : ''}`} />
                         </Button>
                       )}
 
@@ -196,91 +196,96 @@ export default function EmployeeList({
                           rel="noopener noreferrer"
                           className="flex items-center justify-center"
                         >
-                          <Button variant="ghost" size="icon" className="text-green-600">
-                            <MessageCircle className="w-4 h-4" />
+                          <Button variant="ghost" size="icon" className="text-green-600 h-7 w-7">
+                            <MessageCircle className="w-3.5 h-3.5" />
                           </Button>
                         </a>
                       )}
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-2 mb-3">
+                  <div className="flex flex-wrap gap-1 mb-1.5">
                     {employee.is_externally_assigned && (
-                      <Badge className="bg-orange-100 text-orange-700">
+                      <Badge className="bg-orange-100 text-orange-700 text-[10px] py-0 px-2 h-5 font-bold">
                         مكلف خارجي {employee.external_assignment_center && `- ${employee.external_assignment_center}`}
                       </Badge>
                     )}
 
                     {activeHolidayAssignments.length > 0 && (
-                      <Badge className="bg-purple-100 text-purple-700">
+                      <Badge className="bg-purple-100 text-purple-700 text-[10px] py-0 px-2 h-5 font-bold">
                         تكليف {activeHolidayAssignments[0].holiday_name}
                       </Badge>
                     )}
 
                     {employeeRoles.length > 0 && (
                       employeeRoles.slice(0, 2).map((role, idx) => (
-                        <Badge key={idx} className="bg-blue-100 text-blue-700">
+                        <Badge key={idx} className="bg-blue-100 text-blue-700 text-[10px] py-0 px-2 h-5 font-bold">
                           {role}
                         </Badge>
                       ))
                     )}
                     {employeeRoles.length > 2 && (
-                        <Badge className="bg-blue-50 text-blue-700 text-xs">
+                        <Badge className="bg-blue-50 text-blue-700 text-[10px] py-0 px-2 h-5 font-bold">
                           +{employeeRoles.length - 2}
                         </Badge>
                       )}
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm text-gray-600 mb-3">
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-1.5 text-[11px] font-bold text-gray-700 mb-2">
                     {employee.رقم_الموظف && (
                       <div>
-                        <span className="font-medium">رقم الموظف:</span> {employee.رقم_الموظف}
+                        <span className="font-extrabold text-gray-500">رقم الموظف:</span> {employee.رقم_الموظف}
+                      </div>
+                    )}
+                    {employee.phone && (
+                      <div>
+                        <span className="font-extrabold text-gray-500">الجوال:</span> {employee.phone}
                       </div>
                     )}
                     {employee.رقم_الهوية && (
                       <div>
-                        <span className="font-medium">السجل المدني:</span> {employee.رقم_الهوية}
+                        <span className="font-extrabold text-gray-500">السجل المدني:</span> {employee.رقم_الهوية}
                       </div>
                     )}
                     {employee.birth_date && (
                       <div>
-                        <span className="font-medium">تاريخ الميلاد:</span> {employee.birth_date}
+                        <span className="font-extrabold text-gray-500">ت.الميلاد:</span> {employee.birth_date}
                       </div>
                     )}
                     {employee.hire_date && (
                       <div>
-                        <span className="font-medium">تاريخ التعيين:</span> {employee.hire_date}
+                        <span className="font-extrabold text-gray-500">ت.التعيين:</span> {employee.hire_date}
                       </div>
                     )}
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1">
                     <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)}>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" className="h-7 text-[11px] px-2">
                         <Eye className="w-3 h-3 ml-1" />
-                        عرض الملف
+                        عرض
                       </Button>
                     </Link>
                     {onEdit && (
-                      <Button variant="outline" size="sm" onClick={() => onEdit(employee)}>
+                      <Button variant="outline" size="sm" onClick={() => onEdit(employee)} className="h-7 text-[11px] px-2">
                         <Edit className="w-3 h-3 ml-1" />
                         تعديل
                       </Button>
                     )}
                     {onAddLeave && (
-                      <Button variant="outline" size="sm" onClick={() => onAddLeave(employee)}>
+                      <Button variant="outline" size="sm" onClick={() => onAddLeave(employee)} className="h-7 text-[11px] px-2">
                         <Calendar className="w-3 h-3 ml-1" />
                         إجازة
                       </Button>
                     )}
                     {onAddAssignment && (
-                      <Button variant="outline" size="sm" onClick={() => onAddAssignment(employee)}>
+                      <Button variant="outline" size="sm" onClick={() => onAddAssignment(employee)} className="h-7 text-[11px] px-2">
                         <Briefcase className="w-3 h-3 ml-1" />
                         تكليف
                       </Button>
                     )}
                     {onAddHolidayAssignment && (
-                      <Button variant="outline" size="sm" onClick={() => onAddHolidayAssignment(employee)}>
+                      <Button variant="outline" size="sm" onClick={() => onAddHolidayAssignment(employee)} className="h-7 text-[11px] px-2">
                         <Award className="w-3 h-3 ml-1" />
                         تكليف إجازة
                       </Button>
@@ -290,7 +295,7 @@ export default function EmployeeList({
                         variant="outline"
                         size="sm"
                         onClick={() => onDelete(employee)}
-                        className="text-red-600 hover:bg-red-50"
+                        className="text-red-600 hover:bg-red-50 h-7 text-[11px] px-2"
                       >
                         <Trash2 className="w-3 h-3 ml-1" />
                         حذف
