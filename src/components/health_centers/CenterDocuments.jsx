@@ -47,6 +47,7 @@ export default function CenterDocuments({ centerId, centerName }) {
   });
   const [selectedFile, setSelectedFile] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isExtracting, setIsExtracting] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -69,14 +70,15 @@ export default function CenterDocuments({ centerId, centerName }) {
     }
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
+      await extractDataFromFile(file);
     }
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = async (e) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
@@ -84,6 +86,7 @@ export default function CenterDocuments({ centerId, centerName }) {
     const file = e.dataTransfer?.files?.[0];
     if (file) {
       setSelectedFile(file);
+      await extractDataFromFile(file);
     }
   };
 
@@ -97,6 +100,57 @@ export default function CenterDocuments({ centerId, centerName }) {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
+  };
+
+  const extractDataFromFile = async (file) => {
+    setIsExtracting(true);
+    try {
+      // رفع الملف أولاً
+      const uploadResult = await base44.integrations.Core.UploadFile({ file });
+      
+      // استخراج البيانات باستخدام الذكاء الاصطناعي
+      const extractedData = await base44.integrations.Core.InvokeLLM({
+        prompt: `قم بتحليل هذا المستند واستخراج المعلومات التالية بشكل دقيق ومختصر:
+- document_title: عنوان المستند (مختصر وواضح، 5-10 كلمات)
+- document_type: نوع المستند (اختر من: قرار إداري، تكليف مدير، تكليف نائب مدير، معاملة رسمية، عقد إيجار، صيانة، تجهيزات، تقرير، مراسلة، أخرى)
+- description: وصف مختصر للمستند (جملة أو جملتين)
+- document_date: تاريخ المستند بصيغة YYYY-MM-DD (إن وجد)
+- document_number: رقم المستند أو القرار (إن وجد)
+
+إذا لم تجد معلومة محددة، اتركها فارغة (null).
+كن دقيقاً ومختصراً في الاستخراج.`,
+        add_context_from_internet: false,
+        file_urls: [uploadResult.file_url],
+        response_json_schema: {
+          type: "object",
+          properties: {
+            document_title: { type: "string" },
+            document_type: { type: "string" },
+            description: { type: "string" },
+            document_date: { type: ["string", "null"] },
+            document_number: { type: ["string", "null"] }
+          }
+        }
+      });
+
+      // ملء الحقول بالبيانات المستخرجة
+      if (extractedData) {
+        setFormData(prev => ({
+          ...prev,
+          document_title: extractedData.document_title || prev.document_title,
+          document_type: extractedData.document_type || prev.document_type,
+          description: extractedData.description || prev.description,
+          document_date: extractedData.document_date || prev.document_date,
+          document_number: extractedData.document_number || prev.document_number
+        }));
+        toast.success('تم استخراج البيانات من الملف بنجاح ✓');
+      }
+    } catch (error) {
+      console.error('Error extracting data:', error);
+      toast.error('فشل استخراج البيانات - يمكنك إدخالها يدوياً');
+    } finally {
+      setIsExtracting(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -455,19 +509,30 @@ export default function CenterDocuments({ centerId, centerName }) {
                   )}
                 >
                   <div className="text-center">
-                    <Upload className={cn(
-                      "w-8 h-8 mx-auto mb-2 transition-colors",
-                      isDragging ? "text-blue-500" : selectedFile ? "text-green-500" : "text-gray-400"
-                    )} />
-                    <p className={cn(
-                      "text-sm font-medium",
-                      selectedFile ? "text-green-700" : "text-gray-600"
-                    )}>
-                      {isDragging ? '📥 أفلت الملف هنا' : selectedFile ? `✓ ${selectedFile.name}` : '📁 اضغط أو اسحب الملف هنا'}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      PDF, Word, Excel, صورة
-                    </p>
+                    {isExtracting ? (
+                      <>
+                        <Loader2 className="w-8 h-8 mx-auto mb-2 animate-spin text-blue-500" />
+                        <p className="text-sm font-medium text-blue-600">
+                          🤖 جاري قراءة الملف بالذكاء الاصطناعي...
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <Upload className={cn(
+                          "w-8 h-8 mx-auto mb-2 transition-colors",
+                          isDragging ? "text-blue-500" : selectedFile ? "text-green-500" : "text-gray-400"
+                        )} />
+                        <p className={cn(
+                          "text-sm font-medium",
+                          selectedFile ? "text-green-700" : "text-gray-600"
+                        )}>
+                          {isDragging ? '📥 أفلت الملف هنا' : selectedFile ? `✓ ${selectedFile.name}` : '📁 اضغط أو اسحب الملف هنا'}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          PDF, Word, Excel, صورة • سيتم استخراج البيانات تلقائياً
+                        </p>
+                      </>
+                    )}
                   </div>
                   <input
                     ref={fileInputRef}
