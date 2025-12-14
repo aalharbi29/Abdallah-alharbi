@@ -146,7 +146,7 @@ export default function CenterEmployeeExporter({
 <body>
   <div class="header">
     <h1>بيان موظفي ${centerName}</h1>
-    <h2 style="font-size: 20px; font-weight: bold; color: #1e40af;">${administrationName}</h2>
+    <h2 style="font-size: 26px; font-weight: bold; color: #1e40af;">${administrationName}</h2>
   </div>
   
   <div class="meta">
@@ -184,8 +184,8 @@ export default function CenterEmployeeExporter({
   <div class="footer">
     <div class="signature">
       <div class="signature-line"></div>
-      <div style="font-weight: bold; font-size: 16px; color: #1e40af;">${managerName}</div>
-      <div style="font-size: 13px; color: #374151; font-weight: bold; margin-top: 5px;">${managerTitle}</div>
+      <div style="font-weight: bold; font-size: 22px; color: #1e40af;">${managerName}</div>
+      <div style="font-size: 16px; color: #374151; font-weight: bold; margin-top: 5px;">${managerTitle}</div>
     </div>
   </div>
 </body>
