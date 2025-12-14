@@ -50,8 +50,10 @@ export default function AIAnnouncementDesigner() {
 
   // توليد الفيديو
   const [videoPrompt, setVideoPrompt] = useState('');
+  const [videoScript, setVideoScript] = useState(null);
   const [generatedVideo, setGeneratedVideo] = useState(null);
   const [isGeneratingVideo, setIsGeneratingVideo] = useState(false);
+  const [isGeneratingScript, setIsGeneratingScript] = useState(false);
 
   // القوالب الجاهزة
   const templates = [
@@ -816,78 +818,286 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div>
-                  <Label>موضوع الفيديو التعليمي</Label>
-                  <Textarea
-                    value={videoPrompt}
-                    onChange={(e) => setVideoPrompt(e.target.value)}
-                    placeholder="مثال: شرح طريقة غسل اليدين الصحيحة، طرق الوقاية من العدوى، أهمية التطعيمات..."
-                    rows={3}
-                  />
-                </div>
+                {/* الخطوة 1: إدخال الموضوع وتوليد السيناريو */}
+                {!videoScript && (
+                  <>
+                    <div>
+                      <Label>موضوع الفيديو التعليمي</Label>
+                      <Textarea
+                        value={videoPrompt}
+                        onChange={(e) => setVideoPrompt(e.target.value)}
+                        placeholder="مثال: شرح طريقة غسل اليدين الصحيحة، طرق الوقاية من العدوى، أهمية التطعيمات..."
+                        rows={3}
+                      />
+                    </div>
 
-                <Button
-                  onClick={async () => {
-                    if (!videoPrompt.trim()) {
-                      alert('الرجاء إدخال موضوع الفيديو');
-                      return;
-                    }
+                    <Button
+                      onClick={async () => {
+                        if (!videoPrompt.trim()) {
+                          alert('الرجاء إدخال موضوع الفيديو');
+                          return;
+                        }
 
-                    setIsGeneratingVideo(true);
-                    try {
-                      const response = await base44.integrations.Core.InvokeLLM({
-                        prompt: `أنت خبير في إنشاء فيديوهات تعليمية تفاعلية. قم بإنشاء فيديو تعليمي HTML5/CSS3/JavaScript مدته 30 ثانية عن: ${videoPrompt}
+                        setIsGeneratingScript(true);
+                        try {
+                          const response = await base44.integrations.Core.InvokeLLM({
+                            prompt: `أنت كاتب سيناريو متخصص في المحتوى التعليمي والطبي. قم بإنشاء سيناريو فيديو تعليمي مدته 30 ثانية عن: ${videoPrompt}
 
-المطلوب:
+المطلوب - سيناريو JSON منظم بالتفصيل التالي:
+{
+  "title": "عنوان الفيديو",
+  "duration": 30,
+  "style": "الأسلوب البصري المناسب (احترافي/بسيط/ملون)",
+  "color_scheme": "نظام الألوان المناسب",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "duration": 5,
+      "title": "عنوان المشهد",
+      "description": "وصف تفصيلي للمشهد والحركة",
+      "text": "النص الظاهر على الشاشة",
+      "narration": "النص الصوتي/التعليق",
+      "visual_elements": ["عنصر بصري 1", "عنصر بصري 2"],
+      "animation": "نوع التحريك (fade-in, slide, zoom)",
+      "background": "وصف الخلفية"
+    }
+  ],
+  "key_points": ["نقطة رئيسية 1", "نقطة رئيسية 2"],
+  "call_to_action": "دعوة للعمل في النهاية"
+}
+
+تأكد من:
+1. المجموع الكلي للمدة = 30 ثانية بالضبط
+2. 4-6 مشاهد متنوعة
+3. نصوص واضحة ومختصرة
+4. عناصر بصرية مناسبة للموضوع
+5. تسلسل منطقي للمعلومات
+6. استخدام اللغة العربية الفصحى البسيطة
+7. أسلوب تعليمي جذاب
+
+أرجع ONLY JSON بدون أي نص إضافي.`,
+                            add_context_from_internet: false,
+                            response_json_schema: {
+                              type: "object",
+                              properties: {
+                                title: { type: "string" },
+                                duration: { type: "number" },
+                                style: { type: "string" },
+                                color_scheme: { type: "string" },
+                                scenes: {
+                                  type: "array",
+                                  items: {
+                                    type: "object",
+                                    properties: {
+                                      scene_number: { type: "number" },
+                                      duration: { type: "number" },
+                                      title: { type: "string" },
+                                      description: { type: "string" },
+                                      text: { type: "string" },
+                                      narration: { type: "string" },
+                                      visual_elements: { type: "array", items: { type: "string" } },
+                                      animation: { type: "string" },
+                                      background: { type: "string" }
+                                    }
+                                  }
+                                },
+                                key_points: { type: "array", items: { type: "string" } },
+                                call_to_action: { type: "string" }
+                              }
+                            }
+                          });
+
+                          setVideoScript(response);
+                        } catch (error) {
+                          console.error('Error generating script:', error);
+                          alert('فشل في توليد السيناريو: ' + error.message);
+                        } finally {
+                          setIsGeneratingScript(false);
+                        }
+                      }}
+                      disabled={isGeneratingScript}
+                      className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
+                    >
+                      {isGeneratingScript ? (
+                        <>
+                          <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                          جاري توليد السيناريو...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4 ml-2" />
+                          الخطوة 1: توليد السيناريو
+                        </>
+                      )}
+                    </Button>
+
+                    <div className="text-xs text-gray-500 bg-blue-50 p-3 rounded-lg border border-blue-200">
+                      📝 سيتم توليد سيناريو مفصل يتضمن المشاهد والحوار والعناصر البصرية
+                    </div>
+                  </>
+                )}
+
+                {/* الخطوة 2: عرض ومراجعة السيناريو */}
+                {videoScript && !generatedVideo && (
+                  <>
+                    <div className="bg-white border-2 border-blue-300 rounded-lg p-4 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-bold text-lg text-blue-900">📋 السيناريو المولد</h3>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setVideoScript(null);
+                            setVideoPrompt('');
+                          }}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+
+                      <div className="space-y-3">
+                        <div>
+                          <Label className="text-blue-700">العنوان:</Label>
+                          <p className="font-semibold text-lg">{videoScript.title}</p>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-2 text-sm">
+                          <div className="bg-blue-50 p-2 rounded">
+                            <span className="text-gray-600">المدة:</span>
+                            <span className="font-bold mr-2">{videoScript.duration} ثانية</span>
+                          </div>
+                          <div className="bg-blue-50 p-2 rounded">
+                            <span className="text-gray-600">الأسلوب:</span>
+                            <span className="font-bold mr-2">{videoScript.style}</span>
+                          </div>
+                          <div className="bg-blue-50 p-2 rounded">
+                            <span className="text-gray-600">الألوان:</span>
+                            <span className="font-bold mr-2">{videoScript.color_scheme}</span>
+                          </div>
+                        </div>
+
+                        <div>
+                          <Label className="text-blue-700 mb-2 block">المشاهد ({videoScript.scenes?.length}):</Label>
+                          <div className="space-y-3 max-h-[300px] overflow-y-auto">
+                            {videoScript.scenes?.map((scene, idx) => (
+                              <div key={idx} className="bg-gradient-to-r from-blue-50 to-cyan-50 p-3 rounded-lg border border-blue-200">
+                                <div className="flex items-start justify-between mb-2">
+                                  <span className="font-bold text-blue-900">المشهد {scene.scene_number}: {scene.title}</span>
+                                  <Badge variant="outline">{scene.duration} ث</Badge>
+                                </div>
+                                <p className="text-sm text-gray-700 mb-2">{scene.description}</p>
+                                <div className="bg-white p-2 rounded text-sm">
+                                  <div className="text-gray-600 mb-1">النص: <span className="text-gray-900">{scene.text}</span></div>
+                                  <div className="text-gray-600 mb-1">التعليق: <span className="text-gray-900">{scene.narration}</span></div>
+                                  <div className="text-gray-600">العناصر: {scene.visual_elements?.join(' • ')}</div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {videoScript.key_points && (
+                          <div>
+                            <Label className="text-blue-700">النقاط الرئيسية:</Label>
+                            <ul className="list-disc mr-6 text-sm">
+                              {videoScript.key_points.map((point, idx) => (
+                                <li key={idx}>{point}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {videoScript.call_to_action && (
+                          <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+                            <Label className="text-green-700">دعوة للعمل:</Label>
+                            <p className="font-semibold">{videoScript.call_to_action}</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button
+                        variant="outline"
+                        onClick={() => setVideoScript(null)}
+                      >
+                        تعديل الموضوع
+                      </Button>
+                      <Button
+                        onClick={async () => {
+                          setIsGeneratingVideo(true);
+                          try {
+                            const response = await base44.integrations.Core.InvokeLLM({
+                              prompt: `أنت خبير في إنشاء فيديوهات HTML5/CSS3/JavaScript تفاعلية. قم بإنشاء فيديو تعليمي بناءً على السيناريو التالي:
+
+${JSON.stringify(videoScript, null, 2)}
+
+المتطلبات التقنية:
 1. استخدم HTML5 مع CSS3 animations وJavaScript للتحريك
-2. مدة الفيديو: 30 ثانية بالضبط
+2. المدة الإجمالية: ${videoScript.duration} ثانية بالضبط
 3. استخدم dir="rtl" واللغة العربية
-4. استخدم خط Cairo من Google Fonts
-5. أضف animations سلسة وجذابة
-6. قسّم المحتوى إلى مراحل (scenes) تتغير تلقائياً
-7. استخدم ألوان جذابة ورسوم توضيحية بسيطة (SVG أو CSS shapes)
-8. أضف نصوص واضحة ومقروءة
-9. استخدم تأثيرات fade-in, slide-in, scale
-10. اجعل التصميم احترافي ومناسب للبيئة الطبية/الحكومية
-
-التصميم يجب أن:
-- يعمل تلقائياً عند فتح الصفحة
-- يتوقف تلقائياً بعد 30 ثانية
-- يكون responsive وواضح
-- يحتوي على معلومات مفيدة ومختصرة
-- background بألوان مناسبة للموضوع
+4. استخدم خط Cairo من Google Fonts بوزن 400-800
+5. طبّق السيناريو بدقة:
+   - كل مشهد بمدته المحددة
+   - النصوص والتعليقات كما هي
+   - العناصر البصرية المطلوبة (استخدم SVG أو CSS shapes)
+   - أنواع التحريك المحددة
+6. الألوان: استخدم ${videoScript.color_scheme}
+7. الأسلوب: ${videoScript.style}
+8. أضف:
+   - progress bar في الأسفل
+   - تأثيرات fade بين المشاهد
+   - رسوم توضيحية بسيطة وواضحة
+9. اجعل التصميم:
+   - responsive للموبايل والديسكتوب
+   - احترافي ومناسب للبيئة الطبية/الحكومية
+   - واضح ومقروء
+10. البرمجة:
+   - استخدم setInterval للتحكم في توقيت المشاهد
+   - أوقف الفيديو تلقائياً بعد انتهاء المدة
+   - أضف animation للانتقال بين المشاهد
 
 أرجع ONLY كود HTML كامل مع CSS وJavaScript inline بدون أي نص إضافي.`,
-                        add_context_from_internet: false
-                      });
+                              add_context_from_internet: false
+                            });
 
-                      setGeneratedVideo(response);
-                      alert('تم توليد الفيديو التعليمي بنجاح!');
-                    } catch (error) {
-                      console.error('Error generating video:', error);
-                      alert('فشل في توليد الفيديو: ' + error.message);
-                    } finally {
-                      setIsGeneratingVideo(false);
-                    }
-                  }}
-                  disabled={isGeneratingVideo}
-                  className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600"
-                >
-                  {isGeneratingVideo ? (
-                    <>
-                      <Loader2 className="w-4 h-4 ml-2 animate-spin" />
-                      جاري التوليد...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4 ml-2" />
-                      توليد فيديو تعليمي
-                    </>
-                  )}
-                </Button>
+                            setGeneratedVideo(response);
+                          } catch (error) {
+                            console.error('Error generating video:', error);
+                            alert('فشل في توليد الفيديو: ' + error.message);
+                          } finally {
+                            setIsGeneratingVideo(false);
+                          }
+                        }}
+                        disabled={isGeneratingVideo}
+                        className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600"
+                      >
+                        {isGeneratingVideo ? (
+                          <>
+                            <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                            جاري التوليد...
+                          </>
+                        ) : (
+                          <>
+                            <Sparkles className="w-4 h-4 ml-2" />
+                            الخطوة 2: توليد الفيديو
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </>
+                )}
 
+                {/* الخطوة 3: عرض الفيديو */}
                 {generatedVideo && (
-                  <div className="mt-4 space-y-2">
+                  <div className="space-y-3">
+                    <div className="bg-green-50 border-2 border-green-300 rounded-lg p-3">
+                      <div className="flex items-center gap-2 text-green-800 font-semibold">
+                        <CheckCircle2 className="w-5 h-5" />
+                        تم توليد الفيديو بنجاح!
+                      </div>
+                    </div>
+
                     <div className="border-2 border-blue-200 rounded-lg overflow-hidden bg-black">
                       <iframe
                         srcDoc={generatedVideo}
@@ -895,7 +1105,8 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                         title="فيديو تعليمي"
                       />
                     </div>
-                    <div className="grid grid-cols-3 gap-2">
+
+                    <div className="grid grid-cols-4 gap-2">
                       <Button
                         variant="outline"
                         size="sm"
@@ -929,17 +1140,29 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => setGeneratedVideo(null)}
+                        onClick={() => {
+                          setGeneratedVideo(null);
+                          setVideoScript(null);
+                          setVideoPrompt('');
+                        }}
                       >
                         <X className="w-3 h-3 ml-1" />
-                        حذف
+                        جديد
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setGeneratedVideo(null)}
+                      >
+                        <RefreshCw className="w-3 h-3 ml-1" />
+                        إعادة توليد
                       </Button>
                     </div>
                   </div>
                 )}
 
                 <div className="text-xs text-gray-500 bg-blue-50 p-3 rounded-lg border border-blue-200">
-                  🎬 الفيديو التعليمي سيكون مدته 30 ثانية بالضبط ويعمل تلقائياً
+                  🎬 نظام توليد متقدم: سيناريو مفصل → مراجعة → فيديو احترافي (30 ثانية)
                 </div>
               </CardContent>
             </Card>
