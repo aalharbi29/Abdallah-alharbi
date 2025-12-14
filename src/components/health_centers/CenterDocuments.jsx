@@ -475,7 +475,6 @@ export default function CenterDocuments({ centerId, centerName }) {
                     onChange={handleFileChange}
                     className="hidden"
                     accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
-                    required
                   />
                 </div>
               </div>

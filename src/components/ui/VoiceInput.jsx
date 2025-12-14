@@ -14,6 +14,7 @@ export default function VoiceInput({
   const [isListening, setIsListening] = useState(false);
   const [isSupported, setIsSupported] = useState(true);
   const [recognition, setRecognition] = useState(null);
+  const [accumulatedText, setAccumulatedText] = useState('');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -31,18 +32,16 @@ export default function VoiceInput({
 
       recognitionInstance.onresult = (event) => {
         let finalTranscript = '';
-        let interimTranscript = '';
 
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
             finalTranscript += transcript;
-          } else {
-            interimTranscript += transcript;
           }
         }
 
         if (finalTranscript && onResult) {
+          setAccumulatedText(prev => prev + finalTranscript + ' ');
           onResult(finalTranscript);
         }
       };
@@ -75,8 +74,10 @@ export default function VoiceInput({
     if (isListening) {
       recognition.stop();
       setIsListening(false);
+      setAccumulatedText('');
     } else {
       try {
+        setAccumulatedText('');
         recognition.start();
         setIsListening(true);
       } catch (error) {
