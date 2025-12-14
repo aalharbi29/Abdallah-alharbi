@@ -12,7 +12,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Building2, MapPin, Phone, Mail, Users, ArrowRight, Printer, AlertCircle,
   Edit, Search, Eye, Car, Calendar, CheckCircle2, XCircle, Hash, Building,
-  DollarSign, FileText, Hospital, Activity, UserPlus
+  DollarSign, FileText, Hospital, Activity, UserPlus, Briefcase
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { createPageUrl } from "@/utils";
@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/dialog";
 import QuickRoleAssignment from "@/components/employees/QuickRoleAssignment";
 import ClinicsSummary from "@/components/health_centers/ClinicsSummary";
+import CenterEmployeeExporter from "@/components/health_centers/CenterEmployeeExporter";
 
 export default function HealthCenterDetails() {
   const location = useLocation();
@@ -45,6 +46,7 @@ export default function HealthCenterDetails() {
   const [showPrintDialog, setShowPrintDialog] = useState(false);
   const [showRoleAssignment, setShowRoleAssignment] = useState(false);
   const [selectedEmployeeForRole, setSelectedEmployeeForRole] = useState(null);
+  const [showEmployeeExporter, setShowEmployeeExporter] = useState(false);
   const [printOptions, setPrintOptions] = useState({
     outputFormat: 'detailed', // New print option
     basicInfo: true,
@@ -1007,6 +1009,13 @@ export default function HealthCenterDetails() {
             </div>
           </div>
           <div className="flex gap-2">
+            <Button 
+              onClick={() => setShowEmployeeExporter(true)}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              <FileText className="w-4 h-4 ml-2" />
+              استخراج بيان موظفين
+            </Button>
             <Button onClick={() => navigate(createPageUrl(`HealthCenterEdit?id=${center.id}`))} className="bg-green-600 hover:bg-green-700">
               <Edit className="w-4 h-4 ml-2" />
               تعديل البيانات
@@ -1711,6 +1720,15 @@ export default function HealthCenterDetails() {
             });
           }
         }}
+      />
+
+      {/* Dialog استخراج بيان الموظفين */}
+      <CenterEmployeeExporter
+        open={showEmployeeExporter}
+        onOpenChange={setShowEmployeeExporter}
+        employees={centerEmployees}
+        centerName={center.اسم_المركز}
+        manager={manager}
       />
 
       {/* Dialog تخصيص الطباعة */}
