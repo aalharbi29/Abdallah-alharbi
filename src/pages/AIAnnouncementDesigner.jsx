@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   Wand2, Download, Printer, RefreshCw, Users, Calendar,
   MapPin, Info, Sparkles, Image as ImageIcon, Loader2,
-  Upload, Library, Edit2, Maximize2
+  Upload, Library, Edit2, Maximize2, X
 } from 'lucide-react';
 import ImageLibrary from '../components/announcement/ImageLibrary';
 import ImageEditor from '../components/announcement/ImageEditor';
