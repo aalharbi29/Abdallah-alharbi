@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileDown, Copy, FileText, FileSpreadsheet, CheckCircle2, Users } from "lucide-react";
+import { FileDown, Copy, FileText, FileSpreadsheet, CheckCircle2, Users, ChevronUp, ChevronDown, GripVertical } from "lucide-react";
 import { toast } from "sonner";
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 export default function CenterEmployeeExporter({ 
   open, 
@@ -15,13 +16,21 @@ export default function CenterEmployeeExporter({
   centerName = "",
   manager = null
 }) {
+  const [orderedEmployees, setOrderedEmployees] = useState([]);
   const [selectedEmployeeIds, setSelectedEmployeeIds] = useState(new Set());
   const [selectedFields, setSelectedFields] = useState(new Set([
     "full_name_arabic", "رقم_الموظف", "position", "contract_type"
   ]));
   const [administrationName, setAdministrationName] = useState("إدارة الشؤون الصحية - الحناكية");
   const [managerName, setManagerName] = useState(manager?.full_name_arabic || "");
+  const [managerTitle, setManagerTitle] = useState("مدير إدارة شؤون المراكز الصحية بالحناكية");
   const [isExporting, setIsExporting] = useState(false);
+
+  useEffect(() => {
+    if (employees.length > 0) {
+      setOrderedEmployees([...employees]);
+    }
+  }, [employees]);
 
   const fieldDefinitions = [
     { key: "full_name_arabic", label: "الاسم الكامل" },
@@ -67,15 +76,39 @@ export default function CenterEmployeeExporter({
   };
 
   const handleSelectAllEmployees = () => {
-    if (selectedEmployeeIds.size === employees.length) {
+    if (selectedEmployeeIds.size === orderedEmployees.length) {
       setSelectedEmployeeIds(new Set());
     } else {
-      setSelectedEmployeeIds(new Set(employees.map(e => e.id)));
+      setSelectedEmployeeIds(new Set(orderedEmployees.map(e => e.id)));
     }
   };
 
   const getSelectedEmployees = () => {
-    return employees.filter(e => selectedEmployeeIds.has(e.id));
+    return orderedEmployees.filter(e => selectedEmployeeIds.has(e.id));
+  };
+
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const items = Array.from(orderedEmployees);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setOrderedEmployees(items);
+  };
+
+  const moveEmployee = (index, direction) => {
+    if (
+      (direction === 'up' && index === 0) ||
+      (direction === 'down' && index === orderedEmployees.length - 1)
+    ) {
+      return;
+    }
+
+    const newOrder = [...orderedEmployees];
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    [newOrder[index], newOrder[targetIndex]] = [newOrder[targetIndex], newOrder[index]];
+    setOrderedEmployees(newOrder);
   };
 
   const generateTableHTML = () => {
@@ -153,7 +186,7 @@ export default function CenterEmployeeExporter({
     <div class="signature">
       <div class="signature-line"></div>
       <div style="font-weight: bold;">${managerName}</div>
-      <div style="font-size: 11px; color: #6b7280;">المدير</div>
+      <div style="font-size: 11px; color: #6b7280;">${managerTitle}</div>
     </div>
   </div>
 </body>
@@ -301,42 +334,90 @@ export default function CenterEmployeeExporter({
           {/* اختيار الموظفين */}
           <TabsContent value="employees" className="space-y-4">
             <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-              <span className="font-medium">تحديد الكل ({employees.length} موظف)</span>
+              <span className="font-medium">تحديد الكل ({orderedEmployees.length} موظف)</span>
               <Checkbox
-                checked={selectedEmployeeIds.size === employees.length && employees.length > 0}
+                checked={selectedEmployeeIds.size === orderedEmployees.length && orderedEmployees.length > 0}
                 onCheckedChange={handleSelectAllEmployees}
               />
             </div>
 
-            <div className="max-h-[400px] overflow-y-auto space-y-2 border rounded-lg p-3">
-              {employees.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  لا يوجد موظفون في هذا المركز
-                </div>
-              ) : (
-                employees.map(emp => (
-                  <div
-                    key={emp.id}
-                    className={`flex items-center justify-between p-3 rounded-lg border transition-all ${
-                      selectedEmployeeIds.has(emp.id) 
-                        ? 'bg-green-50 border-green-300' 
-                        : 'bg-white hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className="flex-1">
-                      <div className="font-semibold text-gray-900">{emp.full_name_arabic}</div>
-                      <div className="text-sm text-gray-600">
-                        {emp.position} • {emp.رقم_الموظف}
-                      </div>
-                    </div>
-                    <Checkbox
-                      checked={selectedEmployeeIds.has(emp.id)}
-                      onCheckedChange={() => handleToggleEmployee(emp.id)}
-                    />
-                  </div>
-                ))
-              )}
+            <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-3 mb-3">
+              <p className="text-sm text-yellow-800">
+                💡 يمكنك سحب وإفلات الموظفين لتغيير الترتيب، أو استخدام الأسهم
+              </p>
             </div>
+
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="employees">
+                {(provided) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    className="max-h-[400px] overflow-y-auto space-y-2 border rounded-lg p-3"
+                  >
+                    {orderedEmployees.length === 0 ? (
+                      <div className="text-center py-8 text-gray-500">
+                        لا يوجد موظفون في هذا المركز
+                      </div>
+                    ) : (
+                      orderedEmployees.map((emp, index) => (
+                        <Draggable key={emp.id} draggableId={emp.id} index={index}>
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              className={`flex items-center gap-2 p-3 rounded-lg border transition-all ${
+                                selectedEmployeeIds.has(emp.id) 
+                                  ? 'bg-green-50 border-green-300' 
+                                  : 'bg-white hover:bg-gray-50'
+                              } ${snapshot.isDragging ? 'shadow-lg' : ''}`}
+                            >
+                              <div {...provided.dragHandleProps} className="cursor-grab active:cursor-grabbing">
+                                <GripVertical className="w-5 h-5 text-gray-400" />
+                              </div>
+
+                              <div className="flex-1">
+                                <div className="font-semibold text-gray-900">{emp.full_name_arabic}</div>
+                                <div className="text-sm text-gray-600">
+                                  {emp.position} • {emp.رقم_الموظف}
+                                </div>
+                              </div>
+
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => moveEmployee(index, 'up')}
+                                  disabled={index === 0}
+                                  className="h-8 w-8"
+                                >
+                                  <ChevronUp className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  onClick={() => moveEmployee(index, 'down')}
+                                  disabled={index === orderedEmployees.length - 1}
+                                  className="h-8 w-8"
+                                >
+                                  <ChevronDown className="w-4 h-4" />
+                                </Button>
+                              </div>
+
+                              <Checkbox
+                                checked={selectedEmployeeIds.has(emp.id)}
+                                onCheckedChange={() => handleToggleEmployee(emp.id)}
+                              />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))
+                    )}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
           </TabsContent>
 
           {/* اختيار الحقول */}
@@ -399,6 +480,16 @@ export default function CenterEmployeeExporter({
                   المدير الحالي: {manager.full_name_arabic}
                 </p>
               )}
+            </div>
+
+            <div>
+              <Label htmlFor="managerTitle" className="mb-2 block">المسمى الوظيفي للمدير</Label>
+              <Input
+                id="managerTitle"
+                value={managerTitle}
+                onChange={(e) => setManagerTitle(e.target.value)}
+                placeholder="مثال: مدير إدارة شؤون المراكز الصحية بالحناكية"
+              />
             </div>
           </TabsContent>
         </Tabs>
