@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import InputWithVoice from '@/components/ui/InputWithVoice';
 import {
   Select,
   SelectContent,
@@ -44,6 +45,8 @@ export default function CenterDocuments({ centerId, centerName }) {
     notes: ''
   });
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     loadDocuments();
@@ -70,6 +73,29 @@ export default function CenterDocuments({ centerId, centerName }) {
     if (file) {
       setSelectedFile(file);
     }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const file = e.dataTransfer?.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
   };
 
   const handleSubmit = async (e) => {
@@ -323,7 +349,7 @@ export default function CenterDocuments({ centerId, centerName }) {
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label>عنوان المستند *</Label>
-              <Input
+              <InputWithVoice
                 value={formData.document_title}
                 onChange={(e) => setFormData({ ...formData, document_title: e.target.value })}
                 placeholder="مثال: قرار تكليف مدير المركز"
@@ -351,7 +377,7 @@ export default function CenterDocuments({ centerId, centerName }) {
 
               <div>
                 <Label>رقم المستند/القرار</Label>
-                <Input
+                <InputWithVoice
                   value={formData.document_number}
                   onChange={(e) => setFormData({ ...formData, document_number: e.target.value })}
                   placeholder="مثال: 12345"
@@ -361,7 +387,8 @@ export default function CenterDocuments({ centerId, centerName }) {
 
             <div>
               <Label>الوصف</Label>
-              <Textarea
+              <InputWithVoice
+                multiline
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="وصف مختصر للمستند..."
@@ -391,7 +418,7 @@ export default function CenterDocuments({ centerId, centerName }) {
 
             <div>
               <Label>كلمات مفتاحية (مفصولة بفاصلة)</Label>
-              <Input
+              <InputWithVoice
                 value={formData.tags}
                 onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
                 placeholder="مثال: تكليف, مدير, 2024"
@@ -400,7 +427,8 @@ export default function CenterDocuments({ centerId, centerName }) {
 
             <div>
               <Label>ملاحظات</Label>
-              <Textarea
+              <InputWithVoice
+                multiline
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 placeholder="ملاحظات إضافية..."
@@ -411,24 +439,44 @@ export default function CenterDocuments({ centerId, centerName }) {
             <div>
               <Label>الملف *</Label>
               <div className="mt-2">
-                <label className="flex items-center justify-center w-full px-4 py-6 border-2 border-dashed rounded-lg cursor-pointer hover:bg-gray-50 transition-colors">
+                <div
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onClick={() => fileInputRef.current?.click()}
+                  className={cn(
+                    "flex items-center justify-center w-full px-4 py-6 border-2 border-dashed rounded-lg cursor-pointer transition-all",
+                    isDragging 
+                      ? "border-blue-500 bg-blue-50 scale-105" 
+                      : selectedFile
+                      ? "border-green-500 bg-green-50"
+                      : "border-gray-300 hover:border-gray-400 hover:bg-gray-50"
+                  )}
+                >
                   <div className="text-center">
-                    <Upload className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-                    <p className="text-sm text-gray-600">
-                      {selectedFile ? selectedFile.name : 'اضغط لاختيار ملف'}
+                    <Upload className={cn(
+                      "w-8 h-8 mx-auto mb-2 transition-colors",
+                      isDragging ? "text-blue-500" : selectedFile ? "text-green-500" : "text-gray-400"
+                    )} />
+                    <p className={cn(
+                      "text-sm font-medium",
+                      selectedFile ? "text-green-700" : "text-gray-600"
+                    )}>
+                      {isDragging ? '📥 أفلت الملف هنا' : selectedFile ? `✓ ${selectedFile.name}` : '📁 اضغط أو اسحب الملف هنا'}
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
                       PDF, Word, Excel, صورة
                     </p>
                   </div>
                   <input
+                    ref={fileInputRef}
                     type="file"
                     onChange={handleFileChange}
                     className="hidden"
                     accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
                     required
                   />
-                </label>
+                </div>
               </div>
             </div>
 
