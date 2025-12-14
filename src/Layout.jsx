@@ -536,8 +536,8 @@ function LayoutContent({ children, currentPageName }) {
           </main>
 
           {isMobile && (
-            <div className="bottom-nav safe-bottom no-print">
-              <div className="flex justify-around items-center py-1">
+            <div className="bottom-nav safe-bottom no-print overflow-x-auto">
+              <div className="flex justify-around items-center py-1 min-w-max px-2">
                 {[
                   { name: "الرئيسية", href: createPageUrl("Dashboard"), icon: Home },
                   { name: "الموارد", href: createPageUrl("HumanResources"), icon: Users },
@@ -547,14 +547,14 @@ function LayoutContent({ children, currentPageName }) {
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-colors mobile-nav-item touch-target ${
+                    className={`flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg transition-colors mobile-nav-item touch-target min-w-[70px] ${
                       location.pathname === item.href
                         ? "text-green-600" 
                         : "text-gray-500"
                     }`}
                   >
-                    <item.icon className="w-3 h-3 md:w-4 md-h-4" />
-                    <span className="text-xs font-medium text-center leading-tight">{item.name}</span>
+                    <item.icon className="w-4 h-4" />
+                    <span className="text-[10px] font-medium text-center leading-tight">{item.name}</span>
                   </Link>
                 ))}
               </div>
