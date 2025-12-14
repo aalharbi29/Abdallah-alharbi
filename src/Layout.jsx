@@ -542,6 +542,7 @@ function LayoutContent({ children, currentPageName }) {
                   { name: "الرئيسية", href: createPageUrl("Dashboard"), icon: Home },
                   { name: "الموارد", href: createPageUrl("HumanResources"), icon: Users },
                   { name: "الإجازات", href: createPageUrl("Leaves"), icon: Calendar },
+                  { name: "التصميم", href: createPageUrl("AIAnnouncementDesigner"), icon: FileSignature },
                 ].map((item) => ( 
                   <Link
                     key={item.name}
