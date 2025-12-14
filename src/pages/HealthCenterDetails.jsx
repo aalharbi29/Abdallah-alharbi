@@ -27,6 +27,7 @@ import {
 import QuickRoleAssignment from "@/components/employees/QuickRoleAssignment";
 import ClinicsSummary from "@/components/health_centers/ClinicsSummary";
 import CenterEmployeeExporter from "@/components/health_centers/CenterEmployeeExporter";
+import CenterDocuments from "@/components/health_centers/CenterDocuments";
 
 export default function HealthCenterDetails() {
   const location = useLocation();
@@ -1583,6 +1584,11 @@ export default function HealthCenterDetails() {
         {/* ملخص العيادات */}
         <div className="mt-6">
           <ClinicsSummary healthCenterId={center.id} healthCenterName={center.اسم_المركز} />
+        </div>
+
+        {/* مستندات المركز */}
+        <div className="mt-6">
+          <CenterDocuments centerId={center.id} centerName={center.اسم_المركز} />
         </div>
 
         {/* قسم موظفي المركز */}
