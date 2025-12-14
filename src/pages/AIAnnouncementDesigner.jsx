@@ -892,7 +892,7 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                         } : {}}
                       />
                     </div>
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-4 gap-2">
                       <Button
                         variant="outline"
                         size="sm"
@@ -900,6 +900,21 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                       >
                         <Edit2 className="w-3 h-3 ml-1" />
                         تعديل
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const link = document.createElement('a');
+                          link.href = generatedImage;
+                          link.download = `image-${Date.now()}.png`;
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                        }}
+                      >
+                        <Download className="w-3 h-3 ml-1" />
+                        حفظ
                       </Button>
                       <Button
                         variant="outline"
