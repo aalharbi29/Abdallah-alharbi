@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/dialog';
 import {
   FileText, Upload, Trash2, Download, Eye, Plus,
-  Calendar, Hash, AlertCircle, CheckCircle2, Search
+  Calendar, Hash, AlertCircle, CheckCircle2, Search, Loader2
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
