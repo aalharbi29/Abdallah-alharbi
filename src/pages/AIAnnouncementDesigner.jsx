@@ -176,6 +176,7 @@ export default function AIAnnouncementDesigner() {
   // بيانات التصميم
   const [announcementData, setAnnouncementData] = useState({
     designType: 'announcement', // announcement, brochure, awareness, job_description
+    pageSize: 'a4', // a3, a4, a5, a6, a7
     title: '',
     description: '',
     date: '',
@@ -394,6 +395,16 @@ export default function AIAnnouncementDesigner() {
         job_description: 'خلفية رسمية احترافية بألوان هادئة مع شريط جانبي ملون'
       }[announcementData.designType];
 
+      const pageSizes = {
+        a3: { width: '297mm', height: '420mm' },
+        a4: { width: '210mm', height: '297mm' },
+        a5: { width: '148mm', height: '210mm' },
+        a6: { width: '105mm', height: '148mm' },
+        a7: { width: '74mm', height: '105mm' }
+      };
+
+      const currentSize = pageSizes[announcementData.pageSize] || pageSizes.a4;
+
       const prompt = `أنت مصمم جرافيك محترف متخصص في التصاميم الطبية والحكومية. قم بإنشاء تصميم HTML/CSS جميل واحترافي جداً لـ ${designTypeText}.
 
 معلومات التصميم:
@@ -410,7 +421,11 @@ ${includeEmployees && employeesData.length > 0 ? `\nأسماء المرشحين 
 نظام الألوان: ${announcementData.colorScheme}
 
 المطلوب - تصميم احترافي جداً:
-1. صمم ${designTypeText === 'بطاقة توعوية' ? 'بطاقة' : designTypeText === 'بروشور معلوماتي' ? 'بروشور' : 'لوحة'} جذابة واحترافية بتنسيق A4 ${designTypeText === 'بطاقة توعوية' ? '(148mm x 210mm) portrait' : '(297mm x 210mm) landscape'}
+1. المقاس والتخطيط:
+   - مقاس الصفحة: ${currentSize.width} × ${currentSize.height} (${announcementData.pageSize.toUpperCase()})
+   - التخطيط: portrait (عمودي) - الطول أكبر من العرض
+   - استخدم @page { size: ${announcementData.pageSize.toUpperCase()} portrait; margin: 0; }
+   - width: ${currentSize.width}; height: ${currentSize.height}; في body
 
 2. الخلفية - مهم جداً:
    ${backgroundInstructions}
@@ -459,11 +474,13 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
 - ملفت للنظر ومنظم
 - يعكس الهوية الحكومية السعودية
 
-⚠️ مهم جداً - اتجاه النص العربي:
-- استخدم dir="rtl" في الـ <html> أو <body>
+⚠️ مهم جداً - اتجاه النص العربي والمقاسات:
+- استخدم dir="rtl" في الـ <html> و <body>
 - استخدم text-align: right لجميع النصوص العربية
 - اجعل الجداول والعناصر تبدأ من اليمين
 - تأكد من أن التخطيط كامل من اليمين لليسار (RTL)
+- الصفحة portrait (عمودي) وليس landscape
+- استخدم المقاسات المحددة بالضبط: ${currentSize.width} × ${currentSize.height}
 
 أرجع ONLY كود HTML كامل متضمن CSS inline بدون أي نص إضافي أو شروحات.`;
 
@@ -719,6 +736,24 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>مقاس الصفحة</Label>
+                    <Select
+                      value={announcementData.pageSize}
+                      onValueChange={(value) => setAnnouncementData(prev => ({ ...prev, pageSize: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="a3">A3 (297 × 420 ملم)</SelectItem>
+                        <SelectItem value="a4">A4 (210 × 297 ملم)</SelectItem>
+                        <SelectItem value="a5">A5 (148 × 210 ملم)</SelectItem>
+                        <SelectItem value="a6">A6 (105 × 148 ملم)</SelectItem>
+                        <SelectItem value="a7">A7 (74 × 105 ملم)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <div>
                     <Label>نمط التصميم</Label>
                     <Select
