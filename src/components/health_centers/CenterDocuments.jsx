@@ -367,11 +367,26 @@ export default function CenterDocuments({ centerId, centerName }) {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => {
-                        const link = document.createElement('a');
-                        link.href = doc.file_url;
-                        link.download = doc.file_name;
-                        link.click();
+                      onClick={async () => {
+                        try {
+                          const response = await fetch(doc.file_url);
+                          const blob = await response.blob();
+                          const url = window.URL.createObjectURL(blob);
+                          const link = document.createElement('a');
+                          link.href = url;
+                          link.download = doc.file_name;
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                          window.URL.revokeObjectURL(url);
+                        } catch (error) {
+                          console.error('Error downloading:', error);
+                          const link = document.createElement('a');
+                          link.href = doc.file_url;
+                          link.download = doc.file_name;
+                          link.target = '_blank';
+                          link.click();
+                        }
                       }}
                       title="تحميل"
                     >
