@@ -146,11 +146,10 @@ export default function CenterEmployeeExporter({
 <body>
   <div class="header">
     <h1>بيان موظفي ${centerName}</h1>
-    <h2>${administrationName}</h2>
+    <h2 style="font-size: 20px; font-weight: bold; color: #1e40af;">${administrationName}</h2>
   </div>
   
   <div class="meta">
-    <div>التاريخ: ${new Date().toLocaleDateString('ar-SA', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
     <div>عدد الموظفين: ${selectedEmps.length}</div>
   </div>
 
@@ -185,8 +184,8 @@ export default function CenterEmployeeExporter({
   <div class="footer">
     <div class="signature">
       <div class="signature-line"></div>
-      <div style="font-weight: bold;">${managerName}</div>
-      <div style="font-size: 11px; color: #6b7280;">${managerTitle}</div>
+      <div style="font-weight: bold; font-size: 16px; color: #1e40af;">${managerName}</div>
+      <div style="font-size: 13px; color: #374151; font-weight: bold; margin-top: 5px;">${managerTitle}</div>
     </div>
   </div>
 </body>
