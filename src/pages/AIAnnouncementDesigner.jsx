@@ -36,6 +36,7 @@ export default function AIAnnouncementDesigner() {
   const [generatedDesign, setGeneratedDesign] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showTemplates, setShowTemplates] = useState(false);
+  const [includeEmployees, setIncludeEmployees] = useState(false);
   
   // توليد الصور
   const [imagePrompt, setImagePrompt] = useState('');
@@ -49,98 +50,132 @@ export default function AIAnnouncementDesigner() {
 
   // القوالب الجاهزة
   const templates = [
+    // إعلانات
     {
       id: 'training',
       name: 'دعوة تدريب',
       icon: '🎓',
+      designType: 'announcement',
       title: 'المرشحين لحضور دورة [اسم الدورة]',
       description: 'يسر القطاع دعوتكم لحضور الدورة التدريبية',
       designStyle: 'professional',
       colorScheme: 'blue',
       additionalInfo: 'يرجى الحضور في الموعد المحدد والالتزام بالزي الرسمي',
+      needsEmployees: true,
       suggestedFields: ['full_name_arabic', 'position', 'المركز_الصحي']
     },
     {
       id: 'event',
       name: 'إعلان حدث',
       icon: '🎉',
+      designType: 'announcement',
       title: 'المدعوين لحضور [اسم الحدث]',
       description: 'يشرفنا دعوتكم لحضور الحدث الخاص',
       designStyle: 'elegant',
       colorScheme: 'gold',
       additionalInfo: 'نتطلع لحضوركم الكريم',
-      suggestedFields: ['full_name_arabic', 'position', 'المركز_الصحي']
-    },
-    {
-      id: 'meeting',
-      name: 'دعوة اجتماع',
-      icon: '👥',
-      title: 'جدول أعمال اجتماع [موضوع الاجتماع]',
-      description: 'الرجاء الحضور للاجتماع الدوري',
-      designStyle: 'simple',
-      colorScheme: 'blue',
-      additionalInfo: 'يرجى الاطلاع على جدول الأعمال المرفق',
-      suggestedFields: ['full_name_arabic', 'position', 'department']
-    },
-    {
-      id: 'safety',
-      name: 'إعلان أمن وسلامة',
-      icon: '🛡️',
-      title: 'المشاركين في برنامج الأمن والسلامة',
-      description: 'ضمن جهود تعزيز بيئة العمل الآمنة',
-      designStyle: 'professional',
-      colorScheme: 'green',
-      additionalInfo: 'الالتزام بحضور جميع الجلسات إلزامي',
-      suggestedFields: ['full_name_arabic', 'position', 'المركز_الصحي', 'phone']
-    },
-    {
-      id: 'recognition',
-      name: 'شهادة تقدير',
-      icon: '🏆',
-      title: 'تكريم الموظفين المتميزين',
-      description: 'تقديراً لجهودكم المتميزة وإنجازاتكم',
-      designStyle: 'elegant',
-      colorScheme: 'gold',
-      additionalInfo: 'نشكركم على تفانيكم وإخلاصكم في العمل',
+      needsEmployees: true,
       suggestedFields: ['full_name_arabic', 'position', 'المركز_الصحي']
     },
     {
       id: 'notice',
-      name: 'إشعار رسمي',
+      name: 'إشعار عام',
       icon: '📢',
-      title: 'إشعار هام - [الموضوع]',
-      description: 'نود إشعاركم بما يلي',
+      designType: 'announcement',
+      title: 'إشعار هام',
+      description: 'إعلان موجه للجميع',
       designStyle: 'professional',
       colorScheme: 'blue',
-      additionalInfo: 'للاستفسار يرجى التواصل مع إدارة الموارد البشرية',
-      suggestedFields: ['full_name_arabic', 'رقم_الموظف', 'المركز_الصحي']
+      additionalInfo: '',
+      needsEmployees: false,
+      suggestedFields: []
     },
+    // بروشورات
     {
-      id: 'health',
-      name: 'برنامج صحي',
-      icon: '⚕️',
-      title: 'المشاركين في البرنامج الصحي',
-      description: 'ضمن المبادرات الصحية والوقائية',
+      id: 'health_brochure',
+      name: 'بروشور صحي',
+      icon: '📘',
+      designType: 'brochure',
+      title: 'دليل الصحة والوقاية',
+      description: 'معلومات صحية مهمة',
       designStyle: 'modern',
       colorScheme: 'green',
-      additionalInfo: 'الفحوصات مجانية لجميع المشاركين',
-      suggestedFields: ['full_name_arabic', 'position', 'المركز_الصحي', 'phone']
+      additionalInfo: 'معلومات موثوقة من وزارة الصحة',
+      needsEmployees: false,
+      suggestedFields: []
     },
     {
-      id: 'committee',
-      name: 'تشكيل لجنة',
-      icon: '📋',
-      title: 'أعضاء لجنة [اسم اللجنة]',
-      description: 'تم تشكيل اللجنة من الأعضاء التالية أسماؤهم',
+      id: 'services_brochure',
+      name: 'بروشور خدمات',
+      icon: '📗',
+      designType: 'brochure',
+      title: 'الخدمات المتاحة',
+      description: 'تعرف على خدماتنا',
       designStyle: 'professional',
       colorScheme: 'blue',
-      additionalInfo: 'يرجى من الأعضاء الاطلاع على اختصاصات اللجنة',
-      suggestedFields: ['full_name_arabic', 'position', 'المركز_الصحي', 'phone']
+      additionalInfo: '',
+      needsEmployees: false,
+      suggestedFields: []
+    },
+    // بطاقات توعوية
+    {
+      id: 'hygiene_awareness',
+      name: 'بطاقة توعية صحية',
+      icon: '🩺',
+      designType: 'awareness',
+      title: 'نصائح للوقاية من العدوى',
+      description: 'حافظ على صحتك',
+      designStyle: 'simple',
+      colorScheme: 'green',
+      additionalInfo: 'اتبع الإرشادات للحفاظ على السلامة',
+      needsEmployees: false,
+      suggestedFields: []
+    },
+    {
+      id: 'safety_awareness',
+      name: 'بطاقة الأمن والسلامة',
+      icon: '🛡️',
+      designType: 'awareness',
+      title: 'قواعد الأمن والسلامة',
+      description: 'سلامتك مسؤوليتنا',
+      designStyle: 'professional',
+      colorScheme: 'blue',
+      additionalInfo: '',
+      needsEmployees: false,
+      suggestedFields: []
+    },
+    // وصف عمل
+    {
+      id: 'nurse_job',
+      name: 'وصف وظيفي - تمريض',
+      icon: '💼',
+      designType: 'job_description',
+      title: 'وصف وظيفي: ممرض/ممرضة',
+      description: 'المهام والمسؤوليات',
+      designStyle: 'professional',
+      colorScheme: 'blue',
+      additionalInfo: '',
+      needsEmployees: false,
+      suggestedFields: []
+    },
+    {
+      id: 'doctor_job',
+      name: 'وصف وظيفي - طبيب',
+      icon: '👨‍⚕️',
+      designType: 'job_description',
+      title: 'وصف وظيفي: طبيب عام',
+      description: 'المهام والمسؤوليات',
+      designStyle: 'professional',
+      colorScheme: 'blue',
+      additionalInfo: '',
+      needsEmployees: false,
+      suggestedFields: []
     }
   ];
 
-  // بيانات الإعلان
+  // بيانات التصميم
   const [announcementData, setAnnouncementData] = useState({
+    designType: 'announcement', // announcement, brochure, awareness, job_description
     title: '',
     description: '',
     date: '',
@@ -196,6 +231,7 @@ export default function AIAnnouncementDesigner() {
   const applyTemplate = (template) => {
     setAnnouncementData(prev => ({
       ...prev,
+      designType: template.designType,
       title: template.title,
       description: template.description,
       designStyle: template.designStyle,
@@ -206,9 +242,12 @@ export default function AIAnnouncementDesigner() {
     // تطبيق الحقول المقترحة
     const newDisplayFields = {};
     Object.keys(displayFields).forEach(field => {
-      newDisplayFields[field] = template.suggestedFields.includes(field);
+      newDisplayFields[field] = template.suggestedFields?.includes(field) || false;
     });
     setDisplayFields(newDisplayFields);
+
+    // تفعيل أو إلغاء تفعيل قسم الموظفين
+    setIncludeEmployees(template.needsEmployees || false);
 
     setShowTemplates(false);
   };
@@ -310,15 +349,20 @@ export default function AIAnnouncementDesigner() {
   };
 
   const generateDesign = async () => {
-    if (!announcementData.title || selectedEmployees.length === 0) {
-      alert('الرجاء إدخال عنوان الإعلان واختيار موظف واحد على الأقل');
+    if (!announcementData.title) {
+      alert('الرجاء إدخال عنوان التصميم');
+      return;
+    }
+    
+    if (includeEmployees && selectedEmployees.length === 0) {
+      alert('الرجاء اختيار موظف واحد على الأقل أو إلغاء تفعيل قسم الموظفين');
       return;
     }
 
     setIsGenerating(true);
     try {
-      // تجهيز بيانات الموظفين المحددة
-      const employeesData = selectedEmployees.map(emp => {
+      // تجهيز بيانات الموظفين المحددة (إذا كانت مفعلة)
+      const employeesData = includeEmployees ? selectedEmployees.map(emp => {
         const empData = {};
         Object.keys(displayFields).forEach(field => {
           if (displayFields[field]) {
@@ -326,42 +370,47 @@ export default function AIAnnouncementDesigner() {
           }
         });
         return empData;
-      });
+      }) : [];
 
       const filterStyle = imageFilters 
         ? `filter: brightness(${imageFilters.brightness}%) contrast(${imageFilters.contrast}%) saturate(${imageFilters.saturation}%); transform: rotate(${imageFilters.rotation}deg);`
         : '';
 
       const imageInstruction = generatedImage 
-        ? `\n\nصورة مضمنة (يجب استخدامها في التصميم):\n<img src="${generatedImage}" alt="صورة الإعلان" style="max-width: 100%; height: auto; border-radius: 10px; margin: 20px 0; ${filterStyle}">\nاستخدم هذه الصورة بشكل جذاب في أعلى أو جانب التصميم.`
+        ? `\n\nصورة مضمنة (يجب استخدامها في التصميم):\n<img src="${generatedImage}" alt="صورة التصميم" style="max-width: 100%; height: auto; border-radius: 10px; margin: 20px 0; ${filterStyle}">\nاستخدم هذه الصورة بشكل جذاب في أعلى أو جانب التصميم.`
         : '';
 
-      const prompt = `أنت مصمم جرافيك محترف. قم بإنشاء تصميم HTML/CSS جميل واحترافي لإعلان رسمي.
+      const designTypeText = {
+        announcement: 'إعلان رسمي',
+        brochure: 'بروشور معلوماتي',
+        awareness: 'بطاقة توعوية',
+        job_description: 'وصف وظيفي'
+      }[announcementData.designType] || 'إعلان';
 
-معلومات الإعلان:
+      const prompt = `أنت مصمم جرافيك محترف. قم بإنشاء تصميم HTML/CSS جميل واحترافي لـ ${designTypeText}.
+
+معلومات التصميم:
 - العنوان: ${announcementData.title}
 - الوصف: ${announcementData.description || 'لا يوجد'}
 - التاريخ: ${announcementData.date || 'غير محدد'}
 - الوقت: ${announcementData.time || 'غير محدد'}
 - الموقع: ${announcementData.location || 'غير محدد'}
 - معلومات إضافية: ${announcementData.additionalInfo || 'لا يوجد'}${imageInstruction}
+${includeEmployees && employeesData.length > 0 ? `\nأسماء المرشحين وبياناتهم:\n${JSON.stringify(employeesData, null, 2)}` : ''}
 
-أسماء المرشحين وبياناتهم:
-${JSON.stringify(employeesData, null, 2)}
-
+نوع التصميم: ${designTypeText}
 نمط التصميم المطلوب: ${announcementData.designStyle}
 نظام الألوان: ${announcementData.colorScheme}
 
 المطلوب:
-1. صمم لوحة إعلانية جذابة واحترافية بتنسيق A4 (297mm x 210mm) landscape
+1. صمم ${designTypeText === 'بطاقة توعوية' ? 'بطاقة' : designTypeText === 'بروشور معلوماتي' ? 'بروشور' : 'لوحة'} جذابة واحترافية بتنسيق A4 ${designTypeText === 'بطاقة توعوية' ? '(148mm x 210mm) portrait' : '(297mm x 210mm) landscape'}
 2. استخدم ألوان ${announcementData.colorScheme === 'blue' ? 'أزرق وأخضر' : announcementData.colorScheme === 'green' ? 'أخضر ورمادي' : 'ذهبي وأزرق'}
 3. اجعل العنوان بارز وكبير في الأعلى
-4. نسق أسماء المرشحين في جدول أنيق أو بطاقات جميلة
-5. أضف الشعار والهوية البصرية لوزارة الصحة
-6. استخدم خطوط عربية واضحة ومقروءة
-7. أضف عناصر تصميمية جميلة (أيقونات، إطارات، خلفيات)
-8. اجعل التصميم جاهز للطباعة
-${generatedImage ? '9. تأكد من دمج الصورة المضمنة بشكل جذاب في التصميم' : ''}
+${includeEmployees && employeesData.length > 0 ? '4. نسق أسماء المرشحين في جدول أنيق أو بطاقات جميلة\n' : ''}${designTypeText === 'وصف وظيفي' ? '4. نظم المحتوى في أقسام واضحة: المهام، المسؤوليات، المتطلبات، المؤهلات\n' : ''}${designTypeText === 'بطاقة توعوية' ? '4. استخدم رسوم توضيحية وأيقونات واضحة\n5. اجعل المعلومات سهلة القراءة والفهم\n' : ''}${designTypeText === 'بروشور معلوماتي' ? '4. نظم المحتوى في أقسام واضحة مع عناوين فرعية\n5. استخدم نقاط وقوائم للمعلومات المهمة\n' : ''}6. أضف الشعار والهوية البصرية لوزارة الصحة
+7. استخدم خطوط عربية واضحة ومقروءة
+8. أضف عناصر تصميمية جميلة (أيقونات، إطارات، خلفيات)
+9. اجعل التصميم جاهز للطباعة
+${generatedImage ? '10. تأكد من دمج الصورة المضمنة بشكل جذاب في التصميم' : ''}
 
 أرجع ONLY كود HTML كامل متضمن CSS inline بدون أي نص إضافي أو شروحات.`;
 
@@ -414,10 +463,10 @@ ${generatedImage ? '9. تأكد من دمج الصورة المضمنة بشكل
             <Wand2 className="w-10 h-10 text-white" />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-            مصمم الإعلانات بالذكاء الاصطناعي
+            أداة التصميم بالذكاء الاصطناعي
           </h1>
           <p className="text-lg text-gray-600">
-            صمم إعلانات احترافية في ثوانٍ باستخدام الذكاء الاصطناعي
+            صمم إعلانات، بروشورات، بطاقات توعوية، أو أوصاف وظيفية احترافية في ثوانٍ
           </p>
         </div>
 
@@ -440,25 +489,84 @@ ${generatedImage ? '9. تأكد من دمج الصورة المضمنة بشكل
           </CardHeader>
           {showTemplates && (
             <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {templates.map(template => (
-                  <button
-                    key={template.id}
-                    onClick={() => applyTemplate(template)}
-                    className="p-4 border-2 rounded-xl hover:border-purple-400 hover:shadow-lg transition-all text-center group bg-white"
-                  >
-                    <div className="text-3xl mb-2">{template.icon}</div>
-                    <div className="font-semibold text-sm text-gray-900 group-hover:text-purple-700">
-                      {template.name}
-                    </div>
-                    <div className="text-xs text-gray-500 mt-1">
-                      {template.designStyle === 'professional' ? 'رسمي' :
-                       template.designStyle === 'modern' ? 'عصري' :
-                       template.designStyle === 'elegant' ? 'أنيق' : 'بسيط'}
-                    </div>
-                  </button>
-                ))}
+              <div className="space-y-4">
+                {/* إعلانات */}
+                <div>
+                  <h4 className="font-bold text-sm text-gray-700 mb-2">📢 إعلانات</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {templates.filter(t => t.designType === 'announcement').map(template => (
+                      <button
+                        key={template.id}
+                        onClick={() => applyTemplate(template)}
+                        className="p-4 border-2 rounded-xl hover:border-purple-400 hover:shadow-lg transition-all text-center group bg-white"
+                      >
+                        <div className="text-3xl mb-2">{template.icon}</div>
+                        <div className="font-semibold text-sm text-gray-900 group-hover:text-purple-700">
+                          {template.name}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* بروشورات */}
+                <div>
+                  <h4 className="font-bold text-sm text-gray-700 mb-2">📘 بروشورات</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {templates.filter(t => t.designType === 'brochure').map(template => (
+                      <button
+                        key={template.id}
+                        onClick={() => applyTemplate(template)}
+                        className="p-4 border-2 rounded-xl hover:border-purple-400 hover:shadow-lg transition-all text-center group bg-white"
+                      >
+                        <div className="text-3xl mb-2">{template.icon}</div>
+                        <div className="font-semibold text-sm text-gray-900 group-hover:text-purple-700">
+                          {template.name}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* بطاقات توعوية */}
+                <div>
+                  <h4 className="font-bold text-sm text-gray-700 mb-2">🩺 بطاقات توعوية</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {templates.filter(t => t.designType === 'awareness').map(template => (
+                      <button
+                        key={template.id}
+                        onClick={() => applyTemplate(template)}
+                        className="p-4 border-2 rounded-xl hover:border-purple-400 hover:shadow-lg transition-all text-center group bg-white"
+                      >
+                        <div className="text-3xl mb-2">{template.icon}</div>
+                        <div className="font-semibold text-sm text-gray-900 group-hover:text-purple-700">
+                          {template.name}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* أوصاف وظيفية */}
+                <div>
+                  <h4 className="font-bold text-sm text-gray-700 mb-2">💼 أوصاف وظيفية</h4>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                    {templates.filter(t => t.designType === 'job_description').map(template => (
+                      <button
+                        key={template.id}
+                        onClick={() => applyTemplate(template)}
+                        className="p-4 border-2 rounded-xl hover:border-purple-400 hover:shadow-lg transition-all text-center group bg-white"
+                      >
+                        <div className="text-3xl mb-2">{template.icon}</div>
+                        <div className="font-semibold text-sm text-gray-900 group-hover:text-purple-700">
+                          {template.name}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
+
               <div className="mt-4 p-3 bg-white rounded-lg border border-purple-200">
                 <p className="text-sm text-gray-600 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-purple-500" />
@@ -472,17 +580,35 @@ ${generatedImage ? '9. تأكد من دمج الصورة المضمنة بشكل
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* لوحة الإدخال */}
           <div className="space-y-6">
-            {/* معلومات الإعلان */}
+            {/* معلومات التصميم */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Info className="w-5 h-5 text-blue-600" />
-                  معلومات الإعلان
+                  معلومات التصميم
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label>عنوان الإعلان *</Label>
+                  <Label>نوع التصميم</Label>
+                  <Select
+                    value={announcementData.designType}
+                    onValueChange={(value) => setAnnouncementData(prev => ({ ...prev, designType: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="announcement">📢 إعلان</SelectItem>
+                      <SelectItem value="brochure">📘 بروشور</SelectItem>
+                      <SelectItem value="awareness">🩺 بطاقة توعوية</SelectItem>
+                      <SelectItem value="job_description">💼 وصف وظيفي</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label>عنوان التصميم *</Label>
                   <Input
                     value={announcementData.title}
                     onChange={(e) => setAnnouncementData(prev => ({ ...prev, title: e.target.value }))}
@@ -713,14 +839,34 @@ ${generatedImage ? '9. تأكد من دمج الصورة المضمنة بشكل
               </CardContent>
             </Card>
 
-            {/* البيانات المراد إظهارها */}
-            <Card>
+            {/* تفعيل قسم الموظفين */}
+            <Card className="border-2 border-green-200">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="w-5 h-5 text-green-600" />
-                  البيانات المراد إظهارها
+                <CardTitle className="flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <Users className="w-5 h-5 text-green-600" />
+                    إضافة موظفين للتصميم
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="include-employees"
+                      checked={includeEmployees}
+                      onCheckedChange={setIncludeEmployees}
+                    />
+                    <Label htmlFor="include-employees" className="cursor-pointer">
+                      تفعيل
+                    </Label>
+                  </div>
                 </CardTitle>
               </CardHeader>
+              {includeEmployees && (
+                <>
+                  <CardHeader className="pt-0">
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <Users className="w-4 h-4 text-green-600" />
+                      البيانات المراد إظهارها
+                    </CardTitle>
+                  </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="flex items-center gap-2">
@@ -781,10 +927,8 @@ ${generatedImage ? '9. تأكد من دمج الصورة المضمنة بشكل
                   </div>
                 </div>
               </CardContent>
-            </Card>
 
-            {/* اختيار الموظفين */}
-            <Card>
+              {/* اختيار الموظفين */}
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
                   <span className="flex items-center gap-2">
@@ -825,6 +969,8 @@ ${generatedImage ? '9. تأكد من دمج الصورة المضمنة بشكل
                   ))}
                 </div>
               </CardContent>
+                </>
+              )}
             </Card>
 
             {/* زر التصميم */}
@@ -841,10 +987,18 @@ ${generatedImage ? '9. تأكد من دمج الصورة المضمنة بشكل
               ) : (
                 <>
                   <Wand2 className="w-5 h-5 ml-2" />
-                  توليد التصميم {generatedImage ? 'مع الصورة' : 'بالذكاء الاصطناعي'}
+                  توليد التصميم بالذكاء الاصطناعي
                 </>
               )}
             </Button>
+
+            {includeEmployees && selectedEmployees.length === 0 && (
+              <div className="p-4 bg-yellow-50 border-2 border-yellow-300 rounded-xl">
+                <p className="text-sm text-yellow-800 text-center">
+                  ⚠️ لم يتم اختيار أي موظفين - قم بإلغاء تفعيل قسم الموظفين أو اختر موظفين
+                </p>
+              </div>
+            )}
 
             {generatedImage && (
               <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl">
@@ -975,9 +1129,10 @@ ${generatedImage ? '9. تأكد من دمج الصورة المضمنة بشكل
               <div>
                 <h3 className="font-bold text-lg text-gray-900 mb-2">💡 نصائح للحصول على أفضل تصميم</h3>
                 <ul className="text-gray-600 space-y-1 text-sm">
+                  <li>• اختر نوع التصميم المناسب (إعلان، بروشور، بطاقة توعوية، وصف وظيفي)</li>
                   <li>• اكتب عنوان واضح ومختصر</li>
-                  <li>• حدد البيانات المهمة فقط لتجنب الازدحام</li>
-                  <li>• اختر نمط التصميم المناسب للمناسبة</li>
+                  <li>• قسم الموظفين اختياري - فعّله فقط عند الحاجة</li>
+                  <li>• استخدم الصور المولدة لتحسين التصميم</li>
                   <li>• يمكنك إعادة التصميم عدة مرات للحصول على نتائج مختلفة</li>
                   <li>• التصميم جاهز للطباعة بجودة عالية</li>
                 </ul>
