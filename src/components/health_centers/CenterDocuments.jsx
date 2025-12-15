@@ -27,6 +27,7 @@ import {
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { downloadFileWithName } from '@/components/files/InlineFileReplacer';
 
 export default function CenterDocuments({ centerId, centerName }) {
   const [documents, setDocuments] = useState([]);
@@ -355,51 +356,33 @@ export default function CenterDocuments({ centerId, centerName }) {
                     )}
                   </div>
 
-                  <div className="flex gap-1">
+                  <div className="flex gap-1 flex-wrap">
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => window.open(doc.file_url, '_blank')}
                       title="عرض"
+                      className="touch-target"
                     >
-                      <Eye className="w-4 h-4" />
+                      <Eye className="w-5 h-5" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={async () => {
-                        try {
-                          const response = await fetch(doc.file_url);
-                          const blob = await response.blob();
-                          const url = window.URL.createObjectURL(blob);
-                          const link = document.createElement('a');
-                          link.href = url;
-                          link.download = doc.file_name;
-                          document.body.appendChild(link);
-                          link.click();
-                          document.body.removeChild(link);
-                          window.URL.revokeObjectURL(url);
-                        } catch (error) {
-                          console.error('Error downloading:', error);
-                          const link = document.createElement('a');
-                          link.href = doc.file_url;
-                          link.download = doc.file_name;
-                          link.target = '_blank';
-                          link.click();
-                        }
-                      }}
+                      onClick={() => downloadFileWithName(doc.file_url, doc.file_name)}
                       title="تحميل"
+                      className="touch-target text-blue-600 hover:text-blue-700 hover:bg-blue-50"
                     >
-                      <Download className="w-4 h-4" />
+                      <Download className="w-5 h-5" />
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => handleDelete(doc.id)}
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 touch-target"
                       title="حذف"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-5 h-5" />
                     </Button>
                   </div>
                 </div>
