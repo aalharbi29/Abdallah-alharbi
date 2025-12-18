@@ -49,6 +49,7 @@ import HRAnalytics from './pages/HRAnalytics';
 import FillDigitalAccountForm from './pages/FillDigitalAccountForm';
 import AdvancedFormEditor from './pages/AdvancedFormEditor';
 import AIAnnouncementDesigner from './pages/AIAnnouncementDesigner';
+import NoteSorter from './pages/NoteSorter';
 import __Layout from './Layout.jsx';
 
 
@@ -104,6 +105,7 @@ export const PAGES = {
     "FillDigitalAccountForm": FillDigitalAccountForm,
     "AdvancedFormEditor": AdvancedFormEditor,
     "AIAnnouncementDesigner": AIAnnouncementDesigner,
+    "NoteSorter": NoteSorter,
 }
 
 export const pagesConfig = {
