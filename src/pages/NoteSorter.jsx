@@ -29,7 +29,7 @@ import {
 import {
   Sparkles, FileText, Clock, User, CheckCircle2, AlertTriangle,
   Loader2, Trash2, Edit2, Filter, Search, Download, Plus,
-  ArrowUpCircle, ArrowDownCircle, Circle, AlertCircle
+  ArrowUpCircle, ArrowDownCircle, Circle, AlertCircle, Printer, FileCode
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -291,6 +291,536 @@ ${inputText}
     link.href = url;
     link.download = `ملاحظات-مفرزة-${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
+  };
+
+  const generateHTMLReport = () => {
+    const today = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    
+    // إحصائيات
+    const stats = {
+      total: filteredSavedNotes.length,
+      byCategory: categories.reduce((acc, cat) => {
+        acc[cat] = filteredSavedNotes.filter(n => n.category === cat).length;
+        return acc;
+      }, {}),
+      byPriority: priorities.reduce((acc, p) => {
+        acc[p] = filteredSavedNotes.filter(n => n.priority === p).length;
+        return acc;
+      }, {}),
+      byStatus: statuses.reduce((acc, s) => {
+        acc[s] = filteredSavedNotes.filter(n => n.status === s).length;
+        return acc;
+      }, {})
+    };
+
+    const priorityColors = {
+      'عاجل': '#dc2626',
+      'مهم': '#ea580c',
+      'متوسط': '#2563eb',
+      'منخفض': '#6b7280'
+    };
+
+    const statusColors = {
+      'جديد': '#3b82f6',
+      'قيد المعالجة': '#f59e0b',
+      'مكتمل': '#22c55e',
+      'معلق': '#ef4444'
+    };
+
+    const categoryColors = {
+      'إداري': '#9333ea',
+      'فني': '#3b82f6',
+      'طبي': '#22c55e',
+      'مالي': '#eab308',
+      'موارد بشرية': '#ec4899',
+      'صيانة': '#f97316',
+      'تجهيزات': '#06b6d4',
+      'خدمات': '#6366f1',
+      'أخرى': '#6b7280'
+    };
+
+    const html = `
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تقرير الملاحظات المفرزة - ${today}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      color: #1e293b;
+      line-height: 1.6;
+      padding: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      color: white;
+      padding: 40px;
+      border-radius: 20px;
+      margin-bottom: 30px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(79, 70, 229, 0.3);
+    }
+    
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .header .subtitle {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+    .header .date {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 30px;
+      display: inline-block;
+      font-weight: 600;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .stat-card {
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      border: 1px solid #e2e8f0;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+    }
+    
+    .stat-number {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .stat-label {
+      color: #64748b;
+      font-weight: 600;
+      margin-top: 5px;
+    }
+    
+    .section {
+      background: white;
+      border-radius: 16px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    
+    .section-header {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 20px 30px;
+      font-size: 1.3rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .section-content {
+      padding: 25px;
+    }
+    
+    .charts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+    
+    .chart-card {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    
+    .chart-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    
+    .bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .bar-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .bar-label {
+      min-width: 100px;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .bar-container {
+      flex: 1;
+      height: 30px;
+      background: #f1f5f9;
+      border-radius: 15px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .bar-fill {
+      height: 100%;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 10px;
+      color: white;
+      font-weight: 700;
+      font-size: 0.85rem;
+      min-width: 40px;
+      transition: width 0.5s ease;
+    }
+    
+    .notes-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    
+    .notes-table th {
+      background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+      color: white;
+      padding: 15px 12px;
+      text-align: right;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    
+    .notes-table th:first-child {
+      border-radius: 0 12px 0 0;
+    }
+    
+    .notes-table th:last-child {
+      border-radius: 12px 0 0 0;
+    }
+    
+    .notes-table td {
+      padding: 15px 12px;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 0.9rem;
+    }
+    
+    .notes-table tr:nth-child(even) {
+      background: #f8fafc;
+    }
+    
+    .notes-table tr:hover {
+      background: #ede9fe;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    
+    .priority-عاجل { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .priority-مهم { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
+    .priority-متوسط { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+    .priority-منخفض { background: #f9fafb; color: #6b7280; border: 1px solid #e5e7eb; }
+    
+    .status-جديد { background: #eff6ff; color: #3b82f6; }
+    .status-قيد-المعالجة { background: #fef3c7; color: #d97706; }
+    .status-مكتمل { background: #dcfce7; color: #16a34a; }
+    .status-معلق { background: #fef2f2; color: #dc2626; }
+    
+    .category-badge {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 30px;
+      color: #64748b;
+      font-size: 0.9rem;
+      border-top: 2px solid #e2e8f0;
+      margin-top: 30px;
+    }
+    
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .summary-card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    
+    .summary-card h4 {
+      font-size: 1rem;
+      color: #64748b;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .summary-list {
+      list-style: none;
+    }
+    
+    .summary-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+    
+    .summary-list li:last-child {
+      border-bottom: none;
+    }
+    
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      
+      .header {
+        box-shadow: none;
+        border: 2px solid #4f46e5;
+      }
+      
+      .section, .stat-card, .chart-card, .summary-card {
+        box-shadow: none;
+        border: 1px solid #e2e8f0;
+        break-inside: avoid;
+      }
+      
+      .notes-table tr {
+        break-inside: avoid;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 1.8rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .stat-number {
+        font-size: 2rem;
+      }
+      
+      .notes-table {
+        font-size: 0.8rem;
+      }
+      
+      .notes-table th, .notes-table td {
+        padding: 10px 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📋 تقرير الملاحظات المفرزة</h1>
+      <p class="subtitle">تحليل شامل ومتابعة للملاحظات والإجراءات</p>
+      <div class="date">📅 ${today}</div>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">${stats.total}</div>
+        <div class="stat-label">إجمالي الملاحظات</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" style="background: linear-gradient(135deg, #dc2626, #f87171); -webkit-background-clip: text;">${stats.byPriority['عاجل'] || 0}</div>
+        <div class="stat-label">عاجلة</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" style="background: linear-gradient(135deg, #f59e0b, #fbbf24); -webkit-background-clip: text;">${stats.byStatus['قيد المعالجة'] || 0}</div>
+        <div class="stat-label">قيد المعالجة</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" style="background: linear-gradient(135deg, #22c55e, #4ade80); -webkit-background-clip: text;">${stats.byStatus['مكتمل'] || 0}</div>
+        <div class="stat-label">مكتملة</div>
+      </div>
+    </div>
+    
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3 class="chart-title">📊 التوزيع حسب التصنيف</h3>
+        <div class="bar-chart">
+          ${categories.filter(cat => stats.byCategory[cat] > 0).map(cat => `
+            <div class="bar-item">
+              <span class="bar-label">${cat}</span>
+              <div class="bar-container">
+                <div class="bar-fill" style="width: ${Math.max((stats.byCategory[cat] / stats.total) * 100, 15)}%; background: ${categoryColors[cat]};">
+                  ${stats.byCategory[cat]}
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      
+      <div class="chart-card">
+        <h3 class="chart-title">⚡ التوزيع حسب الأولوية</h3>
+        <div class="bar-chart">
+          ${priorities.filter(p => stats.byPriority[p] > 0).map(p => `
+            <div class="bar-item">
+              <span class="bar-label">${p}</span>
+              <div class="bar-container">
+                <div class="bar-fill" style="width: ${Math.max((stats.byPriority[p] / stats.total) * 100, 15)}%; background: ${priorityColors[p]};">
+                  ${stats.byPriority[p]}
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      
+      <div class="chart-card">
+        <h3 class="chart-title">📈 التوزيع حسب الحالة</h3>
+        <div class="bar-chart">
+          ${statuses.filter(s => stats.byStatus[s] > 0).map(s => `
+            <div class="bar-item">
+              <span class="bar-label">${s}</span>
+              <div class="bar-container">
+                <div class="bar-fill" style="width: ${Math.max((stats.byStatus[s] / stats.total) * 100, 15)}%; background: ${statusColors[s]};">
+                  ${stats.byStatus[s]}
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+    
+    <div class="section">
+      <div class="section-header">
+        📝 جدول الملاحظات التفصيلي
+      </div>
+      <div class="section-content" style="overflow-x: auto;">
+        <table class="notes-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>العنوان</th>
+              <th>التصنيف</th>
+              <th>الأولوية</th>
+              <th>الحالة</th>
+              <th>المسؤول</th>
+              <th>الإجراء</th>
+              <th>المدة</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${filteredSavedNotes.map((note, idx) => `
+              <tr>
+                <td style="font-weight: 700; color: #4f46e5;">${idx + 1}</td>
+                <td>
+                  <strong>${note.title}</strong>
+                  <div style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">${note.original_text?.substring(0, 100)}${note.original_text?.length > 100 ? '...' : ''}</div>
+                </td>
+                <td><span class="category-badge" style="background: ${categoryColors[note.category]}20; color: ${categoryColors[note.category]};">${note.category}</span></td>
+                <td><span class="badge priority-${note.priority}">${note.priority}</span></td>
+                <td><span class="badge status-${note.status?.replace(' ', '-')}">${note.status}</span></td>
+                <td>${note.responsible_party || '-'}</td>
+                <td>${note.action_taken || '-'}</td>
+                <td>${note.expected_duration || '-'}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>تم إنشاء هذا التقرير بواسطة نظام فرز الملاحظات الذكي</p>
+      <p style="margin-top: 5px;">وزارة الصحة - قطاع الحناكية الصحي</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+    return html;
+  };
+
+  const exportToHTML = () => {
+    const html = generateHTMLReport();
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `تقرير-الملاحظات-${new Date().toISOString().split('T')[0]}.html`;
+    link.click();
+  };
+
+  const printReport = () => {
+    const html = generateHTMLReport();
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(html);
+    printWindow.document.close();
+    printWindow.print();
   };
 
   return (
@@ -600,7 +1130,15 @@ ${inputText}
                     </Select>
                     <Button variant="outline" onClick={exportToCSV}>
                       <Download className="w-4 h-4 ml-1" />
-                      تصدير
+                      CSV
+                    </Button>
+                    <Button variant="outline" onClick={exportToHTML} className="text-purple-600 hover:bg-purple-50">
+                      <FileCode className="w-4 h-4 ml-1" />
+                      HTML
+                    </Button>
+                    <Button variant="outline" onClick={printReport} className="text-green-600 hover:bg-green-50">
+                      <Printer className="w-4 h-4 ml-1" />
+                      طباعة
                     </Button>
                   </div>
                 </CardTitle>
