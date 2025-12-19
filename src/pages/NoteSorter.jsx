@@ -35,6 +35,8 @@ import { toast } from 'sonner';
 
 export default function NoteSorter() {
   const [inputText, setInputText] = useState('');
+  const [selectedCenter, setSelectedCenter] = useState('');
+  const [healthCenters, setHealthCenters] = useState([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [sortedNotes, setSortedNotes] = useState([]);
   const [savedNotes, setSavedNotes] = useState([]);
@@ -51,7 +53,17 @@ export default function NoteSorter() {
 
   useEffect(() => {
     loadSavedNotes();
+    loadHealthCenters();
   }, []);
+
+  const loadHealthCenters = async () => {
+    try {
+      const centers = await base44.entities.HealthCenter.list('-updated_date', 100);
+      setHealthCenters(Array.isArray(centers) ? centers : []);
+    } catch (error) {
+      console.error('Error loading health centers:', error);
+    }
+  };
 
   const loadSavedNotes = async () => {
     setIsLoading(true);
@@ -120,6 +132,7 @@ ${inputText}
         const processedNotes = response.notes.map((note, index) => ({
           id: `temp-${Date.now()}-${index}`,
           ...note,
+          health_center: selectedCenter || '',
           responsible_party: note.suggested_responsible || '',
           action_taken: '',
           expected_duration: note.suggested_duration || '',
@@ -145,6 +158,7 @@ ${inputText}
         title: note.title,
         category: note.category,
         priority: note.priority,
+        health_center: note.health_center,
         responsible_party: note.responsible_party,
         action_taken: note.action_taken,
         expected_duration: note.expected_duration,
@@ -168,6 +182,7 @@ ${inputText}
           title: note.title,
           category: note.category,
           priority: note.priority,
+          health_center: note.health_center,
           responsible_party: note.responsible_party,
           action_taken: note.action_taken,
           expected_duration: note.expected_duration,
@@ -865,6 +880,22 @@ ${inputText}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 pt-6">
+                <div>
+                  <Label>المركز الصحي</Label>
+                  <Select value={selectedCenter} onValueChange={setSelectedCenter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="اختر المركز الصحي..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value={null}>جميع المراكز</SelectItem>
+                      {healthCenters.map(center => (
+                        <SelectItem key={center.id} value={center.اسم_المركز}>
+                          {center.اسم_المركز}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div>
                   <Label>أدخل ملاحظاتك هنا (يمكنك إدخال ملاحظة واحدة أو عدة ملاحظات)</Label>
                   <Textarea
