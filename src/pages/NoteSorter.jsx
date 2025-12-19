@@ -85,11 +85,27 @@ export default function NoteSorter() {
 
     setIsAnalyzing(true);
     try {
+      // تحديد حالة المركز (حكومي أو مستأجر)
+      const selectedCenterData = healthCenters.find(c => c.اسم_المركز === selectedCenter);
+      const centerOwnership = selectedCenterData?.حالة_المركز || 'حكومي';
+      const ownerName = selectedCenterData?.اسم_المؤجر || 'مالك المبنى';
+      
+      const responsibilityRule = `
+قواعد تحديد المسؤولية للأعمال الإنشائية والصيانة:
+- إذا كانت الملاحظة تتعلق بأعمال إنشائية أو صيانة مباني أو بنية تحتية:
+  * المباني الحكومية: المسؤول هو "التجمع الصحي بالمدينة المنورة"
+  * المباني المستأجرة: المسؤول هو "${ownerName}" (مالك المبنى)
+- حالة المركز الحالي: ${centerOwnership}
+${centerOwnership === 'مستأجر' ? `- اسم المؤجر: ${ownerName}` : ''}
+`;
+
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: `أنت محلل متخصص في تصنيف وفرز الملاحظات الإدارية والصحية. قم بتحليل النص التالي واستخراج الملاحظات منه وتصنيفها:
 
 النص المُدخل:
 ${inputText}
+
+${responsibilityRule}
 
 المطلوب:
 1. فصل كل ملاحظة على حدة (قد يحتوي النص على ملاحظة واحدة أو عدة ملاحظات)
@@ -98,7 +114,7 @@ ${inputText}
    - original_text: النص الأصلي للملاحظة
    - category: التصنيف (إداري، فني، طبي، مالي، موارد بشرية، صيانة، تجهيزات، خدمات، أخرى)
    - priority: الأولوية (عاجل، مهم، متوسط، منخفض)
-   - suggested_responsible: الجهة المقترحة للمسؤولية
+   - suggested_responsible: الجهة المقترحة للمسؤولية (طبق قواعد تحديد المسؤولية أعلاه للأعمال الإنشائية والصيانة)
    - suggested_action: الإجراء المقترح
    - suggested_duration: المدة المتوقعة للإنجاز
    - analysis: تحليل مختصر للملاحظة
