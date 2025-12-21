@@ -192,37 +192,89 @@ export default function CustomExportManager({
     if (!selectedFields.length && !preambleText && !footerText) return '';
 
     const headers = selectedFields.map(field => fieldDefinitions[field]);
-    const headerRow = headers.map(h => `<th style="background-color: #f5f5f5; padding: 12px; border: 1px solid #ddd; font-weight: bold; text-align: center;">${h}</th>`).join('');
     
-    const dataRows = (sortedExportData || []).map(item => {
-      const cells = selectedFields.map(field => {
-        let value = '';
-        if (field === 'special_roles' && Array.isArray(item[field])) {
-          value = item[field].join(', ');
-        } else if (field === 'assigned_tasks' && Array.isArray(item[field])) {
-          value = item[field].join(', ');
-        } else if (field === 'employee_count' && type === 'healthcenters') {
-          value = item.employees ? item.employees.length : 0;
-        } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date') {
-          value = item[field] ? new Date(item[field]).toLocaleDateString('ar-SA') : '';
-        } else {
-          value = item[field] || '';
-        }
-        return `<td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${value}</td>`;
+    // تجميع البيانات حسب المركز الصحي للموظفين
+    const groupedByCenter = type === 'employees' ? (sortedExportData || []).reduce((acc, item) => {
+      const center = item.المركز_الصحي || 'غير محدد';
+      if (!acc[center]) acc[center] = [];
+      acc[center].push(item);
+      return acc;
+    }, {}) : null;
+
+    const formatValue = (item, field) => {
+      if (field === 'special_roles' && Array.isArray(item[field])) {
+        return item[field].join('، ');
+      } else if (field === 'assigned_tasks' && Array.isArray(item[field])) {
+        return item[field].join('، ');
+      } else if (field === 'employee_count' && type === 'healthcenters') {
+        return item.employees ? item.employees.length : 0;
+      } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date') {
+        return item[field] ? new Date(item[field]).toLocaleDateString('ar-SA') : '';
+      } else {
+        return item[field] || '';
+      }
+    };
+
+    const generateTableRows = (items, startIndex = 1) => {
+      return items.map((item, idx) => {
+        const cells = selectedFields.map(field => {
+          const value = formatValue(item, field);
+          return `<td>${value}</td>`;
+        }).join('');
+        return `<tr><td class="row-num">${startIndex + idx}</td>${cells}</tr>`;
       }).join('');
-      return `<tr>${cells}</tr>`;
-    }).join('');
+    };
 
     const signatureBlock = `
-      <div style="text-align: center; margin-top: 50px; page-break-inside: avoid;">
-        <p style="margin: 0; font-weight: bold;">مدير ادارة المراكز الصحية بالحناكية</p>
-        <p style="margin: 5px 0 0 0; font-weight: bold;">أ/ عبدالمجيد سعود الربيقي</p>
-        <div style="position: relative; width: 250px; height: 100px; margin: -20px auto 0 auto;">
-          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/7cc0a0a53_.png" alt="Signature" style="position: absolute; left: 0; top: 0; width: 150px; mix-blend-mode: darken;">
-          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/9059c4577_2.png" alt="Stamp" style="position: absolute; right: 0; top: 10px; width: 100px; opacity: 0.9;">
+      <div class="signature-block">
+        <p class="signature-title">مدير ادارة المراكز الصحية بالحناكية</p>
+        <p class="signature-name">أ/ عبدالمجيد سعود الربيقي</p>
+        <div class="signature-images">
+          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/7cc0a0a53_.png" alt="Signature" class="signature-img">
+          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/9059c4577_2.png" alt="Stamp" class="stamp-img">
         </div>
       </div>
     `;
+
+    // إحصائيات للموظفين
+    const stats = type === 'employees' ? {
+      total: sortedExportData.length,
+      centers: Object.keys(groupedByCenter || {}).length,
+      positions: [...new Set(sortedExportData.map(e => e.position).filter(Boolean))].length
+    } : null;
+
+    const tableContent = type === 'employees' && groupedByCenter ? 
+      Object.entries(groupedByCenter).map(([center, items], groupIdx) => `
+        <div class="center-section">
+          <div class="center-header">
+            <span class="center-icon">🏥</span>
+            <span class="center-name">${center}</span>
+            <span class="center-count">(${items.length} موظف)</span>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th class="row-num-header">م</th>
+                ${headers.map(h => `<th>${h}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody>
+              ${generateTableRows(items)}
+            </tbody>
+          </table>
+        </div>
+      `).join('') :
+      `<table>
+        <thead>
+          <tr>
+            <th class="row-num-header">م</th>
+            ${headers.map(h => `<th>${h}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+          ${generateTableRows(sortedExportData)}
+        </tbody>
+      </table>`;
 
     return `
       <!DOCTYPE html>
@@ -230,30 +282,282 @@ export default function CustomExportManager({
         <head>
           <meta charset="utf-8">
           <title>${exportTitle}</title>
+          <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
           <style>
-            body { font-family: 'Times New Roman', Arial, sans-serif; direction: rtl; margin: 1in; font-size: 12pt; }
-            table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 11pt; }
-            th, td { border: 1px solid #000; text-align: center; padding: 8px; }
-            th { background-color: #f0f0f0; font-weight: bold; }
-            h1 { text-align: center; color: #000; margin-bottom: 20px; font-size: 16pt; font-weight: bold; }
-            .preamble { text-align: right; margin-bottom: 20px; line-height: 1.6; }
-            .footer-text { text-align: right; margin-top: 20px; line-height: 1.6; }
-            @page { size: A4; margin: 1in; }
-            @media print { body { margin: 0; } }
+            * { box-sizing: border-box; }
+            body { 
+              font-family: 'Cairo', 'Times New Roman', Arial, sans-serif; 
+              direction: rtl; 
+              margin: 0;
+              padding: 30px 40px;
+              font-size: 12pt; 
+              background: #f8fafc;
+              color: #1e293b;
+            }
+            
+            .report-container {
+              max-width: 1200px;
+              margin: 0 auto;
+              background: white;
+              border-radius: 16px;
+              box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+              overflow: hidden;
+            }
+            
+            .report-header {
+              background: linear-gradient(135deg, #059669 0%, #047857 100%);
+              color: white;
+              padding: 30px 40px;
+              text-align: center;
+            }
+            
+            .report-header h1 {
+              margin: 0 0 10px 0;
+              font-size: 28pt;
+              font-weight: 800;
+            }
+            
+            .report-header .subtitle {
+              font-size: 12pt;
+              opacity: 0.9;
+            }
+            
+            .report-header .export-date {
+              font-size: 10pt;
+              opacity: 0.8;
+              margin-top: 10px;
+            }
+            
+            .stats-bar {
+              display: flex;
+              justify-content: center;
+              gap: 40px;
+              padding: 20px 40px;
+              background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+              border-bottom: 2px solid #d1fae5;
+            }
+            
+            .stat-item {
+              text-align: center;
+            }
+            
+            .stat-value {
+              font-size: 28pt;
+              font-weight: 800;
+              color: #059669;
+              display: block;
+            }
+            
+            .stat-label {
+              font-size: 10pt;
+              color: #6b7280;
+              font-weight: 600;
+            }
+            
+            .report-body {
+              padding: 30px 40px;
+            }
+            
+            .preamble {
+              background: #f8fafc;
+              border-right: 4px solid #059669;
+              padding: 20px;
+              margin-bottom: 30px;
+              border-radius: 0 8px 8px 0;
+              line-height: 1.8;
+              font-size: 13pt;
+            }
+            
+            .center-section {
+              margin-bottom: 30px;
+              page-break-inside: avoid;
+            }
+            
+            .center-header {
+              background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+              color: white;
+              padding: 12px 20px;
+              border-radius: 10px 10px 0 0;
+              display: flex;
+              align-items: center;
+              gap: 10px;
+            }
+            
+            .center-icon {
+              font-size: 18pt;
+            }
+            
+            .center-name {
+              font-size: 14pt;
+              font-weight: 700;
+            }
+            
+            .center-count {
+              font-size: 10pt;
+              opacity: 0.9;
+              margin-right: auto;
+            }
+            
+            table { 
+              width: 100%; 
+              border-collapse: collapse; 
+              font-size: 10pt;
+              background: white;
+              border-radius: 0 0 10px 10px;
+              overflow: hidden;
+              box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            }
+            
+            th { 
+              background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+              font-weight: 700; 
+              padding: 14px 10px;
+              border: 1px solid #cbd5e1;
+              color: #334155;
+              white-space: nowrap;
+            }
+            
+            td { 
+              padding: 12px 10px;
+              border: 1px solid #e2e8f0;
+              text-align: center;
+            }
+            
+            tbody tr:nth-child(even) {
+              background: #f8fafc;
+            }
+            
+            tbody tr:hover {
+              background: #f0fdf4;
+            }
+            
+            .row-num-header, .row-num {
+              width: 40px;
+              background: #f1f5f9;
+              font-weight: 700;
+              color: #64748b;
+            }
+            
+            .footer-text {
+              background: #fffbeb;
+              border-right: 4px solid #f59e0b;
+              padding: 20px;
+              margin-top: 30px;
+              border-radius: 0 8px 8px 0;
+              line-height: 1.8;
+              font-size: 12pt;
+            }
+            
+            .signature-block {
+              text-align: center;
+              margin-top: 50px;
+              padding-top: 30px;
+              border-top: 2px dashed #e2e8f0;
+              page-break-inside: avoid;
+            }
+            
+            .signature-title {
+              margin: 0;
+              font-weight: 700;
+              font-size: 14pt;
+              color: #1e293b;
+            }
+            
+            .signature-name {
+              margin: 8px 0 0 0;
+              font-weight: 800;
+              font-size: 16pt;
+              color: #059669;
+            }
+            
+            .signature-images {
+              position: relative;
+              width: 280px;
+              height: 110px;
+              margin: -15px auto 0 auto;
+            }
+            
+            .signature-img {
+              position: absolute;
+              left: 0;
+              top: 0;
+              width: 160px;
+              mix-blend-mode: darken;
+            }
+            
+            .stamp-img {
+              position: absolute;
+              right: 0;
+              top: 15px;
+              width: 110px;
+              opacity: 0.9;
+            }
+            
+            .report-footer {
+              background: #f8fafc;
+              padding: 20px 40px;
+              text-align: center;
+              color: #6b7280;
+              font-size: 9pt;
+              border-top: 1px solid #e2e8f0;
+            }
+            
+            @page { 
+              size: A4 landscape; 
+              margin: 15mm; 
+            }
+            
+            @media print { 
+              body { 
+                background: white;
+                padding: 0;
+              }
+              .report-container {
+                box-shadow: none;
+                border-radius: 0;
+              }
+              .center-section {
+                page-break-inside: avoid;
+              }
+            }
           </style>
         </head>
         <body>
-          <h1>${exportTitle}</h1>
-          <p class="export-date" style="text-align: center; color: #666; font-size: 10pt; margin-bottom: 20px;">تاريخ التصدير: ${new Date().toLocaleDateString('ar-SA')}</p>
-          ${preambleText ? `<div class="preamble">${preambleText.replace(/\n/g, '<br/>')}</div>` : ''}
-          ${selectedFields.length > 0 ? `
-            <table>
-              <thead><tr>${headerRow}</tr></thead>
-              <tbody>${dataRows}</tbody>
-            </table>
-          ` : ''}
-          ${footerText ? `<div class="footer-text">${footerText.replace(/\n/g, '<br/>')}</div>` : ''}
-          ${includeSignature ? signatureBlock : ''}
+          <div class="report-container">
+            <div class="report-header">
+              <h1>${exportTitle}</h1>
+              <div class="subtitle">إدارة المراكز الصحية بالحناكية - التجمع الصحي بالمدينة المنورة</div>
+              <div class="export-date">📅 تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
+            </div>
+            
+            ${stats ? `
+            <div class="stats-bar">
+              <div class="stat-item">
+                <span class="stat-value">${stats.total}</span>
+                <span class="stat-label">إجمالي الموظفين</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">${stats.centers}</span>
+                <span class="stat-label">عدد المراكز</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-value">${stats.positions}</span>
+                <span class="stat-label">التخصصات</span>
+              </div>
+            </div>
+            ` : ''}
+            
+            <div class="report-body">
+              ${preambleText ? `<div class="preamble">${preambleText.replace(/\n/g, '<br/>')}</div>` : ''}
+              ${selectedFields.length > 0 ? tableContent : ''}
+              ${footerText ? `<div class="footer-text">${footerText.replace(/\n/g, '<br/>')}</div>` : ''}
+              ${includeSignature ? signatureBlock : ''}
+            </div>
+            
+            <div class="report-footer">
+              تم إنشاء هذا التقرير آلياً من نظام إدارة المراكز الصحية | جميع الحقوق محفوظة © ${new Date().getFullYear()}
+            </div>
+          </div>
         </body>
       </html>
     `;
