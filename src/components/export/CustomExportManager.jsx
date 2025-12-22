@@ -52,9 +52,11 @@ export default function CustomExportManager({
     switch(type) {
       case 'employees':
         return {
-          'full_name_arabic': 'الاسم الكامل',
+          'full_name_arabic': 'الاسم بالعربية',
+          'full_name_english': 'الاسم بالإنجليزية',
           'رقم_الموظف': 'الرقم الوظيفي',
           'رقم_الهوية': 'رقم الهوية',
+          'age': 'العمر',
           'email': 'البريد الإلكتروني',
           'phone': 'رقم الجوال',
           'المركز_الصحي': 'المركز الصحي',
@@ -62,6 +64,7 @@ export default function CustomExportManager({
           'department': 'القسم',
           'job_category': 'ملاك الوظيفة',
           'job_category_type': 'فئة الوظيفة',
+          'scfhs_classification': 'تصنيف الهيئة',
           'qualification': 'المؤهل',
           'rank': 'المرتبة',
           'sequence': 'التسلسل',
@@ -69,7 +72,8 @@ export default function CustomExportManager({
           'contract_end_date': 'تاريخ نهاية العقد',
           'gender': 'الجنس',
           'nationality': 'الجنسية',
-          'hire_date': 'تاريخ التوظيف',
+          'hire_date': 'تاريخ التعيين',
+          'start_work_date': 'تاريخ المباشرة',
           'birth_date': 'تاريخ الميلاد',
           'special_roles': 'الأدوار الإشرافية والقيادية',
           'assigned_tasks': 'المهام المكلف بها'
@@ -137,6 +141,19 @@ export default function CustomExportManager({
     });
   }, [exportData]);
 
+  // حساب العمر
+  const calculateAge = (birthDate) => {
+    if (!birthDate) return '';
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
   // معاينة البيانات المختارة
   const previewData = useMemo(() => {
     if (!sortedExportData || sortedExportData.length === 0 || !selectedFields.length) return [];
@@ -150,8 +167,10 @@ export default function CustomExportManager({
           filteredItem[field] = item[field].join(', ');
         } else if (field === 'employee_count' && type === 'healthcenters') {
           filteredItem[field] = item.employees ? item.employees.length : 0;
-        } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date') {
-                        filteredItem[field] = item[field] ? new Date(item[field]).toLocaleDateString('ar-SA') : '';
+        } else if (field === 'age') {
+          filteredItem[field] = calculateAge(item.birth_date);
+        } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date' || field === 'start_work_date') {
+          filteredItem[field] = item[field] ? new Date(item[field]).toLocaleDateString('ar-SA') : '';
         } else {
           filteredItem[field] = item[field] || '';
         }
@@ -175,7 +194,9 @@ export default function CustomExportManager({
           value = item[field].join(', ');
         } else if (field === 'employee_count' && type === 'healthcenters') {
           value = item.employees ? item.employees.length : 0;
-        } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date') {
+        } else if (field === 'age') {
+          value = calculateAge(item.birth_date);
+        } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date' || field === 'start_work_date') {
           value = item[field] ? new Date(item[field]).toLocaleDateString('ar-SA') : '';
         } else {
           value = item[field] || '';
@@ -208,7 +229,9 @@ export default function CustomExportManager({
         return item[field].join('، ');
       } else if (field === 'employee_count' && type === 'healthcenters') {
         return item.employees ? item.employees.length : 0;
-      } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date') {
+      } else if (field === 'age') {
+        return calculateAge(item.birth_date);
+      } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date' || field === 'start_work_date') {
         return item[field] ? new Date(item[field]).toLocaleDateString('ar-SA') : '';
       } else {
         return item[field] || '';
