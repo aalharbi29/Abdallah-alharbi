@@ -119,6 +119,7 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
   const [formData, setFormData] = useState(employee || {
     رقم_الموظف: "",
     full_name_arabic: "",
+    full_name_english: "",
     رقم_الهوية: "",
     birth_date: "",
     gender: "ذكر",
@@ -130,18 +131,35 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
     department: "",
     job_category: "",
     job_category_type: "",
+    scfhs_classification: "",
     qualification: "",
     rank: "",
     sequence: "",
     level: "",
     grade: "",
     hire_date: "",
+    start_work_date: "",
     contract_type: "خدمة مدنية",
     contract_end_date: "",
     special_roles: [],
     assigned_tasks: [],
     profile_image_url: "",
   });
+
+  // حساب العمر تلقائياً
+  const calculateAge = (birthDate) => {
+    if (!birthDate) return null;
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+      age--;
+    }
+    return age;
+  };
+
+  const employeeAge = calculateAge(formData.birth_date);
 
   const [healthCenters, setHealthCenters] = useState([]);
   const [customRole, setCustomRole] = useState("");
@@ -312,6 +330,7 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
               {/* حقول البيانات الشخصية */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div><Label htmlFor="full_name_arabic">الاسم بالعربية *</Label><Input id="full_name_arabic" value={formData.full_name_arabic} onChange={(e) => handleChange("full_name_arabic", e.target.value)} required /></div>
+                <div><Label htmlFor="full_name_english">الاسم بالإنجليزية</Label><Input id="full_name_english" value={formData.full_name_english} onChange={(e) => handleChange("full_name_english", e.target.value)} placeholder="Full Name in English" dir="ltr" /></div>
                 <div><Label htmlFor="employee_id">الرقم الوظيفي *</Label><Input id="employee_id" value={formData.رقم_الموظف} onChange={(e) => handleChange("رقم_الموظف", e.target.value)} required /></div>
                 <div><Label htmlFor="national_id">رقم الهوية</Label><Input id="national_id" value={formData.رقم_الهوية} onChange={(e) => handleChange("رقم_الهوية", e.target.value)} /></div>
                 <div>
@@ -320,6 +339,19 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
                     value={formData.birth_date}
                     onChange={(date) => handleChange("birth_date", date)}
                   />
+                </div>
+                <div>
+                  <Label htmlFor="age">العمر</Label>
+                  <div className="flex items-center gap-2">
+                    <Input 
+                      id="age" 
+                      value={employeeAge !== null ? `${employeeAge} سنة` : ''} 
+                      readOnly 
+                      className="bg-gray-100 cursor-not-allowed"
+                      placeholder="يُحسب تلقائياً"
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">يُحسب تلقائياً من تاريخ الميلاد</p>
                 </div>
                 <div><Label htmlFor="gender">الجنس</Label><Select value={formData.gender} onValueChange={(v) => handleChange("gender", v)}><SelectTrigger><SelectValue/></SelectTrigger><SelectContent><SelectItem value="ذكر">ذكر</SelectItem><SelectItem value="أنثى">أنثى</SelectItem></SelectContent></Select></div>
                 <div><Label htmlFor="nationality">الجنسية</Label><Input id="nationality" value={formData.nationality} onChange={(e) => handleChange("nationality", e.target.value)} /></div>
@@ -368,6 +400,17 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
                   </Select>
                 </div>
 
+                <div>
+                  <Label htmlFor="scfhs_classification">تصنيف الهيئة</Label>
+                  <Input 
+                    id="scfhs_classification" 
+                    value={formData.scfhs_classification} 
+                    onChange={(e) => handleChange("scfhs_classification", e.target.value)} 
+                    placeholder="مثال: أخصائي أول، فني"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">تصنيف الهيئة السعودية للتخصصات الصحية</p>
+                </div>
+
                 <div><Label htmlFor="qualification">المؤهل</Label><Select value={formData.qualification} onValueChange={(v) => handleChange("qualification", v)}><SelectTrigger><SelectValue placeholder="اختر المؤهل" /></SelectTrigger><SelectContent><SelectItem value="ابتدائي">ابتدائي</SelectItem><SelectItem value="متوسط">متوسط</SelectItem><SelectItem value="ثانوي">ثانوي</SelectItem><SelectItem value="دبلوم">دبلوم</SelectItem><SelectItem value="بكالوريوس">بكالوريوس</SelectItem><SelectItem value="ماجستير">ماجستير</SelectItem><SelectItem value="دكتوراه">دكتوراه</SelectItem><SelectItem value="أخرى">أخرى</SelectItem></SelectContent></Select></div>
                 <div><Label htmlFor="rank">المرتبة</Label><Input id="rank" value={formData.rank} onChange={(e) => handleChange("rank", e.target.value)} placeholder="مثال: 86، 87، 31" /></div>
                 <div><Label htmlFor="sequence">التسلسل</Label><Input id="sequence" value={formData.sequence} onChange={(e) => handleChange("sequence", e.target.value)} placeholder="مثال: 1، 2، 3" /></div>
@@ -375,10 +418,24 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
                 <div><Label htmlFor="grade">الدرجة</Label><Input id="grade" value={formData.grade} onChange={(e) => handleChange("grade", e.target.value)} placeholder="مثال: 2" /></div>
                 <div>
                   <SmartDateInput
-                    label="تاريخ التوظيف"
+                    label="تاريخ التعيين"
                     value={formData.hire_date}
-                    onChange={(date) => handleChange("hire_date", date)}
+                    onChange={(date) => {
+                      handleChange("hire_date", date);
+                      // إذا لم يكن تاريخ المباشرة محدداً، اجعله نفس تاريخ التعيين
+                      if (!formData.start_work_date) {
+                        handleChange("start_work_date", date);
+                      }
+                    }}
                   />
+                </div>
+                <div>
+                  <SmartDateInput
+                    label="تاريخ المباشرة"
+                    value={formData.start_work_date || formData.hire_date}
+                    onChange={(date) => handleChange("start_work_date", date)}
+                  />
+                  <p className="text-xs text-gray-500 mt-1">يُعبأ تلقائياً من تاريخ التعيين</p>
                 </div>
                 <div><Label htmlFor="contract_type">نوع العقد</Label><Select value={formData.contract_type} onValueChange={(v) => handleChange("contract_type", v)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="خدمة مدنية">خدمة مدنية</SelectItem><SelectItem value="تشغيل">تشغيل</SelectItem><SelectItem value="تشغيل ذاتي">تشغيل ذاتي</SelectItem><SelectItem value="المستخدمين">المستخدمين</SelectItem><SelectItem value="دائم">دائم</SelectItem><SelectItem value="مؤقت">مؤقت</SelectItem><SelectItem value="تعاقد">تعاقد</SelectItem><SelectItem value="متدرب">متدرب</SelectItem></SelectContent></Select></div>
                 
