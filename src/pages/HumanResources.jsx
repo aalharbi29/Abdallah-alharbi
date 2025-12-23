@@ -77,93 +77,35 @@ export default function HumanResources() {
   const loadData = async () => {
     setIsLoading(true);
     setError(null);
-    setLoadingProgress(0);
     
     try {
-      // المرحلة 1: تحميل الموظفين
-      setLoadingMessage('جاري تحميل بيانات الموظفين...');
-      setLoadingProgress(10);
-      
-      const employeesData = await retry(async () => {
-        return await base44.entities.Employee.list("-updated_date", 500);
-      }, 3, 2000);
+      // تحميل البيانات بالتوازي
+      const [employeesData, centersData, assignmentsData] = await Promise.all([
+        base44.entities.Employee.list("-updated_date", 500),
+        base44.entities.HealthCenter.list().catch(() => []),
+        base44.entities.Assignment.list("-created_date", 200).catch(() => [])
+      ]);
       
       const safeEmployees = Array.isArray(employeesData) ? employeesData : [];
       setEmployees(safeEmployees);
-      setLoadingProgress(40);
-      console.log(`✓ تم تحميل ${safeEmployees.length} موظف`);
 
-      // المرحلة 2: تحميل المراكز الصحية
-      setLoadingMessage('جاري تحميل المراكز الصحية...');
-      setLoadingProgress(50);
-      
-      let centersData = [];
-      try {
-        centersData = await retry(async () => {
-          return await base44.entities.HealthCenter.list();
-        }, 2, 2000);
-        
-        if (Array.isArray(centersData) && centersData.length > 0) {
-          setHealthCenters(centersData);
-          console.log(`✓ تم تحميل ${centersData.length} مركز صحي`);
-        } else {
-          throw new Error('No centers returned');
-        }
-      } catch (centersError) {
-        console.warn('⚠ فشل تحميل المراكز، استخدام البيانات المستخرجة من الموظفين');
+      if (Array.isArray(centersData) && centersData.length > 0) {
+        setHealthCenters(centersData);
+      } else {
         const centersFromEmployees = [...new Set(safeEmployees.map(e => e.المركز_الصحي).filter(Boolean))];
-        const extractedCenters = centersFromEmployees.map(name => ({ اسم_المركز: name }));
-        setHealthCenters(extractedCenters);
+        setHealthCenters(centersFromEmployees.map(name => ({ اسم_المركز: name })));
       }
       
-      setLoadingProgress(70);
-
-      // المرحلة 3: تحميل التكاليف (اختياري)
-      setLoadingMessage('جاري تحميل بيانات التكاليف...');
-      setLoadingProgress(80);
-      
-      try {
-        const assignmentsData = await retry(async () => {
-          return await base44.entities.Assignment.list("-created_date", 200);
-        }, 2, 1500);
-        
-        setAssignments(Array.isArray(assignmentsData) ? assignmentsData : []);
-        console.log(`✓ تم تحميل ${assignmentsData?.length || 0} تكليف`);
-      } catch (assignmentsError) {
-        console.warn('⚠ فشل تحميل التكاليف، المتابعة بدونها');
-        setAssignments([]);
-      }
-
-      // المرحلة 4: استخراج الأقسام
-      setLoadingMessage('جاري معالجة البيانات...');
-      setLoadingProgress(90);
+      setAssignments(Array.isArray(assignmentsData) ? assignmentsData : []);
       
       const uniqueDepartments = [...new Set(safeEmployees.map(e => e.المركز_الصحي).filter(Boolean))];
       setDepartments(uniqueDepartments);
-
-      setLoadingProgress(100);
-      setLoadingMessage('تم التحميل بنجاح');
-      console.log('✓ اكتمل تحميل جميع البيانات');
       
     } catch (err) {
-      console.error('❌ خطأ في تحميل البيانات:', err);
-      
-      let errorMessage = 'فشل تحميل البيانات';
-      
-      if (err.message?.includes('Network Error') || err.message?.includes('timeout')) {
-        errorMessage = 'فشل الاتصال بالإنترنت. يرجى التحقق من اتصالك والمحاولة مرة أخرى.';
-      } else if (err.message?.includes('Rate limit')) {
-        errorMessage = 'تم تجاوز حد الطلبات. يرجى الانتظار قليلاً والمحاولة مرة أخرى.';
-      } else if (err.message?.includes('500')) {
-        errorMessage = 'خطأ في الخادم. يرجى المحاولة بعد قليل.';
-      } else if (err.message) {
-        errorMessage = err.message;
-      }
-      
-      setError(errorMessage);
+      console.error('خطأ في تحميل البيانات:', err);
+      setError(err.message || 'فشل تحميل البيانات');
     } finally {
       setIsLoading(false);
-      setLoadingMessage('');
     }
   };
 
