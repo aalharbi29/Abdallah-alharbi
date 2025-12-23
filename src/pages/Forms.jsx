@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Upload, FileText, Calendar, DollarSign, Activity, FileBarChart, RefreshCw, FilePlus, Download, Eye, Trash2, Search, Loader2, FileSearch, CheckCircle, MoveRight } from "lucide-react";
+import { Upload, FileText, Calendar, DollarSign, Activity, FileBarChart, RefreshCw, FilePlus, Download, Eye, Trash2, Search, Loader2, FileSearch, CheckCircle, MoveRight, Users, Briefcase, FolderOpen } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import FormViewer from "@/components/forms/FormViewer";
 import FilePreviewDialog from "@/components/forms/FilePreviewDialog";
@@ -28,12 +28,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 const categories = [
-  { key: "leaves", label: "نماذج الإجازات", icon: Calendar, color: "blue" },
-  { key: "assignments", label: "نماذج التكاليف", icon: DollarSign, color: "green" },
-  { key: "epidemiology", label: "نماذج الاستقصاء الوبائي", icon: Activity, color: "red" },
-  { key: "statistics", label: "نماذج الإحصائيات", icon: FileBarChart, color: "purple" },
-  { key: "contract_renewal", label: "نماذج تجديد العقد", icon: RefreshCw, color: "orange" },
-  { key: "additional", label: "نماذج إضافية", icon: FilePlus, color: "indigo" }
+  { key: "hr", label: "الموارد البشرية", icon: Users, color: "blue", description: "إجازات، تكاليف، تجديد عقود" },
+  { key: "medical", label: "الشؤون الطبية", icon: Activity, color: "red", description: "استقصاء وبائي، تقارير طبية" },
+  { key: "statistics", label: "الإحصاء والتقارير", icon: FileBarChart, color: "purple", description: "إحصائيات، تقارير دورية" },
+  { key: "administrative", label: "الشؤون الإدارية", icon: Briefcase, color: "green", description: "مراسلات، قرارات، محاضر" },
+  { key: "financial", label: "الشؤون المالية", icon: DollarSign, color: "orange", description: "مطالبات، صرف، ميزانيات" },
+  { key: "other", label: "نماذج أخرى", icon: FilePlus, color: "indigo", description: "نماذج متنوعة" }
 ];
 
 
@@ -284,71 +284,94 @@ export default function Forms() {
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-6 bg-gradient-to-br from-gray-50 via-white to-blue-50">
+    <div className="min-h-screen p-4 md:p-6 bg-gradient-to-br from-slate-50 via-white to-blue-50">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">مكتبة النماذج المرفوعة</h1>
-            <p className="text-gray-600">إدارة وعرض جميع النماذج والاستمارات الرسمية المرفوعة</p>
-          </div>
-
-          <div className="flex items-center gap-4 w-full sm:w-auto flex-wrap">
-            {/* Search */}
-            <div className="flex items-center gap-2 flex-grow sm:flex-grow-0">
-              <div className="relative flex-grow sm:w-80">
-                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <Input
-                  placeholder={searchInContent ? "ابحث في العناوين والمحتوى..." : "ابحث في العناوين..."}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pr-10"
-                />
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 md:p-8 text-white shadow-xl">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+                <FolderOpen className="w-8 h-8 text-white" />
               </div>
-              <Button
-                variant={searchInContent ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSearchInContent(!searchInContent)}
-                title="البحث في محتوى الملفات"
-                className={searchInContent ? "bg-purple-600 hover:bg-purple-700" : ""}
-              >
-                <FileSearch className="w-4 h-4" />
-              </Button>
+              <div>
+                <h1 className="text-2xl md:text-3xl font-bold mb-1">مكتبة النماذج الرسمية</h1>
+                <p className="text-blue-100 text-sm md:text-base">إدارة وتنظيم جميع النماذج والاستمارات الرسمية</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2">
+              <FileText className="w-5 h-5" />
+              <span className="font-semibold">{forms.length} نموذج</span>
             </div>
           </div>
         </div>
 
-        {/* Tabs */}
+        {/* Search Bar */}
+        <Card className="border-0 shadow-md">
+          <CardContent className="p-4">
+            <div className="flex flex-col sm:flex-row items-center gap-3">
+              <div className="relative flex-grow w-full">
+                <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Input
+                  placeholder={searchInContent ? "🔍 ابحث في العناوين والمحتوى..." : "🔍 ابحث في العناوين..."}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pr-12 h-12 text-base border-2 focus:border-blue-500"
+                />
+              </div>
+              <Button
+                variant={searchInContent ? "default" : "outline"}
+                onClick={() => setSearchInContent(!searchInContent)}
+                className={`h-12 px-6 ${searchInContent ? "bg-purple-600 hover:bg-purple-700" : ""}`}
+              >
+                <FileSearch className="w-5 h-5 ml-2" />
+                بحث متقدم
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Categories Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {(categories || []).map((cat) => {
+            const Icon = cat.icon;
+            const count = (forms || []).filter(f => f.category === cat.key).length;
+            const colors = colorClasses[cat.color];
+            const isActive = activeCategory === cat.key;
+            
+            return (
+              <button
+                key={cat.key}
+                onClick={() => setActiveCategory(cat.key)}
+                className={`relative p-4 rounded-xl transition-all duration-300 text-right ${
+                  isActive 
+                    ? `bg-gradient-to-br ${colors.bg} text-white shadow-lg scale-105` 
+                    : `bg-white border-2 ${colors.border} hover:shadow-md hover:scale-102`
+                }`}
+              >
+                <div className={`w-12 h-12 rounded-xl ${isActive ? 'bg-white/20' : `bg-gradient-to-br ${colors.bg}`} flex items-center justify-center mb-3`}>
+                  <Icon className={`w-6 h-6 ${isActive ? 'text-white' : 'text-white'}`} />
+                </div>
+                <h3 className={`font-bold text-sm mb-1 ${isActive ? 'text-white' : 'text-gray-800'}`}>
+                  {cat.label}
+                </h3>
+                <p className={`text-xs ${isActive ? 'text-white/80' : 'text-gray-500'} line-clamp-1`}>
+                  {cat.description}
+                </p>
+                <div className={`absolute top-3 left-3 px-2 py-1 rounded-full text-xs font-bold ${
+                  isActive ? 'bg-white/30 text-white' : colors.badge
+                }`}>
+                  {count}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Content Area */}
         <Card className="shadow-lg border-0">
           <CardContent className="p-0">
             <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
-              <div className="border-b bg-gray-50/50 px-4 py-2">
-                <TabsList className="w-full grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2 bg-transparent h-auto">
-                {(categories || []).map((cat) => {
-                  const Icon = cat.icon;
-                  const count = (forms || []).filter(f => f.category === cat.key).length;
-                    const colors = colorClasses[cat.color];
-                    
-                    return (
-                      <TabsTrigger
-                        key={cat.key}
-                        value={cat.key}
-                        className="flex flex-col items-center gap-2 py-3 px-2 data-[state=active]:bg-white data-[state=active]:shadow-md rounded-lg transition-all"
-                      >
-                        <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${colors.bg} flex items-center justify-center shadow-sm`}>
-                          <Icon className="w-5 h-5 text-white" />
-                        </div>
-                        <div className="text-center">
-                          <div className="text-xs font-medium text-gray-700 leading-tight">{cat.label}</div>
-                          <Badge variant="secondary" className={`mt-1 text-xs ${colors.badge}`}>
-                            {count}
-                          </Badge>
-                        </div>
-                      </TabsTrigger>
-                    );
-                  })}
-                </TabsList>
-              </div>
+              <div className="hidden"></div>
 
               {(categories || []).map((cat) => {
                 const Icon = cat.icon;
@@ -359,16 +382,16 @@ export default function Forms() {
                   <TabsContent key={cat.key} value={cat.key} className="p-6">
                     <div className="space-y-6">
                       {/* Category Header */}
-                      <div className={`rounded-lg p-4 ${colors.light} border ${colors.border}`}>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${colors.bg} flex items-center justify-center shadow-lg`}>
-                              <Icon className="w-6 h-6 text-white" />
+                      <div className={`rounded-2xl p-6 bg-gradient-to-r ${colors.bg} text-white shadow-lg`}>
+                        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                          <div className="flex items-center gap-4">
+                            <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                              <Icon className="w-7 h-7 text-white" />
                             </div>
                             <div>
-                              <h2 className="text-xl font-bold text-gray-900">{cat.label}</h2>
-                              <p className="text-sm text-gray-600">
-                                {categoryForms.length === 0 ? 'لا توجد نماذج' : `${categoryForms.length} نموذج`}
+                              <h2 className="text-2xl font-bold">{cat.label}</h2>
+                              <p className="text-white/80 text-sm mt-1">
+                                {cat.description} • {categoryForms.length === 0 ? 'لا توجد نماذج' : `${categoryForms.length} نموذج`}
                               </p>
                             </div>
                           </div>
@@ -386,7 +409,7 @@ export default function Forms() {
                               <Button
                                 asChild
                                 disabled={uploadingCategory === cat.key}
-                                className={`bg-gradient-to-r ${colors.bg} hover:opacity-90 text-white shadow-md`}
+                                className="bg-white text-gray-800 hover:bg-gray-100 shadow-md font-semibold"
                               >
                                 <span className="cursor-pointer">
                                   {uploadingCategory === cat.key ? (
@@ -409,73 +432,78 @@ export default function Forms() {
 
                       {/* Forms Grid */}
                       {loading ? (
-                        <div className="text-center py-12">
-                          <RefreshCw className="w-12 h-12 mx-auto mb-4 animate-spin text-gray-400" />
-                          <p className="text-gray-500">جاري التحميل...</p>
+                        <div className="text-center py-16">
+                          <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+                            <RefreshCw className="w-8 h-8 animate-spin text-gray-400" />
+                          </div>
+                          <p className="text-gray-500 font-medium">جاري تحميل النماذج...</p>
                         </div>
                       ) : !Array.isArray(categoryForms) || categoryForms.length === 0 ? (
-                        <div className="text-center py-16 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
-                          <FileText className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                          <p className="text-lg font-medium text-gray-600 mb-2">
-                            {searchQuery ? 'لم يتم العثور على نماذج' : 'لا توجد نماذج في هذه الفئة'}
+                        <div className="text-center py-16 bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl border-2 border-dashed border-gray-300">
+                          <div className="w-20 h-20 mx-auto mb-4 rounded-2xl bg-gray-200 flex items-center justify-center">
+                            <FileText className="w-10 h-10 text-gray-400" />
+                          </div>
+                          <p className="text-xl font-bold text-gray-600 mb-2">
+                            {searchQuery ? 'لم يتم العثور على نماذج' : 'لا توجد نماذج بعد'}
                           </p>
-                          <p className="text-sm text-gray-500">
-                            {searchQuery ? 'جرب كلمات بحث أخرى' : 'ابدأ برفع نموذج جديد'}
+                          <p className="text-sm text-gray-500 mb-4">
+                            {searchQuery ? 'جرب كلمات بحث أخرى' : 'ابدأ برفع نموذج جديد لهذه الفئة'}
                           </p>
                         </div>
                       ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {(categoryForms || []).map((form) => (
-                            <Card key={form.id} className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-gray-300">
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+                          {(categoryForms || []).map((form, index) => (
+                            <Card key={form.id} className="group hover:shadow-2xl transition-all duration-300 border-0 shadow-md overflow-hidden">
+                              <div className={`h-2 bg-gradient-to-r ${colors.bg}`}></div>
                               <CardContent className="p-5">
                                 <div className="space-y-4">
                                   {/* Icon & Title */}
-                                  <div className="flex items-start gap-3">
-                                    <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${colors.bg} flex items-center justify-center flex-shrink-0 shadow-md group-hover:scale-110 transition-transform`}>
-                                      <FileText className="w-6 h-6 text-white" />
+                                  <div className="flex items-start gap-4">
+                                    <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${colors.bg} flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform`}>
+                                      <FileText className="w-7 h-7 text-white" />
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                      <h3 className="font-bold text-base text-gray-900 leading-tight line-clamp-2" title={form.title}>
+                                      <h3 className="font-bold text-lg text-gray-900 leading-tight line-clamp-2 group-hover:text-blue-700 transition-colors" title={form.title}>
                                         {form.title}
                                       </h3>
                                       {form.description && (
-                                        <p className="text-sm text-gray-600 mt-1 line-clamp-2" title={form.description}>
+                                        <p className="text-sm text-gray-500 mt-2 line-clamp-2" title={form.description}>
                                           {form.description}
                                         </p>
-                                      )}
-                                      {form.is_indexed && (
-                                        <span className="inline-flex items-center gap-1 text-xs text-green-600 mt-1">
-                                          <CheckCircle className="w-3 h-3" />
-                                          مفهرس
-                                        </span>
                                       )}
                                     </div>
                                   </div>
 
-                                  {/* File Name */}
-                                  {form.file_name && (
-                                    <div className={`text-xs ${colors.text} ${colors.light} p-2 rounded-md border ${colors.border}`}>
-                                      <FileText className="w-3 h-3 inline-block ml-1" />
-                                      {form.file_name}
-                                    </div>
-                                  )}
+                                  {/* Meta Info */}
+                                  <div className="flex items-center gap-2 flex-wrap">
+                                    {form.is_indexed && (
+                                      <span className="inline-flex items-center gap-1 text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+                                        <CheckCircle className="w-3 h-3" />
+                                        مفهرس
+                                      </span>
+                                    )}
+                                    {form.file_name && (
+                                      <span className={`text-xs ${colors.badge} px-2 py-1 rounded-full truncate max-w-[200px]`}>
+                                        {form.file_name}
+                                      </span>
+                                    )}
+                                  </div>
 
                                   {/* Search Match Preview */}
                                   {getSearchMatchPreview(form) && (
-                                    <div className="text-xs bg-yellow-50 p-2 rounded-md border border-yellow-200 text-yellow-800">
+                                    <div className="text-xs bg-amber-50 p-3 rounded-lg border border-amber-200 text-amber-800">
                                       <FileSearch className="w-3 h-3 inline-block ml-1" />
-                                      <span className="font-medium">نتيجة البحث: </span>
+                                      <span className="font-semibold">نتيجة البحث: </span>
                                       {getSearchMatchPreview(form)}
                                     </div>
                                   )}
 
                                   {/* Actions */}
-                                  <div className="flex gap-2 pt-2 border-t">
+                                  <div className="flex gap-2 pt-4 border-t border-gray-100">
                                     <Button
                                       size="sm"
-                                      variant="outline"
                                       onClick={() => setViewingForm(form)}
-                                      className="flex-1 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
+                                      className={`flex-1 bg-gradient-to-r ${colors.bg} hover:opacity-90 text-white shadow-sm`}
                                     >
                                       <Eye className="w-4 h-4 ml-1" />
                                       عرض
@@ -489,95 +517,97 @@ export default function Forms() {
                                       <Download className="w-4 h-4 ml-1" />
                                       تحميل
                                     </Button>
-                                    <Button
-                                      size="sm"
-                                      variant="outline"
-                                      onClick={() => indexFormContent(form)}
-                                      disabled={indexingFormId === form.id || form.is_indexed}
-                                      className="hover:bg-purple-50 hover:text-purple-700 hover:border-purple-300"
-                                      title={form.is_indexed ? "تم الفهرسة" : "فهرسة المحتوى"}
-                                    >
-                                      {indexingFormId === form.id ? (
-                                        <Loader2 className="w-4 h-4 animate-spin" />
-                                      ) : form.is_indexed ? (
-                                        <CheckCircle className="w-4 h-4 text-green-600" />
-                                      ) : (
-                                        <FileSearch className="w-4 h-4" />
-                                      )}
-                                    </Button>
-                                    {/* Move Form Button */}
-                                    <AlertDialog open={movingForm?.id === form.id} onOpenChange={(open) => !open && setMovingForm(null)}>
-                                      <AlertDialogTrigger asChild>
-                                        <Button
-                                          size="sm"
-                                          variant="outline"
-                                          onClick={() => setMovingForm(form)}
-                                          className="hover:bg-blue-50 hover:text-blue-700 hover:border-blue-300"
-                                          title="نقل النموذج"
-                                        >
-                                          <MoveRight className="w-4 h-4" />
-                                        </Button>
-                                      </AlertDialogTrigger>
-                                      <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                          <AlertDialogTitle>نقل النموذج</AlertDialogTitle>
-                                          <AlertDialogDescription>
-                                            اختر الفئة التي تريد نقل النموذج إليها
-                                          </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <div className="py-4">
-                                          <Select value={targetCategory} onValueChange={setTargetCategory}>
-                                            <SelectTrigger>
-                                              <SelectValue placeholder="اختر الفئة الجديدة" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                              {categories.filter(c => c.key !== form.category).map(c => (
-                                                <SelectItem key={c.key} value={c.key}>
-                                                  {c.label}
-                                                </SelectItem>
-                                              ))}
-                                            </SelectContent>
-                                          </Select>
-                                        </div>
-                                        <AlertDialogFooter>
-                                          <AlertDialogCancel onClick={() => { setMovingForm(null); setTargetCategory(""); }}>إلغاء</AlertDialogCancel>
-                                          <AlertDialogAction 
-                                            onClick={() => handleMoveForm(form, targetCategory)} 
-                                            disabled={!targetCategory}
-                                            className="bg-blue-600 hover:bg-blue-700"
+                                    <div className="flex gap-1">
+                                      <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        onClick={() => indexFormContent(form)}
+                                        disabled={indexingFormId === form.id || form.is_indexed}
+                                        className="hover:bg-purple-50 hover:text-purple-700 px-2"
+                                        title={form.is_indexed ? "تم الفهرسة" : "فهرسة المحتوى"}
+                                      >
+                                        {indexingFormId === form.id ? (
+                                          <Loader2 className="w-4 h-4 animate-spin" />
+                                        ) : form.is_indexed ? (
+                                          <CheckCircle className="w-4 h-4 text-green-600" />
+                                        ) : (
+                                          <FileSearch className="w-4 h-4" />
+                                        )}
+                                      </Button>
+                                      {/* Move Form Button */}
+                                      <AlertDialog open={movingForm?.id === form.id} onOpenChange={(open) => !open && setMovingForm(null)}>
+                                        <AlertDialogTrigger asChild>
+                                          <Button
+                                            size="sm"
+                                            variant="ghost"
+                                            onClick={() => setMovingForm(form)}
+                                            className="hover:bg-blue-50 hover:text-blue-700 px-2"
+                                            title="نقل النموذج"
                                           >
-                                            نقل
-                                          </AlertDialogAction>
-                                        </AlertDialogFooter>
-                                      </AlertDialogContent>
-                                    </AlertDialog>
+                                            <MoveRight className="w-4 h-4" />
+                                          </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                          <AlertDialogHeader>
+                                            <AlertDialogTitle>نقل النموذج</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                              اختر الفئة التي تريد نقل النموذج إليها
+                                            </AlertDialogDescription>
+                                          </AlertDialogHeader>
+                                          <div className="py-4">
+                                            <Select value={targetCategory} onValueChange={setTargetCategory}>
+                                              <SelectTrigger>
+                                                <SelectValue placeholder="اختر الفئة الجديدة" />
+                                              </SelectTrigger>
+                                              <SelectContent>
+                                                {categories.filter(c => c.key !== form.category).map(c => (
+                                                  <SelectItem key={c.key} value={c.key}>
+                                                    {c.label}
+                                                  </SelectItem>
+                                                ))}
+                                              </SelectContent>
+                                            </Select>
+                                          </div>
+                                          <AlertDialogFooter>
+                                            <AlertDialogCancel onClick={() => { setMovingForm(null); setTargetCategory(""); }}>إلغاء</AlertDialogCancel>
+                                            <AlertDialogAction 
+                                              onClick={() => handleMoveForm(form, targetCategory)} 
+                                              disabled={!targetCategory}
+                                              className="bg-blue-600 hover:bg-blue-700"
+                                            >
+                                              نقل
+                                            </AlertDialogAction>
+                                          </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                      </AlertDialog>
 
-                                    {/* Delete Button */}
-                                    <AlertDialog>
-                                      <AlertDialogTrigger asChild>
-                                        <Button
-                                          size="sm"
-                                          variant="outline"
-                                          className="hover:bg-red-50 hover:text-red-700 hover:border-red-300"
-                                        >
-                                          <Trash2 className="w-4 h-4" />
-                                        </Button>
-                                      </AlertDialogTrigger>
-                                      <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                          <AlertDialogTitle>تأكيد الحذف</AlertDialogTitle>
-                                          <AlertDialogDescription>
-                                            هل أنت متأكد من حذف هذا النموذج؟ لا يمكن التراجع عن هذا الإجراء.
-                                          </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <AlertDialogFooter>
-                                          <AlertDialogCancel>إلغاء</AlertDialogCancel>
-                                          <AlertDialogAction onClick={() => handleDelete(form.id)} className="bg-red-600 hover:bg-red-700">
-                                            حذف
-                                          </AlertDialogAction>
-                                        </AlertDialogFooter>
-                                      </AlertDialogContent>
-                                    </AlertDialog>
+                                      {/* Delete Button */}
+                                      <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                          <Button
+                                            size="sm"
+                                            variant="ghost"
+                                            className="hover:bg-red-50 hover:text-red-700 px-2"
+                                          >
+                                            <Trash2 className="w-4 h-4" />
+                                          </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                          <AlertDialogHeader>
+                                            <AlertDialogTitle>تأكيد الحذف</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                              هل أنت متأكد من حذف هذا النموذج؟ لا يمكن التراجع عن هذا الإجراء.
+                                            </AlertDialogDescription>
+                                          </AlertDialogHeader>
+                                          <AlertDialogFooter>
+                                            <AlertDialogCancel>إلغاء</AlertDialogCancel>
+                                            <AlertDialogAction onClick={() => handleDelete(form.id)} className="bg-red-600 hover:bg-red-700">
+                                              حذف
+                                            </AlertDialogAction>
+                                          </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                      </AlertDialog>
+                                    </div>
                                   </div>
                                 </div>
                               </CardContent>
