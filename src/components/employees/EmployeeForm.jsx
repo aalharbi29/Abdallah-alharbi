@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowRight, Save, User, ShieldCheck, Phone, Mail, Briefcase, Calendar as CalendarIcon, Plus, X, Upload, Image as ImageIcon, Loader2 } from "lucide-react";
+import { ArrowRight, Save, User, ShieldCheck, Phone, Mail, Briefcase, Calendar as CalendarIcon, Plus, X, Upload, Image as ImageIcon, Loader2, Wand2 } from "lucide-react";
 import { HealthCenter } from "@/entities/HealthCenter";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
@@ -165,6 +165,7 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
   const [customRole, setCustomRole] = useState("");
   const [customTask, setCustomTask] = useState("");
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [isGeneratingEnglishName, setIsGeneratingEnglishName] = useState(false);
 
   useEffect(() => {
     HealthCenter.list().then(data => {
@@ -219,6 +220,39 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
     if (customTask.trim()) {
       handleAddTask(customTask.trim());
       setCustomTask("");
+    }
+  };
+
+  const generateEnglishName = async () => {
+    if (!formData.full_name_arabic || formData.full_name_arabic.trim() === '') {
+      alert('يرجى إدخال الاسم بالعربية أولاً');
+      return;
+    }
+
+    setIsGeneratingEnglishName(true);
+    try {
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: `قم بترجمة الاسم العربي التالي إلى الإنجليزية بشكل صحيح. الاسم هو اسم شخص عربي ويجب كتابته بالأحرف الإنجليزية (Transliteration).
+
+الاسم العربي: ${formData.full_name_arabic}
+
+أعد الاسم بالإنجليزية فقط، بدون أي شرح أو نص إضافي.`,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            english_name: { type: "string", description: "الاسم بالإنجليزية" }
+          }
+        }
+      });
+
+      if (result && result.english_name) {
+        handleChange("full_name_english", result.english_name);
+      }
+    } catch (error) {
+      console.error('فشل توليد الاسم الإنجليزي:', error);
+      alert('فشل في توليد الاسم الإنجليزي. يرجى المحاولة مرة أخرى.');
+    } finally {
+      setIsGeneratingEnglishName(false);
     }
   };
 
@@ -330,7 +364,24 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
               {/* حقول البيانات الشخصية */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div><Label htmlFor="full_name_arabic">الاسم بالعربية *</Label><Input id="full_name_arabic" value={formData.full_name_arabic} onChange={(e) => handleChange("full_name_arabic", e.target.value)} required /></div>
-                <div><Label htmlFor="full_name_english">الاسم بالإنجليزية</Label><Input id="full_name_english" value={formData.full_name_english} onChange={(e) => handleChange("full_name_english", e.target.value)} placeholder="Full Name in English" dir="ltr" /></div>
+                <div>
+                  <Label htmlFor="full_name_english">الاسم بالإنجليزية</Label>
+                  <div className="flex gap-2">
+                    <Input id="full_name_english" value={formData.full_name_english} onChange={(e) => handleChange("full_name_english", e.target.value)} placeholder="Full Name in English" dir="ltr" className="flex-1" />
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      size="icon"
+                      onClick={generateEnglishName}
+                      disabled={isGeneratingEnglishName || !formData.full_name_arabic}
+                      title="توليد تلقائي من الاسم العربي"
+                      className="shrink-0"
+                    >
+                      {isGeneratingEnglishName ? <Loader2 className="w-4 h-4 animate-spin" /> : <Wand2 className="w-4 h-4" />}
+                    </Button>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-1">اضغط على الأيقونة لتوليد الاسم تلقائياً</p>
+                </div>
                 <div><Label htmlFor="employee_id">الرقم الوظيفي *</Label><Input id="employee_id" value={formData.رقم_الموظف} onChange={(e) => handleChange("رقم_الموظف", e.target.value)} required /></div>
                 <div><Label htmlFor="national_id">رقم الهوية</Label><Input id="national_id" value={formData.رقم_الهوية} onChange={(e) => handleChange("رقم_الهوية", e.target.value)} /></div>
                 <div>
