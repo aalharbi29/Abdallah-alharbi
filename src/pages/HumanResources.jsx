@@ -28,26 +28,7 @@ import HolidayAssignmentForm from "../components/assignments/HolidayAssignmentFo
 import BulkHolidayAssignmentDialog from "../components/assignments/BulkHolidayAssignmentDialog";
 import BulkWhatsAppDialog from "../components/employees/BulkWhatsAppDialog";
 
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-const retry = async (fn, retries = 3, delay = 2000) => {
-  for (let i = 0; i < retries; i++) {
-    try {
-      return await fn();
-    } catch (error) {
-      console.warn(`محاولة ${i + 1} فشلت:`, error.message);
-      
-      if (i === retries - 1) {
-        throw error;
-      }
-      
-      // تأخير متزايد
-      const waitTime = delay * Math.pow(2, i);
-      console.log(`انتظار ${waitTime}ms قبل المحاولة التالية...`);
-      await sleep(waitTime);
-    }
-  }
-};
 
 export default function HumanResources() {
   const [employees, setEmployees] = useState([]);
