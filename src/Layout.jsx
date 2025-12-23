@@ -431,6 +431,10 @@ function LayoutContent({ children, currentPageName }) {
           min-height: 44px;
         }
 
+        main:focus {
+          outline: none;
+        }
+
         img {
           max-width: 100%;
           height: auto;
