@@ -452,15 +452,21 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
                 </div>
 
                 <div>
-                  <Label htmlFor="scfhs_classification">تصنيف الهيئة</Label>
-                  <Input 
-                    id="scfhs_classification" 
-                    value={formData.scfhs_classification} 
-                    onChange={(e) => handleChange("scfhs_classification", e.target.value)} 
-                    placeholder="مثال: أخصائي أول، فني"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">تصنيف الهيئة السعودية للتخصصات الصحية</p>
-                </div>
+                                        <Label htmlFor="scfhs_classification">رقم تصنيف الهيئة</Label>
+                                        <Input 
+                                          id="scfhs_classification" 
+                                          value={formData.scfhs_classification} 
+                                          onChange={(e) => {
+                                            // تحويل الحروف الصغيرة إلى كبيرة وإزالة الأحرف غير المسموحة
+                                            const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                                            handleChange("scfhs_classification", value);
+                                          }} 
+                                          placeholder="مثال: 12345ABC"
+                                          dir="ltr"
+                                          className="text-left font-mono"
+                                        />
+                                        <p className="text-xs text-gray-500 mt-1">أحرف إنجليزية كبيرة وأرقام فقط</p>
+                                      </div>
 
                 <div><Label htmlFor="qualification">المؤهل</Label><Select value={formData.qualification} onValueChange={(v) => handleChange("qualification", v)}><SelectTrigger><SelectValue placeholder="اختر المؤهل" /></SelectTrigger><SelectContent><SelectItem value="ابتدائي">ابتدائي</SelectItem><SelectItem value="متوسط">متوسط</SelectItem><SelectItem value="ثانوي">ثانوي</SelectItem><SelectItem value="دبلوم">دبلوم</SelectItem><SelectItem value="بكالوريوس">بكالوريوس</SelectItem><SelectItem value="ماجستير">ماجستير</SelectItem><SelectItem value="دكتوراه">دكتوراه</SelectItem><SelectItem value="أخرى">أخرى</SelectItem></SelectContent></Select></div>
                 <div><Label htmlFor="rank">المرتبة</Label><Input id="rank" value={formData.rank} onChange={(e) => handleChange("rank", e.target.value)} placeholder="مثال: 86، 87، 31" /></div>

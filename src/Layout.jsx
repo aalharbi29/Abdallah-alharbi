@@ -535,20 +535,31 @@ function LayoutContent({ children, currentPageName }) {
           )}
 
           <main 
-            className={`flex-1 overflow-y-auto ${mainPadding}`}
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'PageDown') {
-                e.currentTarget.scrollBy({ top: window.innerHeight * 0.8, behavior: 'smooth' });
-              } else if (e.key === 'PageUp') {
-                e.currentTarget.scrollBy({ top: -window.innerHeight * 0.8, behavior: 'smooth' });
-              } else if (e.key === 'Home' && e.ctrlKey) {
-                e.currentTarget.scrollTo({ top: 0, behavior: 'smooth' });
-              } else if (e.key === 'End' && e.ctrlKey) {
-                e.currentTarget.scrollTo({ top: e.currentTarget.scrollHeight, behavior: 'smooth' });
-              }
-            }}
-          >
+                            className={`flex-1 overflow-y-auto ${mainPadding}`}
+                            tabIndex={-1}
+                            ref={(el) => {
+                              if (el) {
+                                const handleKeyDown = (e) => {
+                                  if (e.key === 'PageDown') {
+                                    e.preventDefault();
+                                    el.scrollBy({ top: window.innerHeight * 0.8, behavior: 'smooth' });
+                                  } else if (e.key === 'PageUp') {
+                                    e.preventDefault();
+                                    el.scrollBy({ top: -window.innerHeight * 0.8, behavior: 'smooth' });
+                                  } else if (e.key === 'Home') {
+                                    e.preventDefault();
+                                    el.scrollTo({ top: 0, behavior: 'smooth' });
+                                  } else if (e.key === 'End') {
+                                    e.preventDefault();
+                                    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+                                  }
+                                };
+                                window.removeEventListener('keydown', window._layoutKeyHandler);
+                                window._layoutKeyHandler = handleKeyDown;
+                                window.addEventListener('keydown', handleKeyDown);
+                              }
+                            }}
+                          >
             <div className="min-h-full">
               {children}
             </div>
