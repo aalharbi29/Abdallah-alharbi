@@ -316,7 +316,6 @@ export default function HumanResources() {
     return (
       <div className="p-4 md:p-6 space-y-6">
         <div className="max-w-7xl mx-auto">
-          {/* Header Skeleton */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
             <div className="space-y-2">
               <Skeleton className="h-10 w-64" />
@@ -324,27 +323,6 @@ export default function HumanResources() {
             </div>
             <Skeleton className="h-10 w-32" />
           </div>
-
-          {/* Progress Bar */}
-          <Card className="mb-6">
-            <CardContent className="p-6">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
-                  <span className="text-sm text-gray-600">{loadingMessage || 'جاري التحميل...'}</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-blue-600 h-2 rounded-full transition-all duration-500"
-                    style={{ width: `${loadingProgress}%` }}
-                  />
-                </div>
-                <p className="text-xs text-gray-500 text-center">{loadingProgress}%</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* List Skeleton */}
           <div className="space-y-4">
             {[1, 2, 3].map(i => (
               <Card key={i}>
