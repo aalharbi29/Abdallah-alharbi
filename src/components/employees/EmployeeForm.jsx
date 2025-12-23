@@ -9,6 +9,7 @@ import { HealthCenter } from "@/entities/HealthCenter";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import SmartDateInput from "@/components/ui/smart-date-input";
+import HijriDateInput from "@/components/ui/hijri-date-input";
 import { base44 } from "@/api/base44Client";
 
 const specialRolesOptions = [
@@ -398,13 +399,10 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="birth_date_hijri">تاريخ الميلاد (هجري)</Label>
-                  <Input 
-                    id="birth_date_hijri" 
-                    value={formData.birth_date_hijri} 
-                    onChange={(e) => handleChange("birth_date_hijri", e.target.value)} 
-                    placeholder="مثال: 01/12/1411"
-                    dir="ltr"
+                  <HijriDateInput
+                    label="تاريخ الميلاد (هجري)"
+                    value={formData.birth_date_hijri}
+                    onChange={(date) => handleChange("birth_date_hijri", date)}
                   />
                 </div>
                 <div>
@@ -502,13 +500,10 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="hire_date_hijri">تاريخ التعيين (هجري)</Label>
-                  <Input 
-                    id="hire_date_hijri" 
-                    value={formData.hire_date_hijri} 
-                    onChange={(e) => handleChange("hire_date_hijri", e.target.value)} 
-                    placeholder="مثال: 01/01/1445"
-                    dir="ltr"
+                  <HijriDateInput
+                    label="تاريخ التعيين (هجري)"
+                    value={formData.hire_date_hijri}
+                    onChange={(date) => handleChange("hire_date_hijri", date)}
                   />
                 </div>
                 <div>
@@ -519,13 +514,10 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
                   />
                 </div>
                 <div>
-                  <Label htmlFor="start_work_date_hijri">تاريخ المباشرة (هجري)</Label>
-                  <Input 
-                    id="start_work_date_hijri" 
-                    value={formData.start_work_date_hijri} 
-                    onChange={(e) => handleChange("start_work_date_hijri", e.target.value)} 
-                    placeholder="مثال: 01/01/1445"
-                    dir="ltr"
+                  <HijriDateInput
+                    label="تاريخ المباشرة (هجري)"
+                    value={formData.start_work_date_hijri}
+                    onChange={(date) => handleChange("start_work_date_hijri", date)}
                   />
                 </div>
                 <div><Label htmlFor="contract_type">نوع العقد</Label><Select value={formData.contract_type} onValueChange={(v) => handleChange("contract_type", v)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="خدمة مدنية">خدمة مدنية</SelectItem><SelectItem value="تشغيل">تشغيل</SelectItem><SelectItem value="تشغيل ذاتي">تشغيل ذاتي</SelectItem><SelectItem value="المستخدمين">المستخدمين</SelectItem><SelectItem value="دائم">دائم</SelectItem><SelectItem value="مؤقت">مؤقت</SelectItem><SelectItem value="تعاقد">تعاقد</SelectItem><SelectItem value="متدرب">متدرب</SelectItem></SelectContent></Select></div>
@@ -545,13 +537,10 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="contract_start_date_hijri">تاريخ بداية العقد (هجري)</Label>
-                      <Input 
-                        id="contract_start_date_hijri" 
-                        value={formData.contract_start_date_hijri} 
-                        onChange={(e) => handleChange("contract_start_date_hijri", e.target.value)} 
-                        placeholder="مثال: 01/01/1445"
-                        dir="ltr"
+                      <HijriDateInput
+                        label="تاريخ بداية العقد (هجري)"
+                        value={formData.contract_start_date_hijri}
+                        onChange={(date) => handleChange("contract_start_date_hijri", date)}
                       />
                     </div>
                     <div>
@@ -562,13 +551,10 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
                       />
                     </div>
                     <div>
-                      <Label htmlFor="contract_end_date_hijri">تاريخ انتهاء العقد (هجري)</Label>
-                      <Input 
-                        id="contract_end_date_hijri" 
-                        value={formData.contract_end_date_hijri} 
-                        onChange={(e) => handleChange("contract_end_date_hijri", e.target.value)} 
-                        placeholder="مثال: 01/01/1446"
-                        dir="ltr"
+                      <HijriDateInput
+                        label="تاريخ انتهاء العقد (هجري)"
+                        value={formData.contract_end_date_hijri}
+                        onChange={(date) => handleChange("contract_end_date_hijri", date)}
                       />
                     </div>
                   </>
