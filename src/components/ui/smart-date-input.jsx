@@ -11,30 +11,115 @@ const toEnglishDigits = (str) => {
   return String(str).replace(/[٠-٩]/g, d => map[d] || d);
 };
 
-// دوال التحويل المحسّنة
+// بيانات تقويم أم القرى - تواريخ بداية كل شهر هجري بالميلادي
+// المصدر: تقويم أم القرى الرسمي
+const ummAlQuraStartDates = {
+  // السنة الهجرية: [تاريخ بداية محرم بصيغة YYYYMMDD]
+  1356: 19370314, 1357: 19380303, 1358: 19390220, 1359: 19400209, 1360: 19410130,
+  1361: 19420119, 1362: 19430108, 1363: 19431228, 1364: 19441217, 1365: 19451206,
+  1366: 19461125, 1367: 19471115, 1368: 19481103, 1369: 19491024, 1370: 19501013,
+  1371: 19511002, 1372: 19520921, 1373: 19530910, 1374: 19540831, 1375: 19550820,
+  1376: 19560809, 1377: 19570730, 1378: 19580719, 1379: 19590708, 1380: 19600627,
+  1381: 19610616, 1382: 19620606, 1383: 19630526, 1384: 19640514, 1385: 19650504,
+  1386: 19660423, 1387: 19670412, 1388: 19680401, 1389: 19690322, 1390: 19700311,
+  1391: 19710228, 1392: 19720217, 1393: 19730206, 1394: 19740126, 1395: 19750116,
+  1396: 19760105, 1397: 19761225, 1398: 19771214, 1399: 19781203, 1400: 19791121,
+  1401: 19801109, 1402: 19811030, 1403: 19821019, 1404: 19831008, 1405: 19840927,
+  1406: 19850916, 1407: 19860906, 1408: 19870826, 1409: 19880814, 1410: 19890803,
+  1411: 19900724, 1412: 19910713, 1413: 19920702, 1414: 19930621, 1415: 19940611,
+  1416: 19950531, 1417: 19960519, 1418: 19970509, 1419: 19980428, 1420: 19990417,
+  1421: 20000406, 1422: 20010326, 1423: 20020315, 1424: 20030305, 1425: 20040221,
+  1426: 20050210, 1427: 20060131, 1428: 20070120, 1429: 20080110, 1430: 20081229,
+  1431: 20091218, 1432: 20101207, 1433: 20111127, 1434: 20121115, 1435: 20131105,
+  1436: 20141025, 1437: 20151014, 1438: 20161002, 1439: 20170922, 1440: 20180912,
+  1441: 20190901, 1442: 20200820, 1443: 20210810, 1444: 20220730, 1445: 20230719,
+  1446: 20240707, 1447: 20250626, 1448: 20260616, 1449: 20270606, 1450: 20280525
+};
+
+// تحويل YYYYMMDD إلى كائن Date
+function parseYYYYMMDD(num) {
+  const str = num.toString();
+  const year = parseInt(str.substring(0, 4));
+  const month = parseInt(str.substring(4, 6)) - 1;
+  const day = parseInt(str.substring(6, 8));
+  return new Date(year, month, day);
+}
+
+// حساب الفرق بالأيام بين تاريخين
+function daysBetween(date1, date2) {
+  const oneDay = 24 * 60 * 60 * 1000;
+  return Math.round((date2 - date1) / oneDay);
+}
+
+// تحويل ميلادي إلى هجري باستخدام تقويم أم القرى
 const convertGregorianToHijri = (gregorianDate) => {
   try {
-    return new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    }).format(new Date(gregorianDate));
+    const gDate = new Date(gregorianDate);
+    if (isNaN(gDate.getTime())) return '';
+    
+    // البحث عن السنة الهجرية المناسبة
+    let hijriYear = null;
+    let yearStartDate = null;
+    
+    for (const [year, startDate] of Object.entries(ummAlQuraStartDates)) {
+      const yearStart = parseYYYYMMDD(startDate);
+      const nextYear = parseInt(year) + 1;
+      const nextYearStart = ummAlQuraStartDates[nextYear] ? parseYYYYMMDD(ummAlQuraStartDates[nextYear]) : null;
+      
+      if (gDate >= yearStart && (!nextYearStart || gDate < nextYearStart)) {
+        hijriYear = parseInt(year);
+        yearStartDate = yearStart;
+        break;
+      }
+    }
+    
+    if (!hijriYear || !yearStartDate) {
+      // استخدم الطريقة القديمة كـ fallback
+      return new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).format(gDate);
+    }
+    
+    // حساب عدد الأيام من بداية السنة الهجرية
+    const daysFromYearStart = daysBetween(yearStartDate, gDate);
+    
+    // الحصول على أطوال الأشهر لهذه السنة
+    const monthLengths = ummAlQuraData[hijriYear];
+    if (!monthLengths) {
+      return new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      }).format(gDate);
+    }
+    
+    // تحديد الشهر واليوم
+    let remainingDays = daysFromYearStart;
+    let hijriMonth = 1;
+    
+    for (let m = 0; m < 12; m++) {
+      if (remainingDays < monthLengths[m]) {
+        hijriMonth = m + 1;
+        break;
+      }
+      remainingDays -= monthLengths[m];
+      if (m === 11) hijriMonth = 12;
+    }
+    
+    const hijriDay = remainingDays + 1;
+    
+    // تنسيق النتيجة
+    const dayStr = hijriDay.toString().padStart(2, '0');
+    const monthStr = hijriMonth.toString().padStart(2, '0');
+    
+    return `${dayStr}/${monthStr}/${hijriYear}`;
   } catch (error) {
+    console.error('Gregorian to Hijri conversion error:', error);
     return '';
   }
 };
-
-function hijriParts(date) {
-  try {
-    const df = new Intl.DateTimeFormat("ar-SA-u-ca-islamic", { year:"numeric", month:"numeric", day:"numeric" });
-    const parts = df.formatToParts(date);
-    const d = Number(parts.find(p => p.type === "day")?.value || 0);
-    const m = Number(parts.find(p => p.type === "month")?.value || 0);
-    const yRaw = parts.find(p => p.type === "year")?.value || "0";
-    const y = Number(toEnglishDigits(yRaw));
-    return { d, m, y };
-  } catch { return { d:0, m:0, y:0 }; }
-}
 
 // جدول تقويم أم القرى - التواريخ الفعلية للأشهر الهجرية
 const ummAlQuraData = {
