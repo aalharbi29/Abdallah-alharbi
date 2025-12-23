@@ -122,6 +122,7 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
     full_name_english: "",
     رقم_الهوية: "",
     birth_date: "",
+    birth_date_hijri: "",
     gender: "ذكر",
     nationality: "سعودي",
     phone: "",
@@ -138,9 +139,14 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
     level: "",
     grade: "",
     hire_date: "",
+    hire_date_hijri: "",
     start_work_date: "",
+    start_work_date_hijri: "",
     contract_type: "خدمة مدنية",
+    contract_start_date: "",
+    contract_start_date_hijri: "",
     contract_end_date: "",
+    contract_end_date_hijri: "",
     special_roles: [],
     assigned_tasks: [],
     profile_image_url: "",
@@ -386,9 +392,19 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
                 <div><Label htmlFor="national_id">رقم الهوية</Label><Input id="national_id" value={formData.رقم_الهوية} onChange={(e) => handleChange("رقم_الهوية", e.target.value)} /></div>
                 <div>
                   <SmartDateInput
-                    label="تاريخ الميلاد"
+                    label="تاريخ الميلاد (ميلادي)"
                     value={formData.birth_date}
                     onChange={(date) => handleChange("birth_date", date)}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="birth_date_hijri">تاريخ الميلاد (هجري)</Label>
+                  <Input 
+                    id="birth_date_hijri" 
+                    value={formData.birth_date_hijri} 
+                    onChange={(e) => handleChange("birth_date_hijri", e.target.value)} 
+                    placeholder="مثال: 01/12/1411"
+                    dir="ltr"
                   />
                 </div>
                 <div>
@@ -475,11 +491,10 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
                 <div><Label htmlFor="grade">الدرجة</Label><Input id="grade" value={formData.grade} onChange={(e) => handleChange("grade", e.target.value)} placeholder="مثال: 2" /></div>
                 <div>
                   <SmartDateInput
-                    label="تاريخ التعيين"
+                    label="تاريخ التعيين (ميلادي)"
                     value={formData.hire_date}
                     onChange={(date) => {
                       handleChange("hire_date", date);
-                      // إذا لم يكن تاريخ المباشرة محدداً، اجعله نفس تاريخ التعيين
                       if (!formData.start_work_date) {
                         handleChange("start_work_date", date);
                       }
@@ -487,25 +502,76 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
                   />
                 </div>
                 <div>
+                  <Label htmlFor="hire_date_hijri">تاريخ التعيين (هجري)</Label>
+                  <Input 
+                    id="hire_date_hijri" 
+                    value={formData.hire_date_hijri} 
+                    onChange={(e) => handleChange("hire_date_hijri", e.target.value)} 
+                    placeholder="مثال: 01/01/1445"
+                    dir="ltr"
+                  />
+                </div>
+                <div>
                   <SmartDateInput
-                    label="تاريخ المباشرة"
+                    label="تاريخ المباشرة (ميلادي)"
                     value={formData.start_work_date || formData.hire_date}
                     onChange={(date) => handleChange("start_work_date", date)}
                   />
-                  <p className="text-xs text-gray-500 mt-1">يُعبأ تلقائياً من تاريخ التعيين</p>
+                </div>
+                <div>
+                  <Label htmlFor="start_work_date_hijri">تاريخ المباشرة (هجري)</Label>
+                  <Input 
+                    id="start_work_date_hijri" 
+                    value={formData.start_work_date_hijri} 
+                    onChange={(e) => handleChange("start_work_date_hijri", e.target.value)} 
+                    placeholder="مثال: 01/01/1445"
+                    dir="ltr"
+                  />
                 </div>
                 <div><Label htmlFor="contract_type">نوع العقد</Label><Select value={formData.contract_type} onValueChange={(v) => handleChange("contract_type", v)}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="خدمة مدنية">خدمة مدنية</SelectItem><SelectItem value="تشغيل">تشغيل</SelectItem><SelectItem value="تشغيل ذاتي">تشغيل ذاتي</SelectItem><SelectItem value="المستخدمين">المستخدمين</SelectItem><SelectItem value="دائم">دائم</SelectItem><SelectItem value="مؤقت">مؤقت</SelectItem><SelectItem value="تعاقد">تعاقد</SelectItem><SelectItem value="متدرب">متدرب</SelectItem></SelectContent></Select></div>
                 
-                {/* تاريخ نهاية العقد - يظهر للموظفين غير السعوديين أو المتعاقدين */}
-                {(formData.nationality && formData.nationality !== 'سعودي' && formData.nationality !== 'سعودية') || formData.contract_type === 'تعاقد' || formData.contract_type === 'تشغيل' || formData.contract_type === 'تشغيل ذاتي' ? (
-                  <div>
-                    <SmartDateInput
-                      label="تاريخ انتهاء العقد"
-                      value={formData.contract_end_date}
-                      onChange={(date) => handleChange("contract_end_date", date)}
-                    />
-                    <p className="text-xs text-gray-500 mt-1">تاريخ انتهاء عقد الموظف</p>
-                  </div>
+                {/* حقول العقد - تظهر للموظفين غير السعوديين أو المتعاقدين أو فئة المتعاقدين */}
+                {(formData.nationality && formData.nationality !== 'سعودي' && formData.nationality !== 'سعودية') || 
+                 formData.contract_type === 'تعاقد' || 
+                 formData.contract_type === 'تشغيل' || 
+                 formData.contract_type === 'تشغيل ذاتي' ||
+                 formData.job_category_type === 'المتعاقدين' ? (
+                  <>
+                    <div>
+                      <SmartDateInput
+                        label="تاريخ بداية العقد (ميلادي)"
+                        value={formData.contract_start_date}
+                        onChange={(date) => handleChange("contract_start_date", date)}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="contract_start_date_hijri">تاريخ بداية العقد (هجري)</Label>
+                      <Input 
+                        id="contract_start_date_hijri" 
+                        value={formData.contract_start_date_hijri} 
+                        onChange={(e) => handleChange("contract_start_date_hijri", e.target.value)} 
+                        placeholder="مثال: 01/01/1445"
+                        dir="ltr"
+                      />
+                    </div>
+                    <div>
+                      <SmartDateInput
+                        label="تاريخ انتهاء العقد (ميلادي)"
+                        value={formData.contract_end_date}
+                        onChange={(date) => handleChange("contract_end_date", date)}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="contract_end_date_hijri">تاريخ انتهاء العقد (هجري)</Label>
+                      <Input 
+                        id="contract_end_date_hijri" 
+                        value={formData.contract_end_date_hijri} 
+                        onChange={(e) => handleChange("contract_end_date_hijri", e.target.value)} 
+                        placeholder="مثال: 01/01/1446"
+                        dir="ltr"
+                      />
+                    </div>
+                  </>
                 ) : null}
                  
                  <div className="md:col-span-3 space-y-4">
