@@ -200,56 +200,6 @@ const ummAlQuraData = {
   1500: [29,30,29,30,29,30,30,29,30,30,29,30]
 };
 
-// حساب عدد الأيام من بداية التقويم الهجري (1/1/1) إلى تاريخ معين
-function hijriToJulianDay(hYear, hMonth, hDay) {
-  // نقطة البداية: 1 محرم 1 هجري = 16 يوليو 622 ميلادي = Julian Day 1948440
-  const baseJD = 1948440;
-  
-  // حساب عدد الأيام من بداية التقويم
-  let days = 0;
-  
-  // إضافة أيام السنوات الكاملة
-  for (let y = 1; y < hYear; y++) {
-    if (ummAlQuraData[y]) {
-      days += ummAlQuraData[y].reduce((a, b) => a + b, 0);
-    } else {
-      // إذا لم تكن البيانات متوفرة، استخدم متوسط السنة الهجرية (354 يوم)
-      days += 354;
-    }
-  }
-  
-  // إضافة أيام الأشهر الكاملة في السنة الحالية
-  if (ummAlQuraData[hYear]) {
-    for (let m = 0; m < hMonth - 1; m++) {
-      days += ummAlQuraData[hYear][m];
-    }
-  } else {
-    // استخدم المتوسط (29.5 يوم لكل شهر)
-    days += Math.floor((hMonth - 1) * 29.5);
-  }
-  
-  // إضافة الأيام في الشهر الحالي
-  days += hDay - 1;
-  
-  return baseJD + days;
-}
-
-// تحويل Julian Day إلى تاريخ ميلادي
-function julianDayToGregorian(jd) {
-  const a = jd + 32044;
-  const b = Math.floor((4 * a + 3) / 146097);
-  const c = a - Math.floor((146097 * b) / 4);
-  const d = Math.floor((4 * c + 3) / 1461);
-  const e = c - Math.floor((1461 * d) / 4);
-  const m = Math.floor((5 * e + 2) / 153);
-  
-  const day = e - Math.floor((153 * m + 2) / 5) + 1;
-  const month = m + 3 - 12 * Math.floor(m / 10);
-  const year = 100 * b + d - 4800 + Math.floor(m / 10);
-  
-  return { year, month, day };
-}
-
 // التحويل من الهجري إلى الميلادي باستخدام تقويم أم القرى
 function convertHijriToGregorian(hijriString) {
   try {
@@ -264,14 +214,31 @@ function convertHijriToGregorian(hijriString) {
       return '';
     }
     
-    // تحويل باستخدام تقويم أم القرى
-    const jd = hijriToJulianDay(hYear, hMonth, hDay);
-    const greg = julianDayToGregorian(jd);
+    // التحقق من وجود البيانات
+    if (!ummAlQuraStartDates[hYear] || !ummAlQuraData[hYear]) {
+      return '';
+    }
+    
+    // الحصول على تاريخ بداية السنة الهجرية
+    const yearStartDate = parseYYYYMMDD(ummAlQuraStartDates[hYear]);
+    
+    // حساب عدد الأيام من بداية السنة
+    let daysToAdd = 0;
+    const monthLengths = ummAlQuraData[hYear];
+    
+    for (let m = 0; m < hMonth - 1; m++) {
+      daysToAdd += monthLengths[m];
+    }
+    daysToAdd += hDay - 1;
+    
+    // إضافة الأيام إلى تاريخ بداية السنة
+    const resultDate = new Date(yearStartDate);
+    resultDate.setDate(resultDate.getDate() + daysToAdd);
     
     // تنسيق التاريخ
-    const year = greg.year.toString();
-    const month = greg.month.toString().padStart(2, '0');
-    const day = greg.day.toString().padStart(2, '0');
+    const year = resultDate.getFullYear().toString();
+    const month = (resultDate.getMonth() + 1).toString().padStart(2, '0');
+    const day = resultDate.getDate().toString().padStart(2, '0');
     
     return `${year}-${month}-${day}`;
   } catch (error) {
