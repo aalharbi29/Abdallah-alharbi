@@ -390,37 +390,70 @@ export default function HumanResources() {
 
   // العرض الرئيسي
   return (
-    <div className="p-4 md:p-6 space-y-6 bg-gradient-to-br from-gray-50 via-white to-blue-50/30 min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 animate-fade-in">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-display text-gray-900 flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg">
-                <Users className="w-6 h-6 md:w-7 md:h-7 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 relative overflow-hidden">
+      {/* خلفية متحركة */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse" style={{animationDelay: '4s'}}></div>
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto p-4 md:p-6 space-y-6">
+        {/* Header احترافي */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-blue-600 rounded-2xl blur-lg opacity-50"></div>
+                <div className="relative w-16 h-16 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-2xl">
+                  <Users className="w-8 h-8 text-white" />
+                </div>
               </div>
-              إدارة الموارد البشرية
-            </h1>
-            <p className="text-gray-600 text-base md:text-lg font-medium mr-16 md:mr-0">
-              <span className="text-blue-600 font-bold">{employees.length}</span> موظف • 
-              <span className="text-green-600 font-bold mr-2">{filteredEmployees.length}</span> معروض
-            </p>
+              <div>
+                <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-indigo-200 to-blue-200 tracking-tight">
+                  الموارد البشرية
+                </h1>
+                <div className="flex items-center gap-3 mt-2">
+                  <div className="flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
+                    <Building2 className="w-4 h-4 text-indigo-400" />
+                    <span className="text-white/80 text-sm font-medium">{employees.length} موظف</span>
+                  </div>
+                  <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/20 backdrop-blur-md rounded-full border border-emerald-500/30">
+                    <TrendingUp className="w-4 h-4 text-emerald-400" />
+                    <span className="text-emerald-400 text-sm font-medium">{filteredEmployees.length} معروض</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex gap-2 no-print">
+              <Button 
+                onClick={loadData} 
+                variant="outline" 
+                size="sm" 
+                disabled={isLoading}
+                className="border-white/20 text-white hover:bg-white/10 rounded-xl backdrop-blur-md"
+              >
+                <RefreshCw className={`w-4 h-4 ml-2 ${isLoading ? 'animate-spin' : ''}`} />
+                تحديث
+              </Button>
+              <Button 
+                onClick={() => {
+                  setEditingEmployee(null);
+                  setShowEmployeeForm(true);
+                }}
+                className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 shadow-lg rounded-xl"
+              >
+                <UserPlus className="w-4 h-4 ml-2" />
+                إضافة موظف
+              </Button>
+            </div>
           </div>
-          
-          <div className="flex gap-2 no-print">
-            <Button onClick={loadData} variant="outline" size="sm" disabled={isLoading}>
-              <RefreshCw className={`w-4 h-4 ml-2 ${isLoading ? 'animate-spin' : ''}`} />
-              تحديث
-            </Button>
-            <Button onClick={() => {
-              setEditingEmployee(null);
-              setShowEmployeeForm(true);
-            }}>
-              <UserPlus className="w-4 h-4 ml-2" />
-              إضافة موظف
-            </Button>
-          </div>
-        </div>
+        </motion.div>
 
         {/* Search and Actions */}
         <Card className="mb-6 no-print shadow-medium border-0 bg-white">
