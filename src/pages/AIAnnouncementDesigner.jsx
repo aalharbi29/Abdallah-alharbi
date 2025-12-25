@@ -546,20 +546,61 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
   );
 
   return (
-    <div className="min-h-screen p-4 md:p-6 bg-gradient-to-br from-purple-50 via-white to-pink-50">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 shadow-xl mb-4">
-            <Wand2 className="w-10 h-10 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      {/* خلفية متحركة */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse" style={{animationDelay: '4s'}}></div>
+      </div>
+
+      <div className="relative z-10 p-4 md:p-6 max-w-7xl mx-auto">
+        {/* Header احترافي */}
+        <motion.div 
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-10"
+        >
+          <div className="relative inline-block mb-6">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl blur-xl opacity-50 animate-pulse"></div>
+            <div className="relative bg-gradient-to-br from-purple-600 via-pink-600 to-orange-500 p-6 rounded-3xl shadow-2xl">
+              <Wand2 className="w-14 h-14 text-white drop-shadow-lg" />
+            </div>
+            <div className="absolute -top-2 -right-2 w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center shadow-lg">
+              <Sparkles className="w-3 h-3 text-yellow-900" />
+            </div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-            أداة التصميم بالذكاء الاصطناعي
+          <h1 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-pink-200 mb-4 tracking-tight">
+            استوديو التصميم الذكي
           </h1>
-          <p className="text-lg text-gray-600">
-            صمم إعلانات، بروشورات، بطاقات توعوية، أو أوصاف وظيفية احترافية في ثوانٍ
+          <p className="text-lg md:text-xl text-purple-200/80 max-w-2xl mx-auto leading-relaxed">
+            أنشئ تصاميم احترافية مذهلة باستخدام قوة الذكاء الاصطناعي
           </p>
-        </div>
+          
+          {/* شريط الإحصائيات السريعة */}
+          <div className="flex flex-wrap justify-center gap-4 mt-8">
+            {[
+              { icon: Layers, label: 'إعلانات', color: 'from-blue-500 to-cyan-500' },
+              { icon: BookOpen, label: 'بروشورات', color: 'from-green-500 to-emerald-500' },
+              { icon: Heart, label: 'توعوية', color: 'from-pink-500 to-rose-500' },
+              { icon: Briefcase, label: 'وظيفية', color: 'from-orange-500 to-amber-500' },
+            ].map((item, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 + idx * 0.1 }}
+                className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20"
+              >
+                <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center shadow-lg`}>
+                  <item.icon className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-white/90 font-medium text-sm">{item.label}</span>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
 
         {/* القوالب الجاهزة */}
         <Card className="mb-6 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
