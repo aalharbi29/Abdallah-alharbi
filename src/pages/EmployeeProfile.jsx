@@ -832,12 +832,15 @@ export default function EmployeeProfile() {
                         )}
                     </div>
                 )}
-                <Button onClick={handleSaveExternalAssignment} className="w-full bg-blue-600 hover:bg-blue-700">
-                    <Save className="w-4 h-4 ml-2" />
-                    حفظ حالة التكليف
+                <Button 
+                  onClick={handleSaveExternalAssignment} 
+                  className="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 h-11 rounded-xl shadow-lg"
+                >
+                  <Save className="w-4 h-4 ml-2" />
+                  حفظ حالة التكليف
                 </Button>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
             
             {/* صندوق العمل في الإجازات الرسمية - جديد */}
             <HolidayWorkManager 
