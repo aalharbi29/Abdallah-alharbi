@@ -491,23 +491,48 @@ export default function EmployeeProfile() {
           </div>
         </motion.div>
 
-        {/* Employee Full Details with Integrated Roles */}
-        <Card>
-          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50">
-            <div className="flex items-center justify-between">
-              <CardTitle className="flex items-center gap-2 text-xl">
-                <User className="w-6 h-6 text-blue-600" />
-                {employee.full_name_arabic}
-              </CardTitle>
-              <Link to={createPageUrl(`HumanResources?id=${employee.id}`)}>
-                <Button variant="outline" size="sm">
-                  <Edit className="w-4 h-4 ml-1" />
-                  تعديل البيانات
-                </Button>
-              </Link>
+        {/* Employee Full Details with Integrated Roles - محسّن */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden shadow-2xl">
+            <div className="p-5 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border-b border-white/10">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  {employee.profile_image_url ? (
+                    <img 
+                      src={employee.profile_image_url} 
+                      alt={employee.full_name_arabic} 
+                      className="w-16 h-16 rounded-2xl object-cover border-2 border-white/30 shadow-lg"
+                    />
+                  ) : (
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg">
+                      <User className="w-8 h-8 text-white" />
+                    </div>
+                  )}
+                  <div>
+                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+                      {employee.full_name_arabic}
+                      <Sparkles className="w-5 h-5 text-yellow-400" />
+                    </h2>
+                    <p className="text-indigo-200/80 text-sm">{employee.position}</p>
+                  </div>
+                </div>
+                <Link to={createPageUrl(`HumanResources?id=${employee.id}`)}>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="border-white/20 text-white hover:bg-white/10 rounded-xl backdrop-blur-md"
+                  >
+                    <Edit className="w-4 h-4 ml-1" />
+                    تعديل
+                  </Button>
+                </Link>
+              </div>
             </div>
-          </CardHeader>
-          <CardContent className="p-6">
+            <div className="p-6">
             {/* الأدوار الوظيفية المتكاملة */}
             {employeeRoles.length > 0 && (
               <div className="mb-6 p-4 bg-purple-50 border border-purple-200 rounded-lg">
