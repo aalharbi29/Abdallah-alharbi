@@ -128,10 +128,10 @@ export default function EmployeeList({
             transition={{ delay: idx * 0.03 }}
           >
             <Card
-              className={`bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/40 hover:bg-white/15 transition-all shadow-lg ${
-                isPinned ? 'border-amber-400/50 bg-amber-500/10' : ''
+              className={`bg-white/15 backdrop-blur-xl border border-white/30 hover:border-white/50 hover:bg-white/20 transition-all shadow-xl ${
+                isPinned ? 'border-amber-400/60 bg-amber-500/20' : ''
               } ${
-                isSelected ? 'ring-2 ring-indigo-400/50' : ''
+                isSelected ? 'ring-2 ring-indigo-400/70 bg-indigo-500/10' : ''
               }`}
             >
             <CardContent className="p-3 md:p-4">
@@ -176,17 +176,17 @@ export default function EmployeeList({
                     <div className="flex-1">
                       <Link
                         to={createPageUrl(`EmployeeProfile?id=${employee.id}`)}
-                        className="text-base md:text-lg font-bold text-white hover:text-indigo-300 transition-colors flex items-center gap-2"
+                        className="text-base md:text-lg font-black text-white hover:text-indigo-200 transition-colors flex items-center gap-2 drop-shadow-sm"
                       >
                         {employee.full_name_arabic || 'غير محدد'}
-                        <Sparkles className="w-4 h-4 text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <Sparkles className="w-4 h-4 text-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </Link>
-                      <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-white/60">
-                        {employee.position && <span className="font-medium">{employee.position}</span>}
-                        {employee.position && employee.المركز_الصحي && <span>•</span>}
-                        {employee.المركز_الصحي && <span>{employee.المركز_الصحي}</span>}
+                      <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-white/80">
+                        {employee.position && <span className="font-bold">{employee.position}</span>}
+                        {employee.position && employee.المركز_الصحي && <span className="text-white/60">•</span>}
+                        {employee.المركز_الصحي && <span className="font-semibold">{employee.المركز_الصحي}</span>}
                         {employee.contract_type && (
-                          <Badge variant="outline" className="text-[10px] py-0 px-2 h-5 border-white/30 text-white/70">
+                          <Badge variant="outline" className="text-[10px] py-0 px-2 h-5 border-white/40 text-white font-bold bg-white/10">
                             {employee.contract_type}
                           </Badge>
                         )}
@@ -246,30 +246,30 @@ export default function EmployeeList({
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-[11px] mb-3 p-3 bg-white/5 rounded-xl">
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-[11px] mb-3 p-3 bg-white/10 rounded-xl border border-white/20">
                     {employee.رقم_الموظف && (
-                      <div className="text-white/80">
-                        <span className="text-white/50">رقم:</span> <span className="font-bold">{employee.رقم_الموظف}</span>
+                      <div className="text-white">
+                        <span className="text-white/70 font-semibold">رقم:</span> <span className="font-black">{employee.رقم_الموظف}</span>
                       </div>
                     )}
                     {employee.phone && (
-                      <div className="text-white/80">
-                        <span className="text-white/50">جوال:</span> <span className="font-bold">{employee.phone}</span>
+                      <div className="text-white">
+                        <span className="text-white/70 font-semibold">جوال:</span> <span className="font-black">{employee.phone}</span>
                       </div>
                     )}
                     {employee.رقم_الهوية && (
-                      <div className="text-white/80">
-                        <span className="text-white/50">هوية:</span> <span className="font-bold">{employee.رقم_الهوية}</span>
+                      <div className="text-white">
+                        <span className="text-white/70 font-semibold">هوية:</span> <span className="font-black">{employee.رقم_الهوية}</span>
                       </div>
                     )}
                     {employee.birth_date && (
-                      <div className="text-white/80">
-                        <span className="text-white/50">ميلاد:</span> <span className="font-bold">{employee.birth_date}</span>
+                      <div className="text-white">
+                        <span className="text-white/70 font-semibold">ميلاد:</span> <span className="font-black">{employee.birth_date}</span>
                       </div>
                     )}
                     {employee.hire_date && (
-                      <div className="text-white/80">
-                        <span className="text-white/50">تعيين:</span> <span className="font-bold">{employee.hire_date}</span>
+                      <div className="text-white">
+                        <span className="text-white/70 font-semibold">تعيين:</span> <span className="font-black">{employee.hire_date}</span>
                       </div>
                     )}
                   </div>
@@ -279,7 +279,7 @@ export default function EmployeeList({
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="h-8 text-xs px-3 bg-indigo-500/20 border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/30 rounded-lg"
+                        className="h-8 text-xs px-3 font-bold bg-indigo-500/30 border-indigo-400/50 text-white hover:bg-indigo-500/40 rounded-lg shadow-md"
                       >
                         <Eye className="w-3 h-3 ml-1" />
                         عرض
@@ -290,7 +290,7 @@ export default function EmployeeList({
                         variant="outline" 
                         size="sm" 
                         onClick={() => onEdit(employee)} 
-                        className="h-8 text-xs px-3 bg-blue-500/20 border-blue-500/30 text-blue-300 hover:bg-blue-500/30 rounded-lg"
+                        className="h-8 text-xs px-3 font-bold bg-blue-500/30 border-blue-400/50 text-white hover:bg-blue-500/40 rounded-lg shadow-md"
                       >
                         <Edit className="w-3 h-3 ml-1" />
                         تعديل
@@ -301,7 +301,7 @@ export default function EmployeeList({
                         variant="outline" 
                         size="sm" 
                         onClick={() => onAddLeave(employee)} 
-                        className="h-8 text-xs px-3 bg-amber-500/20 border-amber-500/30 text-amber-300 hover:bg-amber-500/30 rounded-lg"
+                        className="h-8 text-xs px-3 font-bold bg-amber-500/30 border-amber-400/50 text-white hover:bg-amber-500/40 rounded-lg shadow-md"
                       >
                         <Calendar className="w-3 h-3 ml-1" />
                         إجازة
@@ -312,7 +312,7 @@ export default function EmployeeList({
                         variant="outline" 
                         size="sm" 
                         onClick={() => onAddAssignment(employee)} 
-                        className="h-8 text-xs px-3 bg-purple-500/20 border-purple-500/30 text-purple-300 hover:bg-purple-500/30 rounded-lg"
+                        className="h-8 text-xs px-3 font-bold bg-purple-500/30 border-purple-400/50 text-white hover:bg-purple-500/40 rounded-lg shadow-md"
                       >
                         <Briefcase className="w-3 h-3 ml-1" />
                         تكليف
@@ -323,7 +323,7 @@ export default function EmployeeList({
                         variant="outline" 
                         size="sm" 
                         onClick={() => onAddHolidayAssignment(employee)} 
-                        className="h-8 text-xs px-3 bg-pink-500/20 border-pink-500/30 text-pink-300 hover:bg-pink-500/30 rounded-lg"
+                        className="h-8 text-xs px-3 font-bold bg-pink-500/30 border-pink-400/50 text-white hover:bg-pink-500/40 rounded-lg shadow-md"
                       >
                         <Award className="w-3 h-3 ml-1" />
                         إجازة
@@ -334,7 +334,7 @@ export default function EmployeeList({
                         variant="outline"
                         size="sm"
                         onClick={() => onDelete(employee)}
-                        className="h-8 text-xs px-3 bg-red-500/20 border-red-500/30 text-red-300 hover:bg-red-500/30 rounded-lg"
+                        className="h-8 text-xs px-3 font-bold bg-red-500/30 border-red-400/50 text-white hover:bg-red-500/40 rounded-lg shadow-md"
                       >
                         <Trash2 className="w-3 h-3 ml-1" />
                         حذف

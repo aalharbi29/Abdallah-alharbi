@@ -414,17 +414,17 @@ export default function HumanResources() {
                 </div>
               </div>
               <div>
-                <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-indigo-200 to-blue-200 tracking-tight">
+                <h1 className="text-3xl md:text-5xl font-black text-white drop-shadow-lg tracking-tight">
                   الموارد البشرية
                 </h1>
                 <div className="flex items-center gap-3 mt-2">
-                  <div className="flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20">
-                    <Building2 className="w-4 h-4 text-indigo-400" />
-                    <span className="text-white/80 text-sm font-medium">{employees.length} موظف</span>
+                  <div className="flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full border border-white/30">
+                    <Building2 className="w-5 h-5 text-white" />
+                    <span className="text-white text-sm font-bold">{employees.length} موظف</span>
                   </div>
-                  <div className="flex items-center gap-2 px-3 py-1 bg-emerald-500/20 backdrop-blur-md rounded-full border border-emerald-500/30">
-                    <TrendingUp className="w-4 h-4 text-emerald-400" />
-                    <span className="text-emerald-400 text-sm font-medium">{filteredEmployees.length} معروض</span>
+                  <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/30 backdrop-blur-md rounded-full border border-emerald-400/50">
+                    <TrendingUp className="w-5 h-5 text-emerald-300" />
+                    <span className="text-emerald-200 text-sm font-bold">{filteredEmployees.length} معروض</span>
                   </div>
                 </div>
               </div>
@@ -436,7 +436,7 @@ export default function HumanResources() {
                 variant="outline" 
                 size="sm" 
                 disabled={isLoading}
-                className="border-white/20 text-white hover:bg-white/10 rounded-xl backdrop-blur-md"
+                className="border-white/30 bg-white/10 text-white font-bold hover:bg-white/20 rounded-xl backdrop-blur-md shadow-lg"
               >
                 <RefreshCw className={`w-4 h-4 ml-2 ${isLoading ? 'animate-spin' : ''}`} />
                 تحديث
@@ -446,7 +446,7 @@ export default function HumanResources() {
                   setEditingEmployee(null);
                   setShowEmployeeForm(true);
                 }}
-                className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 shadow-lg rounded-xl"
+                className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold shadow-xl rounded-xl"
               >
                 <UserPlus className="w-4 h-4 ml-2" />
                 إضافة موظف
@@ -461,15 +461,15 @@ export default function HumanResources() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-5 md:p-6 mb-6 no-print shadow-2xl">
+          <div className="bg-white/15 backdrop-blur-xl rounded-2xl border border-white/30 p-5 md:p-6 mb-6 no-print shadow-2xl">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1 relative">
-                <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/40 w-5 h-5" />
+                <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 w-5 h-5" />
                 <Input
                   placeholder="ابحث بالاسم، رقم الهوية، رقم الموظف، الجوال..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pr-12 h-12 text-base bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-indigo-400 focus:ring-indigo-400 rounded-xl"
+                  className="pr-12 h-12 text-base font-semibold bg-white/15 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 rounded-xl shadow-lg"
                 />
               </div>
               
@@ -485,7 +485,7 @@ export default function HumanResources() {
                         <Button
                           variant="outline"
                           onClick={() => setShowBulkWhatsAppDialog(true)}
-                          className="gap-2 bg-green-500/20 hover:bg-green-500/30 text-green-300 border-green-500/30 rounded-xl"
+                          className="gap-2 bg-green-500/30 hover:bg-green-500/40 text-white font-bold border-green-400/50 rounded-xl shadow-lg"
                         >
                           <MessageCircle className="w-4 h-4" />
                           واتساب ({selectedEmployees.size})
@@ -499,7 +499,7 @@ export default function HumanResources() {
                         <Button
                           variant="outline"
                           onClick={() => setShowBulkAssignmentDialog(true)}
-                          className="gap-2 border-white/20 text-white hover:bg-white/10 rounded-xl"
+                          className="gap-2 bg-white/15 border-white/30 text-white font-bold hover:bg-white/25 rounded-xl shadow-lg"
                         >
                           <Award className="w-4 h-4" />
                           تكليف ({selectedEmployees.size})
@@ -514,7 +514,7 @@ export default function HumanResources() {
                           variant="outline"
                           onClick={() => setSelectedEmployees(new Set())}
                           size="icon"
-                          className="border-white/20 text-red-400 hover:bg-red-500/20 rounded-xl"
+                          className="bg-red-500/30 border-red-400/50 text-white font-bold hover:bg-red-500/40 rounded-xl shadow-lg"
                         >
                           <X className="w-4 h-4" />
                         </Button>
@@ -529,7 +529,7 @@ export default function HumanResources() {
                 <Button 
                   variant="outline" 
                   onClick={() => window.print()}
-                  className="border-white/20 text-white hover:bg-white/10 rounded-xl"
+                  className="bg-white/15 border-white/30 text-white font-bold hover:bg-white/25 rounded-xl shadow-lg"
                 >
                   <Printer className="w-4 h-4 ml-2" />
                   طباعة
