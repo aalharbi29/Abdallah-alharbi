@@ -730,20 +730,25 @@ export default function EmployeeProfile() {
                     </Suspense>
                   </TabsContent>
                 </Tabs>
-              </CardContent>
-            </Card>
-          </div>
+              </div>
+            </div>
+          </motion.div>
 
-          {/* التكليف الخارجي والمستندات (Column 3) */}
-          <div className="lg:col-span-1 space-y-6">
-            <Card className="shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileClock className="text-orange-500" />
+          {/* التكليف الخارجي */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            className="lg:col-span-1 space-y-6"
+          >
+            <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden shadow-2xl">
+              <div className="p-5 border-b border-white/10">
+                <h3 className="font-bold text-white flex items-center gap-2">
+                  <FileClock className="w-5 h-5 text-amber-400" />
                   التكليف الخارجي
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+                </h3>
+              </div>
+              <div className="p-6 space-y-4">
                 <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
                   <Label htmlFor="is_externally_assigned" className="font-semibold">
                     مكلف خارج المنطقة؟
