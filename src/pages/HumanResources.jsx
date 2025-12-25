@@ -535,9 +535,9 @@ export default function HumanResources() {
                   طباعة
                 </Button>
               </div>
-              </div>
-              </div>
-              </motion.div>
+            </div>
+          </div>
+        </motion.div>
 
         {/* Filters */}
         <EmployeeFilters
