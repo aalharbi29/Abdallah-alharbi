@@ -1676,27 +1676,37 @@ ${JSON.stringify(videoScript, null, 2)}
           </Dialog>
         )}
 
-        {/* معلومات مفيدة */}
-        <Card className="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-          <CardContent className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h3 className="font-bold text-lg text-gray-900 mb-2">💡 نصائح للحصول على أفضل تصميم</h3>
-                <ul className="text-gray-600 space-y-1 text-sm">
-                  <li>• اختر نوع التصميم المناسب (إعلان، بروشور، بطاقة توعوية، وصف وظيفي)</li>
-                  <li>• اكتب عنوان واضح ومختصر</li>
-                  <li>• قسم الموظفين اختياري - فعّله فقط عند الحاجة</li>
-                  <li>• استخدم الصور المولدة لتحسين التصميم</li>
-                  <li>• يمكنك إعادة التصميم عدة مرات للحصول على نتائج مختلفة</li>
-                  <li>• التصميم جاهز للطباعة بجودة عالية</li>
-                </ul>
+        {/* معلومات مفيدة - محسّنة */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mt-10 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-orange-500/20 backdrop-blur-xl rounded-3xl border border-white/20 p-8"
+        >
+          <div className="flex items-start gap-6">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center flex-shrink-0 shadow-2xl">
+              <Zap className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h3 className="font-bold text-2xl text-white mb-4">نصائح للحصول على أفضل النتائج</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { icon: Layers, text: 'اختر نوع التصميم المناسب للمحتوى' },
+                  { icon: PenTool, text: 'اكتب عنوان واضح ومختصر وجذاب' },
+                  { icon: Users, text: 'قسم الموظفين اختياري - فعّله عند الحاجة' },
+                  { icon: ImageIcon, text: 'استخدم الصور المولدة لتحسين التصميم' },
+                  { icon: RefreshCw, text: 'أعد التوليد للحصول على نتائج متنوعة' },
+                  { icon: Printer, text: 'التصميم جاهز للطباعة بجودة عالية' },
+                ].map((tip, idx) => (
+                  <div key={idx} className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
+                    <tip.icon className="w-5 h-5 text-purple-400 flex-shrink-0" />
+                    <span className="text-white/80 text-sm">{tip.text}</span>
+                  </div>
+                ))}
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </motion.div>
       </div>
     </div>
   );
