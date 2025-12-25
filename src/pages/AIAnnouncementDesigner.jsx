@@ -602,112 +602,101 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
           </div>
         </motion.div>
 
-        {/* القوالب الجاهزة */}
-        <Card className="mb-6 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-purple-600" />
-                ابدأ بقالب جاهز
-              </span>
-              <Button
-                variant={showTemplates ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setShowTemplates(!showTemplates)}
+        {/* القوالب الجاهزة - محسّنة */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="mb-8"
+        >
+          <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 overflow-hidden shadow-2xl">
+            <div 
+              className="p-5 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
+              onClick={() => setShowTemplates(!showTemplates)}
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg">
+                  <Sparkles className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white">قوالب جاهزة للاستخدام</h3>
+                  <p className="text-purple-200/70 text-sm">اختر من بين {templates.length} قالب احترافي</p>
+                </div>
+              </div>
+              <motion.div
+                animate={{ rotate: showTemplates ? 180 : 0 }}
+                transition={{ duration: 0.3 }}
               >
-                {showTemplates ? 'إخفاء القوالب' : 'عرض القوالب'}
-              </Button>
-            </CardTitle>
-          </CardHeader>
-          {showTemplates && (
-            <CardContent>
-              <div className="space-y-4">
-                {/* إعلانات */}
-                <div>
-                  <h4 className="font-bold text-sm text-gray-700 mb-2">📢 إعلانات</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {templates.filter(t => t.designType === 'announcement').map(template => (
-                      <button
-                        key={template.id}
-                        onClick={() => applyTemplate(template)}
-                        className="p-4 border-2 rounded-xl hover:border-purple-400 hover:shadow-lg transition-all text-center group bg-white"
-                      >
-                        <div className="text-3xl mb-2">{template.icon}</div>
-                        <div className="font-semibold text-sm text-gray-900 group-hover:text-purple-700">
-                          {template.name}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                <ChevronDown className="w-6 h-6 text-white/70" />
+              </motion.div>
+            </div>
 
-                {/* بروشورات */}
-                <div>
-                  <h4 className="font-bold text-sm text-gray-700 mb-2">📘 بروشورات</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {templates.filter(t => t.designType === 'brochure').map(template => (
-                      <button
-                        key={template.id}
-                        onClick={() => applyTemplate(template)}
-                        className="p-4 border-2 rounded-xl hover:border-purple-400 hover:shadow-lg transition-all text-center group bg-white"
-                      >
-                        <div className="text-3xl mb-2">{template.icon}</div>
-                        <div className="font-semibold text-sm text-gray-900 group-hover:text-purple-700">
-                          {template.name}
+            <AnimatePresence>
+              {showTemplates && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="overflow-hidden"
+                >
+                  <div className="p-6 pt-0 space-y-6">
+                    {[
+                      { type: 'announcement', title: 'إعلانات', icon: Megaphone, color: 'from-blue-500 to-cyan-500' },
+                      { type: 'brochure', title: 'بروشورات', icon: BookOpen, color: 'from-green-500 to-emerald-500' },
+                      { type: 'awareness', title: 'بطاقات توعوية', icon: Heart, color: 'from-pink-500 to-rose-500' },
+                      { type: 'job_description', title: 'أوصاف وظيفية', icon: Briefcase, color: 'from-orange-500 to-amber-500' },
+                    ].map((category, catIdx) => (
+                      <div key={category.type}>
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${category.color} flex items-center justify-center shadow-lg`}>
+                            <category.icon className="w-5 h-5 text-white" />
+                          </div>
+                          <h4 className="font-bold text-white">{category.title}</h4>
+                          <div className="flex-1 h-px bg-gradient-to-r from-white/20 to-transparent"></div>
                         </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* بطاقات توعوية */}
-                <div>
-                  <h4 className="font-bold text-sm text-gray-700 mb-2">🩺 بطاقات توعوية</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {templates.filter(t => t.designType === 'awareness').map(template => (
-                      <button
-                        key={template.id}
-                        onClick={() => applyTemplate(template)}
-                        className="p-4 border-2 rounded-xl hover:border-purple-400 hover:shadow-lg transition-all text-center group bg-white"
-                      >
-                        <div className="text-3xl mb-2">{template.icon}</div>
-                        <div className="font-semibold text-sm text-gray-900 group-hover:text-purple-700">
-                          {template.name}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                          {templates.filter(t => t.designType === category.type).map((template, idx) => (
+                            <motion.button
+                              key={template.id}
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: catIdx * 0.1 + idx * 0.05 }}
+                              onClick={() => applyTemplate(template)}
+                              className="group relative p-5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-white/30 hover:bg-white/10 transition-all duration-300 text-center overflow-hidden"
+                            >
+                              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                              <div className="relative">
+                                <div className="text-4xl mb-3 transform group-hover:scale-110 transition-transform duration-300">{template.icon}</div>
+                                <div className="font-semibold text-white/90 group-hover:text-white text-sm">
+                                  {template.name}
+                                </div>
+                                {template.needsEmployees && (
+                                  <div className="mt-2 flex justify-center">
+                                    <span className="text-xs px-2 py-1 bg-blue-500/20 text-blue-300 rounded-full flex items-center gap-1">
+                                      <Users className="w-3 h-3" /> يحتاج موظفين
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            </motion.button>
+                          ))}
                         </div>
-                      </button>
+                      </div>
                     ))}
-                  </div>
-                </div>
 
-                {/* أوصاف وظيفية */}
-                <div>
-                  <h4 className="font-bold text-sm text-gray-700 mb-2">💼 أوصاف وظيفية</h4>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    {templates.filter(t => t.designType === 'job_description').map(template => (
-                      <button
-                        key={template.id}
-                        onClick={() => applyTemplate(template)}
-                        className="p-4 border-2 rounded-xl hover:border-purple-400 hover:shadow-lg transition-all text-center group bg-white"
-                      >
-                        <div className="text-3xl mb-2">{template.icon}</div>
-                        <div className="font-semibold text-sm text-gray-900 group-hover:text-purple-700">
-                          {template.name}
-                        </div>
-                      </button>
-                    ))}
+                    <div className="p-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl border border-purple-500/30">
+                      <p className="text-purple-200 flex items-center gap-2 text-sm">
+                        <Zap className="w-4 h-4 text-yellow-400" />
+                        اختر قالب لملء البيانات تلقائياً - يمكنك التعديل على كل شيء لاحقاً
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </div>
-
-              <div className="mt-4 p-3 bg-white rounded-lg border border-purple-200">
-                <p className="text-sm text-gray-600 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-purple-500" />
-                  اختر قالب لملء البيانات تلقائياً - يمكنك التعديل على كل شيء لاحقاً
-                </p>
-              </div>
-            </CardContent>
-          )}
-        </Card>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* لوحة الإدخال */}
