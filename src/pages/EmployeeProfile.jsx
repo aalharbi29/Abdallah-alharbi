@@ -749,8 +749,8 @@ export default function EmployeeProfile() {
                 </h3>
               </div>
               <div className="p-6 space-y-4">
-                <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
-                  <Label htmlFor="is_externally_assigned" className="font-semibold">
+                <div className="flex items-center justify-between p-4 bg-amber-500/20 rounded-xl border border-amber-500/30">
+                  <Label htmlFor="is_externally_assigned" className="font-semibold text-white">
                     مكلف خارج المنطقة؟
                   </Label>
                   <Switch
