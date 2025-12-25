@@ -1534,89 +1534,125 @@ ${JSON.stringify(videoScript, null, 2)}
             )}
           </motion.div>
 
-          {/* لوحة المعاينة */}
-          <div className="space-y-6">
-            <Card className="border-2 border-purple-200">
-              <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50">
-                <CardTitle className="flex items-center justify-between">
-                  <span className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-purple-600" />
-                    معاينة التصميم
-                  </span>
-                  {generatedDesign && (
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" onClick={handlePrint}>
-                        <Printer className="w-4 h-4 ml-2" />
-                        طباعة
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={handleDownload}>
-                        <Download className="w-4 h-4 ml-2" />
-                        تحميل
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={generateDesign}>
-                        <RefreshCw className="w-4 h-4 ml-2" />
-                        إعادة التصميم
-                      </Button>
-                    </div>
-                  )}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
+          {/* لوحة المعاينة - محسّنة */}
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5 }}
+            className="space-y-6"
+          >
+            <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 overflow-hidden shadow-2xl sticky top-6">
+              <div className="p-5 border-b border-white/10 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
+                    <Eye className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-white">معاينة التصميم</h3>
+                    <p className="text-purple-200/70 text-sm">النتيجة النهائية</p>
+                  </div>
+                </div>
+                {generatedDesign && (
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={handlePrint}
+                      className="border-white/20 text-white hover:bg-white/10 rounded-xl"
+                    >
+                      <Printer className="w-4 h-4 ml-1" />
+                      طباعة
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={handleDownload}
+                      className="border-white/20 text-white hover:bg-white/10 rounded-xl"
+                    >
+                      <Download className="w-4 h-4 ml-1" />
+                      تحميل
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={generateDesign}
+                      className="border-white/20 text-white hover:bg-white/10 rounded-xl"
+                    >
+                      <RefreshCw className="w-4 h-4" />
+                    </Button>
+                  </div>
+                )}
+              </div>
+              
+              <div className="p-6">
                 {!generatedDesign ? (
-                  <div className="text-center py-20 text-gray-400">
-                    <Wand2 className="w-16 h-16 mx-auto mb-4 opacity-30" />
-                    <p className="text-lg">املأ البيانات واختر الموظفين</p>
-                    <p className="text-sm">ثم اضغط على "توليد التصميم" لرؤية الإعلان</p>
+                  <div className="text-center py-20">
+                    <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-white/5 flex items-center justify-center">
+                      <Wand2 className="w-12 h-12 text-white/30" />
+                    </div>
+                    <p className="text-xl text-white/60 mb-2">التصميم سيظهر هنا</p>
+                    <p className="text-white/40">املأ البيانات واضغط على زر الإنشاء</p>
                   </div>
                 ) : (
-                  <div className="border-2 border-dashed border-purple-200 rounded-lg overflow-hidden">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="rounded-2xl overflow-hidden border border-white/20 shadow-2xl"
+                  >
                     <iframe
                       srcDoc={generatedDesign}
                       className="w-full h-[600px] bg-white"
                       title="معاينة التصميم"
                     />
-                  </div>
+                  </motion.div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* الموظفين المحددين */}
-            {selectedEmployees.length > 0 && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-green-600" />
-                    الموظفين المحددين ({selectedEmployees.length})
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2 max-h-64 overflow-y-auto">
+            <AnimatePresence>
+              {selectedEmployees.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 overflow-hidden"
+                >
+                  <div className="p-5 border-b border-white/10 flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-lg">
+                      <Users className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-white">المحددين ({selectedEmployees.length})</h3>
+                    </div>
+                  </div>
+                  <div className="p-4 max-h-48 overflow-y-auto space-y-2">
                     {selectedEmployees.map((emp, index) => (
-                      <div key={emp.id} className="flex items-center justify-between p-2 bg-green-50 rounded-lg">
-                        <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
+                      <div key={emp.id} className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-8 bg-gradient-to-br from-green-500 to-emerald-500 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
                             {index + 1}
                           </div>
                           <div>
-                            <div className="font-semibold text-sm">{emp.full_name_arabic}</div>
-                            <div className="text-xs text-gray-600">{emp.position}</div>
+                            <div className="font-semibold text-white text-sm">{emp.full_name_arabic}</div>
+                            <div className="text-xs text-white/50">{emp.position}</div>
                           </div>
                         </div>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => toggleEmployee(emp)}
-                          className="text-red-600 hover:bg-red-50"
+                          className="text-red-400 hover:bg-red-500/20 rounded-full w-8 h-8 p-0"
                         >
-                          ✕
+                          <X className="w-4 h-4" />
                         </Button>
                       </div>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.div>
         </div>
 
         {/* مكتبة الصور */}
