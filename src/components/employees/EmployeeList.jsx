@@ -342,9 +342,10 @@ export default function EmployeeList({
                     )}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
         );
       })}
     </div>
