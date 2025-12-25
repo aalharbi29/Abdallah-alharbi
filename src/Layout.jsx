@@ -419,11 +419,26 @@ function LayoutContent({ children, currentPageName }) {
           backdrop-filter: blur(10px);
           background: rgba(0, 0, 0, 0.5);
         }
-        
+
         .bottom-nav {
           background: rgba(255, 255, 255, 0.95);
           backdrop-filter: blur(20px);
           border-top: 1px solid #e5e7eb;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+          width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 2px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.2);
+          border-radius: 2px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.3);
         }
 
         .touch-target {
