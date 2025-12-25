@@ -3,15 +3,15 @@ import { Employee } from "@/entities/Employee";
 import { HealthCenter } from "@/entities/HealthCenter";
 import { Leave } from "@/entities/Leave";
 import { Assignment } from "@/entities/Assignment";
-import { Notification } from "@/entities/Notification"; // Added import
-import { Users, Building2, UserX, Briefcase, AlertTriangle, RefreshCw } from "lucide-react";
+import { Notification } from "@/entities/Notification";
+import { Users, Building2, UserX, Briefcase, AlertTriangle, RefreshCw, TrendingUp, Calendar, Activity, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { motion } from "framer-motion";
 import StatsCard from "../components/dashboard/StatsCard";
 import CurrentLeaves from "../components/dashboard/CurrentLeaves";
 import CurrentAssignments from "../components/dashboard/CurrentAssignments";
 import GoalsWidget from "../components/dashboard/GoalsWidget";
-// REMOVED: import NotesWidget from "../components/dashboard/NotesWidget";
 import MonthlyStatistics from "../components/dashboard/MonthlyStatistics";
 
 export default function Dashboard() {
@@ -146,45 +146,148 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="bg-gradient-to-br from-gray-50 via-white to-green-50/30 min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-6 md:mb-8 animate-fade-in">
-          <h1 className="text-2xl md:text-4xl font-display text-gray-900 mb-2">لوحة التحكم</h1>
-          <p className="text-gray-600 text-base md:text-lg font-medium">نظرة عامة شاملة على النظام والمهام</p>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 relative overflow-hidden">
+      {/* خلفية متحركة احترافية */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{animationDelay: '2s'}}></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-green-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse" style={{animationDelay: '4s'}}></div>
+      </div>
+
+      <div className="relative z-10 max-w-7xl mx-auto p-4 md:p-6">
+        {/* Header احترافي */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8 md:mb-10"
+        >
+          <div className="flex items-center gap-4 mb-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-2xl blur-lg opacity-50"></div>
+              <div className="relative w-14 h-14 md:w-16 md:h-16 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl flex items-center justify-center shadow-2xl">
+                <Activity className="w-7 h-7 md:w-8 md:h-8 text-white" />
+              </div>
+            </div>
+            <div>
+              <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-200 to-cyan-200 tracking-tight">
+                لوحة التحكم
+              </h1>
+              <p className="text-blue-200/70 text-sm md:text-lg font-medium mt-1">
+                نظرة شاملة على النظام والمهام اليومية
+              </p>
+            </div>
+          </div>
+          
+          {/* شريط معلومات سريع */}
+          <div className="flex flex-wrap gap-3 mt-6">
+            {[
+              { icon: Calendar, label: new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }), color: 'from-blue-500 to-cyan-500' },
+            ].map((item, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1 + idx * 0.1 }}
+                className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-full border border-white/20"
+              >
+                <div className={`w-6 h-6 rounded-full bg-gradient-to-br ${item.color} flex items-center justify-center`}>
+                  <item.icon className="w-3 h-3 text-white" />
+                </div>
+                <span className="text-white/80 text-sm font-medium">{item.label}</span>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
 
         {endedAssignmentsAlert.length > 0 && (
-          <Alert variant="destructive" className="mb-4">
-            <AlertTriangle className="h-4 w-4" />
-            <AlertDescription>
-              <p className="font-bold mb-2">تنبيهات هامة:</p>
-              <ul className="list-disc pr-4 space-y-1">
-                {endedAssignmentsAlert.map((alert, index) => (
-                  <li key={index}>{alert}</li>
-                ))}
-              </ul>
-            </AlertDescription>
-          </Alert>
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <Alert variant="destructive" className="mb-6 bg-red-500/20 border-red-500/50 backdrop-blur-md">
+              <AlertTriangle className="h-5 w-5 text-red-400" />
+              <AlertDescription className="text-red-200">
+                <p className="font-bold mb-2 text-red-100">تنبيهات هامة:</p>
+                <ul className="list-disc pr-4 space-y-1">
+                  {endedAssignmentsAlert.map((alert, index) => (
+                    <li key={index}>{alert}</li>
+                  ))}
+                </ul>
+              </AlertDescription>
+            </Alert>
+          </motion.div>
         )}
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8 animate-slide-up">
-          <StatsCard title="الموظفين" value={stats.totalEmployees} icon={Users} color="blue" isMobile={true} />
-          <StatsCard title="المراكز" value={stats.totalDepartments} icon={Building2} color="green" isMobile={true} />
-          <StatsCard title="مجازون" value={stats.onLeaveEmployees} icon={UserX} color="orange" isMobile={true} />
-          <StatsCard title="مكلفون" value={stats.onAssignmentEmployees} icon={Briefcase} color="purple" isMobile={true} />
+        {/* بطاقات الإحصائيات المحسّنة */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
+          {[
+            { title: "إجمالي الموظفين", value: stats.totalEmployees, icon: Users, gradient: "from-blue-500 to-blue-600", bgGlow: "blue" },
+            { title: "المراكز الصحية", value: stats.totalDepartments, icon: Building2, gradient: "from-emerald-500 to-green-600", bgGlow: "green" },
+            { title: "في إجازة", value: stats.onLeaveEmployees, icon: UserX, gradient: "from-amber-500 to-orange-600", bgGlow: "orange" },
+            { title: "مكلفون حالياً", value: stats.onAssignmentEmployees, icon: Briefcase, gradient: "from-purple-500 to-violet-600", bgGlow: "purple" },
+          ].map((stat, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 + idx * 0.1 }}
+              whileHover={{ scale: 1.02, y: -5 }}
+              className="relative group"
+            >
+              <div className={`absolute inset-0 bg-${stat.bgGlow}-500/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity`}></div>
+              <div className="relative bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-4 md:p-6 overflow-hidden">
+                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-white/5 to-transparent rounded-bl-full"></div>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="text-white/60 text-xs md:text-sm font-medium mb-1">{stat.title}</p>
+                    <p className="text-2xl md:text-4xl font-black text-white">
+                      {typeof stat.value === 'number' ? stat.value.toLocaleString('ar-SA') : stat.value || 0}
+                    </p>
+                  </div>
+                  <div className={`w-10 h-10 md:w-14 md:h-14 bg-gradient-to-br ${stat.gradient} rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg`}>
+                    <stat.icon className="w-5 h-5 md:w-7 md:h-7 text-white" />
+                  </div>
+                </div>
+                <div className="mt-3 flex items-center gap-2">
+                  <TrendingUp className="w-3 h-3 text-green-400" />
+                  <span className="text-xs text-green-400 font-medium">نشط</span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
 
-        <div className="grid lg:grid-cols-5 gap-4 md:gap-6">
-            <div className="lg:col-span-3 grid grid-cols-1 gap-4 md:gap-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-                    <CurrentLeaves leaves={employeesOnLeave || []} />
-                    <CurrentAssignments assignments={currentAssignments || []} />
-                </div>
-                <GoalsWidget />
+        {/* المحتوى الرئيسي */}
+        <div className="grid lg:grid-cols-5 gap-6">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            className="lg:col-span-3 space-y-6"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden">
+                <CurrentLeaves leaves={employeesOnLeave || []} />
+              </div>
+              <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden">
+                <CurrentAssignments assignments={currentAssignments || []} />
+              </div>
             </div>
-            <div className="lg:col-span-2">
-                 <MonthlyStatistics />
+            <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden">
+              <GoalsWidget />
             </div>
+          </motion.div>
+          
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.5 }}
+            className="lg:col-span-2"
+          >
+            <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden h-full">
+              <MonthlyStatistics />
+            </div>
+          </motion.div>
         </div>
       </div>
     </div>
