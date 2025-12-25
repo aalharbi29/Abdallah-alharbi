@@ -112,8 +112,8 @@ export default function EmployeeList({
 
   return (
     <div className="space-y-4">
-      {employees.map((employee) => {
-        if (!employee || !employee.id) return null; // Ensure employee and ID exist
+      {employees.map((employee, idx) => {
+        if (!employee || !employee.id) return null;
 
         const isPinned = pinnedEmployees.has(employee.id);
         const isSelected = selectedEmployees.has(employee.id);
@@ -121,14 +121,19 @@ export default function EmployeeList({
         const employeeRoles = getEmployeeRoles(employee);
 
         return (
-          <Card
+          <motion.div
             key={employee.id}
-            className={`hover:shadow-lg transition-all ${
-              isPinned ? 'border-yellow-400 border-2 bg-yellow-50' : ''
-            } ${
-              isSelected ? 'ring-2 ring-blue-400' : ''
-            }`}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.03 }}
           >
+            <Card
+              className={`bg-white/10 backdrop-blur-xl border border-white/20 hover:border-white/40 hover:bg-white/15 transition-all shadow-lg ${
+                isPinned ? 'border-amber-400/50 bg-amber-500/10' : ''
+              } ${
+                isSelected ? 'ring-2 ring-indigo-400/50' : ''
+              }`}
+            >
             <CardContent className="p-2 md:p-3">
               <div className="flex items-start gap-2 md:gap-3">
                 {/* Checkbox للتحديد */}
