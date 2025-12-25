@@ -219,100 +219,114 @@ export default function EmployeeList({
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-1 mb-1.5">
+                  <div className="flex flex-wrap gap-1.5 mb-2">
                     {employee.is_externally_assigned && (
-                      <Badge className="bg-orange-100 text-orange-700 text-[10px] py-0 px-2 h-5 font-bold">
-                        مكلف خارجي {employee.external_assignment_center && `- ${employee.external_assignment_center}`}
+                      <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] py-1 px-2 font-bold shadow-lg">
+                        🌍 مكلف خارجي {employee.external_assignment_center && `- ${employee.external_assignment_center}`}
                       </Badge>
                     )}
 
                     {activeHolidayAssignments.length > 0 && (
-                      <Badge className="bg-purple-100 text-purple-700 text-[10px] py-0 px-2 h-5 font-bold">
-                        تكليف {activeHolidayAssignments[0].holiday_name}
+                      <Badge className="bg-gradient-to-r from-purple-500 to-violet-500 text-white text-[10px] py-1 px-2 font-bold shadow-lg">
+                        🎯 {activeHolidayAssignments[0].holiday_name}
                       </Badge>
                     )}
 
                     {employeeRoles.length > 0 && (
                       employeeRoles.slice(0, 2).map((role, idx) => (
-                        <Badge key={idx} className="bg-blue-100 text-blue-700 text-[10px] py-0 px-2 h-5 font-bold">
+                        <Badge key={idx} className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-[10px] py-1 px-2 font-bold shadow-md">
                           {role}
                         </Badge>
                       ))
                     )}
                     {employeeRoles.length > 2 && (
-                        <Badge className="bg-blue-50 text-blue-700 text-[10px] py-0 px-2 h-5 font-bold">
-                          +{employeeRoles.length - 2}
-                        </Badge>
-                      )}
+                      <Badge className="bg-white/20 text-white text-[10px] py-1 px-2 font-bold border border-white/30">
+                        +{employeeRoles.length - 2}
+                      </Badge>
+                    )}
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-1.5 text-[11px] font-bold text-gray-700 mb-2">
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-[11px] mb-3 p-3 bg-white/5 rounded-xl">
                     {employee.رقم_الموظف && (
-                      <div>
-                        <span className="font-extrabold text-gray-500">رقم الموظف:</span> {employee.رقم_الموظف}
+                      <div className="text-white/80">
+                        <span className="text-white/50">رقم:</span> <span className="font-bold">{employee.رقم_الموظف}</span>
                       </div>
                     )}
                     {employee.phone && (
-                      <div>
-                        <span className="font-extrabold text-gray-500">الجوال:</span> {employee.phone}
+                      <div className="text-white/80">
+                        <span className="text-white/50">جوال:</span> <span className="font-bold">{employee.phone}</span>
                       </div>
                     )}
                     {employee.رقم_الهوية && (
-                      <div>
-                        <span className="font-extrabold text-gray-500">السجل المدني:</span> {employee.رقم_الهوية}
+                      <div className="text-white/80">
+                        <span className="text-white/50">هوية:</span> <span className="font-bold">{employee.رقم_الهوية}</span>
                       </div>
                     )}
                     {employee.birth_date && (
-                      <div>
-                        <span className="font-extrabold text-gray-500">ت.الميلاد:</span> {employee.birth_date}
+                      <div className="text-white/80">
+                        <span className="text-white/50">ميلاد:</span> <span className="font-bold">{employee.birth_date}</span>
                       </div>
                     )}
                     {employee.hire_date && (
-                      <div>
-                        <span className="font-extrabold text-gray-500">ت.التعيين:</span> {employee.hire_date}
-                      </div>
-                    )}
-                    {(employee.rank || employee.sequence) && (
-                      <div>
-                        <span className="font-extrabold text-gray-500">المرتبة/التسلسل:</span> {employee.rank}{employee.sequence && `/${employee.sequence}`}
-                      </div>
-                    )}
-                    {(employee.level || employee.grade) && (
-                      <div>
-                        <span className="font-extrabold text-gray-500">المستوى/الدرجة:</span> {employee.level}{employee.grade && `/${employee.grade}`}
+                      <div className="text-white/80">
+                        <span className="text-white/50">تعيين:</span> <span className="font-bold">{employee.hire_date}</span>
                       </div>
                     )}
                   </div>
 
-                  <div className="flex flex-wrap gap-1">
+                  <div className="flex flex-wrap gap-1.5">
                     <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)}>
-                      <Button variant="outline" size="sm" className="h-7 text-[11px] px-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="h-8 text-xs px-3 bg-indigo-500/20 border-indigo-500/30 text-indigo-300 hover:bg-indigo-500/30 rounded-lg"
+                      >
                         <Eye className="w-3 h-3 ml-1" />
                         عرض
                       </Button>
                     </Link>
                     {onEdit && (
-                      <Button variant="outline" size="sm" onClick={() => onEdit(employee)} className="h-7 text-[11px] px-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => onEdit(employee)} 
+                        className="h-8 text-xs px-3 bg-blue-500/20 border-blue-500/30 text-blue-300 hover:bg-blue-500/30 rounded-lg"
+                      >
                         <Edit className="w-3 h-3 ml-1" />
                         تعديل
                       </Button>
                     )}
                     {onAddLeave && (
-                      <Button variant="outline" size="sm" onClick={() => onAddLeave(employee)} className="h-7 text-[11px] px-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => onAddLeave(employee)} 
+                        className="h-8 text-xs px-3 bg-amber-500/20 border-amber-500/30 text-amber-300 hover:bg-amber-500/30 rounded-lg"
+                      >
                         <Calendar className="w-3 h-3 ml-1" />
                         إجازة
                       </Button>
                     )}
                     {onAddAssignment && (
-                      <Button variant="outline" size="sm" onClick={() => onAddAssignment(employee)} className="h-7 text-[11px] px-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => onAddAssignment(employee)} 
+                        className="h-8 text-xs px-3 bg-purple-500/20 border-purple-500/30 text-purple-300 hover:bg-purple-500/30 rounded-lg"
+                      >
                         <Briefcase className="w-3 h-3 ml-1" />
                         تكليف
                       </Button>
                     )}
                     {onAddHolidayAssignment && (
-                      <Button variant="outline" size="sm" onClick={() => onAddHolidayAssignment(employee)} className="h-7 text-[11px] px-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => onAddHolidayAssignment(employee)} 
+                        className="h-8 text-xs px-3 bg-pink-500/20 border-pink-500/30 text-pink-300 hover:bg-pink-500/30 rounded-lg"
+                      >
                         <Award className="w-3 h-3 ml-1" />
-                        تكليف إجازة
+                        إجازة
                       </Button>
                     )}
                     {onDelete && (
@@ -320,7 +334,7 @@ export default function EmployeeList({
                         variant="outline"
                         size="sm"
                         onClick={() => onDelete(employee)}
-                        className="text-red-600 hover:bg-red-50 h-7 text-[11px] px-2"
+                        className="h-8 text-xs px-3 bg-red-500/20 border-red-500/30 text-red-300 hover:bg-red-500/30 rounded-lg"
                       >
                         <Trash2 className="w-3 h-3 ml-1" />
                         حذف
@@ -331,6 +345,7 @@ export default function EmployeeList({
               </div>
             </CardContent>
           </Card>
+          </motion.div>
         );
       })}
     </div>
