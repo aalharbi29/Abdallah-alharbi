@@ -10,7 +10,10 @@ import { Badge } from '@/components/ui/badge';
 import {
   Wand2, Download, Printer, RefreshCw, Users, Calendar,
   MapPin, Info, Sparkles, Image as ImageIcon, Loader2,
-  Upload, Library, Edit2, Maximize2, X
+  Upload, Library, Edit2, Maximize2, X, Palette, FileText,
+  Heart, Briefcase, GraduationCap, Megaphone, BookOpen, Shield,
+  Stethoscope, CheckCircle2, Clock, Zap, Layers, Eye, Play,
+  Film, PenTool, Search, UserPlus, Settings, ChevronDown
 } from 'lucide-react';
 import ImageLibrary from '../components/announcement/ImageLibrary';
 import ImageEditor from '../components/announcement/ImageEditor';
@@ -27,6 +30,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function AIAnnouncementDesigner() {
   const [employees, setEmployees] = useState([]);
