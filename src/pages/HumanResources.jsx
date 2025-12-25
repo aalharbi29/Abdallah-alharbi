@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { motion, AnimatePresence } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, Printer, AlertTriangle, RefreshCw, Loader2, Users, UserPlus, Calendar, FileText, Filter, Award, CheckSquare, Square, Pin, X, WifiOff, MessageCircle, User } from "lucide-react";
+import { Plus, Search, Printer, AlertTriangle, RefreshCw, Loader2, Users, UserPlus, Calendar, FileText, Filter, Award, CheckSquare, Square, Pin, X, WifiOff, MessageCircle, User, Sparkles, Building2, TrendingUp } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
