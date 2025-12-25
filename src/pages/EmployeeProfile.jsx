@@ -650,13 +650,21 @@ export default function EmployeeProfile() {
             </div>
           </motion.div>
 
-          {/* محتوى ملف الموظف (Column 2 - Tabs for Leaves and Assignments) */}
-          <div className="lg:col-span-1 space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>سجل الإجازات والتكاليف</CardTitle>
-              </CardHeader>
-              <CardContent>
+          {/* محتوى ملف الموظف */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="lg:col-span-1 space-y-6"
+          >
+            <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden shadow-2xl">
+              <div className="p-5 border-b border-white/10">
+                <h3 className="font-bold text-white flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-indigo-400" />
+                  السجلات والمستندات
+                </h3>
+              </div>
+              <div className="p-6">
                 <Tabs defaultValue="documents" className="w-full">
                   <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="documents" className="flex items-center gap-2">
