@@ -666,18 +666,30 @@ export default function EmployeeProfile() {
               </div>
               <div className="p-6">
                 <Tabs defaultValue="documents" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="documents" className="flex items-center gap-2">
+                  <TabsList className="grid w-full grid-cols-3 bg-white/5 p-1 rounded-xl border border-white/10">
+                    <TabsTrigger 
+                      value="documents" 
+                      className="flex items-center gap-2 data-[state=active]:bg-indigo-500 data-[state=active]:text-white rounded-lg transition-all"
+                    >
                       <FileText className="w-4 h-4" />
-                      المستندات ({documents.length})
+                      <span className="hidden md:inline">المستندات</span>
+                      <Badge variant="secondary" className="text-xs bg-white/20">{documents.length}</Badge>
                     </TabsTrigger>
-                    <TabsTrigger value="leaves" className="flex items-center gap-2">
+                    <TabsTrigger 
+                      value="leaves" 
+                      className="flex items-center gap-2 data-[state=active]:bg-amber-500 data-[state=active]:text-white rounded-lg transition-all"
+                    >
                       <Calendar className="w-4 h-4" />
-                      الإجازات ({leaves.length})
+                      <span className="hidden md:inline">الإجازات</span>
+                      <Badge variant="secondary" className="text-xs bg-white/20">{leaves.length}</Badge>
                     </TabsTrigger>
-                    <TabsTrigger value="assignments" className="flex items-center gap-2">
+                    <TabsTrigger 
+                      value="assignments" 
+                      className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white rounded-lg transition-all"
+                    >
                       <Briefcase className="w-4 h-4" />
-                      التكاليف ({assignments.length})
+                      <span className="hidden md:inline">التكاليف</span>
+                      <Badge variant="secondary" className="text-xs bg-white/20">{assignments.length}</Badge>
                     </TabsTrigger>
                   </TabsList>
 
