@@ -455,17 +455,21 @@ export default function HumanResources() {
           </div>
         </motion.div>
 
-        {/* Search and Actions */}
-        <Card className="mb-6 no-print shadow-medium border-0 bg-white">
-          <CardContent className="p-5 md:p-6">
+        {/* Search and Actions - محسّن */}
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 p-5 md:p-6 mb-6 no-print shadow-2xl">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1 relative">
-                <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/40 w-5 h-5" />
                 <Input
                   placeholder="ابحث بالاسم، رقم الهوية، رقم الموظف، الجوال..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pr-12 h-12 text-base border-gray-200 focus:border-green-500 focus:ring-green-500"
+                  className="pr-12 h-12 text-base bg-white/10 border-white/20 text-white placeholder:text-white/40 focus:border-indigo-400 focus:ring-indigo-400 rounded-xl"
                 />
               </div>
               
