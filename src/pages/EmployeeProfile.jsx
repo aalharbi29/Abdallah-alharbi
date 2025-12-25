@@ -697,14 +697,18 @@ export default function EmployeeProfile() {
                     <div className="mb-4 flex justify-end">
                       <Button 
                         onClick={() => setShowUpload(true)}
-                        className="bg-blue-600 hover:bg-blue-700"
+                        className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 shadow-lg rounded-xl"
                         size="sm"
                       >
                         <Plus className="w-4 h-4 ml-2" />
-                        رفع مستند جديد
+                        رفع مستند
                       </Button>
                     </div>
-                    <Suspense fallback={<div>جاري تحميل المستندات...</div>}>
+                    <Suspense fallback={
+                      <div className="flex items-center justify-center py-8">
+                        <RefreshCw className="w-6 h-6 animate-spin text-white/40" />
+                      </div>
+                    }>
                       <EmployeeDocumentList 
                           documents={documents} 
                           onDocumentDeleted={handleDocumentDeleted}
