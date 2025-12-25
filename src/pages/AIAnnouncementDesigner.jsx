@@ -1494,45 +1494,45 @@ ${JSON.stringify(videoScript, null, 2)}
               </AnimatePresence>
             </div>
 
-            {/* زر التصميم */}
-            <Button
-              onClick={generateDesign}
-              disabled={isGenerating}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white py-6 text-lg shadow-lg hover:shadow-xl transition-all"
+            {/* زر التصميم الرئيسي - محسّن */}
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              {isGenerating ? (
-                <>
-                  <Loader2 className="w-5 h-5 ml-2 animate-spin" />
-                  جاري التصميم...
-                </>
-              ) : (
-                <>
-                  <Wand2 className="w-5 h-5 ml-2" />
-                  توليد التصميم بالذكاء الاصطناعي
-                </>
-              )}
-            </Button>
+              <Button
+                onClick={generateDesign}
+                disabled={isGenerating}
+                className="w-full h-16 bg-gradient-to-r from-purple-600 via-pink-600 to-orange-500 hover:from-purple-700 hover:via-pink-700 hover:to-orange-600 text-white text-xl font-bold rounded-2xl shadow-2xl shadow-purple-500/30 transition-all relative overflow-hidden group"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="w-6 h-6 ml-3 animate-spin" />
+                    جاري إنشاء التصميم...
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="w-6 h-6 ml-3" />
+                    إنشاء التصميم بالذكاء الاصطناعي
+                    <Sparkles className="w-5 h-5 mr-3 animate-pulse" />
+                  </>
+                )}
+              </Button>
+            </motion.div>
 
             {includeEmployees && selectedEmployees.length === 0 && (
-              <div className="p-4 bg-yellow-50 border-2 border-yellow-300 rounded-xl">
-                <p className="text-sm text-yellow-800 text-center">
-                  ⚠️ لم يتم اختيار أي موظفين - قم بإلغاء تفعيل قسم الموظفين أو اختر موظفين
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-4 bg-amber-500/20 border border-amber-500/50 rounded-2xl backdrop-blur-sm"
+              >
+                <p className="text-amber-200 text-center flex items-center justify-center gap-2">
+                  <Info className="w-4 h-4" />
+                  لم يتم اختيار أي موظفين - قم بإلغاء تفعيل قسم الموظفين أو اختر موظفين
                 </p>
-              </div>
+              </motion.div>
             )}
-
-            {generatedImage && (
-              <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl">
-                <div className="flex items-center gap-2 text-green-700">
-                  <Badge className="bg-green-100 text-green-700">✓</Badge>
-                  <span className="font-semibold">صورة جاهزة للدمج</span>
-                </div>
-                <p className="text-sm text-gray-600 mt-1">
-                  سيتم تضمين الصورة المولدة في التصميم النهائي
-                </p>
-              </div>
-            )}
-          </div>
+          </motion.div>
 
           {/* لوحة المعاينة */}
           <div className="space-y-6">
