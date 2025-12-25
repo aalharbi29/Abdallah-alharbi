@@ -533,49 +533,50 @@ export default function EmployeeProfile() {
               </div>
             </div>
             <div className="p-6">
-            {/* الأدوار الوظيفية المتكاملة */}
-            {employeeRoles.length > 0 && (
-              <div className="mb-6 p-4 bg-purple-50 border border-purple-200 rounded-lg">
-                <h3 className="text-sm font-semibold text-purple-900 mb-3 flex items-center gap-2">
-                  <Shield className="w-4 h-4" />
-                  الأدوار الوظيفية والقيادية
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {employeeRoles.map((roleObj, index) => {
-                    const isAutoRole = roleObj.source === 'auto';
-                    const isManagerRole = roleObj.roleType === 'manager';
-                    
-                    return (
-                      <div key={index} className="flex items-center gap-2">
-                        <Badge
-                          className={`${
-                            isManagerRole
-                              ? 'bg-purple-600 text-white'
-                              : roleObj.roleType === 'deputy'
-                              ? 'bg-blue-600 text-white'
-                              : roleObj.roleType === 'supervisor'
-                              ? 'bg-green-600 text-white'
-                              : 'bg-gray-600 text-white'
-                          }`}
-                        >
-                          {roleObj.role}
-                          {roleObj.centerName && (
-                            <span className="mr-1">- {roleObj.centerName}</span>
+              {/* الأدوار الوظيفية المتكاملة */}
+              {employeeRoles.length > 0 && (
+                <div className="mb-6 p-4 bg-purple-500/20 border border-purple-500/30 rounded-xl backdrop-blur-sm">
+                  <h3 className="text-sm font-semibold text-purple-200 mb-3 flex items-center gap-2">
+                    <Shield className="w-4 h-4" />
+                    الأدوار الوظيفية والقيادية
+                  </h3>
+                  <div className="flex flex-wrap gap-2">
+                    {employeeRoles.map((roleObj, index) => {
+                      const isAutoRole = roleObj.source === 'auto';
+                      const isManagerRole = roleObj.roleType === 'manager';
+                      
+                      return (
+                        <div key={index} className="flex items-center gap-2">
+                          <Badge
+                            className={`${
+                              isManagerRole
+                                ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white shadow-md'
+                                : roleObj.roleType === 'deputy'
+                                ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md'
+                                : roleObj.roleType === 'supervisor'
+                                ? 'bg-gradient-to-r from-emerald-600 to-green-600 text-white shadow-md'
+                                : 'bg-gradient-to-r from-gray-600 to-slate-600 text-white shadow-md'
+                            }`}
+                          >
+                            {roleObj.role}
+                            {roleObj.centerName && (
+                              <span className="mr-1">- {roleObj.centerName}</span>
+                            )}
+                          </Badge>
+                          {isAutoRole && (
+                            <span className="text-xs text-white/40">(تلقائي)</span>
                           )}
-                        </Badge>
-                        {isAutoRole && (
-                          <span className="text-xs text-gray-500">(تلقائي من دليل المراكز)</span>
-                        )}
-                      </div>
-                    );
-                  })}
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            <EmployeeFullDetails employee={employee} />
-          </CardContent>
-        </Card>
+              <EmployeeFullDetails employee={employee} />
+            </div>
+          </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* معلومات الموظف الأساسية (Column 1) - This section is now mainly covered by the Employee Full Details Card */}
