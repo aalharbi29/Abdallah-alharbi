@@ -1367,139 +1367,132 @@ ${JSON.stringify(videoScript, null, 2)}
               </div>
             </div>
 
-            {/* تفعيل قسم الموظفين */}
-            <Card className="border-2 border-green-200">
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-green-600" />
-                    إضافة موظفين للتصميم
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="include-employees"
-                      checked={includeEmployees}
-                      onCheckedChange={setIncludeEmployees}
-                    />
-                    <Label htmlFor="include-employees" className="cursor-pointer">
-                      تفعيل
-                    </Label>
+            {/* تفعيل قسم الموظفين - محسّن */}
+            <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 overflow-hidden shadow-2xl">
+              <div 
+                className="p-5 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
+                onClick={() => setIncludeEmployees(!includeEmployees)}
+              >
+                <div className="flex items-center gap-4">
+                  <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg transition-colors ${
+                    includeEmployees 
+                      ? 'bg-gradient-to-br from-green-500 to-emerald-500' 
+                      : 'bg-white/10'
+                  }`}>
+                    <UserPlus className={`w-6 h-6 ${includeEmployees ? 'text-white' : 'text-white/50'}`} />
                   </div>
-                </CardTitle>
-              </CardHeader>
-              {includeEmployees && (
-                <>
-                  <CardHeader className="pt-0">
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <Users className="w-4 h-4 text-green-600" />
-                      البيانات المراد إظهارها
-                    </CardTitle>
-                  </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="field-name"
-                      checked={displayFields.full_name_arabic}
-                      onCheckedChange={() => toggleField('full_name_arabic')}
-                    />
-                    <Label htmlFor="field-name" className="cursor-pointer">الاسم الكامل</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="field-position"
-                      checked={displayFields.position}
-                      onCheckedChange={() => toggleField('position')}
-                    />
-                    <Label htmlFor="field-position" className="cursor-pointer">التخصص</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="field-employee-num"
-                      checked={displayFields.رقم_الموظف}
-                      onCheckedChange={() => toggleField('رقم_الموظف')}
-                    />
-                    <Label htmlFor="field-employee-num" className="cursor-pointer">الرقم الوظيفي</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="field-center"
-                      checked={displayFields.المركز_الصحي}
-                      onCheckedChange={() => toggleField('المركز_الصحي')}
-                    />
-                    <Label htmlFor="field-center" className="cursor-pointer">المركز الصحي</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="field-department"
-                      checked={displayFields.department}
-                      onCheckedChange={() => toggleField('department')}
-                    />
-                    <Label htmlFor="field-department" className="cursor-pointer">القسم</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="field-phone"
-                      checked={displayFields.phone}
-                      onCheckedChange={() => toggleField('phone')}
-                    />
-                    <Label htmlFor="field-phone" className="cursor-pointer">الهاتف</Label>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="field-email"
-                      checked={displayFields.email}
-                      onCheckedChange={() => toggleField('email')}
-                    />
-                    <Label htmlFor="field-email" className="cursor-pointer">البريد الإلكتروني</Label>
+                  <div>
+                    <h3 className="text-xl font-bold text-white">إضافة موظفين</h3>
+                    <p className="text-purple-200/70 text-sm">
+                      {includeEmployees 
+                        ? `تم اختيار ${selectedEmployees.length} موظف` 
+                        : 'اضغط لتفعيل إضافة الموظفين'
+                      }
+                    </p>
                   </div>
                 </div>
-              </CardContent>
+                <div className={`w-14 h-8 rounded-full p-1 transition-colors ${
+                  includeEmployees ? 'bg-green-500' : 'bg-white/20'
+                }`}>
+                  <div className={`w-6 h-6 rounded-full bg-white shadow-md transition-transform ${
+                    includeEmployees ? 'translate-x-6' : 'translate-x-0'
+                  }`}></div>
+                </div>
+              </div>
 
-              {/* اختيار الموظفين */}
-              <CardHeader>
-                <CardTitle className="flex items-center justify-between">
-                  <span className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-purple-600" />
-                    اختيار الموظفين ({selectedEmployees.length})
-                  </span>
-                  <Input
-                    placeholder="بحث..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-48"
-                  />
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="max-h-96 overflow-y-auto space-y-2">
-                  {filteredEmployees.map(emp => (
-                    <div
-                      key={emp.id}
-                      onClick={() => toggleEmployee(emp)}
-                      className={`p-3 border rounded-lg cursor-pointer transition-all ${
-                        selectedEmployees.find(e => e.id === emp.id)
-                          ? 'bg-purple-50 border-purple-300 shadow-md'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-semibold text-gray-900">{emp.full_name_arabic}</div>
-                          <div className="text-sm text-gray-600">{emp.position} - {emp.المركز_الصحي}</div>
+              <AnimatePresence>
+                {includeEmployees && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="p-6 pt-0 space-y-6">
+                      {/* البيانات المراد إظهارها */}
+                      <div>
+                        <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
+                          <Eye className="w-4 h-4 text-green-400" />
+                          البيانات المراد إظهارها
+                        </h4>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                          {[
+                            { id: 'full_name_arabic', label: 'الاسم' },
+                            { id: 'position', label: 'التخصص' },
+                            { id: 'رقم_الموظف', label: 'الرقم الوظيفي' },
+                            { id: 'المركز_الصحي', label: 'المركز' },
+                            { id: 'department', label: 'القسم' },
+                            { id: 'phone', label: 'الهاتف' },
+                            { id: 'email', label: 'البريد' },
+                          ].map((field) => (
+                            <button
+                              key={field.id}
+                              onClick={() => toggleField(field.id)}
+                              className={`p-2 rounded-xl text-sm font-medium transition-all ${
+                                displayFields[field.id]
+                                  ? 'bg-green-500/30 text-green-300 border border-green-500/50'
+                                  : 'bg-white/5 text-white/60 border border-white/10 hover:border-white/30'
+                              }`}
+                            >
+                              {field.label}
+                            </button>
+                          ))}
                         </div>
-                        <Checkbox
-                          checked={!!selectedEmployees.find(e => e.id === emp.id)}
-                          onCheckedChange={() => toggleEmployee(emp)}
-                        />
+                      </div>
+
+                      {/* اختيار الموظفين */}
+                      <div>
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="text-white font-semibold flex items-center gap-2">
+                            <Users className="w-4 h-4 text-purple-400" />
+                            اختيار الموظفين ({selectedEmployees.length})
+                          </h4>
+                          <div className="relative">
+                            <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40" />
+                            <Input
+                              placeholder="بحث..."
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
+                              className="w-40 h-9 pr-9 bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl text-sm"
+                            />
+                          </div>
+                        </div>
+                        <div className="max-h-64 overflow-y-auto space-y-2 custom-scrollbar">
+                          {filteredEmployees.slice(0, 50).map(emp => (
+                            <div
+                              key={emp.id}
+                              onClick={() => toggleEmployee(emp)}
+                              className={`p-3 rounded-xl cursor-pointer transition-all ${
+                                selectedEmployees.find(e => e.id === emp.id)
+                                  ? 'bg-purple-500/30 border border-purple-500/50'
+                                  : 'bg-white/5 border border-white/10 hover:bg-white/10'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <div className="font-semibold text-white">{emp.full_name_arabic}</div>
+                                  <div className="text-sm text-white/60">{emp.position} - {emp.المركز_الصحي}</div>
+                                </div>
+                                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                                  selectedEmployees.find(e => e.id === emp.id)
+                                    ? 'bg-purple-500 border-purple-500'
+                                    : 'border-white/30'
+                                }`}>
+                                  {selectedEmployees.find(e => e.id === emp.id) && (
+                                    <CheckCircle2 className="w-3 h-3 text-white" />
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-                </>
-              )}
-            </Card>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             {/* زر التصميم */}
             <Button
