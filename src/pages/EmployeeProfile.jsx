@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, User, FileText, Calendar, Briefcase, Plus, AlertCircle, RefreshCw, FileClock, Save, MessageCircle, Printer, Edit, Shield, CreditCard } from 'lucide-react';
+import { ArrowRight, User, FileText, Calendar, Briefcase, Plus, AlertCircle, RefreshCw, FileClock, Save, MessageCircle, Printer, Edit, Shield, CreditCard, Sparkles } from 'lucide-react';
 import { createPageUrl } from '@/utils';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
@@ -15,6 +15,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { motion } from "framer-motion";
 
 import SmartDateInput from "../components/ui/smart-date-input";
 import EmployeeFullDetails from "@/components/employee_profile/EmployeeFullDetails";
