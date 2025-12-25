@@ -773,15 +773,15 @@ export default function EmployeeProfile() {
                         </div>
                         
                         <div>
-                            <Label className="mb-2 block text-sm font-medium text-gray-700">سبب التكليف</Label>
+                            <Label className="mb-2 block text-sm font-medium text-white/80">سبب التكليف</Label>
                             <Select
                                 value={externalAssignment.external_assignment_reason}
                                 onValueChange={(value) => handleExternalAssignmentChange('external_assignment_reason', value)}
                             >
-                                <SelectTrigger>
+                                <SelectTrigger className="bg-white/10 border-white/20 text-white rounded-xl">
                                     <SelectValue placeholder="اختر سبب التكليف" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className="bg-slate-900 border-white/20">
                                     <SelectItem value="حتى افتتاح مركز">حتى افتتاح مركز</SelectItem>
                                     <SelectItem value="لتعزيز الكوادر">لتعزيز الكوادر</SelectItem>
                                     <SelectItem value="لسد العجز">لسد العجز</SelectItem>
