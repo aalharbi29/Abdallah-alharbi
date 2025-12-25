@@ -1231,55 +1231,64 @@ ${JSON.stringify(videoScript, null, 2)}
               </CardContent>
             </Card>
 
-            {/* توليد صورة بالذكاء الاصطناعي */}
-            <Card className="border-2 border-pink-200">
-              <CardHeader className="bg-gradient-to-r from-pink-50 to-purple-50">
-                <CardTitle className="flex items-center gap-2">
-                  <ImageIcon className="w-5 h-5 text-pink-600" />
-                  توليد صورة بالذكاء الاصطناعي
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+            {/* توليد صورة بالذكاء الاصطناعي - محسّن */}
+            <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 overflow-hidden shadow-2xl">
+              <div className="p-5 border-b border-white/10 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center shadow-lg">
+                  <ImageIcon className="w-6 h-6 text-white" />
+                </div>
                 <div>
-                  <Label>وصف الصورة المطلوبة</Label>
+                  <h3 className="text-xl font-bold text-white">مولّد الصور الذكي</h3>
+                  <p className="text-purple-200/70 text-sm">أنشئ صور احترافية بالذكاء الاصطناعي</p>
+                </div>
+              </div>
+              
+              <div className="p-6 space-y-5">
+                <div>
+                  <Label className="text-white/90 font-medium mb-2 block">وصف الصورة المطلوبة</Label>
                   <Textarea
                     value={imagePrompt}
                     onChange={(e) => setImagePrompt(e.target.value)}
-                    placeholder="مثال: أطباء يتعاونون في مستشفى حديث، فريق طبي متنوع، بيئة صحية احترافية..."
+                    placeholder="مثال: أطباء يتعاونون في مستشفى حديث، فريق طبي متنوع..."
                     rows={3}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl"
                   />
                 </div>
 
                 <div>
-                  <Label>نمط الصورة</Label>
-                  <Select
-                    value={imageStyle}
-                    onValueChange={setImageStyle}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="realistic">واقعي (تصوير فوتوغرافي)</SelectItem>
-                      <SelectItem value="illustration">رسم توضيحي (Illustration)</SelectItem>
-                      <SelectItem value="minimalist">بسيط (Minimalist)</SelectItem>
-                      <SelectItem value="corporate">مؤسسي احترافي</SelectItem>
-                      <SelectItem value="medical">طبي متخصص</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label className="text-white/90 font-medium mb-2 block">نمط الصورة</Label>
+                  <div className="grid grid-cols-5 gap-2">
+                    {[
+                      { value: 'realistic', label: '📷', title: 'واقعي' },
+                      { value: 'illustration', label: '🎨', title: 'رسم' },
+                      { value: 'minimalist', label: '⬜', title: 'بسيط' },
+                      { value: 'corporate', label: '🏢', title: 'مؤسسي' },
+                      { value: 'medical', label: '🏥', title: 'طبي' },
+                    ].map((style) => (
+                      <button
+                        key={style.value}
+                        onClick={() => setImageStyle(style.value)}
+                        className={`p-3 rounded-xl border-2 transition-all text-center ${
+                          imageStyle === style.value 
+                            ? 'border-pink-500 bg-pink-500/20' 
+                            : 'border-white/20 bg-white/5 hover:border-white/40'
+                        }`}
+                      >
+                        <div className="text-2xl mb-1">{style.label}</div>
+                        <div className="text-xs text-white/70">{style.title}</div>
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-3">
                   <Button
                     onClick={generateImage}
                     disabled={isGeneratingImage}
-                    className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
+                    className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white h-12 rounded-xl shadow-lg"
                   >
                     {isGeneratingImage ? (
-                      <>
-                        <Loader2 className="w-4 h-4 ml-2 animate-spin" />
-                        جاري...
-                      </>
+                      <Loader2 className="w-5 h-5 animate-spin" />
                     ) : (
                       <>
                         <Sparkles className="w-4 h-4 ml-2" />
@@ -1291,36 +1300,34 @@ ${JSON.stringify(videoScript, null, 2)}
                   <Button
                     variant="outline"
                     onClick={() => setShowImageLibrary(true)}
+                    className="border-white/20 text-white hover:bg-white/10 h-12 rounded-xl"
                   >
                     <Library className="w-4 h-4 ml-2" />
                     المكتبة
                   </Button>
+
+                  <label htmlFor="custom-upload" className="cursor-pointer">
+                    <div className="h-12 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 flex items-center justify-center gap-2 text-white transition-colors">
+                      <Upload className="w-4 h-4" />
+                      <span className="text-sm">رفع</span>
+                    </div>
+                  </label>
+                  <input
+                    id="custom-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleUploadCustomImage}
+                    className="hidden"
+                  />
                 </div>
 
-                <label htmlFor="custom-upload">
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    disabled={isGeneratingImage}
-                    asChild
-                  >
-                    <span className="cursor-pointer">
-                      <Upload className="w-4 h-4 ml-2" />
-                      رفع صورة خاصة
-                    </span>
-                  </Button>
-                </label>
-                <input
-                  id="custom-upload"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleUploadCustomImage}
-                  className="hidden"
-                />
-
                 {generatedImage && (
-                  <div className="mt-4 space-y-2">
-                    <div className="border-2 border-pink-200 rounded-lg overflow-hidden">
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="space-y-3"
+                  >
+                    <div className="relative group rounded-2xl overflow-hidden border-2 border-pink-500/50">
                       <img 
                         src={generatedImage} 
                         alt="Generated" 
@@ -1330,56 +1337,35 @@ ${JSON.stringify(videoScript, null, 2)}
                           transform: `rotate(${imageFilters.rotation}deg)`
                         } : {}}
                       />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center p-4">
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="secondary" onClick={handleEditImage} className="rounded-full">
+                            <Edit2 className="w-4 h-4" />
+                          </Button>
+                          <Button size="sm" variant="secondary" onClick={() => {
+                            const link = document.createElement('a');
+                            link.href = generatedImage;
+                            link.download = `image-${Date.now()}.png`;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                          }} className="rounded-full">
+                            <Download className="w-4 h-4" />
+                          </Button>
+                          <Button size="sm" variant="secondary" onClick={() => setGeneratedImage(null)} className="rounded-full">
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
                     </div>
-                    <div className="grid grid-cols-4 gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleEditImage}
-                      >
-                        <Edit2 className="w-3 h-3 ml-1" />
-                        تعديل
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => {
-                          const link = document.createElement('a');
-                          link.href = generatedImage;
-                          link.download = `image-${Date.now()}.png`;
-                          document.body.appendChild(link);
-                          link.click();
-                          document.body.removeChild(link);
-                        }}
-                      >
-                        <Download className="w-3 h-3 ml-1" />
-                        حفظ
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setGeneratedImage(null)}
-                      >
-                        <X className="w-3 h-3 ml-1" />
-                        حذف
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={generateImage}
-                      >
-                        <RefreshCw className="w-3 h-3 ml-1" />
-                        جديدة
-                      </Button>
+                    <div className="flex items-center justify-center gap-2 text-green-400 text-sm">
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>صورة جاهزة للدمج في التصميم</span>
                     </div>
-                  </div>
+                  </motion.div>
                 )}
-
-                <div className="text-xs text-gray-500 bg-pink-50 p-3 rounded-lg border border-pink-200">
-                  💡 الصورة المولدة ستُدمج تلقائياً في التصميم النهائي
-                </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* تفعيل قسم الموظفين */}
             <Card className="border-2 border-green-200">
