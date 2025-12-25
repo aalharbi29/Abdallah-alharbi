@@ -782,30 +782,30 @@ export default function EmployeeProfile() {
                                     <SelectValue placeholder="اختر سبب التكليف" />
                                 </SelectTrigger>
                                 <SelectContent className="bg-slate-900 border-white/20">
-                                    <SelectItem value="حتى افتتاح مركز">حتى افتتاح مركز</SelectItem>
-                                    <SelectItem value="لتعزيز الكوادر">لتعزيز الكوادر</SelectItem>
-                                    <SelectItem value="لسد العجز">لسد العجز</SelectItem>
-                                    <SelectItem value="بناء على طلب الجهة">بناء على طلب الجهة</SelectItem>
-                                    <SelectItem value="حتى إشعار آخر">حتى إشعار آخر</SelectItem>
-                                    <SelectItem value="أخرى">أخرى</SelectItem>
+                                    <SelectItem value="حتى افتتاح مركز" className="text-white hover:bg-white/10">حتى افتتاح مركز</SelectItem>
+                                    <SelectItem value="لتعزيز الكوادر" className="text-white hover:bg-white/10">لتعزيز الكوادر</SelectItem>
+                                    <SelectItem value="لسد العجز" className="text-white hover:bg-white/10">لسد العجز</SelectItem>
+                                    <SelectItem value="بناء على طلب الجهة" className="text-white hover:bg-white/10">بناء على طلب الجهة</SelectItem>
+                                    <SelectItem value="حتى إشعار آخر" className="text-white hover:bg-white/10">حتى إشعار آخر</SelectItem>
+                                    <SelectItem value="أخرى" className="text-white hover:bg-white/10">أخرى</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
 
                         {externalAssignment.external_assignment_reason === 'أخرى' && (
                             <div>
-                                <Label htmlFor="external_assignment_reason_other" className="mb-1 block text-sm font-medium text-gray-700">حدد السبب</Label>
+                                <Label htmlFor="external_assignment_reason_other" className="mb-2 block text-sm font-medium text-white/80">حدد السبب</Label>
                                 <Input
                                     id="external_assignment_reason_other"
                                     placeholder="اكتب السبب..."
                                     value={externalAssignment.external_assignment_reason_other}
                                     onChange={(e) => handleExternalAssignmentChange('external_assignment_reason_other', e.target.value)}
-                                    className="w-full"
+                                    className="w-full bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl"
                                 />
                             </div>
                         )}
 
-                        <div className="flex items-center space-x-2 space-x-reverse p-3 bg-blue-50 rounded-lg">
+                        <div className="flex items-center space-x-2 space-x-reverse p-4 bg-blue-500/20 rounded-xl border border-blue-500/30">
                             <Checkbox 
                                 id="external_assignment_indefinite"
                                 checked={externalAssignment.external_assignment_indefinite}
@@ -816,7 +816,7 @@ export default function EmployeeProfile() {
                                     }
                                 }}
                             />
-                            <Label htmlFor="external_assignment_indefinite" className="cursor-pointer">
+                            <Label htmlFor="external_assignment_indefinite" className="cursor-pointer text-white">
                                 حتى إشعار آخر (بدون تاريخ محدد)
                             </Label>
                         </div>
