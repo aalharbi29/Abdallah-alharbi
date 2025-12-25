@@ -842,12 +842,14 @@ export default function EmployeeProfile() {
               </div>
             </div>
             
-            {/* صندوق العمل في الإجازات الرسمية - جديد */}
-            <HolidayWorkManager 
-              employee={employee}
-              onUpdate={() => loadEmployeeData(employee.id)}
-            />
-          </div>
+            {/* صندوق العمل في الإجازات الرسمية */}
+            <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden shadow-2xl">
+              <HolidayWorkManager 
+                employee={employee}
+                onUpdate={() => loadEmployeeData(employee.id)}
+              />
+            </div>
+          </motion.div>
         </div>
 
         {/* نسخة طباعة احترافية (تظهر فقط عند الطباعة) */}
