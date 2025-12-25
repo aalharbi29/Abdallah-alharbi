@@ -579,71 +579,76 @@ export default function EmployeeProfile() {
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* معلومات الموظف الأساسية (Column 1) - This section is now mainly covered by the Employee Full Details Card */}
-          {/* Re-adding some key info for quick glance as in original design, avoiding redundancy with EmployeeFullDetails */}
-          <Card className="lg:col-span-1">
-            <CardHeader className="text-center">
-              <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <User className="w-12 h-12 text-blue-600" />
+          {/* معلومات الموظف السريعة */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 }}
+            className="lg:col-span-1"
+          >
+            <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden shadow-2xl">
+              <div className="p-6 text-center border-b border-white/10">
+                {employee.profile_image_url ? (
+                  <img 
+                    src={employee.profile_image_url} 
+                    alt={employee.full_name_arabic} 
+                    className="w-24 h-24 rounded-2xl object-cover border-4 border-white/20 shadow-xl mx-auto mb-4"
+                  />
+                ) : (
+                  <div className="w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl">
+                    <User className="w-12 h-12 text-white" />
+                  </div>
+                )}
+                <h2 className="text-xl font-bold text-white mb-1">{employee.full_name_arabic}</h2>
+                <p className="text-indigo-200/70">{employee.position}</p>
+                {employee.is_externally_assigned && (
+                  <Badge className="mt-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg">
+                    <FileClock className="w-3 h-3 ml-1" />
+                    مكلف خارجي
+                    {employee.external_assignment_center && ` - ${employee.external_assignment_center}`}
+                  </Badge>
+                )}
               </div>
-              <CardTitle className="text-xl">{employee.full_name_arabic}</CardTitle>
-              <p className="text-gray-600">{employee.position}</p>
-              {employee.is_externally_assigned && (
-                <Badge variant="secondary" className="mt-2 bg-orange-100 text-orange-700">
-                  <FileClock className="w-3 h-3 ml-1" />
-                  مكلف خارجي
-                  {employee.external_assignment_center && ` في ${employee.external_assignment_center}`}
-                  {employee.external_assignment_end_date && ` حتى ${format(new Date(employee.external_assignment_end_date), 'dd/MM/yyyy', { locale: ar })}`}
-                </Badge>
-              )}
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">رقم الموظف:</span>
-                  <span className="font-medium">{employee.رقم_الموظف}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">المركز الصحي:</span>
-                  <span className="font-medium">{employee.المركز_الصحي || 'غير محدد'}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">نوع العقد:</span>
-                  <span className="font-medium">{employee.contract_type}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">الهاتف:</span>
-                  <span className="font-medium">
-                    {employee.phone ? (
-                      (() => {
-                        const normalized = normalizePhoneForWhatsApp(employee.phone);
-                        const defaultMsg = `مرحبا ${employee.full_name_arabic || ''}`;
-                        const waUrl = `https://wa.me/${normalized}?text=${encodeURIComponent(defaultMsg)}`;
-                        return (
-                          <a
-                            href={waUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline inline-flex items-center gap-1"
-                            title="إرسال رسالة عبر واتساب"
-                          >
-                            <MessageCircle className="w-4 h-4" />
-                            {employee.phone}
-                          </a>
-                        );
-                      })()
-                    ) : (
-                      'غير محدد'
-                    )}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">البريد الإلكتروني:</span>
-                  <span className="font-medium text-sm break-all">{employee.email || 'غير محدد'}</span>
+              <div className="p-6">
+                <div className="space-y-3">
+                  {[
+                    { label: 'رقم الموظف', value: employee.رقم_الموظف },
+                    { label: 'المركز الصحي', value: employee.المركز_الصحي || 'غير محدد' },
+                    { label: 'نوع العقد', value: employee.contract_type },
+                  ].map((item, idx) => (
+                    <div key={idx} className="flex justify-between items-center p-2 bg-white/5 rounded-lg">
+                      <span className="text-white/60 text-sm">{item.label}:</span>
+                      <span className="font-medium text-white text-sm">{item.value}</span>
+                    </div>
+                  ))}
+                  <div className="flex justify-between items-center p-2 bg-white/5 rounded-lg">
+                    <span className="text-white/60 text-sm">الهاتف:</span>
+                    <span className="font-medium">
+                      {employee.phone ? (
+                        <a
+                          href={`https://wa.me/${normalizePhoneForWhatsApp(employee.phone)}?text=${encodeURIComponent(`مرحبا ${employee.full_name_arabic}`)}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-1"
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                          <span className="text-sm">{employee.phone}</span>
+                        </a>
+                      ) : (
+                        <span className="text-white/40 text-sm">غير محدد</span>
+                      )}
+                    </span>
+                  </div>
+                  {employee.email && (
+                    <div className="flex justify-between items-center p-2 bg-white/5 rounded-lg">
+                      <span className="text-white/60 text-sm">البريد:</span>
+                      <span className="font-medium text-white text-xs break-all">{employee.email}</span>
+                    </div>
+                  )}
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </motion.div>
 
           {/* محتوى ملف الموظف (Column 2 - Tabs for Leaves and Assignments) */}
           <div className="lg:col-span-1 space-y-6">
