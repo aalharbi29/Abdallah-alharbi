@@ -474,45 +474,70 @@ export default function HumanResources() {
               </div>
               
               <div className="flex gap-2 flex-wrap">
-                {selectedEmployees.size > 0 && (
-                  <>
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowBulkWhatsAppDialog(true)}
-                      className="gap-2 bg-green-50 hover:bg-green-100 text-green-700 border-green-300"
-                    >
-                      <MessageCircle className="w-4 h-4" />
-                      واتساب ({selectedEmployees.size})
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowBulkAssignmentDialog(true)}
-                      className="gap-2"
-                    >
-                      <Award className="w-4 h-4" />
-                      تكليف مجموعة ({selectedEmployees.size})
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => setSelectedEmployees(new Set())}
-                      size="icon"
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </>
-                )}
-                
+                <AnimatePresence>
+                  {selectedEmployees.size > 0 && (
+                    <>
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <Button
+                          variant="outline"
+                          onClick={() => setShowBulkWhatsAppDialog(true)}
+                          className="gap-2 bg-green-500/20 hover:bg-green-500/30 text-green-300 border-green-500/30 rounded-xl"
+                        >
+                          <MessageCircle className="w-4 h-4" />
+                          واتساب ({selectedEmployees.size})
+                        </Button>
+                      </motion.div>
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <Button
+                          variant="outline"
+                          onClick={() => setShowBulkAssignmentDialog(true)}
+                          className="gap-2 border-white/20 text-white hover:bg-white/10 rounded-xl"
+                        >
+                          <Award className="w-4 h-4" />
+                          تكليف ({selectedEmployees.size})
+                        </Button>
+                      </motion.div>
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                      >
+                        <Button
+                          variant="outline"
+                          onClick={() => setSelectedEmployees(new Set())}
+                          size="icon"
+                          className="border-white/20 text-red-400 hover:bg-red-500/20 rounded-xl"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
+
                 <ExportManager employees={filteredEmployees} />
                 <CustomExportManager employees={filteredEmployees} />
-                
-                <Button variant="outline" onClick={() => window.print()}>
+
+                <Button 
+                  variant="outline" 
+                  onClick={() => window.print()}
+                  className="border-white/20 text-white hover:bg-white/10 rounded-xl"
+                >
                   <Printer className="w-4 h-4 ml-2" />
                   طباعة
                 </Button>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+              </div>
+              </div>
+              </motion.div>
 
         {/* Filters */}
         <EmployeeFilters
