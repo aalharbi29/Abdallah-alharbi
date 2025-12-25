@@ -698,150 +698,180 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* لوحة الإدخال */}
-          <div className="space-y-6">
-            {/* معلومات التصميم */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Info className="w-5 h-5 text-blue-600" />
-                  معلومات التصميم
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            className="space-y-6"
+          >
+            {/* معلومات التصميم - محسّنة */}
+            <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 overflow-hidden shadow-2xl">
+              <div className="p-5 border-b border-white/10 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg">
+                  <FileText className="w-6 h-6 text-white" />
+                </div>
                 <div>
-                  <Label>نوع التصميم</Label>
+                  <h3 className="text-xl font-bold text-white">معلومات التصميم</h3>
+                  <p className="text-purple-200/70 text-sm">حدد تفاصيل المحتوى</p>
+                </div>
+              </div>
+              
+              <div className="p-6 space-y-5">
+                <div>
+                  <Label className="text-white/90 font-medium mb-2 block">نوع التصميم</Label>
                   <Select
                     value={announcementData.designType}
                     onValueChange={(value) => setAnnouncementData(prev => ({ ...prev, designType: value }))}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-white/10 border-white/20 text-white h-12 rounded-xl">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="announcement">📢 إعلان</SelectItem>
-                      <SelectItem value="brochure">📘 بروشور</SelectItem>
-                      <SelectItem value="awareness">🩺 بطاقة توعوية</SelectItem>
-                      <SelectItem value="job_description">💼 وصف وظيفي</SelectItem>
+                    <SelectContent className="bg-slate-900 border-white/20">
+                      <SelectItem value="announcement" className="text-white hover:bg-white/10">📢 إعلان</SelectItem>
+                      <SelectItem value="brochure" className="text-white hover:bg-white/10">📘 بروشور</SelectItem>
+                      <SelectItem value="awareness" className="text-white hover:bg-white/10">🩺 بطاقة توعوية</SelectItem>
+                      <SelectItem value="job_description" className="text-white hover:bg-white/10">💼 وصف وظيفي</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div>
-                  <Label>عنوان التصميم *</Label>
+                  <Label className="text-white/90 font-medium mb-2 block">عنوان التصميم *</Label>
                   <Input
                     value={announcementData.title}
                     onChange={(e) => setAnnouncementData(prev => ({ ...prev, title: e.target.value }))}
                     placeholder="مثال: المرشحين لحضور دورة الأمن والسلامة"
-                    className="text-lg"
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/40 h-12 rounded-xl text-lg"
                   />
                 </div>
 
                 <div>
-                  <Label>وصف أو تفاصيل</Label>
+                  <Label className="text-white/90 font-medium mb-2 block">وصف أو تفاصيل</Label>
                   <Textarea
                     value={announcementData.description}
                     onChange={(e) => setAnnouncementData(prev => ({ ...prev, description: e.target.value }))}
                     placeholder="وصف مختصر للإعلان..."
                     rows={3}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label>التاريخ</Label>
+                    <Label className="text-white/90 font-medium mb-2 block flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-purple-400" />
+                      التاريخ
+                    </Label>
                     <Input
                       type="date"
                       value={announcementData.date}
                       onChange={(e) => setAnnouncementData(prev => ({ ...prev, date: e.target.value }))}
+                      className="bg-white/10 border-white/20 text-white h-11 rounded-xl"
                     />
                   </div>
                   <div>
-                    <Label>الوقت</Label>
+                    <Label className="text-white/90 font-medium mb-2 block flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-purple-400" />
+                      الوقت
+                    </Label>
                     <Input
                       type="time"
                       value={announcementData.time}
                       onChange={(e) => setAnnouncementData(prev => ({ ...prev, time: e.target.value }))}
+                      className="bg-white/10 border-white/20 text-white h-11 rounded-xl"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <Label>الموقع</Label>
+                  <Label className="text-white/90 font-medium mb-2 block flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-purple-400" />
+                    الموقع
+                  </Label>
                   <Input
                     value={announcementData.location}
                     onChange={(e) => setAnnouncementData(prev => ({ ...prev, location: e.target.value }))}
                     placeholder="مثال: قاعة الاجتماعات - المدينة المنورة"
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/40 h-11 rounded-xl"
                   />
                 </div>
 
                 <div>
-                  <Label>معلومات إضافية</Label>
+                  <Label className="text-white/90 font-medium mb-2 block">معلومات إضافية</Label>
                   <Textarea
                     value={announcementData.additionalInfo}
                     onChange={(e) => setAnnouncementData(prev => ({ ...prev, additionalInfo: e.target.value }))}
                     placeholder="أي ملاحظات أو تعليمات إضافية..."
                     rows={2}
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl"
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>مقاس الصفحة</Label>
-                    <Select
-                      value={announcementData.pageSize}
-                      onValueChange={(value) => setAnnouncementData(prev => ({ ...prev, pageSize: value }))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="a3">A3 (297 × 420 ملم)</SelectItem>
-                        <SelectItem value="a4">A4 (210 × 297 ملم)</SelectItem>
-                        <SelectItem value="a5">A5 (148 × 210 ملم)</SelectItem>
-                        <SelectItem value="a6">A6 (105 × 148 ملم)</SelectItem>
-                        <SelectItem value="a7">A7 (74 × 105 ملم)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label>نمط التصميم</Label>
-                    <Select
-                      value={announcementData.designStyle}
-                      onValueChange={(value) => setAnnouncementData(prev => ({ ...prev, designStyle: value }))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="professional">رسمي واحترافي</SelectItem>
-                        <SelectItem value="modern">عصري وجذاب</SelectItem>
-                        <SelectItem value="elegant">أنيق وفاخر</SelectItem>
-                        <SelectItem value="simple">بسيط ونظيف</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label>نظام الألوان</Label>
-                    <Select
-                      value={announcementData.colorScheme}
-                      onValueChange={(value) => setAnnouncementData(prev => ({ ...prev, colorScheme: value }))}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="blue">أزرق وأخضر</SelectItem>
-                        <SelectItem value="green">أخضر ورمادي</SelectItem>
-                        <SelectItem value="gold">ذهبي وأزرق</SelectItem>
-                        <SelectItem value="purple">بنفسجي ووردي</SelectItem>
-                      </SelectContent>
-                    </Select>
+                {/* إعدادات التصميم */}
+                <div className="pt-4 border-t border-white/10">
+                  <h4 className="text-white font-semibold mb-4 flex items-center gap-2">
+                    <Settings className="w-4 h-4 text-purple-400" />
+                    إعدادات التصميم
+                  </h4>
+                  <div className="grid grid-cols-3 gap-3">
+                    <div>
+                      <Label className="text-white/70 text-xs mb-1 block">مقاس الصفحة</Label>
+                      <Select
+                        value={announcementData.pageSize}
+                        onValueChange={(value) => setAnnouncementData(prev => ({ ...prev, pageSize: value }))}
+                      >
+                        <SelectTrigger className="bg-white/10 border-white/20 text-white h-10 rounded-xl text-sm">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-900 border-white/20">
+                          <SelectItem value="a3" className="text-white">A3</SelectItem>
+                          <SelectItem value="a4" className="text-white">A4</SelectItem>
+                          <SelectItem value="a5" className="text-white">A5</SelectItem>
+                          <SelectItem value="a6" className="text-white">A6</SelectItem>
+                          <SelectItem value="a7" className="text-white">A7</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-white/70 text-xs mb-1 block">النمط</Label>
+                      <Select
+                        value={announcementData.designStyle}
+                        onValueChange={(value) => setAnnouncementData(prev => ({ ...prev, designStyle: value }))}
+                      >
+                        <SelectTrigger className="bg-white/10 border-white/20 text-white h-10 rounded-xl text-sm">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-900 border-white/20">
+                          <SelectItem value="professional" className="text-white">رسمي</SelectItem>
+                          <SelectItem value="modern" className="text-white">عصري</SelectItem>
+                          <SelectItem value="elegant" className="text-white">أنيق</SelectItem>
+                          <SelectItem value="simple" className="text-white">بسيط</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label className="text-white/70 text-xs mb-1 block">الألوان</Label>
+                      <Select
+                        value={announcementData.colorScheme}
+                        onValueChange={(value) => setAnnouncementData(prev => ({ ...prev, colorScheme: value }))}
+                      >
+                        <SelectTrigger className="bg-white/10 border-white/20 text-white h-10 rounded-xl text-sm">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-slate-900 border-white/20">
+                          <SelectItem value="blue" className="text-white">🔵 أزرق</SelectItem>
+                          <SelectItem value="green" className="text-white">🟢 أخضر</SelectItem>
+                          <SelectItem value="gold" className="text-white">🟡 ذهبي</SelectItem>
+                          <SelectItem value="purple" className="text-white">🟣 بنفسجي</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* توليد فيديو تعليمي */}
             <Card className="border-2 border-blue-200">
