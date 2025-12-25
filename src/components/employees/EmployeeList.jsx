@@ -134,64 +134,74 @@ export default function EmployeeList({
                 isSelected ? 'ring-2 ring-indigo-400/50' : ''
               }`}
             >
-            <CardContent className="p-2 md:p-3">
-              <div className="flex items-start gap-2 md:gap-3">
+            <CardContent className="p-3 md:p-4">
+              <div className="flex items-start gap-3 md:gap-4">
                 {/* Checkbox للتحديد */}
                 {onToggleSelection && (
-                  <div className="pt-0.5">
-                    <Checkbox
-                      checked={isSelected}
-                      onCheckedChange={() => onToggleSelection(employee.id)}
-                    />
+                  <div className="pt-1">
+                    <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center cursor-pointer transition-all ${
+                      isSelected 
+                        ? 'bg-indigo-500 border-indigo-500' 
+                        : 'border-white/30 hover:border-indigo-400'
+                    }`}
+                    onClick={() => onToggleSelection(employee.id)}
+                    >
+                      {isSelected && <CheckSquare className="w-3 h-3 text-white" />}
+                    </div>
                   </div>
                 )}
 
                 {/* الصورة الشخصية */}
-                <div className="flex-shrink-0">
+                <div className="flex-shrink-0 relative group">
                   {employee.profile_image_url ? (
                     <img 
                       src={employee.profile_image_url} 
                       alt={employee.full_name_arabic || 'صورة الموظف'} 
-                      className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover border-2 border-gray-100 shadow-sm"
+                      className="w-14 h-14 md:w-16 md:h-16 rounded-2xl object-cover border-2 border-white/20 shadow-lg group-hover:border-indigo-400 transition-all"
                     />
                   ) : (
-                    <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 border-2 border-gray-100 flex items-center justify-center shadow-sm">
-                      <User className="w-6 h-6 md:w-7 md:h-7 text-gray-400" />
+                    <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-blue-500/20 border-2 border-white/20 flex items-center justify-center shadow-lg group-hover:border-indigo-400 transition-all">
+                      <User className="w-7 h-7 md:w-8 md:h-8 text-indigo-400" />
+                    </div>
+                  )}
+                  {isPinned && (
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center shadow-lg">
+                      <Pin className="w-3 h-3 text-amber-900 fill-current" />
                     </div>
                   )}
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2 mb-1.5">
+                  <div className="flex items-start justify-between gap-2 mb-2">
                     <div className="flex-1">
                       <Link
                         to={createPageUrl(`EmployeeProfile?id=${employee.id}`)}
-                        className="text-sm md:text-base font-extrabold text-gray-900 hover:text-blue-600 transition-colors"
+                        className="text-base md:text-lg font-bold text-white hover:text-indigo-300 transition-colors flex items-center gap-2"
                       >
                         {employee.full_name_arabic || 'غير محدد'}
+                        <Sparkles className="w-4 h-4 text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity" />
                       </Link>
-                      <div className="flex flex-wrap items-center gap-1.5 mt-0.5 text-xs font-semibold text-gray-600">
-                        {employee.position && <span>{employee.position}</span>}
+                      <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-white/60">
+                        {employee.position && <span className="font-medium">{employee.position}</span>}
                         {employee.position && employee.المركز_الصحي && <span>•</span>}
                         {employee.المركز_الصحي && <span>{employee.المركز_الصحي}</span>}
-                        {employee.contract_type && (employee.position || employee.المركز_الصحي) && (
-                          <>
-                            <span>•</span>
-                            <Badge variant="outline" className="text-[10px] py-0 px-1.5 h-4">{employee.contract_type}</Badge>
-                          </>
+                        {employee.contract_type && (
+                          <Badge variant="outline" className="text-[10px] py-0 px-2 h-5 border-white/30 text-white/70">
+                            {employee.contract_type}
+                          </Badge>
                         )}
                       </div>
                     </div>
 
-                    <div className="flex gap-0.5 flex-shrink-0">
+                    <div className="flex gap-1 flex-shrink-0">
                       {onPinEmployee && (
                         <Button
                           variant="ghost"
                           size="icon"
                           onClick={() => onPinEmployee(employee.id)}
-                          className={`h-7 w-7 ${isPinned ? 'text-yellow-600' : 'text-gray-400'}`}
+                          className={`h-8 w-8 rounded-xl ${isPinned ? 'text-amber-400 bg-amber-500/20' : 'text-white/40 hover:text-amber-400 hover:bg-amber-500/10'}`}
                         >
-                          <Pin className={`w-3.5 h-3.5 ${isPinned ? 'fill-current' : ''}`} />
+                          <Pin className={`w-4 h-4 ${isPinned ? 'fill-current' : ''}`} />
                         </Button>
                       )}
 
@@ -200,10 +210,9 @@ export default function EmployeeList({
                           href={`https://wa.me/${normalizePhoneForWhatsApp(employee.phone)}?text=${encodeURIComponent(`مرحبا ${employee.full_name_arabic}`)}`}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="flex items-center justify-center"
                         >
-                          <Button variant="ghost" size="icon" className="text-green-600 h-7 w-7">
-                            <MessageCircle className="w-3.5 h-3.5" />
+                          <Button variant="ghost" size="icon" className="text-emerald-400 hover:bg-emerald-500/20 h-8 w-8 rounded-xl">
+                            <MessageCircle className="w-4 h-4" />
                           </Button>
                         </a>
                       )}
