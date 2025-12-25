@@ -760,15 +760,15 @@ export default function EmployeeProfile() {
                   />
                 </div>
                 {externalAssignment.is_externally_assigned && (
-                    <div className="space-y-4 pt-4 border-t">
+                    <div className="space-y-4 pt-4 border-t border-white/10">
                         <div>
-                            <Label htmlFor="external_assignment_center" className="mb-1 block text-sm font-medium text-gray-700">الجهة المكلف بها</Label>
+                            <Label htmlFor="external_assignment_center" className="mb-2 block text-sm font-medium text-white/80">الجهة المكلف بها</Label>
                             <Input
                                 id="external_assignment_center"
                                 placeholder="اسم الجهة أو المركز"
                                 value={externalAssignment.external_assignment_center}
                                 onChange={(e) => handleExternalAssignmentChange('external_assignment_center', e.target.value)}
-                                className="w-full"
+                                className="w-full bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl"
                             />
                         </div>
                         
