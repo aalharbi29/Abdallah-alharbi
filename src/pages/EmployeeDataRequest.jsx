@@ -294,22 +294,35 @@ export default function EmployeeDataRequest() {
     return groups;
   }, [selectedEmployees, employeeManagers]);
 
-  const copyTableToClipboard = () => {
+  const copyTableToClipboard = async () => {
     const headers = selectedFields.map(key =>
       availableFields.find(f => f.key === key)?.label || key
-    ).join('\t');
+    );
 
-    let tableText = '';
+    // إنشاء الجدول كـ HTML للنسخ بشكل أفضل
+    let htmlTable = '<table dir="rtl" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;">';
+    htmlTable += '<thead><tr style="background-color: #f3f4f6;">';
+    headers.forEach(header => {
+      htmlTable += `<th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">${header}</th>`;
+    });
+    htmlTable += '</tr></thead><tbody>';
 
     if (displayMode === 'normal') {
-      const rows = selectedEmployees.map(emp =>
-        selectedFields.map(key => emp[key] || '').join('\t')
-      ).join('\n');
-      tableText = headers + '\n' + rows;
+      selectedEmployees.forEach((emp, idx) => {
+        const bgColor = idx % 2 === 0 ? '#fff' : '#f9fafb';
+        htmlTable += `<tr style="background-color: ${bgColor};">`;
+        selectedFields.forEach(key => {
+          htmlTable += `<td style="border: 1px solid #000; padding: 8px; text-align: center;">${emp[key] || '-'}</td>`;
+        });
+        htmlTable += '</tr>';
+      });
     } else {
-      const rows = [];
       selectedEmployees.forEach(emp => {
-        rows.push(selectedFields.map(key => emp[key] || '').join('\t'));
+        htmlTable += '<tr style="background-color: #dbeafe;">';
+        selectedFields.forEach(key => {
+          htmlTable += `<td style="border: 1px solid #000; padding: 8px; text-align: center;">${emp[key] || '-'}</td>`;
+        });
+        htmlTable += '</tr>';
       });
 
       const processedManagers = new Set();
@@ -317,31 +330,66 @@ export default function EmployeeDataRequest() {
         if (!processedManagers.has(managerId)) {
           const manager = getManagerWithCenters(managerId, employeeIds);
           if (manager) {
-            rows.push('بيانات المدير المباشر');
-            rows.push(selectedFields.map(key => manager[key] || '').join('\t'));
+            htmlTable += `<tr style="background-color: #d1fae5;"><td colspan="${selectedFields.length}" style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">بيانات المدير المباشر</td></tr>`;
+            htmlTable += '<tr style="background-color: #ecfdf5;">';
+            selectedFields.forEach(key => {
+              htmlTable += `<td style="border: 1px solid #000; padding: 8px; text-align: center;">${manager[key] || '-'}</td>`;
+            });
+            htmlTable += '</tr>';
             processedManagers.add(managerId);
           }
         }
       });
-
-      tableText = headers + '\n' + rows.join('\n');
     }
 
-    // تنسيق الطلب النهائي بالترتيب المطلوب
-    let fullText = '';
-    
-    if (finalRequest) {
-      fullText = `بعد التحية\n\n${tableText}\n\n${finalRequest}\n\nنأمل التكرم بالاطلاع وإكمال اللازم.\n\n\nأطيب التحايا.`;
+    htmlTable += '</tbody></table>';
+
+    // النص العادي للنسخ كبديل
+    let plainText = headers.join('\t') + '\n';
+    if (displayMode === 'normal') {
+      plainText += selectedEmployees.map(emp =>
+        selectedFields.map(key => emp[key] || '-').join('\t')
+      ).join('\n');
     } else {
-      fullText = `بعد التحية\n\n${tableText}\n\nنأمل التكرم بالاطلاع وإكمال اللازم.\n\n\nأطيب التحايا.`;
+      selectedEmployees.forEach(emp => {
+        plainText += selectedFields.map(key => emp[key] || '-').join('\t') + '\n';
+      });
+      const processedManagers = new Set();
+      Object.entries(groupedByManager).forEach(([managerId, employeeIds]) => {
+        if (!processedManagers.has(managerId)) {
+          const manager = getManagerWithCenters(managerId, employeeIds);
+          if (manager) {
+            plainText += 'بيانات المدير المباشر\n';
+            plainText += selectedFields.map(key => manager[key] || '-').join('\t') + '\n';
+            processedManagers.add(managerId);
+          }
+        }
+      });
     }
 
-    navigator.clipboard.writeText(fullText).then(() => {
-      alert('تم نسخ الطلب والجدول! يمكنك الآن لصقهما في Word');
-    }).catch(err => {
-      console.error('Failed to copy:', err);
-      alert('فشل النسخ. يرجى المحاولة مرة أخرى');
-    });
+    // تنسيق الطلب النهائي
+    const requestText = finalRequest ? `\n\n${finalRequest}` : '';
+    const fullPlainText = `بعد التحية\n\n${plainText}${requestText}\n\nنأمل التكرم بالاطلاع وإكمال اللازم.\n\nأطيب التحايا.`;
+    const fullHtml = `<div dir="rtl" style="font-family: Arial, sans-serif;"><p style="font-weight: bold;">بعد التحية</p><br/>${htmlTable}<br/>${finalRequest ? `<p>${finalRequest}</p><br/>` : ''}<p>نأمل التكرم بالاطلاع وإكمال اللازم.</p><br/><p style="font-weight: bold;">أطيب التحايا.</p></div>`;
+
+    try {
+      // محاولة نسخ كـ HTML و نص عادي معاً
+      const clipboardItem = new ClipboardItem({
+        'text/html': new Blob([fullHtml], { type: 'text/html' }),
+        'text/plain': new Blob([fullPlainText], { type: 'text/plain' })
+      });
+      await navigator.clipboard.write([clipboardItem]);
+      alert('تم نسخ الطلب والجدول بنجاح! يمكنك الآن لصقها في Word أو Excel وسيظهر الجدول بشكل صحيح.');
+    } catch (err) {
+      // في حال فشل نسخ HTML، نستخدم النص العادي فقط
+      try {
+        await navigator.clipboard.writeText(fullPlainText);
+        alert('تم نسخ النص! (استخدم التصدير لـ Excel للحصول على جدول منسق)');
+      } catch (e) {
+        console.error('Failed to copy:', e);
+        alert('فشل النسخ. يرجى المحاولة مرة أخرى');
+      }
+    }
   };
 
   const exportToCSV = () => {
