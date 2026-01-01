@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
-import { Employee } from '@/entities/Employee';
-import { HealthCenter } from '@/entities/HealthCenter';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -76,7 +74,7 @@ export default function EmployeeDataRequest() {
   const loadEmployees = async () => {
     setIsLoading(true);
     try {
-      const data = await Employee.list('-updated_date', 1000);
+      const data = await base44.entities.Employee.list('-updated_date', 1000);
       setEmployees(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error loading employees:', error);
@@ -87,7 +85,7 @@ export default function EmployeeDataRequest() {
 
   const loadHealthCenters = async () => {
     try {
-      const centers = await HealthCenter.list();
+      const centers = await base44.entities.HealthCenter.list();
       setHealthCenters(Array.isArray(centers) ? centers : []);
     } catch (error) {
       console.error('Error loading health centers:', error);
