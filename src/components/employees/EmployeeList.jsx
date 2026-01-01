@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Trash2, Calendar, Briefcase, Award, Eye, Pin, MessageCircle, CheckSquare, Square, User, Sparkles } from "lucide-react";
+import { Edit, Trash2, Calendar, Briefcase, Award, Eye, Pin, MessageCircle, CheckSquare, Square, User, Sparkles, Phone, IdCard, CakeIcon, CalendarCheck, Building2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Checkbox } from "@/components/ui/checkbox";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function EmployeeList({
   employees,
@@ -102,16 +102,57 @@ export default function EmployeeList({
 
   if (!employees || employees.length === 0) {
     return (
-      <Card>
-        <CardContent className="p-12 text-center text-gray-500">
-          <p>لا توجد موظفين</p>
-        </CardContent>
-      </Card>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        <Card className="bg-white/10 backdrop-blur-xl border border-white/20">
+          <CardContent className="p-16 text-center">
+            <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-full flex items-center justify-center">
+              <User className="w-12 h-12 text-white/40" />
+            </div>
+            <p className="text-white/60 text-xl font-bold">لا توجد موظفين</p>
+            <p className="text-white/40 text-sm mt-2">قم بإضافة موظفين للبدء</p>
+          </CardContent>
+        </Card>
+      </motion.div>
     );
   }
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 15
+      }
+    }
+  };
+
   return (
-    <div className="space-y-4">
+    <motion.div 
+      className="space-y-5"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <AnimatePresence mode="popLayout">
       {employees.map((employee, idx) => {
         if (!employee || !employee.id) return null;
 
@@ -123,222 +164,317 @@ export default function EmployeeList({
         return (
           <motion.div
             key={employee.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.03 }}
+            variants={itemVariants}
+            layout
+            exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+            whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
+            className="group"
           >
             <Card
-              className={`bg-white/15 backdrop-blur-xl border border-white/30 hover:border-white/50 hover:bg-white/20 transition-all shadow-xl ${
-                isPinned ? 'border-amber-400/60 bg-amber-500/20' : ''
+              className={`relative overflow-hidden bg-gradient-to-br from-slate-800/90 via-slate-800/80 to-indigo-900/60 backdrop-blur-2xl border-2 transition-all duration-500 shadow-2xl hover:shadow-indigo-500/20 ${
+                isPinned 
+                  ? 'border-amber-400 bg-gradient-to-br from-amber-900/40 via-slate-800/80 to-amber-900/30 shadow-amber-500/20' 
+                  : 'border-white/20 hover:border-indigo-400/60'
               } ${
-                isSelected ? 'ring-2 ring-indigo-400/70 bg-indigo-500/10' : ''
+                isSelected 
+                  ? 'ring-4 ring-indigo-500/50 border-indigo-400 bg-gradient-to-br from-indigo-900/50 via-slate-800/80 to-indigo-900/40' 
+                  : ''
               }`}
             >
-            <CardContent className="p-3 md:p-4">
-              <div className="flex items-start gap-3 md:gap-4">
+              {/* Gradient overlay on hover */}
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/0 via-purple-600/0 to-pink-600/0 group-hover:from-indigo-600/5 group-hover:via-purple-600/5 group-hover:to-pink-600/5 transition-all duration-500 pointer-events-none" />
+              
+              {/* Animated border glow */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-400 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-purple-400 to-transparent" />
+              </div>
+
+            <CardContent className="relative z-10 p-4 md:p-5">
+              <div className="flex items-start gap-4 md:gap-5">
                 {/* Checkbox للتحديد */}
                 {onToggleSelection && (
-                  <div className="pt-1">
-                    <div className={`w-5 h-5 rounded-lg border-2 flex items-center justify-center cursor-pointer transition-all ${
-                      isSelected 
-                        ? 'bg-indigo-500 border-indigo-500' 
-                        : 'border-white/30 hover:border-indigo-400'
-                    }`}
-                    onClick={() => onToggleSelection(employee.id)}
+                  <motion.div 
+                    className="pt-2"
+                    whileTap={{ scale: 0.9 }}
+                  >
+                    <div 
+                      className={`w-7 h-7 rounded-xl border-2 flex items-center justify-center cursor-pointer transition-all duration-300 ${
+                        isSelected 
+                          ? 'bg-gradient-to-br from-indigo-500 to-purple-600 border-indigo-400 shadow-lg shadow-indigo-500/30' 
+                          : 'border-white/30 hover:border-indigo-400 hover:bg-white/10'
+                      }`}
+                      onClick={() => onToggleSelection(employee.id)}
                     >
-                      {isSelected && <CheckSquare className="w-3 h-3 text-white" />}
+                      {isSelected && <CheckSquare className="w-4 h-4 text-white" />}
                     </div>
-                  </div>
+                  </motion.div>
                 )}
 
                 {/* الصورة الشخصية */}
-                <div className="flex-shrink-0 relative group">
+                <motion.div 
+                  className="flex-shrink-0 relative"
+                  whileHover={{ scale: 1.05 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
                   {employee.profile_image_url ? (
-                    <img 
-                      src={employee.profile_image_url} 
-                      alt={employee.full_name_arabic || 'صورة الموظف'} 
-                      className="w-14 h-14 md:w-16 md:h-16 rounded-2xl object-cover border-2 border-white/20 shadow-lg group-hover:border-indigo-400 transition-all"
-                    />
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl blur-md opacity-40" />
+                      <img 
+                        src={employee.profile_image_url} 
+                        alt={employee.full_name_arabic || 'صورة الموظف'} 
+                        className="relative w-16 h-16 md:w-20 md:h-20 rounded-2xl object-cover border-3 border-white/30 shadow-2xl"
+                      />
+                    </div>
                   ) : (
-                    <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-blue-500/20 border-2 border-white/20 flex items-center justify-center shadow-lg group-hover:border-indigo-400 transition-all">
-                      <User className="w-7 h-7 md:w-8 md:h-8 text-indigo-400" />
+                    <div className="relative">
+                      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl blur-md opacity-30" />
+                      <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-indigo-600/40 to-purple-600/40 border-2 border-white/30 flex items-center justify-center shadow-2xl">
+                        <User className="w-8 h-8 md:w-10 md:h-10 text-white/80" />
+                      </div>
                     </div>
                   )}
                   {isPinned && (
-                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-amber-400 rounded-full flex items-center justify-center shadow-lg">
-                      <Pin className="w-3 h-3 text-amber-900 fill-current" />
-                    </div>
+                    <motion.div 
+                      className="absolute -top-2 -right-2 w-7 h-7 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center shadow-xl border-2 border-white/50"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ type: "spring", stiffness: 500 }}
+                    >
+                      <Pin className="w-3.5 h-3.5 text-white fill-current" />
+                    </motion.div>
                   )}
-                </div>
+                </motion.div>
 
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2 mb-2">
+                  <div className="flex items-start justify-between gap-3 mb-3">
                     <div className="flex-1">
                       <Link
                         to={createPageUrl(`EmployeeProfile?id=${employee.id}`)}
-                        className="text-base md:text-lg font-black text-white hover:text-indigo-200 transition-colors flex items-center gap-2 drop-shadow-sm"
+                        className="text-lg md:text-xl font-black text-white hover:text-indigo-300 transition-all duration-300 flex items-center gap-2 group/name"
                       >
-                        {employee.full_name_arabic || 'غير محدد'}
-                        <Sparkles className="w-4 h-4 text-yellow-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <span className="bg-gradient-to-r from-white to-white/90 bg-clip-text">{employee.full_name_arabic || 'غير محدد'}</span>
+                        <Sparkles className="w-5 h-5 text-yellow-400 opacity-0 group-hover/name:opacity-100 transition-all duration-300 group-hover/name:rotate-12" />
                       </Link>
-                      <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-white/80">
-                        {employee.position && <span className="font-bold">{employee.position}</span>}
-                        {employee.position && employee.المركز_الصحي && <span className="text-white/60">•</span>}
-                        {employee.المركز_الصحي && <span className="font-semibold">{employee.المركز_الصحي}</span>}
+                      <div className="flex flex-wrap items-center gap-2 mt-2">
+                        {employee.position && (
+                          <span className="text-sm font-bold text-indigo-300 bg-indigo-500/20 px-3 py-1 rounded-lg">{employee.position}</span>
+                        )}
+                        {employee.المركز_الصحي && (
+                          <span className="flex items-center gap-1.5 text-sm font-semibold text-emerald-300 bg-emerald-500/20 px-3 py-1 rounded-lg">
+                            <Building2 className="w-3.5 h-3.5" />
+                            {employee.المركز_الصحي}
+                          </span>
+                        )}
                         {employee.contract_type && (
-                          <Badge variant="outline" className="text-[10px] py-0 px-2 h-5 border-white/40 text-white font-bold bg-white/10">
+                          <Badge className="text-xs py-1 px-3 bg-gradient-to-r from-purple-500/30 to-pink-500/30 border border-purple-400/40 text-purple-200 font-bold">
                             {employee.contract_type}
                           </Badge>
                         )}
                       </div>
                     </div>
 
-                    <div className="flex gap-1 flex-shrink-0">
+                    <div className="flex gap-2 flex-shrink-0">
                       {onPinEmployee && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => onPinEmployee(employee.id)}
-                          className={`h-8 w-8 rounded-xl ${isPinned ? 'text-amber-400 bg-amber-500/20' : 'text-white/40 hover:text-amber-400 hover:bg-amber-500/10'}`}
-                        >
-                          <Pin className={`w-4 h-4 ${isPinned ? 'fill-current' : ''}`} />
-                        </Button>
+                        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => onPinEmployee(employee.id)}
+                            className={`h-10 w-10 rounded-xl transition-all duration-300 ${
+                              isPinned 
+                                ? 'text-amber-300 bg-gradient-to-br from-amber-500/30 to-orange-500/30 shadow-lg shadow-amber-500/20' 
+                                : 'text-white/50 hover:text-amber-400 hover:bg-amber-500/20'
+                            }`}
+                          >
+                            <Pin className={`w-5 h-5 ${isPinned ? 'fill-current' : ''}`} />
+                          </Button>
+                        </motion.div>
                       )}
 
                       {employee.phone && (
-                        <a
+                        <motion.a
                           href={`https://wa.me/${normalizePhoneForWhatsApp(employee.phone)}?text=${encodeURIComponent(`مرحبا ${employee.full_name_arabic}`)}`}
                           target="_blank"
                           rel="noopener noreferrer"
+                          whileHover={{ scale: 1.1 }}
+                          whileTap={{ scale: 0.95 }}
                         >
-                          <Button variant="ghost" size="icon" className="text-emerald-400 hover:bg-emerald-500/20 h-8 w-8 rounded-xl">
-                            <MessageCircle className="w-4 h-4" />
+                          <Button variant="ghost" size="icon" className="text-emerald-400 hover:bg-gradient-to-br hover:from-emerald-500/30 hover:to-green-500/30 h-10 w-10 rounded-xl shadow-lg shadow-emerald-500/0 hover:shadow-emerald-500/20 transition-all duration-300">
+                            <MessageCircle className="w-5 h-5" />
                           </Button>
-                        </a>
+                        </motion.a>
                       )}
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-1.5 mb-2">
+                  <div className="flex flex-wrap gap-2 mb-4">
                     {employee.is_externally_assigned && (
-                      <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[10px] py-1 px-2 font-bold shadow-lg">
-                        🌍 مكلف خارجي {employee.external_assignment_center && `- ${employee.external_assignment_center}`}
-                      </Badge>
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }}>
+                        <Badge className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white text-xs py-1.5 px-3 font-black shadow-xl shadow-orange-500/30 border border-orange-300/30">
+                          🌍 مكلف خارجي {employee.external_assignment_center && `- ${employee.external_assignment_center}`}
+                        </Badge>
+                      </motion.div>
                     )}
 
                     {activeHolidayAssignments.length > 0 && (
-                      <Badge className="bg-gradient-to-r from-purple-500 to-violet-500 text-white text-[10px] py-1 px-2 font-bold shadow-lg">
-                        🎯 {activeHolidayAssignments[0].holiday_name}
-                      </Badge>
+                      <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", delay: 0.1 }}>
+                        <Badge className="bg-gradient-to-r from-purple-500 via-violet-500 to-fuchsia-500 text-white text-xs py-1.5 px-3 font-black shadow-xl shadow-purple-500/30 border border-purple-300/30">
+                          🎯 {activeHolidayAssignments[0].holiday_name}
+                        </Badge>
+                      </motion.div>
                     )}
 
                     {employeeRoles.length > 0 && (
                       employeeRoles.slice(0, 2).map((role, idx) => (
-                        <Badge key={idx} className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white text-[10px] py-1 px-2 font-bold shadow-md">
-                          {role}
-                        </Badge>
+                        <motion.div 
+                          key={idx} 
+                          initial={{ scale: 0 }} 
+                          animate={{ scale: 1 }} 
+                          transition={{ type: "spring", delay: 0.1 * (idx + 1) }}
+                        >
+                          <Badge className="bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white text-xs py-1.5 px-3 font-bold shadow-lg shadow-blue-500/20 border border-blue-300/30">
+                            {role}
+                          </Badge>
+                        </motion.div>
                       ))
                     )}
                     {employeeRoles.length > 2 && (
-                      <Badge className="bg-white/20 text-white text-[10px] py-1 px-2 font-bold border border-white/30">
+                      <Badge className="bg-white/20 text-white text-xs py-1.5 px-3 font-bold border-2 border-white/30 backdrop-blur-sm">
                         +{employeeRoles.length - 2}
                       </Badge>
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-2 text-[11px] mb-3 p-3 bg-white/10 rounded-xl border border-white/20">
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-sm mb-4 p-4 bg-gradient-to-br from-white/10 to-white/5 rounded-2xl border border-white/20 backdrop-blur-sm">
                     {employee.رقم_الموظف && (
-                      <div className="text-white">
-                        <span className="text-white/70 font-semibold">رقم:</span> <span className="font-black">{employee.رقم_الموظف}</span>
+                      <div className="flex items-center gap-2 text-white">
+                        <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                          <IdCard className="w-4 h-4 text-blue-400" />
+                        </div>
+                        <div>
+                          <span className="text-white/50 text-xs block">الرقم الوظيفي</span>
+                          <span className="font-black text-white">{employee.رقم_الموظف}</span>
+                        </div>
                       </div>
                     )}
                     {employee.phone && (
-                      <div className="text-white">
-                        <span className="text-white/70 font-semibold">جوال:</span> <span className="font-black">{employee.phone}</span>
+                      <div className="flex items-center gap-2 text-white">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                          <Phone className="w-4 h-4 text-emerald-400" />
+                        </div>
+                        <div>
+                          <span className="text-white/50 text-xs block">الجوال</span>
+                          <span className="font-black text-white">{employee.phone}</span>
+                        </div>
                       </div>
                     )}
                     {employee.رقم_الهوية && (
-                      <div className="text-white">
-                        <span className="text-white/70 font-semibold">هوية:</span> <span className="font-black">{employee.رقم_الهوية}</span>
+                      <div className="flex items-center gap-2 text-white">
+                        <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                          <IdCard className="w-4 h-4 text-purple-400" />
+                        </div>
+                        <div>
+                          <span className="text-white/50 text-xs block">الهوية</span>
+                          <span className="font-black text-white">{employee.رقم_الهوية}</span>
+                        </div>
                       </div>
                     )}
                     {employee.birth_date && (
-                      <div className="text-white">
-                        <span className="text-white/70 font-semibold">ميلاد:</span> <span className="font-black">{employee.birth_date}</span>
+                      <div className="flex items-center gap-2 text-white">
+                        <div className="w-8 h-8 rounded-lg bg-pink-500/20 flex items-center justify-center">
+                          <CakeIcon className="w-4 h-4 text-pink-400" />
+                        </div>
+                        <div>
+                          <span className="text-white/50 text-xs block">الميلاد</span>
+                          <span className="font-black text-white">{employee.birth_date}</span>
+                        </div>
                       </div>
                     )}
                     {employee.hire_date && (
-                      <div className="text-white">
-                        <span className="text-white/70 font-semibold">تعيين:</span> <span className="font-black">{employee.hire_date}</span>
+                      <div className="flex items-center gap-2 text-white">
+                        <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                          <CalendarCheck className="w-4 h-4 text-amber-400" />
+                        </div>
+                        <div>
+                          <span className="text-white/50 text-xs block">التعيين</span>
+                          <span className="font-black text-white">{employee.hire_date}</span>
+                        </div>
                       </div>
                     )}
                   </div>
 
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-2">
                     <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)}>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        className="h-8 text-xs px-3 font-bold bg-indigo-500/30 border-indigo-400/50 text-white hover:bg-indigo-500/40 rounded-lg shadow-md"
-                      >
-                        <Eye className="w-3 h-3 ml-1" />
-                        عرض
-                      </Button>
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button 
+                          size="sm" 
+                          className="h-10 text-sm px-4 font-black bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-xl shadow-lg shadow-indigo-500/30 border-0"
+                        >
+                          <Eye className="w-4 h-4 ml-2" />
+                          عرض الملف
+                        </Button>
+                      </motion.div>
                     </Link>
                     {onEdit && (
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => onEdit(employee)} 
-                        className="h-8 text-xs px-3 font-bold bg-blue-500/30 border-blue-400/50 text-white hover:bg-blue-500/40 rounded-lg shadow-md"
-                      >
-                        <Edit className="w-3 h-3 ml-1" />
-                        تعديل
-                      </Button>
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button 
+                          size="sm" 
+                          onClick={() => onEdit(employee)} 
+                          className="h-10 text-sm px-4 font-bold bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-500 hover:to-teal-500 text-white rounded-xl shadow-lg shadow-cyan-500/30 border-0"
+                        >
+                          <Edit className="w-4 h-4 ml-2" />
+                          تعديل
+                        </Button>
+                      </motion.div>
                     )}
                     {onAddLeave && (
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => onAddLeave(employee)} 
-                        className="h-8 text-xs px-3 font-bold bg-amber-500/30 border-amber-400/50 text-white hover:bg-amber-500/40 rounded-lg shadow-md"
-                      >
-                        <Calendar className="w-3 h-3 ml-1" />
-                        إجازة
-                      </Button>
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button 
+                          size="sm" 
+                          onClick={() => onAddLeave(employee)} 
+                          className="h-10 text-sm px-4 font-bold bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white rounded-xl shadow-lg shadow-amber-500/30 border-0"
+                        >
+                          <Calendar className="w-4 h-4 ml-2" />
+                          إجازة
+                        </Button>
+                      </motion.div>
                     )}
                     {onAddAssignment && (
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => onAddAssignment(employee)} 
-                        className="h-8 text-xs px-3 font-bold bg-purple-500/30 border-purple-400/50 text-white hover:bg-purple-500/40 rounded-lg shadow-md"
-                      >
-                        <Briefcase className="w-3 h-3 ml-1" />
-                        تكليف
-                      </Button>
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button 
+                          size="sm" 
+                          onClick={() => onAddAssignment(employee)} 
+                          className="h-10 text-sm px-4 font-bold bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-500 hover:to-violet-500 text-white rounded-xl shadow-lg shadow-purple-500/30 border-0"
+                        >
+                          <Briefcase className="w-4 h-4 ml-2" />
+                          تكليف
+                        </Button>
+                      </motion.div>
                     )}
                     {onAddHolidayAssignment && (
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => onAddHolidayAssignment(employee)} 
-                        className="h-8 text-xs px-3 font-bold bg-pink-500/30 border-pink-400/50 text-white hover:bg-pink-500/40 rounded-lg shadow-md"
-                      >
-                        <Award className="w-3 h-3 ml-1" />
-                        إجازة
-                      </Button>
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button 
+                          size="sm" 
+                          onClick={() => onAddHolidayAssignment(employee)} 
+                          className="h-10 text-sm px-4 font-bold bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white rounded-xl shadow-lg shadow-pink-500/30 border-0"
+                        >
+                          <Award className="w-4 h-4 ml-2" />
+                          تكليف إجازة
+                        </Button>
+                      </motion.div>
                     )}
                     {onDelete && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => onDelete(employee)}
-                        className="h-8 text-xs px-3 font-bold bg-red-500/30 border-red-400/50 text-white hover:bg-red-500/40 rounded-lg shadow-md"
-                      >
-                        <Trash2 className="w-3 h-3 ml-1" />
-                        حذف
-                      </Button>
+                      <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                        <Button
+                          size="sm"
+                          onClick={() => onDelete(employee)}
+                          className="h-10 text-sm px-4 font-bold bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white rounded-xl shadow-lg shadow-red-500/30 border-0"
+                        >
+                          <Trash2 className="w-4 h-4 ml-2" />
+                          حذف
+                        </Button>
+                      </motion.div>
                     )}
                   </div>
                 </div>
@@ -348,6 +484,7 @@ export default function EmployeeList({
         </motion.div>
         );
       })}
-    </div>
+      </AnimatePresence>
+    </motion.div>
   );
 }
