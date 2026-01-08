@@ -141,7 +141,7 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl h-[85vh] flex flex-col">
+      <DialogContent className="max-w-2xl h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <UserPlus className="w-5 h-5 text-blue-600" />
@@ -170,28 +170,9 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="tasks" className="flex-1 flex flex-col mt-4 space-y-3 overflow-auto">
-            {/* المهام المحددة */}
-            <div>
-              <Label className="text-sm font-medium mb-2 block">المهام المحددة:</Label>
-              <div className="flex flex-wrap gap-2 p-2 bg-blue-50 rounded-lg min-h-[40px] border border-blue-200">
-                {selectedTasks.length > 0 ? (
-                  selectedTasks.map(task => (
-                    <Badge key={task} className="bg-blue-600 text-white flex items-center gap-1">
-                      {task}
-                      <button onClick={() => toggleTask(task)} className="hover:bg-blue-700 rounded-full p-0.5">
-                        <X className="w-3 h-3" />
-                      </button>
-                    </Badge>
-                  ))
-                ) : (
-                  <span className="text-sm text-gray-500">لا توجد مهام محددة</span>
-                )}
-              </div>
-            </div>
-
+          <TabsContent value="tasks" className="flex-1 flex flex-col mt-4 space-y-3 overflow-hidden">
             {/* البحث */}
-            <div className="relative">
+            <div className="relative flex-shrink-0">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input
                 placeholder="ابحث عن مهمة..."
@@ -201,11 +182,11 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
               />
             </div>
 
-            {/* قائمة المهام */}
-            <div className="border rounded-lg p-3 overflow-y-auto flex-1" style={{ minHeight: '700px', maxHeight: '700px' }}>
+            {/* قائمة المهام - تأخذ كل المساحة المتاحة */}
+            <div className="border rounded-lg p-3 overflow-y-auto flex-1">
               {categories.map(category => (
                 <div key={category} className="mb-4">
-                  <div className="text-sm font-semibold text-gray-700 mb-2 bg-gray-100 px-2 py-1 rounded">
+                  <div className="text-sm font-semibold text-gray-700 mb-2 bg-gray-100 px-2 py-1 rounded sticky top-0">
                     {category}
                   </div>
                   <div className="grid grid-cols-2 gap-2">
@@ -232,8 +213,25 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
               ))}
             </div>
 
+            {/* المهام المحددة */}
+            {selectedTasks.length > 0 && (
+              <div className="flex-shrink-0">
+                <Label className="text-sm font-medium mb-2 block">المهام المحددة ({selectedTasks.length}):</Label>
+                <div className="flex flex-wrap gap-2 p-2 bg-blue-50 rounded-lg max-h-[60px] overflow-y-auto border border-blue-200">
+                  {selectedTasks.map(task => (
+                    <Badge key={task} className="bg-blue-600 text-white flex items-center gap-1">
+                      {task}
+                      <button onClick={() => toggleTask(task)} className="hover:bg-blue-700 rounded-full p-0.5">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* إضافة مهمة مخصصة */}
-            <div className="flex gap-2 mt-3">
+            <div className="flex gap-2 flex-shrink-0">
               <Input
                 placeholder="أدخل مهمة مخصصة..."
                 value={customTask}
@@ -246,28 +244,9 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
             </div>
           </TabsContent>
 
-          <TabsContent value="roles" className="flex-1 flex flex-col mt-4 space-y-3 overflow-auto">
-            {/* الأدوار المحددة */}
-            <div>
-              <Label className="text-sm font-medium mb-2 block">الأدوار المحددة:</Label>
-              <div className="flex flex-wrap gap-2 p-2 bg-green-50 rounded-lg min-h-[40px] border border-green-200">
-                {selectedRoles.length > 0 ? (
-                  selectedRoles.map(role => (
-                    <Badge key={role} className="bg-green-600 text-white flex items-center gap-1">
-                      {role}
-                      <button onClick={() => toggleRole(role)} className="hover:bg-green-700 rounded-full p-0.5">
-                        <X className="w-3 h-3" />
-                      </button>
-                    </Badge>
-                  ))
-                ) : (
-                  <span className="text-sm text-gray-500">لا توجد أدوار محددة</span>
-                )}
-              </div>
-            </div>
-
-            {/* قائمة الأدوار */}
-            <div className="border rounded-lg p-3 overflow-y-auto flex-1" style={{ minHeight: '700px', maxHeight: '700px' }}>
+          <TabsContent value="roles" className="flex-1 flex flex-col mt-4 space-y-3 overflow-hidden">
+            {/* قائمة الأدوار - تأخذ كل المساحة المتاحة */}
+            <div className="border rounded-lg p-3 overflow-y-auto flex-1">
               <div className="grid grid-cols-2 gap-2">
                 {specialRolesOptions.map(role => (
                   <label
@@ -288,8 +267,25 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
               </div>
             </div>
 
+            {/* الأدوار المحددة */}
+            {selectedRoles.length > 0 && (
+              <div className="flex-shrink-0">
+                <Label className="text-sm font-medium mb-2 block">الأدوار المحددة ({selectedRoles.length}):</Label>
+                <div className="flex flex-wrap gap-2 p-2 bg-green-50 rounded-lg max-h-[60px] overflow-y-auto border border-green-200">
+                  {selectedRoles.map(role => (
+                    <Badge key={role} className="bg-green-600 text-white flex items-center gap-1">
+                      {role}
+                      <button onClick={() => toggleRole(role)} className="hover:bg-green-700 rounded-full p-0.5">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* إضافة دور مخصص */}
-            <div className="flex gap-2 mt-3">
+            <div className="flex gap-2 flex-shrink-0">
               <Input
                 placeholder="أدخل دور مخصص..."
                 value={customRole}
