@@ -152,7 +152,7 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
           </div>
         </DialogHeader>
 
-        <Tabs defaultValue="tasks" className="flex-1 flex flex-col overflow-hidden">
+        <Tabs defaultValue="tasks" className="flex-1 flex flex-col overflow-hidden" style={{ minHeight: 0 }}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="tasks" className="gap-2">
               <Briefcase className="w-4 h-4" />
@@ -170,7 +170,7 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="tasks" className="flex-1 flex flex-col mt-4 space-y-3 overflow-hidden">
+          <TabsContent value="tasks" className="flex-1 flex flex-col mt-4 space-y-3 overflow-hidden" style={{ minHeight: 0 }}>
             {/* البحث */}
             <div className="relative flex-shrink-0">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -244,7 +244,7 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
             </div>
           </TabsContent>
 
-          <TabsContent value="roles" className="flex-1 flex flex-col mt-4 space-y-3 overflow-hidden">
+          <TabsContent value="roles" className="flex-1 flex flex-col mt-4 space-y-3 overflow-hidden" style={{ minHeight: 0 }}>
             {/* قائمة الأدوار - تأخذ كل المساحة المتاحة */}
             <div className="border rounded-lg p-3 overflow-y-auto flex-1">
               <div className="grid grid-cols-2 gap-2">
