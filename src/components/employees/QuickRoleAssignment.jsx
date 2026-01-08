@@ -172,9 +172,9 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
 
           <TabsContent value="tasks" className="flex-1 overflow-hidden flex flex-col mt-4 min-h-0">
             {/* المهام المحددة */}
-            <div className="mb-3">
+            <div className="mb-3 flex-shrink-0">
               <Label className="text-sm font-medium mb-2 block">المهام المحددة:</Label>
-              <div className="flex flex-wrap gap-2 p-2 bg-blue-50 rounded-lg min-h-[40px] border border-blue-200">
+              <div className="flex flex-wrap gap-2 p-2 bg-blue-50 rounded-lg min-h-[40px] max-h-[80px] overflow-y-auto border border-blue-200">
                 {selectedTasks.length > 0 ? (
                   selectedTasks.map(task => (
                     <Badge key={task} className="bg-blue-600 text-white flex items-center gap-1">
@@ -191,7 +191,7 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
             </div>
 
             {/* البحث */}
-            <div className="relative mb-3">
+            <div className="relative mb-3 flex-shrink-0">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input
                 placeholder="ابحث عن مهمة..."
@@ -202,10 +202,10 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
             </div>
 
             {/* قائمة المهام */}
-            <ScrollArea className="flex-1 border rounded-lg p-3 min-h-[200px]" style={{ maxHeight: 'calc(100% - 150px)' }}>
+            <ScrollArea className="flex-1 border rounded-lg p-3 min-h-0 h-[300px]">
               {categories.map(category => (
                 <div key={category} className="mb-4">
-                  <div className="text-sm font-semibold text-gray-700 mb-2 bg-gray-100 px-2 py-1 rounded">
+                  <div className="text-sm font-semibold text-gray-700 mb-2 bg-gray-100 px-2 py-1 rounded sticky top-0 z-10">
                     {category}
                   </div>
                   <div className="grid grid-cols-2 gap-2">
@@ -248,9 +248,9 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
 
           <TabsContent value="roles" className="flex-1 overflow-hidden flex flex-col mt-4 min-h-0">
             {/* الأدوار المحددة */}
-            <div className="mb-3">
+            <div className="mb-3 flex-shrink-0">
               <Label className="text-sm font-medium mb-2 block">الأدوار المحددة:</Label>
-              <div className="flex flex-wrap gap-2 p-2 bg-green-50 rounded-lg min-h-[40px] border border-green-200">
+              <div className="flex flex-wrap gap-2 p-2 bg-green-50 rounded-lg min-h-[40px] max-h-[80px] overflow-y-auto border border-green-200">
                 {selectedRoles.length > 0 ? (
                   selectedRoles.map(role => (
                     <Badge key={role} className="bg-green-600 text-white flex items-center gap-1">
@@ -267,7 +267,7 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
             </div>
 
             {/* قائمة الأدوار */}
-            <ScrollArea className="flex-1 border rounded-lg p-3 min-h-[200px]" style={{ maxHeight: 'calc(100% - 100px)' }}>
+            <ScrollArea className="flex-1 border rounded-lg p-3 min-h-0 h-[350px]">
               <div className="grid grid-cols-2 gap-2">
                 {specialRolesOptions.map(role => (
                   <label
