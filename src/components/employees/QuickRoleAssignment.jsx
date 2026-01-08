@@ -202,7 +202,7 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
             </div>
 
             {/* قائمة المهام */}
-            <div className="border rounded-lg p-3 overflow-y-auto flex-1" style={{ minHeight: '500px', maxHeight: '500px' }}>
+            <div className="border rounded-lg p-3 overflow-y-auto flex-1" style={{ minHeight: '700px', maxHeight: '700px' }}>
               {categories.map(category => (
                 <div key={category} className="mb-4">
                   <div className="text-sm font-semibold text-gray-700 mb-2 bg-gray-100 px-2 py-1 rounded">
@@ -267,7 +267,7 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
             </div>
 
             {/* قائمة الأدوار */}
-            <div className="border rounded-lg p-3 overflow-y-auto flex-1" style={{ minHeight: '500px', maxHeight: '500px' }}>
+            <div className="border rounded-lg p-3 overflow-y-auto flex-1" style={{ minHeight: '700px', maxHeight: '700px' }}>
               <div className="grid grid-cols-2 gap-2">
                 {specialRolesOptions.map(role => (
                   <label
