@@ -170,11 +170,11 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="tasks" className="flex-1 overflow-hidden flex flex-col mt-4 min-h-0">
+          <TabsContent value="tasks" className="flex-1 flex flex-col mt-4 space-y-3 overflow-auto">
             {/* المهام المحددة */}
-            <div className="mb-3 flex-shrink-0">
+            <div>
               <Label className="text-sm font-medium mb-2 block">المهام المحددة:</Label>
-              <div className="flex flex-wrap gap-2 p-2 bg-blue-50 rounded-lg min-h-[40px] max-h-[80px] overflow-y-auto border border-blue-200">
+              <div className="flex flex-wrap gap-2 p-2 bg-blue-50 rounded-lg min-h-[40px] border border-blue-200">
                 {selectedTasks.length > 0 ? (
                   selectedTasks.map(task => (
                     <Badge key={task} className="bg-blue-600 text-white flex items-center gap-1">
@@ -191,7 +191,7 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
             </div>
 
             {/* البحث */}
-            <div className="relative mb-3 flex-shrink-0">
+            <div className="relative">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input
                 placeholder="ابحث عن مهمة..."
@@ -202,10 +202,10 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
             </div>
 
             {/* قائمة المهام */}
-            <ScrollArea className="flex-1 border rounded-lg p-3 min-h-0 h-[300px]">
+            <div className="border rounded-lg p-3 overflow-y-auto" style={{ maxHeight: '280px' }}>
               {categories.map(category => (
                 <div key={category} className="mb-4">
-                  <div className="text-sm font-semibold text-gray-700 mb-2 bg-gray-100 px-2 py-1 rounded sticky top-0 z-10">
+                  <div className="text-sm font-semibold text-gray-700 mb-2 bg-gray-100 px-2 py-1 rounded">
                     {category}
                   </div>
                   <div className="grid grid-cols-2 gap-2">
@@ -230,7 +230,7 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
                   </div>
                 </div>
               ))}
-            </ScrollArea>
+            </div>
 
             {/* إضافة مهمة مخصصة */}
             <div className="flex gap-2 mt-3">
@@ -246,11 +246,11 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
             </div>
           </TabsContent>
 
-          <TabsContent value="roles" className="flex-1 overflow-hidden flex flex-col mt-4 min-h-0">
+          <TabsContent value="roles" className="flex-1 flex flex-col mt-4 space-y-3 overflow-auto">
             {/* الأدوار المحددة */}
-            <div className="mb-3 flex-shrink-0">
+            <div>
               <Label className="text-sm font-medium mb-2 block">الأدوار المحددة:</Label>
-              <div className="flex flex-wrap gap-2 p-2 bg-green-50 rounded-lg min-h-[40px] max-h-[80px] overflow-y-auto border border-green-200">
+              <div className="flex flex-wrap gap-2 p-2 bg-green-50 rounded-lg min-h-[40px] border border-green-200">
                 {selectedRoles.length > 0 ? (
                   selectedRoles.map(role => (
                     <Badge key={role} className="bg-green-600 text-white flex items-center gap-1">
@@ -267,7 +267,7 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
             </div>
 
             {/* قائمة الأدوار */}
-            <ScrollArea className="flex-1 border rounded-lg p-3 min-h-0 h-[350px]">
+            <div className="border rounded-lg p-3 overflow-y-auto" style={{ maxHeight: '320px' }}>
               <div className="grid grid-cols-2 gap-2">
                 {specialRolesOptions.map(role => (
                   <label
@@ -286,7 +286,7 @@ export default function QuickRoleAssignment({ employee, open, onOpenChange, onSu
                   </label>
                 ))}
               </div>
-            </ScrollArea>
+            </div>
 
             {/* إضافة دور مخصص */}
             <div className="flex gap-2 mt-3">
