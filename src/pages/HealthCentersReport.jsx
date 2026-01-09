@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -16,6 +15,7 @@ import {
 const availableFields = [
   { key: 'اسم_المركز', label: 'اسم المركز', category: 'basic', default: true },
   { key: 'الموقع', label: 'الموقع', category: 'basic', default: true },
+  { key: 'seha_id', label: 'SEHA ID', category: 'basic', default: false },
   { key: 'center_code', label: 'كود المركز', category: 'basic', default: false },
   { key: 'organization_code', label: 'الرقم الوزاري', category: 'basic', default: false },
   { key: 'خط_الطول', label: 'خط الطول', category: 'basic', default: false },
