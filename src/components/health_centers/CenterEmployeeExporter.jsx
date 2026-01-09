@@ -35,6 +35,7 @@ export default function CenterEmployeeExporter({
   const fieldDefinitions = [
     { key: "full_name_arabic", label: "الاسم الكامل" },
     { key: "رقم_الموظف", label: "رقم الموظف" },
+    { key: "seha_id", label: "SEHA ID" },
     { key: "رقم_الهوية", label: "رقم الهوية" },
     { key: "birth_date", label: "تاريخ الميلاد" },
     { key: "gender", label: "الجنس" },
