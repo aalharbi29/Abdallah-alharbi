@@ -89,6 +89,7 @@ export default function CustomExportManager({
         return {
           'اسم_المركز': 'اسم المركز',
           'الموقع': 'الموقع',
+          'seha_id': 'SEHA ID',
           'center_code': 'كود المركز',
           'organization_code': 'الرقم الوزاري',
           'خط_الطول': 'خط الطول',
