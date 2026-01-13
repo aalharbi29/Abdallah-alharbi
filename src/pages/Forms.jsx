@@ -28,12 +28,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 
 const categories = [
-  { key: "hr", label: "الموارد البشرية", icon: Users, color: "blue", description: "إجازات، تكاليف، تجديد عقود" },
-  { key: "medical", label: "الشؤون الطبية", icon: Activity, color: "red", description: "استقصاء وبائي، تقارير طبية" },
-  { key: "statistics", label: "الإحصاء والتقارير", icon: FileBarChart, color: "purple", description: "إحصائيات، تقارير دورية" },
-  { key: "administrative", label: "الشؤون الإدارية", icon: Briefcase, color: "green", description: "مراسلات، قرارات، محاضر" },
-  { key: "financial", label: "الشؤون المالية", icon: DollarSign, color: "orange", description: "مطالبات، صرف، ميزانيات" },
-  { key: "other", label: "نماذج أخرى", icon: FilePlus, color: "indigo", description: "نماذج متنوعة" }
+  { key: "leaves", label: "الإجازات", icon: Calendar, color: "blue", description: "نماذج الإجازات المختلفة" },
+  { key: "assignments", label: "التكاليف", icon: DollarSign, color: "green", description: "نماذج التكاليف والتفويضات" },
+  { key: "epidemiology", label: "الاستقصاء الوبائي", icon: Activity, color: "red", description: "نماذج الأمراض المعدية" },
+  { key: "statistics", label: "الإحصائيات", icon: FileBarChart, color: "purple", description: "إحصائيات وتقارير دورية" },
+  { key: "contract_renewal", label: "تجديد العقود", icon: RefreshCw, color: "orange", description: "نماذج تجديد العقود" },
+  { key: "additional", label: "نماذج إضافية", icon: FilePlus, color: "indigo", description: "نماذج متنوعة أخرى" }
 ];
 
 
