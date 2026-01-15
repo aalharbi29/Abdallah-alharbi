@@ -855,15 +855,11 @@ export default function CenterDeficiencyTool() {
     .header { background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%); color: white; padding: 40px; border-radius: 20px; margin-bottom: 30px; text-align: center; }
     .header h1 { font-size: 2rem; margin-bottom: 10px; }
     .header h2 { font-size: 1.3rem; opacity: 0.9; font-weight: 600; }
-    .center-section { background: white; border-radius: 16px; margin-bottom: 25px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-    .center-header { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; padding: 15px 25px; font-size: 1.2rem; font-weight: 700; }
-    table { width: 100%; border-collapse: collapse; }
-    th { background: #f1f5f9; padding: 12px; text-align: right; font-weight: 700; color: #475569; border-bottom: 2px solid #e2e8f0; }
-    td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; }
+    table { width: 100%; border-collapse: collapse; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 30px; }
+    th { background: #1e293b; color: white; padding: 15px 12px; text-align: right; font-weight: 700; }
+    td { padding: 12px; border-bottom: 1px solid #e2e8f0; }
     tr:hover { background: #f8fafc; }
-    .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
-    .badge-medical { background: #d1fae5; color: #065f46; }
-    .badge-nonmedical { background: #ede9fe; color: #5b21b6; }
+    tr:nth-child(even) { background: #f8fafc; }
     .quantity { font-weight: 800; color: #0f766e; text-align: center; }
     .footer { text-align: center; padding: 30px; color: #64748b; border-top: 2px solid #e2e8f0; margin-top: 30px; }
     @media print { body { background: white; padding: 10px; } .header, .center-section { box-shadow: none; border: 1px solid #e2e8f0; } }
@@ -876,33 +872,34 @@ export default function CenterDeficiencyTool() {
       <h2>النواقص في ${equipmentType}</h2>
     </div>
     
-    ${Object.entries(centerData).map(([center, items]) => `
-    <div class="center-section">
-      <div class="center-header">🏥 ${center}</div>
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>اسم العنصر</th>
-            <th>التصنيف</th>
-            <th>النوع</th>
-            <th>العدد</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${items.map((item, idx) => `
-            <tr>
-              <td>${idx + 1}</td>
-              <td>${item.name}</td>
-              <td>${item.category}</td>
-              <td><span class="badge ${item.type === 'medical' ? 'badge-medical' : 'badge-nonmedical'}">${item.type === 'medical' ? 'طبي' : 'غير طبي'}</span></td>
-              <td class="quantity">${item.quantity}</td>
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
-    `).join('')}
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 60px;">#</th>
+          <th style="width: 200px;">المركز</th>
+          <th>اسم الجهاز</th>
+          <th style="width: 100px;">الكمية</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${(() => {
+          let counter = 0;
+          return Object.entries(centerData).map(([center, items]) => 
+            items.map(item => {
+              counter++;
+              return `
+                <tr>
+                  <td>${counter}</td>
+                  <td>${center}</td>
+                  <td>${item.name}</td>
+                  <td class="quantity">${item.quantity}</td>
+                </tr>
+              `;
+            }).join('')
+          ).join('');
+        })()}
+      </tbody>
+    </table>
     
     <div class="footer">
       <p>وزارة الصحة - قطاع الحناكية الصحي</p>
