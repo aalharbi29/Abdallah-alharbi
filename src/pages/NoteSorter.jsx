@@ -42,126 +42,360 @@ const medicalEquipmentList = [
   { id: 'nebulizer', name: 'جهاز بخار (Nebulizer)', category: 'أجهزة طبية' },
   { id: 'pulse_oximeter', name: 'جهاز قياس الأكسجين (Pulse Oximeter)', category: 'أجهزة طبية' },
   { id: 'bp_monitor', name: 'جهاز قياس ضغط الدم', category: 'أجهزة طبية' },
+  { id: 'bp_monitor_digital', name: 'جهاز قياس ضغط رقمي', category: 'أجهزة طبية' },
+  { id: 'bp_monitor_manual', name: 'جهاز قياس ضغط زئبقي', category: 'أجهزة طبية' },
   { id: 'thermometer_digital', name: 'ميزان حرارة رقمي', category: 'أجهزة طبية' },
+  { id: 'thermometer_infrared', name: 'ميزان حرارة بالأشعة تحت الحمراء', category: 'أجهزة طبية' },
   { id: 'glucometer', name: 'جهاز قياس السكر', category: 'أجهزة طبية' },
+  { id: 'glucometer_strips', name: 'شرائط قياس السكر', category: 'أجهزة طبية' },
   { id: 'infant_scale', name: 'ميزان أطفال', category: 'أجهزة طبية' },
   { id: 'adult_scale', name: 'ميزان بالغين', category: 'أجهزة طبية' },
   { id: 'height_measure', name: 'جهاز قياس الطول', category: 'أجهزة طبية' },
+  { id: 'bmi_scale', name: 'ميزان قياس كتلة الجسم', category: 'أجهزة طبية' },
   { id: 'autoclave', name: 'جهاز تعقيم (Autoclave)', category: 'أجهزة طبية' },
   { id: 'centrifuge', name: 'جهاز طرد مركزي', category: 'أجهزة طبية' },
   { id: 'microscope', name: 'مجهر', category: 'أجهزة طبية' },
+  { id: 'doppler', name: 'جهاز دوبلر للجنين', category: 'أجهزة طبية' },
+  { id: 'ctg', name: 'جهاز تخطيط نبض الجنين (CTG)', category: 'أجهزة طبية' },
+  { id: 'spirometer', name: 'جهاز قياس وظائف الرئة', category: 'أجهزة طبية' },
+  { id: 'audiometer', name: 'جهاز قياس السمع', category: 'أجهزة طبية' },
+  { id: 'vision_chart', name: 'لوحة فحص النظر', category: 'أجهزة طبية' },
+  { id: 'snellen_chart', name: 'لوحة سنلن', category: 'أجهزة طبية' },
+  { id: 'hba1c', name: 'جهاز قياس السكر التراكمي', category: 'أجهزة طبية' },
+  { id: 'cholesterol_meter', name: 'جهاز قياس الكوليسترول', category: 'أجهزة طبية' },
+  { id: 'hemoglobin_meter', name: 'جهاز قياس الهيموجلوبين', category: 'أجهزة طبية' },
+  { id: 'urine_analyzer', name: 'جهاز تحليل البول', category: 'أجهزة طبية' },
+  { id: 'infant_warmer', name: 'جهاز تدفئة الأطفال', category: 'أجهزة طبية' },
+  { id: 'phototherapy', name: 'جهاز العلاج الضوئي', category: 'أجهزة طبية' },
   
   // أدوات الفحص
   { id: 'stethoscope', name: 'سماعة طبية', category: 'أدوات الفحص' },
   { id: 'otoscope', name: 'منظار الأذن', category: 'أدوات الفحص' },
   { id: 'ophthalmoscope', name: 'منظار العين', category: 'أدوات الفحص' },
+  { id: 'dermatoscope', name: 'منظار الجلد', category: 'أدوات الفحص' },
   { id: 'tongue_depressor', name: 'خافض لسان', category: 'أدوات الفحص' },
   { id: 'reflex_hammer', name: 'مطرقة الانعكاسات', category: 'أدوات الفحص' },
   { id: 'tape_measure', name: 'شريط قياس طبي', category: 'أدوات الفحص' },
   { id: 'pen_light', name: 'قلم ضوئي للفحص', category: 'أدوات الفحص' },
+  { id: 'tuning_fork', name: 'شوكة رنانة', category: 'أدوات الفحص' },
+  { id: 'nasal_speculum', name: 'منظار أنف', category: 'أدوات الفحص' },
+  { id: 'vaginal_speculum', name: 'منظار مهبلي', category: 'أدوات الفحص' },
+  { id: 'proctoscope', name: 'منظار شرجي', category: 'أدوات الفحص' },
   
   // أدوات الإسعافات الأولية
   { id: 'emergency_cart', name: 'عربة طوارئ', category: 'إسعافات أولية' },
   { id: 'oxygen_cylinder', name: 'اسطوانة أكسجين', category: 'إسعافات أولية' },
+  { id: 'oxygen_regulator', name: 'منظم أكسجين', category: 'إسعافات أولية' },
+  { id: 'oxygen_mask', name: 'قناع أكسجين', category: 'إسعافات أولية' },
+  { id: 'nasal_cannula', name: 'قنية أنفية', category: 'إسعافات أولية' },
   { id: 'ambu_bag', name: 'جهاز تنفس يدوي (Ambu Bag)', category: 'إسعافات أولية' },
+  { id: 'ambu_bag_pediatric', name: 'جهاز تنفس يدوي أطفال', category: 'إسعافات أولية' },
   { id: 'first_aid_kit', name: 'حقيبة إسعافات أولية', category: 'إسعافات أولية' },
   { id: 'stretcher', name: 'نقالة', category: 'إسعافات أولية' },
+  { id: 'scoop_stretcher', name: 'نقالة مجرفية', category: 'إسعافات أولية' },
+  { id: 'spine_board', name: 'لوح العمود الفقري', category: 'إسعافات أولية' },
   { id: 'wheelchair', name: 'كرسي متحرك', category: 'إسعافات أولية' },
   { id: 'splints', name: 'جبائر', category: 'إسعافات أولية' },
+  { id: 'sam_splint', name: 'جبيرة سام', category: 'إسعافات أولية' },
   { id: 'cervical_collar', name: 'طوق رقبة', category: 'إسعافات أولية' },
+  { id: 'head_immobilizer', name: 'مثبت رأس', category: 'إسعافات أولية' },
+  { id: 'ked', name: 'جهاز استخراج كيندريك', category: 'إسعافات أولية' },
+  { id: 'aed', name: 'جهاز الصدمات الآلي (AED)', category: 'إسعافات أولية' },
+  { id: 'laryngoscope', name: 'منظار حنجرة', category: 'إسعافات أولية' },
+  { id: 'endotracheal_tube', name: 'أنبوب رغامي', category: 'إسعافات أولية' },
+  { id: 'airway_oral', name: 'مجرى هوائي فموي', category: 'إسعافات أولية' },
+  { id: 'airway_nasal', name: 'مجرى هوائي أنفي', category: 'إسعافات أولية' },
   
   // أدوات التطعيم
   { id: 'vaccine_fridge', name: 'ثلاجة لقاحات', category: 'التطعيمات' },
+  { id: 'vaccine_freezer', name: 'فريزر لقاحات', category: 'التطعيمات' },
   { id: 'vaccine_carrier', name: 'حافظة لقاحات', category: 'التطعيمات' },
+  { id: 'cold_box', name: 'صندوق تبريد', category: 'التطعيمات' },
   { id: 'ice_pack', name: 'أكياس ثلج', category: 'التطعيمات' },
   { id: 'temp_monitor', name: 'جهاز مراقبة درجة الحرارة', category: 'التطعيمات' },
+  { id: 'data_logger', name: 'جهاز تسجيل درجات الحرارة', category: 'التطعيمات' },
+  { id: 'vaccine_tray', name: 'صينية لقاحات', category: 'التطعيمات' },
   
   // أدوات المختبر
   { id: 'blood_collection_tubes', name: 'أنابيب جمع الدم', category: 'المختبر' },
+  { id: 'edta_tubes', name: 'أنابيب EDTA', category: 'المختبر' },
+  { id: 'serum_tubes', name: 'أنابيب سيرم', category: 'المختبر' },
+  { id: 'citrate_tubes', name: 'أنابيب سترات', category: 'المختبر' },
   { id: 'syringes', name: 'محاقن (سرنجات)', category: 'المختبر' },
+  { id: 'syringes_1ml', name: 'سرنجات 1 مل', category: 'المختبر' },
+  { id: 'syringes_3ml', name: 'سرنجات 3 مل', category: 'المختبر' },
+  { id: 'syringes_5ml', name: 'سرنجات 5 مل', category: 'المختبر' },
+  { id: 'syringes_10ml', name: 'سرنجات 10 مل', category: 'المختبر' },
+  { id: 'insulin_syringes', name: 'سرنجات إنسولين', category: 'المختبر' },
   { id: 'needles', name: 'إبر طبية', category: 'المختبر' },
+  { id: 'butterfly_needles', name: 'إبر فراشة', category: 'المختبر' },
+  { id: 'iv_cannula', name: 'كانيولا وريدية', category: 'المختبر' },
   { id: 'tourniquet', name: 'رباط ضاغط', category: 'المختبر' },
   { id: 'alcohol_swabs', name: 'مسحات كحول', category: 'المختبر' },
   { id: 'cotton_balls', name: 'كرات قطن', category: 'المختبر' },
+  { id: 'gauze', name: 'شاش طبي', category: 'المختبر' },
+  { id: 'bandages', name: 'ضمادات', category: 'المختبر' },
   { id: 'urine_cups', name: 'أكواب عينات البول', category: 'المختبر' },
+  { id: 'stool_cups', name: 'أكواب عينات البراز', category: 'المختبر' },
+  { id: 'swabs', name: 'مسحات قطنية', category: 'المختبر' },
+  { id: 'lancets', name: 'وخازات', category: 'المختبر' },
+  { id: 'slides', name: 'شرائح مجهرية', category: 'المختبر' },
+  { id: 'cover_slips', name: 'أغطية شرائح', category: 'المختبر' },
+  { id: 'pipettes', name: 'ماصات', category: 'المختبر' },
+  { id: 'test_tubes', name: 'أنابيب اختبار', category: 'المختبر' },
+  { id: 'test_tube_rack', name: 'حامل أنابيب', category: 'المختبر' },
   
   // أثاث طبي
   { id: 'exam_bed', name: 'سرير فحص', category: 'أثاث طبي' },
+  { id: 'gyneco_bed', name: 'سرير نسائية', category: 'أثاث طبي' },
+  { id: 'pediatric_bed', name: 'سرير أطفال', category: 'أثاث طبي' },
   { id: 'exam_light', name: 'إضاءة فحص', category: 'أثاث طبي' },
+  { id: 'surgical_light', name: 'إضاءة جراحية', category: 'أثاث طبي' },
   { id: 'instrument_table', name: 'طاولة أدوات', category: 'أثاث طبي' },
+  { id: 'mayo_stand', name: 'طاولة مايو', category: 'أثاث طبي' },
   { id: 'medicine_cabinet', name: 'خزانة أدوية', category: 'أثاث طبي' },
+  { id: 'medicine_trolley', name: 'عربة أدوية', category: 'أثاث طبي' },
+  { id: 'iv_stand', name: 'حامل محاليل', category: 'أثاث طبي' },
   { id: 'sharps_container', name: 'حاوية الأدوات الحادة', category: 'أثاث طبي' },
   { id: 'medical_waste_bin', name: 'سلة نفايات طبية', category: 'أثاث طبي' },
+  { id: 'screen_divider', name: 'ستارة فاصلة', category: 'أثاث طبي' },
+  { id: 'step_stool', name: 'درج صعود', category: 'أثاث طبي' },
+  { id: 'footstool', name: 'مسند قدم', category: 'أثاث طبي' },
   
   // أدوات الأسنان
   { id: 'dental_chair', name: 'كرسي أسنان', category: 'طب الأسنان' },
   { id: 'dental_unit', name: 'وحدة أسنان متكاملة', category: 'طب الأسنان' },
   { id: 'dental_xray', name: 'جهاز أشعة أسنان', category: 'طب الأسنان' },
+  { id: 'panoramic_xray', name: 'جهاز أشعة بانورامية', category: 'طب الأسنان' },
   { id: 'dental_instruments', name: 'أدوات أسنان أساسية', category: 'طب الأسنان' },
   { id: 'dental_sterilizer', name: 'جهاز تعقيم أسنان', category: 'طب الأسنان' },
+  { id: 'dental_compressor', name: 'ضاغط هواء أسنان', category: 'طب الأسنان' },
+  { id: 'dental_suction', name: 'جهاز شفط أسنان', category: 'طب الأسنان' },
+  { id: 'ultrasonic_scaler', name: 'جهاز تنظيف بالموجات', category: 'طب الأسنان' },
+  { id: 'light_cure', name: 'جهاز تصليب الحشوات', category: 'طب الأسنان' },
+  { id: 'amalgamator', name: 'جهاز خلط الحشوات', category: 'طب الأسنان' },
+  
+  // أدوات الجراحة الصغرى
+  { id: 'surgical_set', name: 'طقم جراحة صغرى', category: 'الجراحة الصغرى' },
+  { id: 'suture_kit', name: 'طقم خياطة', category: 'الجراحة الصغرى' },
+  { id: 'suture_threads', name: 'خيوط جراحية', category: 'الجراحة الصغرى' },
+  { id: 'scalpel', name: 'مشرط', category: 'الجراحة الصغرى' },
+  { id: 'scalpel_blades', name: 'شفرات مشرط', category: 'الجراحة الصغرى' },
+  { id: 'scissors_surgical', name: 'مقص جراحي', category: 'الجراحة الصغرى' },
+  { id: 'forceps', name: 'ملقط جراحي', category: 'الجراحة الصغرى' },
+  { id: 'needle_holder', name: 'ماسك إبر', category: 'الجراحة الصغرى' },
+  { id: 'retractors', name: 'مباعدات', category: 'الجراحة الصغرى' },
+  { id: 'artery_forceps', name: 'ملقط شرياني', category: 'الجراحة الصغرى' },
+  { id: 'tissue_forceps', name: 'ملقط أنسجة', category: 'الجراحة الصغرى' },
+  { id: 'dressing_set', name: 'طقم غيار', category: 'الجراحة الصغرى' },
+  { id: 'kidney_dish', name: 'طبق كلوي', category: 'الجراحة الصغرى' },
+  { id: 'gallipot', name: 'وعاء محاليل', category: 'الجراحة الصغرى' },
+  
+  // مستلزمات التعقيم والنظافة
+  { id: 'gloves_sterile', name: 'قفازات معقمة', category: 'التعقيم والنظافة' },
+  { id: 'gloves_exam', name: 'قفازات فحص', category: 'التعقيم والنظافة' },
+  { id: 'gloves_nitrile', name: 'قفازات نيتريل', category: 'التعقيم والنظافة' },
+  { id: 'masks_surgical', name: 'كمامات جراحية', category: 'التعقيم والنظافة' },
+  { id: 'masks_n95', name: 'كمامات N95', category: 'التعقيم والنظافة' },
+  { id: 'gowns', name: 'عباءات طبية', category: 'التعقيم والنظافة' },
+  { id: 'caps', name: 'قبعات طبية', category: 'التعقيم والنظافة' },
+  { id: 'shoe_covers', name: 'أغطية أحذية', category: 'التعقيم والنظافة' },
+  { id: 'face_shield', name: 'واقي وجه', category: 'التعقيم والنظافة' },
+  { id: 'goggles', name: 'نظارات واقية', category: 'التعقيم والنظافة' },
+  { id: 'aprons', name: 'مرايل بلاستيكية', category: 'التعقيم والنظافة' },
+  { id: 'hand_sanitizer', name: 'معقم يدين', category: 'التعقيم والنظافة' },
+  { id: 'disinfectant', name: 'مطهر سطحي', category: 'التعقيم والنظافة' },
+  { id: 'sterilization_pouches', name: 'أكياس تعقيم', category: 'التعقيم والنظافة' },
+  { id: 'indicator_tape', name: 'شريط مؤشر تعقيم', category: 'التعقيم والنظافة' },
 ];
 
 // قوائم الأدوات غير الطبية
 const nonMedicalEquipmentList = [
   // أثاث مكتبي
   { id: 'desk', name: 'مكتب', category: 'أثاث مكتبي' },
+  { id: 'desk_manager', name: 'مكتب مدير', category: 'أثاث مكتبي' },
+  { id: 'desk_secretary', name: 'مكتب سكرتارية', category: 'أثاث مكتبي' },
   { id: 'office_chair', name: 'كرسي مكتبي', category: 'أثاث مكتبي' },
+  { id: 'executive_chair', name: 'كرسي مدير', category: 'أثاث مكتبي' },
   { id: 'visitor_chair', name: 'كرسي زوار', category: 'أثاث مكتبي' },
   { id: 'waiting_chair', name: 'كرسي انتظار', category: 'أثاث مكتبي' },
+  { id: 'bench_3seat', name: 'كنب انتظار 3 مقاعد', category: 'أثاث مكتبي' },
+  { id: 'bench_4seat', name: 'كنب انتظار 4 مقاعد', category: 'أثاث مكتبي' },
   { id: 'filing_cabinet', name: 'خزانة ملفات', category: 'أثاث مكتبي' },
+  { id: 'filing_cabinet_4drawer', name: 'خزانة ملفات 4 أدراج', category: 'أثاث مكتبي' },
   { id: 'bookshelf', name: 'رف كتب', category: 'أثاث مكتبي' },
+  { id: 'bookcase', name: 'مكتبة', category: 'أثاث مكتبي' },
   { id: 'counter', name: 'كاونتر استقبال', category: 'أثاث مكتبي' },
+  { id: 'meeting_table', name: 'طاولة اجتماعات', category: 'أثاث مكتبي' },
+  { id: 'coffee_table', name: 'طاولة قهوة', category: 'أثاث مكتبي' },
+  { id: 'side_table', name: 'طاولة جانبية', category: 'أثاث مكتبي' },
+  { id: 'drawer_unit', name: 'وحدة أدراج', category: 'أثاث مكتبي' },
+  { id: 'coat_hanger', name: 'علاقة ملابس', category: 'أثاث مكتبي' },
+  { id: 'notice_board', name: 'لوحة إعلانات', category: 'أثاث مكتبي' },
+  { id: 'whiteboard', name: 'سبورة بيضاء', category: 'أثاث مكتبي' },
+  { id: 'corkboard', name: 'لوحة فلين', category: 'أثاث مكتبي' },
   
   // أجهزة إلكترونية
   { id: 'computer', name: 'جهاز كمبيوتر', category: 'أجهزة إلكترونية' },
+  { id: 'computer_desktop', name: 'كمبيوتر مكتبي', category: 'أجهزة إلكترونية' },
   { id: 'laptop', name: 'لابتوب', category: 'أجهزة إلكترونية' },
+  { id: 'monitor', name: 'شاشة كمبيوتر', category: 'أجهزة إلكترونية' },
+  { id: 'keyboard', name: 'لوحة مفاتيح', category: 'أجهزة إلكترونية' },
+  { id: 'mouse', name: 'فأرة', category: 'أجهزة إلكترونية' },
   { id: 'printer', name: 'طابعة', category: 'أجهزة إلكترونية' },
+  { id: 'printer_laser', name: 'طابعة ليزر', category: 'أجهزة إلكترونية' },
+  { id: 'printer_color', name: 'طابعة ملونة', category: 'أجهزة إلكترونية' },
+  { id: 'printer_label', name: 'طابعة ملصقات', category: 'أجهزة إلكترونية' },
   { id: 'scanner', name: 'ماسح ضوئي', category: 'أجهزة إلكترونية' },
   { id: 'copier', name: 'آلة تصوير', category: 'أجهزة إلكترونية' },
+  { id: 'multifunction', name: 'طابعة متعددة الوظائف', category: 'أجهزة إلكترونية' },
   { id: 'phone', name: 'هاتف أرضي', category: 'أجهزة إلكترونية' },
+  { id: 'phone_cordless', name: 'هاتف لاسلكي', category: 'أجهزة إلكترونية' },
   { id: 'fax', name: 'جهاز فاكس', category: 'أجهزة إلكترونية' },
   { id: 'projector', name: 'جهاز عرض (بروجكتور)', category: 'أجهزة إلكترونية' },
-  { id: 'tv_screen', name: 'شاشة عرض', category: 'أجهزة إلكترونية' },
+  { id: 'projector_screen', name: 'شاشة عرض بروجكتور', category: 'أجهزة إلكترونية' },
+  { id: 'tv_screen', name: 'شاشة تلفزيون', category: 'أجهزة إلكترونية' },
+  { id: 'tv_bracket', name: 'حامل شاشة', category: 'أجهزة إلكترونية' },
   { id: 'cctv', name: 'كاميرات مراقبة', category: 'أجهزة إلكترونية' },
+  { id: 'dvr', name: 'جهاز تسجيل DVR', category: 'أجهزة إلكترونية' },
   { id: 'fingerprint', name: 'جهاز بصمة', category: 'أجهزة إلكترونية' },
+  { id: 'intercom', name: 'جهاز اتصال داخلي', category: 'أجهزة إلكترونية' },
+  { id: 'router', name: 'راوتر', category: 'أجهزة إلكترونية' },
+  { id: 'switch', name: 'سويتش شبكة', category: 'أجهزة إلكترونية' },
+  { id: 'access_point', name: 'أكسس بوينت', category: 'أجهزة إلكترونية' },
+  { id: 'barcode_reader', name: 'قارئ باركود', category: 'أجهزة إلكترونية' },
+  { id: 'queue_system', name: 'نظام انتظار', category: 'أجهزة إلكترونية' },
+  { id: 'speaker', name: 'سماعة إعلان', category: 'أجهزة إلكترونية' },
+  { id: 'microphone', name: 'ميكروفون', category: 'أجهزة إلكترونية' },
   
   // تكييف وتبريد
   { id: 'ac_split', name: 'مكيف سبليت', category: 'تكييف وتبريد' },
+  { id: 'ac_split_1ton', name: 'مكيف سبليت 1 طن', category: 'تكييف وتبريد' },
+  { id: 'ac_split_1.5ton', name: 'مكيف سبليت 1.5 طن', category: 'تكييف وتبريد' },
+  { id: 'ac_split_2ton', name: 'مكيف سبليت 2 طن', category: 'تكييف وتبريد' },
   { id: 'ac_window', name: 'مكيف شباك', category: 'تكييف وتبريد' },
   { id: 'ac_central', name: 'تكييف مركزي', category: 'تكييف وتبريد' },
+  { id: 'ac_cassette', name: 'مكيف كاسيت', category: 'تكييف وتبريد' },
+  { id: 'ac_floor', name: 'مكيف أرضي', category: 'تكييف وتبريد' },
   { id: 'water_cooler', name: 'برادة ماء', category: 'تكييف وتبريد' },
+  { id: 'water_dispenser', name: 'موزع مياه', category: 'تكييف وتبريد' },
   { id: 'fridge', name: 'ثلاجة', category: 'تكييف وتبريد' },
+  { id: 'fridge_small', name: 'ثلاجة صغيرة', category: 'تكييف وتبريد' },
+  { id: 'freezer', name: 'فريزر', category: 'تكييف وتبريد' },
   { id: 'fan', name: 'مروحة', category: 'تكييف وتبريد' },
+  { id: 'fan_ceiling', name: 'مروحة سقف', category: 'تكييف وتبريد' },
+  { id: 'fan_stand', name: 'مروحة عامود', category: 'تكييف وتبريد' },
+  { id: 'heater', name: 'دفاية', category: 'تكييف وتبريد' },
+  { id: 'air_purifier', name: 'جهاز تنقية الهواء', category: 'تكييف وتبريد' },
+  { id: 'dehumidifier', name: 'جهاز إزالة الرطوبة', category: 'تكييف وتبريد' },
   
   // إضاءة
   { id: 'ceiling_light', name: 'إضاءة سقف', category: 'إضاءة' },
   { id: 'fluorescent', name: 'لمبات فلورسنت', category: 'إضاءة' },
+  { id: 'fluorescent_2ft', name: 'نيون 2 قدم', category: 'إضاءة' },
+  { id: 'fluorescent_4ft', name: 'نيون 4 قدم', category: 'إضاءة' },
   { id: 'led_lights', name: 'إضاءة LED', category: 'إضاءة' },
+  { id: 'led_panel', name: 'لوحة LED', category: 'إضاءة' },
+  { id: 'led_bulb', name: 'لمبة LED', category: 'إضاءة' },
+  { id: 'spotlight', name: 'سبوت لايت', category: 'إضاءة' },
+  { id: 'downlight', name: 'داون لايت', category: 'إضاءة' },
   { id: 'emergency_light', name: 'إضاءة طوارئ', category: 'إضاءة' },
+  { id: 'exit_light', name: 'إضاءة مخرج', category: 'إضاءة' },
   { id: 'outdoor_light', name: 'إضاءة خارجية', category: 'إضاءة' },
+  { id: 'desk_lamp', name: 'مصباح مكتب', category: 'إضاءة' },
+  { id: 'wall_light', name: 'إضاءة جدارية', category: 'إضاءة' },
   
   // سلامة وأمان
+  { id: 'fire_extinguisher_co2', name: 'طفاية ثاني أكسيد الكربون', category: 'سلامة وأمان' },
+  { id: 'fire_extinguisher_powder', name: 'طفاية بودرة', category: 'سلامة وأمان' },
+  { id: 'fire_extinguisher_foam', name: 'طفاية رغوة', category: 'سلامة وأمان' },
   { id: 'fire_extinguisher', name: 'طفاية حريق', category: 'سلامة وأمان' },
+  { id: 'fire_hose', name: 'خرطوم إطفاء', category: 'سلامة وأمان' },
+  { id: 'fire_blanket', name: 'بطانية إطفاء', category: 'سلامة وأمان' },
   { id: 'fire_alarm', name: 'جهاز إنذار حريق', category: 'سلامة وأمان' },
+  { id: 'fire_alarm_panel', name: 'لوحة إنذار حريق', category: 'سلامة وأمان' },
   { id: 'smoke_detector', name: 'كاشف دخان', category: 'سلامة وأمان' },
+  { id: 'heat_detector', name: 'كاشف حرارة', category: 'سلامة وأمان' },
+  { id: 'manual_call_point', name: 'نقطة نداء يدوية', category: 'سلامة وأمان' },
   { id: 'first_aid_sign', name: 'لوحة إسعافات أولية', category: 'سلامة وأمان' },
   { id: 'exit_sign', name: 'لوحة مخرج طوارئ', category: 'سلامة وأمان' },
   { id: 'safety_cabinet', name: 'خزانة معدات السلامة', category: 'سلامة وأمان' },
+  { id: 'fire_door', name: 'باب مقاوم للحريق', category: 'سلامة وأمان' },
+  { id: 'safety_signs', name: 'لوحات إرشادية', category: 'سلامة وأمان' },
+  { id: 'emergency_shower', name: 'دش طوارئ', category: 'سلامة وأمان' },
+  { id: 'eyewash_station', name: 'محطة غسيل عيون', category: 'سلامة وأمان' },
   
   // نظافة وصيانة
   { id: 'vacuum_cleaner', name: 'مكنسة كهربائية', category: 'نظافة وصيانة' },
+  { id: 'vacuum_wet_dry', name: 'مكنسة رطب وجاف', category: 'نظافة وصيانة' },
   { id: 'floor_polisher', name: 'ماكينة تلميع أرضيات', category: 'نظافة وصيانة' },
+  { id: 'floor_scrubber', name: 'ماكينة غسيل أرضيات', category: 'نظافة وصيانة' },
+  { id: 'pressure_washer', name: 'ماكينة غسيل بالضغط', category: 'نظافة وصيانة' },
   { id: 'cleaning_cart', name: 'عربة نظافة', category: 'نظافة وصيانة' },
   { id: 'trash_bin', name: 'سلة مهملات', category: 'نظافة وصيانة' },
+  { id: 'trash_bin_pedal', name: 'سلة مهملات بدواسة', category: 'نظافة وصيانة' },
+  { id: 'trash_bin_large', name: 'حاوية نفايات كبيرة', category: 'نظافة وصيانة' },
+  { id: 'recycling_bin', name: 'سلة إعادة تدوير', category: 'نظافة وصيانة' },
   { id: 'mop_bucket', name: 'دلو ممسحة', category: 'نظافة وصيانة' },
+  { id: 'mop', name: 'ممسحة', category: 'نظافة وصيانة' },
+  { id: 'broom', name: 'مكنسة يدوية', category: 'نظافة وصيانة' },
+  { id: 'dustpan', name: 'جاروف', category: 'نظافة وصيانة' },
+  { id: 'soap_dispenser', name: 'موزع صابون', category: 'نظافة وصيانة' },
+  { id: 'paper_towel_dispenser', name: 'موزع مناديل', category: 'نظافة وصيانة' },
+  { id: 'hand_dryer', name: 'مجفف أيدي', category: 'نظافة وصيانة' },
+  { id: 'toilet_brush', name: 'فرشاة مرحاض', category: 'نظافة وصيانة' },
   
   // معدات متنوعة
   { id: 'generator', name: 'مولد كهربائي', category: 'معدات متنوعة' },
+  { id: 'generator_small', name: 'مولد صغير', category: 'معدات متنوعة' },
   { id: 'ups', name: 'جهاز UPS', category: 'معدات متنوعة' },
+  { id: 'ups_rack', name: 'UPS للخوادم', category: 'معدات متنوعة' },
+  { id: 'stabilizer', name: 'منظم جهد', category: 'معدات متنوعة' },
   { id: 'water_tank', name: 'خزان مياه', category: 'معدات متنوعة' },
+  { id: 'water_tank_ground', name: 'خزان أرضي', category: 'معدات متنوعة' },
+  { id: 'water_tank_elevated', name: 'خزان علوي', category: 'معدات متنوعة' },
   { id: 'water_pump', name: 'مضخة مياه', category: 'معدات متنوعة' },
+  { id: 'booster_pump', name: 'مضخة ضغط', category: 'معدات متنوعة' },
+  { id: 'water_heater', name: 'سخان مياه', category: 'معدات متنوعة' },
   { id: 'ladder', name: 'سلم', category: 'معدات متنوعة' },
+  { id: 'ladder_folding', name: 'سلم قابل للطي', category: 'معدات متنوعة' },
+  { id: 'ladder_extension', name: 'سلم تمديد', category: 'معدات متنوعة' },
   { id: 'toolbox', name: 'صندوق أدوات', category: 'معدات متنوعة' },
+  { id: 'tool_set', name: 'طقم أدوات', category: 'معدات متنوعة' },
+  { id: 'drill', name: 'دريل', category: 'معدات متنوعة' },
+  { id: 'safe', name: 'خزنة', category: 'معدات متنوعة' },
+  { id: 'key_cabinet', name: 'خزانة مفاتيح', category: 'معدات متنوعة' },
+  { id: 'clock', name: 'ساعة حائط', category: 'معدات متنوعة' },
+  { id: 'curtains', name: 'ستائر', category: 'معدات متنوعة' },
+  { id: 'blinds', name: 'ستائر معدنية', category: 'معدات متنوعة' },
+  { id: 'carpet', name: 'سجاد', category: 'معدات متنوعة' },
+  { id: 'mat', name: 'ممسحة أرجل', category: 'معدات متنوعة' },
+  { id: 'mirror', name: 'مرآة', category: 'معدات متنوعة' },
+  
+  // مستلزمات مكتبية
+  { id: 'paper_a4', name: 'ورق A4', category: 'مستلزمات مكتبية' },
+  { id: 'paper_a3', name: 'ورق A3', category: 'مستلزمات مكتبية' },
+  { id: 'ink_cartridge', name: 'حبر طابعة', category: 'مستلزمات مكتبية' },
+  { id: 'toner', name: 'حبر ليزر', category: 'مستلزمات مكتبية' },
+  { id: 'stapler', name: 'دباسة', category: 'مستلزمات مكتبية' },
+  { id: 'staples', name: 'دبابيس', category: 'مستلزمات مكتبية' },
+  { id: 'hole_punch', name: 'خرامة', category: 'مستلزمات مكتبية' },
+  { id: 'scissors', name: 'مقص', category: 'مستلزمات مكتبية' },
+  { id: 'tape', name: 'شريط لاصق', category: 'مستلزمات مكتبية' },
+  { id: 'glue', name: 'صمغ', category: 'مستلزمات مكتبية' },
+  { id: 'pens', name: 'أقلام', category: 'مستلزمات مكتبية' },
+  { id: 'pencils', name: 'أقلام رصاص', category: 'مستلزمات مكتبية' },
+  { id: 'markers', name: 'أقلام ماركر', category: 'مستلزمات مكتبية' },
+  { id: 'highlighters', name: 'أقلام تحديد', category: 'مستلزمات مكتبية' },
+  { id: 'folders', name: 'ملفات', category: 'مستلزمات مكتبية' },
+  { id: 'binders', name: 'كلاسيرات', category: 'مستلزمات مكتبية' },
+  { id: 'paper_clips', name: 'مشابك ورق', category: 'مستلزمات مكتبية' },
+  { id: 'rubber_bands', name: 'أربطة مطاطية', category: 'مستلزمات مكتبية' },
+  { id: 'envelopes', name: 'مظاريف', category: 'مستلزمات مكتبية' },
+  { id: 'stamp_pad', name: 'وسادة أختام', category: 'مستلزمات مكتبية' },
+  { id: 'calculator', name: 'آلة حاسبة', category: 'مستلزمات مكتبية' },
+  { id: 'desk_organizer', name: 'منظم مكتب', category: 'مستلزمات مكتبية' },
+  { id: 'letter_tray', name: 'صينية أوراق', category: 'مستلزمات مكتبية' },
 ];
 
 export default function CenterDeficiencyTool() {
@@ -175,6 +409,9 @@ export default function CenterDeficiencyTool() {
   const [showSavedReports, setShowSavedReports] = useState(false);
   const [reportTitle, setReportTitle] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [showFilePreview, setShowFilePreview] = useState(false);
+  const [fileAnalysisResult, setFileAnalysisResult] = useState(null);
+  const [pendingItems, setPendingItems] = useState([]);
 
   useEffect(() => {
     loadHealthCenters();
@@ -653,6 +890,7 @@ export default function CenterDeficiencyTool() {
 المطلوب:
 1. استخرج اسم المركز الصحي إن وُجد في الملف
 2. استخرج قائمة النواقص مع الكميات
+3. استخرج النص الكامل للملف أو ملخص لمحتواه
 
 قائمة المراكز الصحية المتاحة:
 ${centerNames}
@@ -662,23 +900,29 @@ ${equipmentNames}
 
 أرجع النتيجة بالشكل التالي:
 - center_name: اسم المركز (من القائمة أعلاه إن وجد، أو فارغ)
+- file_content: النص الكامل أو ملخص لمحتوى الملف
 - items: قائمة بالنواقص، كل عنصر يحتوي على:
-  - name: اسم الأداة (من القائمة أعلاه)
+  - name: اسم الأداة (من القائمة أعلاه أو كما وردت في الملف)
+  - original_name: الاسم الأصلي كما ورد في الملف
   - quantity: العدد المطلوب (رقم)
+  - matched: هل تم مطابقتها مع القائمة (true/false)
 
-ملاحظة: طابق أسماء الأدوات مع القائمة المتاحة قدر الإمكان.`,
+ملاحظة: أضف جميع النواقص المذكورة حتى لو لم تتطابق مع القائمة.`,
         file_urls: [file_url],
         response_json_schema: {
           type: "object",
           properties: {
             center_name: { type: "string" },
+            file_content: { type: "string" },
             items: {
               type: "array",
               items: {
                 type: "object",
                 properties: {
                   name: { type: "string" },
-                  quantity: { type: "number" }
+                  original_name: { type: "string" },
+                  quantity: { type: "number" },
+                  matched: { type: "boolean" }
                 }
               }
             }
@@ -687,6 +931,53 @@ ${equipmentNames}
       });
 
       if (response) {
+        // معالجة النتائج
+        const processedItems = [];
+        const addedIds = new Set();
+        
+        if (response.items && response.items.length > 0) {
+          response.items.forEach(item => {
+            // البحث عن الأداة في القوائم
+            const matchedEquipment = allEquipment.find(e => 
+              e.name === item.name || 
+              e.name.includes(item.name) || 
+              item.name.includes(e.name)
+            );
+
+            if (matchedEquipment && !addedIds.has(matchedEquipment.id)) {
+              addedIds.add(matchedEquipment.id);
+              processedItems.push({
+                ...matchedEquipment,
+                quantity: item.quantity || 1,
+                original_name: item.original_name || item.name,
+                matched: true,
+                selected: true
+              });
+            } else if (!matchedEquipment) {
+              // أداة غير موجودة في القائمة
+              processedItems.push({
+                id: `custom_${Date.now()}_${Math.random()}`,
+                name: item.original_name || item.name,
+                original_name: item.original_name || item.name,
+                category: 'غير مصنف',
+                type: 'unknown',
+                quantity: item.quantity || 1,
+                matched: false,
+                selected: false
+              });
+            }
+          });
+        }
+
+        // حفظ النتائج وعرض نافذة المعاينة
+        setFileAnalysisResult({
+          center_name: response.center_name,
+          file_content: response.file_content,
+          items: processedItems
+        });
+        setPendingItems(processedItems);
+        setShowFilePreview(true);
+
         // تحديد المركز إن وجد
         if (response.center_name) {
           const matchedCenter = healthCenters.find(c => 
@@ -697,44 +988,6 @@ ${equipmentNames}
             setSelectedCenter(matchedCenter.اسم_المركز);
           }
         }
-
-        // إضافة النواقص
-        if (response.items && response.items.length > 0) {
-          const newItems = [];
-          const addedIds = new Set();
-          
-          response.items.forEach(item => {
-            // البحث عن الأداة في القوائم
-            const matchedEquipment = allEquipment.find(e => 
-              e.name === item.name || 
-              e.name.includes(item.name) || 
-              item.name.includes(e.name)
-            );
-
-            // تجنب التكرار
-            if (matchedEquipment && !addedIds.has(matchedEquipment.id)) {
-              addedIds.add(matchedEquipment.id);
-              newItems.push({
-                ...matchedEquipment,
-                quantity: item.quantity || 1
-              });
-            }
-          });
-
-          if (newItems.length > 0) {
-            // دمج مع العناصر الموجودة وتجنب التكرار
-            setSelectedItems(prev => {
-              const existingIds = new Set(prev.map(p => p.id));
-              const uniqueNewItems = newItems.filter(n => !existingIds.has(n.id));
-              return [...prev, ...uniqueNewItems];
-            });
-            toast.success(`تم استخراج ${newItems.length} عنصر من الملف`);
-          } else {
-            toast.warning('لم يتم العثور على أدوات مطابقة في الملف');
-          }
-        } else {
-          toast.warning('لم يتم العثور على نواقص في الملف');
-        }
       }
     } catch (error) {
       console.error('Error analyzing file:', error);
@@ -743,6 +996,29 @@ ${equipmentNames}
       setIsAnalyzing(false);
       event.target.value = '';
     }
+  };
+
+  const togglePendingItem = (index) => {
+    setPendingItems(prev => prev.map((item, i) => 
+      i === index ? { ...item, selected: !item.selected } : item
+    ));
+  };
+
+  const confirmFileItems = () => {
+    const itemsToAdd = pendingItems.filter(item => item.selected && item.matched);
+    
+    if (itemsToAdd.length > 0) {
+      setSelectedItems(prev => {
+        const existingIds = new Set(prev.map(p => p.id));
+        const uniqueNewItems = itemsToAdd.filter(n => !existingIds.has(n.id));
+        return [...prev, ...uniqueNewItems];
+      });
+      toast.success(`تم إضافة ${itemsToAdd.length} عنصر`);
+    }
+    
+    setShowFilePreview(false);
+    setFileAnalysisResult(null);
+    setPendingItems([]);
   };
 
   return (
@@ -1059,6 +1335,116 @@ ${equipmentNames}
           </div>
         </div>
       </div>
+
+      {/* نافذة معاينة الملف */}
+      <Dialog open={showFilePreview} onOpenChange={setShowFilePreview}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-purple-600" />
+              تحليل محتوى الملف
+            </DialogTitle>
+          </DialogHeader>
+          
+          {fileAnalysisResult && (
+            <div className="flex-1 overflow-y-auto space-y-4">
+              {/* المركز المكتشف */}
+              {fileAnalysisResult.center_name && (
+                <div className="bg-teal-50 border border-teal-200 rounded-lg p-3">
+                  <p className="text-sm text-teal-600 font-medium">المركز المكتشف:</p>
+                  <p className="font-bold text-teal-800">{fileAnalysisResult.center_name}</p>
+                </div>
+              )}
+
+              {/* محتوى الملف */}
+              <div className="bg-gray-50 border rounded-lg p-4">
+                <p className="text-sm text-gray-600 font-medium mb-2">محتوى الملف:</p>
+                <div className="bg-white border rounded p-3 max-h-[150px] overflow-y-auto text-sm whitespace-pre-wrap">
+                  {fileAnalysisResult.file_content || 'لا يوجد محتوى نصي'}
+                </div>
+              </div>
+
+              {/* النواقص المستخرجة */}
+              <div>
+                <p className="text-sm font-medium mb-2 flex items-center gap-2">
+                  <Package className="w-4 h-4" />
+                  النواقص المستخرجة ({pendingItems.length})
+                </p>
+                <div className="border rounded-lg divide-y max-h-[300px] overflow-y-auto">
+                  {pendingItems.length === 0 ? (
+                    <div className="p-4 text-center text-gray-500">
+                      لم يتم العثور على نواقص في الملف
+                    </div>
+                  ) : (
+                    pendingItems.map((item, index) => (
+                      <div 
+                        key={index}
+                        className={`flex items-center gap-3 p-3 ${
+                          item.matched ? 'bg-white' : 'bg-yellow-50'
+                        }`}
+                      >
+                        <Checkbox
+                          checked={item.selected}
+                          onCheckedChange={() => togglePendingItem(index)}
+                          disabled={!item.matched}
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{item.name}</span>
+                            {item.matched ? (
+                              <Badge className="bg-green-100 text-green-800 text-xs">
+                                <CheckCircle2 className="w-3 h-3 ml-1" />
+                                مطابق
+                              </Badge>
+                            ) : (
+                              <Badge className="bg-yellow-100 text-yellow-800 text-xs">
+                                <AlertCircle className="w-3 h-3 ml-1" />
+                                غير موجود بالقائمة
+                              </Badge>
+                            )}
+                          </div>
+                          {item.original_name && item.original_name !== item.name && (
+                            <p className="text-xs text-gray-500">الاسم الأصلي: {item.original_name}</p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">{item.quantity}</Badge>
+                          {item.type === 'medical' && <Stethoscope className="w-4 h-4 text-teal-600" />}
+                          {item.type === 'nonmedical' && <Wrench className="w-4 h-4 text-purple-600" />}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+
+              {/* ملاحظة */}
+              {pendingItems.some(i => !i.matched) && (
+                <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm">
+                  <p className="text-yellow-800">
+                    <AlertCircle className="w-4 h-4 inline ml-1" />
+                    بعض العناصر غير موجودة في القائمة، يمكنك إضافتها يدوياً من قائمة الأدوات.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          <DialogFooter className="mt-4">
+            <Button variant="outline" onClick={() => setShowFilePreview(false)}>
+              إلغاء
+            </Button>
+            <Button 
+              onClick={confirmFileItems}
+              className="bg-teal-600 hover:bg-teal-700"
+              disabled={!pendingItems.some(i => i.selected && i.matched)}
+            >
+              <Plus className="w-4 h-4 ml-2" />
+              إضافة العناصر المحددة ({pendingItems.filter(i => i.selected && i.matched).length})
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* نافذة التقارير المحفوظة */}
       <Dialog open={showSavedReports} onOpenChange={setShowSavedReports}>
