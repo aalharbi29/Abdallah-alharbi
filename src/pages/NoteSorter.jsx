@@ -412,6 +412,8 @@ export default function CenterDeficiencyTool() {
   const [showFilePreview, setShowFilePreview] = useState(false);
   const [fileAnalysisResult, setFileAnalysisResult] = useState(null);
   const [pendingItems, setPendingItems] = useState([]);
+  const [showMultiCenterExport, setShowMultiCenterExport] = useState(false);
+  const [selectedCentersForExport, setSelectedCentersForExport] = useState([]);
 
   useEffect(() => {
     loadHealthCenters();
@@ -776,9 +778,28 @@ export default function CenterDeficiencyTool() {
     toast.success('تم تصدير التقرير');
   };
 
-  const exportAllCentersReport = () => {
+  const openMultiCenterExport = () => {
     if (savedReports.length === 0) {
       toast.error('لا توجد تقارير محفوظة للتصدير');
+      return;
+    }
+    // جمع المراكز الفريدة
+    const uniqueCenters = [...new Set(savedReports.map(r => r.center))];
+    setSelectedCentersForExport(uniqueCenters); // تحديد الكل افتراضياً
+    setShowMultiCenterExport(true);
+  };
+
+  const toggleCenterForExport = (center) => {
+    setSelectedCentersForExport(prev => 
+      prev.includes(center) 
+        ? prev.filter(c => c !== center)
+        : [...prev, center]
+    );
+  };
+
+  const exportSelectedCentersReport = () => {
+    if (selectedCentersForExport.length === 0) {
+      toast.error('الرجاء اختيار مركز واحد على الأقل');
       return;
     }
 
@@ -786,14 +807,16 @@ export default function CenterDeficiencyTool() {
       weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
     });
 
-    // تجميع البيانات حسب المركز
+    // تجميع البيانات للمراكز المختارة فقط
     const centerData = {};
-    savedReports.forEach(report => {
-      if (!centerData[report.center]) {
-        centerData[report.center] = [];
-      }
-      centerData[report.center].push(...report.items);
-    });
+    savedReports
+      .filter(report => selectedCentersForExport.includes(report.center))
+      .forEach(report => {
+        if (!centerData[report.center]) {
+          centerData[report.center] = [];
+        }
+        centerData[report.center].push(...report.items);
+      });
 
     // إزالة التكرارات وجمع الكميات
     Object.keys(centerData).forEach(center => {
@@ -902,9 +925,13 @@ export default function CenterDeficiencyTool() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `تقرير-نواقص-جميع-المراكز-${new Date().toISOString().split('T')[0]}.html`;
+    const fileName = selectedCentersForExport.length === 1 
+      ? `تقرير-نواقص-${selectedCentersForExport[0]}-${new Date().toISOString().split('T')[0]}.html`
+      : `تقرير-نواقص-${selectedCentersForExport.length}-مراكز-${new Date().toISOString().split('T')[0]}.html`;
+    link.download = fileName;
     link.click();
-    toast.success('تم تصدير تقرير جميع المراكز');
+    toast.success(`تم تصدير تقرير ${selectedCentersForExport.length} مركز`);
+    setShowMultiCenterExport(false);
   };
 
   const printReport = () => {
@@ -1001,9 +1028,12 @@ export default function CenterDeficiencyTool() {
     if (!file) return;
 
     setIsAnalyzing(true);
+    toast.info(`جاري تحليل الملف: ${file.name}`);
+    
     try {
       // رفع الملف أولاً
       const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      console.log('File uploaded:', file_url);
 
       // إنشاء قائمة بأسماء الأدوات المتاحة للمطابقة
       const allEquipment = [
@@ -1011,45 +1041,30 @@ export default function CenterDeficiencyTool() {
         ...nonMedicalEquipmentList.map(e => ({ ...e, type: 'nonmedical' }))
       ];
 
-      const equipmentNames = allEquipment.map(e => e.name).join('\n');
-      const centerNames = healthCenters.map(c => c.اسم_المركز).join('\n');
+      // تقليل حجم القوائم للـ AI
+      const equipmentSample = allEquipment.slice(0, 100).map(e => e.name).join('، ');
+      const centerNames = healthCenters.map(c => c.اسم_المركز).join('، ');
 
       // تحليل الملف باستخدام الذكاء الاصطناعي
       const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `أنت محلل مستندات متخصص. قم بقراءة وتحليل هذا الملف بعناية فائقة واستخراج جميع المعلومات المتعلقة بالنواقص والاحتياجات.
+        prompt: `حلل هذا الملف واستخرج:
+1. اسم المركز الصحي (إن وجد)
+2. النص الكامل للملف (أو ملخص إذا كان طويلاً)
+3. قائمة بكل الأدوات/المعدات/النواقص المذكورة
 
-## المهمة:
-1. اقرأ الملف بالكامل واستخرج النص الموجود فيه
-2. حدد اسم المركز الصحي إن ذُكر
-3. استخرج كل النواقص/الاحتياجات المذكورة مع الكميات
+أمثلة على المراكز: ${centerNames}
+أمثلة على الأدوات: ${equipmentSample}
 
-## قائمة المراكز الصحية للمطابقة:
-${centerNames}
-
-## قائمة الأدوات للمطابقة (طابق أي عنصر مشابه):
-${equipmentNames}
-
-## التعليمات المهمة:
-- اقرأ كل سطر في الملف
-- أي شيء يبدو كطلب أو نقص أو احتياج، أضفه للقائمة
-- إذا لم تجد كمية محددة، ضع 1 كافتراضي
-- أضف العنصر حتى لو لم تجد مطابقة في القائمة
-- file_content يجب أن يحتوي على النص الكامل أو ملخص شامل للملف
-
-## صيغة الإخراج:
-{
-  "center_name": "اسم المركز إن وجد",
-  "file_content": "النص الكامل أو ملخص المحتوى - اكتب كل ما تراه في الملف",
-  "items": [
-    {"name": "اسم مطابق من القائمة", "original_name": "الاسم كما ورد", "quantity": 1, "matched": true/false}
-  ]
-}`,
+مهم جداً:
+- اكتب في file_content كل النص الذي تقرأه من الملف
+- استخرج كل عنصر مذكور حتى لو لم يكن في الأمثلة
+- الكمية = 1 إذا لم تذكر`,
         file_urls: [file_url],
         response_json_schema: {
           type: "object",
           properties: {
-            center_name: { type: "string" },
-            file_content: { type: "string" },
+            center_name: { type: "string", description: "اسم المركز الصحي" },
+            file_content: { type: "string", description: "محتوى الملف الكامل أو ملخصه" },
             items: {
               type: "array",
               items: {
@@ -1057,8 +1072,7 @@ ${equipmentNames}
                 properties: {
                   name: { type: "string" },
                   original_name: { type: "string" },
-                  quantity: { type: "number" },
-                  matched: { type: "boolean" }
+                  quantity: { type: "number" }
                 }
               }
             }
@@ -1073,38 +1087,46 @@ ${equipmentNames}
         const processedItems = [];
         const addedIds = new Set();
         
-        if (response.items && response.items.length > 0) {
-          response.items.forEach(item => {
-            if (!item.name && !item.original_name) return;
-            
-            const searchName = (item.name || item.original_name || '').toLowerCase();
-            
-            // البحث عن الأداة في القوائم بطرق متعددة
-            const matchedEquipment = allEquipment.find(e => {
-              const eName = e.name.toLowerCase();
-              return eName === searchName || 
-                     eName.includes(searchName) || 
-                     searchName.includes(eName) ||
-                     eName.split(' ').some(word => searchName.includes(word) && word.length > 3) ||
-                     searchName.split(' ').some(word => eName.includes(word) && word.length > 3);
-            });
+        const extractedItems = response.items || [];
+        console.log('Extracted items:', extractedItems);
+        
+        extractedItems.forEach(item => {
+          const itemName = item.name || item.original_name || '';
+          if (!itemName.trim()) return;
+          
+          const searchName = itemName.toLowerCase().trim();
+          
+          // البحث عن الأداة في القوائم بطرق متعددة
+          const matchedEquipment = allEquipment.find(e => {
+            const eName = e.name.toLowerCase();
+            // مطابقة تامة
+            if (eName === searchName) return true;
+            // مطابقة جزئية
+            if (eName.includes(searchName) || searchName.includes(eName)) return true;
+            // مطابقة كلمات
+            const eWords = eName.split(/[\s\-\(\)]+/).filter(w => w.length > 2);
+            const sWords = searchName.split(/[\s\-\(\)]+/).filter(w => w.length > 2);
+            return eWords.some(ew => sWords.some(sw => ew.includes(sw) || sw.includes(ew)));
+          });
 
-            if (matchedEquipment && !addedIds.has(matchedEquipment.id)) {
-              addedIds.add(matchedEquipment.id);
+          const uniqueKey = matchedEquipment ? matchedEquipment.id : searchName;
+          
+          if (!addedIds.has(uniqueKey)) {
+            addedIds.add(uniqueKey);
+            
+            if (matchedEquipment) {
               processedItems.push({
                 ...matchedEquipment,
                 quantity: item.quantity || 1,
-                original_name: item.original_name || item.name,
+                original_name: itemName,
                 matched: true,
                 selected: true
               });
-            } else if (!matchedEquipment && !addedIds.has(searchName)) {
-              addedIds.add(searchName);
-              // أداة غير موجودة في القائمة
+            } else {
               processedItems.push({
-                id: `custom_${Date.now()}_${Math.random()}`,
-                name: item.original_name || item.name,
-                original_name: item.original_name || item.name,
+                id: `custom_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                name: itemName,
+                original_name: itemName,
                 category: 'غير مصنف',
                 type: 'unknown',
                 quantity: item.quantity || 1,
@@ -1112,14 +1134,17 @@ ${equipmentNames}
                 selected: false
               });
             }
-          });
-        }
+          }
+        });
+
+        console.log('Processed items:', processedItems);
 
         // حفظ النتائج وعرض نافذة المعاينة
         setFileAnalysisResult({
-          center_name: response.center_name,
-          file_content: response.file_content,
-          items: processedItems
+          center_name: response.center_name || '',
+          file_content: response.file_content || 'لم يتم استخراج محتوى نصي من الملف',
+          items: processedItems,
+          raw_response: response
         });
         setPendingItems(processedItems);
         setShowFilePreview(true);
@@ -1127,17 +1152,33 @@ ${equipmentNames}
         // تحديد المركز إن وجد
         if (response.center_name) {
           const matchedCenter = healthCenters.find(c => 
-            c.اسم_المركز.includes(response.center_name) || 
-            response.center_name.includes(c.اسم_المركز)
+            c.اسم_المركز?.includes(response.center_name) || 
+            response.center_name.includes(c.اسم_المركز || '')
           );
           if (matchedCenter) {
             setSelectedCenter(matchedCenter.اسم_المركز);
           }
         }
+        
+        toast.success(`تم تحليل الملف - وجدنا ${processedItems.length} عنصر`);
+      } else {
+        toast.error('لم يتم الحصول على نتائج من التحليل');
+        setFileAnalysisResult({
+          center_name: '',
+          file_content: 'فشل في قراءة الملف',
+          items: []
+        });
+        setShowFilePreview(true);
       }
     } catch (error) {
       console.error('Error analyzing file:', error);
-      toast.error('فشل في تحليل الملف');
+      toast.error('فشل في تحليل الملف: ' + (error.message || 'خطأ غير معروف'));
+      setFileAnalysisResult({
+        center_name: '',
+        file_content: `خطأ: ${error.message || 'فشل في قراءة الملف'}`,
+        items: []
+      });
+      setShowFilePreview(true);
     } finally {
       setIsAnalyzing(false);
       event.target.value = '';
@@ -1251,10 +1292,10 @@ ${equipmentNames}
                     </Button>
                     <Button 
                       variant="outline" 
-                      onClick={exportAllCentersReport}
+                      onClick={openMultiCenterExport}
                       disabled={savedReports.length === 0}
                       className="h-12 bg-gradient-to-r from-teal-50 to-emerald-50 border-teal-200 hover:border-teal-400"
-                      title="تصدير تقرير شامل لجميع المراكز"
+                      title="تصدير تقرير شامل لمراكز مختارة"
                     >
                       <Download className="w-4 h-4 ml-2 text-teal-600" />
                       تقرير شامل
@@ -1596,6 +1637,79 @@ ${equipmentNames}
             >
               <Plus className="w-4 h-4 ml-2" />
               إضافة العناصر المحددة ({pendingItems.filter(i => i.selected && i.matched).length})
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* نافذة اختيار المراكز للتصدير */}
+      <Dialog open={showMultiCenterExport} onOpenChange={setShowMultiCenterExport}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Download className="w-5 h-5 text-teal-600" />
+              تصدير تقرير شامل
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-gray-600">اختر المراكز التي تريد تضمينها في التقرير:</p>
+            
+            <div className="flex gap-2 mb-2">
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setSelectedCentersForExport([...new Set(savedReports.map(r => r.center))])}
+              >
+                تحديد الكل
+              </Button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => setSelectedCentersForExport([])}
+              >
+                إلغاء الكل
+              </Button>
+            </div>
+
+            <div className="max-h-[300px] overflow-y-auto border rounded-lg divide-y">
+              {[...new Set(savedReports.map(r => r.center))].map(center => {
+                const centerReports = savedReports.filter(r => r.center === center);
+                const totalItems = centerReports.reduce((sum, r) => sum + r.items.length, 0);
+                const isSelected = selectedCentersForExport.includes(center);
+                
+                return (
+                  <div 
+                    key={center}
+                    className={`flex items-center gap-3 p-3 cursor-pointer hover:bg-gray-50 ${isSelected ? 'bg-teal-50' : ''}`}
+                    onClick={() => toggleCenterForExport(center)}
+                  >
+                    <Checkbox checked={isSelected} />
+                    <div className="flex-1">
+                      <p className="font-medium">{center}</p>
+                      <p className="text-xs text-gray-500">{centerReports.length} تقرير - {totalItems} عنصر</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="bg-gray-50 rounded-lg p-3 text-sm">
+              <p className="text-gray-600">
+                المراكز المختارة: <span className="font-bold text-teal-600">{selectedCentersForExport.length}</span>
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowMultiCenterExport(false)}>
+              إلغاء
+            </Button>
+            <Button 
+              onClick={exportSelectedCentersReport}
+              disabled={selectedCentersForExport.length === 0}
+              className="bg-teal-600 hover:bg-teal-700"
+            >
+              <Download className="w-4 h-4 ml-2" />
+              تصدير ({selectedCentersForExport.length})
             </Button>
           </DialogFooter>
         </DialogContent>
