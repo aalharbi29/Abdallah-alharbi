@@ -701,6 +701,8 @@ ${equipmentNames}
         // إضافة النواقص
         if (response.items && response.items.length > 0) {
           const newItems = [];
+          const addedIds = new Set();
+          
           response.items.forEach(item => {
             // البحث عن الأداة في القوائم
             const matchedEquipment = allEquipment.find(e => 
@@ -709,7 +711,9 @@ ${equipmentNames}
               item.name.includes(e.name)
             );
 
-            if (matchedEquipment && !selectedItems.some(s => s.id === matchedEquipment.id)) {
+            // تجنب التكرار
+            if (matchedEquipment && !addedIds.has(matchedEquipment.id)) {
+              addedIds.add(matchedEquipment.id);
               newItems.push({
                 ...matchedEquipment,
                 quantity: item.quantity || 1
@@ -718,7 +722,12 @@ ${equipmentNames}
           });
 
           if (newItems.length > 0) {
-            setSelectedItems(prev => [...prev, ...newItems]);
+            // دمج مع العناصر الموجودة وتجنب التكرار
+            setSelectedItems(prev => {
+              const existingIds = new Set(prev.map(p => p.id));
+              const uniqueNewItems = newItems.filter(n => !existingIds.has(n.id));
+              return [...prev, ...uniqueNewItems];
+            });
             toast.success(`تم استخراج ${newItems.length} عنصر من الملف`);
           } else {
             toast.warning('لم يتم العثور على أدوات مطابقة في الملف');
