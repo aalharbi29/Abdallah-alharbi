@@ -884,11 +884,12 @@ ${equipmentNames}
                                     ? 'border-teal-500 bg-teal-50' 
                                     : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                                 }`}
-                                onClick={() => !selected && toggleItem(item)}
+                                onClick={() => toggleItem(item)}
                               >
                                 <Checkbox
                                   checked={selected}
-                                  onCheckedChange={() => toggleItem(item)}
+                                  onCheckedChange={(e) => e.stopPropagation()}
+                                  onClick={(e) => e.stopPropagation()}
                                 />
                                 <span className="flex-1 text-sm">{item.name}</span>
                                 {selected && (
