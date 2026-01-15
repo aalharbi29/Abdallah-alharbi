@@ -85,7 +85,7 @@ const getNavigationItems = (t) => [
   { name: t('nav.settings'), href: createPageUrl("Settings"), icon: Settings },
   { name: t('nav.clinicManagement'), href: createPageUrl("ClinicManagement"), icon: Hospital },
   { name: t('nav.aiAnnouncementDesigner'), href: createPageUrl("AIAnnouncementDesigner"), icon: FileSignature },
-  { name: "فرز الملاحظات", href: createPageUrl("NoteSorter"), icon: FileText },
+  { name: "نواقص المراكز", href: createPageUrl("NoteSorter"), icon: FileText },
   ];
 
 function LayoutContent({ children, currentPageName }) {
