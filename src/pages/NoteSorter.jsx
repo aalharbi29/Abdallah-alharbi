@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Select,
   SelectContent,
@@ -27,348 +27,293 @@ import {
   TabsTrigger,
 } from '@/components/ui/tabs';
 import {
-  Sparkles, FileText, Clock, User, CheckCircle2, AlertTriangle,
-  Loader2, Trash2, Edit2, Filter, Search, Download, Plus,
-  ArrowUpCircle, ArrowDownCircle, Circle, AlertCircle, Printer, FileCode
+  Stethoscope, Wrench, Building2, Search, Download, Plus, Minus,
+  Loader2, Trash2, FileCode, Printer, FileSpreadsheet, Package,
+  CheckCircle2, AlertCircle, Filter, X, Save, List
 } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function NoteSorter() {
-  const [inputText, setInputText] = useState('');
-  const [selectedCenter, setSelectedCenter] = useState('');
-  const [healthCenters, setHealthCenters] = useState([]);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [sortedNotes, setSortedNotes] = useState([]);
-  const [savedNotes, setSavedNotes] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [editingNote, setEditingNote] = useState(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filterCategory, setFilterCategory] = useState('all');
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [activeTab, setActiveTab] = useState('new');
+// قوائم الأدوات الطبية
+const medicalEquipmentList = [
+  // أجهزة طبية رئيسية
+  { id: 'defibrillator', name: 'جهاز صدمات كهربائية (Defibrillator)', category: 'أجهزة طبية' },
+  { id: 'ecg', name: 'جهاز تخطيط القلب (ECG)', category: 'أجهزة طبية' },
+  { id: 'suction', name: 'جهاز شفط', category: 'أجهزة طبية' },
+  { id: 'nebulizer', name: 'جهاز بخار (Nebulizer)', category: 'أجهزة طبية' },
+  { id: 'pulse_oximeter', name: 'جهاز قياس الأكسجين (Pulse Oximeter)', category: 'أجهزة طبية' },
+  { id: 'bp_monitor', name: 'جهاز قياس ضغط الدم', category: 'أجهزة طبية' },
+  { id: 'thermometer_digital', name: 'ميزان حرارة رقمي', category: 'أجهزة طبية' },
+  { id: 'glucometer', name: 'جهاز قياس السكر', category: 'أجهزة طبية' },
+  { id: 'infant_scale', name: 'ميزان أطفال', category: 'أجهزة طبية' },
+  { id: 'adult_scale', name: 'ميزان بالغين', category: 'أجهزة طبية' },
+  { id: 'height_measure', name: 'جهاز قياس الطول', category: 'أجهزة طبية' },
+  { id: 'autoclave', name: 'جهاز تعقيم (Autoclave)', category: 'أجهزة طبية' },
+  { id: 'centrifuge', name: 'جهاز طرد مركزي', category: 'أجهزة طبية' },
+  { id: 'microscope', name: 'مجهر', category: 'أجهزة طبية' },
+  
+  // أدوات الفحص
+  { id: 'stethoscope', name: 'سماعة طبية', category: 'أدوات الفحص' },
+  { id: 'otoscope', name: 'منظار الأذن', category: 'أدوات الفحص' },
+  { id: 'ophthalmoscope', name: 'منظار العين', category: 'أدوات الفحص' },
+  { id: 'tongue_depressor', name: 'خافض لسان', category: 'أدوات الفحص' },
+  { id: 'reflex_hammer', name: 'مطرقة الانعكاسات', category: 'أدوات الفحص' },
+  { id: 'tape_measure', name: 'شريط قياس طبي', category: 'أدوات الفحص' },
+  { id: 'pen_light', name: 'قلم ضوئي للفحص', category: 'أدوات الفحص' },
+  
+  // أدوات الإسعافات الأولية
+  { id: 'emergency_cart', name: 'عربة طوارئ', category: 'إسعافات أولية' },
+  { id: 'oxygen_cylinder', name: 'اسطوانة أكسجين', category: 'إسعافات أولية' },
+  { id: 'ambu_bag', name: 'جهاز تنفس يدوي (Ambu Bag)', category: 'إسعافات أولية' },
+  { id: 'first_aid_kit', name: 'حقيبة إسعافات أولية', category: 'إسعافات أولية' },
+  { id: 'stretcher', name: 'نقالة', category: 'إسعافات أولية' },
+  { id: 'wheelchair', name: 'كرسي متحرك', category: 'إسعافات أولية' },
+  { id: 'splints', name: 'جبائر', category: 'إسعافات أولية' },
+  { id: 'cervical_collar', name: 'طوق رقبة', category: 'إسعافات أولية' },
+  
+  // أدوات التطعيم
+  { id: 'vaccine_fridge', name: 'ثلاجة لقاحات', category: 'التطعيمات' },
+  { id: 'vaccine_carrier', name: 'حافظة لقاحات', category: 'التطعيمات' },
+  { id: 'ice_pack', name: 'أكياس ثلج', category: 'التطعيمات' },
+  { id: 'temp_monitor', name: 'جهاز مراقبة درجة الحرارة', category: 'التطعيمات' },
+  
+  // أدوات المختبر
+  { id: 'blood_collection_tubes', name: 'أنابيب جمع الدم', category: 'المختبر' },
+  { id: 'syringes', name: 'محاقن (سرنجات)', category: 'المختبر' },
+  { id: 'needles', name: 'إبر طبية', category: 'المختبر' },
+  { id: 'tourniquet', name: 'رباط ضاغط', category: 'المختبر' },
+  { id: 'alcohol_swabs', name: 'مسحات كحول', category: 'المختبر' },
+  { id: 'cotton_balls', name: 'كرات قطن', category: 'المختبر' },
+  { id: 'urine_cups', name: 'أكواب عينات البول', category: 'المختبر' },
+  
+  // أثاث طبي
+  { id: 'exam_bed', name: 'سرير فحص', category: 'أثاث طبي' },
+  { id: 'exam_light', name: 'إضاءة فحص', category: 'أثاث طبي' },
+  { id: 'instrument_table', name: 'طاولة أدوات', category: 'أثاث طبي' },
+  { id: 'medicine_cabinet', name: 'خزانة أدوية', category: 'أثاث طبي' },
+  { id: 'sharps_container', name: 'حاوية الأدوات الحادة', category: 'أثاث طبي' },
+  { id: 'medical_waste_bin', name: 'سلة نفايات طبية', category: 'أثاث طبي' },
+  
+  // أدوات الأسنان
+  { id: 'dental_chair', name: 'كرسي أسنان', category: 'طب الأسنان' },
+  { id: 'dental_unit', name: 'وحدة أسنان متكاملة', category: 'طب الأسنان' },
+  { id: 'dental_xray', name: 'جهاز أشعة أسنان', category: 'طب الأسنان' },
+  { id: 'dental_instruments', name: 'أدوات أسنان أساسية', category: 'طب الأسنان' },
+  { id: 'dental_sterilizer', name: 'جهاز تعقيم أسنان', category: 'طب الأسنان' },
+];
 
-  const categories = ['إداري', 'فني', 'طبي', 'مالي', 'موارد بشرية', 'صيانة', 'تجهيزات', 'خدمات', 'أخرى'];
-  const priorities = ['عاجل', 'مهم', 'متوسط', 'منخفض'];
-  const statuses = ['جديد', 'قيد المعالجة', 'مكتمل', 'معلق'];
+// قوائم الأدوات غير الطبية
+const nonMedicalEquipmentList = [
+  // أثاث مكتبي
+  { id: 'desk', name: 'مكتب', category: 'أثاث مكتبي' },
+  { id: 'office_chair', name: 'كرسي مكتبي', category: 'أثاث مكتبي' },
+  { id: 'visitor_chair', name: 'كرسي زوار', category: 'أثاث مكتبي' },
+  { id: 'waiting_chair', name: 'كرسي انتظار', category: 'أثاث مكتبي' },
+  { id: 'filing_cabinet', name: 'خزانة ملفات', category: 'أثاث مكتبي' },
+  { id: 'bookshelf', name: 'رف كتب', category: 'أثاث مكتبي' },
+  { id: 'counter', name: 'كاونتر استقبال', category: 'أثاث مكتبي' },
+  
+  // أجهزة إلكترونية
+  { id: 'computer', name: 'جهاز كمبيوتر', category: 'أجهزة إلكترونية' },
+  { id: 'laptop', name: 'لابتوب', category: 'أجهزة إلكترونية' },
+  { id: 'printer', name: 'طابعة', category: 'أجهزة إلكترونية' },
+  { id: 'scanner', name: 'ماسح ضوئي', category: 'أجهزة إلكترونية' },
+  { id: 'copier', name: 'آلة تصوير', category: 'أجهزة إلكترونية' },
+  { id: 'phone', name: 'هاتف أرضي', category: 'أجهزة إلكترونية' },
+  { id: 'fax', name: 'جهاز فاكس', category: 'أجهزة إلكترونية' },
+  { id: 'projector', name: 'جهاز عرض (بروجكتور)', category: 'أجهزة إلكترونية' },
+  { id: 'tv_screen', name: 'شاشة عرض', category: 'أجهزة إلكترونية' },
+  { id: 'cctv', name: 'كاميرات مراقبة', category: 'أجهزة إلكترونية' },
+  { id: 'fingerprint', name: 'جهاز بصمة', category: 'أجهزة إلكترونية' },
+  
+  // تكييف وتبريد
+  { id: 'ac_split', name: 'مكيف سبليت', category: 'تكييف وتبريد' },
+  { id: 'ac_window', name: 'مكيف شباك', category: 'تكييف وتبريد' },
+  { id: 'ac_central', name: 'تكييف مركزي', category: 'تكييف وتبريد' },
+  { id: 'water_cooler', name: 'برادة ماء', category: 'تكييف وتبريد' },
+  { id: 'fridge', name: 'ثلاجة', category: 'تكييف وتبريد' },
+  { id: 'fan', name: 'مروحة', category: 'تكييف وتبريد' },
+  
+  // إضاءة
+  { id: 'ceiling_light', name: 'إضاءة سقف', category: 'إضاءة' },
+  { id: 'fluorescent', name: 'لمبات فلورسنت', category: 'إضاءة' },
+  { id: 'led_lights', name: 'إضاءة LED', category: 'إضاءة' },
+  { id: 'emergency_light', name: 'إضاءة طوارئ', category: 'إضاءة' },
+  { id: 'outdoor_light', name: 'إضاءة خارجية', category: 'إضاءة' },
+  
+  // سلامة وأمان
+  { id: 'fire_extinguisher', name: 'طفاية حريق', category: 'سلامة وأمان' },
+  { id: 'fire_alarm', name: 'جهاز إنذار حريق', category: 'سلامة وأمان' },
+  { id: 'smoke_detector', name: 'كاشف دخان', category: 'سلامة وأمان' },
+  { id: 'first_aid_sign', name: 'لوحة إسعافات أولية', category: 'سلامة وأمان' },
+  { id: 'exit_sign', name: 'لوحة مخرج طوارئ', category: 'سلامة وأمان' },
+  { id: 'safety_cabinet', name: 'خزانة معدات السلامة', category: 'سلامة وأمان' },
+  
+  // نظافة وصيانة
+  { id: 'vacuum_cleaner', name: 'مكنسة كهربائية', category: 'نظافة وصيانة' },
+  { id: 'floor_polisher', name: 'ماكينة تلميع أرضيات', category: 'نظافة وصيانة' },
+  { id: 'cleaning_cart', name: 'عربة نظافة', category: 'نظافة وصيانة' },
+  { id: 'trash_bin', name: 'سلة مهملات', category: 'نظافة وصيانة' },
+  { id: 'mop_bucket', name: 'دلو ممسحة', category: 'نظافة وصيانة' },
+  
+  // معدات متنوعة
+  { id: 'generator', name: 'مولد كهربائي', category: 'معدات متنوعة' },
+  { id: 'ups', name: 'جهاز UPS', category: 'معدات متنوعة' },
+  { id: 'water_tank', name: 'خزان مياه', category: 'معدات متنوعة' },
+  { id: 'water_pump', name: 'مضخة مياه', category: 'معدات متنوعة' },
+  { id: 'ladder', name: 'سلم', category: 'معدات متنوعة' },
+  { id: 'toolbox', name: 'صندوق أدوات', category: 'معدات متنوعة' },
+];
+
+export default function CenterDeficiencyTool() {
+  const [healthCenters, setHealthCenters] = useState([]);
+  const [selectedCenter, setSelectedCenter] = useState('');
+  const [activeTab, setActiveTab] = useState('medical');
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [savedReports, setSavedReports] = useState([]);
+  const [showSavedReports, setShowSavedReports] = useState(false);
+  const [reportTitle, setReportTitle] = useState('');
 
   useEffect(() => {
-    loadSavedNotes();
     loadHealthCenters();
+    loadSavedReports();
   }, []);
 
   const loadHealthCenters = async () => {
+    setIsLoading(true);
     try {
       const centers = await base44.entities.HealthCenter.list('-updated_date', 100);
       setHealthCenters(Array.isArray(centers) ? centers : []);
     } catch (error) {
       console.error('Error loading health centers:', error);
-    }
-  };
-
-  const loadSavedNotes = async () => {
-    setIsLoading(true);
-    try {
-      const notes = await base44.entities.SortedNote.list('-created_date', 100);
-      setSavedNotes(Array.isArray(notes) ? notes : []);
-    } catch (error) {
-      console.error('Error loading notes:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const analyzeNotes = async () => {
-    if (!inputText.trim()) {
-      toast.error('الرجاء إدخال ملاحظات للتحليل');
+  const loadSavedReports = async () => {
+    // يمكن حفظ التقارير في localStorage أو في قاعدة البيانات
+    const saved = localStorage.getItem('deficiency_reports');
+    if (saved) {
+      setSavedReports(JSON.parse(saved));
+    }
+  };
+
+  const saveReport = () => {
+    if (!selectedCenter || selectedItems.length === 0) {
+      toast.error('الرجاء اختيار مركز وإضافة عناصر للتقرير');
       return;
     }
 
-    setIsAnalyzing(true);
-    try {
-      // تحديد حالة المركز (حكومي أو مستأجر)
-      const selectedCenterData = healthCenters.find(c => c.اسم_المركز === selectedCenter);
-      const centerOwnership = selectedCenterData?.حالة_المركز || 'حكومي';
-      const ownerName = selectedCenterData?.اسم_المؤجر || 'مالك المبنى';
-      
-      const responsibilityRule = `
-قواعد تحديد المسؤولية للأعمال الإنشائية والصيانة:
-- إذا كانت الملاحظة تتعلق بأعمال إنشائية أو صيانة مباني أو بنية تحتية:
-  * المباني الحكومية: المسؤول هو "التجمع الصحي بالمدينة المنورة"
-  * المباني المستأجرة: المسؤول هو "${ownerName}" (مالك المبنى)
-- حالة المركز الحالي: ${centerOwnership}
-${centerOwnership === 'مستأجر' ? `- اسم المؤجر: ${ownerName}` : ''}
-`;
+    const report = {
+      id: Date.now(),
+      title: reportTitle || `تقرير نواقص ${selectedCenter}`,
+      center: selectedCenter,
+      items: selectedItems,
+      date: new Date().toISOString(),
+    };
 
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `أنت محلل متخصص في تصنيف وفرز الملاحظات الإدارية والصحية. قم بتحليل النص التالي واستخراج الملاحظات منه وتصنيفها:
+    const updated = [...savedReports, report];
+    setSavedReports(updated);
+    localStorage.setItem('deficiency_reports', JSON.stringify(updated));
+    toast.success('تم حفظ التقرير');
+  };
 
-النص المُدخل:
-${inputText}
+  const deleteReport = (reportId) => {
+    const updated = savedReports.filter(r => r.id !== reportId);
+    setSavedReports(updated);
+    localStorage.setItem('deficiency_reports', JSON.stringify(updated));
+    toast.success('تم حذف التقرير');
+  };
 
-${responsibilityRule}
+  const loadReport = (report) => {
+    setSelectedCenter(report.center);
+    setSelectedItems(report.items);
+    setReportTitle(report.title);
+    setShowSavedReports(false);
+    toast.success('تم تحميل التقرير');
+  };
 
-المطلوب:
-1. فصل كل ملاحظة على حدة (قد يحتوي النص على ملاحظة واحدة أو عدة ملاحظات)
-2. لكل ملاحظة، حدد:
-   - title: عنوان مختصر وواضح (5-10 كلمات)
-   - original_text: النص الأصلي للملاحظة
-   - category: التصنيف (إداري، فني، طبي، مالي، موارد بشرية، صيانة، تجهيزات، خدمات، أخرى)
-   - priority: الأولوية (عاجل، مهم، متوسط، منخفض)
-   - suggested_responsible: الجهة المقترحة للمسؤولية (طبق قواعد تحديد المسؤولية أعلاه للأعمال الإنشائية والصيانة)
-   - suggested_action: الإجراء المقترح
-   - suggested_duration: المدة المتوقعة للإنجاز
-   - analysis: تحليل مختصر للملاحظة
-
-أرجع النتيجة بصيغة JSON array.`,
-        add_context_from_internet: false,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            notes: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  title: { type: "string" },
-                  original_text: { type: "string" },
-                  category: { type: "string" },
-                  priority: { type: "string" },
-                  suggested_responsible: { type: "string" },
-                  suggested_action: { type: "string" },
-                  suggested_duration: { type: "string" },
-                  analysis: { type: "string" }
-                }
-              }
-            }
-          }
-        }
-      });
-
-      if (response && response.notes) {
-        const processedNotes = response.notes.map((note, index) => ({
-          id: `temp-${Date.now()}-${index}`,
-          ...note,
-          health_center: selectedCenter || '',
-          responsible_party: note.suggested_responsible || '',
-          action_taken: '',
-          expected_duration: note.suggested_duration || '',
-          status: 'جديد',
-          ai_analysis: note.analysis || ''
-        }));
-        setSortedNotes(processedNotes);
-        setActiveTab('sorted');
-        toast.success(`تم تحليل وفرز ${processedNotes.length} ملاحظة`);
-      }
-    } catch (error) {
-      console.error('Error analyzing notes:', error);
-      toast.error('فشل في تحليل الملاحظات');
-    } finally {
-      setIsAnalyzing(false);
+  const toggleItem = (item, quantity = 1) => {
+    const existingIndex = selectedItems.findIndex(i => i.id === item.id);
+    if (existingIndex >= 0) {
+      setSelectedItems(prev => prev.filter(i => i.id !== item.id));
+    } else {
+      setSelectedItems(prev => [...prev, { ...item, quantity, type: activeTab }]);
     }
   };
 
-  const saveNote = async (note) => {
-    try {
-      await base44.entities.SortedNote.create({
-        original_text: note.original_text,
-        title: note.title,
-        category: note.category,
-        priority: note.priority,
-        health_center: note.health_center,
-        responsible_party: note.responsible_party,
-        action_taken: note.action_taken,
-        expected_duration: note.expected_duration,
-        status: note.status,
-        ai_analysis: note.ai_analysis
-      });
-      toast.success('تم حفظ الملاحظة');
-      loadSavedNotes();
-      setSortedNotes(prev => prev.filter(n => n.id !== note.id));
-    } catch (error) {
-      console.error('Error saving note:', error);
-      toast.error('فشل في حفظ الملاحظة');
-    }
-  };
-
-  const saveAllNotes = async () => {
-    try {
-      for (const note of sortedNotes) {
-        await base44.entities.SortedNote.create({
-          original_text: note.original_text,
-          title: note.title,
-          category: note.category,
-          priority: note.priority,
-          health_center: note.health_center,
-          responsible_party: note.responsible_party,
-          action_taken: note.action_taken,
-          expected_duration: note.expected_duration,
-          status: note.status,
-          ai_analysis: note.ai_analysis
-        });
-      }
-      toast.success(`تم حفظ ${sortedNotes.length} ملاحظة`);
-      loadSavedNotes();
-      setSortedNotes([]);
-      setInputText('');
-      setActiveTab('saved');
-    } catch (error) {
-      console.error('Error saving notes:', error);
-      toast.error('فشل في حفظ الملاحظات');
-    }
-  };
-
-  const updateSortedNote = (noteId, field, value) => {
-    setSortedNotes(prev => prev.map(note =>
-      note.id === noteId ? { ...note, [field]: value } : note
+  const updateQuantity = (itemId, quantity) => {
+    if (quantity < 1) quantity = 1;
+    setSelectedItems(prev => prev.map(item => 
+      item.id === itemId ? { ...item, quantity } : item
     ));
   };
 
-  const updateSavedNote = async (noteId, updates) => {
-    try {
-      await base44.entities.SortedNote.update(noteId, updates);
-      toast.success('تم تحديث الملاحظة');
-      loadSavedNotes();
-      setEditingNote(null);
-    } catch (error) {
-      console.error('Error updating note:', error);
-      toast.error('فشل في تحديث الملاحظة');
+  const isSelected = (itemId) => selectedItems.some(i => i.id === itemId);
+  const getSelectedQuantity = (itemId) => selectedItems.find(i => i.id === itemId)?.quantity || 1;
+
+  const currentList = activeTab === 'medical' ? medicalEquipmentList : nonMedicalEquipmentList;
+  const categories = [...new Set(currentList.map(item => item.category))];
+
+  const filteredItems = searchQuery
+    ? currentList.filter(item => 
+        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.category.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : currentList;
+
+  const medicalItems = selectedItems.filter(i => i.type === 'medical');
+  const nonMedicalItems = selectedItems.filter(i => i.type === 'nonmedical');
+
+  const exportToExcel = () => {
+    if (!selectedCenter || selectedItems.length === 0) {
+      toast.error('الرجاء اختيار مركز وإضافة عناصر للتقرير');
+      return;
     }
-  };
 
-  const deleteNote = async (noteId) => {
-    if (!confirm('هل أنت متأكد من حذف هذه الملاحظة؟')) return;
-    try {
-      await base44.entities.SortedNote.delete(noteId);
-      toast.success('تم حذف الملاحظة');
-      loadSavedNotes();
-    } catch (error) {
-      console.error('Error deleting note:', error);
-      toast.error('فشل في حذف الملاحظة');
-    }
-  };
-
-  const getPriorityIcon = (priority) => {
-    switch (priority) {
-      case 'عاجل': return <AlertTriangle className="w-4 h-4 text-red-600" />;
-      case 'مهم': return <ArrowUpCircle className="w-4 h-4 text-orange-600" />;
-      case 'متوسط': return <Circle className="w-4 h-4 text-blue-600" />;
-      case 'منخفض': return <ArrowDownCircle className="w-4 h-4 text-gray-600" />;
-      default: return <Circle className="w-4 h-4 text-gray-400" />;
-    }
-  };
-
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'عاجل': return 'bg-red-100 text-red-800 border-red-300';
-      case 'مهم': return 'bg-orange-100 text-orange-800 border-orange-300';
-      case 'متوسط': return 'bg-blue-100 text-blue-800 border-blue-300';
-      case 'منخفض': return 'bg-gray-100 text-gray-800 border-gray-300';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getCategoryColor = (category) => {
-    const colors = {
-      'إداري': 'bg-purple-100 text-purple-800',
-      'فني': 'bg-blue-100 text-blue-800',
-      'طبي': 'bg-green-100 text-green-800',
-      'مالي': 'bg-yellow-100 text-yellow-800',
-      'موارد بشرية': 'bg-pink-100 text-pink-800',
-      'صيانة': 'bg-orange-100 text-orange-800',
-      'تجهيزات': 'bg-cyan-100 text-cyan-800',
-      'خدمات': 'bg-indigo-100 text-indigo-800',
-      'أخرى': 'bg-gray-100 text-gray-800'
-    };
-    return colors[category] || 'bg-gray-100 text-gray-800';
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'جديد': return 'bg-blue-100 text-blue-800';
-      case 'قيد المعالجة': return 'bg-yellow-100 text-yellow-800';
-      case 'مكتمل': return 'bg-green-100 text-green-800';
-      case 'معلق': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const filteredSavedNotes = savedNotes.filter(note => {
-    const matchesSearch = !searchQuery ||
-      note.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      note.original_text?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      note.responsible_party?.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = filterCategory === 'all' || note.category === filterCategory;
-    const matchesStatus = filterStatus === 'all' || note.status === filterStatus;
-    return matchesSearch && matchesCategory && matchesStatus;
-  });
-
-  const exportToCSV = () => {
-    const headers = ['العنوان', 'التصنيف', 'الأولوية', 'المسؤول', 'الإجراء', 'المدة المتوقعة', 'الحالة', 'النص الأصلي'];
-    const rows = filteredSavedNotes.map(note => [
-      note.title,
-      note.category,
-      note.priority,
-      note.responsible_party,
-      note.action_taken,
-      note.expected_duration,
-      note.status,
-      note.original_text
+    const headers = ['#', 'اسم العنصر', 'التصنيف', 'النوع', 'العدد المطلوب'];
+    const rows = selectedItems.map((item, idx) => [
+      idx + 1,
+      item.name,
+      item.category,
+      item.type === 'medical' ? 'طبي' : 'غير طبي',
+      item.quantity
     ]);
-    
-    const csvContent = [headers, ...rows].map(row => row.map(cell => `"${cell || ''}"`).join(',')).join('\n');
+
+    // إضافة معلومات المركز
+    const centerInfo = [
+      ['تقرير نواقص المركز الصحي'],
+      ['المركز:', selectedCenter],
+      ['التاريخ:', new Date().toLocaleDateString('ar-SA')],
+      [''],
+    ];
+
+    const csvContent = [
+      ...centerInfo.map(row => row.join(',')),
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
+    ].join('\n');
+
     const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `ملاحظات-مفرزة-${new Date().toISOString().split('T')[0]}.csv`;
+    link.download = `نواقص-${selectedCenter}-${new Date().toISOString().split('T')[0]}.csv`;
     link.click();
+    toast.success('تم تصدير التقرير');
   };
 
-  const generateHTMLReport = () => {
-    const today = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    
-    // إحصائيات
-    const stats = {
-      total: filteredSavedNotes.length,
-      byCategory: categories.reduce((acc, cat) => {
-        acc[cat] = filteredSavedNotes.filter(n => n.category === cat).length;
-        return acc;
-      }, {}),
-      byPriority: priorities.reduce((acc, p) => {
-        acc[p] = filteredSavedNotes.filter(n => n.priority === p).length;
-        return acc;
-      }, {}),
-      byStatus: statuses.reduce((acc, s) => {
-        acc[s] = filteredSavedNotes.filter(n => n.status === s).length;
-        return acc;
-      }, {})
-    };
+  const exportToHTML = () => {
+    if (!selectedCenter || selectedItems.length === 0) {
+      toast.error('الرجاء اختيار مركز وإضافة عناصر للتقرير');
+      return;
+    }
 
-    const priorityColors = {
-      'عاجل': '#dc2626',
-      'مهم': '#ea580c',
-      'متوسط': '#2563eb',
-      'منخفض': '#6b7280'
-    };
-
-    const statusColors = {
-      'جديد': '#3b82f6',
-      'قيد المعالجة': '#f59e0b',
-      'مكتمل': '#22c55e',
-      'معلق': '#ef4444'
-    };
-
-    const categoryColors = {
-      'إداري': '#9333ea',
-      'فني': '#3b82f6',
-      'طبي': '#22c55e',
-      'مالي': '#eab308',
-      'موارد بشرية': '#ec4899',
-      'صيانة': '#f97316',
-      'تجهيزات': '#06b6d4',
-      'خدمات': '#6366f1',
-      'أخرى': '#6b7280'
-    };
+    const today = new Date().toLocaleDateString('ar-SA', { 
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+    });
 
     const html = `
 <!DOCTYPE html>
@@ -376,63 +321,39 @@ ${responsibilityRule}
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>تقرير الملاحظات المفرزة - ${today}</title>
+  <title>تقرير نواقص ${selectedCenter}</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
     
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     
     body {
       font-family: 'Cairo', sans-serif;
       background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
       color: #1e293b;
       line-height: 1.6;
-      padding: 20px;
+      padding: 30px;
     }
     
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+    .container { max-width: 900px; margin: 0 auto; }
     
     .header {
-      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
       color: white;
       padding: 40px;
       border-radius: 20px;
       margin-bottom: 30px;
       text-align: center;
-      box-shadow: 0 20px 40px rgba(79, 70, 229, 0.3);
+      box-shadow: 0 20px 40px rgba(15, 118, 110, 0.3);
     }
     
-    .header h1 {
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 10px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-    }
+    .header h1 { font-size: 2rem; font-weight: 800; margin-bottom: 10px; }
+    .header .center-name { font-size: 1.5rem; margin-bottom: 15px; opacity: 0.95; }
+    .header .date { background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 20px; display: inline-block; }
     
-    .header .subtitle {
-      font-size: 1.1rem;
-      opacity: 0.9;
-    }
-    
-    .header .date {
-      margin-top: 15px;
-      padding: 10px 20px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 30px;
-      display: inline-block;
-      font-weight: 600;
-    }
-    
-    .stats-grid {
+    .stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(3, 1fr);
       gap: 20px;
       margin-bottom: 30px;
     }
@@ -443,29 +364,10 @@ ${responsibilityRule}
       border-radius: 16px;
       text-align: center;
       box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      border: 1px solid #e2e8f0;
-      transition: transform 0.3s, box-shadow 0.3s;
     }
     
-    .stat-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-    }
-    
-    .stat-number {
-      font-size: 3rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #4f46e5, #7c3aed);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    
-    .stat-label {
-      color: #64748b;
-      font-weight: 600;
-      margin-top: 5px;
-    }
+    .stat-number { font-size: 2.5rem; font-weight: 800; color: #0f766e; }
+    .stat-label { color: #64748b; font-weight: 600; }
     
     .section {
       background: white;
@@ -478,143 +380,50 @@ ${responsibilityRule}
     .section-header {
       background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
       color: white;
-      padding: 20px 30px;
-      font-size: 1.3rem;
+      padding: 15px 25px;
+      font-size: 1.2rem;
       font-weight: 700;
       display: flex;
       align-items: center;
       gap: 10px;
     }
     
-    .section-content {
-      padding: 25px;
-    }
+    .section-header.medical { background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%); }
+    .section-header.non-medical { background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%); }
     
-    .charts-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 25px;
-      margin-bottom: 30px;
-    }
+    table { width: 100%; border-collapse: collapse; }
     
-    .chart-card {
-      background: white;
-      border-radius: 16px;
-      padding: 25px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    }
-    
-    .chart-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #1e293b;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 2px solid #e2e8f0;
-    }
-    
-    .bar-chart {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    
-    .bar-item {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-    
-    .bar-label {
-      min-width: 100px;
-      font-weight: 600;
-      font-size: 0.9rem;
-    }
-    
-    .bar-container {
-      flex: 1;
-      height: 30px;
+    th {
       background: #f1f5f9;
-      border-radius: 15px;
-      overflow: hidden;
-      position: relative;
-    }
-    
-    .bar-fill {
-      height: 100%;
-      border-radius: 15px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      padding-right: 10px;
-      color: white;
-      font-weight: 700;
-      font-size: 0.85rem;
-      min-width: 40px;
-      transition: width 0.5s ease;
-    }
-    
-    .notes-table {
-      width: 100%;
-      border-collapse: separate;
-      border-spacing: 0;
-    }
-    
-    .notes-table th {
-      background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
-      color: white;
       padding: 15px 12px;
       text-align: right;
       font-weight: 700;
-      font-size: 0.95rem;
+      color: #475569;
+      border-bottom: 2px solid #e2e8f0;
     }
     
-    .notes-table th:first-child {
-      border-radius: 0 12px 0 0;
-    }
-    
-    .notes-table th:last-child {
-      border-radius: 12px 0 0 0;
-    }
-    
-    .notes-table td {
-      padding: 15px 12px;
+    td {
+      padding: 12px;
       border-bottom: 1px solid #e2e8f0;
-      font-size: 0.9rem;
     }
     
-    .notes-table tr:nth-child(even) {
-      background: #f8fafc;
-    }
+    tr:hover { background: #f8fafc; }
     
-    .notes-table tr:hover {
-      background: #ede9fe;
-    }
-    
-    .badge {
+    .category-badge {
       display: inline-block;
-      padding: 5px 12px;
+      padding: 4px 12px;
       border-radius: 20px;
       font-size: 0.8rem;
       font-weight: 600;
-      white-space: nowrap;
+      background: #e2e8f0;
+      color: #475569;
     }
     
-    .priority-عاجل { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-    .priority-مهم { background: #fff7ed; color: #ea580c; border: 1px solid #fed7aa; }
-    .priority-متوسط { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
-    .priority-منخفض { background: #f9fafb; color: #6b7280; border: 1px solid #e5e7eb; }
-    
-    .status-جديد { background: #eff6ff; color: #3b82f6; }
-    .status-قيد-المعالجة { background: #fef3c7; color: #d97706; }
-    .status-مكتمل { background: #dcfce7; color: #16a34a; }
-    .status-معلق { background: #fef2f2; color: #dc2626; }
-    
-    .category-badge {
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      font-weight: 600;
+    .quantity { 
+      font-weight: 800; 
+      color: #0f766e; 
+      font-size: 1.1rem;
+      text-align: center;
     }
     
     .footer {
@@ -626,749 +435,528 @@ ${responsibilityRule}
       margin-top: 30px;
     }
     
-    .summary-cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      margin-bottom: 30px;
-    }
-    
-    .summary-card {
-      background: white;
-      border-radius: 16px;
-      padding: 20px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    }
-    
-    .summary-card h4 {
-      font-size: 1rem;
-      color: #64748b;
-      margin-bottom: 15px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    
-    .summary-list {
-      list-style: none;
-    }
-    
-    .summary-list li {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px dashed #e2e8f0;
-    }
-    
-    .summary-list li:last-child {
-      border-bottom: none;
-    }
-    
     @media print {
-      body {
-        background: white;
-        padding: 0;
-      }
-      
-      .header {
-        box-shadow: none;
-        border: 2px solid #4f46e5;
-      }
-      
-      .section, .stat-card, .chart-card, .summary-card {
-        box-shadow: none;
-        border: 1px solid #e2e8f0;
-        break-inside: avoid;
-      }
-      
-      .notes-table tr {
-        break-inside: avoid;
-      }
-    }
-    
-    @media (max-width: 768px) {
-      .header h1 {
-        font-size: 1.8rem;
-      }
-      
-      .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      
-      .stat-number {
-        font-size: 2rem;
-      }
-      
-      .notes-table {
-        font-size: 0.8rem;
-      }
-      
-      .notes-table th, .notes-table td {
-        padding: 10px 8px;
-      }
+      body { background: white; padding: 10px; }
+      .header { box-shadow: none; border: 2px solid #0f766e; }
+      .section, .stat-card { box-shadow: none; border: 1px solid #e2e8f0; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>📋 تقرير الملاحظات المفرزة</h1>
-      <p class="subtitle">تحليل شامل ومتابعة للملاحظات والإجراءات</p>
+      <h1>📋 تقرير نواقص التجهيزات</h1>
+      <div class="center-name">🏥 ${selectedCenter}</div>
       <div class="date">📅 ${today}</div>
     </div>
     
-    <div class="stats-grid">
+    <div class="stats">
       <div class="stat-card">
-        <div class="stat-number">${stats.total}</div>
-        <div class="stat-label">إجمالي الملاحظات</div>
+        <div class="stat-number">${selectedItems.length}</div>
+        <div class="stat-label">إجمالي العناصر</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number" style="background: linear-gradient(135deg, #dc2626, #f87171); -webkit-background-clip: text;">${stats.byPriority['عاجل'] || 0}</div>
-        <div class="stat-label">عاجلة</div>
+        <div class="stat-number" style="color: #0f766e;">${medicalItems.length}</div>
+        <div class="stat-label">أدوات طبية</div>
       </div>
       <div class="stat-card">
-        <div class="stat-number" style="background: linear-gradient(135deg, #f59e0b, #fbbf24); -webkit-background-clip: text;">${stats.byStatus['قيد المعالجة'] || 0}</div>
-        <div class="stat-label">قيد المعالجة</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" style="background: linear-gradient(135deg, #22c55e, #4ade80); -webkit-background-clip: text;">${stats.byStatus['مكتمل'] || 0}</div>
-        <div class="stat-label">مكتملة</div>
+        <div class="stat-number" style="color: #7c3aed;">${nonMedicalItems.length}</div>
+        <div class="stat-label">أدوات غير طبية</div>
       </div>
     </div>
     
-    <div class="charts-grid">
-      <div class="chart-card">
-        <h3 class="chart-title">📊 التوزيع حسب التصنيف</h3>
-        <div class="bar-chart">
-          ${categories.filter(cat => stats.byCategory[cat] > 0).map(cat => `
-            <div class="bar-item">
-              <span class="bar-label">${cat}</span>
-              <div class="bar-container">
-                <div class="bar-fill" style="width: ${Math.max((stats.byCategory[cat] / stats.total) * 100, 15)}%; background: ${categoryColors[cat]};">
-                  ${stats.byCategory[cat]}
-                </div>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-      
-      <div class="chart-card">
-        <h3 class="chart-title">⚡ التوزيع حسب الأولوية</h3>
-        <div class="bar-chart">
-          ${priorities.filter(p => stats.byPriority[p] > 0).map(p => `
-            <div class="bar-item">
-              <span class="bar-label">${p}</span>
-              <div class="bar-container">
-                <div class="bar-fill" style="width: ${Math.max((stats.byPriority[p] / stats.total) * 100, 15)}%; background: ${priorityColors[p]};">
-                  ${stats.byPriority[p]}
-                </div>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-      
-      <div class="chart-card">
-        <h3 class="chart-title">📈 التوزيع حسب الحالة</h3>
-        <div class="bar-chart">
-          ${statuses.filter(s => stats.byStatus[s] > 0).map(s => `
-            <div class="bar-item">
-              <span class="bar-label">${s}</span>
-              <div class="bar-container">
-                <div class="bar-fill" style="width: ${Math.max((stats.byStatus[s] / stats.total) * 100, 15)}%; background: ${statusColors[s]};">
-                  ${stats.byStatus[s]}
-                </div>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-    </div>
-    
+    ${medicalItems.length > 0 ? `
     <div class="section">
-      <div class="section-header">
-        📝 جدول الملاحظات التفصيلي
+      <div class="section-header medical">
+        🏥 الأدوات الطبية المطلوبة (${medicalItems.length})
       </div>
-      <div class="section-content" style="overflow-x: auto;">
-        <table class="notes-table">
-          <thead>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>اسم العنصر</th>
+            <th>التصنيف</th>
+            <th>العدد</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${medicalItems.map((item, idx) => `
             <tr>
-              <th>#</th>
-              <th>العنوان</th>
-              <th>التصنيف</th>
-              <th>الأولوية</th>
-              <th>الحالة</th>
-              <th>المسؤول</th>
-              <th>الإجراء</th>
-              <th>المدة</th>
+              <td style="font-weight: 700; color: #0f766e;">${idx + 1}</td>
+              <td>${item.name}</td>
+              <td><span class="category-badge">${item.category}</span></td>
+              <td class="quantity">${item.quantity}</td>
             </tr>
-          </thead>
-          <tbody>
-            ${filteredSavedNotes.map((note, idx) => `
-              <tr>
-                <td style="font-weight: 700; color: #4f46e5;">${idx + 1}</td>
-                <td>
-                  <strong>${note.title}</strong>
-                  <div style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">${note.original_text?.substring(0, 100)}${note.original_text?.length > 100 ? '...' : ''}</div>
-                </td>
-                <td><span class="category-badge" style="background: ${categoryColors[note.category]}20; color: ${categoryColors[note.category]};">${note.category}</span></td>
-                <td><span class="badge priority-${note.priority}">${note.priority}</span></td>
-                <td><span class="badge status-${note.status?.replace(' ', '-')}">${note.status}</span></td>
-                <td>${note.responsible_party || '-'}</td>
-                <td>${note.action_taken || '-'}</td>
-                <td>${note.expected_duration || '-'}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-      </div>
+          `).join('')}
+        </tbody>
+      </table>
     </div>
+    ` : ''}
+    
+    ${nonMedicalItems.length > 0 ? `
+    <div class="section">
+      <div class="section-header non-medical">
+        🔧 الأدوات غير الطبية المطلوبة (${nonMedicalItems.length})
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>اسم العنصر</th>
+            <th>التصنيف</th>
+            <th>العدد</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${nonMedicalItems.map((item, idx) => `
+            <tr>
+              <td style="font-weight: 700; color: #7c3aed;">${idx + 1}</td>
+              <td>${item.name}</td>
+              <td><span class="category-badge">${item.category}</span></td>
+              <td class="quantity">${item.quantity}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+    ` : ''}
     
     <div class="footer">
-      <p>تم إنشاء هذا التقرير بواسطة نظام فرز الملاحظات الذكي</p>
+      <p>تم إنشاء هذا التقرير بواسطة نظام إدارة المراكز الصحية</p>
       <p style="margin-top: 5px;">وزارة الصحة - قطاع الحناكية الصحي</p>
     </div>
   </div>
 </body>
 </html>`;
 
-    return html;
-  };
-
-  const exportToHTML = () => {
-    const html = generateHTMLReport();
     const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `تقرير-الملاحظات-${new Date().toISOString().split('T')[0]}.html`;
+    link.download = `تقرير-نواقص-${selectedCenter}-${new Date().toISOString().split('T')[0]}.html`;
     link.click();
+    toast.success('تم تصدير التقرير');
   };
 
   const printReport = () => {
-    const html = generateHTMLReport();
+    if (!selectedCenter || selectedItems.length === 0) {
+      toast.error('الرجاء اختيار مركز وإضافة عناصر للتقرير');
+      return;
+    }
+
     const printWindow = window.open('', '_blank');
+    // نفس HTML الخاص بالتصدير
+    const today = new Date().toLocaleDateString('ar-SA', { 
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+    });
+
+    const html = `
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>تقرير نواقص ${selectedCenter}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Cairo', sans-serif; padding: 20px; color: #1e293b; }
+    .header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #0f766e; }
+    .header h1 { font-size: 1.8rem; color: #0f766e; margin-bottom: 10px; }
+    .header .center-name { font-size: 1.3rem; color: #475569; }
+    .header .date { color: #64748b; margin-top: 10px; }
+    .section { margin-bottom: 30px; }
+    .section-title { font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; padding: 10px; background: #f1f5f9; border-radius: 8px; }
+    .section-title.medical { color: #0f766e; border-right: 4px solid #0f766e; }
+    .section-title.non-medical { color: #7c3aed; border-right: 4px solid #7c3aed; }
+    table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    th, td { padding: 12px; text-align: right; border: 1px solid #e2e8f0; }
+    th { background: #f8fafc; font-weight: 700; }
+    .quantity { text-align: center; font-weight: 700; }
+    .footer { text-align: center; margin-top: 30px; padding-top: 20px; border-top: 2px solid #e2e8f0; color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>تقرير نواقص التجهيزات</h1>
+    <div class="center-name">${selectedCenter}</div>
+    <div class="date">${today}</div>
+  </div>
+  
+  ${medicalItems.length > 0 ? `
+  <div class="section">
+    <div class="section-title medical">الأدوات الطبية المطلوبة (${medicalItems.length})</div>
+    <table>
+      <thead><tr><th>#</th><th>اسم العنصر</th><th>التصنيف</th><th>العدد</th></tr></thead>
+      <tbody>
+        ${medicalItems.map((item, idx) => `
+          <tr><td>${idx + 1}</td><td>${item.name}</td><td>${item.category}</td><td class="quantity">${item.quantity}</td></tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+  ` : ''}
+  
+  ${nonMedicalItems.length > 0 ? `
+  <div class="section">
+    <div class="section-title non-medical">الأدوات غير الطبية المطلوبة (${nonMedicalItems.length})</div>
+    <table>
+      <thead><tr><th>#</th><th>اسم العنصر</th><th>التصنيف</th><th>العدد</th></tr></thead>
+      <tbody>
+        ${nonMedicalItems.map((item, idx) => `
+          <tr><td>${idx + 1}</td><td>${item.name}</td><td>${item.category}</td><td class="quantity">${item.quantity}</td></tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+  ` : ''}
+  
+  <div class="footer">
+    <p>وزارة الصحة - قطاع الحناكية الصحي</p>
+  </div>
+</body>
+</html>`;
+
     printWindow.document.write(html);
     printWindow.document.close();
     printWindow.print();
   };
 
+  const clearSelection = () => {
+    setSelectedItems([]);
+    setReportTitle('');
+    toast.success('تم مسح التحديد');
+  };
+
   return (
-    <div className="min-h-screen p-4 md:p-6 bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+    <div className="min-h-screen p-4 md:p-6 bg-gradient-to-br from-teal-50 via-white to-purple-50">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-xl mb-4">
-            <Sparkles className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-teal-600 shadow-xl mb-4">
+            <Package className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-            فرز وتصنيف الملاحظات
+            نواقص المراكز الصحية
           </h1>
           <p className="text-gray-600">
-            أدخل ملاحظاتك وسيقوم النظام بتحليلها وتصنيفها تلقائياً
+            استخراج وتوثيق نواقص الأدوات الطبية وغير الطبية للمراكز الصحية
           </p>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid grid-cols-3 w-full max-w-md mx-auto">
-            <TabsTrigger value="new" className="gap-2">
-              <Plus className="w-4 h-4" />
-              إدخال جديد
-            </TabsTrigger>
-            <TabsTrigger value="sorted" className="gap-2">
-              <FileText className="w-4 h-4" />
-              مفرزة ({sortedNotes.length})
-            </TabsTrigger>
-            <TabsTrigger value="saved" className="gap-2">
-              <CheckCircle2 className="w-4 h-4" />
-              محفوظة ({savedNotes.length})
-            </TabsTrigger>
-          </TabsList>
-
-          {/* تبويب الإدخال الجديد */}
-          <TabsContent value="new">
-            <Card className="border-2 border-indigo-200">
-              <CardHeader className="bg-gradient-to-r from-indigo-50 to-purple-50">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* اختيار المركز والقائمة */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* اختيار المركز */}
+            <Card className="border-2 border-teal-200">
+              <CardHeader className="bg-gradient-to-r from-teal-50 to-emerald-50 pb-4">
                 <CardTitle className="flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-indigo-600" />
-                  إدخال الملاحظات
+                  <Building2 className="w-5 h-5 text-teal-600" />
+                  اختر المركز الصحي
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 pt-6">
-                <div>
-                  <Label>المركز الصحي</Label>
-                  <Select value={selectedCenter} onValueChange={setSelectedCenter}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="اختر المركز الصحي..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value={null}>جميع المراكز</SelectItem>
-                      {healthCenters.map(center => (
-                        <SelectItem key={center.id} value={center.اسم_المركز}>
-                          {center.اسم_المركز}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>أدخل ملاحظاتك هنا (يمكنك إدخال ملاحظة واحدة أو عدة ملاحظات)</Label>
-                  <Textarea
-                    value={inputText}
-                    onChange={(e) => setInputText(e.target.value)}
-                    placeholder="مثال:
-- يوجد تسريب في سقف غرفة الانتظار يحتاج إصلاح عاجل
-- نحتاج تعيين موظف استقبال إضافي للفترة المسائية
-- جهاز الأشعة يحتاج صيانة دورية
-- تأخر وصول مستلزمات المختبر..."
-                    rows={8}
-                    className="text-lg"
-                  />
-                </div>
-
-                <Button
-                  onClick={analyzeNotes}
-                  disabled={isAnalyzing || !inputText.trim()}
-                  className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 py-6 text-lg"
-                >
-                  {isAnalyzing ? (
-                    <>
-                      <Loader2 className="w-5 h-5 ml-2 animate-spin" />
-                      جاري التحليل والفرز...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-5 h-5 ml-2" />
-                      تحليل وفرز الملاحظات
-                    </>
-                  )}
-                </Button>
-
-                <div className="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
-                  <h4 className="font-semibold text-indigo-900 mb-2">💡 نصائح:</h4>
-                  <ul className="text-sm text-indigo-700 space-y-1">
-                    <li>• يمكنك إدخال ملاحظات متعددة في نص واحد</li>
-                    <li>• استخدم نقاط (-) أو أرقام لفصل الملاحظات</li>
-                    <li>• كلما كانت الملاحظة واضحة، كان التصنيف أدق</li>
-                  </ul>
+              <CardContent className="pt-4">
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex-1">
+                    <Select value={selectedCenter} onValueChange={setSelectedCenter}>
+                      <SelectTrigger className="h-12">
+                        <SelectValue placeholder="اختر المركز الصحي..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {healthCenters.map(center => (
+                          <SelectItem key={center.id} value={center.اسم_المركز}>
+                            {center.اسم_المركز}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setShowSavedReports(true)}
+                    className="h-12"
+                  >
+                    <List className="w-4 h-4 ml-2" />
+                    التقارير المحفوظة ({savedReports.length})
+                  </Button>
                 </div>
               </CardContent>
             </Card>
-          </TabsContent>
 
-          {/* تبويب الملاحظات المفرزة */}
-          <TabsContent value="sorted">
-            {sortedNotes.length === 0 ? (
-              <Card className="text-center py-12">
-                <CardContent>
-                  <FileText className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-                  <p className="text-gray-500">لا توجد ملاحظات مفرزة</p>
-                  <p className="text-sm text-gray-400">أدخل ملاحظات في التبويب الأول للبدء</p>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="font-bold text-lg">الملاحظات المفرزة ({sortedNotes.length})</h3>
-                  <Button onClick={saveAllNotes} className="bg-green-600 hover:bg-green-700">
-                    <CheckCircle2 className="w-4 h-4 ml-2" />
-                    حفظ الكل
-                  </Button>
-                </div>
-
-                <div className="grid gap-4">
-                  {sortedNotes.map((note, index) => (
-                    <Card key={note.id} className="border-2 hover:shadow-lg transition-shadow">
-                      <CardContent className="p-4 space-y-4">
-                        {/* العنوان والشارات */}
-                        <div className="flex flex-wrap items-start justify-between gap-2">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-2">
-                              <span className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
-                                {index + 1}
-                              </span>
-                              <Input
-                                value={note.title}
-                                onChange={(e) => updateSortedNote(note.id, 'title', e.target.value)}
-                                className="font-semibold text-lg border-0 bg-transparent p-0 h-auto focus-visible:ring-0"
-                              />
-                            </div>
-                            <p className="text-sm text-gray-600 bg-gray-50 p-2 rounded">{note.original_text}</p>
-                          </div>
-                          <div className="flex flex-wrap gap-2">
-                            <Badge className={getCategoryColor(note.category)}>{note.category}</Badge>
-                            <Badge className={getPriorityColor(note.priority)}>
-                              {getPriorityIcon(note.priority)}
-                              <span className="mr-1">{note.priority}</span>
-                            </Badge>
-                          </div>
-                        </div>
-
-                        {/* تحليل AI */}
-                        {note.ai_analysis && (
-                          <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
-                            <div className="flex items-center gap-2 text-purple-700 text-sm font-medium mb-1">
-                              <Sparkles className="w-4 h-4" />
-                              تحليل الذكاء الاصطناعي
-                            </div>
-                            <p className="text-sm text-purple-800">{note.ai_analysis}</p>
-                          </div>
-                        )}
-
-                        {/* حقول الإدخال */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                          <div>
-                            <Label className="text-xs text-gray-500">التصنيف</Label>
-                            <Select
-                              value={note.category}
-                              onValueChange={(value) => updateSortedNote(note.id, 'category', value)}
-                            >
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {categories.map(cat => (
-                                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-
-                          <div>
-                            <Label className="text-xs text-gray-500">الأولوية</Label>
-                            <Select
-                              value={note.priority}
-                              onValueChange={(value) => updateSortedNote(note.id, 'priority', value)}
-                            >
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {priorities.map(p => (
-                                  <SelectItem key={p} value={p}>{p}</SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-
-                          <div>
-                            <Label className="text-xs text-gray-500">الحالة</Label>
-                            <Select
-                              value={note.status}
-                              onValueChange={(value) => updateSortedNote(note.id, 'status', value)}
-                            >
-                              <SelectTrigger>
-                                <SelectValue />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {statuses.map(s => (
-                                  <SelectItem key={s} value={s}>{s}</SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </div>
-
-                          <div>
-                            <Label className="text-xs text-gray-500 flex items-center gap-1">
-                              <User className="w-3 h-3" />
-                              المسؤول
-                            </Label>
-                            <Input
-                              value={note.responsible_party}
-                              onChange={(e) => updateSortedNote(note.id, 'responsible_party', e.target.value)}
-                              placeholder="الجهة أو الشخص المسؤول"
-                            />
-                          </div>
-
-                          <div>
-                            <Label className="text-xs text-gray-500 flex items-center gap-1">
-                              <CheckCircle2 className="w-3 h-3" />
-                              الإجراء المتخذ
-                            </Label>
-                            <Input
-                              value={note.action_taken}
-                              onChange={(e) => updateSortedNote(note.id, 'action_taken', e.target.value)}
-                              placeholder="الإجراء المتخذ"
-                            />
-                          </div>
-
-                          <div>
-                            <Label className="text-xs text-gray-500 flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              المدة المتوقعة
-                            </Label>
-                            <Input
-                              value={note.expected_duration}
-                              onChange={(e) => updateSortedNote(note.id, 'expected_duration', e.target.value)}
-                              placeholder="مثال: 3 أيام"
-                            />
-                          </div>
-                        </div>
-
-                        {/* أزرار الإجراءات */}
-                        <div className="flex justify-end gap-2 pt-2 border-t">
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => setSortedNotes(prev => prev.filter(n => n.id !== note.id))}
-                            className="text-red-600 hover:bg-red-50"
-                          >
-                            <Trash2 className="w-4 h-4 ml-1" />
-                            حذف
-                          </Button>
-                          <Button
-                            size="sm"
-                            onClick={() => saveNote(note)}
-                            className="bg-green-600 hover:bg-green-700"
-                          >
-                            <CheckCircle2 className="w-4 h-4 ml-1" />
-                            حفظ
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            )}
-          </TabsContent>
-
-          {/* تبويب الملاحظات المحفوظة */}
-          <TabsContent value="saved">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                  <span className="flex items-center gap-2">
-                    <CheckCircle2 className="w-5 h-5 text-green-600" />
-                    الملاحظات المحفوظة ({filteredSavedNotes.length})
-                  </span>
-                  <div className="flex flex-wrap gap-2">
-                    <div className="relative flex-1 min-w-[200px]">
-                      <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                      <Input
-                        placeholder="بحث..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pr-10"
-                      />
-                    </div>
-                    <Select value={filterCategory} onValueChange={setFilterCategory}>
-                      <SelectTrigger className="w-32">
-                        <SelectValue placeholder="التصنيف" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">الكل</SelectItem>
-                        {categories.map(cat => (
-                          <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Select value={filterStatus} onValueChange={setFilterStatus}>
-                      <SelectTrigger className="w-32">
-                        <SelectValue placeholder="الحالة" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">الكل</SelectItem>
-                        {statuses.map(s => (
-                          <SelectItem key={s} value={s}>{s}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Button variant="outline" onClick={exportToCSV}>
-                      <Download className="w-4 h-4 ml-1" />
-                      CSV
-                    </Button>
-                    <Button variant="outline" onClick={exportToHTML} className="text-purple-600 hover:bg-purple-50">
-                      <FileCode className="w-4 h-4 ml-1" />
-                      HTML
-                    </Button>
-                    <Button variant="outline" onClick={printReport} className="text-green-600 hover:bg-green-50">
-                      <Printer className="w-4 h-4 ml-1" />
-                      طباعة
-                    </Button>
-                  </div>
-                </CardTitle>
+            {/* قائمة الأدوات */}
+            <Card className="border-2 border-gray-200">
+              <CardHeader className="pb-4">
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                  <TabsList className="grid grid-cols-2 w-full">
+                    <TabsTrigger value="medical" className="gap-2">
+                      <Stethoscope className="w-4 h-4" />
+                      أدوات طبية
+                      <Badge className="bg-teal-100 text-teal-800">{medicalEquipmentList.length}</Badge>
+                    </TabsTrigger>
+                    <TabsTrigger value="nonmedical" className="gap-2">
+                      <Wrench className="w-4 h-4" />
+                      أدوات غير طبية
+                      <Badge className="bg-purple-100 text-purple-800">{nonMedicalEquipmentList.length}</Badge>
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
               </CardHeader>
               <CardContent>
-                {isLoading ? (
-                  <div className="text-center py-8">
-                    <Loader2 className="w-8 h-8 animate-spin mx-auto text-gray-400" />
-                  </div>
-                ) : filteredSavedNotes.length === 0 ? (
-                  <div className="text-center py-12">
-                    <FileText className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-                    <p className="text-gray-500">لا توجد ملاحظات محفوظة</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {filteredSavedNotes.map((note) => (
-                      <div
-                        key={note.id}
-                        className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                      >
-                        <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
-                          <div>
-                            <h4 className="font-semibold text-gray-900">{note.title}</h4>
-                            <p className="text-sm text-gray-600 mt-1">{note.original_text}</p>
-                          </div>
-                          <div className="flex flex-wrap gap-1">
-                            <Badge className={getCategoryColor(note.category)}>{note.category}</Badge>
-                            <Badge className={getPriorityColor(note.priority)}>
-                              {getPriorityIcon(note.priority)}
-                              <span className="mr-1">{note.priority}</span>
-                            </Badge>
-                            <Badge className={getStatusColor(note.status)}>{note.status}</Badge>
-                          </div>
-                        </div>
+                {/* البحث */}
+                <div className="relative mb-4">
+                  <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Input
+                    placeholder="ابحث عن أداة..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pr-10"
+                  />
+                </div>
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm mt-3 pt-3 border-t">
-                          <div>
-                            <span className="text-gray-500">المسؤول:</span>
-                            <span className="font-medium mr-1">{note.responsible_party || '-'}</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-500">الإجراء:</span>
-                            <span className="font-medium mr-1">{note.action_taken || '-'}</span>
-                          </div>
-                          <div>
-                            <span className="text-gray-500">المدة:</span>
-                            <span className="font-medium mr-1">{note.expected_duration || '-'}</span>
-                          </div>
-                          <div className="flex justify-end gap-1">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setEditingNote(note)}
-                            >
-                              <Edit2 className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => deleteNote(note.id)}
-                              className="text-red-600 hover:bg-red-50"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
+                {/* القائمة */}
+                <div className="max-h-[500px] overflow-y-auto space-y-4">
+                  {categories.map(category => {
+                    const categoryItems = filteredItems.filter(item => item.category === category);
+                    if (categoryItems.length === 0) return null;
+
+                    return (
+                      <div key={category} className="space-y-2">
+                        <h4 className="font-semibold text-gray-700 bg-gray-100 px-3 py-2 rounded-lg sticky top-0 z-10">
+                          {category} ({categoryItems.length})
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                          {categoryItems.map(item => {
+                            const selected = isSelected(item.id);
+                            return (
+                              <div
+                                key={item.id}
+                                className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all cursor-pointer ${
+                                  selected 
+                                    ? 'border-teal-500 bg-teal-50' 
+                                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                                }`}
+                                onClick={() => !selected && toggleItem(item)}
+                              >
+                                <Checkbox
+                                  checked={selected}
+                                  onCheckedChange={() => toggleItem(item)}
+                                />
+                                <span className="flex-1 text-sm">{item.name}</span>
+                                {selected && (
+                                  <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-7 w-7"
+                                      onClick={() => updateQuantity(item.id, getSelectedQuantity(item.id) - 1)}
+                                    >
+                                      <Minus className="w-3 h-3" />
+                                    </Button>
+                                    <Input
+                                      type="number"
+                                      min="1"
+                                      value={getSelectedQuantity(item.id)}
+                                      onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)}
+                                      className="w-14 h-7 text-center text-sm p-1"
+                                    />
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-7 w-7"
+                                      onClick={() => updateQuantity(item.id, getSelectedQuantity(item.id) + 1)}
+                                    >
+                                      <Plus className="w-3 h-3" />
+                                    </Button>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* ملخص التقرير */}
+          <div className="space-y-6">
+            <Card className="border-2 border-teal-200 sticky top-4">
+              <CardHeader className="bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-t-lg">
+                <CardTitle className="flex items-center justify-between">
+                  <span className="flex items-center gap-2">
+                    <CheckCircle2 className="w-5 h-5" />
+                    ملخص التقرير
+                  </span>
+                  <Badge className="bg-white/20 text-white">{selectedItems.length}</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-4 space-y-4">
+                {/* المركز المحدد */}
+                {selectedCenter && (
+                  <div className="bg-gray-50 p-3 rounded-lg">
+                    <p className="text-sm text-gray-500">المركز الصحي:</p>
+                    <p className="font-semibold">{selectedCenter}</p>
+                  </div>
+                )}
+
+                {/* عنوان التقرير */}
+                <div>
+                  <Label>عنوان التقرير (اختياري)</Label>
+                  <Input
+                    placeholder="مثال: نواقص الربع الأول 2024"
+                    value={reportTitle}
+                    onChange={(e) => setReportTitle(e.target.value)}
+                  />
+                </div>
+
+                {/* إحصائيات */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-teal-50 p-3 rounded-lg text-center">
+                    <Stethoscope className="w-6 h-6 mx-auto text-teal-600 mb-1" />
+                    <p className="text-2xl font-bold text-teal-700">{medicalItems.length}</p>
+                    <p className="text-xs text-teal-600">أداة طبية</p>
+                  </div>
+                  <div className="bg-purple-50 p-3 rounded-lg text-center">
+                    <Wrench className="w-6 h-6 mx-auto text-purple-600 mb-1" />
+                    <p className="text-2xl font-bold text-purple-700">{nonMedicalItems.length}</p>
+                    <p className="text-xs text-purple-600">أداة غير طبية</p>
+                  </div>
+                </div>
+
+                {/* قائمة العناصر المحددة */}
+                {selectedItems.length > 0 && (
+                  <div className="max-h-[200px] overflow-y-auto border rounded-lg">
+                    {selectedItems.map((item, idx) => (
+                      <div key={item.id} className="flex items-center justify-between p-2 border-b last:border-b-0 hover:bg-gray-50">
+                        <div className="flex items-center gap-2">
+                          {item.type === 'medical' ? (
+                            <Stethoscope className="w-3 h-3 text-teal-600" />
+                          ) : (
+                            <Wrench className="w-3 h-3 text-purple-600" />
+                          )}
+                          <span className="text-sm">{item.name}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">{item.quantity}</Badge>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 text-red-500 hover:bg-red-50"
+                            onClick={() => toggleItem(item)}
+                          >
+                            <X className="w-3 h-3" />
+                          </Button>
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
+
+                {/* أزرار الإجراءات */}
+                <div className="space-y-2">
+                  <Button
+                    onClick={saveReport}
+                    disabled={!selectedCenter || selectedItems.length === 0}
+                    className="w-full bg-teal-600 hover:bg-teal-700"
+                  >
+                    <Save className="w-4 h-4 ml-2" />
+                    حفظ التقرير
+                  </Button>
+                  
+                  <div className="grid grid-cols-3 gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={exportToExcel}
+                      disabled={selectedItems.length === 0}
+                      className="text-green-600 hover:bg-green-50"
+                    >
+                      <FileSpreadsheet className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={exportToHTML}
+                      disabled={selectedItems.length === 0}
+                      className="text-purple-600 hover:bg-purple-50"
+                    >
+                      <FileCode className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={printReport}
+                      disabled={selectedItems.length === 0}
+                      className="text-blue-600 hover:bg-blue-50"
+                    >
+                      <Printer className="w-4 h-4" />
+                    </Button>
+                  </div>
+
+                  {selectedItems.length > 0 && (
+                    <Button
+                      variant="outline"
+                      onClick={clearSelection}
+                      className="w-full text-red-600 hover:bg-red-50"
+                    >
+                      <Trash2 className="w-4 h-4 ml-2" />
+                      مسح التحديد
+                    </Button>
+                  )}
+                </div>
               </CardContent>
             </Card>
-          </TabsContent>
-        </Tabs>
+          </div>
+        </div>
+      </div>
 
-        {/* Dialog تعديل الملاحظة */}
-        <Dialog open={!!editingNote} onOpenChange={() => setEditingNote(null)}>
-          <DialogContent className="max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>تعديل الملاحظة</DialogTitle>
-            </DialogHeader>
-            {editingNote && (
-              <div className="space-y-4">
-                <div>
-                  <Label>العنوان</Label>
-                  <Input
-                    value={editingNote.title}
-                    onChange={(e) => setEditingNote({ ...editingNote, title: e.target.value })}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label>التصنيف</Label>
-                    <Select
-                      value={editingNote.category}
-                      onValueChange={(value) => setEditingNote({ ...editingNote, category: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map(cat => (
-                          <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+      {/* نافذة التقارير المحفوظة */}
+      <Dialog open={showSavedReports} onOpenChange={setShowSavedReports}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <List className="w-5 h-5" />
+              التقارير المحفوظة ({savedReports.length})
+            </DialogTitle>
+          </DialogHeader>
+          <div className="max-h-[400px] overflow-y-auto">
+            {savedReports.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <AlertCircle className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                <p>لا توجد تقارير محفوظة</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {savedReports.map(report => (
+                  <div key={report.id} className="border rounded-lg p-4 hover:bg-gray-50">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h4 className="font-semibold">{report.title}</h4>
+                        <p className="text-sm text-gray-500">{report.center}</p>
+                        <p className="text-xs text-gray-400 mt-1">
+                          {new Date(report.date).toLocaleDateString('ar-SA')} - {report.items.length} عنصر
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button size="sm" onClick={() => loadReport(report)}>
+                          تحميل
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="text-red-600"
+                          onClick={() => deleteReport(report.id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-
-                  <div>
-                    <Label>الأولوية</Label>
-                    <Select
-                      value={editingNote.priority}
-                      onValueChange={(value) => setEditingNote({ ...editingNote, priority: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {priorities.map(p => (
-                          <SelectItem key={p} value={p}>{p}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label>الحالة</Label>
-                    <Select
-                      value={editingNote.status}
-                      onValueChange={(value) => setEditingNote({ ...editingNote, status: value })}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {statuses.map(s => (
-                          <SelectItem key={s} value={s}>{s}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label>المدة المتوقعة</Label>
-                    <Input
-                      value={editingNote.expected_duration}
-                      onChange={(e) => setEditingNote({ ...editingNote, expected_duration: e.target.value })}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <Label>المسؤول</Label>
-                  <Input
-                    value={editingNote.responsible_party}
-                    onChange={(e) => setEditingNote({ ...editingNote, responsible_party: e.target.value })}
-                  />
-                </div>
-
-                <div>
-                  <Label>الإجراء المتخذ</Label>
-                  <Textarea
-                    value={editingNote.action_taken}
-                    onChange={(e) => setEditingNote({ ...editingNote, action_taken: e.target.value })}
-                    rows={3}
-                  />
-                </div>
+                ))}
               </div>
             )}
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setEditingNote(null)}>إلغاء</Button>
-              <Button
-                onClick={() => updateSavedNote(editingNote.id, editingNote)}
-                className="bg-green-600 hover:bg-green-700"
-              >
-                حفظ التغييرات
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
