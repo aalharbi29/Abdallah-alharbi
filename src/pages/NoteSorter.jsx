@@ -1164,7 +1164,6 @@ ${equipmentNames}
                               >
                                 <Checkbox
                                   checked={selected}
-                                  onCheckedChange={(e) => e.stopPropagation()}
                                   onClick={(e) => e.stopPropagation()}
                                 />
                                 <span className="flex-1 text-sm">{item.name}</span>
