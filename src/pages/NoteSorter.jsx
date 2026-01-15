@@ -776,6 +776,137 @@ export default function CenterDeficiencyTool() {
     toast.success('تم تصدير التقرير');
   };
 
+  const exportAllCentersReport = () => {
+    if (savedReports.length === 0) {
+      toast.error('لا توجد تقارير محفوظة للتصدير');
+      return;
+    }
+
+    const today = new Date().toLocaleDateString('ar-SA', { 
+      weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+    });
+
+    // تجميع البيانات حسب المركز
+    const centerData = {};
+    savedReports.forEach(report => {
+      if (!centerData[report.center]) {
+        centerData[report.center] = [];
+      }
+      centerData[report.center].push(...report.items);
+    });
+
+    // إزالة التكرارات وجمع الكميات
+    Object.keys(centerData).forEach(center => {
+      const uniqueItems = {};
+      centerData[center].forEach(item => {
+        if (uniqueItems[item.id]) {
+          uniqueItems[item.id].quantity += item.quantity;
+        } else {
+          uniqueItems[item.id] = { ...item };
+        }
+      });
+      centerData[center] = Object.values(uniqueItems);
+    });
+
+    const html = `
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>تقرير نواقص جميع المراكز</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Cairo', sans-serif; background: #f8fafc; padding: 30px; color: #1e293b; }
+    .container { max-width: 1000px; margin: 0 auto; }
+    .header { background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%); color: white; padding: 40px; border-radius: 20px; margin-bottom: 30px; text-align: center; }
+    .header h1 { font-size: 2rem; margin-bottom: 10px; }
+    .header .date { background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 20px; display: inline-block; }
+    .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+    .summary-card { background: white; padding: 25px; border-radius: 16px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    .summary-number { font-size: 2.5rem; font-weight: 800; color: #0f766e; }
+    .summary-label { color: #64748b; font-weight: 600; }
+    .center-section { background: white; border-radius: 16px; margin-bottom: 25px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    .center-header { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; padding: 15px 25px; font-size: 1.2rem; font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: #f1f5f9; padding: 12px; text-align: right; font-weight: 700; color: #475569; border-bottom: 2px solid #e2e8f0; }
+    td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; }
+    tr:hover { background: #f8fafc; }
+    .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+    .badge-medical { background: #d1fae5; color: #065f46; }
+    .badge-nonmedical { background: #ede9fe; color: #5b21b6; }
+    .quantity { font-weight: 800; color: #0f766e; text-align: center; }
+    .footer { text-align: center; padding: 30px; color: #64748b; border-top: 2px solid #e2e8f0; margin-top: 30px; }
+    @media print { body { background: white; padding: 10px; } .header, .center-section, .summary-card { box-shadow: none; border: 1px solid #e2e8f0; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📋 تقرير نواقص جميع المراكز الصحية</h1>
+      <div class="date">📅 ${today}</div>
+    </div>
+    
+    <div class="summary">
+      <div class="summary-card">
+        <div class="summary-number">${Object.keys(centerData).length}</div>
+        <div class="summary-label">مركز صحي</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-number">${Object.values(centerData).flat().length}</div>
+        <div class="summary-label">إجمالي العناصر</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-number">${savedReports.length}</div>
+        <div class="summary-label">تقرير محفوظ</div>
+      </div>
+    </div>
+    
+    ${Object.entries(centerData).map(([center, items]) => `
+    <div class="center-section">
+      <div class="center-header">🏥 ${center} (${items.length} عنصر)</div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>اسم العنصر</th>
+            <th>التصنيف</th>
+            <th>النوع</th>
+            <th>العدد</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${items.map((item, idx) => `
+            <tr>
+              <td>${idx + 1}</td>
+              <td>${item.name}</td>
+              <td>${item.category}</td>
+              <td><span class="badge ${item.type === 'medical' ? 'badge-medical' : 'badge-nonmedical'}">${item.type === 'medical' ? 'طبي' : 'غير طبي'}</span></td>
+              <td class="quantity">${item.quantity}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+    `).join('')}
+    
+    <div class="footer">
+      <p>وزارة الصحة - قطاع الحناكية الصحي</p>
+      <p style="margin-top: 5px;">تم إنشاء هذا التقرير بواسطة نظام إدارة المراكز الصحية</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `تقرير-نواقص-جميع-المراكز-${new Date().toISOString().split('T')[0]}.html`;
+    link.click();
+    toast.success('تم تصدير تقرير جميع المراكز');
+  };
+
   const printReport = () => {
     if (!selectedCenter || selectedItems.length === 0) {
       toast.error('الرجاء اختيار مركز وإضافة عناصر للتقرير');
@@ -885,29 +1016,34 @@ export default function CenterDeficiencyTool() {
 
       // تحليل الملف باستخدام الذكاء الاصطناعي
       const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `قم بتحليل هذا الملف واستخراج النواقص/الاحتياجات من الأدوات الطبية وغير الطبية.
+        prompt: `أنت محلل مستندات متخصص. قم بقراءة وتحليل هذا الملف بعناية فائقة واستخراج جميع المعلومات المتعلقة بالنواقص والاحتياجات.
 
-المطلوب:
-1. استخرج اسم المركز الصحي إن وُجد في الملف
-2. استخرج قائمة النواقص مع الكميات
-3. استخرج النص الكامل للملف أو ملخص لمحتواه
+## المهمة:
+1. اقرأ الملف بالكامل واستخرج النص الموجود فيه
+2. حدد اسم المركز الصحي إن ذُكر
+3. استخرج كل النواقص/الاحتياجات المذكورة مع الكميات
 
-قائمة المراكز الصحية المتاحة:
+## قائمة المراكز الصحية للمطابقة:
 ${centerNames}
 
-قائمة الأدوات المتاحة للمطابقة:
+## قائمة الأدوات للمطابقة (طابق أي عنصر مشابه):
 ${equipmentNames}
 
-أرجع النتيجة بالشكل التالي:
-- center_name: اسم المركز (من القائمة أعلاه إن وجد، أو فارغ)
-- file_content: النص الكامل أو ملخص لمحتوى الملف
-- items: قائمة بالنواقص، كل عنصر يحتوي على:
-  - name: اسم الأداة (من القائمة أعلاه أو كما وردت في الملف)
-  - original_name: الاسم الأصلي كما ورد في الملف
-  - quantity: العدد المطلوب (رقم)
-  - matched: هل تم مطابقتها مع القائمة (true/false)
+## التعليمات المهمة:
+- اقرأ كل سطر في الملف
+- أي شيء يبدو كطلب أو نقص أو احتياج، أضفه للقائمة
+- إذا لم تجد كمية محددة، ضع 1 كافتراضي
+- أضف العنصر حتى لو لم تجد مطابقة في القائمة
+- file_content يجب أن يحتوي على النص الكامل أو ملخص شامل للملف
 
-ملاحظة: أضف جميع النواقص المذكورة حتى لو لم تتطابق مع القائمة.`,
+## صيغة الإخراج:
+{
+  "center_name": "اسم المركز إن وجد",
+  "file_content": "النص الكامل أو ملخص المحتوى - اكتب كل ما تراه في الملف",
+  "items": [
+    {"name": "اسم مطابق من القائمة", "original_name": "الاسم كما ورد", "quantity": 1, "matched": true/false}
+  ]
+}`,
         file_urls: [file_url],
         response_json_schema: {
           type: "object",
@@ -930,6 +1066,8 @@ ${equipmentNames}
         }
       });
 
+      console.log('AI Response:', response);
+      
       if (response) {
         // معالجة النتائج
         const processedItems = [];
@@ -937,12 +1075,19 @@ ${equipmentNames}
         
         if (response.items && response.items.length > 0) {
           response.items.forEach(item => {
-            // البحث عن الأداة في القوائم
-            const matchedEquipment = allEquipment.find(e => 
-              e.name === item.name || 
-              e.name.includes(item.name) || 
-              item.name.includes(e.name)
-            );
+            if (!item.name && !item.original_name) return;
+            
+            const searchName = (item.name || item.original_name || '').toLowerCase();
+            
+            // البحث عن الأداة في القوائم بطرق متعددة
+            const matchedEquipment = allEquipment.find(e => {
+              const eName = e.name.toLowerCase();
+              return eName === searchName || 
+                     eName.includes(searchName) || 
+                     searchName.includes(eName) ||
+                     eName.split(' ').some(word => searchName.includes(word) && word.length > 3) ||
+                     searchName.split(' ').some(word => eName.includes(word) && word.length > 3);
+            });
 
             if (matchedEquipment && !addedIds.has(matchedEquipment.id)) {
               addedIds.add(matchedEquipment.id);
@@ -953,7 +1098,8 @@ ${equipmentNames}
                 matched: true,
                 selected: true
               });
-            } else if (!matchedEquipment) {
+            } else if (!matchedEquipment && !addedIds.has(searchName)) {
+              addedIds.add(searchName);
               // أداة غير موجودة في القائمة
               processedItems.push({
                 id: `custom_${Date.now()}_${Math.random()}`,
@@ -1102,6 +1248,16 @@ ${equipmentNames}
                     >
                       <List className="w-4 h-4 ml-2" />
                       المحفوظة ({savedReports.length})
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={exportAllCentersReport}
+                      disabled={savedReports.length === 0}
+                      className="h-12 bg-gradient-to-r from-teal-50 to-emerald-50 border-teal-200 hover:border-teal-400"
+                      title="تصدير تقرير شامل لجميع المراكز"
+                    >
+                      <Download className="w-4 h-4 ml-2 text-teal-600" />
+                      تقرير شامل
                     </Button>
                   </div>
                 </div>
