@@ -831,12 +831,22 @@ export default function CenterDeficiencyTool() {
       centerData[center] = Object.values(uniqueItems);
     });
 
+    // تحديد نوع التجهيزات (طبية/غير طبية/مختلطة)
+    const allItems = Object.values(centerData).flat();
+    const hasMedical = allItems.some(i => i.type === 'medical');
+    const hasNonMedical = allItems.some(i => i.type === 'nonmedical');
+    const equipmentType = hasMedical && hasNonMedical 
+      ? 'التجهيزات الطبية وغير الطبية'
+      : hasMedical 
+        ? 'التجهيزات الطبية'
+        : 'التجهيزات غير الطبية';
+
     const html = `
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>تقرير نواقص جميع المراكز</title>
+  <title>تقرير نواقص المراكز الصحية</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -844,11 +854,7 @@ export default function CenterDeficiencyTool() {
     .container { max-width: 1000px; margin: 0 auto; }
     .header { background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%); color: white; padding: 40px; border-radius: 20px; margin-bottom: 30px; text-align: center; }
     .header h1 { font-size: 2rem; margin-bottom: 10px; }
-    .header .date { background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 20px; display: inline-block; }
-    .summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
-    .summary-card { background: white; padding: 25px; border-radius: 16px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
-    .summary-number { font-size: 2.5rem; font-weight: 800; color: #0f766e; }
-    .summary-label { color: #64748b; font-weight: 600; }
+    .header h2 { font-size: 1.3rem; opacity: 0.9; font-weight: 600; }
     .center-section { background: white; border-radius: 16px; margin-bottom: 25px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
     .center-header { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); color: white; padding: 15px 25px; font-size: 1.2rem; font-weight: 700; }
     table { width: 100%; border-collapse: collapse; }
@@ -860,34 +866,19 @@ export default function CenterDeficiencyTool() {
     .badge-nonmedical { background: #ede9fe; color: #5b21b6; }
     .quantity { font-weight: 800; color: #0f766e; text-align: center; }
     .footer { text-align: center; padding: 30px; color: #64748b; border-top: 2px solid #e2e8f0; margin-top: 30px; }
-    @media print { body { background: white; padding: 10px; } .header, .center-section, .summary-card { box-shadow: none; border: 1px solid #e2e8f0; } }
+    @media print { body { background: white; padding: 10px; } .header, .center-section { box-shadow: none; border: 1px solid #e2e8f0; } }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>📋 تقرير نواقص جميع المراكز الصحية</h1>
-      <div class="date">📅 ${today}</div>
-    </div>
-    
-    <div class="summary">
-      <div class="summary-card">
-        <div class="summary-number">${Object.keys(centerData).length}</div>
-        <div class="summary-label">مركز صحي</div>
-      </div>
-      <div class="summary-card">
-        <div class="summary-number">${Object.values(centerData).flat().length}</div>
-        <div class="summary-label">إجمالي العناصر</div>
-      </div>
-      <div class="summary-card">
-        <div class="summary-number">${savedReports.length}</div>
-        <div class="summary-label">تقرير محفوظ</div>
-      </div>
+      <h1>المراكز الصحية بالحناكية</h1>
+      <h2>النواقص في ${equipmentType}</h2>
     </div>
     
     ${Object.entries(centerData).map(([center, items]) => `
     <div class="center-section">
-      <div class="center-header">🏥 ${center} (${items.length} عنصر)</div>
+      <div class="center-header">🏥 ${center}</div>
       <table>
         <thead>
           <tr>
@@ -915,7 +906,6 @@ export default function CenterDeficiencyTool() {
     
     <div class="footer">
       <p>وزارة الصحة - قطاع الحناكية الصحي</p>
-      <p style="margin-top: 5px;">تم إنشاء هذا التقرير بواسطة نظام إدارة المراكز الصحية</p>
     </div>
   </div>
 </body>
