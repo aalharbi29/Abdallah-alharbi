@@ -29,7 +29,7 @@ import {
 import {
   Stethoscope, Wrench, Building2, Search, Download, Plus, Minus,
   Loader2, Trash2, FileCode, Printer, FileSpreadsheet, Package,
-  CheckCircle2, AlertCircle, Filter, X, Save, List
+  CheckCircle2, AlertCircle, Filter, X, Save, List, Upload, FileUp, Sparkles
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -174,6 +174,7 @@ export default function CenterDeficiencyTool() {
   const [savedReports, setSavedReports] = useState([]);
   const [showSavedReports, setShowSavedReports] = useState(false);
   const [reportTitle, setReportTitle] = useState('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   useEffect(() => {
     loadHealthCenters();
@@ -627,6 +628,114 @@ export default function CenterDeficiencyTool() {
     toast.success('تم مسح التحديد');
   };
 
+  const handleFileUpload = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsAnalyzing(true);
+    try {
+      // رفع الملف أولاً
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+
+      // إنشاء قائمة بأسماء الأدوات المتاحة للمطابقة
+      const allEquipment = [
+        ...medicalEquipmentList.map(e => ({ ...e, type: 'medical' })),
+        ...nonMedicalEquipmentList.map(e => ({ ...e, type: 'nonmedical' }))
+      ];
+
+      const equipmentNames = allEquipment.map(e => e.name).join('\n');
+      const centerNames = healthCenters.map(c => c.اسم_المركز).join('\n');
+
+      // تحليل الملف باستخدام الذكاء الاصطناعي
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt: `قم بتحليل هذا الملف واستخراج النواقص/الاحتياجات من الأدوات الطبية وغير الطبية.
+
+المطلوب:
+1. استخرج اسم المركز الصحي إن وُجد في الملف
+2. استخرج قائمة النواقص مع الكميات
+
+قائمة المراكز الصحية المتاحة:
+${centerNames}
+
+قائمة الأدوات المتاحة للمطابقة:
+${equipmentNames}
+
+أرجع النتيجة بالشكل التالي:
+- center_name: اسم المركز (من القائمة أعلاه إن وجد، أو فارغ)
+- items: قائمة بالنواقص، كل عنصر يحتوي على:
+  - name: اسم الأداة (من القائمة أعلاه)
+  - quantity: العدد المطلوب (رقم)
+
+ملاحظة: طابق أسماء الأدوات مع القائمة المتاحة قدر الإمكان.`,
+        file_urls: [file_url],
+        response_json_schema: {
+          type: "object",
+          properties: {
+            center_name: { type: "string" },
+            items: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                  quantity: { type: "number" }
+                }
+              }
+            }
+          }
+        }
+      });
+
+      if (response) {
+        // تحديد المركز إن وجد
+        if (response.center_name) {
+          const matchedCenter = healthCenters.find(c => 
+            c.اسم_المركز.includes(response.center_name) || 
+            response.center_name.includes(c.اسم_المركز)
+          );
+          if (matchedCenter) {
+            setSelectedCenter(matchedCenter.اسم_المركز);
+          }
+        }
+
+        // إضافة النواقص
+        if (response.items && response.items.length > 0) {
+          const newItems = [];
+          response.items.forEach(item => {
+            // البحث عن الأداة في القوائم
+            const matchedEquipment = allEquipment.find(e => 
+              e.name === item.name || 
+              e.name.includes(item.name) || 
+              item.name.includes(e.name)
+            );
+
+            if (matchedEquipment && !selectedItems.some(s => s.id === matchedEquipment.id)) {
+              newItems.push({
+                ...matchedEquipment,
+                quantity: item.quantity || 1
+              });
+            }
+          });
+
+          if (newItems.length > 0) {
+            setSelectedItems(prev => [...prev, ...newItems]);
+            toast.success(`تم استخراج ${newItems.length} عنصر من الملف`);
+          } else {
+            toast.warning('لم يتم العثور على أدوات مطابقة في الملف');
+          }
+        } else {
+          toast.warning('لم يتم العثور على نواقص في الملف');
+        }
+      }
+    } catch (error) {
+      console.error('Error analyzing file:', error);
+      toast.error('فشل في تحليل الملف');
+    } finally {
+      setIsAnalyzing(false);
+      event.target.value = '';
+    }
+  };
+
   return (
     <div className="min-h-screen p-4 md:p-6 bg-gradient-to-br from-teal-50 via-white to-purple-50">
       <div className="max-w-7xl mx-auto">
@@ -670,14 +779,46 @@ export default function CenterDeficiencyTool() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => setShowSavedReports(true)}
-                    className="h-12"
-                  >
-                    <List className="w-4 h-4 ml-2" />
-                    التقارير المحفوظة ({savedReports.length})
-                  </Button>
+                  <div className="flex gap-2">
+                    <input
+                      type="file"
+                      id="file-upload"
+                      className="hidden"
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.txt"
+                      onChange={handleFileUpload}
+                      disabled={isAnalyzing}
+                    />
+                    <label htmlFor="file-upload">
+                      <Button
+                        asChild
+                        variant="outline"
+                        disabled={isAnalyzing}
+                        className="h-12 cursor-pointer bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200 hover:border-purple-400"
+                      >
+                        <span>
+                          {isAnalyzing ? (
+                            <>
+                              <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                              جاري التحليل...
+                            </>
+                          ) : (
+                            <>
+                              <Sparkles className="w-4 h-4 ml-2 text-purple-600" />
+                              رفع ملف نواقص
+                            </>
+                          )}
+                        </span>
+                      </Button>
+                    </label>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setShowSavedReports(true)}
+                      className="h-12"
+                    >
+                      <List className="w-4 h-4 ml-2" />
+                      المحفوظة ({savedReports.length})
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
