@@ -1453,87 +1453,109 @@ export default function CenterDeficiencyTool() {
           </div>
 
           {/* ملخص التقرير */}
-          <div className="space-y-6">
-            <Card className="border-2 border-teal-200 sticky top-4">
-              <CardHeader className="bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-t-lg">
-                <CardTitle className="flex items-center justify-between">
-                  <span className="flex items-center gap-2">
+          <div className="space-y-5">
+            <Card className="border-0 shadow-xl bg-white/90 backdrop-blur-sm sticky top-4 overflow-hidden">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-teal-600 via-teal-700 to-emerald-700 text-white p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-bold flex items-center gap-2">
                     <CheckCircle2 className="w-5 h-5" />
                     ملخص التقرير
-                  </span>
-                  <Badge className="bg-white/20 text-white">{selectedItems.length}</Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-4 space-y-4">
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <Badge className="bg-white/20 text-white text-lg px-3 py-1 border-0">
+                      {selectedItems.length} عنصر
+                    </Badge>
+                  </div>
+                </div>
+                
+                {/* إحصائيات سريعة */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-white/20">
+                    <Stethoscope className="w-6 h-6 mx-auto mb-1 opacity-80" />
+                    <p className="text-2xl font-bold">{medicalItems.length}</p>
+                    <p className="text-xs opacity-80">طبي</p>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-white/20">
+                    <Wrench className="w-6 h-6 mx-auto mb-1 opacity-80" />
+                    <p className="text-2xl font-bold">{nonMedicalItems.length}</p>
+                    <p className="text-xs opacity-80">غير طبي</p>
+                  </div>
+                </div>
+              </div>
+              
+              <CardContent className="p-4 space-y-4">
                 {/* المركز المحدد */}
-                {selectedCenter && (
-                  <div className="bg-gray-50 p-3 rounded-lg">
-                    <p className="text-sm text-gray-500">المركز الصحي:</p>
-                    <p className="font-semibold">{selectedCenter}</p>
+                {selectedCenter ? (
+                  <div className="bg-gradient-to-r from-teal-50 to-emerald-50 p-4 rounded-xl border border-teal-200">
+                    <p className="text-xs text-teal-600 font-medium mb-1">المركز الصحي</p>
+                    <p className="font-bold text-teal-800 flex items-center gap-2">
+                      <Building2 className="w-4 h-4" />
+                      {selectedCenter}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="bg-amber-50 p-4 rounded-xl border border-amber-200 text-center">
+                    <AlertCircle className="w-8 h-8 mx-auto text-amber-500 mb-2" />
+                    <p className="text-sm text-amber-700">اختر مركزاً صحياً للبدء</p>
                   </div>
                 )}
 
                 {/* عنوان التقرير */}
                 <div>
-                  <Label>عنوان التقرير (اختياري)</Label>
+                  <Label className="text-xs text-gray-500">عنوان التقرير (اختياري)</Label>
                   <Input
                     placeholder="مثال: نواقص الربع الأول 2024"
                     value={reportTitle}
                     onChange={(e) => setReportTitle(e.target.value)}
+                    className="mt-1 h-11 border-2"
                   />
-                </div>
-
-                {/* إحصائيات */}
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-teal-50 p-3 rounded-lg text-center">
-                    <Stethoscope className="w-6 h-6 mx-auto text-teal-600 mb-1" />
-                    <p className="text-2xl font-bold text-teal-700">{medicalItems.length}</p>
-                    <p className="text-xs text-teal-600">أداة طبية</p>
-                  </div>
-                  <div className="bg-purple-50 p-3 rounded-lg text-center">
-                    <Wrench className="w-6 h-6 mx-auto text-purple-600 mb-1" />
-                    <p className="text-2xl font-bold text-purple-700">{nonMedicalItems.length}</p>
-                    <p className="text-xs text-purple-600">أداة غير طبية</p>
-                  </div>
                 </div>
 
                 {/* قائمة العناصر المحددة */}
                 {selectedItems.length > 0 && (
-                  <div className="max-h-[200px] overflow-y-auto border rounded-lg">
-                    {selectedItems.map((item, idx) => (
-                      <div key={item.id} className="flex items-center justify-between p-2 border-b last:border-b-0 hover:bg-gray-50">
-                        <div className="flex items-center gap-2">
-                          {item.type === 'medical' ? (
-                            <Stethoscope className="w-3 h-3 text-teal-600" />
-                          ) : (
-                            <Wrench className="w-3 h-3 text-purple-600" />
-                          )}
-                          <span className="text-sm">{item.name}</span>
+                  <div>
+                    <Label className="text-xs text-gray-500 mb-2 block">العناصر المحددة</Label>
+                    <div className="max-h-[180px] overflow-y-auto rounded-xl border-2 border-gray-100 divide-y">
+                      {selectedItems.map((item) => (
+                        <div key={item.id} className="flex items-center justify-between p-3 hover:bg-gray-50 transition-colors">
+                          <div className="flex items-center gap-2 flex-1 min-w-0">
+                            <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
+                              item.type === 'medical' ? 'bg-teal-500' : 'bg-purple-500'
+                            }`} />
+                            <span className="text-sm truncate">{item.name}</span>
+                          </div>
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            <Badge className={`${
+                              item.type === 'medical' 
+                                ? 'bg-teal-100 text-teal-700' 
+                                : 'bg-purple-100 text-purple-700'
+                            } border-0`}>
+                              {item.quantity}
+                            </Badge>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-7 w-7 text-red-500 hover:bg-red-50 hover:text-red-600"
+                              onClick={() => toggleItem(item)}
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Badge variant="outline">{item.quantity}</Badge>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 text-red-500 hover:bg-red-50"
-                            onClick={() => toggleItem(item)}
-                          >
-                            <X className="w-3 h-3" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 )}
 
                 {/* أزرار الإجراءات */}
-                <div className="space-y-2">
+                <div className="space-y-3 pt-2">
                   <Button
                     onClick={saveReport}
                     disabled={!selectedCenter || selectedItems.length === 0}
-                    className="w-full bg-teal-600 hover:bg-teal-700"
+                    className="w-full h-12 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 shadow-lg shadow-teal-200 text-base font-semibold"
                   >
-                    <Save className="w-4 h-4 ml-2" />
+                    <Save className="w-5 h-5 ml-2" />
                     حفظ التقرير
                   </Button>
                   
@@ -1542,25 +1564,28 @@ export default function CenterDeficiencyTool() {
                       variant="outline"
                       onClick={exportToExcel}
                       disabled={selectedItems.length === 0}
-                      className="text-green-600 hover:bg-green-50"
+                      className="h-11 border-2 border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300"
+                      title="تصدير Excel"
                     >
-                      <FileSpreadsheet className="w-4 h-4" />
+                      <FileSpreadsheet className="w-5 h-5" />
                     </Button>
                     <Button
                       variant="outline"
                       onClick={exportToHTML}
                       disabled={selectedItems.length === 0}
-                      className="text-purple-600 hover:bg-purple-50"
+                      className="h-11 border-2 border-purple-200 text-purple-600 hover:bg-purple-50 hover:border-purple-300"
+                      title="تصدير HTML"
                     >
-                      <FileCode className="w-4 h-4" />
+                      <FileCode className="w-5 h-5" />
                     </Button>
                     <Button
                       variant="outline"
                       onClick={printReport}
                       disabled={selectedItems.length === 0}
-                      className="text-blue-600 hover:bg-blue-50"
+                      className="h-11 border-2 border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300"
+                      title="طباعة"
                     >
-                      <Printer className="w-4 h-4" />
+                      <Printer className="w-5 h-5" />
                     </Button>
                   </div>
 
@@ -1568,10 +1593,10 @@ export default function CenterDeficiencyTool() {
                     <Button
                       variant="outline"
                       onClick={clearSelection}
-                      className="w-full text-red-600 hover:bg-red-50"
+                      className="w-full h-11 border-2 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
                     >
                       <Trash2 className="w-4 h-4 ml-2" />
-                      مسح التحديد
+                      مسح الكل ({selectedItems.length})
                     </Button>
                   )}
                 </div>
