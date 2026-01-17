@@ -108,23 +108,48 @@ export default function FillOfficialAssignmentForm() {
     window.print();
   };
 
+  const generatePDF = async () => {
+    if (!formRef.current) return null;
+    const canvas = await html2canvas(formRef.current, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#ffffff'
+    });
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const imgWidth = 210;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+    return pdf;
+  };
+
   const handleExportPDF = async () => {
     if (!formRef.current) return;
     setIsExporting(true);
     try {
-      const canvas = await html2canvas(formRef.current, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff'
-      });
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-      pdf.save('نموذج_تكليف_مهمة_رسمية.pdf');
+      const pdf = await generatePDF();
+      if (pdf) {
+        pdf.save(`نموذج_تكليف_${formData.employeeName || 'مهمة_رسمية'}.pdf`);
+      }
     } catch (error) {
       console.error('Error exporting PDF:', error);
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleSaveToLocation = async () => {
+    if (!formRef.current) return;
+    setIsExporting(true);
+    try {
+      const pdf = await generatePDF();
+      if (pdf) {
+        const blob = pdf.output('blob');
+        setPdfBlob(blob);
+        setShowSaveDialog(true);
+      }
+    } catch (error) {
+      console.error('Error generating PDF:', error);
     } finally {
       setIsExporting(false);
     }
