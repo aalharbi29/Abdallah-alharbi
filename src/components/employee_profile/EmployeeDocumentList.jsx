@@ -384,6 +384,192 @@ const CopyDocumentDialog = ({ open, onOpenChange, document: doc, currentEmployee
 };
 
 
+const DocumentCardHorizontal = ({ document: doc, onDelete, onRefresh, currentEmployeeId }) => {
+  const [isViewing, setIsViewing] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showMoveDialog, setShowMoveDialog] = useState(false);
+  const [showCopyDialog, setShowCopyDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [newDocumentType, setNewDocumentType] = useState(doc.document_type);
+  const [isMoving, setIsMoving] = useState(false);
+
+  const isExpired = doc.expiry_date &&
+                    doc.expiry_date !== 'حتى إشعار آخر' &&
+                    new Date(doc.expiry_date) < new Date();
+
+  const handleDelete = async () => {
+    try {
+      await EmployeeDocument.delete(doc.id);
+      onDelete(doc.id);
+      setShowDeleteDialog(false);
+    } catch (error) {
+      console.error("Error deleting document:", error);
+      alert('حدث خطأ أثناء حذف المستند');
+    }
+  };
+
+  const handleMove = async () => {
+    if (!newDocumentType) return;
+    setIsMoving(true);
+    try {
+      await EmployeeDocument.update(doc.id, { document_type: newDocumentType });
+      setShowMoveDialog(false);
+      onRefresh();
+    } catch (error) {
+      console.error("Error moving document:", error);
+    } finally {
+      setIsMoving(false);
+    }
+  };
+
+  return (
+    <>
+      <Card className={`hover:shadow-md transition-all ${isExpired ? 'border-red-200 bg-red-50' : 'hover:border-blue-300'}`}>
+        <CardContent className="p-3">
+          <div className="flex items-center gap-3">
+            {/* أيقونة الملف */}
+            <div className="flex-shrink-0">
+              {getFileIcon(doc.file_name)}
+            </div>
+            
+            {/* معلومات المستند */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <h4 className="font-semibold text-sm truncate" title={doc.document_title}>
+                  {doc.document_title}
+                </h4>
+                {doc.is_confidential && <Lock className="w-3 h-3 text-red-500 flex-shrink-0" />}
+                {isExpired && <Badge variant="destructive" className="text-xs px-1 py-0">منتهي</Badge>}
+              </div>
+              
+              <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
+                <span className="flex items-center gap-1">
+                  <Calendar className="w-3 h-3" />
+                  {format(new Date(doc.created_date), 'dd/MM/yyyy', { locale: ar })}
+                </span>
+                
+                {/* فترة التكليف */}
+                {doc.document_type === 'contract' && (doc.start_date || doc.end_date) && (
+                  <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded">
+                    {doc.start_date && doc.end_date ? (
+                      `${format(new Date(doc.start_date), 'dd/MM/yyyy')} - ${format(new Date(doc.end_date), 'dd/MM/yyyy')}`
+                    ) : doc.start_date ? (
+                      `من ${format(new Date(doc.start_date), 'dd/MM/yyyy')}`
+                    ) : (
+                      `حتى ${format(new Date(doc.end_date), 'dd/MM/yyyy')}`
+                    )}
+                  </span>
+                )}
+                
+                {doc.expiry_date && doc.expiry_date !== 'حتى إشعار آخر' && (
+                  <span className={isExpired ? 'text-red-600' : ''}>
+                    صالح حتى: {format(new Date(doc.expiry_date), 'dd/MM/yyyy')}
+                  </span>
+                )}
+                {doc.expiry_date === 'حتى إشعار آخر' && (
+                  <span className="text-green-600">∞ حتى إشعار آخر</span>
+                )}
+              </div>
+            </div>
+            
+            {/* أزرار الإجراءات */}
+            <div className="flex items-center gap-1 flex-shrink-0">
+              <Button variant="ghost" size="sm" onClick={() => setIsViewing(true)} className="h-8 w-8 p-0" title="استعراض">
+                <Eye className="w-4 h-4" />
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => downloadFileWithName(doc.file_url, doc.file_name)} className="h-8 w-8 p-0" title="تحميل">
+                <Download className="w-4 h-4" />
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setShowEditDialog(true)} className="h-8 w-8 p-0" title="تعديل">
+                <Edit className="w-4 h-4" />
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setShowCopyDialog(true)} className="h-8 w-8 p-0 text-blue-600" title="نسخ">
+                <Copy className="w-4 h-4" />
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => { setNewDocumentType(doc.document_type); setShowMoveDialog(true); }} className="h-8 w-8 p-0" title="نقل">
+                <Move className="w-4 h-4" />
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setShowDeleteDialog(true)} className="h-8 w-8 p-0 text-red-600" title="حذف">
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* PDF Viewer */}
+      <PDFViewer
+        file={doc}
+        open={isViewing}
+        onOpenChange={setIsViewing}
+        entitySDK={EmployeeDocument}
+        recordId={doc.id}
+        fileUrlField="file_url"
+        fileNameField="file_name"
+        onFileUpdated={onRefresh}
+      />
+
+      {/* Copy Dialog */}
+      <CopyDocumentDialog
+        open={showCopyDialog}
+        onOpenChange={setShowCopyDialog}
+        document={doc}
+        currentEmployeeId={currentEmployeeId}
+        onCopyComplete={onRefresh}
+      />
+
+      {/* Edit Dialog */}
+      <EditDocumentTitleDialog
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+        document={doc}
+        entitySDK={EmployeeDocument}
+        onSuccess={onRefresh}
+      />
+
+      {/* Delete Dialog */}
+      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>تأكيد الحذف</AlertDialogTitle>
+            <AlertDialogDescription>
+              هل أنت متأكد من حذف المستند "{doc.document_title}"؟
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>إلغاء</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} className="bg-red-600 hover:bg-red-700">حذف</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Move Dialog */}
+      <Dialog open={showMoveDialog} onOpenChange={setShowMoveDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>نقل المستند</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <Label>نوع المستند الجديد</Label>
+            <Select value={newDocumentType} onValueChange={setNewDocumentType}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {Object.entries(documentTypeLabels).map(([key, label]) => (
+                  <SelectItem key={key} value={key}>{label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowMoveDialog(false)}>إلغاء</Button>
+            <Button onClick={handleMove} disabled={isMoving}>{isMoving ? 'جاري النقل...' : 'نقل'}</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+};
+
 const DocumentCard = ({ document: doc, onDelete, onRefresh, currentEmployeeId }) => {
   const [isViewing, setIsViewing] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
