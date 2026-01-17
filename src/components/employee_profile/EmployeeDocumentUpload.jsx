@@ -487,6 +487,69 @@ export default function EmployeeDocumentUpload({ employee, onClose, onDocumentUp
               />
             </div>
           )}
+
+          {/* حقول تاريخ التكليف - تظهر فقط للعقود والتكليفات */}
+          {formData.document_type === 'contract' && (
+            <div className="border border-blue-200 bg-blue-50 rounded-lg p-4 space-y-4">
+              <div className="flex items-center justify-between">
+                <h4 className="font-medium text-blue-800 flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  فترة التكليف
+                </h4>
+                {files.length > 0 && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => extractDatesFromFile(files[0])}
+                    disabled={isExtractingDates || isUploading}
+                    className="text-blue-600 border-blue-300 hover:bg-blue-100"
+                  >
+                    {isExtractingDates ? (
+                      <>
+                        <Loader2 className="w-3 h-3 ml-1 animate-spin" />
+                        جاري التحليل...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-3 h-3 ml-1" />
+                        استخراج تلقائي
+                      </>
+                    )}
+                  </Button>
+                )}
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="start_date">تاريخ بداية التكليف</Label>
+                  <Input 
+                    id="start_date" 
+                    type="date"
+                    value={formData.start_date} 
+                    onChange={e => setFormData(prev => ({...prev, start_date: e.target.value}))} 
+                    disabled={isUploading}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="end_date">تاريخ نهاية التكليف</Label>
+                  <Input 
+                    id="end_date" 
+                    type="date"
+                    value={formData.end_date} 
+                    onChange={e => setFormData(prev => ({...prev, end_date: e.target.value}))} 
+                    disabled={isUploading}
+                  />
+                </div>
+              </div>
+              
+              {isExtractingDates && (
+                <p className="text-xs text-blue-600">
+                  يتم تحليل الملف بالذكاء الاصطناعي لاستخراج التواريخ...
+                </p>
+              )}
+            </div>
+          )}
           
           {error && (
             <Alert variant="destructive">
