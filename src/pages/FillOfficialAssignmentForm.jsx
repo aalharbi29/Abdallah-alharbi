@@ -186,10 +186,19 @@ export default function FillOfficialAssignmentForm() {
               <Button 
                 onClick={handleExportPDF}
                 disabled={isExporting}
-                className="bg-white text-teal-700 hover:bg-teal-50 rounded-xl"
+                variant="secondary"
+                className="rounded-xl"
               >
                 {isExporting ? <Loader2 className="w-4 h-4 ml-2 animate-spin" /> : <Download className="w-4 h-4 ml-2" />}
-                تصدير PDF
+                تحميل
+              </Button>
+              <Button 
+                onClick={handleSaveToLocation}
+                disabled={isExporting}
+                className="bg-white text-teal-700 hover:bg-teal-50 rounded-xl"
+              >
+                <FolderOpen className="w-4 h-4 ml-2" />
+                حفظ في موقع
               </Button>
             </div>
           </div>
