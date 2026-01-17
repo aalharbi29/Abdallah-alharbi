@@ -829,7 +829,7 @@ export default function EmployeeProfile() {
           </motion.div>
         </div>
 
-        {/* نسخة طباعة احترافية (تظهر فقط عند الطباعة) */}
+        {/* نسخة طباعة احترافية */}
         <div className="print-only print-area p-6 mt-6 bg-white border border-gray-200 rounded-lg">
           <div className="text-center mb-4">
             <h2 className="text-xl font-bold text-gray-800">بيانات الموظف التفصيلية</h2>
@@ -847,13 +847,13 @@ export default function EmployeeProfile() {
                 if ((k.toLowerCase().includes("date") || k.includes("تاريخ")) && v) {
                   try { 
                     const date = new Date(v);
-                    if (!isNaN(date.getTime())) { // Check if date is valid
+                    if (!isNaN(date.getTime())) {
                       val = date.toLocaleDateString("ar-SA", { year: 'numeric', month: 'long', day: 'numeric' }); 
                     } else {
-                      val = v; // Keep original if invalid date
+                      val = v;
                     }
                   } catch (e) {
-                    val = v; // Keep original if error parsing
+                    val = v;
                   }
                 }
                 return (
@@ -877,7 +877,6 @@ export default function EmployeeProfile() {
           </Suspense>
         )}
 
-        {/* ID Card Dialog */}
         {showIDCard && (
           <EmployeeIDCard employee={employee} onClose={() => setShowIDCard(false)} />
         )}
