@@ -904,17 +904,32 @@ export default function EmployeeDocumentList({ documents, onDocumentDeleted, onR
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredDocuments.map(document => (
-          <DocumentCard
-            key={document.id}
-            document={document}
-            onDelete={onDocumentDeleted}
-            onRefresh={onRefresh}
-            currentEmployeeId={currentEmployeeId} // Pass currentEmployeeId
-          />
-        ))}
-      </div>
+      {/* عرض المستندات مجمعة حسب النوع */}
+      {Object.entries(documentTypeLabels).map(([type, label]) => {
+        const docsOfType = filteredDocuments.filter(d => d.document_type === type);
+        if (docsOfType.length === 0) return null;
+        
+        return (
+          <div key={type} className="mb-6">
+            <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 text-gray-800 border-b pb-2">
+              <span>{documentTypeIcons[type]}</span>
+              {label}
+              <Badge variant="secondary" className="mr-auto">{docsOfType.length}</Badge>
+            </h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+              {docsOfType.map(document => (
+                <DocumentCard
+                  key={document.id}
+                  document={document}
+                  onDelete={onDocumentDeleted}
+                  onRefresh={onRefresh}
+                  currentEmployeeId={currentEmployeeId}
+                />
+              ))}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
