@@ -277,7 +277,9 @@ export default function EmployeeDocumentUpload({ employee, onClose, onDocumentUp
             file_name: file.name,
             tags: formData.tags.split(',').map(tag => tag.trim()).filter(Boolean),
             is_confidential: formData.is_confidential,
-            expiry_date: formData.has_no_expiry ? 'حتى إشعار آخر' : (formData.expiry_date || null)
+            expiry_date: formData.has_no_expiry ? 'حتى إشعار آخر' : (formData.expiry_date || null),
+            start_date: formData.start_date || null,
+            end_date: formData.end_date || null
           });
           
           successCount++;
