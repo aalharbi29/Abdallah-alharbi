@@ -1196,49 +1196,68 @@ export default function CenterDeficiencyTool() {
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-6 bg-gradient-to-br from-teal-50 via-white to-purple-50">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500 to-teal-600 shadow-xl mb-4">
-            <Package className="w-8 h-8 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-teal-50/30 to-emerald-50/40">
+      {/* Hero Header */}
+      <div className="bg-gradient-to-r from-teal-600 via-teal-700 to-emerald-700 text-white">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center shadow-2xl border border-white/30">
+                <Package className="w-8 h-8 md:w-10 md:h-10 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl md:text-4xl font-bold mb-1">نواقص المراكز الصحية</h1>
+                <p className="text-teal-100 text-sm md:text-base">توثيق وإدارة نواقص التجهيزات الطبية وغير الطبية</p>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 text-center border border-white/20">
+                <p className="text-2xl md:text-3xl font-bold">{healthCenters.length}</p>
+                <p className="text-xs text-teal-100">مركز صحي</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 text-center border border-white/20">
+                <p className="text-2xl md:text-3xl font-bold">{savedReports.length}</p>
+                <p className="text-xs text-teal-100">تقرير محفوظ</p>
+              </div>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl px-4 py-3 text-center border border-white/20">
+                <p className="text-2xl md:text-3xl font-bold">{selectedItems.length}</p>
+                <p className="text-xs text-teal-100">عنصر محدد</p>
+              </div>
+            </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
-            نواقص المراكز الصحية
-          </h1>
-          <p className="text-gray-600">
-            استخراج وتوثيق نواقص الأدوات الطبية وغير الطبية للمراكز الصحية
-          </p>
         </div>
+      </div>
 
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* اختيار المركز والقائمة */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* اختيار المركز */}
-            <Card className="border-2 border-teal-200">
-              <CardHeader className="bg-gradient-to-r from-teal-50 to-emerald-50 pb-4">
-                <CardTitle className="flex items-center gap-2">
-                  <Building2 className="w-5 h-5 text-teal-600" />
-                  اختر المركز الصحي
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-4">
-                <div className="flex flex-col md:flex-row gap-4">
+          <div className="lg:col-span-2 space-y-5">
+            {/* شريط الأدوات */}
+            <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+              <CardContent className="p-4">
+                <div className="flex flex-col lg:flex-row gap-4">
+                  {/* اختيار المركز */}
                   <div className="flex-1">
+                    <Label className="text-xs text-gray-500 mb-1 block">المركز الصحي</Label>
                     <Select value={selectedCenter} onValueChange={setSelectedCenter}>
-                      <SelectTrigger className="h-12">
+                      <SelectTrigger className="h-12 bg-white border-2 border-gray-200 focus:border-teal-500 transition-colors">
                         <SelectValue placeholder="اختر المركز الصحي..." />
                       </SelectTrigger>
                       <SelectContent>
                         {healthCenters.map(center => (
                           <SelectItem key={center.id} value={center.اسم_المركز}>
-                            {center.اسم_المركز}
+                            <div className="flex items-center gap-2">
+                              <Building2 className="w-4 h-4 text-teal-600" />
+                              {center.اسم_المركز}
+                            </div>
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="flex gap-2">
+                  
+                  {/* أزرار الإجراءات */}
+                  <div className="flex flex-wrap gap-2 items-end">
                     <input
                       type="file"
                       id="file-upload"
@@ -1250,9 +1269,8 @@ export default function CenterDeficiencyTool() {
                     <label htmlFor="file-upload">
                       <Button
                         asChild
-                        variant="outline"
                         disabled={isAnalyzing}
-                        className="h-12 cursor-pointer bg-gradient-to-r from-purple-50 to-indigo-50 border-purple-200 hover:border-purple-400"
+                        className="h-12 cursor-pointer bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-lg shadow-purple-200"
                       >
                         <span>
                           {isAnalyzing ? (
@@ -1262,8 +1280,8 @@ export default function CenterDeficiencyTool() {
                             </>
                           ) : (
                             <>
-                              <Sparkles className="w-4 h-4 ml-2 text-purple-600" />
-                              رفع ملف نواقص
+                              <Sparkles className="w-4 h-4 ml-2" />
+                              تحليل ملف
                             </>
                           )}
                         </span>
@@ -1272,19 +1290,19 @@ export default function CenterDeficiencyTool() {
                     <Button 
                       variant="outline" 
                       onClick={() => setShowSavedReports(true)}
-                      className="h-12"
+                      className="h-12 border-2"
                     >
                       <List className="w-4 h-4 ml-2" />
-                      المحفوظة ({savedReports.length})
+                      المحفوظة
+                      <Badge className="mr-2 bg-gray-100">{savedReports.length}</Badge>
                     </Button>
                     <Button 
                       variant="outline" 
                       onClick={openMultiCenterExport}
                       disabled={savedReports.length === 0}
-                      className="h-12 bg-gradient-to-r from-teal-50 to-emerald-50 border-teal-200 hover:border-teal-400"
-                      title="تصدير تقرير شامل لمراكز مختارة"
+                      className="h-12 border-2 border-teal-200 text-teal-700 hover:bg-teal-50"
                     >
-                      <Download className="w-4 h-4 ml-2 text-teal-600" />
+                      <Download className="w-4 h-4 ml-2" />
                       تقرير شامل
                     </Button>
                   </div>
