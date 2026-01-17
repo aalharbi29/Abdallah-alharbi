@@ -59,6 +59,7 @@ const getNavigationItems = (t) => [
       { name: "Equipment Request", href: createPageUrl("FillNonMedicalEquipmentForm"), icon: FilePlus },
       { name: "Additional Forms", href: createPageUrl("Forms?type=additional"), icon: FilePlus },
       { name: "Clearance Form", href: createPageUrl("FillClearanceForm"), icon: FileCheck },
+            { name: "تكليف مهمة رسمية", href: createPageUrl("FillOfficialAssignmentForm"), icon: FileText },
     ]
   },
   { name: t('nav.reports'), href: createPageUrl("Reports"), icon: BarChart3 },
