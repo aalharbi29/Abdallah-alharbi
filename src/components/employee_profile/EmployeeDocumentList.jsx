@@ -69,6 +69,15 @@ const documentTypeLabels = {
   other: 'أخرى'
 };
 
+const documentTypeIcons = {
+  personal: '👤',
+  official: '📋',
+  certificate: '🎓',
+  contract: '📝',
+  evaluation: '⭐',
+  other: '📎'
+};
+
 const getFileIcon = (fileName) => {
   if (/\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(fileName)) return <Image className="w-8 h-8 text-indigo-500"/>;
   if (/\.pdf$/i.test(fileName)) return <FileText className="w-8 h-8 text-red-500"/>;
