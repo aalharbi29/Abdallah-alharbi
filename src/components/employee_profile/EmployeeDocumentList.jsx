@@ -641,6 +641,21 @@ ${doc.description ? `📝 ${doc.description}\n` : ''}
             </div>
           )}
 
+          {/* فترة التكليف - تظهر فقط للعقود والتكليفات */}
+          {doc.document_type === 'contract' && (doc.start_date || doc.end_date) && (
+            <div className="text-center text-xs mb-2 bg-blue-50 rounded px-2 py-1">
+              <span className="text-blue-700 font-medium">
+                {doc.start_date && doc.end_date ? (
+                  `📅 ${format(new Date(doc.start_date), 'dd/MM/yyyy', { locale: ar })} - ${format(new Date(doc.end_date), 'dd/MM/yyyy', { locale: ar })}`
+                ) : doc.start_date ? (
+                  `📅 من ${format(new Date(doc.start_date), 'dd/MM/yyyy', { locale: ar })}`
+                ) : (
+                  `📅 حتى ${format(new Date(doc.end_date), 'dd/MM/yyyy', { locale: ar })}`
+                )}
+              </span>
+            </div>
+          )}
+
           {/* أزرار الإجراءات */}
           <div className="grid grid-cols-3 gap-1 mb-1">
             <DropdownMenu>
