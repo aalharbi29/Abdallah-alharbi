@@ -9,11 +9,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Printer, Download, Search, User, Building2, Calendar,
-  FileText, Loader2, CheckCircle2
+  FileText, Loader2, CheckCircle2, Save, FolderOpen
 } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { motion } from 'framer-motion';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import SaveToLocationDialog from '@/components/pdf_editor/SaveToLocationDialog';
 
 export default function FillOfficialAssignmentForm() {
   const location = useLocation();
