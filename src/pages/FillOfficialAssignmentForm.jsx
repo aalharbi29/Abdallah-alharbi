@@ -9,13 +9,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Printer, Download, Search, User, Building2, Calendar,
-  FileText, Loader2, CheckCircle2, Save, FolderOpen
+  FileText, Loader2, CheckCircle2
 } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { motion } from 'framer-motion';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import SaveToLocationDialog from '@/components/pdf_editor/SaveToLocationDialog';
 
 export default function FillOfficialAssignmentForm() {
   const location = useLocation();
@@ -26,8 +24,6 @@ export default function FillOfficialAssignmentForm() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const [showSaveDialog, setShowSaveDialog] = useState(false);
-  const [pdfBlob, setPdfBlob] = useState(null);
 
   const [formData, setFormData] = useState({
     employeeNumber: '',
@@ -108,48 +104,23 @@ export default function FillOfficialAssignmentForm() {
     window.print();
   };
 
-  const generatePDF = async () => {
-    if (!formRef.current) return null;
-    const canvas = await html2canvas(formRef.current, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: '#ffffff'
-    });
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const imgWidth = 210;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-    return pdf;
-  };
-
   const handleExportPDF = async () => {
     if (!formRef.current) return;
     setIsExporting(true);
     try {
-      const pdf = await generatePDF();
-      if (pdf) {
-        pdf.save(`نموذج_تكليف_${formData.employeeName || 'مهمة_رسمية'}.pdf`);
-      }
+      const canvas = await html2canvas(formRef.current, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff'
+      });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 210;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      pdf.save('نموذج_تكليف_مهمة_رسمية.pdf');
     } catch (error) {
       console.error('Error exporting PDF:', error);
-    } finally {
-      setIsExporting(false);
-    }
-  };
-
-  const handleSaveToLocation = async () => {
-    if (!formRef.current) return;
-    setIsExporting(true);
-    try {
-      const pdf = await generatePDF();
-      if (pdf) {
-        const blob = pdf.output('blob');
-        setPdfBlob(blob);
-        setShowSaveDialog(true);
-      }
-    } catch (error) {
-      console.error('Error generating PDF:', error);
     } finally {
       setIsExporting(false);
     }
@@ -186,19 +157,10 @@ export default function FillOfficialAssignmentForm() {
               <Button 
                 onClick={handleExportPDF}
                 disabled={isExporting}
-                variant="secondary"
-                className="rounded-xl"
-              >
-                {isExporting ? <Loader2 className="w-4 h-4 ml-2 animate-spin" /> : <Download className="w-4 h-4 ml-2" />}
-                تحميل
-              </Button>
-              <Button 
-                onClick={handleSaveToLocation}
-                disabled={isExporting}
                 className="bg-white text-teal-700 hover:bg-teal-50 rounded-xl"
               >
-                <FolderOpen className="w-4 h-4 ml-2" />
-                حفظ في موقع
+                {isExporting ? <Loader2 className="w-4 h-4 ml-2 animate-spin" /> : <Download className="w-4 h-4 ml-2" />}
+                تصدير PDF
               </Button>
             </div>
           </div>
@@ -520,22 +482,6 @@ export default function FillOfficialAssignmentForm() {
           </div>
         </motion.div>
       </div>
-
-      {/* Save to Location Dialog */}
-      {showSaveDialog && pdfBlob && (
-        <SaveToLocationDialog
-          isOpen={showSaveDialog}
-          onClose={() => {
-            setShowSaveDialog(false);
-            setPdfBlob(null);
-          }}
-          fileBlob={pdfBlob}
-          fileName={`نموذج_تكليف_${formData.employeeName || 'مهمة_رسمية'}.pdf`}
-          defaultTitle={`تكليف مهمة رسمية - ${formData.employeeName}`}
-          employeeId={selectedEmployee?.id}
-          employeeName={selectedEmployee?.full_name_arabic}
-        />
-      )}
 
       {/* Print Styles */}
       <style>{`
