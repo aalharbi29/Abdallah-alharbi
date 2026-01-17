@@ -904,7 +904,7 @@ export default function EmployeeDocumentList({ documents, onDocumentDeleted, onR
         </div>
       </div>
 
-      {/* عرض المستندات مجمعة حسب النوع */}
+      {/* عرض المستندات مجمعة حسب النوع - بشكل أفقي */}
       {Object.entries(documentTypeLabels).map(([type, label]) => {
         const docsOfType = filteredDocuments.filter(d => d.document_type === type);
         if (docsOfType.length === 0) return null;
@@ -916,9 +916,9 @@ export default function EmployeeDocumentList({ documents, onDocumentDeleted, onR
               {label}
               <Badge variant="secondary" className="mr-auto">{docsOfType.length}</Badge>
             </h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+            <div className="space-y-2">
               {docsOfType.map(document => (
-                <DocumentCard
+                <DocumentCardHorizontal
                   key={document.id}
                   document={document}
                   onDelete={onDocumentDeleted}
