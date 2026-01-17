@@ -1311,100 +1311,144 @@ export default function CenterDeficiencyTool() {
             </Card>
 
             {/* قائمة الأدوات */}
-            <Card className="border-2 border-gray-200">
-              <CardHeader className="pb-4">
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                  <TabsList className="grid grid-cols-2 w-full">
-                    <TabsTrigger value="medical" className="gap-2">
-                      <Stethoscope className="w-4 h-4" />
-                      أدوات طبية
-                      <Badge className="bg-teal-100 text-teal-800">{medicalEquipmentList.length}</Badge>
+            <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm overflow-hidden">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <div className="border-b bg-gradient-to-r from-gray-50 to-gray-100 p-2">
+                  <TabsList className="grid grid-cols-2 w-full bg-white/50 p-1 h-auto">
+                    <TabsTrigger value="medical" className="gap-2 py-3 data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-lg">
+                      <Stethoscope className="w-5 h-5" />
+                      <span className="font-semibold">أدوات طبية</span>
+                      <Badge className="bg-white/20 text-inherit border-0">{medicalEquipmentList.length}</Badge>
                     </TabsTrigger>
-                    <TabsTrigger value="nonmedical" className="gap-2">
-                      <Wrench className="w-4 h-4" />
-                      أدوات غير طبية
-                      <Badge className="bg-purple-100 text-purple-800">{nonMedicalEquipmentList.length}</Badge>
+                    <TabsTrigger value="nonmedical" className="gap-2 py-3 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-indigo-500 data-[state=active]:text-white data-[state=active]:shadow-lg">
+                      <Wrench className="w-5 h-5" />
+                      <span className="font-semibold">أدوات غير طبية</span>
+                      <Badge className="bg-white/20 text-inherit border-0">{nonMedicalEquipmentList.length}</Badge>
                     </TabsTrigger>
                   </TabsList>
-                </Tabs>
-              </CardHeader>
-              <CardContent>
-                {/* البحث */}
-                <div className="relative mb-4">
-                  <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <Input
-                    placeholder="ابحث عن أداة..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pr-10"
-                  />
                 </div>
+                
+                <CardContent className="p-4">
+                  {/* البحث */}
+                  <div className="relative mb-4">
+                    <Search className="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                    <Input
+                      placeholder="ابحث عن أداة أو تصنيف..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pr-11 h-12 bg-gray-50 border-2 border-gray-200 focus:border-teal-500 focus:bg-white transition-all text-base"
+                    />
+                    {searchQuery && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute left-2 top-1/2 -translate-y-1/2 h-8 w-8"
+                        onClick={() => setSearchQuery('')}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
 
-                {/* القائمة */}
-                <div className="max-h-[500px] overflow-y-auto space-y-4">
-                  {categories.map(category => {
-                    const categoryItems = filteredItems.filter(item => item.category === category);
-                    if (categoryItems.length === 0) return null;
+                  {/* عدد النتائج */}
+                  {searchQuery && (
+                    <div className="mb-3 text-sm text-gray-500">
+                      عرض {filteredItems.length} من {currentList.length} عنصر
+                    </div>
+                  )}
 
-                    return (
-                      <div key={category} className="space-y-2">
-                        <h4 className="font-semibold text-gray-700 bg-gray-100 px-3 py-2 rounded-lg sticky top-0 z-10">
-                          {category} ({categoryItems.length})
-                        </h4>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                          {categoryItems.map(item => {
-                            const selected = isSelected(item.id);
-                            return (
-                              <div
-                                key={item.id}
-                                className={`flex items-center gap-3 p-3 rounded-lg border-2 transition-all cursor-pointer ${
-                                  selected 
-                                    ? 'border-teal-500 bg-teal-50' 
-                                    : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                                }`}
-                                onClick={() => toggleItem(item)}
-                              >
-                                <Checkbox
-                                  checked={selected}
-                                  onClick={(e) => e.stopPropagation()}
-                                />
-                                <span className="flex-1 text-sm">{item.name}</span>
-                                {selected && (
-                                  <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      className="h-7 w-7"
-                                      onClick={() => updateQuantity(item.id, getSelectedQuantity(item.id) - 1)}
-                                    >
-                                      <Minus className="w-3 h-3" />
-                                    </Button>
-                                    <Input
-                                      type="number"
-                                      min="1"
-                                      value={getSelectedQuantity(item.id)}
-                                      onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)}
-                                      className="w-14 h-7 text-center text-sm p-1"
-                                    />
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      className="h-7 w-7"
-                                      onClick={() => updateQuantity(item.id, getSelectedQuantity(item.id) + 1)}
-                                    >
-                                      <Plus className="w-3 h-3" />
-                                    </Button>
-                                  </div>
-                                )}
-                              </div>
-                            );
-                          })}
+                  {/* القائمة */}
+                  <div className="max-h-[500px] overflow-y-auto space-y-4 custom-scrollbar">
+                    {categories.map(category => {
+                      const categoryItems = filteredItems.filter(item => item.category === category);
+                      if (categoryItems.length === 0) return null;
+
+                      const selectedInCategory = categoryItems.filter(item => isSelected(item.id)).length;
+
+                      return (
+                        <div key={category} className="space-y-2">
+                          <div className={`sticky top-0 z-10 flex items-center justify-between px-4 py-3 rounded-xl ${
+                            activeTab === 'medical' 
+                              ? 'bg-gradient-to-r from-teal-100 to-emerald-100 border border-teal-200' 
+                              : 'bg-gradient-to-r from-purple-100 to-indigo-100 border border-purple-200'
+                          }`}>
+                            <h4 className="font-bold text-gray-800 flex items-center gap-2">
+                              {activeTab === 'medical' ? (
+                                <Stethoscope className="w-4 h-4 text-teal-600" />
+                              ) : (
+                                <Wrench className="w-4 h-4 text-purple-600" />
+                              )}
+                              {category}
+                            </h4>
+                            <div className="flex items-center gap-2">
+                              {selectedInCategory > 0 && (
+                                <Badge className={activeTab === 'medical' ? 'bg-teal-600' : 'bg-purple-600'}>
+                                  {selectedInCategory} محدد
+                                </Badge>
+                              )}
+                              <Badge variant="outline" className="bg-white/80">{categoryItems.length}</Badge>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            {categoryItems.map(item => {
+                              const selected = isSelected(item.id);
+                              return (
+                                <div
+                                  key={item.id}
+                                  className={`group flex items-center gap-3 p-3 rounded-xl border-2 transition-all cursor-pointer ${
+                                    selected 
+                                      ? activeTab === 'medical'
+                                        ? 'border-teal-500 bg-gradient-to-r from-teal-50 to-emerald-50 shadow-md shadow-teal-100' 
+                                        : 'border-purple-500 bg-gradient-to-r from-purple-50 to-indigo-50 shadow-md shadow-purple-100'
+                                      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 hover:shadow-sm'
+                                  }`}
+                                  onClick={() => toggleItem(item)}
+                                >
+                                  <Checkbox
+                                    checked={selected}
+                                    onClick={(e) => e.stopPropagation()}
+                                    className={selected ? (activeTab === 'medical' ? 'border-teal-600 data-[state=checked]:bg-teal-600' : 'border-purple-600 data-[state=checked]:bg-purple-600') : ''}
+                                  />
+                                  <span className={`flex-1 text-sm font-medium ${selected ? 'text-gray-900' : 'text-gray-700'}`}>
+                                    {item.name}
+                                  </span>
+                                  {selected && (
+                                    <div className="flex items-center gap-1 bg-white rounded-lg p-1 shadow-sm" onClick={(e) => e.stopPropagation()}>
+                                      <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-7 w-7 hover:bg-gray-100"
+                                        onClick={() => updateQuantity(item.id, getSelectedQuantity(item.id) - 1)}
+                                      >
+                                        <Minus className="w-3 h-3" />
+                                      </Button>
+                                      <Input
+                                        type="number"
+                                        min="1"
+                                        value={getSelectedQuantity(item.id)}
+                                        onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)}
+                                        className="w-12 h-7 text-center text-sm p-1 border-0 bg-gray-50 font-bold"
+                                      />
+                                      <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        className="h-7 w-7 hover:bg-gray-100"
+                                        onClick={() => updateQuantity(item.id, getSelectedQuantity(item.id) + 1)}
+                                      >
+                                        <Plus className="w-3 h-3" />
+                                      </Button>
+                                    </div>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </CardContent>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Tabs>
             </Card>
           </div>
 
