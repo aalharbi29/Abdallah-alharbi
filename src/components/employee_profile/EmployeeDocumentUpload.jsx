@@ -58,8 +58,11 @@ export default function EmployeeDocumentUpload({ employee, onClose, onDocumentUp
     tags: '',
     is_confidential: false,
     expiry_date: '',
-    has_no_expiry: false // خيار جديد: حتى إشعار آخر
+    has_no_expiry: false,
+    start_date: '',
+    end_date: ''
   });
+  const [isExtractingDates, setIsExtractingDates] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [currentUploadFile, setCurrentUploadFile] = useState('');
