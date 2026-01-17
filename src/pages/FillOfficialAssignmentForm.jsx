@@ -521,6 +521,22 @@ export default function FillOfficialAssignmentForm() {
         </motion.div>
       </div>
 
+      {/* Save to Location Dialog */}
+      {showSaveDialog && pdfBlob && (
+        <SaveToLocationDialog
+          isOpen={showSaveDialog}
+          onClose={() => {
+            setShowSaveDialog(false);
+            setPdfBlob(null);
+          }}
+          fileBlob={pdfBlob}
+          fileName={`نموذج_تكليف_${formData.employeeName || 'مهمة_رسمية'}.pdf`}
+          defaultTitle={`تكليف مهمة رسمية - ${formData.employeeName}`}
+          employeeId={selectedEmployee?.id}
+          employeeName={selectedEmployee?.full_name_arabic}
+        />
+      )}
+
       {/* Print Styles */}
       <style>{`
         @media print {
