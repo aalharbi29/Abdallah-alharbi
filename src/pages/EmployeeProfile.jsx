@@ -587,266 +587,141 @@ export default function EmployeeProfile() {
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 space-y-6">
 
-        {/* Employee Full Details with Integrated Roles - محسّن */}
+        {/* البيانات التفصيلية */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden shadow-2xl">
-            <div className="p-5 bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border-b border-white/10">
+          <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
+            <div className="p-5 bg-gradient-to-r from-indigo-500 to-blue-500 border-b">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  {employee.profile_image_url ? (
-                    <img 
-                      src={employee.profile_image_url} 
-                      alt={employee.full_name_arabic} 
-                      className="w-16 h-16 rounded-2xl object-cover border-2 border-white/30 shadow-lg"
-                    />
-                  ) : (
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center shadow-lg">
-                      <User className="w-8 h-8 text-white" />
-                    </div>
-                  )}
-                  <div>
-                    <h2 className="text-2xl font-bold text-white flex items-center gap-2">
-                      {employee.full_name_arabic}
-                      <Sparkles className="w-5 h-5 text-yellow-400" />
-                    </h2>
-                    <p className="text-indigo-200/80 text-sm">{employee.position}</p>
-                  </div>
-                </div>
+                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                  <User className="w-5 h-5" />
+                  البيانات التفصيلية
+                </h2>
                 <Link to={createPageUrl(`HumanResources?id=${employee.id}`)}>
                   <Button 
-                    variant="outline" 
+                    variant="secondary" 
                     size="sm"
-                    className="border-white/20 text-white hover:bg-white/10 rounded-xl backdrop-blur-md"
+                    className="rounded-xl"
                   >
                     <Edit className="w-4 h-4 ml-1" />
-                    تعديل
+                    تعديل البيانات
                   </Button>
                 </Link>
               </div>
             </div>
-            <div className="p-6">
-              {/* الأدوار الوظيفية المتكاملة */}
-              {employeeRoles.length > 0 && (
-                <div className="mb-6 p-4 bg-purple-500/20 border border-purple-500/30 rounded-xl backdrop-blur-sm">
-                  <h3 className="text-sm font-semibold text-purple-200 mb-3 flex items-center gap-2">
-                    <Shield className="w-4 h-4" />
-                    الأدوار الوظيفية والقيادية
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {employeeRoles.map((roleObj, index) => {
-                      const isAutoRole = roleObj.source === 'auto';
-                      const isManagerRole = roleObj.roleType === 'manager';
-                      
-                      return (
-                        <div key={index} className="flex items-center gap-2">
-                          <Badge
-                            className={`${
-                              isManagerRole
-                                ? 'bg-gradient-to-r from-purple-600 to-violet-600 text-white shadow-md'
-                                : roleObj.roleType === 'deputy'
-                                ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-md'
-                                : roleObj.roleType === 'supervisor'
-                                ? 'bg-gradient-to-r from-emerald-600 to-green-600 text-white shadow-md'
-                                : 'bg-gradient-to-r from-gray-600 to-slate-600 text-white shadow-md'
-                            }`}
-                          >
-                            {roleObj.role}
-                            {roleObj.centerName && (
-                              <span className="mr-1">- {roleObj.centerName}</span>
-                            )}
-                          </Badge>
-                          {isAutoRole && (
-                            <span className="text-xs text-white/40">(تلقائي)</span>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
+            <CardContent className="p-6">
               <EmployeeFullDetails employee={employee} />
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* معلومات الموظف السريعة */}
+        {/* المستندات والسجلات */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
+            <Tabs defaultValue="documents" className="w-full">
+              <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b">
+                <TabsList className="grid w-full grid-cols-3 bg-white/80 p-1 rounded-xl shadow-sm h-auto">
+                  <TabsTrigger 
+                    value="documents" 
+                    className="flex items-center gap-2 py-3 data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500 data-[state=active]:to-blue-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg transition-all"
+                  >
+                    <FileText className="w-5 h-5" />
+                    <span className="font-semibold">المستندات</span>
+                    <Badge className="bg-white/20 border-0 text-inherit">{documents.length}</Badge>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="leaves" 
+                    className="flex items-center gap-2 py-3 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg transition-all"
+                  >
+                    <Calendar className="w-5 h-5" />
+                    <span className="font-semibold">الإجازات</span>
+                    <Badge className="bg-white/20 border-0 text-inherit">{leaves.length}</Badge>
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="assignments" 
+                    className="flex items-center gap-2 py-3 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-violet-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg transition-all"
+                  >
+                    <Briefcase className="w-5 h-5" />
+                    <span className="font-semibold">التكاليف</span>
+                    <Badge className="bg-white/20 border-0 text-inherit">{assignments.length}</Badge>
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+
+              <CardContent className="p-6">
+                <TabsContent value="documents" className="mt-0">
+                  <div className="mb-4 flex justify-end">
+                    <Button 
+                      onClick={() => setShowUpload(true)}
+                      className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 shadow-lg rounded-xl"
+                    >
+                      <Plus className="w-4 h-4 ml-2" />
+                      رفع مستند جديد
+                    </Button>
+                  </div>
+                  <Suspense fallback={
+                    <div className="flex items-center justify-center py-8">
+                      <RefreshCw className="w-6 h-6 animate-spin text-indigo-500" />
+                    </div>
+                  }>
+                    <EmployeeDocumentList 
+                        documents={documents} 
+                        onDocumentDeleted={handleDocumentDeleted}
+                        onRefresh={handleRefreshDocuments}
+                        currentEmployeeId={employee?.id}
+                    />
+                  </Suspense>
+                </TabsContent>
+
+                <TabsContent value="leaves" className="mt-0">
+                  <Suspense fallback={
+                    <div className="flex items-center justify-center py-8">
+                      <RefreshCw className="w-6 h-6 animate-spin text-amber-500" />
+                    </div>
+                  }>
+                    <EmployeeLeaveHistory leaves={leaves} />
+                  </Suspense>
+                </TabsContent>
+
+                <TabsContent value="assignments" className="mt-0">
+                  <Suspense fallback={
+                    <div className="flex items-center justify-center py-8">
+                      <RefreshCw className="w-6 h-6 animate-spin text-purple-500" />
+                    </div>
+                  }>
+                    <EmployeeAssignmentHistory assignments={assignments} />
+                  </Suspense>
+                </TabsContent>
+              </CardContent>
+            </Tabs>
+          </Card>
+        </motion.div>
+
+        {/* التكليف الخارجي والعمل في الإجازات */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* التكليف الخارجي */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 }}
-            className="lg:col-span-1"
-          >
-            <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden shadow-2xl">
-              <div className="p-6 text-center border-b border-white/10">
-                {employee.profile_image_url ? (
-                  <img 
-                    src={employee.profile_image_url} 
-                    alt={employee.full_name_arabic} 
-                    className="w-24 h-24 rounded-2xl object-cover border-4 border-white/20 shadow-xl mx-auto mb-4"
-                  />
-                ) : (
-                  <div className="w-24 h-24 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-xl">
-                    <User className="w-12 h-12 text-white" />
-                  </div>
-                )}
-                <h2 className="text-xl font-bold text-white mb-1">{employee.full_name_arabic}</h2>
-                <p className="text-indigo-200/70">{employee.position}</p>
-                {employee.is_externally_assigned && (
-                  <Badge className="mt-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg">
-                    <FileClock className="w-3 h-3 ml-1" />
-                    مكلف خارجي
-                    {employee.external_assignment_center && ` - ${employee.external_assignment_center}`}
-                  </Badge>
-                )}
-              </div>
-              <div className="p-6">
-                <div className="space-y-3">
-                  {[
-                    { label: 'رقم الموظف', value: employee.رقم_الموظف },
-                    { label: 'المركز الصحي', value: employee.المركز_الصحي || 'غير محدد' },
-                    { label: 'نوع العقد', value: employee.contract_type },
-                  ].map((item, idx) => (
-                    <div key={idx} className="flex justify-between items-center p-2 bg-white/5 rounded-lg">
-                      <span className="text-white/60 text-sm">{item.label}:</span>
-                      <span className="font-medium text-white text-sm">{item.value}</span>
-                    </div>
-                  ))}
-                  <div className="flex justify-between items-center p-2 bg-white/5 rounded-lg">
-                    <span className="text-white/60 text-sm">الهاتف:</span>
-                    <span className="font-medium">
-                      {employee.phone ? (
-                        <a
-                          href={`https://wa.me/${normalizePhoneForWhatsApp(employee.phone)}?text=${encodeURIComponent(`مرحبا ${employee.full_name_arabic}`)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-emerald-400 hover:text-emerald-300 inline-flex items-center gap-1"
-                        >
-                          <MessageCircle className="w-4 h-4" />
-                          <span className="text-sm">{employee.phone}</span>
-                        </a>
-                      ) : (
-                        <span className="text-white/40 text-sm">غير محدد</span>
-                      )}
-                    </span>
-                  </div>
-                  {employee.email && (
-                    <div className="flex justify-between items-center p-2 bg-white/5 rounded-lg">
-                      <span className="text-white/60 text-sm">البريد:</span>
-                      <span className="font-medium text-white text-xs break-all">{employee.email}</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* محتوى ملف الموظف */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="lg:col-span-1 space-y-6"
           >
-            <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden shadow-2xl">
-              <div className="p-5 border-b border-white/10">
+            <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm overflow-hidden h-full">
+              <div className="p-5 bg-gradient-to-r from-amber-500 to-orange-500 border-b">
                 <h3 className="font-bold text-white flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-indigo-400" />
-                  السجلات والمستندات
-                </h3>
-              </div>
-              <div className="p-6">
-                <Tabs defaultValue="documents" className="w-full">
-                  <TabsList className="grid w-full grid-cols-3 bg-white/5 p-1 rounded-xl border border-white/10">
-                    <TabsTrigger 
-                      value="documents" 
-                      className="flex items-center gap-2 data-[state=active]:bg-indigo-500 data-[state=active]:text-white rounded-lg transition-all"
-                    >
-                      <FileText className="w-4 h-4" />
-                      <span className="hidden md:inline">المستندات</span>
-                      <Badge variant="secondary" className="text-xs bg-white/20">{documents.length}</Badge>
-                    </TabsTrigger>
-                    <TabsTrigger 
-                      value="leaves" 
-                      className="flex items-center gap-2 data-[state=active]:bg-amber-500 data-[state=active]:text-white rounded-lg transition-all"
-                    >
-                      <Calendar className="w-4 h-4" />
-                      <span className="hidden md:inline">الإجازات</span>
-                      <Badge variant="secondary" className="text-xs bg-white/20">{leaves.length}</Badge>
-                    </TabsTrigger>
-                    <TabsTrigger 
-                      value="assignments" 
-                      className="flex items-center gap-2 data-[state=active]:bg-purple-500 data-[state=active]:text-white rounded-lg transition-all"
-                    >
-                      <Briefcase className="w-4 h-4" />
-                      <span className="hidden md:inline">التكاليف</span>
-                      <Badge variant="secondary" className="text-xs bg-white/20">{assignments.length}</Badge>
-                    </TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="documents" className="mt-6">
-                    <div className="mb-4 flex justify-end">
-                      <Button 
-                        onClick={() => setShowUpload(true)}
-                        className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 shadow-lg rounded-xl"
-                        size="sm"
-                      >
-                        <Plus className="w-4 h-4 ml-2" />
-                        رفع مستند
-                      </Button>
-                    </div>
-                    <Suspense fallback={
-                      <div className="flex items-center justify-center py-8">
-                        <RefreshCw className="w-6 h-6 animate-spin text-white/40" />
-                      </div>
-                    }>
-                      <EmployeeDocumentList 
-                          documents={documents} 
-                          onDocumentDeleted={handleDocumentDeleted}
-                          onRefresh={handleRefreshDocuments}
-                          currentEmployeeId={employee?.id}
-                      />
-                    </Suspense>
-                  </TabsContent>
-
-                  <TabsContent value="leaves" className="mt-6">
-                    <Suspense fallback={<div>جاري تحميل سجل الإجازات...</div>}>
-                      <EmployeeLeaveHistory leaves={leaves} />
-                    </Suspense>
-                  </TabsContent>
-
-                  <TabsContent value="assignments" className="mt-6">
-                    <Suspense fallback={<div>جاري تحميل سجل التكاليف...</div>}>
-                      <EmployeeAssignmentHistory assignments={assignments} />
-                    </Suspense>
-                  </TabsContent>
-                </Tabs>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* التكليف الخارجي */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4 }}
-            className="lg:col-span-1 space-y-6"
-          >
-            <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden shadow-2xl">
-              <div className="p-5 border-b border-white/10">
-                <h3 className="font-bold text-white flex items-center gap-2">
-                  <FileClock className="w-5 h-5 text-amber-400" />
+                  <FileClock className="w-5 h-5" />
                   التكليف الخارجي
                 </h3>
               </div>
-              <div className="p-6 space-y-4">
-                <div className="flex items-center justify-between p-4 bg-amber-500/20 rounded-xl border border-amber-500/30">
-                  <Label htmlFor="is_externally_assigned" className="font-semibold text-white">
+              <CardContent className="p-6 space-y-4">
+                <div className="flex items-center justify-between p-4 bg-amber-50 rounded-xl border border-amber-200">
+                  <Label htmlFor="is_externally_assigned" className="font-semibold text-amber-800">
                     مكلف خارج المنطقة؟
                   </Label>
                   <Switch
@@ -856,52 +731,52 @@ export default function EmployeeProfile() {
                   />
                 </div>
                 {externalAssignment.is_externally_assigned && (
-                    <div className="space-y-4 pt-4 border-t border-white/10">
+                    <div className="space-y-4 pt-4 border-t">
                         <div>
-                            <Label htmlFor="external_assignment_center" className="mb-2 block text-sm font-medium text-white/80">الجهة المكلف بها</Label>
+                            <Label htmlFor="external_assignment_center" className="mb-2 block text-sm font-medium text-gray-700">الجهة المكلف بها</Label>
                             <Input
                                 id="external_assignment_center"
                                 placeholder="اسم الجهة أو المركز"
                                 value={externalAssignment.external_assignment_center}
                                 onChange={(e) => handleExternalAssignmentChange('external_assignment_center', e.target.value)}
-                                className="w-full bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl"
+                                className="w-full rounded-xl"
                             />
                         </div>
                         
                         <div>
-                            <Label className="mb-2 block text-sm font-medium text-white/80">سبب التكليف</Label>
+                            <Label className="mb-2 block text-sm font-medium text-gray-700">سبب التكليف</Label>
                             <Select
                                 value={externalAssignment.external_assignment_reason}
                                 onValueChange={(value) => handleExternalAssignmentChange('external_assignment_reason', value)}
                             >
-                                <SelectTrigger className="bg-white/10 border-white/20 text-white rounded-xl">
+                                <SelectTrigger className="rounded-xl">
                                     <SelectValue placeholder="اختر سبب التكليف" />
                                 </SelectTrigger>
-                                <SelectContent className="bg-slate-900 border-white/20">
-                                    <SelectItem value="حتى افتتاح مركز" className="text-white hover:bg-white/10">حتى افتتاح مركز</SelectItem>
-                                    <SelectItem value="لتعزيز الكوادر" className="text-white hover:bg-white/10">لتعزيز الكوادر</SelectItem>
-                                    <SelectItem value="لسد العجز" className="text-white hover:bg-white/10">لسد العجز</SelectItem>
-                                    <SelectItem value="بناء على طلب الجهة" className="text-white hover:bg-white/10">بناء على طلب الجهة</SelectItem>
-                                    <SelectItem value="حتى إشعار آخر" className="text-white hover:bg-white/10">حتى إشعار آخر</SelectItem>
-                                    <SelectItem value="أخرى" className="text-white hover:bg-white/10">أخرى</SelectItem>
+                                <SelectContent>
+                                    <SelectItem value="حتى افتتاح مركز">حتى افتتاح مركز</SelectItem>
+                                    <SelectItem value="لتعزيز الكوادر">لتعزيز الكوادر</SelectItem>
+                                    <SelectItem value="لسد العجز">لسد العجز</SelectItem>
+                                    <SelectItem value="بناء على طلب الجهة">بناء على طلب الجهة</SelectItem>
+                                    <SelectItem value="حتى إشعار آخر">حتى إشعار آخر</SelectItem>
+                                    <SelectItem value="أخرى">أخرى</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
 
                         {externalAssignment.external_assignment_reason === 'أخرى' && (
                             <div>
-                                <Label htmlFor="external_assignment_reason_other" className="mb-2 block text-sm font-medium text-white/80">حدد السبب</Label>
+                                <Label htmlFor="external_assignment_reason_other" className="mb-2 block text-sm font-medium text-gray-700">حدد السبب</Label>
                                 <Input
                                     id="external_assignment_reason_other"
                                     placeholder="اكتب السبب..."
                                     value={externalAssignment.external_assignment_reason_other}
                                     onChange={(e) => handleExternalAssignmentChange('external_assignment_reason_other', e.target.value)}
-                                    className="w-full bg-white/10 border-white/20 text-white placeholder:text-white/40 rounded-xl"
+                                    className="w-full rounded-xl"
                                 />
                             </div>
                         )}
 
-                        <div className="flex items-center space-x-2 space-x-reverse p-4 bg-blue-500/20 rounded-xl border border-blue-500/30">
+                        <div className="flex items-center space-x-2 space-x-reverse p-4 bg-blue-50 rounded-xl border border-blue-200">
                             <Checkbox 
                                 id="external_assignment_indefinite"
                                 checked={externalAssignment.external_assignment_indefinite}
@@ -912,7 +787,7 @@ export default function EmployeeProfile() {
                                     }
                                 }}
                             />
-                            <Label htmlFor="external_assignment_indefinite" className="cursor-pointer text-white">
+                            <Label htmlFor="external_assignment_indefinite" className="cursor-pointer text-blue-800">
                                 حتى إشعار آخر (بدون تاريخ محدد)
                             </Label>
                         </div>
@@ -930,21 +805,27 @@ export default function EmployeeProfile() {
                 )}
                 <Button 
                   onClick={handleSaveExternalAssignment} 
-                  className="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 h-11 rounded-xl shadow-lg"
+                  className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 h-11 rounded-xl shadow-lg"
                 >
                   <Save className="w-4 h-4 ml-2" />
                   حفظ حالة التكليف
                 </Button>
-              </div>
-            </div>
-            
-            {/* صندوق العمل في الإجازات الرسمية */}
-            <div className="bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 overflow-hidden shadow-2xl">
+              </CardContent>
+            </Card>
+          </motion.div>
+          
+          {/* صندوق العمل في الإجازات الرسمية */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+          >
+            <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm overflow-hidden h-full">
               <HolidayWorkManager 
                 employee={employee}
                 onUpdate={() => loadEmployeeData(employee.id)}
               />
-            </div>
+            </Card>
           </motion.div>
         </div>
 
