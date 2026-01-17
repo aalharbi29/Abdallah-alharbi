@@ -432,65 +432,160 @@ export default function EmployeeProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-900 to-slate-900 relative overflow-hidden">
-      {/* خلفية متحركة */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" style={{animationDelay: '2s'}}></div>
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto p-4 md:p-6 space-y-6">
-        {/* Header احترافي */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-4 mb-8"
-        >
-          <Button 
-            variant="outline" 
-            onClick={() => navigate(createPageUrl('HumanResources'))} 
-            size="icon"
-            className="border-white/20 text-white hover:bg-white/10 rounded-xl backdrop-blur-md"
-          >
-            <ArrowRight className="w-4 h-4" />
-          </Button>
-          <div className="flex-1">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl blur-lg opacity-50"></div>
-                <div className="relative w-14 h-14 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl">
-                  <User className="w-7 h-7 text-white" />
-                </div>
-              </div>
-              <div>
-                <h1 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-indigo-200 to-purple-200 tracking-tight">
-                  ملف الموظف
-                </h1>
-                <p className="text-indigo-200/70 text-sm md:text-base mt-1">عرض شامل ومفصّل</p>
-              </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
+      {/* Hero Section مع بيانات الموظف */}
+      <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 relative overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+          }}></div>
+        </div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10">
+          {/* Navigation Bar */}
+          <div className="flex items-center justify-between mb-6">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate(createPageUrl('HumanResources'))} 
+              className="text-white hover:bg-white/20 rounded-xl gap-2"
+            >
+              <ArrowRight className="w-5 h-5" />
+              <span className="hidden sm:inline">العودة للموظفين</span>
+            </Button>
+            <div className="flex gap-2 no-print">
+              <Button 
+                variant="ghost" 
+                onClick={() => setShowIDCard(true)}
+                className="text-white hover:bg-white/20 rounded-xl"
+              >
+                <CreditCard className="w-4 h-4 ml-2" />
+                <span className="hidden sm:inline">البطاقة</span>
+              </Button>
+              <EmployeeProfileExporter employee={employee} />
+              <EmployeeProfileCustomExport employee={employee} />
+              <Button 
+                variant="ghost" 
+                onClick={() => window.print()}
+                className="text-white hover:bg-white/20 rounded-xl"
+              >
+                <Printer className="w-4 h-4 ml-2" />
+                <span className="hidden sm:inline">طباعة</span>
+              </Button>
             </div>
           </div>
-          <div className="flex gap-2 no-print">
-            <Button 
-              variant="outline" 
-              onClick={() => setShowIDCard(true)}
-              className="bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border-emerald-500/30 rounded-xl backdrop-blur-md"
+          
+          {/* Employee Hero Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col md:flex-row items-center gap-6"
+          >
+            {/* Profile Image */}
+            <div className="relative">
+              <div className="absolute inset-0 bg-white rounded-3xl blur-xl opacity-30 transform scale-110"></div>
+              {employee.profile_image_url ? (
+                <img 
+                  src={employee.profile_image_url} 
+                  alt={employee.full_name_arabic} 
+                  className="relative w-28 h-28 md:w-36 md:h-36 rounded-3xl object-cover border-4 border-white/30 shadow-2xl"
+                />
+              ) : (
+                <div className="relative w-28 h-28 md:w-36 md:h-36 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center border-4 border-white/30 shadow-2xl">
+                  <User className="w-14 h-14 md:w-18 md:h-18 text-white" />
+                </div>
+              )}
+              {employee.is_externally_assigned && (
+                <div className="absolute -bottom-2 -right-2 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg flex items-center gap-1">
+                  <FileClock className="w-3 h-3" />
+                  مكلف
+                </div>
+              )}
+            </div>
+            
+            {/* Employee Info */}
+            <div className="flex-1 text-center md:text-right">
+              <h1 className="text-3xl md:text-4xl font-black text-white mb-2">
+                {employee.full_name_arabic}
+              </h1>
+              <p className="text-blue-100 text-lg mb-4">{employee.position}</p>
+              
+              {/* Quick Stats */}
+              <div className="flex flex-wrap justify-center md:justify-start gap-3">
+                <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 flex items-center gap-2">
+                  <span className="text-white/70 text-sm">الرقم الوظيفي:</span>
+                  <span className="text-white font-bold">{employee.رقم_الموظف}</span>
+                </div>
+                <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 flex items-center gap-2">
+                  <span className="text-white/70 text-sm">المركز:</span>
+                  <span className="text-white font-bold">{employee.المركز_الصحي || 'غير محدد'}</span>
+                </div>
+                {employee.phone && (
+                  <a
+                    href={`https://wa.me/${normalizePhoneForWhatsApp(employee.phone)}?text=${encodeURIComponent(`مرحبا ${employee.full_name_arabic}`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-emerald-500/80 hover:bg-emerald-500 backdrop-blur-sm rounded-xl px-4 py-2 flex items-center gap-2 transition-colors"
+                  >
+                    <MessageCircle className="w-4 h-4 text-white" />
+                    <span className="text-white font-medium">تواصل واتساب</span>
+                  </a>
+                )}
+              </div>
+            </div>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-3 gap-3 mt-4 md:mt-0">
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/20">
+                <FileText className="w-6 h-6 text-white mx-auto mb-2" />
+                <p className="text-2xl font-bold text-white">{documents.length}</p>
+                <p className="text-xs text-white/70">مستند</p>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/20">
+                <Calendar className="w-6 h-6 text-white mx-auto mb-2" />
+                <p className="text-2xl font-bold text-white">{leaves.length}</p>
+                <p className="text-xs text-white/70">إجازة</p>
+              </div>
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/20">
+                <Briefcase className="w-6 h-6 text-white mx-auto mb-2" />
+                <p className="text-2xl font-bold text-white">{assignments.length}</p>
+                <p className="text-xs text-white/70">تكليف</p>
+              </div>
+            </div>
+          </motion.div>
+          
+          {/* Employee Roles */}
+          {employeeRoles.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="mt-6 flex flex-wrap justify-center md:justify-start gap-2"
             >
-              <CreditCard className="w-4 h-4 ml-2" />
-              البطاقة
-            </Button>
-            <EmployeeProfileExporter employee={employee} />
-            <EmployeeProfileCustomExport employee={employee} />
-            <Button 
-              variant="outline" 
-              onClick={() => window.print()}
-              className="border-white/20 text-white hover:bg-white/10 rounded-xl backdrop-blur-md"
-            >
-              <Printer className="w-4 h-4 ml-2" />
-              طباعة
-            </Button>
-          </div>
-        </motion.div>
+              {employeeRoles.map((roleObj, index) => (
+                <Badge
+                  key={index}
+                  className={`${
+                    roleObj.roleType === 'manager'
+                      ? 'bg-gradient-to-r from-yellow-400 to-amber-500 text-black'
+                      : roleObj.roleType === 'deputy'
+                      ? 'bg-gradient-to-r from-blue-400 to-cyan-500 text-white'
+                      : roleObj.roleType === 'supervisor'
+                      ? 'bg-gradient-to-r from-emerald-400 to-green-500 text-white'
+                      : 'bg-white/30 text-white'
+                  } px-4 py-2 text-sm font-semibold rounded-full shadow-lg`}
+                >
+                  <Shield className="w-4 h-4 ml-1 inline" />
+                  {roleObj.role}
+                  {roleObj.centerName && <span className="mr-1 opacity-80">- {roleObj.centerName}</span>}
+                </Badge>
+              ))}
+            </motion.div>
+          )}
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 space-y-6">
 
         {/* Employee Full Details with Integrated Roles - محسّن */}
         <motion.div
