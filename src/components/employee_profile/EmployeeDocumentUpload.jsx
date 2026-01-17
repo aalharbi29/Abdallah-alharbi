@@ -101,6 +101,48 @@ export default function EmployeeDocumentUpload({ employee, onClose, onDocumentUp
     return null;
   };
 
+  const extractDatesFromFile = async (file) => {
+    if (formData.document_type !== 'contract') return;
+    
+    setIsExtractingDates(true);
+    try {
+      const uploadResult = await UploadFile({ file });
+      if (uploadResult?.file_url) {
+        const result = await InvokeLLM({
+          prompt: `قم بتحليل هذا الملف واستخراج تواريخ التكليف منه.
+          ابحث عن:
+          - تاريخ بداية التكليف
+          - تاريخ نهاية التكليف
+          
+          إذا وجدت التواريخ، أرجعها بصيغة YYYY-MM-DD.
+          إذا لم تجد تاريخ معين، أرجع null.`,
+          file_urls: [uploadResult.file_url],
+          response_json_schema: {
+            type: "object",
+            properties: {
+              start_date: { type: ["string", "null"], description: "تاريخ البداية بصيغة YYYY-MM-DD" },
+              end_date: { type: ["string", "null"], description: "تاريخ النهاية بصيغة YYYY-MM-DD" },
+              title_suggestion: { type: ["string", "null"], description: "اقتراح لعنوان المستند" }
+            }
+          }
+        });
+
+        if (result) {
+          setFormData(prev => ({
+            ...prev,
+            start_date: result.start_date || prev.start_date,
+            end_date: result.end_date || prev.end_date,
+            document_title: result.title_suggestion && !prev.document_title ? result.title_suggestion : prev.document_title
+          }));
+        }
+      }
+    } catch (err) {
+      console.error('فشل استخراج التواريخ:', err);
+    } finally {
+      setIsExtractingDates(false);
+    }
+  };
+
   const handleFileSelect = useCallback((selectedFiles) => {
     const fileArray = Array.from(selectedFiles);
     
@@ -120,7 +162,12 @@ export default function EmployeeDocumentUpload({ employee, onClose, onDocumentUp
       }));
     }
     setError('');
-  }, [formData.document_title]);
+
+    // استخراج التواريخ تلقائياً للتكليفات
+    if (fileArray.length === 1 && formData.document_type === 'contract') {
+      extractDatesFromFile(fileArray[0]);
+    }
+  }, [formData.document_title, formData.document_type]);
 
   const handleDrop = useCallback((e) => {
     e.preventDefault();
