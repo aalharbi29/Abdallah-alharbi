@@ -26,6 +26,8 @@ export default function FillOfficialAssignmentForm() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [showSaveDialog, setShowSaveDialog] = useState(false);
+  const [pdfBlob, setPdfBlob] = useState(null);
 
   const [formData, setFormData] = useState({
     employeeNumber: '',
