@@ -252,7 +252,7 @@ export default function MultipleAssignmentTemplate({
 
       {/* Controls Panel */}
       {onAssignmentsChange && (
-        <div className="no-print absolute top-2 left-2 bg-white/90 backdrop-blur rounded-lg shadow-lg p-2 z-50 flex gap-2 items-center text-xs">
+        <div className="no-print absolute top-2 left-2 bg-white/90 backdrop-blur rounded-lg shadow-lg p-2 z-50 flex gap-2 items-center text-xs flex-wrap max-w-xs">
           <label className="flex items-center gap-1 cursor-pointer">
             <input 
               type="checkbox" 
@@ -265,7 +265,7 @@ export default function MultipleAssignmentTemplate({
           <span className="text-gray-400">|</span>
           <span className="text-gray-600">Ctrl+ تكبير | Ctrl- تصغير</span>
           <span className="text-gray-400">|</span>
-          <span className="text-blue-600">اسحب التوقيع والختم والاسم</span>
+          <span className="text-blue-600">اسحب العناصر لتحريكها</span>
         </div>
       )}
 
