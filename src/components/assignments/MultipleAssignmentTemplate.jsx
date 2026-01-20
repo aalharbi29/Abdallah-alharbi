@@ -301,9 +301,21 @@ export default function MultipleAssignmentTemplate({
           )}
         </div>
 
-        {/* Table Container */}
+        {/* Table Container - Draggable */}
+        <div 
+          className={`signature-container relative ${onAssignmentsChange ? 'cursor-grab' : ''}`}
+          style={{
+            position: tablePos.x !== 0 || tablePos.y !== 0 ? 'relative' : 'static',
+            left: `${tablePos.x}px`,
+            top: `${tablePos.y}px`,
+          }}
+          onMouseDown={onAssignmentsChange ? (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.closest('.no-drag')) return;
+            handleItemMouseDown('table', e);
+          } : undefined}
+        >
         <DragDropContext onDragEnd={onDragEnd}>
-          <div className="relative">
+          <div className="relative no-drag">
             {onAssignmentsChange && (
               <button 
                 onClick={addColumn}
