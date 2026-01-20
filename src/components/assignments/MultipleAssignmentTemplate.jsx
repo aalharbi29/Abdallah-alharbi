@@ -254,6 +254,7 @@ export default function MultipleAssignmentTemplate({
         position: 'relative',
         direction: 'rtl'
       }}
+      onClick={() => setSelectedElement(null)}
     >
       <style>{`
         @media print {
