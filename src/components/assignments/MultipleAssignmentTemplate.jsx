@@ -129,7 +129,7 @@ export default function MultipleAssignmentTemplate({
     if (!draggingItem) return;
 
     const handleMouseMove = (e) => {
-      const parent = e.target.closest('.signature-container');
+      const parent = containerRef.current;
       if (!parent) return;
       
       const parentRect = parent.getBoundingClientRect();
@@ -146,6 +146,8 @@ export default function MultipleAssignmentTemplate({
         setTablePos({ x: newX, y: newY });
       } else if (draggingItem === 'freeText') {
         setFreeTextPos({ x: newX, y: newY });
+      } else if (draggingItem === 'title') {
+        setTitlePos({ x: newX, y: newY });
       }
     };
 
