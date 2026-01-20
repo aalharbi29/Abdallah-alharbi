@@ -564,21 +564,23 @@ export default function MultipleAssignmentTemplate({
         </div>
 
         {/* Footer / Signature - with individual draggable elements */}
-        <div className="signature-container relative mt-10 px-8 flex justify-end" style={{ minHeight: '200px' }}>
-          <div className="text-center relative" style={{ minWidth: '300px' }}>
+        <div className="relative mt-10 px-8" style={{ minHeight: '250px' }}>
             
             {/* Manager Title & Name - Draggable */}
             <div
               className={`draggable-item no-print ${draggingItem === 'managerName' ? 'opacity-70' : ''}`}
               style={{ 
-                position: managerNamePos.x !== 0 || managerNamePos.y !== 0 ? 'absolute' : 'relative',
+                position: 'absolute',
+                right: managerNamePos.x !== 0 || managerNamePos.y !== 0 ? 'auto' : '50px',
                 left: managerNamePos.x !== 0 || managerNamePos.y !== 0 ? `${managerNamePos.x}px` : 'auto',
-                top: managerNamePos.x !== 0 || managerNamePos.y !== 0 ? `${managerNamePos.y}px` : 'auto',
+                top: managerNamePos.y !== 0 ? `${managerNamePos.y}px` : '0px',
                 zIndex: draggingItem === 'managerName' ? 100 : 10,
                 background: 'rgba(255,255,255,0.9)',
                 padding: '8px',
                 borderRadius: '4px',
-                border: '1px dashed #ccc'
+                border: '1px dashed #ccc',
+                cursor: 'grab',
+                textAlign: 'center'
               }}
               onMouseDown={(e) => handleItemMouseDown('managerName', e)}
             >
@@ -587,67 +589,89 @@ export default function MultipleAssignmentTemplate({
             </div>
 
             {/* Print version - static */}
-            <div className="hidden print:block">
+            <div className="hidden print:block absolute right-12 top-0 text-center">
               <p className="font-bold text-lg mb-2">{managerTitle}</p>
               <p className="font-bold text-lg mt-6">{managerName}</p>
             </div>
 
             {/* Signature Image - Draggable */}
             <div
-              className={`draggable-item no-print ${draggingItem === 'signature' ? 'opacity-70' : ''}`}
+              className={`draggable-item no-print ${draggingItem === 'signature' ? 'opacity-70' : ''} ${selectedElement === 'signature' ? 'ring-2 ring-blue-500' : ''}`}
               style={{ 
                 position: 'absolute',
-                left: `${signaturePos.x}px`, 
-                top: `${signaturePos.y}px`,
+                right: signaturePos.x !== 0 || signaturePos.y !== 0 ? 'auto' : '100px',
+                left: signaturePos.x !== 0 || signaturePos.y !== 0 ? `${signaturePos.x}px` : 'auto',
+                top: signaturePos.y !== 0 ? `${signaturePos.y}px` : '60px',
                 zIndex: draggingItem === 'signature' ? 100 : 20,
                 padding: '4px',
-                border: '1px dashed transparent',
-                borderRadius: '4px'
+                border: selectedElement === 'signature' ? '2px solid #3b82f6' : '1px dashed transparent',
+                borderRadius: '4px',
+                cursor: 'grab'
               }}
               onMouseDown={(e) => handleItemMouseDown('signature', e)}
-              onMouseEnter={(e) => e.currentTarget.style.borderColor = '#3b82f6'}
-              onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedElement(selectedElement === 'signature' ? null : 'signature');
+              }}
+              onMouseEnter={(e) => { if (selectedElement !== 'signature') e.currentTarget.style.borderColor = '#3b82f6'; }}
+              onMouseLeave={(e) => { if (selectedElement !== 'signature') e.currentTarget.style.borderColor = 'transparent'; }}
             >
               <img
                 src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/7cc0a0a53_.png"
                 alt="التوقيع"
                 style={{ 
-                  width: '150px', 
+                  width: `${signatureSize}px`, 
                   mixBlendMode: 'darken',
                   transform: 'rotate(-5deg)',
                   pointerEvents: 'none'
                 }}
                 draggable={false}
               />
+              {selectedElement === 'signature' && (
+                <div className="absolute -bottom-6 left-0 right-0 text-center text-xs text-blue-600 bg-white/80 rounded px-1">
+                  Ctrl+/- للتحكم بالحجم ({signatureSize}px)
+                </div>
+              )}
             </div>
 
             {/* Stamp Image - Draggable */}
             <div
-              className={`draggable-item no-print ${draggingItem === 'stamp' ? 'opacity-70' : ''}`}
+              className={`draggable-item no-print ${draggingItem === 'stamp' ? 'opacity-70' : ''} ${selectedElement === 'stamp' ? 'ring-2 ring-red-500' : ''}`}
               style={{ 
                 position: 'absolute',
-                left: `${stampPos.x}px`, 
-                top: `${stampPos.y}px`,
+                right: stampPos.x !== 0 || stampPos.y !== 0 ? 'auto' : '20px',
+                left: stampPos.x !== 0 || stampPos.y !== 0 ? `${stampPos.x}px` : 'auto',
+                top: stampPos.y !== 0 ? `${stampPos.y}px` : '80px',
                 zIndex: draggingItem === 'stamp' ? 100 : 15,
                 padding: '4px',
-                border: '1px dashed transparent',
-                borderRadius: '4px'
+                border: selectedElement === 'stamp' ? '2px solid #ef4444' : '1px dashed transparent',
+                borderRadius: '4px',
+                cursor: 'grab'
               }}
               onMouseDown={(e) => handleItemMouseDown('stamp', e)}
-              onMouseEnter={(e) => e.currentTarget.style.borderColor = '#ef4444'}
-              onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedElement(selectedElement === 'stamp' ? null : 'stamp');
+              }}
+              onMouseEnter={(e) => { if (selectedElement !== 'stamp') e.currentTarget.style.borderColor = '#ef4444'; }}
+              onMouseLeave={(e) => { if (selectedElement !== 'stamp') e.currentTarget.style.borderColor = 'transparent'; }}
             >
               <img
                 src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/9059c4577_2.png"
                 alt="الختم"
                 style={{ 
-                  width: `${stampSize}px`, 
+                  width: `${currentStampSize}px`, 
                   opacity: 0.9,
                   mixBlendMode: 'multiply',
                   pointerEvents: 'none'
                 }}
                 draggable={false}
               />
+              {selectedElement === 'stamp' && (
+                <div className="absolute -bottom-6 left-0 right-0 text-center text-xs text-red-600 bg-white/80 rounded px-1">
+                  Ctrl+/- للتحكم بالحجم ({currentStampSize}px)
+                </div>
+              )}
             </div>
 
             {/* Print versions - static */}
@@ -657,9 +681,9 @@ export default function MultipleAssignmentTemplate({
               className="hidden print:block"
               style={{ 
                 position: 'absolute',
-                left: `${signaturePos.x}px`, 
-                top: `${signaturePos.y}px`,
-                width: '150px', 
+                right: '100px',
+                top: '60px',
+                width: `${signatureSize}px`, 
                 mixBlendMode: 'darken',
                 transform: 'rotate(-5deg)'
               }}
@@ -670,14 +694,13 @@ export default function MultipleAssignmentTemplate({
               className="hidden print:block"
               style={{ 
                 position: 'absolute',
-                left: `${stampPos.x}px`, 
-                top: `${stampPos.y}px`,
-                width: `${stampSize}px`, 
+                right: '20px',
+                top: '80px',
+                width: `${currentStampSize}px`, 
                 opacity: 0.9,
                 mixBlendMode: 'multiply'
               }}
             />
-          </div>
         </div>
       </div>
     </div>
