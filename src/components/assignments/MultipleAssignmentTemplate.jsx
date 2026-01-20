@@ -54,15 +54,20 @@ export default function MultipleAssignmentTemplate({
   const [freeText, setFreeText] = useState(initialFreeText);
   
   // Separate draggable positions
-  const [signaturePos, setSignaturePos] = useState({ x: 150, y: 0 });
-  const [stampPos, setStampPos] = useState({ x: 50, y: -50 });
+  const [signaturePos, setSignaturePos] = useState({ x: 0, y: 0 });
+  const [stampPos, setStampPos] = useState({ x: 0, y: 0 });
   const [managerNamePos, setManagerNamePos] = useState({ x: 0, y: 0 });
   const [tablePos, setTablePos] = useState({ x: 0, y: 0 });
   const [freeTextPos, setFreeTextPos] = useState({ x: 0, y: 0 });
+  const [titlePos, setTitlePos] = useState({ x: 0, y: 0 });
   
   const [draggingItem, setDraggingItem] = useState(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [titlePos, setTitlePos] = useState({ x: 0, y: 0 });
+  
+  // Size controls for signature and stamp
+  const [signatureSize, setSignatureSize] = useState(150);
+  const [currentStampSize, setCurrentStampSize] = useState(stampSize);
+  const [selectedElement, setSelectedElement] = useState(null); // 'signature' or 'stamp'
 
   const addColumn = () => {
     const newId = `col_${Date.now()}`;
