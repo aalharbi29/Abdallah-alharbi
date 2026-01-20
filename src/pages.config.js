@@ -27,6 +27,7 @@ import FillEquipmentRequestForm from './pages/FillEquipmentRequestForm';
 import FillExcellentEmployeeCertificate from './pages/FillExcellentEmployeeCertificate';
 import FillForm from './pages/FillForm';
 import FillNonMedicalEquipmentForm from './pages/FillNonMedicalEquipmentForm';
+import FillOfficialAssignmentForm from './pages/FillOfficialAssignmentForm';
 import FormEditor from './pages/FormEditor';
 import Forms from './pages/Forms';
 import HRAnalytics from './pages/HRAnalytics';
@@ -51,7 +52,6 @@ import StatisticsHijri from './pages/StatisticsHijri';
 import ViewAssignment from './pages/ViewAssignment';
 import ViewEquipmentRequest from './pages/ViewEquipmentRequest';
 import ViewExcellentEmployeeCertificate from './pages/ViewExcellentEmployeeCertificate';
-import FillOfficialAssignmentForm from './pages/FillOfficialAssignmentForm';
 import __Layout from './Layout.jsx';
 
 
@@ -85,6 +85,7 @@ export const PAGES = {
     "FillExcellentEmployeeCertificate": FillExcellentEmployeeCertificate,
     "FillForm": FillForm,
     "FillNonMedicalEquipmentForm": FillNonMedicalEquipmentForm,
+    "FillOfficialAssignmentForm": FillOfficialAssignmentForm,
     "FormEditor": FormEditor,
     "Forms": Forms,
     "HRAnalytics": HRAnalytics,
@@ -109,7 +110,6 @@ export const PAGES = {
     "ViewAssignment": ViewAssignment,
     "ViewEquipmentRequest": ViewEquipmentRequest,
     "ViewExcellentEmployeeCertificate": ViewExcellentEmployeeCertificate,
-    "FillOfficialAssignmentForm": FillOfficialAssignmentForm,
 }
 
 export const pagesConfig = {
