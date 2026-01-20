@@ -281,23 +281,31 @@ export default function MultipleAssignmentTemplate({
       `}</style>
 
       {/* Controls Panel */}
-      {onAssignmentsChange && (
-        <div className="no-print absolute top-2 left-2 bg-white/90 backdrop-blur rounded-lg shadow-lg p-2 z-50 flex gap-2 items-center text-xs flex-wrap max-w-xs">
-          <label className="flex items-center gap-1 cursor-pointer">
-            <input 
-              type="checkbox" 
-              checked={showNumbering} 
-              onChange={(e) => setShowNumbering(e.target.checked)}
-              className="w-4 h-4"
-            />
-            ترقيم
-          </label>
-          <span className="text-gray-400">|</span>
-          <span className="text-gray-600">Ctrl+ تكبير | Ctrl- تصغير</span>
-          <span className="text-gray-400">|</span>
-          <span className="text-blue-600">اسحب العناصر لتحريكها</span>
-        </div>
-      )}
+      <div className="no-print absolute top-2 left-2 bg-white/90 backdrop-blur rounded-lg shadow-lg p-2 z-50 flex gap-2 items-center text-xs flex-wrap max-w-sm">
+        {onAssignmentsChange && (
+          <>
+            <label className="flex items-center gap-1 cursor-pointer">
+              <input 
+                type="checkbox" 
+                checked={showNumbering} 
+                onChange={(e) => setShowNumbering(e.target.checked)}
+                className="w-4 h-4"
+              />
+              ترقيم
+            </label>
+            <span className="text-gray-400">|</span>
+          </>
+        )}
+        <span className="text-blue-600">🖱️ اسحب العناصر</span>
+        <span className="text-gray-400">|</span>
+        <span className="text-purple-600">🖼️ انقر على التوقيع/الختم ثم Ctrl+/- للحجم</span>
+        {selectedElement && (
+          <>
+            <span className="text-gray-400">|</span>
+            <span className="text-green-600 font-bold">✓ {selectedElement === 'signature' ? 'التوقيع' : 'الختم'} محدد</span>
+          </>
+        )}
+      </div>
 
       <div style={{ marginTop: '50px' }}>
         {/* Title - Draggable */}
