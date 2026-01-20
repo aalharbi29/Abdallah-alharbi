@@ -1029,6 +1029,19 @@ export default function CreateAssignment() {
               customIntro={templateOptions.customIntro}
               decisionPoints={templateOptions.decisionPoints}
               customClosing={templateOptions.customClosing}
+              freeText={templateOptions.freeText}
+              onTitleChange={(v) => setTemplateOptions(prev => ({...prev, customTitle: v}))}
+              onIntroChange={(v) => setTemplateOptions(prev => ({...prev, customIntro: v}))}
+              onDecisionPointsChange={(v) => setTemplateOptions(prev => ({...prev, decisionPoints: v}))}
+              onClosingChange={(v) => setTemplateOptions(prev => ({...prev, customClosing: v}))}
+              onFreeTextChange={(v) => setTemplateOptions(prev => ({...prev, freeText: v}))}
+              onAssignmentsChange={(rowIdx, colId, value) => {
+                setMultipleAssignments(prev => {
+                  const updated = [...prev];
+                  if (updated[rowIdx]) updated[rowIdx][colId] = value;
+                  return updated;
+                });
+              }}
             />
           ) : (
             <StandardAssignmentTemplate 
