@@ -62,6 +62,7 @@ export default function MultipleAssignmentTemplate({
   
   const [draggingItem, setDraggingItem] = useState(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [titlePos, setTitlePos] = useState({ x: 0, y: 0 });
 
   const addColumn = () => {
     const newId = `col_${Date.now()}`;
