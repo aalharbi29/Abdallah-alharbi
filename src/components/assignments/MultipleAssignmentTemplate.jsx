@@ -273,8 +273,19 @@ export default function MultipleAssignmentTemplate({
       )}
 
       <div style={{ marginTop: '50px' }}>
-        {/* Title */}
-        <div className="mb-6">
+        {/* Title - Draggable */}
+        <div 
+          className={`mb-6 ${onTitleChange ? 'cursor-grab' : ''}`}
+          style={{
+            position: titlePos.x !== 0 || titlePos.y !== 0 ? 'relative' : 'static',
+            left: `${titlePos.x}px`,
+            top: `${titlePos.y}px`,
+          }}
+          onMouseDown={onTitleChange ? (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            handleItemMouseDown('title', e);
+          } : undefined}
+        >
           {onTitleChange ? (
             <input
               value={customTitle}
