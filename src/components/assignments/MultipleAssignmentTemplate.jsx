@@ -51,11 +51,14 @@ export default function MultipleAssignmentTemplate({
   const [startPos, setStartPos] = useState(0);
   const [startWidth, setStartWidth] = useState(0);
   const [showNumbering, setShowNumbering] = useState(initialShowNumbering);
+  const [freeText, setFreeText] = useState(initialFreeText);
   
   // Separate draggable positions
   const [signaturePos, setSignaturePos] = useState({ x: 150, y: 0 });
   const [stampPos, setStampPos] = useState({ x: 50, y: -50 });
   const [managerNamePos, setManagerNamePos] = useState({ x: 0, y: 0 });
+  const [tablePos, setTablePos] = useState({ x: 0, y: 0 });
+  const [freeTextPos, setFreeTextPos] = useState({ x: 0, y: 0 });
   
   const [draggingItem, setDraggingItem] = useState(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
