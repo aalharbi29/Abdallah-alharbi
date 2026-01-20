@@ -639,3 +639,5 @@ export default function MultipleAssignmentTemplate({
     </div>
   );
 }
+
+export { MultipleAssignmentTemplate };
