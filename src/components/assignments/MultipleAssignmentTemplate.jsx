@@ -167,9 +167,31 @@ export default function MultipleAssignmentTemplate({
     };
   }, [draggingItem, dragOffset]);
 
-  // Keyboard shortcut for font size
+  // Keyboard shortcut for font size and element resizing
   useEffect(() => {
     const handleKeyDown = (e) => {
+      // Resize selected element (signature or stamp)
+      if (selectedElement && e.ctrlKey) {
+        if (e.key === '=' || e.key === '+') {
+          e.preventDefault();
+          if (selectedElement === 'signature') {
+            setSignatureSize(prev => Math.min(prev + 20, 400));
+          } else if (selectedElement === 'stamp') {
+            setCurrentStampSize(prev => Math.min(prev + 20, 400));
+          }
+          return;
+        } else if (e.key === '-') {
+          e.preventDefault();
+          if (selectedElement === 'signature') {
+            setSignatureSize(prev => Math.max(prev - 20, 50));
+          } else if (selectedElement === 'stamp') {
+            setCurrentStampSize(prev => Math.max(prev - 20, 50));
+          }
+          return;
+        }
+      }
+      
+      // Text font size
       if (e.ctrlKey && (e.key === '=' || e.key === '+')) {
         e.preventDefault();
         const selection = window.getSelection();
@@ -193,7 +215,7 @@ export default function MultipleAssignmentTemplate({
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  }, [selectedElement]);
 
   const letterheadUrl = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/20b408cf3_.png";
 
