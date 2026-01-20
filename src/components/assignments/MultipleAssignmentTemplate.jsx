@@ -27,11 +27,13 @@ export default function MultipleAssignmentTemplate({
   managerTitle = 'مدير شؤون المراكز الصحية بالحناكية',
   stampSize = 150,
   showNumbering: initialShowNumbering = true,
+  freeText: initialFreeText = '',
   onTitleChange,
   onIntroChange,
   onDecisionPointsChange,
   onClosingChange,
   onAssignmentsChange,
+  onFreeTextChange,
 }) {
   const containerRef = useRef(null);
   
