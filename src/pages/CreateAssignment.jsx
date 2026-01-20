@@ -565,6 +565,17 @@ export default function CreateAssignment() {
                                   <Plus className="w-4 h-4 ml-2" /> إضافة نقطة
                                   </Button>
                                   </div>
+
+                                  <div>
+                                  <Label>خطاب حر (تحت الجدول)</Label>
+                                  <Textarea 
+                                  value={templateOptions.freeText}
+                                  onChange={(e) => setTemplateOptions(prev => ({...prev, freeText: e.target.value}))}
+                                  className="mt-1 h-24"
+                                  placeholder="اكتب هنا أي نص إضافي تريد إضافته تحت الجدول... (يمكن سحبه وتحريكه في المعاينة)"
+                                  />
+                                  <p className="text-xs text-gray-500 mt-1">💡 يمكنك سحب هذا النص والجدول إلى أي مكان في المعاينة</p>
+                                  </div>
                                   </div>
                                   </div>
                                   ) : (
