@@ -441,6 +441,44 @@ export default function MultipleAssignmentTemplate({
             </div>
           </div>
         </DragDropContext>
+        </div>
+
+        {/* Free Text Area - Draggable */}
+        {(freeText || onFreeTextChange) && (
+          <div 
+            className={`signature-container relative mb-6 ${onFreeTextChange ? 'cursor-grab' : ''}`}
+            style={{
+              position: freeTextPos.x !== 0 || freeTextPos.y !== 0 ? 'relative' : 'static',
+              left: `${freeTextPos.x}px`,
+              top: `${freeTextPos.y}px`,
+            }}
+            onMouseDown={onFreeTextChange ? (e) => {
+              if (e.target.tagName === 'TEXTAREA') return;
+              handleItemMouseDown('freeText', e);
+            } : undefined}
+          >
+            {onFreeTextChange ? (
+              <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 bg-yellow-50/50 hover:border-blue-400 transition-colors">
+                <p className="text-xs text-gray-500 mb-2 no-print">خطاب حر (قابل للسحب والتحريك)</p>
+                <textarea
+                  value={freeText}
+                  onChange={(e) => {
+                    setFreeText(e.target.value);
+                    if (onFreeTextChange) onFreeTextChange(e.target.value);
+                  }}
+                  className="w-full bg-transparent border-none outline-none resize-none text-sm leading-relaxed"
+                  rows={4}
+                  placeholder="اكتب هنا نص حر إضافي..."
+                  style={{ lineHeight: '1.8' }}
+                />
+              </div>
+            ) : freeText ? (
+              <div className="px-2">
+                <p className="text-sm leading-relaxed whitespace-pre-wrap">{freeText}</p>
+              </div>
+            ) : null}
+          </div>
+        )}
 
         {/* Decision Points */}
         <div className="mb-6 px-2">
