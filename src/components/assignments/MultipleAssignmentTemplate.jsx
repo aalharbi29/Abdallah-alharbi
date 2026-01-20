@@ -377,9 +377,12 @@ export default function MultipleAssignmentTemplate({
                               <span className="text-xs">{col.label}</span>
                             )}
 
-                            {onAssignmentsChange && col.isCustom && (
+                            {onAssignmentsChange && (
                               <button 
-                                onClick={() => removeColumn(col.id)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeColumn(col.id);
+                                }}
                                 className="absolute left-0.5 top-0.5 text-red-400 hover:text-red-600 no-print opacity-0 group-hover/col:opacity-100 transition-opacity text-xs"
                                 title="حذف العمود"
                               >
