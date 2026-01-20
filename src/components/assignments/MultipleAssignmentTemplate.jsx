@@ -142,6 +142,10 @@ export default function MultipleAssignmentTemplate({
         setStampPos({ x: newX, y: newY });
       } else if (draggingItem === 'managerName') {
         setManagerNamePos({ x: newX, y: newY });
+      } else if (draggingItem === 'table') {
+        setTablePos({ x: newX, y: newY });
+      } else if (draggingItem === 'freeText') {
+        setFreeTextPos({ x: newX, y: newY });
       }
     };
 
