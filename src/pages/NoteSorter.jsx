@@ -1731,11 +1731,11 @@ export default function CenterDeficiencyTool() {
                       className="h-10"
                     />
                     <Button
-                      onClick={addCustomItem}
+                      onClick={() => addCustomItem(true)}
                       className="w-full h-9 bg-teal-600 hover:bg-teal-700"
                     >
                       <Plus className="w-4 h-4 ml-1" />
-                      إضافة
+                      إضافة للقائمة الثابتة
                     </Button>
                   </div>
                 )}
