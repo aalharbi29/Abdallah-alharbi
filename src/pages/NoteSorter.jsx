@@ -614,6 +614,17 @@ export default function CenterDeficiencyTool() {
     setEditingItem(null);
   };
 
+  const moveItemToOtherType = (itemId) => {
+    setSelectedItems(prev => prev.map(item => {
+      if (item.id === itemId) {
+        const newType = item.type === 'medical' ? 'nonmedical' : 'medical';
+        return { ...item, type: newType };
+      }
+      return item;
+    }));
+    toast.success('تم نقل العنصر');
+  };
+
   const addCustomItem = (addToMainList = true) => {
     if (!customItemName.trim()) {
       toast.error('الرجاء إدخال اسم العنصر');
