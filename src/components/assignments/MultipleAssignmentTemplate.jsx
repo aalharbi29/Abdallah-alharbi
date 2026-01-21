@@ -445,31 +445,8 @@ export default function MultipleAssignmentTemplate({
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
-          body {
-            margin: 0 !important;
-            padding: 0 !important;
-          }
-          body > * {
-            display: none !important;
-          }
-          .print-area {
-            display: block !important;
-            position: absolute !important;
-            left: 0 !important;
-            top: 0 !important;
-            width: 210mm !important; 
-            min-height: 297mm !important;
-            box-shadow: none !important;
-            margin: 0 !important;
-            padding: 15mm 20mm !important;
-            page-break-after: avoid !important;
-          }
-          .print-area * {
-            visibility: visible !important;
-          }
           .no-print { 
-            display: none !important; 
-            visibility: hidden !important;
+            display: none !important;
           }
         }
         .editable-cell {
