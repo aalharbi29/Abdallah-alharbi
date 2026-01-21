@@ -148,17 +148,22 @@ export default function TemplateStyleManager({
   const handleSyncToOther = async (style) => {
     try {
       const styleData = JSON.parse(style.style_data);
-      const otherType = templateType === 'flexible' ? 'standard' : 'flexible';
+      let otherType;
+      if (templateType === 'flexible') otherType = 'standard';
+      else if (templateType === 'standard') otherType = 'flexible';
+      else otherType = 'standard'; // multiple -> standard
+      
+      const typeNames = { standard: 'قياسي', flexible: 'مرن', multiple: 'متعدد' };
       
       await base44.entities.AssignmentTemplateStyle.create({
-        name: `${style.name} (${otherType === 'standard' ? 'قياسي' : 'مرن'})`,
-        description: `منسوخ من النمط ${templateType === 'flexible' ? 'المرن' : 'القياسي'}`,
+        name: `${style.name} (${typeNames[otherType]})`,
+        description: `منسوخ من النمط ${typeNames[templateType]}`,
         template_type: otherType,
         style_data: style.style_data,
         is_default: false
       });
       
-      alert(`✅ تم نسخ النمط إلى القالب ${otherType === 'standard' ? 'القياسي' : 'المرن'}`);
+      alert(`✅ تم نسخ النمط إلى القالب ${typeNames[otherType]}`);
     } catch (error) {
       alert('فشل في النسخ: ' + error.message);
     }
@@ -239,7 +244,7 @@ export default function TemplateStyleManager({
           <DialogHeader>
             <DialogTitle>{editingStyle ? 'تحديث النمط' : 'حفظ نمط جديد'}</DialogTitle>
             <DialogDescription>
-              {templateType === 'flexible' ? 'نمط للقالب المرن' : 'نمط للقالب القياسي'}
+              {templateType === 'flexible' ? 'نمط للقالب المرن' : templateType === 'multiple' ? 'نمط للتكليف المتعدد' : 'نمط للقالب القياسي'}
             </DialogDescription>
           </DialogHeader>
           
@@ -280,7 +285,7 @@ export default function TemplateStyleManager({
       <Dialog open={showManageDialog} onOpenChange={setShowManageDialog}>
         <DialogContent dir="rtl" className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>إدارة أنماط {templateType === 'flexible' ? 'القالب المرن' : 'القالب القياسي'}</DialogTitle>
+            <DialogTitle>إدارة أنماط {templateType === 'flexible' ? 'القالب المرن' : templateType === 'multiple' ? 'التكليف المتعدد' : 'القالب القياسي'}</DialogTitle>
             <DialogDescription>
               تعديل وحذف ونسخ الأنماط المحفوظة
             </DialogDescription>
@@ -302,7 +307,7 @@ export default function TemplateStyleManager({
                       {style.is_default && <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />}
                       <span className="font-medium">{style.name}</span>
                       <Badge variant="outline" className="text-xs">
-                        {style.template_type === 'flexible' ? 'مرن' : 'قياسي'}
+                        {style.template_type === 'flexible' ? 'مرن' : style.template_type === 'multiple' ? 'متعدد' : 'قياسي'}
                       </Badge>
                     </div>
                     {style.description && (
@@ -341,14 +346,16 @@ export default function TemplateStyleManager({
                     >
                       <Copy className="w-4 h-4" />
                     </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => handleSyncToOther(style)}
-                      title={`نسخ إلى القالب ${templateType === 'flexible' ? 'القياسي' : 'المرن'}`}
-                    >
-                      🔄
-                    </Button>
+                    {templateType !== 'multiple' && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleSyncToOther(style)}
+                        title={`نسخ إلى القالب ${templateType === 'flexible' ? 'القياسي' : 'المرن'}`}
+                      >
+                        🔄
+                      </Button>
+                    )}
                     {!style.is_default && (
                       <Button
                         size="sm"
