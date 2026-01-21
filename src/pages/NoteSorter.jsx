@@ -429,6 +429,18 @@ const nonMedicalEquipmentList = [
   { id: 'carpet', name: 'سجاد', category: 'معدات متنوعة' },
   { id: 'mat', name: 'ممسحة أرجل', category: 'معدات متنوعة' },
   { id: 'mirror', name: 'مرآة', category: 'معدات متنوعة' },
+  { id: 'electronic_queue_system', name: 'نظام انتظار الكتروني', category: 'معدات متنوعة' },
+  { id: 'id_nationality_number_badge', name: 'بطاقة إبراز الهوية الوطنية - الإقامة', category: 'معدات متنوعة' },
+  { id: 'national_id_request_stamp', name: 'طلب طلب إبراز الهوية الوطنية - الإقامة', category: 'معدات متنوعة' },
+  { id: 'disability_toilet_water', name: 'دورات مياه ذوي الإعاقة نقطة للخارج', category: 'معدات متنوعة' },
+  { id: 'vital_signs_area', name: 'قياس جميع العلامات الحيوية (الوزن، الطول، الحرارة، والضغط) في موقع مخصص', category: 'معدات متنوعة' },
+  { id: 'health_awareness_screen', name: 'شاشة توعية صحية أو إعلانات في مكان انتظار المراجعين', category: 'معدات متنوعة' },
+  { id: 'sample_draw_available', name: 'سحب العينات متاح طوال فترة الدوام', category: 'معدات متنوعة' },
+  { id: 'pregnancy_followup_clinic', name: 'عيادة متابعة الحمل متاحة طوال أيام الأسبوع', category: 'معدات متنوعة' },
+  { id: 'lab_check_results', name: 'غرفة فحص الأخبار', category: 'معدات متنوعة' },
+  { id: 'all_vital_measurements', name: 'قياس جميع العلامات الحيوية (اللون، الطول، والضغط والحرارة)', category: 'معدات متنوعة' },
+  { id: 'special_clinic_hours', name: 'عيادات تخصصية', category: 'معدات متنوعة' },
+  { id: 'added_clinic', name: 'عيادة مضافة', category: 'معدات متنوعة' },
   
   // مستلزمات مكتبية
   { id: 'paper_a4', name: 'ورق A4', category: 'مستلزمات مكتبية' },
