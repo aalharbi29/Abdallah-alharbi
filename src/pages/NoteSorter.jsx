@@ -1766,6 +1766,19 @@ export default function CenterDeficiencyTool() {
                             >
                               <Edit2 className="w-3 h-3" />
                             </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className={`h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity ${
+                                item.type === 'medical' 
+                                  ? 'text-purple-400 hover:bg-purple-50 hover:text-purple-600' 
+                                  : 'text-teal-400 hover:bg-teal-50 hover:text-teal-600'
+                              }`}
+                              onClick={() => moveItemToOtherType(item.id)}
+                              title={item.type === 'medical' ? 'نقل للتجهيزات غير الطبية' : 'نقل للتجهيزات الطبية'}
+                            >
+                              <ArrowLeftRight className="w-3 h-3" />
+                            </Button>
                             {isInCustomList && (
                               <Button
                                 variant="ghost"
