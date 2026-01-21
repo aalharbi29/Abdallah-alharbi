@@ -2,7 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { GripVertical, Plus } from 'lucide-react';
+import { GripVertical, Plus, Printer, Save, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { base44 } from '@/api/base44Client';
+import { toast } from 'sonner';
 
 const getDayName = (dateString) => {
   try {
@@ -34,8 +37,10 @@ export default function MultipleAssignmentTemplate({
   onClosingChange,
   onAssignmentsChange,
   onFreeTextChange,
+  showActions = true,
 }) {
   const containerRef = useRef(null);
+  const [isSavingToEmployee, setIsSavingToEmployee] = useState(false);
   
   const defaultColumns = [
     { id: 'name', label: 'الاسم', width: 180 },
@@ -207,24 +212,47 @@ export default function MultipleAssignmentTemplate({
         }
       }
       
-      // Text font size
+      // Text font size - apply to selected text
       if (e.ctrlKey && (e.key === '=' || e.key === '+')) {
         e.preventDefault();
         const selection = window.getSelection();
-        if (selection && selection.toString()) {
-          const range = selection.getRangeAt(0);
-          const span = document.createElement('span');
-          span.style.fontSize = '1.2em';
-          range.surroundContents(span);
+        if (selection && selection.toString().trim()) {
+          try {
+            const range = selection.getRangeAt(0);
+            // Check if already wrapped in a span with font-size
+            const parentSpan = range.commonAncestorContainer.parentElement;
+            if (parentSpan && parentSpan.tagName === 'SPAN' && parentSpan.style.fontSize) {
+              const currentSize = parseFloat(parentSpan.style.fontSize) || 1;
+              parentSpan.style.fontSize = `${Math.min(currentSize + 0.15, 3)}em`;
+            } else {
+              const span = document.createElement('span');
+              span.style.fontSize = '1.15em';
+              span.style.display = 'inline';
+              range.surroundContents(span);
+            }
+          } catch (err) {
+            console.log('Cannot resize text:', err);
+          }
         }
       } else if (e.ctrlKey && e.key === '-') {
         e.preventDefault();
         const selection = window.getSelection();
-        if (selection && selection.toString()) {
-          const range = selection.getRangeAt(0);
-          const span = document.createElement('span');
-          span.style.fontSize = '0.85em';
-          range.surroundContents(span);
+        if (selection && selection.toString().trim()) {
+          try {
+            const range = selection.getRangeAt(0);
+            const parentSpan = range.commonAncestorContainer.parentElement;
+            if (parentSpan && parentSpan.tagName === 'SPAN' && parentSpan.style.fontSize) {
+              const currentSize = parseFloat(parentSpan.style.fontSize) || 1;
+              parentSpan.style.fontSize = `${Math.max(currentSize - 0.15, 0.5)}em`;
+            } else {
+              const span = document.createElement('span');
+              span.style.fontSize = '0.85em';
+              span.style.display = 'inline';
+              range.surroundContents(span);
+            }
+          } catch (err) {
+            console.log('Cannot resize text:', err);
+          }
         }
       }
     };
@@ -234,6 +262,62 @@ export default function MultipleAssignmentTemplate({
   }, [selectedElement]);
 
   const letterheadUrl = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/20b408cf3_.png";
+
+  // Print function
+  const handlePrint = () => {
+    window.print();
+  };
+
+  // Save to employee files
+  const handleSaveToEmployeeFiles = async () => {
+    if (assignments.length === 0) {
+      toast.error('لا يوجد موظفين في التكليف');
+      return;
+    }
+
+    setIsSavingToEmployee(true);
+    try {
+      // Create a canvas from the template
+      const html2canvas = (await import('html2canvas')).default;
+      const canvas = await html2canvas(containerRef.current, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff'
+      });
+      
+      // Convert to blob
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      const file = new File([blob], `تكليف-${new Date().toISOString().split('T')[0]}.png`, { type: 'image/png' });
+      
+      // Upload file
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      
+      // Save to each employee's documents
+      for (const assignment of assignments) {
+        if (assignment.employee_record_id) {
+          await base44.entities.EmployeeDocument.create({
+            employee_id: assignment.employee_record_id,
+            employee_name: assignment.name,
+            document_title: `تكليف - ${assignment.assigned_work} - ${new Date().toLocaleDateString('ar-SA')}`,
+            document_type: 'official',
+            description: `تكليف للعمل في ${assignment.assigned_work} من ${assignment.start_date} إلى ${assignment.end_date}`,
+            file_url: file_url,
+            file_name: `تكليف-${assignment.name}.png`,
+            start_date: assignment.start_date,
+            end_date: assignment.end_date
+          });
+        }
+      }
+      
+      toast.success(`تم حفظ التكليف في ملفات ${assignments.length} موظف`);
+    } catch (error) {
+      console.error('Error saving to employee files:', error);
+      toast.error('فشل في حفظ التكليف');
+    } finally {
+      setIsSavingToEmployee(false);
+    }
+  };
 
   const buildFullDuration = (row) => {
     if (row.full_duration) return row.full_duration;
@@ -297,6 +381,31 @@ export default function MultipleAssignmentTemplate({
         }
       `}</style>
 
+      {/* Action Buttons */}
+      {showActions && (
+        <div className="no-print absolute top-2 right-2 bg-white/90 backdrop-blur rounded-lg shadow-lg p-2 z-50 flex gap-2">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handlePrint}
+            className="gap-1"
+          >
+            <Printer className="w-4 h-4" />
+            طباعة
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleSaveToEmployeeFiles}
+            disabled={isSavingToEmployee || assignments.length === 0}
+            className="gap-1"
+          >
+            {isSavingToEmployee ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+            حفظ بملف الموظف
+          </Button>
+        </div>
+      )}
+
       {/* Controls Panel */}
       <div className="no-print absolute top-2 left-2 bg-white/90 backdrop-blur rounded-lg shadow-lg p-2 z-50 flex gap-2 items-center text-xs flex-wrap max-w-sm">
         {onAssignmentsChange && (
@@ -315,7 +424,7 @@ export default function MultipleAssignmentTemplate({
         )}
         <span className="text-blue-600">🖱️ اسحب العناصر</span>
         <span className="text-gray-400">|</span>
-        <span className="text-purple-600">🖼️ انقر على التوقيع/الختم ثم Ctrl+/- للحجم</span>
+        <span className="text-purple-600">📝 ظلل نص + Ctrl+/- للتكبير/التصغير</span>
         {selectedElement && (
           <>
             <span className="text-gray-400">|</span>
@@ -345,32 +454,6 @@ export default function MultipleAssignmentTemplate({
             />
           ) : (
             <h1 className="text-center text-black text-2xl font-bold">{customTitle}</h1>
-          )}
-        </div>
-
-        {/* Intro - Draggable */}
-        <div 
-          className={`mb-4 ${onIntroChange ? 'cursor-grab hover:bg-blue-50/50 rounded transition-colors' : ''}`}
-          style={{
-            transform: `translate(${introOffset.x}px, ${introOffset.y}px)`,
-          }}
-          onMouseDown={onIntroChange ? (e) => {
-            if (e.target.tagName === 'TEXTAREA') return;
-            handleItemMouseDown('intro', e);
-          } : undefined}
-        >
-          {onIntroChange ? (
-            <textarea
-              value={customIntro}
-              onChange={(e) => onIntroChange(e.target.value)}
-              className="w-full text-center text-base font-bold bg-transparent border-none outline-none focus:bg-blue-50 rounded p-2 resize-none"
-              rows={3}
-              style={{ lineHeight: '1.8' }}
-            />
-          ) : (
-            <p className="text-center text-base font-bold leading-relaxed whitespace-pre-wrap">
-              {customIntro}
-            </p>
           )}
         </div>
 
@@ -515,6 +598,32 @@ export default function MultipleAssignmentTemplate({
             </div>
           </div>
         </DragDropContext>
+        </div>
+
+        {/* Intro - Draggable (moved below table) */}
+        <div 
+          className={`mb-4 ${onIntroChange ? 'cursor-grab hover:bg-blue-50/50 rounded transition-colors' : ''}`}
+          style={{
+            transform: `translate(${introOffset.x}px, ${introOffset.y}px)`,
+          }}
+          onMouseDown={onIntroChange ? (e) => {
+            if (e.target.tagName === 'TEXTAREA') return;
+            handleItemMouseDown('intro', e);
+          } : undefined}
+        >
+          {onIntroChange ? (
+            <textarea
+              value={customIntro}
+              onChange={(e) => onIntroChange(e.target.value)}
+              className="w-full text-center text-base font-bold bg-transparent border-none outline-none focus:bg-blue-50 rounded p-2 resize-none"
+              rows={3}
+              style={{ lineHeight: '1.8' }}
+            />
+          ) : (
+            <p className="text-center text-base font-bold leading-relaxed whitespace-pre-wrap">
+              {customIntro}
+            </p>
+          )}
         </div>
 
         {/* Free Text Area - Draggable */}
