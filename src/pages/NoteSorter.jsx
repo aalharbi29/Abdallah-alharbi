@@ -571,7 +571,9 @@ export default function CenterDeficiencyTool() {
   const isSelected = (itemId) => selectedItems.some(i => i.id === itemId);
   const getSelectedQuantity = (itemId) => selectedItems.find(i => i.id === itemId)?.quantity || 1;
 
-  const currentList = activeTab === 'medical' ? medicalEquipmentList : nonMedicalEquipmentList;
+  const currentList = activeTab === 'medical' 
+    ? [...medicalEquipmentList, ...customMedicalItems] 
+    : [...nonMedicalEquipmentList, ...customNonMedicalItems];
   const categories = [...new Set(currentList.map(item => item.category))];
 
   const filteredItems = searchQuery
