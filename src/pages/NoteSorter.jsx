@@ -420,6 +420,8 @@ export default function CenterDeficiencyTool() {
   const [customItemName, setCustomItemName] = useState('');
   const [customItemCategory, setCustomItemCategory] = useState('');
   const [showAddCustomItem, setShowAddCustomItem] = useState(false);
+  const [customMedicalItems, setCustomMedicalItems] = useState([]);
+  const [customNonMedicalItems, setCustomNonMedicalItems] = useState([]);
 
   useEffect(() => {
     loadHealthCenters();
