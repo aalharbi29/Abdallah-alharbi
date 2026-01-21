@@ -66,6 +66,8 @@ export default function MultipleAssignmentTemplate({
   const [freeTextOffset, setFreeTextOffset] = useState({ x: 0, y: 0 });
   const [titleOffset, setTitleOffset] = useState({ x: 0, y: 0 });
   const [introOffset, setIntroOffset] = useState({ x: 0, y: 0 });
+  const [decisionPointsOffset, setDecisionPointsOffset] = useState({ x: 0, y: 0 });
+  const [closingOffset, setClosingOffset] = useState({ x: 0, y: 0 });
   
   const [draggingItem, setDraggingItem] = useState(null);
   const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
@@ -144,6 +146,8 @@ export default function MultipleAssignmentTemplate({
     else if (itemType === 'freeText') currentOffset = freeTextOffset;
     else if (itemType === 'title') currentOffset = titleOffset;
     else if (itemType === 'intro') currentOffset = introOffset;
+    else if (itemType === 'decisionPoints') currentOffset = decisionPointsOffset;
+    else if (itemType === 'closing') currentOffset = closingOffset;
     
     setDragStartOffset(currentOffset);
     setDraggingItem(itemType);
@@ -175,6 +179,10 @@ export default function MultipleAssignmentTemplate({
         setTitleOffset(newOffset);
       } else if (draggingItem === 'intro') {
         setIntroOffset(newOffset);
+      } else if (draggingItem === 'decisionPoints') {
+        setDecisionPointsOffset(newOffset);
+      } else if (draggingItem === 'closing') {
+        setClosingOffset(newOffset);
       }
     };
 
@@ -188,7 +196,7 @@ export default function MultipleAssignmentTemplate({
     };
   }, [draggingItem, dragStartPos, dragStartOffset]);
 
-  // Keyboard shortcut for font size and element resizing
+  // Keyboard shortcut for font size, element resizing, and text alignment
   useEffect(() => {
     const handleKeyDown = (e) => {
       // Resize selected element (signature or stamp)
@@ -212,6 +220,51 @@ export default function MultipleAssignmentTemplate({
         }
       }
       
+      // Text alignment - Ctrl+L (left), Ctrl+E (center), Ctrl+R (right)
+      if (e.ctrlKey && e.key.toLowerCase() === 'l') {
+        e.preventDefault();
+        const selection = window.getSelection();
+        if (selection && selection.toString().trim()) {
+          try {
+            const range = selection.getRangeAt(0);
+            const span = document.createElement('span');
+            span.style.display = 'block';
+            span.style.textAlign = 'left';
+            range.surroundContents(span);
+          } catch (err) {
+            console.log('Cannot align text:', err);
+          }
+        }
+      } else if (e.ctrlKey && e.key.toLowerCase() === 'e') {
+        e.preventDefault();
+        const selection = window.getSelection();
+        if (selection && selection.toString().trim()) {
+          try {
+            const range = selection.getRangeAt(0);
+            const span = document.createElement('span');
+            span.style.display = 'block';
+            span.style.textAlign = 'center';
+            range.surroundContents(span);
+          } catch (err) {
+            console.log('Cannot align text:', err);
+          }
+        }
+      } else if (e.ctrlKey && e.key.toLowerCase() === 'r') {
+        e.preventDefault();
+        const selection = window.getSelection();
+        if (selection && selection.toString().trim()) {
+          try {
+            const range = selection.getRangeAt(0);
+            const span = document.createElement('span');
+            span.style.display = 'block';
+            span.style.textAlign = 'right';
+            range.surroundContents(span);
+          } catch (err) {
+            console.log('Cannot align text:', err);
+          }
+        }
+      }
+      
       // Text font size - apply to selected text
       if (e.ctrlKey && (e.key === '=' || e.key === '+')) {
         e.preventDefault();
@@ -219,7 +272,6 @@ export default function MultipleAssignmentTemplate({
         if (selection && selection.toString().trim()) {
           try {
             const range = selection.getRangeAt(0);
-            // Check if already wrapped in a span with font-size
             const parentSpan = range.commonAncestorContainer.parentElement;
             if (parentSpan && parentSpan.tagName === 'SPAN' && parentSpan.style.fontSize) {
               const currentSize = parseFloat(parentSpan.style.fontSize) || 1;
@@ -359,12 +411,18 @@ export default function MultipleAssignmentTemplate({
       <style>{`
         @media print {
           @page { size: A4 portrait; margin: 0; }
-          .no-print { display: none !important; }
+          body * { visibility: hidden; }
+          .print-area, .print-area * { visibility: visible; }
           .print-area { 
+            position: absolute;
+            left: 0;
+            top: 0;
             width: 210mm !important; 
             min-height: 297mm !important;
             box-shadow: none !important;
+            margin: 0 !important;
           }
+          .no-print { display: none !important; visibility: hidden !important; }
         }
         .editable-cell {
           min-height: 40px;
@@ -424,7 +482,7 @@ export default function MultipleAssignmentTemplate({
         )}
         <span className="text-blue-600">🖱️ اسحب العناصر</span>
         <span className="text-gray-400">|</span>
-        <span className="text-purple-600">📝 ظلل نص + Ctrl+/- للتكبير/التصغير</span>
+        <span className="text-purple-600">📝 ظلل: Ctrl+/- حجم | Ctrl+L يسار | Ctrl+E وسط | Ctrl+R يمين</span>
         {selectedElement && (
           <>
             <span className="text-gray-400">|</span>
@@ -647,7 +705,7 @@ export default function MultipleAssignmentTemplate({
                     setFreeText(e.target.value);
                     if (onFreeTextChange) onFreeTextChange(e.target.value);
                   }}
-                  className="w-full bg-transparent border-none outline-none resize-none text-sm leading-relaxed"
+                  className="w-full bg-transparent border-none outline-none resize-y text-sm leading-relaxed min-h-[100px]"
                   rows={4}
                   placeholder="اكتب هنا نص حر إضافي..."
                   style={{ lineHeight: '1.8' }}
@@ -661,8 +719,17 @@ export default function MultipleAssignmentTemplate({
           </div>
         )}
 
-        {/* Decision Points */}
-        <div className="mb-6 px-2">
+        {/* Decision Points - Draggable */}
+        <div 
+          className={`mb-6 px-2 ${onDecisionPointsChange ? 'cursor-grab hover:bg-blue-50/50 rounded transition-colors' : ''}`}
+          style={{
+            transform: `translate(${decisionPointsOffset.x}px, ${decisionPointsOffset.y}px)`,
+          }}
+          onMouseDown={onDecisionPointsChange ? (e) => {
+            if (e.target.tagName === 'TEXTAREA') return;
+            handleItemMouseDown('decisionPoints', e);
+          } : undefined}
+        >
           <div className="space-y-2 text-right mr-6 text-sm">
             {decisionPoints.map((point, idx) => (
               <div key={idx} className="flex gap-2">
@@ -687,8 +754,17 @@ export default function MultipleAssignmentTemplate({
           </div>
         </div>
 
-        {/* Closing */}
-        <div className="mb-6">
+        {/* Closing - Draggable */}
+        <div 
+          className={`mb-6 ${onClosingChange ? 'cursor-grab hover:bg-blue-50/50 rounded transition-colors' : ''}`}
+          style={{
+            transform: `translate(${closingOffset.x}px, ${closingOffset.y}px)`,
+          }}
+          onMouseDown={onClosingChange ? (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            handleItemMouseDown('closing', e);
+          } : undefined}
+        >
           {onClosingChange ? (
             <input
               value={customClosing}
