@@ -2,11 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { GripVertical, Plus, Printer, Save, Loader2, Settings2, Star } from 'lucide-react';
+import { GripVertical, Plus, Printer, Save, Loader2, Settings2, Star, Mic } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import TemplateStyleManager from './TemplateStyleManager';
+import VoiceInput from '@/components/ui/VoiceInput';
 
 const getDayName = (dateString) => {
   try {
@@ -74,11 +75,13 @@ export default function MultipleAssignmentTemplate({
   const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
   const [dragStartOffset, setDragStartOffset] = useState({ x: 0, y: 0 });
   
-  // Size controls for signature and stamp
+  // Size controls for signature, stamp, and manager name
   const [signatureSize, setSignatureSize] = useState(150);
   const [currentStampSize, setCurrentStampSize] = useState(stampSize);
-  const [selectedElement, setSelectedElement] = useState(null); // 'signature' or 'stamp'
+  const [managerFontSize, setManagerFontSize] = useState(18);
+  const [selectedElement, setSelectedElement] = useState(null); // 'signature', 'stamp', or 'managerName'
   const [showStyleManager, setShowStyleManager] = useState(false);
+  const [activeVoiceField, setActiveVoiceField] = useState(null);
 
   const addColumn = () => {
     const newId = `col_${Date.now()}`;
@@ -205,22 +208,32 @@ export default function MultipleAssignmentTemplate({
       const printArea = containerRef.current;
       if (!printArea) return;
 
-      // Resize selected element (signature or stamp)
+      // Resize selected element (signature, stamp, or managerName)
       if (selectedElement && e.ctrlKey) {
         if (e.key === '=' || e.key === '+') {
           e.preventDefault();
           if (selectedElement === 'signature') {
             setSignatureSize(prev => Math.min(prev + 20, 400));
+            toast.success(`حجم التوقيع: ${signatureSize + 20}px`);
           } else if (selectedElement === 'stamp') {
             setCurrentStampSize(prev => Math.min(prev + 20, 400));
+            toast.success(`حجم الختم: ${currentStampSize + 20}px`);
+          } else if (selectedElement === 'managerName') {
+            setManagerFontSize(prev => Math.min(prev + 2, 36));
+            toast.success(`حجم خط المدير: ${managerFontSize + 2}px`);
           }
           return;
         } else if (e.key === '-') {
           e.preventDefault();
           if (selectedElement === 'signature') {
             setSignatureSize(prev => Math.max(prev - 20, 50));
+            toast.success(`حجم التوقيع: ${signatureSize - 20}px`);
           } else if (selectedElement === 'stamp') {
             setCurrentStampSize(prev => Math.max(prev - 20, 50));
+            toast.success(`حجم الختم: ${currentStampSize - 20}px`);
+          } else if (selectedElement === 'managerName') {
+            setManagerFontSize(prev => Math.max(prev - 2, 10));
+            toast.success(`حجم خط المدير: ${managerFontSize - 2}px`);
           }
           return;
         }
@@ -616,7 +629,7 @@ export default function MultipleAssignmentTemplate({
         {selectedElement && (
           <>
             <span className="text-gray-400">|</span>
-            <span className="text-green-600 font-bold">✓ {selectedElement === 'signature' ? 'التوقيع' : 'الختم'} محدد</span>
+            <span className="text-green-600 font-bold">✓ {selectedElement === 'signature' ? 'التوقيع' : selectedElement === 'stamp' ? 'الختم' : 'اسم المدير'} محدد</span>
           </>
         )}
       </div>
@@ -815,13 +828,23 @@ export default function MultipleAssignmentTemplate({
             </div>
           )}
           {onIntroChange ? (
-            <textarea
-              value={customIntro}
-              onChange={(e) => onIntroChange(e.target.value)}
-              className="w-full text-center text-base font-bold bg-transparent border-none outline-none focus:bg-blue-50 rounded p-2 resize-none"
-              rows={3}
-              style={{ lineHeight: '1.8' }}
-            />
+            <div className="relative">
+              <textarea
+                value={customIntro}
+                onChange={(e) => onIntroChange(e.target.value)}
+                className="w-full text-center text-base font-bold bg-transparent border-none outline-none focus:bg-blue-50 rounded p-2 resize-none"
+                rows={3}
+                style={{ lineHeight: '1.8' }}
+              />
+              <div className="absolute left-2 top-2 no-print">
+                <VoiceInput
+                  onResult={(text) => onIntroChange(customIntro + ' ' + text)}
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 w-6"
+                />
+              </div>
+            </div>
           ) : (
             <p className="text-center text-base font-bold leading-relaxed whitespace-pre-wrap">
               {customIntro}
@@ -847,7 +870,7 @@ export default function MultipleAssignmentTemplate({
               </div>
             )}
             {onFreeTextChange ? (
-              <div className="free-text-box border-2 border-dashed border-gray-300 rounded-lg p-3 bg-yellow-50/50 hover:border-blue-400 transition-colors">
+              <div className="free-text-box border-2 border-dashed border-gray-300 rounded-lg p-3 bg-yellow-50/50 hover:border-blue-400 transition-colors relative">
                 <p className="free-text-label text-xs text-gray-500 mb-2 no-print">خطاب حر (قابل للسحب والتحريك)</p>
                 <textarea
                   value={freeText}
@@ -860,6 +883,18 @@ export default function MultipleAssignmentTemplate({
                   placeholder="اكتب هنا نص حر إضافي..."
                   style={{ lineHeight: '1.8' }}
                 />
+                <div className="absolute left-2 top-2 no-print">
+                  <VoiceInput
+                    onResult={(text) => {
+                      const newText = freeText + ' ' + text;
+                      setFreeText(newText);
+                      if (onFreeTextChange) onFreeTextChange(newText);
+                    }}
+                    size="sm"
+                    variant="ghost"
+                    className="h-6 w-6"
+                  />
+                </div>
               </div>
             ) : freeText ? (
               <div className="px-2">
@@ -941,7 +976,7 @@ export default function MultipleAssignmentTemplate({
             
             {/* Manager Title & Name - Draggable */}
             <div
-              className={`draggable-item no-print ${draggingItem === 'managerName' ? 'opacity-70' : ''}`}
+              className={`draggable-item no-print ${draggingItem === 'managerName' ? 'opacity-70' : ''} ${selectedElement === 'managerName' ? 'ring-2 ring-green-500' : ''}`}
               style={{ 
                 position: 'absolute',
                 right: '50px',
@@ -951,25 +986,34 @@ export default function MultipleAssignmentTemplate({
                 background: 'rgba(255,255,255,0.9)',
                 padding: '8px',
                 borderRadius: '4px',
-                border: '1px dashed #ccc',
+                border: selectedElement === 'managerName' ? '2px solid #22c55e' : '1px dashed #ccc',
                 cursor: 'grab',
                 textAlign: 'center'
               }}
               onMouseDown={(e) => handleItemMouseDown('managerName', e)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedElement(selectedElement === 'managerName' ? null : 'managerName');
+              }}
             >
-              <p className="font-bold text-lg mb-2">{managerTitle}</p>
-              <p className="font-bold text-lg">{managerName}</p>
+              <p className="font-bold mb-2" style={{ fontSize: `${managerFontSize}px` }}>{managerTitle}</p>
+              <p className="font-bold" style={{ fontSize: `${managerFontSize}px` }}>{managerName}</p>
+              {selectedElement === 'managerName' && (
+                <div className="absolute -bottom-6 left-0 right-0 text-center text-xs text-green-600 bg-white/80 rounded px-1">
+                  Ctrl+/- للتحكم بالحجم ({managerFontSize}px)
+                </div>
+              )}
             </div>
 
-            {/* Print version - using same offset */}
+            {/* Print version - using same offset and font size */}
             <div 
               className="hidden print:block absolute right-12 top-0 text-center"
               style={{
                 transform: `translate(${managerNameOffset.x}px, ${managerNameOffset.y}px)`
               }}
             >
-              <p className="font-bold text-lg mb-2">{managerTitle}</p>
-              <p className="font-bold text-lg mt-6">{managerName}</p>
+              <p className="font-bold mb-2" style={{ fontSize: `${managerFontSize}px` }}>{managerTitle}</p>
+              <p className="font-bold mt-6" style={{ fontSize: `${managerFontSize}px` }}>{managerName}</p>
             </div>
 
             {/* Signature Image - Draggable */}
