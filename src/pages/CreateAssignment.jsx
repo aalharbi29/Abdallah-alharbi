@@ -225,12 +225,6 @@ export default function CreateAssignment() {
 
         // Create records for each employee
         const groupId = crypto.randomUUID();
-        const templateOptionsJSON = JSON.stringify({
-            customTitle: templateOptions.customTitle,
-            customIntro: templateOptions.customIntro,
-            decisionPoints: templateOptions.decisionPoints,
-            customClosing: templateOptions.customClosing
-        });
 
         const createdIds = [];
         for (const item of multipleAssignments) {
@@ -249,8 +243,7 @@ export default function CreateAssignment() {
             assignment_template_type: 'multiple',
             group_id: groupId,
             status: 'active',
-            notes: item.full_duration ? `المدة: ${item.full_duration}` : 'جزء من تكليف جماعي', // Save full duration in notes for now
-            template_options: templateOptionsJSON
+            notes: item.full_duration ? `المدة: ${item.full_duration}` : 'جزء من تكليف جماعي'
           });
           createdIds.push(res.id);
         }

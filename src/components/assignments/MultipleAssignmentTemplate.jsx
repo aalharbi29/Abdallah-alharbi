@@ -53,16 +53,18 @@ export default function MultipleAssignmentTemplate({
   const [showNumbering, setShowNumbering] = useState(initialShowNumbering);
   const [freeText, setFreeText] = useState(initialFreeText);
   
-  // Separate draggable positions
-  const [signaturePos, setSignaturePos] = useState({ x: 0, y: 0 });
-  const [stampPos, setStampPos] = useState({ x: 0, y: 0 });
-  const [managerNamePos, setManagerNamePos] = useState({ x: 0, y: 0 });
-  const [tablePos, setTablePos] = useState({ x: 0, y: 0 });
-  const [freeTextPos, setFreeTextPos] = useState({ x: 0, y: 0 });
-  const [titlePos, setTitlePos] = useState({ x: 0, y: 0 });
+  // Separate draggable positions - using transform instead of position for better behavior
+  const [signatureOffset, setSignatureOffset] = useState({ x: 0, y: 0 });
+  const [stampOffset, setStampOffset] = useState({ x: 0, y: 0 });
+  const [managerNameOffset, setManagerNameOffset] = useState({ x: 0, y: 0 });
+  const [tableOffset, setTableOffset] = useState({ x: 0, y: 0 });
+  const [freeTextOffset, setFreeTextOffset] = useState({ x: 0, y: 0 });
+  const [titleOffset, setTitleOffset] = useState({ x: 0, y: 0 });
+  const [introOffset, setIntroOffset] = useState({ x: 0, y: 0 });
   
   const [draggingItem, setDraggingItem] = useState(null);
-  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
+  const [dragStartOffset, setDragStartOffset] = useState({ x: 0, y: 0 });
   
   // Size controls for signature and stamp
   const [signatureSize, setSignatureSize] = useState(150);
@@ -122,12 +124,23 @@ export default function MultipleAssignmentTemplate({
     setStartWidth(currentWidth);
   };
 
-  // Dragging for signature/stamp/managerName
+  // Dragging for elements - using transform for smoother movement
   const handleItemMouseDown = (itemType, e) => {
     e.preventDefault();
     e.stopPropagation();
-    const rect = e.currentTarget.getBoundingClientRect();
-    setDragOffset({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    setDragStartPos({ x: e.clientX, y: e.clientY });
+    
+    // Get current offset for this item
+    let currentOffset = { x: 0, y: 0 };
+    if (itemType === 'signature') currentOffset = signatureOffset;
+    else if (itemType === 'stamp') currentOffset = stampOffset;
+    else if (itemType === 'managerName') currentOffset = managerNameOffset;
+    else if (itemType === 'table') currentOffset = tableOffset;
+    else if (itemType === 'freeText') currentOffset = freeTextOffset;
+    else if (itemType === 'title') currentOffset = titleOffset;
+    else if (itemType === 'intro') currentOffset = introOffset;
+    
+    setDragStartOffset(currentOffset);
     setDraggingItem(itemType);
   };
 
@@ -135,25 +148,28 @@ export default function MultipleAssignmentTemplate({
     if (!draggingItem) return;
 
     const handleMouseMove = (e) => {
-      const parent = containerRef.current;
-      if (!parent) return;
+      const deltaX = e.clientX - dragStartPos.x;
+      const deltaY = e.clientY - dragStartPos.y;
       
-      const parentRect = parent.getBoundingClientRect();
-      const newX = e.clientX - parentRect.left - dragOffset.x;
-      const newY = e.clientY - parentRect.top - dragOffset.y;
+      const newOffset = {
+        x: dragStartOffset.x + deltaX,
+        y: dragStartOffset.y + deltaY
+      };
       
       if (draggingItem === 'signature') {
-        setSignaturePos({ x: newX, y: newY });
+        setSignatureOffset(newOffset);
       } else if (draggingItem === 'stamp') {
-        setStampPos({ x: newX, y: newY });
+        setStampOffset(newOffset);
       } else if (draggingItem === 'managerName') {
-        setManagerNamePos({ x: newX, y: newY });
+        setManagerNameOffset(newOffset);
       } else if (draggingItem === 'table') {
-        setTablePos({ x: newX, y: newY });
+        setTableOffset(newOffset);
       } else if (draggingItem === 'freeText') {
-        setFreeTextPos({ x: newX, y: newY });
+        setFreeTextOffset(newOffset);
       } else if (draggingItem === 'title') {
-        setTitlePos({ x: newX, y: newY });
+        setTitleOffset(newOffset);
+      } else if (draggingItem === 'intro') {
+        setIntroOffset(newOffset);
       }
     };
 
@@ -165,7 +181,7 @@ export default function MultipleAssignmentTemplate({
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [draggingItem, dragOffset]);
+  }, [draggingItem, dragStartPos, dragStartOffset]);
 
   // Keyboard shortcut for font size and element resizing
   useEffect(() => {
@@ -311,11 +327,9 @@ export default function MultipleAssignmentTemplate({
       <div style={{ marginTop: '50px' }}>
         {/* Title - Draggable */}
         <div 
-          className={`mb-6 ${onTitleChange ? 'cursor-grab' : ''}`}
+          className={`mb-6 ${onTitleChange ? 'cursor-grab hover:bg-blue-50/50 rounded transition-colors' : ''}`}
           style={{
-            position: titlePos.x !== 0 || titlePos.y !== 0 ? 'relative' : 'static',
-            left: `${titlePos.x}px`,
-            top: `${titlePos.y}px`,
+            transform: `translate(${titleOffset.x}px, ${titleOffset.y}px)`,
           }}
           onMouseDown={onTitleChange ? (e) => {
             if (e.target.tagName === 'INPUT') return;
@@ -334,8 +348,17 @@ export default function MultipleAssignmentTemplate({
           )}
         </div>
 
-        {/* Intro */}
-        <div className="mb-4">
+        {/* Intro - Draggable */}
+        <div 
+          className={`mb-4 ${onIntroChange ? 'cursor-grab hover:bg-blue-50/50 rounded transition-colors' : ''}`}
+          style={{
+            transform: `translate(${introOffset.x}px, ${introOffset.y}px)`,
+          }}
+          onMouseDown={onIntroChange ? (e) => {
+            if (e.target.tagName === 'TEXTAREA') return;
+            handleItemMouseDown('intro', e);
+          } : undefined}
+        >
           {onIntroChange ? (
             <textarea
               value={customIntro}
@@ -353,11 +376,9 @@ export default function MultipleAssignmentTemplate({
 
         {/* Table Container - Draggable */}
         <div 
-          className={`signature-container relative ${onAssignmentsChange ? 'cursor-grab' : ''}`}
+          className={`relative ${onAssignmentsChange ? 'cursor-grab' : ''}`}
           style={{
-            position: tablePos.x !== 0 || tablePos.y !== 0 ? 'relative' : 'static',
-            left: `${tablePos.x}px`,
-            top: `${tablePos.y}px`,
+            transform: `translate(${tableOffset.x}px, ${tableOffset.y}px)`,
           }}
           onMouseDown={onAssignmentsChange ? (e) => {
             if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.closest('.no-drag')) return;
@@ -499,11 +520,9 @@ export default function MultipleAssignmentTemplate({
         {/* Free Text Area - Draggable */}
         {(freeText || onFreeTextChange) && (
           <div 
-            className={`signature-container relative mb-6 ${onFreeTextChange ? 'cursor-grab' : ''}`}
+            className={`relative mb-6 ${onFreeTextChange ? 'cursor-grab' : ''}`}
             style={{
-              position: freeTextPos.x !== 0 || freeTextPos.y !== 0 ? 'relative' : 'static',
-              left: `${freeTextPos.x}px`,
-              top: `${freeTextPos.y}px`,
+              transform: `translate(${freeTextOffset.x}px, ${freeTextOffset.y}px)`,
             }}
             onMouseDown={onFreeTextChange ? (e) => {
               if (e.target.tagName === 'TEXTAREA') return;
@@ -580,9 +599,9 @@ export default function MultipleAssignmentTemplate({
               className={`draggable-item no-print ${draggingItem === 'managerName' ? 'opacity-70' : ''}`}
               style={{ 
                 position: 'absolute',
-                right: managerNamePos.x !== 0 || managerNamePos.y !== 0 ? 'auto' : '50px',
-                left: managerNamePos.x !== 0 || managerNamePos.y !== 0 ? `${managerNamePos.x}px` : 'auto',
-                top: managerNamePos.y !== 0 ? `${managerNamePos.y}px` : '0px',
+                right: '50px',
+                top: '0px',
+                transform: `translate(${managerNameOffset.x}px, ${managerNameOffset.y}px)`,
                 zIndex: draggingItem === 'managerName' ? 100 : 10,
                 background: 'rgba(255,255,255,0.9)',
                 padding: '8px',
@@ -608,9 +627,9 @@ export default function MultipleAssignmentTemplate({
               className={`draggable-item no-print ${draggingItem === 'signature' ? 'opacity-70' : ''} ${selectedElement === 'signature' ? 'ring-2 ring-blue-500' : ''}`}
               style={{ 
                 position: 'absolute',
-                right: signaturePos.x !== 0 || signaturePos.y !== 0 ? 'auto' : '100px',
-                left: signaturePos.x !== 0 || signaturePos.y !== 0 ? `${signaturePos.x}px` : 'auto',
-                top: signaturePos.y !== 0 ? `${signaturePos.y}px` : '60px',
+                right: '100px',
+                top: '60px',
+                transform: `translate(${signatureOffset.x}px, ${signatureOffset.y}px)`,
                 zIndex: draggingItem === 'signature' ? 100 : 20,
                 padding: '4px',
                 border: selectedElement === 'signature' ? '2px solid #3b82f6' : '1px dashed transparent',
@@ -648,9 +667,9 @@ export default function MultipleAssignmentTemplate({
               className={`draggable-item no-print ${draggingItem === 'stamp' ? 'opacity-70' : ''} ${selectedElement === 'stamp' ? 'ring-2 ring-red-500' : ''}`}
               style={{ 
                 position: 'absolute',
-                right: stampPos.x !== 0 || stampPos.y !== 0 ? 'auto' : '20px',
-                left: stampPos.x !== 0 || stampPos.y !== 0 ? `${stampPos.x}px` : 'auto',
-                top: stampPos.y !== 0 ? `${stampPos.y}px` : '80px',
+                right: '20px',
+                top: '80px',
+                transform: `translate(${stampOffset.x}px, ${stampOffset.y}px)`,
                 zIndex: draggingItem === 'stamp' ? 100 : 15,
                 padding: '4px',
                 border: selectedElement === 'stamp' ? '2px solid #ef4444' : '1px dashed transparent',
