@@ -447,7 +447,10 @@ export default function MultipleAssignmentTemplate({
             margin: 0 !important;
             padding: 15mm 20mm !important;
             z-index: 999999 !important;
-            background: white !important;
+            background-image: url(${letterheadUrl}) !important;
+            background-size: 100% 100% !important;
+            background-position: top center !important;
+            background-repeat: no-repeat !important;
           }
           .print-area, .print-area * {
             visibility: visible !important;
@@ -455,6 +458,14 @@ export default function MultipleAssignmentTemplate({
           .no-print { 
             display: none !important; 
             visibility: hidden !important;
+          }
+          .free-text-box {
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+          }
+          .free-text-label {
+            display: none !important;
           }
         }
         .editable-cell {
@@ -836,8 +847,8 @@ export default function MultipleAssignmentTemplate({
               </div>
             )}
             {onFreeTextChange ? (
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 bg-yellow-50/50 hover:border-blue-400 transition-colors">
-                <p className="text-xs text-gray-500 mb-2 no-print">خطاب حر (قابل للسحب والتحريك)</p>
+              <div className="free-text-box border-2 border-dashed border-gray-300 rounded-lg p-3 bg-yellow-50/50 hover:border-blue-400 transition-colors">
+                <p className="free-text-label text-xs text-gray-500 mb-2 no-print">خطاب حر (قابل للسحب والتحريك)</p>
                 <textarea
                   value={freeText}
                   onChange={(e) => {
