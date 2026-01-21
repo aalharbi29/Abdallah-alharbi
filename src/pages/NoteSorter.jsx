@@ -191,6 +191,9 @@ const medicalEquipmentList = [
   { id: 'screen_divider', name: 'ستارة فاصلة', category: 'أثاث طبي' },
   { id: 'step_stool', name: 'درج صعود', category: 'أثاث طبي' },
   { id: 'footstool', name: 'مسند قدم', category: 'أثاث طبي' },
+  { id: 'separate_clinic', name: 'عيادة ليست مدمجة مع أي عيادة أخرى', category: 'أثاث طبي' },
+  { id: 'emergency_patient_reception', name: 'وجود موظف مخصص للإستقبال وقت الوصول', category: 'أثاث طبي' },
+  { id: 'sick_patient_waiting', name: 'توفير مريض (ق) في العيادة وقت الوصول', category: 'أثاث طبي' },
   
   // أدوات الأسنان
   { id: 'dental_chair', name: 'كرسي أسنان', category: 'طب الأسنان' },
