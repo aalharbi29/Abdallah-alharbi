@@ -130,6 +130,9 @@ const medicalEquipmentList = [
   { id: 'endotracheal_tube', name: 'أنبوب رغامي', category: 'إسعافات أولية' },
   { id: 'airway_oral', name: 'مجرى هوائي فموي', category: 'إسعافات أولية' },
   { id: 'airway_nasal', name: 'مجرى هوائي أنفي', category: 'إسعافات أولية' },
+  { id: 'wheelchair_path_disability', name: 'ممر جانبي لموقع ذوي الإعاقة يساعد للمركز المتحرك', category: 'إسعافات أولية' },
+  { id: 'wheelchair_ramp_disability', name: 'مساحة دورات مياه ذوي الإعاقة مناسبة لدخول الكرسي المتحرك', category: 'إسعافات أولية' },
+  { id: 'wheelchair_toilet_disability', name: 'مقابض ذوي الإعاقة بدورات المياه', category: 'إسعافات أولية' },
   
   // أدوات التطعيم
   { id: 'vaccine_fridge', name: 'ثلاجة لقاحات', category: 'التطعيمات' },
