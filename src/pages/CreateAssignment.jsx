@@ -15,36 +15,14 @@ import { Command, CommandInput, CommandEmpty, CommandGroup, CommandItem } from "
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Save, ChevronsUpDown, Settings2, Table, List, Loader2, Plus, Trash2 } from "lucide-react";
+import { ArrowRight, Save, ChevronsUpDown, Settings2, Table, List, Loader2, Plus, Trash2, Star } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { differenceInDays } from "date-fns";
 import FlexibleAssignmentTemplate from "@/components/assignments/FlexibleAssignmentTemplate";
 import StandardAssignmentTemplate from "@/components/assignments/StandardAssignmentTemplate";
 import MultipleAssignmentTemplate from "@/components/assignments/MultipleAssignmentTemplate";
 
-// Assuming base44 is a global object or imported
-const base44 = {
-  functions: {
-    invoke: async (functionName, payload) => {
-      // Mock function for demo
-      return { data: { success: true } };
-    }
-  },
-  integrations: {
-    Core: {
-      UploadFile: async ({ file }) => {
-        return { file_url: "https://example.com/file.pdf", file_name: file.name };
-      }
-    }
-  },
-  entities: {
-    EmployeeDocument: {
-      create: async (docData) => {
-        return { id: "123", ...docData };
-      }
-    }
-  }
-};
+import { base44 } from "@/api/base44Client";
 
 export default function CreateAssignment() {
   const navigate = useNavigate();
@@ -87,7 +65,7 @@ export default function CreateAssignment() {
   };
 
   const [templateOptions, setTemplateOptions] = useState({
-    customTitle: 'تكليف',
+    customTitle: 'قرار تكليف',
     tableLayout: 'horizontal',
     showDurationInTable: true,
     showDurationInParagraph: true,
@@ -116,8 +94,36 @@ export default function CreateAssignment() {
       'يتم تنفيذ هذا القرار كلاً فيما يخصه.'
     ],
     customIntro: 'إن مدير شؤون المراكز الصحية بالحناكية وبناء على الصلاحيات الممنوحة لنا نظاماً\nعليه يقرر ما يلي:',
-    freeText: ''
+    freeText: '',
+    showNumbering: true
     });
+
+  // تحميل النمط الافتراضي للتكليف المتعدد عند بدء الصفحة
+  useEffect(() => {
+    if (assignmentType === 'multiple') {
+      loadDefaultMultipleTemplate();
+    }
+  }, [assignmentType]);
+
+  const loadDefaultMultipleTemplate = async () => {
+    try {
+      const user = await base44.auth.me();
+      if (user.default_multiple_assignment_template) {
+        const defaultTemplate = JSON.parse(user.default_multiple_assignment_template);
+        setTemplateOptions(prev => ({
+          ...prev,
+          customTitle: defaultTemplate.customTitle || 'قرار تكليف',
+          customIntro: defaultTemplate.customIntro || prev.customIntro,
+          decisionPoints: defaultTemplate.decisionPoints || prev.decisionPoints,
+          customClosing: defaultTemplate.customClosing || prev.customClosing,
+          freeText: defaultTemplate.freeText || '',
+          showNumbering: defaultTemplate.showNumbering ?? true
+        }));
+      }
+    } catch (error) {
+      console.warn('لم يتم تحميل النمط الافتراضي:', error);
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -578,6 +584,36 @@ export default function CreateAssignment() {
                                   placeholder="اكتب هنا أي نص إضافي تريد إضافته تحت الجدول... (يمكن سحبه وتحريكه في المعاينة)"
                                   />
                                   <p className="text-xs text-gray-500 mt-1">💡 يمكنك سحب هذا النص والجدول إلى أي مكان في المعاينة</p>
+                                  </div>
+
+                                  {/* حفظ كنمط افتراضي */}
+                                  <div className="border-t pt-4 mt-4">
+                                    <Button
+                                      type="button"
+                                      variant="outline"
+                                      onClick={async () => {
+                                        try {
+                                          const user = await base44.auth.me();
+                                          await base44.auth.updateMe({
+                                            default_multiple_assignment_template: JSON.stringify({
+                                              customTitle: templateOptions.customTitle,
+                                              customIntro: templateOptions.customIntro,
+                                              decisionPoints: templateOptions.decisionPoints,
+                                              customClosing: templateOptions.customClosing,
+                                              freeText: templateOptions.freeText,
+                                              showNumbering: true
+                                            })
+                                          });
+                                          alert('✅ تم حفظ النمط كافتراضي للتكاليف المتعددة المستقبلية');
+                                        } catch (error) {
+                                          alert('فشل الحفظ: ' + error.message);
+                                        }
+                                      }}
+                                      className="w-full bg-yellow-50 hover:bg-yellow-100 border-yellow-300 text-yellow-800"
+                                    >
+                                      <Star className="w-4 h-4 ml-2" />
+                                      حفظ كنمط افتراضي للتكاليف المتعددة
+                                    </Button>
                                   </div>
                                   </div>
                                   </div>

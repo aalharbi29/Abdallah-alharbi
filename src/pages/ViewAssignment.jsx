@@ -287,6 +287,20 @@ export default function ViewAssignmentPage() {
   const loadDefaultTemplate = async () => {
     try {
       const user = await base44.auth.me();
+      
+      // تحميل النمط الافتراضي للتكليف المتعدد إذا كان النوع multiple
+      if (assignment?.assignment_template_type === 'multiple' && user.default_multiple_assignment_template) {
+        const defaultTemplate = JSON.parse(user.default_multiple_assignment_template);
+        setCustomTitle(defaultTemplate.customTitle || 'قرار تكليف');
+        setCustomIntro(defaultTemplate.customIntro || '');
+        setMultipleDecisionPoints(defaultTemplate.decisionPoints || multipleDecisionPoints);
+        setCustomClosing(defaultTemplate.customClosing || 'خالص التحايا ،،،');
+        setMultipleFreeText(defaultTemplate.freeText || '');
+        setShowNumbering(defaultTemplate.showNumbering ?? true);
+        console.log('✅ تم تحميل النمط الافتراضي للتكليف المتعدد');
+        return;
+      }
+      
       if (user.default_assignment_template) {
         const defaultTemplate = JSON.parse(user.default_assignment_template);
         
