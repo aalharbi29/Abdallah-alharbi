@@ -1550,36 +1550,124 @@ export default function CenterDeficiencyTool() {
                 {/* قائمة العناصر المحددة */}
                 {selectedItems.length > 0 && (
                   <div>
-                    <Label className="text-xs text-gray-500 mb-2 block">العناصر المحددة</Label>
-                    <div className="max-h-[180px] overflow-y-auto rounded-xl border-2 border-gray-100 divide-y">
+                    <div className="flex items-center justify-between mb-2">
+                      <Label className="text-xs text-gray-500">العناصر المحددة</Label>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 text-xs text-teal-600 hover:text-teal-700"
+                        onClick={() => setShowAddCustomItem(true)}
+                      >
+                        <Plus className="w-3 h-3 ml-1" />
+                        إضافة مخصص
+                      </Button>
+                    </div>
+                    <div className="max-h-[250px] overflow-y-auto rounded-xl border-2 border-gray-100 divide-y">
                       {selectedItems.map((item) => (
-                        <div key={item.id} className="flex items-center justify-between p-3 hover:bg-gray-50 transition-colors">
+                        <div key={item.id} className="flex items-center justify-between p-3 hover:bg-gray-50 transition-colors group">
                           <div className="flex items-center gap-2 flex-1 min-w-0">
                             <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
                               item.type === 'medical' ? 'bg-teal-500' : 'bg-purple-500'
                             }`} />
-                            <span className="text-sm truncate">{item.name}</span>
+                            {editingItem === item.id ? (
+                              <div className="flex items-center gap-1 flex-1">
+                                <Input
+                                  value={item.name}
+                                  onChange={(e) => setSelectedItems(prev => prev.map(i => 
+                                    i.id === item.id ? { ...i, name: e.target.value } : i
+                                  ))}
+                                  className="h-7 text-sm flex-1"
+                                  autoFocus
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') setEditingItem(null);
+                                    if (e.key === 'Escape') setEditingItem(null);
+                                  }}
+                                />
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-6 w-6 text-green-600"
+                                  onClick={() => setEditingItem(null)}
+                                >
+                                  <Check className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            ) : (
+                              <span 
+                                className="text-sm truncate cursor-pointer hover:text-teal-600"
+                                onDoubleClick={() => setEditingItem(item.id)}
+                                title="انقر مرتين للتعديل"
+                              >
+                                {item.name}
+                                {item.isCustom && <span className="text-xs text-gray-400 mr-1">(مخصص)</span>}
+                              </span>
+                            )}
                           </div>
-                          <div className="flex items-center gap-2 flex-shrink-0">
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6 text-gray-400 hover:text-teal-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={() => setEditingItem(item.id)}
+                              title="تعديل"
+                            >
+                              <Edit2 className="w-3 h-3" />
+                            </Button>
                             <Badge className={`${
                               item.type === 'medical' 
                                 ? 'bg-teal-100 text-teal-700' 
                                 : 'bg-purple-100 text-purple-700'
-                            } border-0`}>
+                            } border-0 min-w-[28px] justify-center`}>
                               {item.quantity}
                             </Badge>
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-7 w-7 text-red-500 hover:bg-red-50 hover:text-red-600"
+                              className="h-6 w-6 text-red-400 hover:bg-red-50 hover:text-red-600"
                               onClick={() => toggleItem(item)}
                             >
-                              <X className="w-4 h-4" />
+                              <X className="w-3 h-3" />
                             </Button>
                           </div>
                         </div>
                       ))}
                     </div>
+                  </div>
+                )}
+
+                {/* نافذة إضافة عنصر مخصص */}
+                {showAddCustomItem && (
+                  <div className="bg-gray-50 rounded-xl p-3 border-2 border-dashed border-gray-300 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-medium">إضافة عنصر مخصص</Label>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={() => setShowAddCustomItem(false)}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </div>
+                    <Input
+                      placeholder="اسم العنصر..."
+                      value={customItemName}
+                      onChange={(e) => setCustomItemName(e.target.value)}
+                      className="h-10"
+                    />
+                    <Input
+                      placeholder="التصنيف (اختياري)..."
+                      value={customItemCategory}
+                      onChange={(e) => setCustomItemCategory(e.target.value)}
+                      className="h-10"
+                    />
+                    <Button
+                      onClick={addCustomItem}
+                      className="w-full h-9 bg-teal-600 hover:bg-teal-700"
+                    >
+                      <Plus className="w-4 h-4 ml-1" />
+                      إضافة
+                    </Button>
                   </div>
                 )}
 
