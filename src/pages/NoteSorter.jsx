@@ -30,7 +30,7 @@ import {
   Stethoscope, Wrench, Building2, Search, Download, Plus, Minus,
   Loader2, Trash2, FileCode, Printer, FileSpreadsheet, Package,
   CheckCircle2, AlertCircle, Filter, X, Save, List, Upload, FileUp, Sparkles,
-  Edit2, Check
+  Edit2, Check, ArrowLeftRight
 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
