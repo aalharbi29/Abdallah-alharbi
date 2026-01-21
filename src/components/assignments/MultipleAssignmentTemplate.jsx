@@ -2,10 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { GripVertical, Plus, Printer, Save, Loader2 } from 'lucide-react';
+import { GripVertical, Plus, Printer, Save, Loader2, Settings2, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
+import TemplateStyleManager from './TemplateStyleManager';
 
 const getDayName = (dateString) => {
   try {
@@ -77,6 +78,7 @@ export default function MultipleAssignmentTemplate({
   const [signatureSize, setSignatureSize] = useState(150);
   const [currentStampSize, setCurrentStampSize] = useState(stampSize);
   const [selectedElement, setSelectedElement] = useState(null); // 'signature' or 'stamp'
+  const [showStyleManager, setShowStyleManager] = useState(false);
 
   const addColumn = () => {
     const newId = `col_${Date.now()}`;
@@ -308,18 +310,7 @@ export default function MultipleAssignmentTemplate({
 
   // Print function - only print the assignment document
   const handlePrint = () => {
-    // Add print wrapper class
-    const printArea = containerRef.current;
-    if (printArea) {
-      printArea.classList.add('print-area-wrapper');
-    }
     window.print();
-    // Remove after print
-    setTimeout(() => {
-      if (printArea) {
-        printArea.classList.remove('print-area-wrapper');
-      }
-    }, 1000);
   };
 
   // Save to employee files
@@ -412,18 +403,24 @@ export default function MultipleAssignmentTemplate({
     >
       <style>{`
         @media print {
-          @page { size: A4 portrait; margin: 0; }
-          html, body {
+          @page { 
+            size: A4 portrait; 
+            margin: 0; 
+          }
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          body {
             margin: 0 !important;
             padding: 0 !important;
-            width: 210mm !important;
-            height: 297mm !important;
-            overflow: hidden !important;
           }
-          body > *:not(.print-area-wrapper) { display: none !important; }
-          .print-area-wrapper, .print-area-wrapper * { display: block !important; }
-          .print-area { 
-            position: fixed !important;
+          body > * {
+            display: none !important;
+          }
+          .print-area {
+            display: block !important;
+            position: absolute !important;
             left: 0 !important;
             top: 0 !important;
             width: 210mm !important; 
@@ -431,10 +428,15 @@ export default function MultipleAssignmentTemplate({
             box-shadow: none !important;
             margin: 0 !important;
             padding: 15mm 20mm !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
+            page-break-after: avoid !important;
           }
-          .no-print { display: none !important; }
+          .print-area * {
+            visibility: visible !important;
+          }
+          .no-print { 
+            display: none !important; 
+            visibility: hidden !important;
+          }
         }
         .editable-cell {
           min-height: 40px;
@@ -466,26 +468,99 @@ export default function MultipleAssignmentTemplate({
 
       {/* Action Buttons */}
       {showActions && (
-        <div className="no-print absolute top-2 right-2 bg-white/90 backdrop-blur rounded-lg shadow-lg p-2 z-50 flex gap-2">
+        <div className="no-print absolute top-2 right-2 bg-white/90 backdrop-blur rounded-lg shadow-lg p-2 z-50 flex flex-col gap-2">
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handlePrint}
+              className="gap-1"
+            >
+              <Printer className="w-4 h-4" />
+              طباعة
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={handleSaveToEmployeeFiles}
+              disabled={isSavingToEmployee || assignments.length === 0}
+              className="gap-1"
+            >
+              {isSavingToEmployee ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+              حفظ بملف الموظف
+            </Button>
+          </div>
           <Button
             size="sm"
             variant="outline"
-            onClick={handlePrint}
-            className="gap-1"
+            onClick={() => setShowStyleManager(!showStyleManager)}
+            className="gap-1 bg-blue-50 hover:bg-blue-100"
           >
-            <Printer className="w-4 h-4" />
-            طباعة
+            <Settings2 className="w-4 h-4" />
+            {showStyleManager ? 'إخفاء' : 'إدارة الأنماط'}
           </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={handleSaveToEmployeeFiles}
-            disabled={isSavingToEmployee || assignments.length === 0}
-            className="gap-1"
-          >
-            {isSavingToEmployee ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-            حفظ بملف الموظف
-          </Button>
+        </div>
+      )}
+
+      {/* Style Manager Panel */}
+      {showActions && showStyleManager && (
+        <div className="no-print absolute top-24 right-2 bg-white/95 backdrop-blur rounded-lg shadow-xl p-3 z-50 w-80 max-h-[70vh] overflow-y-auto border-2 border-blue-200">
+          <div className="flex items-center justify-between mb-3 pb-2 border-b">
+            <h4 className="text-sm font-bold flex items-center gap-1">
+              <Star className="w-4 h-4 text-yellow-500" />
+              أنماط التكليف المتعدد
+            </h4>
+            <button 
+              onClick={() => setShowStyleManager(false)}
+              className="text-gray-500 hover:text-gray-700 text-lg"
+            >
+              ×
+            </button>
+          </div>
+          <TemplateStyleManager
+            templateType="multiple"
+            currentStyleData={{
+              columns,
+              titleOffset,
+              tableOffset,
+              introOffset,
+              freeTextOffset,
+              decisionPointsOffset,
+              closingOffset,
+              signatureOffset,
+              stampOffset,
+              managerNameOffset,
+              signatureSize,
+              currentStampSize,
+              showNumbering,
+              customTitle,
+              customIntro,
+              decisionPoints,
+              customClosing,
+              freeText
+            }}
+            onLoadStyle={(styleData) => {
+              if (styleData.columns) setColumns(styleData.columns);
+              if (styleData.titleOffset) setTitleOffset(styleData.titleOffset);
+              if (styleData.tableOffset) setTableOffset(styleData.tableOffset);
+              if (styleData.introOffset) setIntroOffset(styleData.introOffset);
+              if (styleData.freeTextOffset) setFreeTextOffset(styleData.freeTextOffset);
+              if (styleData.decisionPointsOffset) setDecisionPointsOffset(styleData.decisionPointsOffset);
+              if (styleData.closingOffset) setClosingOffset(styleData.closingOffset);
+              if (styleData.signatureOffset) setSignatureOffset(styleData.signatureOffset);
+              if (styleData.stampOffset) setStampOffset(styleData.stampOffset);
+              if (styleData.managerNameOffset) setManagerNameOffset(styleData.managerNameOffset);
+              if (styleData.signatureSize !== undefined) setSignatureSize(styleData.signatureSize);
+              if (styleData.currentStampSize !== undefined) setCurrentStampSize(styleData.currentStampSize);
+              if (styleData.showNumbering !== undefined) setShowNumbering(styleData.showNumbering);
+              if (onTitleChange && styleData.customTitle) onTitleChange(styleData.customTitle);
+              if (onIntroChange && styleData.customIntro) onIntroChange(styleData.customIntro);
+              if (onDecisionPointsChange && styleData.decisionPoints) onDecisionPointsChange(styleData.decisionPoints);
+              if (onClosingChange && styleData.customClosing) onClosingChange(styleData.customClosing);
+              if (onFreeTextChange && styleData.freeText) setFreeText(styleData.freeText);
+              toast.success('تم تحميل النمط بنجاح');
+            }}
+          />
         </div>
       )}
 

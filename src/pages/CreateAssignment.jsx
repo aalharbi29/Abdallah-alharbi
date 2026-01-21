@@ -223,8 +223,17 @@ export default function CreateAssignment() {
           return;
         }
 
-        // Create records for each employee
+        // Create records for each employee with template_options
         const groupId = crypto.randomUUID();
+
+        // حفظ خيارات القالب للتكليف المتعدد
+        const multipleTemplateOptions = JSON.stringify({
+          customTitle: templateOptions.customTitle || 'قرار تكليف',
+          customIntro: templateOptions.customIntro,
+          decisionPoints: templateOptions.decisionPoints,
+          customClosing: templateOptions.customClosing,
+          freeText: templateOptions.freeText
+        });
 
         const createdIds = [];
         for (const item of multipleAssignments) {
@@ -243,6 +252,7 @@ export default function CreateAssignment() {
             assignment_template_type: 'multiple',
             group_id: groupId,
             status: 'active',
+            template_options: multipleTemplateOptions,
             notes: item.full_duration ? `المدة: ${item.full_duration}` : 'جزء من تكليف جماعي'
           });
           createdIds.push(res.id);
@@ -1018,11 +1028,15 @@ export default function CreateAssignment() {
           ) : assignmentType === 'multiple' ? (
             <MultipleAssignmentTemplate 
               assignments={multipleAssignments}
-              customTitle={templateOptions.customTitle}
-              customIntro={templateOptions.customIntro}
-              decisionPoints={templateOptions.decisionPoints}
-              customClosing={templateOptions.customClosing}
-              freeText={templateOptions.freeText}
+              customTitle={templateOptions.customTitle || 'قرار تكليف'}
+              customIntro={templateOptions.customIntro || 'إن مدير شؤون المراكز الصحية بالحناكية وبناء على الصلاحيات الممنوحة لنا نظاماً\nعليه يقرر ما يلي:'}
+              decisionPoints={templateOptions.decisionPoints || [
+                'تكليف الموضح بياناتهم أعلاه بالعمل في الجهات الموضحة قرين اسم كل منهم خلال الفترة المحددة.',
+                'لا يترتب على هذا التكليف أي ميزة مالية إلا ما يقره النظام.',
+                'يتم تنفيذ هذا القرار كلاً فيما يخصه.'
+              ]}
+              customClosing={templateOptions.customClosing || 'خالص التحايا ،،،'}
+              freeText={templateOptions.freeText || ''}
               onTitleChange={(v) => setTemplateOptions(prev => ({...prev, customTitle: v}))}
               onIntroChange={(v) => setTemplateOptions(prev => ({...prev, customIntro: v}))}
               onDecisionPointsChange={(v) => setTemplateOptions(prev => ({...prev, decisionPoints: v}))}

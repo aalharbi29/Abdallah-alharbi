@@ -426,6 +426,9 @@ export default function ViewAssignmentPage() {
           if (savedOptions.decisionPoints) {
             setMultipleDecisionPoints(savedOptions.decisionPoints);
           }
+          if (savedOptions.freeText !== undefined) {
+            setCustomTextBefore(savedOptions.freeText);
+          }
 
           console.log('✅ تم تحميل خيارات القالب المحفوظة من التكليف');
         } catch (e) {
@@ -515,9 +518,6 @@ export default function ViewAssignmentPage() {
     setIsLoading(true);
     try {
       const updates = multipleAssignmentsList.map(item => {
-        // Map back from table fields to Entity fields if needed
-        // Table: name, national_id, employee_id, current_work, assigned_work, duration, start_date, end_date
-        // Entity: employee_name, employee_national_id, employee_job_id, from_health_center, assigned_to_health_center, duration_days...
         return base44.entities.Assignment.update(item.id, {
           employee_name: item.name,
           employee_national_id: item.national_id,
@@ -525,27 +525,26 @@ export default function ViewAssignmentPage() {
           from_health_center: item.current_work,
           assigned_to_health_center: item.assigned_work,
           duration_days: parseInt(item.duration) || 0,
-          // We don't update dates from text easily unless we parse them, assuming basic fields for now
-          // If full_duration is modified, we might save it in notes
           notes: item.full_duration ? `المدة: ${item.full_duration}` : undefined
         });
       });
 
       await Promise.all(updates);
       
-      // Also save template options like title/intro
+      // حفظ جميع خيارات القالب المتعدد
       const templateOptions = JSON.stringify({
         customTitle,
         customIntro,
         decisionPoints: multipleDecisionPoints,
-        customClosing
+        customClosing,
+        freeText: customTextBefore
       });
       await base44.entities.Assignment.update(assignment.id, { template_options: templateOptions });
 
-      alert('✅ تم حفظ التغييرات بنجاح');
+      toast.success('✅ تم حفظ التغييرات بنجاح');
     } catch (error) {
       console.error('Failed to save multiple assignments:', error);
-      alert('حدث خطأ أثناء الحفظ: ' + error.message);
+      toast.error('حدث خطأ أثناء الحفظ: ' + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -2469,10 +2468,12 @@ export default function ViewAssignmentPage() {
                 decisionPoints={multipleDecisionPoints}
                 customClosing={customClosing}
                 showNumbering={showNumbering}
+                freeText={customTextBefore}
                 onTitleChange={setCustomTitle}
                 onIntroChange={setCustomIntro}
                 onDecisionPointsChange={setMultipleDecisionPoints}
                 onClosingChange={setCustomClosing}
+                onFreeTextChange={setCustomTextBefore}
                 onAssignmentsChange={handleMultipleAssignmentsChange}
               />
               {/* Add Save Button specifically for Multiple Template */}
