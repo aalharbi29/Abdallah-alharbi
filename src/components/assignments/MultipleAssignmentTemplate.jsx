@@ -310,41 +310,26 @@ export default function MultipleAssignmentTemplate({
 
   // Print function - only print the assignment document
   const handlePrint = () => {
-    const printCSS = `
-      @media print {
-        @page { 
-          size: A4 portrait; 
-          margin: 0; 
-        }
-        body * {
-          visibility: hidden;
-        }
-        .print-area, .print-area * {
-          visibility: visible !important;
-        }
-        .print-area {
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 100%;
-        }
+    // Hide all other elements except print-area
+    const allElements = document.body.children;
+    const hiddenElements = [];
+    
+    for (let i = 0; i < allElements.length; i++) {
+      const el = allElements[i];
+      if (!el.contains(containerRef.current) && el !== containerRef.current) {
+        hiddenElements.push({ el, display: el.style.display });
+        el.style.display = 'none';
       }
-    `;
-    
-    const existingStyle = document.getElementById('temp-print-style');
-    if (existingStyle) existingStyle.remove();
-    
-    const style = document.createElement('style');
-    style.id = 'temp-print-style';
-    style.textContent = printCSS;
-    document.head.appendChild(style);
+    }
     
     window.print();
     
+    // Restore hidden elements
     setTimeout(() => {
-      const tempStyle = document.getElementById('temp-print-style');
-      if (tempStyle) tempStyle.remove();
-    }, 1000);
+      hiddenElements.forEach(({ el, display }) => {
+        el.style.display = display || '';
+      });
+    }, 500);
   };
 
   // Save to employee files
@@ -448,13 +433,12 @@ export default function MultipleAssignmentTemplate({
           body {
             margin: 0 !important;
             padding: 0 !important;
-          }
-          body > * {
-            display: none !important;
+            visibility: visible !important;
           }
           .print-area {
+            visibility: visible !important;
             display: block !important;
-            position: absolute !important;
+            position: fixed !important;
             left: 0 !important;
             top: 0 !important;
             width: 210mm !important; 
@@ -462,9 +446,10 @@ export default function MultipleAssignmentTemplate({
             box-shadow: none !important;
             margin: 0 !important;
             padding: 15mm 20mm !important;
-            page-break-after: avoid !important;
+            z-index: 999999 !important;
+            background: white !important;
           }
-          .print-area * {
+          .print-area, .print-area * {
             visibility: visible !important;
           }
           .no-print { 
