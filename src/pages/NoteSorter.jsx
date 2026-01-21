@@ -1481,7 +1481,7 @@ export default function CenterDeficiencyTool() {
                               return (
                                 <div
                                   key={item.id}
-                                  className={`group flex items-center gap-3 p-3 rounded-xl border-2 transition-all cursor-pointer ${
+                                  className={`group flex items-center gap-3 p-3 rounded-xl border-2 transition-all cursor-pointer relative ${
                                     selected 
                                       ? activeTab === 'medical'
                                         ? 'border-teal-500 bg-gradient-to-r from-teal-50 to-emerald-50 shadow-md shadow-teal-100' 
@@ -1497,7 +1497,25 @@ export default function CenterDeficiencyTool() {
                                   />
                                   <span className={`flex-1 text-sm font-medium ${selected ? 'text-gray-900' : 'text-gray-700'}`}>
                                     {item.name}
+                                    {(customMedicalItems.some(c => c.id === item.id) || customNonMedicalItems.some(c => c.id === item.id)) && (
+                                      <span className="text-xs text-orange-500 mr-1">(مخصص)</span>
+                                    )}
                                   </span>
+                                  {/* زر حذف العنصر المخصص من القائمة */}
+                                  {(customMedicalItems.some(c => c.id === item.id) || customNonMedicalItems.some(c => c.id === item.id)) && (
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-6 w-6 text-red-400 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity absolute left-1 top-1"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        removeCustomItemFromList(item.id, activeTab);
+                                      }}
+                                      title="حذف من القائمة الثابتة"
+                                    >
+                                      <Trash2 className="w-3 h-3" />
+                                    </Button>
+                                  )}
                                   {selected && (
                                     <div className="flex items-center gap-1 bg-white rounded-lg p-1 shadow-sm" onClick={(e) => e.stopPropagation()}>
                                       <Button
