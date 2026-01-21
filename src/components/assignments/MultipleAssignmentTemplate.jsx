@@ -961,8 +961,13 @@ export default function MultipleAssignmentTemplate({
               <p className="font-bold text-lg">{managerName}</p>
             </div>
 
-            {/* Print version - static */}
-            <div className="hidden print:block absolute right-12 top-0 text-center">
+            {/* Print version - using same offset */}
+            <div 
+              className="hidden print:block absolute right-12 top-0 text-center"
+              style={{
+                transform: `translate(${managerNameOffset.x}px, ${managerNameOffset.y}px)`
+              }}
+            >
               <p className="font-bold text-lg mb-2">{managerTitle}</p>
               <p className="font-bold text-lg mt-6">{managerName}</p>
             </div>
@@ -1047,7 +1052,7 @@ export default function MultipleAssignmentTemplate({
               )}
             </div>
 
-            {/* Print versions - static */}
+            {/* Print versions - using same offsets */}
             <img
               src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/7cc0a0a53_.png"
               alt="التوقيع"
@@ -1058,7 +1063,7 @@ export default function MultipleAssignmentTemplate({
                 top: '60px',
                 width: `${signatureSize}px`, 
                 mixBlendMode: 'darken',
-                transform: 'rotate(-5deg)'
+                transform: `translate(${signatureOffset.x}px, ${signatureOffset.y}px) rotate(-5deg)`
               }}
             />
             <img
@@ -1071,7 +1076,8 @@ export default function MultipleAssignmentTemplate({
                 top: '80px',
                 width: `${currentStampSize}px`, 
                 opacity: 0.9,
-                mixBlendMode: 'multiply'
+                mixBlendMode: 'multiply',
+                transform: `translate(${stampOffset.x}px, ${stampOffset.y}px)`
               }}
             />
         </div>
