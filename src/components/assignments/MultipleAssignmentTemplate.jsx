@@ -199,6 +199,10 @@ export default function MultipleAssignmentTemplate({
   // Keyboard shortcut for font size, element resizing, and text alignment
   useEffect(() => {
     const handleKeyDown = (e) => {
+      // Check if we're inside the print-area
+      const printArea = containerRef.current;
+      if (!printArea) return;
+
       // Resize selected element (signature or stamp)
       if (selectedElement && e.ctrlKey) {
         if (e.key === '=' || e.key === '+') {
@@ -223,89 +227,76 @@ export default function MultipleAssignmentTemplate({
       // Text alignment - Ctrl+L (left), Ctrl+E (center), Ctrl+R (right)
       if (e.ctrlKey && e.key.toLowerCase() === 'l') {
         e.preventDefault();
-        const selection = window.getSelection();
-        if (selection && selection.toString().trim()) {
-          try {
-            const range = selection.getRangeAt(0);
-            const span = document.createElement('span');
-            span.style.display = 'block';
-            span.style.textAlign = 'left';
-            range.surroundContents(span);
-          } catch (err) {
-            console.log('Cannot align text:', err);
-          }
-        }
+        applyTextAlignment('left');
+        return;
       } else if (e.ctrlKey && e.key.toLowerCase() === 'e') {
         e.preventDefault();
-        const selection = window.getSelection();
-        if (selection && selection.toString().trim()) {
-          try {
-            const range = selection.getRangeAt(0);
-            const span = document.createElement('span');
-            span.style.display = 'block';
-            span.style.textAlign = 'center';
-            range.surroundContents(span);
-          } catch (err) {
-            console.log('Cannot align text:', err);
-          }
-        }
+        applyTextAlignment('center');
+        return;
       } else if (e.ctrlKey && e.key.toLowerCase() === 'r') {
         e.preventDefault();
-        const selection = window.getSelection();
-        if (selection && selection.toString().trim()) {
-          try {
-            const range = selection.getRangeAt(0);
-            const span = document.createElement('span');
-            span.style.display = 'block';
-            span.style.textAlign = 'right';
-            range.surroundContents(span);
-          } catch (err) {
-            console.log('Cannot align text:', err);
-          }
-        }
+        applyTextAlignment('right');
+        return;
       }
       
       // Text font size - apply to selected text
       if (e.ctrlKey && (e.key === '=' || e.key === '+')) {
         e.preventDefault();
-        const selection = window.getSelection();
-        if (selection && selection.toString().trim()) {
-          try {
-            const range = selection.getRangeAt(0);
-            const parentSpan = range.commonAncestorContainer.parentElement;
-            if (parentSpan && parentSpan.tagName === 'SPAN' && parentSpan.style.fontSize) {
-              const currentSize = parseFloat(parentSpan.style.fontSize) || 1;
-              parentSpan.style.fontSize = `${Math.min(currentSize + 0.15, 3)}em`;
-            } else {
-              const span = document.createElement('span');
-              span.style.fontSize = '1.15em';
-              span.style.display = 'inline';
-              range.surroundContents(span);
-            }
-          } catch (err) {
-            console.log('Cannot resize text:', err);
-          }
-        }
+        applyFontSizeChange(true);
       } else if (e.ctrlKey && e.key === '-') {
         e.preventDefault();
-        const selection = window.getSelection();
-        if (selection && selection.toString().trim()) {
-          try {
-            const range = selection.getRangeAt(0);
-            const parentSpan = range.commonAncestorContainer.parentElement;
-            if (parentSpan && parentSpan.tagName === 'SPAN' && parentSpan.style.fontSize) {
-              const currentSize = parseFloat(parentSpan.style.fontSize) || 1;
-              parentSpan.style.fontSize = `${Math.max(currentSize - 0.15, 0.5)}em`;
-            } else {
-              const span = document.createElement('span');
-              span.style.fontSize = '0.85em';
-              span.style.display = 'inline';
-              range.surroundContents(span);
-            }
-          } catch (err) {
-            console.log('Cannot resize text:', err);
-          }
+        applyFontSizeChange(false);
+      }
+    };
+
+    const applyTextAlignment = (align) => {
+      const selection = window.getSelection();
+      if (!selection || !selection.toString().trim()) return;
+      
+      try {
+        const range = selection.getRangeAt(0);
+        const span = document.createElement('span');
+        span.style.display = 'block';
+        span.style.textAlign = align;
+        span.style.width = '100%';
+        range.surroundContents(span);
+        toast.success(`تم محاذاة النص ${align === 'left' ? 'لليسار' : align === 'right' ? 'لليمين' : 'للوسط'}`);
+      } catch (err) {
+        console.log('Cannot align text:', err);
+      }
+    };
+
+    const applyFontSizeChange = (increase) => {
+      const selection = window.getSelection();
+      if (!selection || !selection.toString().trim()) return;
+      
+      try {
+        const range = selection.getRangeAt(0);
+        const selectedText = selection.toString();
+        
+        // Check if already has a font-size span
+        let targetElement = range.commonAncestorContainer;
+        if (targetElement.nodeType === Node.TEXT_NODE) {
+          targetElement = targetElement.parentElement;
         }
+        
+        if (targetElement && targetElement.tagName === 'SPAN' && targetElement.style.fontSize) {
+          const currentSize = parseFloat(targetElement.style.fontSize) || 1;
+          const newSize = increase 
+            ? Math.min(currentSize + 0.2, 4) 
+            : Math.max(currentSize - 0.2, 0.5);
+          targetElement.style.fontSize = `${newSize}em`;
+          toast.success(`حجم النص: ${Math.round(newSize * 100)}%`);
+        } else {
+          const span = document.createElement('span');
+          const newSize = increase ? 1.2 : 0.8;
+          span.style.fontSize = `${newSize}em`;
+          range.surroundContents(span);
+          toast.success(`حجم النص: ${Math.round(newSize * 100)}%`);
+        }
+      } catch (err) {
+        console.log('Cannot resize text:', err);
+        toast.error('تعذر تغيير حجم النص');
       }
     };
 
@@ -315,9 +306,20 @@ export default function MultipleAssignmentTemplate({
 
   const letterheadUrl = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/20b408cf3_.png";
 
-  // Print function
+  // Print function - only print the assignment document
   const handlePrint = () => {
+    // Add print wrapper class
+    const printArea = containerRef.current;
+    if (printArea) {
+      printArea.classList.add('print-area-wrapper');
+    }
     window.print();
+    // Remove after print
+    setTimeout(() => {
+      if (printArea) {
+        printArea.classList.remove('print-area-wrapper');
+      }
+    }, 1000);
   };
 
   // Save to employee files
@@ -411,18 +413,28 @@ export default function MultipleAssignmentTemplate({
       <style>{`
         @media print {
           @page { size: A4 portrait; margin: 0; }
-          body * { visibility: hidden; }
-          .print-area, .print-area * { visibility: visible; }
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 210mm !important;
+            height: 297mm !important;
+            overflow: hidden !important;
+          }
+          body > *:not(.print-area-wrapper) { display: none !important; }
+          .print-area-wrapper, .print-area-wrapper * { display: block !important; }
           .print-area { 
-            position: absolute;
-            left: 0;
-            top: 0;
+            position: fixed !important;
+            left: 0 !important;
+            top: 0 !important;
             width: 210mm !important; 
             min-height: 297mm !important;
             box-shadow: none !important;
             margin: 0 !important;
+            padding: 15mm 20mm !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
-          .no-print { display: none !important; visibility: hidden !important; }
+          .no-print { display: none !important; }
         }
         .editable-cell {
           min-height: 40px;
@@ -436,6 +448,19 @@ export default function MultipleAssignmentTemplate({
         }
         .draggable-item:active {
           cursor: grabbing;
+        }
+        .drag-handle {
+          cursor: grab;
+          padding: 4px;
+          border-radius: 4px;
+          transition: background-color 0.2s;
+        }
+        .drag-handle:hover {
+          background-color: rgba(59, 130, 246, 0.1);
+        }
+        .drag-handle:active {
+          cursor: grabbing;
+          background-color: rgba(59, 130, 246, 0.2);
         }
       `}</style>
 
@@ -494,15 +519,20 @@ export default function MultipleAssignmentTemplate({
       <div style={{ marginTop: '50px' }}>
         {/* Title - Draggable */}
         <div 
-          className={`mb-6 ${onTitleChange ? 'cursor-grab hover:bg-blue-50/50 rounded transition-colors' : ''}`}
+          className="mb-6 relative group"
           style={{
             transform: `translate(${titleOffset.x}px, ${titleOffset.y}px)`,
           }}
-          onMouseDown={onTitleChange ? (e) => {
-            if (e.target.tagName === 'INPUT') return;
-            handleItemMouseDown('title', e);
-          } : undefined}
         >
+          {onTitleChange && (
+            <div 
+              className="absolute -right-8 top-1/2 -translate-y-1/2 drag-handle no-print opacity-0 group-hover:opacity-100 z-10"
+              onMouseDown={(e) => handleItemMouseDown('title', e)}
+              title="اسحب لتحريك العنوان"
+            >
+              <GripVertical size={16} className="text-blue-500" />
+            </div>
+          )}
           {onTitleChange ? (
             <input
               value={customTitle}
@@ -517,15 +547,20 @@ export default function MultipleAssignmentTemplate({
 
         {/* Table Container - Draggable */}
         <div 
-          className={`relative ${onAssignmentsChange ? 'cursor-grab' : ''}`}
+          className="relative group"
           style={{
             transform: `translate(${tableOffset.x}px, ${tableOffset.y}px)`,
           }}
-          onMouseDown={onAssignmentsChange ? (e) => {
-            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.closest('.no-drag')) return;
-            handleItemMouseDown('table', e);
-          } : undefined}
         >
+          {onAssignmentsChange && (
+            <div 
+              className="absolute -right-8 top-4 drag-handle no-print opacity-0 group-hover:opacity-100 z-10"
+              onMouseDown={(e) => handleItemMouseDown('table', e)}
+              title="اسحب لتحريك الجدول"
+            >
+              <GripVertical size={16} className="text-green-500" />
+            </div>
+          )}
         <DragDropContext onDragEnd={onDragEnd}>
           <div className="relative no-drag">
             {onAssignmentsChange && (
@@ -660,15 +695,20 @@ export default function MultipleAssignmentTemplate({
 
         {/* Intro - Draggable (moved below table) */}
         <div 
-          className={`mb-4 ${onIntroChange ? 'cursor-grab hover:bg-blue-50/50 rounded transition-colors' : ''}`}
+          className="mb-4 relative group"
           style={{
             transform: `translate(${introOffset.x}px, ${introOffset.y}px)`,
           }}
-          onMouseDown={onIntroChange ? (e) => {
-            if (e.target.tagName === 'TEXTAREA') return;
-            handleItemMouseDown('intro', e);
-          } : undefined}
         >
+          {onIntroChange && (
+            <div 
+              className="absolute -right-8 top-1/2 -translate-y-1/2 drag-handle no-print opacity-0 group-hover:opacity-100 z-10"
+              onMouseDown={(e) => handleItemMouseDown('intro', e)}
+              title="اسحب لتحريك المقدمة"
+            >
+              <GripVertical size={16} className="text-purple-500" />
+            </div>
+          )}
           {onIntroChange ? (
             <textarea
               value={customIntro}
@@ -687,15 +727,20 @@ export default function MultipleAssignmentTemplate({
         {/* Free Text Area - Draggable */}
         {(freeText || onFreeTextChange) && (
           <div 
-            className={`relative mb-6 ${onFreeTextChange ? 'cursor-grab' : ''}`}
+            className="relative mb-6 group"
             style={{
               transform: `translate(${freeTextOffset.x}px, ${freeTextOffset.y}px)`,
             }}
-            onMouseDown={onFreeTextChange ? (e) => {
-              if (e.target.tagName === 'TEXTAREA') return;
-              handleItemMouseDown('freeText', e);
-            } : undefined}
           >
+            {onFreeTextChange && (
+              <div 
+                className="absolute -right-8 top-4 drag-handle no-print opacity-0 group-hover:opacity-100 z-10"
+                onMouseDown={(e) => handleItemMouseDown('freeText', e)}
+                title="اسحب لتحريك النص الحر"
+              >
+                <GripVertical size={16} className="text-yellow-500" />
+              </div>
+            )}
             {onFreeTextChange ? (
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 bg-yellow-50/50 hover:border-blue-400 transition-colors">
                 <p className="text-xs text-gray-500 mb-2 no-print">خطاب حر (قابل للسحب والتحريك)</p>
@@ -721,15 +766,20 @@ export default function MultipleAssignmentTemplate({
 
         {/* Decision Points - Draggable */}
         <div 
-          className={`mb-6 px-2 ${onDecisionPointsChange ? 'cursor-grab hover:bg-blue-50/50 rounded transition-colors' : ''}`}
+          className="mb-6 px-2 relative group"
           style={{
             transform: `translate(${decisionPointsOffset.x}px, ${decisionPointsOffset.y}px)`,
           }}
-          onMouseDown={onDecisionPointsChange ? (e) => {
-            if (e.target.tagName === 'TEXTAREA') return;
-            handleItemMouseDown('decisionPoints', e);
-          } : undefined}
         >
+          {onDecisionPointsChange && (
+            <div 
+              className="absolute -right-6 top-4 drag-handle no-print opacity-0 group-hover:opacity-100 z-10"
+              onMouseDown={(e) => handleItemMouseDown('decisionPoints', e)}
+              title="اسحب لتحريك نقاط القرار"
+            >
+              <GripVertical size={16} className="text-orange-500" />
+            </div>
+          )}
           <div className="space-y-2 text-right mr-6 text-sm">
             {decisionPoints.map((point, idx) => (
               <div key={idx} className="flex gap-2">
@@ -756,15 +806,20 @@ export default function MultipleAssignmentTemplate({
 
         {/* Closing - Draggable */}
         <div 
-          className={`mb-6 ${onClosingChange ? 'cursor-grab hover:bg-blue-50/50 rounded transition-colors' : ''}`}
+          className="mb-6 relative group"
           style={{
             transform: `translate(${closingOffset.x}px, ${closingOffset.y}px)`,
           }}
-          onMouseDown={onClosingChange ? (e) => {
-            if (e.target.tagName === 'INPUT') return;
-            handleItemMouseDown('closing', e);
-          } : undefined}
         >
+          {onClosingChange && (
+            <div 
+              className="absolute -right-8 top-1/2 -translate-y-1/2 drag-handle no-print opacity-0 group-hover:opacity-100 z-10"
+              onMouseDown={(e) => handleItemMouseDown('closing', e)}
+              title="اسحب لتحريك الختام"
+            >
+              <GripVertical size={16} className="text-teal-500" />
+            </div>
+          )}
           {onClosingChange ? (
             <input
               value={customClosing}
