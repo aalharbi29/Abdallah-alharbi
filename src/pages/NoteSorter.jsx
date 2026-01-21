@@ -268,7 +268,7 @@ const nonMedicalEquipmentList = [
   { id: 'whiteboard', name: 'سبورة بيضاء', category: 'أثاث مكتبي' },
   { id: 'corkboard', name: 'لوحة فلين', category: 'أثاث مكتبي' },
   { id: 'nursing_staff_training', name: 'طاقم التمريض مدرب على استخدام جهاز التصوير التلفزيوني', category: 'التدريب والكوادر' },
-  { id: 'good_lab_samples', name: 'كرسي العينات بحالة جيدة', category: 'التدريب والكوادر' },
+  { id: 'good_lab_samples', name: 'كرسي سحب عينات', category: 'التدريب والكوادر' },
   { id: 'lab_transfer_confirmation', name: 'لا يوجد تأخير في نقل العينات المختبر المركزي أو المستشفى', category: 'التدريب والكوادر' },
   { id: 'door_glass_frosting', name: 'زجاج شفاف فقط لدخالات مكافحة العدوى', category: 'التدريب والكوادر' },
   { id: 'infection_control_reports', name: 'تقارير دورية صادرة من موظف الأمن والسلامة', category: 'التدريب والكوادر' },
