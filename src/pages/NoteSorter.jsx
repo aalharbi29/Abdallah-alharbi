@@ -1700,7 +1700,12 @@ export default function CenterDeficiencyTool() {
                       </Button>
                     </div>
                     <div className="max-h-[250px] overflow-y-auto rounded-xl border-2 border-gray-100 divide-y">
-                      {selectedItems.map((item) => (
+                      {selectedItems.map((item) => {
+                        const isInCustomList = item.type === 'medical' 
+                          ? customMedicalItems.some(c => c.id === item.id)
+                          : customNonMedicalItems.some(c => c.id === item.id);
+
+                        return (
                         <div key={item.id} className="flex items-center justify-between p-3 hover:bg-gray-50 transition-colors group">
                           <div className="flex items-center gap-2 flex-1 min-w-0">
                             <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
@@ -1736,7 +1741,7 @@ export default function CenterDeficiencyTool() {
                                 title="انقر مرتين للتعديل"
                               >
                                 {item.name}
-                                {item.isCustom && <span className="text-xs text-gray-400 mr-1">(مخصص)</span>}
+                                {(item.isCustom || isInCustomList) && <span className="text-xs text-orange-500 mr-1">(مخصص)</span>}
                               </span>
                             )}
                           </div>
@@ -1750,6 +1755,17 @@ export default function CenterDeficiencyTool() {
                             >
                               <Edit2 className="w-3 h-3" />
                             </Button>
+                            {isInCustomList && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6 text-orange-400 hover:bg-orange-50 hover:text-orange-600 opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => removeCustomItemFromList(item.id, item.type)}
+                                title="حذف من القائمة الثابتة"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </Button>
+                            )}
                             <Badge className={`${
                               item.type === 'medical' 
                                 ? 'bg-teal-100 text-teal-700' 
@@ -1767,7 +1783,7 @@ export default function CenterDeficiencyTool() {
                             </Button>
                           </div>
                         </div>
-                      ))}
+                      );})}
                     </div>
                   </div>
                 )}
