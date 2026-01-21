@@ -414,6 +414,10 @@ export default function CenterDeficiencyTool() {
   const [pendingItems, setPendingItems] = useState([]);
   const [showMultiCenterExport, setShowMultiCenterExport] = useState(false);
   const [selectedCentersForExport, setSelectedCentersForExport] = useState([]);
+  const [editingItem, setEditingItem] = useState(null);
+  const [customItemName, setCustomItemName] = useState('');
+  const [customItemCategory, setCustomItemCategory] = useState('');
+  const [showAddCustomItem, setShowAddCustomItem] = useState(false);
 
   useEffect(() => {
     loadHealthCenters();
