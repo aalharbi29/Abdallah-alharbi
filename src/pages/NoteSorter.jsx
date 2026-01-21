@@ -426,7 +426,47 @@ export default function CenterDeficiencyTool() {
   useEffect(() => {
     loadHealthCenters();
     loadSavedReports();
+    loadCustomItems();
   }, []);
+
+  const loadCustomItems = () => {
+    const savedMedical = localStorage.getItem('custom_medical_items');
+    const savedNonMedical = localStorage.getItem('custom_nonmedical_items');
+    if (savedMedical) setCustomMedicalItems(JSON.parse(savedMedical));
+    if (savedNonMedical) setCustomNonMedicalItems(JSON.parse(savedNonMedical));
+  };
+
+  const saveCustomItemToList = (item) => {
+    const newItem = {
+      id: item.id || `custom_${Date.now()}`,
+      name: item.name,
+      category: item.category || 'مخصص',
+    };
+    
+    if (item.type === 'medical') {
+      const updated = [...customMedicalItems, newItem];
+      setCustomMedicalItems(updated);
+      localStorage.setItem('custom_medical_items', JSON.stringify(updated));
+    } else {
+      const updated = [...customNonMedicalItems, newItem];
+      setCustomNonMedicalItems(updated);
+      localStorage.setItem('custom_nonmedical_items', JSON.stringify(updated));
+    }
+    toast.success('تم إضافة العنصر للقائمة الثابتة');
+  };
+
+  const removeCustomItemFromList = (itemId, type) => {
+    if (type === 'medical') {
+      const updated = customMedicalItems.filter(i => i.id !== itemId);
+      setCustomMedicalItems(updated);
+      localStorage.setItem('custom_medical_items', JSON.stringify(updated));
+    } else {
+      const updated = customNonMedicalItems.filter(i => i.id !== itemId);
+      setCustomNonMedicalItems(updated);
+      localStorage.setItem('custom_nonmedical_items', JSON.stringify(updated));
+    }
+    toast.success('تم حذف العنصر من القائمة');
+  };
 
   const loadHealthCenters = async () => {
     setIsLoading(true);
