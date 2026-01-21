@@ -1471,13 +1471,13 @@ export default function CenterDeficiencyTool() {
                   <TabsList className="grid grid-cols-2 w-full bg-white/50 p-1 h-auto">
                     <TabsTrigger value="medical" className="gap-2 py-3 data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-lg">
                       <Stethoscope className="w-5 h-5" />
-                      <span className="font-semibold">أدوات طبية</span>
-                      <Badge className="bg-white/20 text-inherit border-0">{medicalEquipmentList.length}</Badge>
+                      <span className="font-semibold">التجهيزات الطبية</span>
+                      <Badge className="bg-white/20 text-inherit border-0">{medicalEquipmentList.length + customMedicalItems.length}</Badge>
                     </TabsTrigger>
                     <TabsTrigger value="nonmedical" className="gap-2 py-3 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-indigo-500 data-[state=active]:text-white data-[state=active]:shadow-lg">
                       <Wrench className="w-5 h-5" />
-                      <span className="font-semibold">أدوات غير طبية</span>
-                      <Badge className="bg-white/20 text-inherit border-0">{nonMedicalEquipmentList.length}</Badge>
+                      <span className="font-semibold">التجهيزات غير الطبية</span>
+                      <Badge className="bg-white/20 text-inherit border-0">{nonMedicalEquipmentList.length + customNonMedicalItems.length}</Badge>
                     </TabsTrigger>
                   </TabsList>
                 </div>
