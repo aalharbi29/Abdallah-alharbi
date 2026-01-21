@@ -30,7 +30,7 @@ import {
   Stethoscope, Wrench, Building2, Search, Download, Plus, Minus,
   Loader2, Trash2, FileCode, Printer, FileSpreadsheet, Package,
   CheckCircle2, AlertCircle, Filter, X, Save, List, Upload, FileUp, Sparkles,
-  Edit2, Check, ArrowLeftRight
+  Edit2, Check, ArrowLeftRight, EyeOff, Eye, RotateCcw
 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
@@ -488,13 +488,16 @@ export default function CenterDeficiencyTool() {
   const [customItemName, setCustomItemName] = useState('');
   const [customItemCategory, setCustomItemCategory] = useState('');
   const [showAddCustomItem, setShowAddCustomItem] = useState(false);
+  const [showHiddenItems, setShowHiddenItems] = useState(false);
   const [customMedicalItems, setCustomMedicalItems] = useState([]);
   const [customNonMedicalItems, setCustomNonMedicalItems] = useState([]);
+  const [hiddenItems, setHiddenItems] = useState([]);
 
   useEffect(() => {
     loadHealthCenters();
     loadSavedReports();
     loadCustomItems();
+    loadHiddenItems();
   }, []);
 
   const loadCustomItems = () => {
@@ -502,6 +505,27 @@ export default function CenterDeficiencyTool() {
     const savedNonMedical = localStorage.getItem('custom_nonmedical_items');
     if (savedMedical) setCustomMedicalItems(JSON.parse(savedMedical));
     if (savedNonMedical) setCustomNonMedicalItems(JSON.parse(savedNonMedical));
+  };
+
+  const loadHiddenItems = () => {
+    const saved = localStorage.getItem('hidden_deficiency_items');
+    if (saved) setHiddenItems(JSON.parse(saved));
+  };
+
+  const hideItemPermanently = (itemId) => {
+    const updated = [...hiddenItems, itemId];
+    setHiddenItems(updated);
+    localStorage.setItem('hidden_deficiency_items', JSON.stringify(updated));
+    // إزالة العنصر من المحددات إن كان موجوداً
+    setSelectedItems(prev => prev.filter(i => i.id !== itemId));
+    toast.success('تم إخفاء العنصر نهائياً');
+  };
+
+  const restoreHiddenItem = (itemId) => {
+    const updated = hiddenItems.filter(id => id !== itemId);
+    setHiddenItems(updated);
+    localStorage.setItem('hidden_deficiency_items', JSON.stringify(updated));
+    toast.success('تم استعادة العنصر');
   };
 
   const saveCustomItemToList = (item) => {
@@ -657,9 +681,10 @@ export default function CenterDeficiencyTool() {
   const isSelected = (itemId) => selectedItems.some(i => i.id === itemId);
   const getSelectedQuantity = (itemId) => selectedItems.find(i => i.id === itemId)?.quantity || 1;
 
-  const currentList = activeTab === 'medical' 
+  const currentList = (activeTab === 'medical' 
     ? [...medicalEquipmentList, ...customMedicalItems] 
-    : [...nonMedicalEquipmentList, ...customNonMedicalItems];
+    : [...nonMedicalEquipmentList, ...customNonMedicalItems]
+  ).filter(item => !hiddenItems.includes(item.id));
   const categories = [...new Set(currentList.map(item => item.category))];
 
   const filteredItems = searchQuery
@@ -1461,6 +1486,18 @@ export default function CenterDeficiencyTool() {
                       المحفوظة
                       <Badge className="mr-2 bg-gray-100">{savedReports.length}</Badge>
                     </Button>
+                    {hiddenItems.length > 0 && (
+                      <Button 
+                        variant="outline" 
+                        onClick={() => setShowHiddenItems(true)}
+                        className="h-12 border-2 border-gray-300"
+                        title="العناصر المخفية"
+                      >
+                        <Eye className="w-4 h-4 ml-2" />
+                        مخفي
+                        <Badge className="mr-2 bg-gray-100">{hiddenItems.length}</Badge>
+                      </Button>
+                    )}
                     <Button 
                       variant="outline" 
                       onClick={openMultiCenterExport}
@@ -1580,21 +1617,23 @@ export default function CenterDeficiencyTool() {
                                       <span className="text-xs text-orange-500 mr-1">(مخصص)</span>
                                     )}
                                   </span>
-                                  {/* زر حذف العنصر المخصص من القائمة */}
-                                  {(customMedicalItems.some(c => c.id === item.id) || customNonMedicalItems.some(c => c.id === item.id)) && (
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      className="h-6 w-6 text-red-400 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity absolute left-1 top-1"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
+                                  {/* زر إخفاء العنصر نهائياً */}
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-6 w-6 text-gray-400 hover:text-red-600 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-opacity absolute left-1 top-1"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      if (customMedicalItems.some(c => c.id === item.id) || customNonMedicalItems.some(c => c.id === item.id)) {
                                         removeCustomItemFromList(item.id, activeTab);
-                                      }}
-                                      title="حذف من القائمة الثابتة"
-                                    >
-                                      <Trash2 className="w-3 h-3" />
-                                    </Button>
-                                  )}
+                                      } else {
+                                        hideItemPermanently(item.id);
+                                      }
+                                    }}
+                                    title="إخفاء نهائياً"
+                                  >
+                                    <EyeOff className="w-3 h-3" />
+                                  </Button>
                                   {selected && (
                                     <div className="flex items-center gap-1 bg-white rounded-lg p-1 shadow-sm" onClick={(e) => e.stopPropagation()}>
                                       <Button
@@ -2085,6 +2124,68 @@ export default function CenterDeficiencyTool() {
               <Download className="w-4 h-4 ml-2" />
               تصدير ({selectedCentersForExport.length})
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* نافذة العناصر المخفية */}
+      <Dialog open={showHiddenItems} onOpenChange={setShowHiddenItems}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <EyeOff className="w-5 h-5 text-gray-600" />
+              العناصر المخفية ({hiddenItems.length})
+            </DialogTitle>
+          </DialogHeader>
+          <div className="max-h-[400px] overflow-y-auto">
+            {hiddenItems.length === 0 ? (
+              <div className="text-center py-8 text-gray-500">
+                <Eye className="w-12 h-12 mx-auto mb-2 text-gray-300" />
+                <p>لا توجد عناصر مخفية</p>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {hiddenItems.map(itemId => {
+                  const item = [...medicalEquipmentList, ...nonMedicalEquipmentList].find(i => i.id === itemId);
+                  if (!item) return null;
+                  return (
+                    <div key={itemId} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50">
+                      <div>
+                        <p className="font-medium">{item.name}</p>
+                        <p className="text-xs text-gray-500">{item.category}</p>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => restoreHiddenItem(itemId)}
+                        className="text-teal-600 border-teal-200 hover:bg-teal-50"
+                      >
+                        <RotateCcw className="w-4 h-4 ml-1" />
+                        استعادة
+                      </Button>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowHiddenItems(false)}>
+              إغلاق
+            </Button>
+            {hiddenItems.length > 0 && (
+              <Button
+                variant="outline"
+                className="text-red-600 border-red-200 hover:bg-red-50"
+                onClick={() => {
+                  setHiddenItems([]);
+                  localStorage.removeItem('hidden_deficiency_items');
+                  toast.success('تم استعادة جميع العناصر');
+                }}
+              >
+                استعادة الكل
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
