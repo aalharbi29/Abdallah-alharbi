@@ -495,6 +495,35 @@ export default function CenterDeficiencyTool() {
     ));
   };
 
+  const updateItemName = (itemId, newName) => {
+    setSelectedItems(prev => prev.map(item => 
+      item.id === itemId ? { ...item, name: newName } : item
+    ));
+    setEditingItem(null);
+  };
+
+  const addCustomItem = () => {
+    if (!customItemName.trim()) {
+      toast.error('الرجاء إدخال اسم العنصر');
+      return;
+    }
+    
+    const newItem = {
+      id: `custom_${Date.now()}`,
+      name: customItemName.trim(),
+      category: customItemCategory.trim() || 'مخصص',
+      type: activeTab,
+      quantity: 1,
+      isCustom: true
+    };
+    
+    setSelectedItems(prev => [...prev, newItem]);
+    setCustomItemName('');
+    setCustomItemCategory('');
+    setShowAddCustomItem(false);
+    toast.success('تم إضافة العنصر');
+  };
+
   const isSelected = (itemId) => selectedItems.some(i => i.id === itemId);
   const getSelectedQuantity = (itemId) => selectedItems.find(i => i.id === itemId)?.quantity || 1;
 
