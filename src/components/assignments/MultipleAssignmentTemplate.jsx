@@ -310,7 +310,41 @@ export default function MultipleAssignmentTemplate({
 
   // Print function - only print the assignment document
   const handlePrint = () => {
+    const printCSS = `
+      @media print {
+        @page { 
+          size: A4 portrait; 
+          margin: 0; 
+        }
+        body * {
+          visibility: hidden;
+        }
+        .print-area, .print-area * {
+          visibility: visible !important;
+        }
+        .print-area {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+        }
+      }
+    `;
+    
+    const existingStyle = document.getElementById('temp-print-style');
+    if (existingStyle) existingStyle.remove();
+    
+    const style = document.createElement('style');
+    style.id = 'temp-print-style';
+    style.textContent = printCSS;
+    document.head.appendChild(style);
+    
     window.print();
+    
+    setTimeout(() => {
+      const tempStyle = document.getElementById('temp-print-style');
+      if (tempStyle) tempStyle.remove();
+    }, 1000);
   };
 
   // Save to employee files

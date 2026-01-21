@@ -41,7 +41,12 @@ export default function ViewAssignmentPage() {
   // Template mode selection
   const [templateMode, setTemplateMode] = useState('standard'); // 'standard', 'flexible', or 'multiple'
   const [multipleAssignmentsList, setMultipleAssignmentsList] = useState([]); // For multiple assignment mode
-  const [multipleDecisionPoints, setMultipleDecisionPoints] = useState([]); // For multiple assignment mode
+  const [multipleDecisionPoints, setMultipleDecisionPoints] = useState([
+    'تكليف الموضح بياناتهم أعلاه بالعمل في الجهات الموضحة قرين اسم كل منهم خلال الفترة المحددة.',
+    'لا يترتب على هذا التكليف أي ميزة مالية إلا ما يقره النظام.',
+    'يتم تنفيذ هذا القرار كلاً فيما يخصه.'
+  ]);
+  const [multipleFreeText, setMultipleFreeText] = useState('');
 
   // States for flexible template - جميع الخيارات
   const [showDurationInTable, setShowDurationInTable] = useState(true);
@@ -427,7 +432,7 @@ export default function ViewAssignmentPage() {
             setMultipleDecisionPoints(savedOptions.decisionPoints);
           }
           if (savedOptions.freeText !== undefined) {
-            setCustomTextBefore(savedOptions.freeText);
+            setMultipleFreeText(savedOptions.freeText);
           }
 
           console.log('✅ تم تحميل خيارات القالب المحفوظة من التكليف');
@@ -537,7 +542,7 @@ export default function ViewAssignmentPage() {
         customIntro,
         decisionPoints: multipleDecisionPoints,
         customClosing,
-        freeText: customTextBefore
+        freeText: multipleFreeText
       });
       await base44.entities.Assignment.update(assignment.id, { template_options: templateOptions });
 
@@ -1136,6 +1141,33 @@ export default function ViewAssignmentPage() {
                 </Button>
             </div>
             
+            {/* Template Mode Selection & Style Manager for Multiple */}
+            {templateMode === 'multiple' && (
+              <div className="p-3 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg">
+                <h4 className="text-sm font-bold text-center border-b pb-2 mb-2">📁 أنماط التكليف المتعدد</h4>
+                <TemplateStyleManager
+                  templateType="multiple"
+                  currentStyleData={{
+                    customTitle,
+                    customIntro,
+                    decisionPoints: multipleDecisionPoints,
+                    customClosing,
+                    freeText: multipleFreeText,
+                    showNumbering
+                  }}
+                  onLoadStyle={(styleData) => {
+                    if (styleData.customTitle !== undefined) setCustomTitle(styleData.customTitle);
+                    if (styleData.customIntro !== undefined) setCustomIntro(styleData.customIntro);
+                    if (styleData.decisionPoints) setMultipleDecisionPoints(styleData.decisionPoints);
+                    if (styleData.customClosing !== undefined) setCustomClosing(styleData.customClosing);
+                    if (styleData.freeText !== undefined) setMultipleFreeText(styleData.freeText);
+                    if (styleData.showNumbering !== undefined) setShowNumbering(styleData.showNumbering);
+                    toast.success('تم تحميل النمط بنجاح');
+                  }}
+                />
+              </div>
+            )}
+            
             {/* Template Mode Selection - Hide if Multiple */}
             {templateMode !== 'multiple' && (
               <div className="p-3 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg">
@@ -1216,62 +1248,6 @@ export default function ViewAssignmentPage() {
                 )}
               </div>
             )}
-              {templateMode === 'standard' && (
-                <div className="mt-3 pt-3 border-t">
-                  <Label className="text-xs font-bold block mb-2">📁 أنماط القالب القياسي</Label>
-                  <TemplateStyleManager
-                    templateType="standard"
-                    currentStyleData={{
-                      signaturePosition,
-                      stampPosition,
-                      managerNamePosition,
-                      stampSize,
-                      textStyles,
-                      syncWithStandard,
-                      showNumbering,
-                      paragraphAlign,
-                      customTitle,
-                      customIntro,
-                      customParagraph1,
-                      customParagraph2,
-                      customParagraph3,
-                      customParagraph4,
-                      customParagraph5,
-                      customClosing,
-                      customTextAfter,
-                      customTextAfterPosition,
-                      customTextAfterStyle,
-                      showDurationInParagraph,
-                      multiplePeriods,
-                      additionalPeriods
-                    }}
-                    onLoadStyle={(styleData) => {
-                      if (styleData.signaturePosition) setSignaturePosition(styleData.signaturePosition);
-                      if (styleData.stampPosition) setStampPosition(styleData.stampPosition);
-                      if (styleData.managerNamePosition) setManagerNamePosition(styleData.managerNamePosition);
-                      if (styleData.stampSize !== undefined) setStampSize(styleData.stampSize);
-                      if (styleData.textStyles) setTextStyles(styleData.textStyles);
-                      if (styleData.syncWithStandard !== undefined) setSyncWithStandard(styleData.syncWithStandard);
-                      if (styleData.showNumbering !== undefined) setShowNumbering(styleData.showNumbering);
-                      if (styleData.paragraphAlign !== undefined) setParagraphAlign(styleData.paragraphAlign);
-                      if (styleData.customTitle !== undefined) setCustomTitle(styleData.customTitle);
-                      if (styleData.customIntro !== undefined) setCustomIntro(styleData.customIntro);
-                      if (styleData.customParagraph1 !== undefined) setCustomParagraph1(styleData.customParagraph1);
-                      if (styleData.customParagraph2 !== undefined) setCustomParagraph2(styleData.customParagraph2);
-                      if (styleData.customParagraph3 !== undefined) setCustomParagraph3(styleData.customParagraph3);
-                      if (styleData.customParagraph4 !== undefined) setCustomParagraph4(styleData.customParagraph4);
-                      if (styleData.customParagraph5 !== undefined) setCustomParagraph5(styleData.customParagraph5);
-                      if (styleData.customClosing !== undefined) setCustomClosing(styleData.customClosing);
-                      if (styleData.customTextAfter !== undefined) setCustomTextAfter(styleData.customTextAfter);
-                      if (styleData.customTextAfterPosition) setCustomTextAfterPosition(styleData.customTextAfterPosition);
-                      if (styleData.customTextAfterStyle) setCustomTextAfterStyle(styleData.customTextAfterStyle);
-                      if (styleData.showDurationInParagraph !== undefined) setShowDurationInParagraph(styleData.showDurationInParagraph);
-                      if (styleData.multiplePeriods !== undefined) setMultiplePeriods(styleData.multiplePeriods);
-                      if (styleData.additionalPeriods !== undefined) setAdditionalPeriods(styleData.additionalPeriods);
-                    }}
-                  />
-                </div>
-              )}
 
             {/* Flexible Template Controls - Now in sidebar */}
                     {templateMode === 'flexible' && (
@@ -2468,12 +2444,12 @@ export default function ViewAssignmentPage() {
                 decisionPoints={multipleDecisionPoints}
                 customClosing={customClosing}
                 showNumbering={showNumbering}
-                freeText={customTextBefore}
+                freeText={multipleFreeText}
                 onTitleChange={setCustomTitle}
                 onIntroChange={setCustomIntro}
                 onDecisionPointsChange={setMultipleDecisionPoints}
                 onClosingChange={setCustomClosing}
-                onFreeTextChange={setCustomTextBefore}
+                onFreeTextChange={setMultipleFreeText}
                 onAssignmentsChange={handleMultipleAssignmentsChange}
               />
               {/* Add Save Button specifically for Multiple Template */}
