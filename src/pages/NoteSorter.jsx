@@ -172,6 +172,8 @@ const medicalEquipmentList = [
   { id: 'pipettes', name: 'ماصات', category: 'المختبر' },
   { id: 'test_tubes', name: 'أنابيب اختبار', category: 'المختبر' },
   { id: 'test_tube_rack', name: 'حامل أنابيب', category: 'المختبر' },
+  { id: 'lab_tech_for_blood_draw', name: 'وجود طبيب في العيادة وقت الوصول أو توفر ممرض مدرب لسحب العينات', category: 'المختبر' },
+  { id: 'phlebotomist', name: 'مختص لسحب العينات', category: 'المختبر' },
   
   // أثاث طبي
   { id: 'exam_bed', name: 'سرير فحص', category: 'أثاث طبي' },
