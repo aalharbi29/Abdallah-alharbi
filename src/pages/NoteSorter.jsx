@@ -546,7 +546,7 @@ export default function CenterDeficiencyTool() {
     setEditingItem(null);
   };
 
-  const addCustomItem = () => {
+  const addCustomItem = (addToMainList = true) => {
     if (!customItemName.trim()) {
       toast.error('الرجاء إدخال اسم العنصر');
       return;
@@ -561,11 +561,18 @@ export default function CenterDeficiencyTool() {
       isCustom: true
     };
     
+    // إضافة للقائمة المحددة
     setSelectedItems(prev => [...prev, newItem]);
+    
+    // إضافة للقائمة الثابتة لاستخدامها مستقبلاً
+    if (addToMainList) {
+      saveCustomItemToList(newItem);
+    }
+    
     setCustomItemName('');
     setCustomItemCategory('');
     setShowAddCustomItem(false);
-    toast.success('تم إضافة العنصر');
+    toast.success('تم إضافة العنصر للقائمة');
   };
 
   const isSelected = (itemId) => selectedItems.some(i => i.id === itemId);
