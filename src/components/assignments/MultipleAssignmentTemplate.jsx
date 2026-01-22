@@ -66,6 +66,25 @@ export default function MultipleAssignmentTemplate({
   const [rowStartPos, setRowStartPos] = useState(0);
   const [rowStartHeight, setRowStartHeight] = useState(0);
   
+  // Table styling
+  const [tableBorderWidth, setTableBorderWidth] = useState(2);
+  const [tableFontSize, setTableFontSize] = useState(11);
+  const [tableFontFamily, setTableFontFamily] = useState('Cairo');
+  
+  // Global font settings
+  const [globalFontSize, setGlobalFontSize] = useState(14);
+  const [globalFontFamily, setGlobalFontFamily] = useState('Cairo');
+  
+  const fontFamilies = [
+    { value: 'Cairo', label: 'Cairo' },
+    { value: 'Tajawal', label: 'Tajawal' },
+    { value: 'Almarai', label: 'Almarai' },
+    { value: 'Amiri', label: 'Amiri' },
+    { value: 'Noto Kufi Arabic', label: 'Noto Kufi' },
+    { value: 'Arial', label: 'Arial' },
+    { value: 'Times New Roman', label: 'Times New Roman' },
+  ];
+  
   // Separate draggable positions - using transform instead of position for better behavior
   const [signatureOffset, setSignatureOffset] = useState({ x: 0, y: 0 });
   const [stampOffset, setStampOffset] = useState({ x: 0, y: 0 });
@@ -648,31 +667,85 @@ export default function MultipleAssignmentTemplate({
       )}
 
       {/* Controls Panel */}
-      <div className="no-print absolute top-2 left-2 bg-white/90 backdrop-blur rounded-lg shadow-lg p-2 z-50 flex gap-2 items-center text-xs flex-wrap max-w-sm">
+      <div className="no-print absolute top-2 left-2 bg-white/95 backdrop-blur rounded-lg shadow-lg p-3 z-50 flex flex-col gap-2 text-xs max-w-md border border-gray-200">
+        <div className="flex gap-2 items-center flex-wrap">
+          {onAssignmentsChange && (
+            <>
+              <label className="flex items-center gap-1 cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={showNumbering} 
+                  onChange={(e) => setShowNumbering(e.target.checked)}
+                  className="w-3 h-3"
+                />
+                ترقيم
+              </label>
+              <span className="text-gray-300">|</span>
+            </>
+          )}
+          <span className="text-blue-600">🖱️ سحب</span>
+          <span className="text-gray-300">|</span>
+          <span className="text-purple-600">📝 Ctrl+/- للنص المظلل</span>
+          {selectedElement && (
+            <>
+              <span className="text-gray-300">|</span>
+              <span className="text-green-600 font-bold">✓ {selectedElement === 'signature' ? 'التوقيع' : selectedElement === 'stamp' ? 'الختم' : 'اسم المدير'}</span>
+            </>
+          )}
+        </div>
+        
+        {/* Font and Table Controls */}
         {onAssignmentsChange && (
-          <>
-            <label className="flex items-center gap-1 cursor-pointer">
+          <div className="flex gap-3 items-center flex-wrap border-t pt-2 mt-1">
+            {/* Global Font */}
+            <div className="flex items-center gap-1">
+              <span className="text-gray-500">الخط:</span>
+              <select 
+                value={globalFontFamily}
+                onChange={(e) => setGlobalFontFamily(e.target.value)}
+                className="text-xs border rounded px-1 py-0.5 bg-white"
+              >
+                {fontFamilies.map(f => (
+                  <option key={f.value} value={f.value}>{f.label}</option>
+                ))}
+              </select>
               <input 
-                type="checkbox" 
-                checked={showNumbering} 
-                onChange={(e) => setShowNumbering(e.target.checked)}
-                className="w-4 h-4"
+                type="number" 
+                value={globalFontSize}
+                onChange={(e) => setGlobalFontSize(Number(e.target.value))}
+                className="w-10 text-xs border rounded px-1 py-0.5 text-center"
+                min="8"
+                max="24"
               />
-              ترقيم
-            </label>
-            <span className="text-gray-400">|</span>
-          </>
-        )}
-        <span className="text-blue-600">🖱️ اسحب العناصر</span>
-        <span className="text-gray-400">|</span>
-        <span className="text-green-600">↕️ اسحب أسفل الصف لتغيير ارتفاعه</span>
-        <span className="text-gray-400">|</span>
-        <span className="text-purple-600">📝 ظلل نص: Ctrl+/- حجم</span>
-        {selectedElement && (
-          <>
-            <span className="text-gray-400">|</span>
-            <span className="text-green-600 font-bold">✓ {selectedElement === 'signature' ? 'التوقيع' : selectedElement === 'stamp' ? 'الختم' : 'اسم المدير'} محدد</span>
-          </>
+            </div>
+            
+            {/* Table Border */}
+            <div className="flex items-center gap-1">
+              <span className="text-gray-500">حدود:</span>
+              <input 
+                type="number" 
+                value={tableBorderWidth}
+                onChange={(e) => setTableBorderWidth(Number(e.target.value))}
+                className="w-10 text-xs border rounded px-1 py-0.5 text-center"
+                min="0"
+                max="5"
+              />
+              <span className="text-gray-400">px</span>
+            </div>
+            
+            {/* Table Font Size */}
+            <div className="flex items-center gap-1">
+              <span className="text-gray-500">جدول:</span>
+              <input 
+                type="number" 
+                value={tableFontSize}
+                onChange={(e) => setTableFontSize(Number(e.target.value))}
+                className="w-10 text-xs border rounded px-1 py-0.5 text-center"
+                min="8"
+                max="18"
+              />
+            </div>
+          </div>
         )}
       </div>
 
@@ -697,11 +770,11 @@ export default function MultipleAssignmentTemplate({
             <input
               value={customTitle}
               onChange={(e) => onTitleChange(e.target.value)}
-              className="text-center text-black text-2xl font-bold w-full bg-transparent border-none outline-none focus:bg-blue-50 rounded"
-              style={{ direction: 'rtl' }}
+              className="text-center text-black font-bold w-full bg-transparent border-none outline-none focus:bg-blue-50 rounded"
+              style={{ direction: 'rtl', fontSize: `${globalFontSize + 10}px`, fontFamily: globalFontFamily }}
             />
           ) : (
-            <h1 className="text-center text-black text-2xl font-bold">{customTitle}</h1>
+            <h1 className="text-center text-black font-bold" style={{ fontSize: `${globalFontSize + 10}px`, fontFamily: globalFontFamily }}>{customTitle}</h1>
           )}
         </div>
 
@@ -732,14 +805,20 @@ export default function MultipleAssignmentTemplate({
               </button>
             )}
 
-            <div className="border-2 border-black mb-6 overflow-visible rounded-sm shadow-sm">
+            <div 
+              className="mb-6 overflow-visible rounded-sm shadow-sm"
+              style={{ 
+                border: `${tableBorderWidth}px solid black`,
+              }}
+            >
               {/* Table Header */}
               <Droppable droppableId="columns" direction="horizontal">
                 {(provided) => (
                   <div 
                     {...provided.droppableProps} 
                     ref={provided.innerRef}
-                    className="flex bg-sky-100 border-b-2 border-black"
+                    className="flex bg-sky-100"
+                    style={{ borderBottom: `${tableBorderWidth}px solid black` }}
                   >
                     {columns.map((col, index) => (
                       <Draggable key={col.id} draggableId={col.id} index={index}>
@@ -747,13 +826,16 @@ export default function MultipleAssignmentTemplate({
                           <div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
-                            className={`relative p-2 text-center font-bold text-xs border-l-2 border-black flex items-center justify-center last:border-l-0 ${snapshot.isDragging ? 'bg-blue-200' : ''} group/col`}
+                            className={`relative p-2 text-center font-bold flex items-center justify-center last:border-l-0 ${snapshot.isDragging ? 'bg-blue-200' : ''} group/col`}
                             style={{ 
                               width: `${col.width}px`,
                               minWidth: `${col.width}px`,
                               ...provided.draggableProps.style,
                               flexShrink: 0,
                               backgroundColor: snapshot.isDragging ? '#bfdbfe' : '#e0f2fe',
+                              borderLeft: `${tableBorderWidth}px solid black`,
+                              fontSize: `${tableFontSize}px`,
+                              fontFamily: globalFontFamily,
                             }}
                           >
                             <div {...provided.dragHandleProps} className="no-print absolute right-0.5 top-0.5 cursor-grab text-gray-400 hover:text-gray-700">
@@ -764,10 +846,11 @@ export default function MultipleAssignmentTemplate({
                               <input 
                                 value={col.label}
                                 onChange={(e) => updateColumnLabel(col.id, e.target.value)}
-                                className="bg-transparent text-center w-full font-bold outline-none focus:bg-white/50 rounded px-1 text-xs"
+                                className="bg-transparent text-center w-full font-bold outline-none focus:bg-white/50 rounded px-1"
+                                style={{ fontSize: `${tableFontSize}px`, fontFamily: globalFontFamily }}
                               />
                             ) : (
-                              <span className="text-xs">{col.label}</span>
+                              <span style={{ fontSize: `${tableFontSize}px`, fontFamily: globalFontFamily }}>{col.label}</span>
                             )}
 
                             {onAssignmentsChange && (
@@ -801,7 +884,11 @@ export default function MultipleAssignmentTemplate({
                 {assignments.map((row, rowIndex) => {
                   const rowHeight = rowHeights[rowIndex] || 50;
                   return (
-                    <div key={rowIndex} className="flex border-b border-black last:border-b-0 relative group/row">
+                    <div 
+                      key={rowIndex} 
+                      className="flex last:border-b-0 relative group/row"
+                      style={{ borderBottom: `${tableBorderWidth > 0 ? 1 : 0}px solid black` }}
+                    >
                       {columns.map((col) => {
                         let displayValue = row[col.id];
                         
@@ -812,19 +899,22 @@ export default function MultipleAssignmentTemplate({
                         return (
                           <div 
                             key={col.id}
-                            className="editable-cell p-1 text-center text-xs border-l border-black last:border-l-0"
+                            className="editable-cell p-1 text-center last:border-l-0"
                             style={{ 
                               width: `${col.width}px`, 
                               minWidth: `${col.width}px`,
                               minHeight: `${rowHeight}px`,
-                              flexShrink: 0 
+                              flexShrink: 0,
+                              borderLeft: `${tableBorderWidth > 0 ? 1 : 0}px solid black`,
+                              fontSize: `${tableFontSize}px`,
+                              fontFamily: globalFontFamily,
                             }}
                           >
                             <textarea
                               className={`w-full h-full text-center bg-transparent border-none outline-none resize-none ${onAssignmentsChange ? 'focus:bg-blue-50 rounded cursor-text' : ''}`}
                               style={{ 
-                                fontSize: '11px', 
-                                fontFamily: 'inherit', 
+                                fontSize: `${tableFontSize}px`, 
+                                fontFamily: globalFontFamily, 
                                 whiteSpace: 'pre-wrap',
                                 lineHeight: '1.4',
                                 minHeight: `${rowHeight - 8}px`
@@ -881,9 +971,9 @@ export default function MultipleAssignmentTemplate({
               <textarea
                 value={customIntro}
                 onChange={(e) => onIntroChange(e.target.value)}
-                className="w-full text-center text-base font-bold bg-transparent border-none outline-none focus:bg-blue-50 rounded p-2 resize-none"
+                className="w-full text-center font-bold bg-transparent border-none outline-none focus:bg-blue-50 rounded p-2 resize-none"
                 rows={3}
-                style={{ lineHeight: '1.8' }}
+                style={{ lineHeight: '1.8', fontSize: `${globalFontSize}px`, fontFamily: globalFontFamily }}
               />
               <div className="absolute left-2 top-2 no-print">
                 <VoiceInput
@@ -895,7 +985,7 @@ export default function MultipleAssignmentTemplate({
               </div>
             </div>
           ) : (
-            <p className="text-center text-base font-bold leading-relaxed whitespace-pre-wrap">
+            <p className="text-center font-bold leading-relaxed whitespace-pre-wrap" style={{ fontSize: `${globalFontSize}px`, fontFamily: globalFontFamily }}>
               {customIntro}
             </p>
           )}
@@ -969,7 +1059,7 @@ export default function MultipleAssignmentTemplate({
               <GripVertical size={16} className="text-orange-500" />
             </div>
           )}
-          <div className="space-y-2 text-right mr-6 text-sm">
+          <div className="space-y-2 text-right mr-6" style={{ fontSize: `${globalFontSize}px`, fontFamily: globalFontFamily }}>
             {decisionPoints.map((point, idx) => (
               <div key={idx} className="flex gap-2">
                 {showNumbering && <span className="font-bold flex-shrink-0">{idx + 1}-</span>}
@@ -981,12 +1071,12 @@ export default function MultipleAssignmentTemplate({
                       newPoints[idx] = e.target.value;
                       onDecisionPointsChange(newPoints);
                     }}
-                    className="flex-1 bg-transparent border-none outline-none focus:bg-blue-50 rounded resize-none text-sm"
+                    className="flex-1 bg-transparent border-none outline-none focus:bg-blue-50 rounded resize-none"
                     rows={2}
-                    style={{ lineHeight: '1.6' }}
+                    style={{ lineHeight: '1.6', fontSize: `${globalFontSize}px`, fontFamily: globalFontFamily }}
                   />
                 ) : (
-                  <p className="leading-relaxed">{point}</p>
+                  <p className="leading-relaxed" style={{ fontSize: `${globalFontSize}px`, fontFamily: globalFontFamily }}>{point}</p>
                 )}
               </div>
             ))}
@@ -1013,10 +1103,11 @@ export default function MultipleAssignmentTemplate({
             <input
               value={customClosing}
               onChange={(e) => onClosingChange(e.target.value)}
-              className="w-full text-center text-base font-bold bg-transparent border-none outline-none focus:bg-blue-50 rounded"
+              className="w-full text-center font-bold bg-transparent border-none outline-none focus:bg-blue-50 rounded"
+              style={{ fontSize: `${globalFontSize}px`, fontFamily: globalFontFamily }}
             />
           ) : (
-            <p className="text-center text-base font-bold">{customClosing}</p>
+            <p className="text-center font-bold" style={{ fontSize: `${globalFontSize}px`, fontFamily: globalFontFamily }}>{customClosing}</p>
           )}
         </div>
 
