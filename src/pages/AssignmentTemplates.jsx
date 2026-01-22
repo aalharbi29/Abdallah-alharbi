@@ -33,7 +33,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Plus, Edit2, Trash2, FileText, Copy, Star, StarOff,
-  Loader2, LayoutTemplate, Users, Settings2, Search
+  Loader2, LayoutTemplate, Users, Settings2, Search, Download
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -92,8 +92,11 @@ export default function AssignmentTemplates() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showImportStyleDialog, setShowImportStyleDialog] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [availableStyles, setAvailableStyles] = useState([]);
+  const [selectedStyleToImport, setSelectedStyleToImport] = useState(null);
   
   // Form state
   const [formData, setFormData] = useState({
@@ -105,7 +108,78 @@ export default function AssignmentTemplates() {
 
   useEffect(() => {
     loadTemplates();
+    loadAvailableStyles();
   }, []);
+
+  const loadAvailableStyles = async () => {
+    try {
+      const styles = await base44.entities.AssignmentTemplateStyle.list("-created_date", 100);
+      setAvailableStyles(Array.isArray(styles) ? styles : []);
+    } catch (error) {
+      console.error("Error loading styles:", error);
+    }
+  };
+
+  const handleImportFromStyle = () => {
+    setSelectedStyleToImport(null);
+    setShowImportStyleDialog(true);
+  };
+
+  const confirmImportStyle = async () => {
+    if (!selectedStyleToImport) {
+      toast.error("يرجى اختيار نمط للاستيراد");
+      return;
+    }
+
+    try {
+      const style = availableStyles.find(s => s.id === selectedStyleToImport);
+      if (!style) return;
+
+      const styleData = typeof style.style_data === 'string' 
+        ? JSON.parse(style.style_data) 
+        : style.style_data;
+
+      // Create new template from style
+      await base44.entities.AssignmentTemplate.create({
+        name: `${style.name} (من نمط)`,
+        description: style.description || `مستورد من النمط: ${style.name}`,
+        template_type: style.template_type,
+        options: {
+          customTitle: styleData.customTitle || DEFAULT_OPTIONS[style.template_type]?.customTitle,
+          customIntro: styleData.customIntro,
+          customClosing: styleData.customClosing || DEFAULT_OPTIONS[style.template_type]?.customClosing,
+          decisionPoints: styleData.decisionPoints,
+          customParagraph1: styleData.customParagraph1,
+          customParagraph2: styleData.customParagraph2,
+          freeText: styleData.freeText,
+          // Save style-specific layout data
+          styleLayoutData: {
+            columns: styleData.columns,
+            titleOffset: styleData.titleOffset,
+            tableOffset: styleData.tableOffset,
+            introOffset: styleData.introOffset,
+            freeTextOffset: styleData.freeTextOffset,
+            decisionPointsOffset: styleData.decisionPointsOffset,
+            closingOffset: styleData.closingOffset,
+            signatureOffset: styleData.signatureOffset,
+            stampOffset: styleData.stampOffset,
+            managerNameOffset: styleData.managerNameOffset,
+            signatureSize: styleData.signatureSize,
+            currentStampSize: styleData.currentStampSize,
+            showNumbering: styleData.showNumbering,
+          }
+        },
+        is_default: false,
+      });
+
+      toast.success("تم استيراد النمط كقالب جديد بنجاح");
+      setShowImportStyleDialog(false);
+      loadTemplates();
+    } catch (error) {
+      console.error("Error importing style:", error);
+      toast.error("فشل في استيراد النمط");
+    }
+  };
 
   const loadTemplates = async () => {
     setIsLoading(true);
@@ -465,10 +539,16 @@ export default function AssignmentTemplates() {
             <p className="text-gray-600 mt-1">إنشاء وتعديل وإدارة قوالب التكليف</p>
           </div>
 
-          <Button onClick={handleCreate} className="bg-green-600 hover:bg-green-700">
-            <Plus className="w-4 h-4 ml-2" />
-            إنشاء قالب جديد
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={handleImportFromStyle} variant="outline" className="border-blue-300 text-blue-700 hover:bg-blue-50">
+              <Download className="w-4 h-4 ml-2" />
+              استيراد من نمط
+            </Button>
+            <Button onClick={handleCreate} className="bg-green-600 hover:bg-green-700">
+              <Plus className="w-4 h-4 ml-2" />
+              إنشاء قالب جديد
+            </Button>
+          </div>
         </div>
 
         {/* Search and Filter */}
@@ -590,6 +670,78 @@ export default function AssignmentTemplates() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
+
+        {/* Import Style Dialog */}
+        <Dialog open={showImportStyleDialog} onOpenChange={setShowImportStyleDialog}>
+          <DialogContent className="max-w-xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Download className="w-5 h-5 text-blue-600" />
+                استيراد نمط كقالب جديد
+              </DialogTitle>
+            </DialogHeader>
+            
+            <div className="py-4">
+              <p className="text-sm text-gray-600 mb-4">
+                اختر نمطاً من الأنماط المحفوظة لإنشاء قالب جديد منه
+              </p>
+              
+              {availableStyles.length === 0 ? (
+                <div className="text-center py-8 text-gray-500">
+                  <Settings2 className="w-12 h-12 mx-auto text-gray-300 mb-3" />
+                  <p>لا توجد أنماط محفوظة</p>
+                  <p className="text-xs mt-1">يمكنك حفظ أنماط من صفحة إنشاء التكليف</p>
+                </div>
+              ) : (
+                <div className="space-y-2 max-h-[400px] overflow-y-auto">
+                  {availableStyles.map((style) => {
+                    const typeInfo = TEMPLATE_TYPES[style.template_type];
+                    return (
+                      <div
+                        key={style.id}
+                        onClick={() => setSelectedStyleToImport(style.id)}
+                        className={`p-3 border rounded-lg cursor-pointer transition-all ${
+                          selectedStyleToImport === style.id
+                            ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
+                            : "border-gray-200 hover:border-blue-300 hover:bg-gray-50"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className={`p-1.5 rounded ${typeInfo?.color || "bg-gray-100"}`}>
+                              {typeInfo?.icon && <typeInfo.icon className="w-4 h-4" />}
+                            </div>
+                            <div>
+                              <p className="font-medium">{style.name}</p>
+                              {style.description && (
+                                <p className="text-xs text-gray-500">{style.description}</p>
+                              )}
+                            </div>
+                          </div>
+                          <Badge className={typeInfo?.color}>{typeInfo?.label}</Badge>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowImportStyleDialog(false)}>
+                إلغاء
+              </Button>
+              <Button
+                onClick={confirmImportStyle}
+                disabled={!selectedStyleToImport}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                <Download className="w-4 h-4 ml-2" />
+                استيراد كقالب
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
