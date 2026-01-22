@@ -76,7 +76,7 @@ export default function MultipleAssignmentTemplate({
   const [globalFontFamily, setGlobalFontFamily] = useState('Cairo');
   
   // Title font settings
-  const [titleFontSize, setTitleFontSize] = useState(24);
+  const [titleFontSize, setTitleFontSize] = useState(32);
   const [titleFontFamily, setTitleFontFamily] = useState('Cairo');
   
   const fontFamilies = [
