@@ -75,6 +75,10 @@ export default function MultipleAssignmentTemplate({
   const [globalFontSize, setGlobalFontSize] = useState(14);
   const [globalFontFamily, setGlobalFontFamily] = useState('Cairo');
   
+  // Title font settings
+  const [titleFontSize, setTitleFontSize] = useState(24);
+  const [titleFontFamily, setTitleFontFamily] = useState('Cairo');
+  
   const fontFamilies = [
     { value: 'Cairo', label: 'Cairo' },
     { value: 'Tajawal', label: 'Tajawal' },
@@ -735,13 +739,13 @@ export default function MultipleAssignmentTemplate({
         
         {/* Font and Table Controls */}
         {onAssignmentsChange && (
-          <div className="flex gap-3 items-center flex-wrap border-t pt-2 mt-1">
-            {/* Global Font */}
-            <div className="flex items-center gap-1">
-              <span className="text-gray-500">الخط:</span>
+          <div className="flex flex-col gap-2 border-t pt-2 mt-1">
+            {/* Title Font Controls */}
+            <div className="flex gap-2 items-center flex-wrap">
+              <span className="text-gray-600 font-semibold">العنوان:</span>
               <select 
-                value={globalFontFamily}
-                onChange={(e) => setGlobalFontFamily(e.target.value)}
+                value={titleFontFamily}
+                onChange={(e) => setTitleFontFamily(e.target.value)}
                 className="text-xs border rounded px-1 py-0.5 bg-white"
               >
                 {fontFamilies.map(f => (
@@ -750,39 +754,63 @@ export default function MultipleAssignmentTemplate({
               </select>
               <input 
                 type="number" 
-                value={globalFontSize}
-                onChange={(e) => setGlobalFontSize(Number(e.target.value))}
-                className="w-10 text-xs border rounded px-1 py-0.5 text-center"
-                min="8"
-                max="24"
-              />
-            </div>
-            
-            {/* Table Border */}
-            <div className="flex items-center gap-1">
-              <span className="text-gray-500">حدود:</span>
-              <input 
-                type="number" 
-                value={tableBorderWidth}
-                onChange={(e) => setTableBorderWidth(Number(e.target.value))}
-                className="w-10 text-xs border rounded px-1 py-0.5 text-center"
-                min="0"
-                max="5"
+                value={titleFontSize}
+                onChange={(e) => setTitleFontSize(Number(e.target.value))}
+                className="w-12 text-xs border rounded px-1 py-0.5 text-center"
+                min="14"
+                max="36"
               />
               <span className="text-gray-400">px</span>
             </div>
             
-            {/* Table Font Size */}
-            <div className="flex items-center gap-1">
-              <span className="text-gray-500">جدول:</span>
-              <input 
-                type="number" 
-                value={tableFontSize}
-                onChange={(e) => setTableFontSize(Number(e.target.value))}
-                className="w-10 text-xs border rounded px-1 py-0.5 text-center"
-                min="8"
-                max="18"
-              />
+            <div className="flex gap-3 items-center flex-wrap">
+              {/* Global Font */}
+              <div className="flex items-center gap-1">
+                <span className="text-gray-500">النص:</span>
+                <select 
+                  value={globalFontFamily}
+                  onChange={(e) => setGlobalFontFamily(e.target.value)}
+                  className="text-xs border rounded px-1 py-0.5 bg-white"
+                >
+                  {fontFamilies.map(f => (
+                    <option key={f.value} value={f.value}>{f.label}</option>
+                  ))}
+                </select>
+                <input 
+                  type="number" 
+                  value={globalFontSize}
+                  onChange={(e) => setGlobalFontSize(Number(e.target.value))}
+                  className="w-10 text-xs border rounded px-1 py-0.5 text-center"
+                  min="8"
+                  max="24"
+                />
+              </div>
+              
+              {/* Table Border */}
+              <div className="flex items-center gap-1">
+                <span className="text-gray-500">حدود:</span>
+                <input 
+                  type="number" 
+                  value={tableBorderWidth}
+                  onChange={(e) => setTableBorderWidth(Number(e.target.value))}
+                  className="w-10 text-xs border rounded px-1 py-0.5 text-center"
+                  min="0"
+                  max="5"
+                />
+              </div>
+              
+              {/* Table Font Size */}
+              <div className="flex items-center gap-1">
+                <span className="text-gray-500">جدول:</span>
+                <input 
+                  type="number" 
+                  value={tableFontSize}
+                  onChange={(e) => setTableFontSize(Number(e.target.value))}
+                  className="w-10 text-xs border rounded px-1 py-0.5 text-center"
+                  min="8"
+                  max="18"
+                />
+              </div>
             </div>
           </div>
         )}
@@ -810,10 +838,10 @@ export default function MultipleAssignmentTemplate({
               value={customTitle}
               onChange={(e) => onTitleChange(e.target.value)}
               className="text-center text-black font-bold w-full bg-transparent border-none outline-none focus:bg-blue-50 rounded"
-              style={{ direction: 'rtl', fontSize: `${globalFontSize + 10}px`, fontFamily: globalFontFamily }}
+              style={{ direction: 'rtl', fontSize: `${titleFontSize}px`, fontFamily: titleFontFamily }}
             />
           ) : (
-            <h1 className="text-center text-black font-bold" style={{ fontSize: `${globalFontSize + 10}px`, fontFamily: globalFontFamily }}>{customTitle}</h1>
+            <h1 className="text-center text-black font-bold" style={{ fontSize: `${titleFontSize}px`, fontFamily: titleFontFamily }}>{customTitle}</h1>
           )}
         </div>
 
@@ -847,7 +875,7 @@ export default function MultipleAssignmentTemplate({
             <div 
               className="mb-6 overflow-visible rounded-sm shadow-sm"
               style={{ 
-                border: `${tableBorderWidth}px solid black`,
+                borderCollapse: 'collapse',
               }}
             >
               {/* Table Header */}
@@ -857,7 +885,10 @@ export default function MultipleAssignmentTemplate({
                     {...provided.droppableProps} 
                     ref={provided.innerRef}
                     className="flex bg-sky-100"
-                    style={{ borderBottom: `${tableBorderWidth}px solid black` }}
+                    style={{ 
+                      border: `${tableBorderWidth}px solid black`,
+                      borderBottom: `${tableBorderWidth}px solid black`
+                    }}
                   >
                     {columns.map((col, index) => (
                       <Draggable key={col.id} draggableId={col.id} index={index}>
@@ -865,14 +896,14 @@ export default function MultipleAssignmentTemplate({
                           <div
                             ref={provided.innerRef}
                             {...provided.draggableProps}
-                            className={`relative p-2 text-center font-bold flex items-center justify-center last:border-l-0 ${snapshot.isDragging ? 'bg-blue-200' : ''} group/col`}
+                            className={`relative p-2 text-center font-bold flex items-center justify-center ${snapshot.isDragging ? 'bg-blue-200' : ''} group/col`}
                             style={{ 
                               width: `${col.width}px`,
                               minWidth: `${col.width}px`,
                               ...provided.draggableProps.style,
                               flexShrink: 0,
                               backgroundColor: snapshot.isDragging ? '#bfdbfe' : '#e0f2fe',
-                              borderLeft: `${tableBorderWidth}px solid black`,
+                              borderLeft: index > 0 ? `${tableBorderWidth}px solid black` : 'none',
                               fontSize: `${tableFontSize}px`,
                               fontFamily: globalFontFamily,
                             }}
@@ -925,8 +956,12 @@ export default function MultipleAssignmentTemplate({
                   return (
                     <div 
                       key={rowIndex} 
-                      className="flex last:border-b-0 relative group/row"
-                      style={{ borderBottom: `${tableBorderWidth}px solid black` }}
+                      className="flex relative group/row"
+                      style={{ 
+                        borderLeft: `${tableBorderWidth}px solid black`,
+                        borderRight: `${tableBorderWidth}px solid black`,
+                        borderBottom: `${tableBorderWidth}px solid black`
+                      }}
                     >
                       {columns.map((col) => {
                         let displayValue = row[col.id];
@@ -938,13 +973,13 @@ export default function MultipleAssignmentTemplate({
                         return (
                           <div 
                             key={col.id}
-                            className="editable-cell p-1 text-center last:border-l-0"
+                            className="editable-cell p-1 text-center"
                             style={{ 
                               width: `${col.width}px`, 
                               minWidth: `${col.width}px`,
                               minHeight: `${rowHeight}px`,
                               flexShrink: 0,
-                              borderLeft: `${tableBorderWidth}px solid black`,
+                              borderLeft: columns.indexOf(col) > 0 ? `${tableBorderWidth}px solid black` : 'none',
                               fontSize: `${tableFontSize}px`,
                               fontFamily: globalFontFamily,
                             }}
