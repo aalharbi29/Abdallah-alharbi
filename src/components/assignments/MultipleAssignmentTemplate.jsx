@@ -60,6 +60,12 @@ export default function MultipleAssignmentTemplate({
   const [showNumbering, setShowNumbering] = useState(initialShowNumbering);
   const [freeText, setFreeText] = useState(initialFreeText);
   
+  // Row heights for each row
+  const [rowHeights, setRowHeights] = useState({});
+  const [resizingRow, setResizingRow] = useState(null);
+  const [rowStartPos, setRowStartPos] = useState(0);
+  const [rowStartHeight, setRowStartHeight] = useState(0);
+  
   // Separate draggable positions - using transform instead of position for better behavior
   const [signatureOffset, setSignatureOffset] = useState({ x: 0, y: 0 });
   const [stampOffset, setStampOffset] = useState({ x: 0, y: 0 });
@@ -134,6 +140,34 @@ export default function MultipleAssignmentTemplate({
     setResizing(colId);
     setStartPos(e.clientX);
     setStartWidth(currentWidth);
+  };
+
+  // Row height resizing
+  useEffect(() => {
+    if (resizingRow === null) return;
+
+    const handleMouseMove = (e) => {
+      const diff = e.clientY - rowStartPos;
+      const newHeight = Math.max(36, rowStartHeight + diff);
+      setRowHeights(prev => ({ ...prev, [resizingRow]: newHeight }));
+    };
+
+    const handleMouseUp = () => setResizingRow(null);
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [resizingRow, rowStartPos, rowStartHeight]);
+
+  const handleRowResizeStart = (e, rowIndex, currentHeight) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setResizingRow(rowIndex);
+    setRowStartPos(e.clientY);
+    setRowStartHeight(currentHeight);
   };
 
   // Dragging for elements - using transform for smoother movement
@@ -507,6 +541,12 @@ export default function MultipleAssignmentTemplate({
           cursor: grabbing;
           background-color: rgba(59, 130, 246, 0.2);
         }
+        .cursor-row-resize {
+          cursor: row-resize;
+        }
+        .group\\/row:hover .cursor-row-resize {
+          background-color: rgba(34, 197, 94, 0.3);
+        }
       `}</style>
 
       {/* Action Buttons */}
@@ -625,7 +665,9 @@ export default function MultipleAssignmentTemplate({
         )}
         <span className="text-blue-600">🖱️ اسحب العناصر</span>
         <span className="text-gray-400">|</span>
-        <span className="text-purple-600">📝 ظلل: Ctrl+/- حجم | Ctrl+L يسار | Ctrl+E وسط | Ctrl+R يمين</span>
+        <span className="text-green-600">↕️ اسحب أسفل الصف لتغيير ارتفاعه</span>
+        <span className="text-gray-400">|</span>
+        <span className="text-purple-600">📝 ظلل نص: Ctrl+/- حجم</span>
         {selectedElement && (
           <>
             <span className="text-gray-400">|</span>
@@ -756,52 +798,59 @@ export default function MultipleAssignmentTemplate({
 
               {/* Table Body */}
               <div className="bg-white">
-                {assignments.map((row, rowIndex) => (
-                  <div key={rowIndex} className="flex border-b border-black last:border-b-0">
-                    {columns.map((col) => {
-                      let displayValue = row[col.id];
-                      
-                      if (col.id === 'full_duration' && !displayValue && !col.isCustom) {
-                        displayValue = buildFullDuration(row);
-                      }
+                {assignments.map((row, rowIndex) => {
+                  const rowHeight = rowHeights[rowIndex] || 50;
+                  return (
+                    <div key={rowIndex} className="flex border-b border-black last:border-b-0 relative group/row">
+                      {columns.map((col) => {
+                        let displayValue = row[col.id];
+                        
+                        if (col.id === 'full_duration' && !displayValue && !col.isCustom) {
+                          displayValue = buildFullDuration(row);
+                        }
 
-                      return (
-                        <div 
-                          key={col.id}
-                          className="editable-cell p-1 text-center text-xs border-l border-black last:border-l-0"
-                          style={{ 
-                            width: `${col.width}px`, 
-                            minWidth: `${col.width}px`,
-                            flexShrink: 0 
-                          }}
-                        >
-                          <textarea
-                            className={`w-full text-center bg-transparent border-none outline-none resize-none ${onAssignmentsChange ? 'focus:bg-blue-50 rounded cursor-text' : ''}`}
+                        return (
+                          <div 
+                            key={col.id}
+                            className="editable-cell p-1 text-center text-xs border-l border-black last:border-l-0"
                             style={{ 
-                              fontSize: '11px', 
-                              fontFamily: 'inherit', 
-                              whiteSpace: 'pre-wrap',
-                              lineHeight: '1.4',
-                              minHeight: '36px'
+                              width: `${col.width}px`, 
+                              minWidth: `${col.width}px`,
+                              minHeight: `${rowHeight}px`,
+                              flexShrink: 0 
                             }}
-                            rows={2}
-                            value={displayValue || ''}
-                            readOnly={!onAssignmentsChange}
-                            onChange={(e) => {
-                              if(onAssignmentsChange) {
-                                onAssignmentsChange(rowIndex, col.id, e.target.value);
-                              }
-                            }}
-                            onInput={(e) => {
-                              e.target.style.height = 'auto';
-                              e.target.style.height = Math.max(36, e.target.scrollHeight) + 'px';
-                            }}
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                ))}
+                          >
+                            <textarea
+                              className={`w-full h-full text-center bg-transparent border-none outline-none resize-none ${onAssignmentsChange ? 'focus:bg-blue-50 rounded cursor-text' : ''}`}
+                              style={{ 
+                                fontSize: '11px', 
+                                fontFamily: 'inherit', 
+                                whiteSpace: 'pre-wrap',
+                                lineHeight: '1.4',
+                                minHeight: `${rowHeight - 8}px`
+                              }}
+                              value={displayValue || ''}
+                              readOnly={!onAssignmentsChange}
+                              onChange={(e) => {
+                                if(onAssignmentsChange) {
+                                  onAssignmentsChange(rowIndex, col.id, e.target.value);
+                                }
+                              }}
+                            />
+                          </div>
+                        );
+                      })}
+                      {/* Row resize handle */}
+                      {onAssignmentsChange && (
+                        <div 
+                          className="no-print absolute left-0 right-0 bottom-0 h-2 cursor-row-resize hover:bg-green-400 z-10 opacity-0 group-hover/row:opacity-100"
+                          onMouseDown={(e) => handleRowResizeStart(e, rowIndex, rowHeight)}
+                          title="اسحب لتغيير ارتفاع الصف"
+                        />
+                      )}
+                    </div>
+                  );
+                })}
                 {assignments.length === 0 && (
                   <div className="p-6 text-center text-gray-500 text-sm">لا توجد بيانات</div>
                 )}
