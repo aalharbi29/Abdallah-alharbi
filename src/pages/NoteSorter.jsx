@@ -500,35 +500,80 @@ export default function CenterDeficiencyTool() {
     loadHiddenItems();
   }, []);
 
-  const loadCustomItems = () => {
-    const savedMedical = localStorage.getItem('custom_medical_items');
-    const savedNonMedical = localStorage.getItem('custom_nonmedical_items');
-    if (savedMedical) setCustomMedicalItems(JSON.parse(savedMedical));
-    if (savedNonMedical) setCustomNonMedicalItems(JSON.parse(savedNonMedical));
+  const loadCustomItems = async () => {
+    try {
+      // تحميل من قاعدة البيانات
+      const items = await base44.entities.SortedNote.filter({ type: 'custom_item' });
+      const medicalItems = items.filter(i => i.item_type === 'medical').map(i => ({
+        id: i.item_id,
+        name: i.name,
+        category: i.category || 'مخصص'
+      }));
+      const nonMedicalItems = items.filter(i => i.item_type === 'nonmedical').map(i => ({
+        id: i.item_id,
+        name: i.name,
+        category: i.category || 'مخصص'
+      }));
+      setCustomMedicalItems(medicalItems);
+      setCustomNonMedicalItems(nonMedicalItems);
+    } catch (error) {
+      console.error('Error loading custom items from DB:', error);
+      // تراجع إلى localStorage
+      const savedMedical = localStorage.getItem('custom_medical_items');
+      const savedNonMedical = localStorage.getItem('custom_nonmedical_items');
+      if (savedMedical) setCustomMedicalItems(JSON.parse(savedMedical));
+      if (savedNonMedical) setCustomNonMedicalItems(JSON.parse(savedNonMedical));
+    }
   };
 
-  const loadHiddenItems = () => {
-    const saved = localStorage.getItem('hidden_deficiency_items');
-    if (saved) setHiddenItems(JSON.parse(saved));
+  const loadHiddenItems = async () => {
+    try {
+      const items = await base44.entities.SortedNote.filter({ type: 'hidden_item' });
+      setHiddenItems(items.map(i => i.item_id));
+    } catch (error) {
+      console.error('Error loading hidden items from DB:', error);
+      const saved = localStorage.getItem('hidden_deficiency_items');
+      if (saved) setHiddenItems(JSON.parse(saved));
+    }
   };
 
-  const hideItemPermanently = (itemId) => {
+  const hideItemPermanently = async (itemId) => {
     const updated = [...hiddenItems, itemId];
     setHiddenItems(updated);
     localStorage.setItem('hidden_deficiency_items', JSON.stringify(updated));
-    // إزالة العنصر من المحددات إن كان موجوداً
     setSelectedItems(prev => prev.filter(i => i.id !== itemId));
+    
+    // حفظ في قاعدة البيانات
+    try {
+      await base44.entities.SortedNote.create({
+        type: 'hidden_item',
+        item_id: itemId,
+        name: itemId
+      });
+    } catch (error) {
+      console.error('Error saving hidden item to DB:', error);
+    }
     toast.success('تم إخفاء العنصر نهائياً');
   };
 
-  const restoreHiddenItem = (itemId) => {
+  const restoreHiddenItem = async (itemId) => {
     const updated = hiddenItems.filter(id => id !== itemId);
     setHiddenItems(updated);
     localStorage.setItem('hidden_deficiency_items', JSON.stringify(updated));
+    
+    // حذف من قاعدة البيانات
+    try {
+      const items = await base44.entities.SortedNote.filter({ type: 'hidden_item', item_id: itemId });
+      for (const item of items) {
+        await base44.entities.SortedNote.delete(item.id);
+      }
+    } catch (error) {
+      console.error('Error removing hidden item from DB:', error);
+    }
     toast.success('تم استعادة العنصر');
   };
 
-  const saveCustomItemToList = (item) => {
+  const saveCustomItemToList = async (item) => {
     const newItem = {
       id: item.id || `custom_${Date.now()}`,
       name: item.name,
@@ -544,10 +589,23 @@ export default function CenterDeficiencyTool() {
       setCustomNonMedicalItems(updated);
       localStorage.setItem('custom_nonmedical_items', JSON.stringify(updated));
     }
+
+    // حفظ في قاعدة البيانات
+    try {
+      await base44.entities.SortedNote.create({
+        type: 'custom_item',
+        item_type: item.type,
+        item_id: newItem.id,
+        name: newItem.name,
+        category: newItem.category
+      });
+    } catch (error) {
+      console.error('Error saving custom item to DB:', error);
+    }
     toast.success('تم إضافة العنصر للقائمة الثابتة');
   };
 
-  const removeCustomItemFromList = (itemId, type) => {
+  const removeCustomItemFromList = async (itemId, type) => {
     if (type === 'medical') {
       const updated = customMedicalItems.filter(i => i.id !== itemId);
       setCustomMedicalItems(updated);
@@ -556,6 +614,16 @@ export default function CenterDeficiencyTool() {
       const updated = customNonMedicalItems.filter(i => i.id !== itemId);
       setCustomNonMedicalItems(updated);
       localStorage.setItem('custom_nonmedical_items', JSON.stringify(updated));
+    }
+
+    // حذف من قاعدة البيانات
+    try {
+      const items = await base44.entities.SortedNote.filter({ type: 'custom_item', item_id: itemId });
+      for (const item of items) {
+        await base44.entities.SortedNote.delete(item.id);
+      }
+    } catch (error) {
+      console.error('Error removing custom item from DB:', error);
     }
     toast.success('تم حذف العنصر من القائمة');
   };
@@ -573,34 +641,75 @@ export default function CenterDeficiencyTool() {
   };
 
   const loadSavedReports = async () => {
-    // يمكن حفظ التقارير في localStorage أو في قاعدة البيانات
-    const saved = localStorage.getItem('deficiency_reports');
-    if (saved) {
-      setSavedReports(JSON.parse(saved));
+    try {
+      const reports = await base44.entities.SortedNote.filter({ type: 'report' });
+      const formattedReports = reports.map(r => ({
+        id: r.id,
+        title: r.name,
+        center: r.center_name,
+        items: r.items || [],
+        date: r.report_date || r.created_date
+      }));
+      setSavedReports(formattedReports);
+    } catch (error) {
+      console.error('Error loading reports from DB:', error);
+      // تراجع إلى localStorage
+      const saved = localStorage.getItem('deficiency_reports');
+      if (saved) {
+        setSavedReports(JSON.parse(saved));
+      }
     }
   };
 
-  const saveReport = () => {
+  const saveReport = async () => {
     if (!selectedCenter || selectedItems.length === 0) {
       toast.error('الرجاء اختيار مركز وإضافة عناصر للتقرير');
       return;
     }
 
-    const report = {
-      id: Date.now(),
-      title: reportTitle || `تقرير نواقص ${selectedCenter}`,
-      center: selectedCenter,
+    const reportData = {
+      type: 'report',
+      name: reportTitle || `تقرير نواقص ${selectedCenter}`,
+      center_name: selectedCenter,
       items: selectedItems,
-      date: new Date().toISOString(),
+      report_date: new Date().toISOString()
     };
 
-    const updated = [...savedReports, report];
-    setSavedReports(updated);
-    localStorage.setItem('deficiency_reports', JSON.stringify(updated));
-    toast.success('تم حفظ التقرير');
+    try {
+      const created = await base44.entities.SortedNote.create(reportData);
+      const newReport = {
+        id: created.id,
+        title: reportData.name,
+        center: reportData.center_name,
+        items: reportData.items,
+        date: reportData.report_date
+      };
+      setSavedReports(prev => [...prev, newReport]);
+      localStorage.setItem('deficiency_reports', JSON.stringify([...savedReports, newReport]));
+      toast.success('تم حفظ التقرير');
+    } catch (error) {
+      console.error('Error saving report to DB:', error);
+      // تراجع إلى localStorage فقط
+      const report = {
+        id: Date.now(),
+        title: reportData.name,
+        center: selectedCenter,
+        items: selectedItems,
+        date: new Date().toISOString(),
+      };
+      const updated = [...savedReports, report];
+      setSavedReports(updated);
+      localStorage.setItem('deficiency_reports', JSON.stringify(updated));
+      toast.success('تم حفظ التقرير محلياً');
+    }
   };
 
-  const deleteReport = (reportId) => {
+  const deleteReport = async (reportId) => {
+    try {
+      await base44.entities.SortedNote.delete(reportId);
+    } catch (error) {
+      console.error('Error deleting report from DB:', error);
+    }
     const updated = savedReports.filter(r => r.id !== reportId);
     setSavedReports(updated);
     localStorage.setItem('deficiency_reports', JSON.stringify(updated));
@@ -609,7 +718,7 @@ export default function CenterDeficiencyTool() {
 
   const loadReport = (report) => {
     setSelectedCenter(report.center);
-    setSelectedItems(report.items);
+    setSelectedItems(report.items || []);
     setReportTitle(report.title);
     setShowSavedReports(false);
     toast.success('تم تحميل التقرير');
