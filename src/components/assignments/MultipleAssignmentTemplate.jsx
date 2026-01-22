@@ -314,6 +314,38 @@ export default function MultipleAssignmentTemplate({
       } else if (e.ctrlKey && e.key === '-') {
         e.preventDefault();
         applyFontSizeChange(false);
+      } else if (e.ctrlKey && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        applyBoldToggle();
+      }
+    };
+
+    const applyBoldToggle = () => {
+      const selection = window.getSelection();
+      if (!selection || !selection.toString().trim()) {
+        toast.info('ظلل النص أولاً لتعريضه');
+        return;
+      }
+      
+      try {
+        const range = selection.getRangeAt(0);
+        let targetElement = range.commonAncestorContainer;
+        if (targetElement.nodeType === Node.TEXT_NODE) {
+          targetElement = targetElement.parentElement;
+        }
+        
+        if (targetElement && targetElement.tagName === 'SPAN' && targetElement.style.fontWeight) {
+          targetElement.style.fontWeight = targetElement.style.fontWeight === 'bold' ? 'normal' : 'bold';
+          toast.success(targetElement.style.fontWeight === 'bold' ? 'تم تعريض النص' : 'تم إزالة التعريض');
+        } else {
+          const span = document.createElement('span');
+          span.style.fontWeight = 'bold';
+          range.surroundContents(span);
+          toast.success('تم تعريض النص');
+        }
+      } catch (err) {
+        console.log('Cannot toggle bold:', err);
+        toast.error('تعذر تعريض النص - حاول تظليل نص أقصر');
       }
     };
 
@@ -533,6 +565,13 @@ export default function MultipleAssignmentTemplate({
           .free-text-label {
             display: none !important;
           }
+          /* Preserve inline text formatting styles */
+          span[style*="font-size"],
+          span[style*="font-weight"],
+          span[style*="font-family"] {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
         }
         .editable-cell {
           min-height: 40px;
@@ -685,7 +724,7 @@ export default function MultipleAssignmentTemplate({
           )}
           <span className="text-blue-600">🖱️ سحب</span>
           <span className="text-gray-300">|</span>
-          <span className="text-purple-600">📝 Ctrl+/- للنص المظلل</span>
+          <span className="text-purple-600">📝 Ctrl+/- و Ctrl+B</span>
           {selectedElement && (
             <>
               <span className="text-gray-300">|</span>
@@ -887,7 +926,7 @@ export default function MultipleAssignmentTemplate({
                     <div 
                       key={rowIndex} 
                       className="flex last:border-b-0 relative group/row"
-                      style={{ borderBottom: `${tableBorderWidth > 0 ? 1 : 0}px solid black` }}
+                      style={{ borderBottom: `${tableBorderWidth}px solid black` }}
                     >
                       {columns.map((col) => {
                         let displayValue = row[col.id];
@@ -905,7 +944,7 @@ export default function MultipleAssignmentTemplate({
                               minWidth: `${col.width}px`,
                               minHeight: `${rowHeight}px`,
                               flexShrink: 0,
-                              borderLeft: `${tableBorderWidth > 0 ? 1 : 0}px solid black`,
+                              borderLeft: `${tableBorderWidth}px solid black`,
                               fontSize: `${tableFontSize}px`,
                               fontFamily: globalFontFamily,
                             }}
