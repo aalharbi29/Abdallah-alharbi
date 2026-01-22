@@ -500,11 +500,30 @@ export default function CenterDeficiencyTool() {
     loadHiddenItems();
   }, []);
 
-  const loadCustomItems = () => {
-    const savedMedical = localStorage.getItem('custom_medical_items');
-    const savedNonMedical = localStorage.getItem('custom_nonmedical_items');
-    if (savedMedical) setCustomMedicalItems(JSON.parse(savedMedical));
-    if (savedNonMedical) setCustomNonMedicalItems(JSON.parse(savedNonMedical));
+  const loadCustomItems = async () => {
+    try {
+      // تحميل من قاعدة البيانات
+      const items = await base44.entities.DeficiencyCustomItem.list();
+      const medical = items.filter(i => i.item_type === 'medical').map(i => ({
+        id: i.id,
+        name: i.name,
+        category: i.category || 'مخصص'
+      }));
+      const nonMedical = items.filter(i => i.item_type === 'nonmedical').map(i => ({
+        id: i.id,
+        name: i.name,
+        category: i.category || 'مخصص'
+      }));
+      setCustomMedicalItems(medical);
+      setCustomNonMedicalItems(nonMedical);
+    } catch (error) {
+      console.error('Error loading custom items:', error);
+      // fallback to localStorage
+      const savedMedical = localStorage.getItem('custom_medical_items');
+      const savedNonMedical = localStorage.getItem('custom_nonmedical_items');
+      if (savedMedical) setCustomMedicalItems(JSON.parse(savedMedical));
+      if (savedNonMedical) setCustomNonMedicalItems(JSON.parse(savedNonMedical));
+    }
   };
 
   const loadHiddenItems = () => {
@@ -528,36 +547,48 @@ export default function CenterDeficiencyTool() {
     toast.success('تم استعادة العنصر');
   };
 
-  const saveCustomItemToList = (item) => {
-    const newItem = {
-      id: item.id || `custom_${Date.now()}`,
-      name: item.name,
-      category: item.category || 'مخصص',
-    };
-    
-    if (item.type === 'medical') {
-      const updated = [...customMedicalItems, newItem];
-      setCustomMedicalItems(updated);
-      localStorage.setItem('custom_medical_items', JSON.stringify(updated));
-    } else {
-      const updated = [...customNonMedicalItems, newItem];
-      setCustomNonMedicalItems(updated);
-      localStorage.setItem('custom_nonmedical_items', JSON.stringify(updated));
+  const saveCustomItemToList = async (item) => {
+    try {
+      // حفظ في قاعدة البيانات
+      const created = await base44.entities.DeficiencyCustomItem.create({
+        name: item.name,
+        category: item.category || 'مخصص',
+        item_type: item.type
+      });
+      
+      const newItem = {
+        id: created.id,
+        name: item.name,
+        category: item.category || 'مخصص',
+      };
+      
+      if (item.type === 'medical') {
+        setCustomMedicalItems(prev => [...prev, newItem]);
+      } else {
+        setCustomNonMedicalItems(prev => [...prev, newItem]);
+      }
+      toast.success('تم إضافة العنصر للقائمة الثابتة');
+    } catch (error) {
+      console.error('Error saving custom item:', error);
+      toast.error('فشل في حفظ العنصر');
     }
-    toast.success('تم إضافة العنصر للقائمة الثابتة');
   };
 
-  const removeCustomItemFromList = (itemId, type) => {
-    if (type === 'medical') {
-      const updated = customMedicalItems.filter(i => i.id !== itemId);
-      setCustomMedicalItems(updated);
-      localStorage.setItem('custom_medical_items', JSON.stringify(updated));
-    } else {
-      const updated = customNonMedicalItems.filter(i => i.id !== itemId);
-      setCustomNonMedicalItems(updated);
-      localStorage.setItem('custom_nonmedical_items', JSON.stringify(updated));
+  const removeCustomItemFromList = async (itemId, type) => {
+    try {
+      // حذف من قاعدة البيانات
+      await base44.entities.DeficiencyCustomItem.delete(itemId);
+      
+      if (type === 'medical') {
+        setCustomMedicalItems(prev => prev.filter(i => i.id !== itemId));
+      } else {
+        setCustomNonMedicalItems(prev => prev.filter(i => i.id !== itemId));
+      }
+      toast.success('تم حذف العنصر من القائمة');
+    } catch (error) {
+      console.error('Error removing custom item:', error);
+      toast.error('فشل في حذف العنصر');
     }
-    toast.success('تم حذف العنصر من القائمة');
   };
 
   const loadHealthCenters = async () => {
@@ -573,38 +604,73 @@ export default function CenterDeficiencyTool() {
   };
 
   const loadSavedReports = async () => {
-    // يمكن حفظ التقارير في localStorage أو في قاعدة البيانات
-    const saved = localStorage.getItem('deficiency_reports');
-    if (saved) {
-      setSavedReports(JSON.parse(saved));
+    try {
+      // تحميل التقارير من قاعدة البيانات
+      const reports = await base44.entities.DeficiencyReport.list('-created_date', 100);
+      const formattedReports = reports.map(r => ({
+        id: r.id,
+        title: r.title,
+        center: r.center_name,
+        items: JSON.parse(r.items || '[]'),
+        date: r.created_date,
+      }));
+      setSavedReports(formattedReports);
+    } catch (error) {
+      console.error('Error loading reports:', error);
+      // fallback to localStorage
+      const saved = localStorage.getItem('deficiency_reports');
+      if (saved) {
+        setSavedReports(JSON.parse(saved));
+      }
     }
   };
 
-  const saveReport = () => {
+  const saveReport = async () => {
     if (!selectedCenter || selectedItems.length === 0) {
       toast.error('الرجاء اختيار مركز وإضافة عناصر للتقرير');
       return;
     }
 
-    const report = {
-      id: Date.now(),
-      title: reportTitle || `تقرير نواقص ${selectedCenter}`,
-      center: selectedCenter,
-      items: selectedItems,
-      date: new Date().toISOString(),
-    };
+    try {
+      const medicalCount = selectedItems.filter(i => i.type === 'medical').length;
+      const nonMedicalCount = selectedItems.filter(i => i.type === 'nonmedical').length;
+      
+      // حفظ في قاعدة البيانات
+      const created = await base44.entities.DeficiencyReport.create({
+        title: reportTitle || `تقرير نواقص ${selectedCenter}`,
+        center_name: selectedCenter,
+        items: JSON.stringify(selectedItems),
+        medical_count: medicalCount,
+        nonmedical_count: nonMedicalCount,
+        total_count: selectedItems.length,
+      });
 
-    const updated = [...savedReports, report];
-    setSavedReports(updated);
-    localStorage.setItem('deficiency_reports', JSON.stringify(updated));
-    toast.success('تم حفظ التقرير');
+      const report = {
+        id: created.id,
+        title: created.title,
+        center: selectedCenter,
+        items: selectedItems,
+        date: new Date().toISOString(),
+      };
+
+      setSavedReports(prev => [...prev, report]);
+      toast.success('تم حفظ التقرير');
+    } catch (error) {
+      console.error('Error saving report:', error);
+      toast.error('فشل في حفظ التقرير');
+    }
   };
 
-  const deleteReport = (reportId) => {
-    const updated = savedReports.filter(r => r.id !== reportId);
-    setSavedReports(updated);
-    localStorage.setItem('deficiency_reports', JSON.stringify(updated));
-    toast.success('تم حذف التقرير');
+  const deleteReport = async (reportId) => {
+    try {
+      // حذف من قاعدة البيانات
+      await base44.entities.DeficiencyReport.delete(reportId);
+      setSavedReports(prev => prev.filter(r => r.id !== reportId));
+      toast.success('تم حذف التقرير');
+    } catch (error) {
+      console.error('Error deleting report:', error);
+      toast.error('فشل في حذف التقرير');
+    }
   };
 
   const loadReport = (report) => {
