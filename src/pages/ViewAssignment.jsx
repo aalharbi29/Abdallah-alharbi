@@ -19,6 +19,7 @@ import TemplateStyleManager from '../components/assignments/TemplateStyleManager
 import { exportAssignment } from "@/functions/exportAssignment";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { EmployeeDocument } from "@/entities/EmployeeDocument";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -936,6 +937,91 @@ export default function ViewAssignmentPage() {
     }
   }, [isDragging, dragOffset]);
 
+  // Keyboard shortcuts for text formatting (Ctrl+/- for font size)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Text font size - apply to selected text
+      if (e.ctrlKey && (e.key === '=' || e.key === '+')) {
+        e.preventDefault();
+        applyFontSizeChange(true);
+      } else if (e.ctrlKey && e.key === '-') {
+        e.preventDefault();
+        applyFontSizeChange(false);
+      } else if (e.ctrlKey && e.key.toLowerCase() === 'b') {
+        e.preventDefault();
+        applyBoldToggle();
+      }
+    };
+
+    const applyFontSizeChange = (increase) => {
+      const selection = window.getSelection();
+      if (!selection || !selection.toString().trim()) {
+        toast.info('ظلل النص أولاً لتغيير حجمه');
+        return;
+      }
+      
+      try {
+        const range = selection.getRangeAt(0);
+        
+        // Check if already has a font-size span
+        let targetElement = range.commonAncestorContainer;
+        if (targetElement.nodeType === Node.TEXT_NODE) {
+          targetElement = targetElement.parentElement;
+        }
+        
+        if (targetElement && targetElement.tagName === 'SPAN' && targetElement.style.fontSize) {
+          const currentSize = parseFloat(targetElement.style.fontSize) || 1;
+          const newSize = increase 
+            ? Math.min(currentSize + 0.15, 3) 
+            : Math.max(currentSize - 0.15, 0.5);
+          targetElement.style.fontSize = `${newSize}em`;
+          toast.success(`حجم النص: ${Math.round(newSize * 100)}%`);
+        } else {
+          const span = document.createElement('span');
+          const newSize = increase ? 1.15 : 0.85;
+          span.style.fontSize = `${newSize}em`;
+          range.surroundContents(span);
+          toast.success(`حجم النص: ${Math.round(newSize * 100)}%`);
+        }
+      } catch (err) {
+        console.log('Cannot resize text:', err);
+        toast.error('تعذر تغيير حجم النص - حاول تظليل نص أقصر');
+      }
+    };
+
+    const applyBoldToggle = () => {
+      const selection = window.getSelection();
+      if (!selection || !selection.toString().trim()) {
+        toast.info('ظلل النص أولاً لتغيير تنسيقه');
+        return;
+      }
+      
+      try {
+        const range = selection.getRangeAt(0);
+        let targetElement = range.commonAncestorContainer;
+        if (targetElement.nodeType === Node.TEXT_NODE) {
+          targetElement = targetElement.parentElement;
+        }
+        
+        if (targetElement && targetElement.tagName === 'SPAN' && targetElement.style.fontWeight) {
+          targetElement.style.fontWeight = targetElement.style.fontWeight === 'bold' ? 'normal' : 'bold';
+          toast.success(targetElement.style.fontWeight === 'bold' ? 'تم تعريض النص' : 'تم إزالة التعريض');
+        } else {
+          const span = document.createElement('span');
+          span.style.fontWeight = 'bold';
+          range.surroundContents(span);
+          toast.success('تم تعريض النص');
+        }
+      } catch (err) {
+        console.log('Cannot toggle bold:', err);
+        toast.error('تعذر تغيير التنسيق');
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   if (isLoading) return <div className="p-6 text-center text-lg">جاري تحميل التكليف...</div>;
   
   if (error) {
@@ -1001,6 +1087,13 @@ export default function ViewAssignmentPage() {
               background: white !important;
               padding: 0 !important;
             }
+            /* Preserve inline styles for text formatting */
+            span[style*="font-size"], 
+            span[style*="font-weight"],
+            span[style*="font-family"] {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
           }
           .print-only {
             display: none;
@@ -1026,6 +1119,10 @@ export default function ViewAssignmentPage() {
           }
           .flexible-draggable-container {
             position: relative;
+          }
+          /* Text selection formatting hint */
+          ::selection {
+            background: rgba(59, 130, 246, 0.3);
           }
         `}</style>
         {/* Floating Controls */}
@@ -1139,6 +1236,14 @@ export default function ViewAssignmentPage() {
                     <ArrowRight className="w-4 h-4 ml-2" />
                     العودة لقائمة التكاليف
                 </Button>
+            </div>
+            
+            {/* Text Formatting Help */}
+            <div className="p-2 bg-purple-50 backdrop-blur-sm rounded-xl shadow-lg border border-purple-200 text-xs">
+                <p className="font-bold text-purple-800 mb-1">📝 تنسيق النصوص:</p>
+                <p className="text-purple-600">• ظلل نص + <kbd className="bg-purple-200 px-1 rounded">Ctrl</kbd>+<kbd className="bg-purple-200 px-1 rounded">+</kbd> للتكبير</p>
+                <p className="text-purple-600">• ظلل نص + <kbd className="bg-purple-200 px-1 rounded">Ctrl</kbd>+<kbd className="bg-purple-200 px-1 rounded">-</kbd> للتصغير</p>
+                <p className="text-purple-600">• ظلل نص + <kbd className="bg-purple-200 px-1 rounded">Ctrl</kbd>+<kbd className="bg-purple-200 px-1 rounded">B</kbd> للتعريض</p>
             </div>
             
             {/* Template Mode Selection & Style Manager for Multiple */}
