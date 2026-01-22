@@ -15,36 +15,22 @@ import { Command, CommandInput, CommandEmpty, CommandGroup, CommandItem } from "
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Save, ChevronsUpDown, Settings2, Table, List, Loader2, Plus, Trash2 } from "lucide-react";
+import { ArrowRight, Save, ChevronsUpDown, Settings2, Table, List, Loader2, Plus, Trash2, FolderOpen, ChevronDown } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { differenceInDays } from "date-fns";
 import FlexibleAssignmentTemplate from "@/components/assignments/FlexibleAssignmentTemplate";
 import StandardAssignmentTemplate from "@/components/assignments/StandardAssignmentTemplate";
 import MultipleAssignmentTemplate from "@/components/assignments/MultipleAssignmentTemplate";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { base44 } from "@/api/base44Client";
 
-// Assuming base44 is a global object or imported
-const base44 = {
-  functions: {
-    invoke: async (functionName, payload) => {
-      // Mock function for demo
-      return { data: { success: true } };
-    }
-  },
-  integrations: {
-    Core: {
-      UploadFile: async ({ file }) => {
-        return { file_url: "https://example.com/file.pdf", file_name: file.name };
-      }
-    }
-  },
-  entities: {
-    EmployeeDocument: {
-      create: async (docData) => {
-        return { id: "123", ...docData };
-      }
-    }
-  }
-};
+
 
 export default function CreateAssignment() {
   const navigate = useNavigate();
@@ -117,7 +103,11 @@ export default function CreateAssignment() {
     ],
     customIntro: 'إن مدير شؤون المراكز الصحية بالحناكية وبناء على الصلاحيات الممنوحة لنا نظاماً\nعليه يقرر ما يلي:',
     freeText: ''
-    });
+  });
+
+  // Saved templates state
+  const [savedTemplates, setSavedTemplates] = useState([]);
+  const [loadingTemplates, setLoadingTemplates] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -135,7 +125,47 @@ export default function CreateAssignment() {
       }
     }
     fetchData();
-  }, []);
+    loadSavedTemplates();
+  }, [assignmentType]);
+
+  const loadSavedTemplates = async () => {
+    setLoadingTemplates(true);
+    try {
+      const templates = await base44.entities.AssignmentTemplate.filter({ template_type: assignmentType });
+      setSavedTemplates(Array.isArray(templates) ? templates : []);
+    } catch (error) {
+      console.error("Error loading templates:", error);
+      setSavedTemplates([]);
+    } finally {
+      setLoadingTemplates(false);
+    }
+  };
+
+  const applyTemplate = (template) => {
+    if (!template?.options) return;
+    
+    const options = template.options;
+    
+    setTemplateOptions(prev => ({
+      ...prev,
+      customTitle: options.customTitle || prev.customTitle,
+      customIntro: options.customIntro || prev.customIntro,
+      customClosing: options.customClosing || prev.customClosing,
+      decisionPoints: options.decisionPoints || prev.decisionPoints,
+      customParagraph1: options.customParagraph1 || prev.customParagraph1,
+      customParagraph2: options.customParagraph2 || prev.customParagraph2,
+      customParagraph3: options.customParagraph3 || prev.customParagraph3,
+      customParagraph4: options.customParagraph4 || prev.customParagraph4,
+      customParagraph5: options.customParagraph5 || prev.customParagraph5,
+      tableLayout: options.tableLayout || prev.tableLayout,
+      showDurationInTable: options.showDurationInTable !== undefined ? options.showDurationInTable : prev.showDurationInTable,
+      showDurationInParagraph: options.showDurationInParagraph !== undefined ? options.showDurationInParagraph : prev.showDurationInParagraph,
+      customTableHeaders: options.customTableHeaders || prev.customTableHeaders,
+      freeText: options.freeText || prev.freeText,
+    }));
+
+    alert(`✅ تم تحميل القالب: ${template.name}`);
+  };
 
   const handleEmployeeSelect = (employee) => {
     setSelectedEmployee(employee);
@@ -303,6 +333,49 @@ export default function CreateAssignment() {
               {assignmentType === 'multiple' && (
                 <Badge className="bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200">تكليف متعدد</Badge>
               )}
+              
+              {/* زر تحميل القالب */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-1 mr-2">
+                    <FolderOpen className="w-4 h-4" />
+                    تحميل قالب
+                    <ChevronDown className="w-3 h-3" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-64">
+                  {loadingTemplates ? (
+                    <DropdownMenuItem disabled>
+                      <Loader2 className="w-4 h-4 animate-spin ml-2" />
+                      جاري التحميل...
+                    </DropdownMenuItem>
+                  ) : savedTemplates.length === 0 ? (
+                    <DropdownMenuItem disabled>
+                      لا توجد قوالب محفوظة لهذا النوع
+                    </DropdownMenuItem>
+                  ) : (
+                    <>
+                      {savedTemplates.map((template) => (
+                        <DropdownMenuItem 
+                          key={template.id} 
+                          onClick={() => applyTemplate(template)}
+                          className="flex flex-col items-start gap-0.5"
+                        >
+                          <span className="font-medium">{template.name}</span>
+                          {template.description && (
+                            <span className="text-xs text-gray-500">{template.description}</span>
+                          )}
+                        </DropdownMenuItem>
+                      ))}
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onClick={() => window.open(createPageUrl("AssignmentTemplates"), '_blank')}>
+                        <Settings2 className="w-4 h-4 ml-2" />
+                        إدارة القوالب
+                      </DropdownMenuItem>
+                    </>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             <p className="text-gray-600 mt-1">
               {assignmentType === 'flexible' 
