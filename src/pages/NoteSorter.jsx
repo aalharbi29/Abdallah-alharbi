@@ -682,7 +682,27 @@ export default function CenterDeficiencyTool() {
     loadSavedReports();
     loadCustomItems();
     loadHiddenItems();
+    loadPreviouslySelectedItems();
   }, []);
+
+  // حفظ العناصر المختارة تلقائياً عند التغيير
+  useEffect(() => {
+    if (selectedItems.length > 0) {
+      localStorage.setItem('previously_selected_deficiency_items', JSON.stringify(selectedItems));
+    }
+  }, [selectedItems]);
+
+  const loadPreviouslySelectedItems = () => {
+    const saved = localStorage.getItem('previously_selected_deficiency_items');
+    if (saved) {
+      try {
+        const items = JSON.parse(saved);
+        setSelectedItems(items);
+      } catch (e) {
+        console.error('Error loading previously selected items:', e);
+      }
+    }
+  };
 
   const loadCustomItems = async () => {
     try {
