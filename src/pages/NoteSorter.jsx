@@ -1856,6 +1856,77 @@ export default function CenterDeficiencyTool() {
 
                   {/* القائمة */}
                   <div className="max-h-[500px] overflow-y-auto space-y-4 custom-scrollbar">
+                    {/* قسم العناصر المختارة سابقاً */}
+                    {(() => {
+                      const selectedInCurrentTab = selectedItems.filter(item => item.type === activeTab);
+                      if (selectedInCurrentTab.length === 0) return null;
+                      
+                      return (
+                        <div className="space-y-2">
+                          <div className={`sticky top-0 z-20 flex items-center justify-between px-4 py-3 rounded-xl ${
+                            activeTab === 'medical' 
+                              ? 'bg-gradient-to-r from-amber-100 to-yellow-100 border-2 border-amber-300' 
+                              : 'bg-gradient-to-r from-amber-100 to-yellow-100 border-2 border-amber-300'
+                          }`}>
+                            <h4 className="font-bold text-amber-800 flex items-center gap-2">
+                              <CheckCircle2 className="w-4 h-4 text-amber-600" />
+                              تم اختيارها سابقاً
+                            </h4>
+                            <Badge className="bg-amber-600 text-white">
+                              {selectedInCurrentTab.length} محدد
+                            </Badge>
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            {selectedInCurrentTab.map(item => (
+                              <div
+                                key={`selected-${item.id}`}
+                                className={`group flex items-center gap-3 p-3 rounded-xl border-2 transition-all cursor-pointer relative ${
+                                  activeTab === 'medical'
+                                    ? 'border-teal-500 bg-gradient-to-r from-teal-50 to-emerald-50 shadow-md shadow-teal-100' 
+                                    : 'border-purple-500 bg-gradient-to-r from-purple-50 to-indigo-50 shadow-md shadow-purple-100'
+                                }`}
+                                onClick={() => toggleItem(item)}
+                              >
+                                <Checkbox
+                                  checked={true}
+                                  onClick={(e) => e.stopPropagation()}
+                                  className={activeTab === 'medical' ? 'border-teal-600 data-[state=checked]:bg-teal-600' : 'border-purple-600 data-[state=checked]:bg-purple-600'}
+                                />
+                                <span className="flex-1 text-sm font-medium text-gray-900">
+                                  {item.name}
+                                  {item.isCustom && <span className="text-xs text-orange-500 mr-1">(مخصص)</span>}
+                                </span>
+                                <div className="flex items-center gap-1 bg-white rounded-lg p-1 shadow-sm" onClick={(e) => e.stopPropagation()}>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7 hover:bg-gray-100"
+                                    onClick={() => updateQuantity(item.id, getSelectedQuantity(item.id) - 1)}
+                                  >
+                                    <Minus className="w-3 h-3" />
+                                  </Button>
+                                  <Input
+                                    type="number"
+                                    min="1"
+                                    value={getSelectedQuantity(item.id)}
+                                    onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)}
+                                    className="w-12 h-7 text-center text-sm p-1 border-0 bg-gray-50 font-bold"
+                                  />
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7 hover:bg-gray-100"
+                                    onClick={() => updateQuantity(item.id, getSelectedQuantity(item.id) + 1)}
+                                  >
+                                    <Plus className="w-3 h-3" />
+                                  </Button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })()}
                     {categories.map(category => {
                       const categoryItems = filteredItems.filter(item => item.category === category);
                       if (categoryItems.length === 0) return null;
