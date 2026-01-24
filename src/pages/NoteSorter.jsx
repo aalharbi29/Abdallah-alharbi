@@ -126,6 +126,7 @@ const medicalEquipmentList = [
   { id: 'head_immobilizer', name: 'مثبت رأس', category: 'إسعافات أولية' },
   { id: 'ked', name: 'جهاز استخراج كيندريك', category: 'إسعافات أولية' },
   { id: 'aed', name: 'جهاز الصدمات الآلي (AED)', category: 'إسعافات أولية' },
+  { id: 'patient_transfer_bed', name: 'سرير نقل مريض', category: 'إسعافات أولية' },
   { id: 'laryngoscope', name: 'منظار حنجرة', category: 'إسعافات أولية' },
   { id: 'endotracheal_tube', name: 'أنبوب رغامي', category: 'إسعافات أولية' },
   { id: 'airway_oral', name: 'مجرى هوائي فموي', category: 'إسعافات أولية' },
