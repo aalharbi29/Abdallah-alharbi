@@ -592,7 +592,7 @@ const nonMedicalEquipmentList = [
 
   // تجهيزات عامة
   { id: 'national_flag', name: 'العلم الوطني السعودي', category: 'تجهيزات عامة' },
-  { id: 'royal_photos', name: 'الصور الملكية (الملك وولي العهد)', category: 'تجهيزات عامة' },
+  { id: 'royal_photos', name: 'صور ملكية', category: 'تجهيزات عامة' },
   { id: 'center_visual_identity', name: 'هوية بصرية للمركز (اسم المركز وشعار التجمع الجديد)', category: 'تجهيزات عامة' },
   { id: 'center_name_board', name: 'لوحة اسم المركز الخارجية', category: 'تجهيزات عامة' },
   { id: 'cluster_logo', name: 'شعار التجمع الصحي', category: 'تجهيزات عامة' },
