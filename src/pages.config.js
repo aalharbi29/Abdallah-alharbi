@@ -41,6 +41,7 @@ import Home from './pages/Home';
 import HumanResources from './pages/HumanResources';
 import InteractiveForms from './pages/InteractiveForms';
 import Leaves from './pages/Leaves';
+import NoteSorter from './pages/NoteSorter';
 import PDFEditor from './pages/PDFEditor';
 import PowerPointEditor from './pages/PowerPointEditor';
 import QuickNotes from './pages/QuickNotes';
@@ -52,7 +53,6 @@ import StatisticsHijri from './pages/StatisticsHijri';
 import ViewAssignment from './pages/ViewAssignment';
 import ViewEquipmentRequest from './pages/ViewEquipmentRequest';
 import ViewExcellentEmployeeCertificate from './pages/ViewExcellentEmployeeCertificate';
-import NoteSorter from './pages/NoteSorter';
 import __Layout from './Layout.jsx';
 
 
@@ -100,6 +100,7 @@ export const PAGES = {
     "HumanResources": HumanResources,
     "InteractiveForms": InteractiveForms,
     "Leaves": Leaves,
+    "NoteSorter": NoteSorter,
     "PDFEditor": PDFEditor,
     "PowerPointEditor": PowerPointEditor,
     "QuickNotes": QuickNotes,
@@ -111,7 +112,6 @@ export const PAGES = {
     "ViewAssignment": ViewAssignment,
     "ViewEquipmentRequest": ViewEquipmentRequest,
     "ViewExcellentEmployeeCertificate": ViewExcellentEmployeeCertificate,
-    "NoteSorter": NoteSorter,
 }
 
 export const pagesConfig = {
