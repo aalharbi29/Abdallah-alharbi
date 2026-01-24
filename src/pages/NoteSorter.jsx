@@ -130,9 +130,11 @@ const medicalEquipmentList = [
   { id: 'endotracheal_tube', name: 'أنبوب رغامي', category: 'إسعافات أولية' },
   { id: 'airway_oral', name: 'مجرى هوائي فموي', category: 'إسعافات أولية' },
   { id: 'airway_nasal', name: 'مجرى هوائي أنفي', category: 'إسعافات أولية' },
-  { id: 'wheelchair_path_disability', name: 'ممر جانبي لموقع ذوي الإعاقة يساعد للمركز المتحرك', category: 'إسعافات أولية' },
-  { id: 'wheelchair_ramp_disability', name: 'مساحة دورات مياه ذوي الإعاقة مناسبة لدخول الكرسي المتحرك', category: 'إسعافات أولية' },
-  { id: 'wheelchair_toilet_disability', name: 'مقابض ذوي الإعاقة بدورات المياه', category: 'إسعافات أولية' },
+  { id: 'wheelchair_path_disability', name: 'ممر جانبي لموقع ذوي الإعاقة يساعد للمركز المتحرك', category: 'سهولة الوصول' },
+  { id: 'wheelchair_ramp_disability', name: 'مساحة دورات مياه ذوي الإعاقة مناسبة لدخول الكرسي المتحرك', category: 'سهولة الوصول' },
+  { id: 'wheelchair_toilet_disability', name: 'مقابض ذوي الإعاقة بدورات المياه', category: 'سهولة الوصول' },
+  { id: 'automatic_main_gate', name: 'بوابة رئيسية تفتح آلياً', category: 'سهولة الوصول' },
+  { id: 'bathroom_support_handles', name: 'مقابض مساندة في دورات المياه', category: 'سهولة الوصول' },
   
   // أدوات التطعيم
   { id: 'vaccine_fridge', name: 'ثلاجة لقاحات', category: 'التطعيمات' },
@@ -267,6 +269,9 @@ const medicalEquipmentList = [
   { id: 'dental_unit', name: 'وحدة أسنان متكاملة', category: 'طب الأسنان' },
   { id: 'dental_xray', name: 'جهاز أشعة أسنان', category: 'طب الأسنان' },
   { id: 'panoramic_xray', name: 'جهاز أشعة بانورامية', category: 'طب الأسنان' },
+  { id: 'dental_lead_apron', name: 'دروع واقية من الأشعة لعيادة الأسنان', category: 'طب الأسنان' },
+  { id: 'dental_lead_thyroid_collar', name: 'واقي الغدة الدرقية من الأشعة', category: 'طب الأسنان' },
+  { id: 'dental_lead_glasses', name: 'نظارات واقية من الأشعة', category: 'طب الأسنان' },
   { id: 'dental_instruments', name: 'أدوات أسنان أساسية', category: 'طب الأسنان' },
   { id: 'dental_sterilizer', name: 'جهاز تعقيم أسنان', category: 'طب الأسنان' },
   { id: 'dental_compressor', name: 'ضاغط هواء أسنان', category: 'طب الأسنان' },
@@ -475,7 +480,10 @@ const nonMedicalEquipmentList = [
   { id: 'exit_sign', name: 'لوحة مخرج طوارئ', category: 'سلامة وأمان' },
   { id: 'safety_cabinet', name: 'خزانة معدات السلامة', category: 'سلامة وأمان' },
   { id: 'fire_door', name: 'باب مقاوم للحريق', category: 'سلامة وأمان' },
-  { id: 'safety_signs', name: 'لوحات إرشادية', category: 'سلامة وأمان' },
+  { id: 'safety_signs_emergency_exit', name: 'لوحات إرشادية لمخرج الطوارئ', category: 'سلامة وأمان' },
+  { id: 'safety_signs_assembly_point', name: 'لوحات إرشادية لنقطة التجمع', category: 'سلامة وأمان' },
+  { id: 'safety_signs_clinic_locations', name: 'لوحات إرشادية لمواقع العيادات', category: 'سلامة وأمان' },
+  { id: 'safety_signs_working_hours', name: 'لوحات إرشادية لوقت العمل بالمركز (معلقة في السقف)', category: 'سلامة وأمان' },
   { id: 'emergency_shower', name: 'دش طوارئ', category: 'سلامة وأمان' },
   { id: 'eyewash_station', name: 'محطة غسيل عيون', category: 'سلامة وأمان' },
   { id: 'clinic_glass_no_barrier', name: 'الصيدلية بدون حاجز أو حاجز زجاجي شفاف مع فتحات للتواصل', category: 'سلامة وأمان' },
@@ -553,6 +561,7 @@ const nonMedicalEquipmentList = [
   { id: 'all_vital_measurements', name: 'قياس جميع العلامات الحيوية (اللون، الطول، والضغط والحرارة)', category: 'معدات متنوعة' },
   { id: 'special_clinic_hours', name: 'عيادات تخصصية', category: 'معدات متنوعة' },
   { id: 'added_clinic', name: 'عيادة مضافة', category: 'معدات متنوعة' },
+  { id: 'leather_waiting_chairs', name: 'كراسي انتظار مريحة (جلد)', category: 'معدات متنوعة' },
   
   // مستلزمات مكتبية
   { id: 'paper_a4', name: 'ورق A4', category: 'مستلزمات مكتبية' },
@@ -578,6 +587,15 @@ const nonMedicalEquipmentList = [
   { id: 'calculator', name: 'آلة حاسبة', category: 'مستلزمات مكتبية' },
   { id: 'desk_organizer', name: 'منظم مكتب', category: 'مستلزمات مكتبية' },
   { id: 'letter_tray', name: 'صينية أوراق', category: 'مستلزمات مكتبية' },
+
+  // تجهيزات عامة
+  { id: 'national_flag', name: 'العلم الوطني السعودي', category: 'تجهيزات عامة' },
+  { id: 'royal_photos', name: 'الصور الملكية (الملك وولي العهد)', category: 'تجهيزات عامة' },
+  { id: 'center_visual_identity', name: 'هوية بصرية للمركز (اسم المركز وشعار التجمع الجديد)', category: 'تجهيزات عامة' },
+  { id: 'center_name_board', name: 'لوحة اسم المركز الخارجية', category: 'تجهيزات عامة' },
+  { id: 'cluster_logo', name: 'شعار التجمع الصحي', category: 'تجهيزات عامة' },
+  { id: 'moh_logo', name: 'شعار وزارة الصحة', category: 'تجهيزات عامة' },
+  { id: 'vision_2030_logo', name: 'شعار رؤية 2030', category: 'تجهيزات عامة' },
 
   // تجهيزات سيارة الإسعاف غير الطبية
   { id: 'ambulance_vehicle', name: 'سيارة إسعاف', category: 'سيارة الإسعاف - غير طبي' },
