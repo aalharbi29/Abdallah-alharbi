@@ -413,7 +413,7 @@ const nonMedicalEquipmentList = [
   { id: 'phone_cordless', name: 'هاتف لاسلكي', category: 'أجهزة إلكترونية' },
   { id: 'fax', name: 'جهاز فاكس', category: 'أجهزة إلكترونية' },
   { id: 'projector', name: 'جهاز عرض (بروجكتور)', category: 'أجهزة إلكترونية' },
-  { id: 'projector_screen', name: 'شاشة عرض بروجكتور', category: 'أجهزة إلكترونية' },
+  { id: 'projector_screen', name: 'شاشة عرض', category: 'أجهزة إلكترونية' },
   { id: 'tv_screen', name: 'شاشة تلفزيون', category: 'أجهزة إلكترونية' },
   { id: 'tv_bracket', name: 'حامل شاشة', category: 'أجهزة إلكترونية' },
   { id: 'cctv', name: 'كاميرات مراقبة', category: 'أجهزة إلكترونية' },
