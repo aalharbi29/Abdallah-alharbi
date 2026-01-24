@@ -483,6 +483,7 @@ const nonMedicalEquipmentList = [
   { id: 'safety_signs_assembly_point', name: 'لوحات إرشادية لنقطة التجمع', category: 'سلامة وأمان' },
   { id: 'safety_signs_clinic_locations', name: 'لوحات إرشادية لمواقع العيادات', category: 'سلامة وأمان' },
   { id: 'safety_signs_working_hours', name: 'لوحات إرشادية لوقت العمل بالمركز (معلقة في السقف)', category: 'سلامة وأمان' },
+  { id: 'safety_signs_working_hours_wall', name: 'لوحات إرشادية لوقت العمل', category: 'سلامة وأمان' },
   { id: 'emergency_shower', name: 'دش طوارئ', category: 'سلامة وأمان' },
   { id: 'eyewash_station', name: 'محطة غسيل عيون', category: 'سلامة وأمان' },
   { id: 'clinic_glass_no_barrier', name: 'الصيدلية بدون حاجز أو حاجز زجاجي شفاف مع فتحات للتواصل', category: 'سلامة وأمان' },
