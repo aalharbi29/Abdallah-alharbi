@@ -471,6 +471,7 @@ const nonMedicalEquipmentList = [
   { id: 'fire_hose', name: 'خرطوم إطفاء', category: 'سلامة وأمان' },
   { id: 'fire_blanket', name: 'بطانية إطفاء', category: 'سلامة وأمان' },
   { id: 'fire_alarm', name: 'جهاز إنذار حريق', category: 'سلامة وأمان' },
+  { id: 'security_system_full', name: 'نظام أمني كامل (كاميرات وجهاز تسجيل وجهاز إنذار ضد السرقة)', category: 'الأمن والسلامة' },
   { id: 'fire_alarm_panel', name: 'لوحة إنذار حريق', category: 'سلامة وأمان' },
   { id: 'smoke_detector', name: 'كاشف دخان', category: 'سلامة وأمان' },
   { id: 'heat_detector', name: 'كاشف حرارة', category: 'سلامة وأمان' },
