@@ -130,11 +130,7 @@ const medicalEquipmentList = [
   { id: 'endotracheal_tube', name: 'أنبوب رغامي', category: 'إسعافات أولية' },
   { id: 'airway_oral', name: 'مجرى هوائي فموي', category: 'إسعافات أولية' },
   { id: 'airway_nasal', name: 'مجرى هوائي أنفي', category: 'إسعافات أولية' },
-  { id: 'wheelchair_path_disability', name: 'ممر جانبي لموقع ذوي الإعاقة يساعد للمركز المتحرك', category: 'سهولة الوصول' },
-  { id: 'wheelchair_ramp_disability', name: 'مساحة دورات مياه ذوي الإعاقة مناسبة لدخول الكرسي المتحرك', category: 'سهولة الوصول' },
-  { id: 'wheelchair_toilet_disability', name: 'مقابض ذوي الإعاقة بدورات المياه', category: 'سهولة الوصول' },
-  { id: 'automatic_main_gate', name: 'بوابة رئيسية تفتح آلياً', category: 'سهولة الوصول' },
-  { id: 'bathroom_support_handles', name: 'مقابض مساندة في دورات المياه', category: 'سهولة الوصول' },
+
   
   // أدوات التطعيم
   { id: 'vaccine_fridge', name: 'ثلاجة لقاحات', category: 'التطعيمات' },
@@ -564,6 +560,13 @@ const nonMedicalEquipmentList = [
   { id: 'special_clinic_hours', name: 'عيادات تخصصية', category: 'معدات متنوعة' },
   { id: 'added_clinic', name: 'عيادة مضافة', category: 'معدات متنوعة' },
   { id: 'leather_waiting_chairs', name: 'كراسي انتظار مريحة (جلد)', category: 'معدات متنوعة' },
+  
+  // سهولة الوصول
+  { id: 'wheelchair_path_disability', name: 'ممر جانبي لموقع ذوي الإعاقة يساعد للمركز المتحرك', category: 'سهولة الوصول' },
+  { id: 'wheelchair_ramp_disability', name: 'مساحة دورات مياه ذوي الإعاقة مناسبة لدخول الكرسي المتحرك', category: 'سهولة الوصول' },
+  { id: 'wheelchair_toilet_disability', name: 'مقابض ذوي الإعاقة بدورات المياه', category: 'سهولة الوصول' },
+  { id: 'automatic_main_gate', name: 'بوابة رئيسية تفتح آلياً', category: 'سهولة الوصول' },
+  { id: 'bathroom_support_handles', name: 'مقابض مساندة في دورات المياه', category: 'سهولة الوصول' },
   
   // مستلزمات مكتبية
   { id: 'paper_a4', name: 'ورق A4', category: 'مستلزمات مكتبية' },
