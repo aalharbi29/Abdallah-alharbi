@@ -372,7 +372,7 @@ const nonMedicalEquipmentList = [
   { id: 'filing_cabinet', name: 'خزانة ملفات', category: 'أثاث مكتبي' },
   { id: 'filing_cabinet_4drawer', name: 'خزانة ملفات 4 أدراج', category: 'أثاث مكتبي' },
   { id: 'bookshelf', name: 'رف كتب', category: 'أثاث مكتبي' },
-  { id: 'bookcase', name: 'مكتبة', category: 'أثاث مكتبي' },
+  { id: 'bookcase', name: 'دولاب مكتبي واجهة زجاج', category: 'أثاث مكتبي' },
   { id: 'counter', name: 'كاونتر استقبال', category: 'أثاث مكتبي' },
   { id: 'meeting_table', name: 'طاولة اجتماعات', category: 'أثاث مكتبي' },
   { id: 'coffee_table', name: 'طاولة قهوة', category: 'أثاث مكتبي' },
