@@ -675,6 +675,7 @@ export default function CenterDeficiencyTool() {
   const [customMedicalItems, setCustomMedicalItems] = useState([]);
   const [customNonMedicalItems, setCustomNonMedicalItems] = useState([]);
   const [hiddenItems, setHiddenItems] = useState([]);
+  const [editingReportId, setEditingReportId] = useState(null);
 
   useEffect(() => {
     loadHealthCenters();
@@ -856,12 +857,57 @@ export default function CenterDeficiencyTool() {
     }
   };
 
-  const loadReport = (report) => {
+  const loadReport = (report, forEditing = false) => {
     setSelectedCenter(report.center);
     setSelectedItems(report.items);
     setReportTitle(report.title);
+    if (forEditing) {
+      setEditingReportId(report.id);
+    } else {
+      setEditingReportId(null);
+    }
     setShowSavedReports(false);
-    toast.success('تم تحميل التقرير');
+    toast.success(forEditing ? 'تم تحميل التقرير للتعديل' : 'تم تحميل التقرير');
+  };
+
+  const updateExistingReport = async () => {
+    if (!editingReportId || !selectedCenter || selectedItems.length === 0) {
+      toast.error('الرجاء التأكد من وجود بيانات للحفظ');
+      return;
+    }
+
+    try {
+      const medicalCount = selectedItems.filter(i => i.type === 'medical').length;
+      const nonMedicalCount = selectedItems.filter(i => i.type === 'nonmedical').length;
+      
+      await base44.entities.DeficiencyReport.update(editingReportId, {
+        title: reportTitle || `تقرير نواقص ${selectedCenter}`,
+        center_name: selectedCenter,
+        items: JSON.stringify(selectedItems),
+        medical_count: medicalCount,
+        nonmedical_count: nonMedicalCount,
+        total_count: selectedItems.length,
+      });
+
+      setSavedReports(prev => prev.map(r => 
+        r.id === editingReportId 
+          ? { ...r, title: reportTitle || `تقرير نواقص ${selectedCenter}`, center: selectedCenter, items: selectedItems }
+          : r
+      ));
+      
+      toast.success('تم تحديث التقرير بنجاح');
+    } catch (error) {
+      console.error('Error updating report:', error);
+      toast.error('فشل في تحديث التقرير');
+    }
+  };
+
+  const cancelEditing = () => {
+    setEditingReportId(null);
+    setSelectedItems([]);
+    setSelectedCenter('');
+    setReportTitle('');
+    toast.info('تم إلغاء التعديل');
   };
 
   const toggleItem = (item, quantity = 1) => {
@@ -2138,14 +2184,50 @@ export default function CenterDeficiencyTool() {
 
                 {/* أزرار الإجراءات */}
                 <div className="space-y-3 pt-2">
-                  <Button
-                    onClick={saveReport}
-                    disabled={!selectedCenter || selectedItems.length === 0}
-                    className="w-full h-12 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 shadow-lg shadow-teal-200 text-base font-semibold"
-                  >
-                    <Save className="w-5 h-5 ml-2" />
-                    حفظ التقرير
-                  </Button>
+                  {editingReportId ? (
+                    <>
+                      <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-700 flex items-center gap-2">
+                        <Edit2 className="w-4 h-4" />
+                        أنت تعدل تقريراً محفوظاً
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          onClick={updateExistingReport}
+                          disabled={!selectedCenter || selectedItems.length === 0}
+                          className="h-12 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 shadow-lg text-base font-semibold"
+                        >
+                          <Save className="w-5 h-5 ml-2" />
+                          حفظ التعديلات
+                        </Button>
+                        <Button
+                          onClick={cancelEditing}
+                          variant="outline"
+                          className="h-12 border-2 border-gray-300"
+                        >
+                          <X className="w-5 h-5 ml-2" />
+                          إلغاء
+                        </Button>
+                      </div>
+                      <Button
+                        onClick={() => { setEditingReportId(null); saveReport(); }}
+                        disabled={!selectedCenter || selectedItems.length === 0}
+                        variant="outline"
+                        className="w-full h-10 border-2 border-teal-200 text-teal-600 hover:bg-teal-50"
+                      >
+                        <Plus className="w-4 h-4 ml-2" />
+                        حفظ كتقرير جديد
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      onClick={saveReport}
+                      disabled={!selectedCenter || selectedItems.length === 0}
+                      className="w-full h-12 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 shadow-lg shadow-teal-200 text-base font-semibold"
+                    >
+                      <Save className="w-5 h-5 ml-2" />
+                      حفظ التقرير
+                    </Button>
+                  )}
                   
                   <div className="grid grid-cols-3 gap-2">
                     <Button
@@ -2180,7 +2262,7 @@ export default function CenterDeficiencyTool() {
                   {selectedItems.length > 0 && (
                     <Button
                       variant="outline"
-                      onClick={clearSelection}
+                      onClick={() => { clearSelection(); setEditingReportId(null); }}
                       className="w-full h-11 border-2 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
                     >
                       <Trash2 className="w-4 h-4 ml-2" />
@@ -2188,6 +2270,7 @@ export default function CenterDeficiencyTool() {
                     </Button>
                   )}
                 </div>
+                }
               </CardContent>
             </Card>
           </div>
@@ -2467,8 +2550,21 @@ export default function CenterDeficiencyTool() {
                         </p>
                       </div>
                       <div className="flex gap-2">
-                        <Button size="sm" onClick={() => loadReport(report)}>
-                          تحميل
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          className="text-teal-600 border-teal-200 hover:bg-teal-50"
+                          onClick={() => loadReport(report)}
+                        >
+                          نسخ
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          className="bg-amber-500 hover:bg-amber-600"
+                          onClick={() => loadReport(report, true)}
+                        >
+                          <Edit2 className="w-4 h-4 ml-1" />
+                          تعديل
                         </Button>
                         <Button 
                           size="sm" 
