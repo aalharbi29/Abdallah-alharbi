@@ -363,6 +363,7 @@ const medicalEquipmentList = [
 const nonMedicalEquipmentList = [
   // أثاث مكتبي
   { id: 'desk', name: 'مكتب', category: 'أثاث مكتبي' },
+  { id: 'desk_employee', name: 'مكتب موظف', category: 'أثاث مكتبي' },
   { id: 'desk_manager', name: 'مكتب مدير', category: 'أثاث مكتبي' },
   { id: 'desk_secretary', name: 'مكتب سكرتارية', category: 'أثاث مكتبي' },
   { id: 'office_chair', name: 'كرسي مكتبي', category: 'أثاث مكتبي' },
