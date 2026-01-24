@@ -416,7 +416,7 @@ const nonMedicalEquipmentList = [
   { id: 'cctv', name: 'كاميرات مراقبة', category: 'أجهزة إلكترونية' },
   { id: 'dvr', name: 'جهاز تسجيل DVR', category: 'أجهزة إلكترونية' },
   { id: 'fingerprint', name: 'جهاز بصمة', category: 'أجهزة إلكترونية' },
-  { id: 'intercom', name: 'جهاز اتصال داخلي', category: 'أجهزة إلكترونية' },
+  { id: 'intercom', name: 'نظام اتصال داخلي', category: 'أجهزة إلكترونية' },
   { id: 'paging_system', name: 'نظام نداء داخلي كامل', category: 'أجهزة إلكترونية' },
   { id: 'router', name: 'راوتر', category: 'أجهزة إلكترونية' },
   { id: 'switch', name: 'سويتش شبكة', category: 'أجهزة إلكترونية' },
