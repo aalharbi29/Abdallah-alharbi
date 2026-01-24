@@ -39,7 +39,7 @@ export default function AIAnnouncementDesigner() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedDesign, setGeneratedDesign] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showTemplates, setShowTemplates] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(true);
   const [includeEmployees, setIncludeEmployees] = useState(false);
   
   // توليد الصور
