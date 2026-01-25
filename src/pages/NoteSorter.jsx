@@ -2537,12 +2537,18 @@ export default function CenterDeficiencyTool() {
       </Dialog>
 
       {/* نافذة اختيار المراكز للتصدير */}
-      <Dialog open={showMultiCenterExport} onOpenChange={setShowMultiCenterExport}>
+      <Dialog open={showMultiCenterExport} onOpenChange={(open) => { setShowMultiCenterExport(open); if (!open) setExportFilterType('all'); }}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Download className="w-5 h-5 text-teal-600" />
-              تصدير تقرير شامل
+              {exportFilterType === 'medical' ? (
+                <Stethoscope className="w-5 h-5 text-teal-600" />
+              ) : exportFilterType === 'nonmedical' ? (
+                <Wrench className="w-5 h-5 text-purple-600" />
+              ) : (
+                <Download className="w-5 h-5 text-teal-600" />
+              )}
+              تصدير تقرير {exportFilterType === 'medical' ? 'التجهيزات الطبية' : exportFilterType === 'nonmedical' ? 'التجهيزات غير الطبية' : 'شامل'}
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
