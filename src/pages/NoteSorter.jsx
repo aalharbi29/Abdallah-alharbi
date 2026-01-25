@@ -61,6 +61,7 @@ const medicalEquipmentList = [
   { id: 'infant_weighing_scale', name: 'ميزان للاطفال الرضع', category: 'أجهزة طبية' },
   { id: 'vital_signs_monitor_electronic', name: 'جهاز قياس علامات حيوية الكتروني', category: 'أجهزة طبية' },
   { id: 'ultrasound_machine', name: 'جهاز موجات فوق صوتية', category: 'أجهزة طبية' },
+  { id: 'sample_storage_refrigerator', name: 'ثلاجة حفظ عينات', category: 'أجهزة طبية' },
   { id: 'autoclave', name: 'جهاز تعقيم (Autoclave)', category: 'أجهزة طبية' },
   { id: 'centrifuge', name: 'جهاز طرد مركزي', category: 'أجهزة طبية' },
   { id: 'microscope', name: 'مجهر', category: 'أجهزة طبية' },
