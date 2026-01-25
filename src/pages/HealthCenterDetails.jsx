@@ -28,7 +28,7 @@ import QuickRoleAssignment from "@/components/employees/QuickRoleAssignment";
 import ClinicsSummary from "@/components/health_centers/ClinicsSummary";
 import CenterEmployeeExporter from "@/components/health_centers/CenterEmployeeExporter";
 import CenterDocuments from "@/components/health_centers/CenterDocuments";
-import CenterMedicalEquipment from "@/components/health_centers/CenterMedicalEquipment";
+
 
 export default function HealthCenterDetails() {
   const location = useLocation();
@@ -1592,10 +1592,7 @@ export default function HealthCenterDetails() {
           <CenterDocuments centerId={center.id} centerName={center.اسم_المركز} />
         </div>
 
-        {/* الأجهزة الطبية */}
-        <div className="mt-6">
-          <CenterMedicalEquipment centerId={center.id} centerName={center.اسم_المركز} />
-        </div>
+
 
         {/* قسم موظفي المركز */}
         <Card className="mt-6">
