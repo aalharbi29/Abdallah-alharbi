@@ -28,6 +28,7 @@ import QuickRoleAssignment from "@/components/employees/QuickRoleAssignment";
 import ClinicsSummary from "@/components/health_centers/ClinicsSummary";
 import CenterEmployeeExporter from "@/components/health_centers/CenterEmployeeExporter";
 import CenterDocuments from "@/components/health_centers/CenterDocuments";
+import CenterMedicalEquipmentNew from "@/components/health_centers/CenterMedicalEquipmentNew";
 
 
 export default function HealthCenterDetails() {
