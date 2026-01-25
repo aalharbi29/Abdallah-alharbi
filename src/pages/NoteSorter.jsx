@@ -68,6 +68,7 @@ const medicalEquipmentList = [
   { id: 'foley_catheter', name: 'قسطرة فولي البولية', category: 'أجهزة طبية' },
   { id: 'urine_bag', name: 'كيس بول', category: 'أجهزة طبية' },
   { id: 'yankauer_suction_tube', name: 'أنبوب توصيل شفط يانكور', category: 'أجهزة طبية' },
+  { id: 'ultrasonic_nebulizer', name: 'جهاز بخار التراسونيك', category: 'أجهزة طبية' },
   { id: 'autoclave', name: 'جهاز تعقيم (Autoclave)', category: 'أجهزة طبية' },
   { id: 'centrifuge', name: 'جهاز طرد مركزي', category: 'أجهزة طبية' },
   { id: 'microscope', name: 'مجهر', category: 'أجهزة طبية' },
