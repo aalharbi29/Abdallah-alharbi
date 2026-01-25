@@ -39,6 +39,9 @@ import {
   ChevronDown,
   Building2,
   RefreshCw,
+  CheckSquare,
+  Square,
+  Loader2,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
@@ -87,6 +90,8 @@ export default function CenterMedicalEquipmentNew({ centerId, centerName, allCen
   const [filterType, setFilterType] = useState("all");
   const [filterCategory, setFilterCategory] = useState("all");
   const [allCenters, setAllCenters] = useState([]);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [formData, setFormData] = useState({
     device_name: "",
@@ -247,6 +252,46 @@ export default function CenterMedicalEquipmentNew({ centerId, centerName, allCen
     } catch (error) {
       console.error("Error deleting equipment:", error);
       toast.error("فشل في حذف الجهاز");
+    }
+  };
+
+  const handleSelectAll = () => {
+    if (selectedIds.length === filteredEquipment.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filteredEquipment.map(item => item.id));
+    }
+  };
+
+  const handleSelectItem = (id) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(selectedIds.filter(i => i !== id));
+    } else {
+      setSelectedIds([...selectedIds, id]);
+    }
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedIds.length === 0) {
+      toast.error("يرجى تحديد الأجهزة المراد حذفها");
+      return;
+    }
+
+    if (!confirm(`هل أنت متأكد من حذف ${selectedIds.length} جهاز؟ هذا الإجراء لا يمكن التراجع عنه.`)) return;
+
+    setIsDeleting(true);
+    try {
+      for (const id of selectedIds) {
+        await base44.entities.MedicalEquipment.delete(id);
+      }
+      toast.success(`تم حذف ${selectedIds.length} جهاز بنجاح`);
+      setSelectedIds([]);
+      loadEquipment();
+    } catch (error) {
+      console.error("Error deleting equipment:", error);
+      toast.error("فشل في حذف بعض الأجهزة");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -453,6 +498,20 @@ export default function CenterMedicalEquipmentNew({ centerId, centerName, allCen
             الأجهزة الطبية ({filteredEquipment.length})
           </span>
           <div className="flex flex-wrap gap-2">
+            {selectedIds.length > 0 && (
+              <Button 
+                variant="destructive" 
+                onClick={handleDeleteSelected}
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                ) : (
+                  <Trash2 className="w-4 h-4 ml-2" />
+                )}
+                حذف المحدد ({selectedIds.length})
+              </Button>
+            )}
             <Button onClick={() => { resetForm(); setShowAddDialog(true); }} className="bg-purple-600 hover:bg-purple-700">
               <Plus className="w-4 h-4 ml-2" />
               إضافة جهاز
@@ -543,6 +602,18 @@ export default function CenterMedicalEquipmentNew({ centerId, centerName, allCen
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr className="bg-purple-50">
+                  <th className="border p-3 text-center print-hide w-10">
+                    <button 
+                      onClick={handleSelectAll}
+                      className="hover:text-purple-600 transition-colors"
+                    >
+                      {selectedIds.length === filteredEquipment.length && filteredEquipment.length > 0 ? (
+                        <CheckSquare className="w-5 h-5 text-purple-600" />
+                      ) : (
+                        <Square className="w-5 h-5" />
+                      )}
+                    </button>
+                  </th>
                   <th className="border p-3 text-right">م</th>
                   {allCentersMode && <th className="border p-3 text-right">المركز</th>}
                   <th className="border p-3 text-right">اسم الجهاز</th>
@@ -560,7 +631,19 @@ export default function CenterMedicalEquipmentNew({ centerId, centerName, allCen
               </thead>
               <tbody>
                 {filteredEquipment.map((item, index) => (
-                  <tr key={item.id} className="hover:bg-gray-50">
+                  <tr key={item.id} className={`hover:bg-gray-50 ${selectedIds.includes(item.id) ? 'bg-purple-50' : ''}`}>
+                    <td className="border p-3 text-center print-hide">
+                      <button 
+                        onClick={() => handleSelectItem(item.id)}
+                        className="hover:text-purple-600 transition-colors"
+                      >
+                        {selectedIds.includes(item.id) ? (
+                          <CheckSquare className="w-5 h-5 text-purple-600" />
+                        ) : (
+                          <Square className="w-5 h-5" />
+                        )}
+                      </button>
+                    </td>
                     <td className="border p-3">{index + 1}</td>
                     {allCentersMode && (
                       <td className="border p-3">
