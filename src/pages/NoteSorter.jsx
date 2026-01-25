@@ -70,6 +70,8 @@ const medicalEquipmentList = [
   { id: 'infant_warmer', name: 'جهاز تدفئة الأطفال', category: 'أجهزة طبية' },
   { id: 'phototherapy', name: 'جهاز العلاج الضوئي', category: 'أجهزة طبية' },
   { id: 'ultrasound', name: 'جهاز (Ultrasound)', category: 'أجهزة طبية' },
+  { id: 'ultrasound_waves', name: 'جهاز موجات صوتية', category: 'أجهزة طبية' },
+  { id: 'doppler_device', name: 'جهاز دوبلر', category: 'أجهزة طبية' },
   { id: 'blood_separator', name: 'جهاز فصل العينات', category: 'أجهزة طبية' },
   { id: 'temp_indicator_svaksin', name: 'جهاز قياس مؤشر درجة حرارة سلسلة الأوردية', category: 'أجهزة طبية' },
   { id: 'blood_bank_fridge', name: 'ثلاجة الحافظة بنك الدم (الدم الآريوي والدقنيات)', category: 'أجهزة طبية' },
