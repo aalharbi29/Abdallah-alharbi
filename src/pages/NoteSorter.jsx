@@ -1455,13 +1455,15 @@ export default function CenterDeficiencyTool() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
+    const typeLabel = exportFilterType === 'medical' ? '-طبي' : exportFilterType === 'nonmedical' ? '-غير-طبي' : '';
     const fileName = selectedCentersForExport.length === 1 
-      ? `تقرير-نواقص-${selectedCentersForExport[0]}-${new Date().toISOString().split('T')[0]}.html`
-      : `تقرير-نواقص-${selectedCentersForExport.length}-مراكز-${new Date().toISOString().split('T')[0]}.html`;
+      ? `تقرير-نواقص${typeLabel}-${selectedCentersForExport[0]}-${new Date().toISOString().split('T')[0]}.html`
+      : `تقرير-نواقص${typeLabel}-${selectedCentersForExport.length}-مراكز-${new Date().toISOString().split('T')[0]}.html`;
     link.download = fileName;
     link.click();
     toast.success(`تم تصدير تقرير ${selectedCentersForExport.length} مركز`);
     setShowMultiCenterExport(false);
+    setExportFilterType('all');
   };
 
   const printReport = () => {
