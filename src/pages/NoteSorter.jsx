@@ -1844,6 +1844,24 @@ export default function CenterDeficiencyTool() {
                       <Download className="w-4 h-4 ml-2" />
                       تقرير شامل
                     </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => openMultiCenterExport('medical')}
+                      disabled={savedReports.length === 0}
+                      className="h-12 border-2 border-teal-200 text-teal-700 hover:bg-teal-50"
+                    >
+                      <Stethoscope className="w-4 h-4 ml-2" />
+                      طبي فقط
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => openMultiCenterExport('nonmedical')}
+                      disabled={savedReports.length === 0}
+                      className="h-12 border-2 border-purple-200 text-purple-700 hover:bg-purple-50"
+                    >
+                      <Wrench className="w-4 h-4 ml-2" />
+                      غير طبي فقط
+                    </Button>
                   </div>
                 </div>
               </CardContent>
