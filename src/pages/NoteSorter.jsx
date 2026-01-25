@@ -1306,11 +1306,12 @@ export default function CenterDeficiencyTool() {
     toast.success('تم تصدير التقرير');
   };
 
-  const openMultiCenterExport = () => {
+  const openMultiCenterExport = (filterType = 'all') => {
     if (savedReports.length === 0) {
       toast.error('لا توجد تقارير محفوظة للتصدير');
       return;
     }
+    setExportFilterType(filterType);
     // جمع المراكز الفريدة
     const uniqueCenters = [...new Set(savedReports.map(r => r.center))];
     setSelectedCentersForExport(uniqueCenters); // تحديد الكل افتراضياً
