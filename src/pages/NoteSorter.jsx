@@ -1344,7 +1344,14 @@ export default function CenterDeficiencyTool() {
         if (!centerData[report.center]) {
           centerData[report.center] = [];
         }
-        centerData[report.center].push(...report.items);
+        // فلترة حسب نوع التجهيزات المطلوب
+        let itemsToAdd = report.items;
+        if (exportFilterType === 'medical') {
+          itemsToAdd = report.items.filter(i => i.type === 'medical');
+        } else if (exportFilterType === 'nonmedical') {
+          itemsToAdd = report.items.filter(i => i.type === 'nonmedical');
+        }
+        centerData[report.center].push(...itemsToAdd);
       });
 
     // إزالة التكرارات وجمع الكميات
@@ -1361,14 +1368,21 @@ export default function CenterDeficiencyTool() {
     });
 
     // تحديد نوع التجهيزات (طبية/غير طبية/مختلطة)
-    const allItems = Object.values(centerData).flat();
-    const hasMedical = allItems.some(i => i.type === 'medical');
-    const hasNonMedical = allItems.some(i => i.type === 'nonmedical');
-    const equipmentType = hasMedical && hasNonMedical 
-      ? 'التجهيزات الطبية وغير الطبية'
-      : hasMedical 
-        ? 'التجهيزات الطبية'
-        : 'التجهيزات غير الطبية';
+    let equipmentType;
+    if (exportFilterType === 'medical') {
+      equipmentType = 'التجهيزات الطبية';
+    } else if (exportFilterType === 'nonmedical') {
+      equipmentType = 'التجهيزات غير الطبية';
+    } else {
+      const allItems = Object.values(centerData).flat();
+      const hasMedical = allItems.some(i => i.type === 'medical');
+      const hasNonMedical = allItems.some(i => i.type === 'nonmedical');
+      equipmentType = hasMedical && hasNonMedical 
+        ? 'التجهيزات الطبية وغير الطبية'
+        : hasMedical 
+          ? 'التجهيزات الطبية'
+          : 'التجهيزات غير الطبية';
+    }
 
     const html = `
 <!DOCTYPE html>
