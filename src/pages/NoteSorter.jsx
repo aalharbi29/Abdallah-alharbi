@@ -58,6 +58,7 @@ const medicalEquipmentList = [
   { id: 'height_weight_scale_child', name: 'ميزان طول و وزن الكتروني - اطفال', category: 'أجهزة طبية' },
   { id: 'hygrometer', name: 'مقياس الرطوبة', category: 'أجهزة طبية' },
   { id: 'oxygen_cylinder_medical', name: 'اسطوانة اكسجين', category: 'أجهزة طبية' },
+  { id: 'infant_weighing_scale', name: 'ميزان للاطفال الرضع', category: 'أجهزة طبية' },
   { id: 'autoclave', name: 'جهاز تعقيم (Autoclave)', category: 'أجهزة طبية' },
   { id: 'centrifuge', name: 'جهاز طرد مركزي', category: 'أجهزة طبية' },
   { id: 'microscope', name: 'مجهر', category: 'أجهزة طبية' },
