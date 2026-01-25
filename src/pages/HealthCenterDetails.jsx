@@ -1593,7 +1593,10 @@ export default function HealthCenterDetails() {
           <CenterDocuments centerId={center.id} centerName={center.اسم_المركز} />
         </div>
 
-
+        {/* الأجهزة الطبية */}
+        <div className="mt-6">
+          <CenterMedicalEquipmentNew centerId={center.id} centerName={center.اسم_المركز} />
+        </div>
 
         {/* قسم موظفي المركز */}
         <Card className="mt-6">
