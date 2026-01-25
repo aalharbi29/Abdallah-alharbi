@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, Copy, Printer, X, UserPlus, Download, User, Sparkles, Loader2, FileText, Send } from 'lucide-react';
+import { Search, Copy, Printer, X, UserPlus, Download, User, Sparkles, Loader2, FileText, Send, FileCode } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
@@ -436,6 +436,104 @@ export default function EmployeeDataRequest() {
     window.URL.revokeObjectURL(url);
   };
 
+  const exportToHTML = () => {
+    const headers = selectedFields.map(key =>
+      availableFields.find(f => f.key === key)?.label || key
+    );
+
+    let tableRows = '';
+    if (displayMode === 'normal') {
+      selectedEmployees.forEach((emp, idx) => {
+        const bgColor = idx % 2 === 0 ? '#fff' : '#f9fafb';
+        tableRows += `<tr style="background-color: ${bgColor};">`;
+        selectedFields.forEach(key => {
+          tableRows += `<td style="border: 1px solid #000; padding: 8px 16px; text-align: center;">${emp[key] || '-'}</td>`;
+        });
+        tableRows += '</tr>';
+      });
+    } else {
+      selectedEmployees.forEach(emp => {
+        tableRows += '<tr style="background-color: #dbeafe;">';
+        selectedFields.forEach(key => {
+          tableRows += `<td style="border: 1px solid #000; padding: 8px 16px; text-align: center;">${emp[key] || '-'}</td>`;
+        });
+        tableRows += '</tr>';
+      });
+
+      const processedManagers = new Set();
+      Object.entries(groupedByManager).forEach(([managerId, employeeIds]) => {
+        if (!processedManagers.has(managerId)) {
+          const manager = getManagerWithCenters(managerId, employeeIds);
+          if (manager) {
+            tableRows += `<tr style="background-color: #d1fae5;"><td colspan="${selectedFields.length}" style="border: 1px solid #000; padding: 8px 16px; text-align: center; font-weight: bold;">بيانات المدير المباشر</td></tr>`;
+            tableRows += '<tr style="background-color: #ecfdf5;">';
+            selectedFields.forEach(key => {
+              tableRows += `<td style="border: 1px solid #000; padding: 8px 16px; text-align: center;">${manager[key] || '-'}</td>`;
+            });
+            tableRows += '</tr>';
+            processedManagers.add(managerId);
+          }
+        }
+      });
+    }
+
+    const html = `<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>طلب بيانات الموظفين</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+    body { font-family: 'Cairo', sans-serif; padding: 30px; background: #f8fafc; color: #000; }
+    .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    h2 { text-align: center; color: #1e40af; margin-bottom: 30px; }
+    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+    th { background-color: #f3f4f6; border: 1px solid #000; padding: 12px 16px; text-align: center; font-weight: bold; }
+    td { border: 1px solid #000; padding: 8px 16px; text-align: center; }
+    .greeting { font-size: 18px; font-weight: 600; margin-bottom: 20px; }
+    .request-text { background: #fef3c7; border: 2px solid #fcd34d; padding: 15px; border-radius: 8px; margin: 20px 0; white-space: pre-wrap; }
+    .closing { margin-top: 30px; }
+    .closing p { margin: 10px 0; font-size: 16px; }
+    @media print { body { background: white; } .container { box-shadow: none; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <p class="greeting">بعد التحية</p>
+    
+    <table>
+      <thead>
+        <tr>
+          ${headers.map(h => `<th>${h}</th>`).join('')}
+        </tr>
+      </thead>
+      <tbody>
+        ${tableRows}
+      </tbody>
+    </table>
+    
+    ${finalRequest ? `<div class="request-text">${finalRequest}</div>` : ''}
+    
+    <div class="closing">
+      <p>نأمل التكرم بالاطلاع وإكمال اللازم.</p>
+      <p style="font-weight: 600; margin-top: 20px;">أطيب التحايا.</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `طلب_بيانات_الموظفين_${new Date().toLocaleDateString('ar-SA')}.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
   const handlePrint = () => {
     window.print();
   };
@@ -772,6 +870,14 @@ export default function EmployeeDataRequest() {
                 >
                   <Download className="w-4 h-4 ml-2" />
                   تصدير Excel
+                </Button>
+                <Button
+                  onClick={exportToHTML}
+                  disabled={selectedEmployees.length === 0 || selectedFields.length === 0}
+                  className="bg-purple-600 hover:bg-purple-700"
+                >
+                  <FileCode className="w-4 h-4 ml-2" />
+                  تصدير HTML
                 </Button>
                 <Button
                   onClick={handlePrint}
