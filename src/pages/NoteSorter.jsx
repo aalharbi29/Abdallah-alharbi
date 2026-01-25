@@ -698,6 +698,7 @@ export default function CenterDeficiencyTool() {
   const [customNonMedicalItems, setCustomNonMedicalItems] = useState([]);
   const [hiddenItems, setHiddenItems] = useState([]);
   const [editingReportId, setEditingReportId] = useState(null);
+  const [exportFilterType, setExportFilterType] = useState('all'); // 'all', 'medical', 'nonmedical'
 
   useEffect(() => {
     loadHealthCenters();
