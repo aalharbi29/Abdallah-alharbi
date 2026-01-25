@@ -88,6 +88,7 @@ const getNavigationItems = (t) => [
   { name: t('nav.clinicManagement'), href: createPageUrl("ClinicManagement"), icon: Hospital },
   { name: t('nav.aiAnnouncementDesigner'), href: createPageUrl("AIAnnouncementDesigner"), icon: FileSignature },
   { name: "نواقص المراكز", href: createPageUrl("NoteSorter"), icon: FileText },
+    { name: "تقارير الأجهزة الطبية", href: createPageUrl("MedicalEquipmentReport"), icon: Activity },
   ];
 
 function LayoutContent({ children, currentPageName }) {
