@@ -54,6 +54,8 @@ const medicalEquipmentList = [
   { id: 'adult_scale', name: 'ميزان بالغين', category: 'أجهزة طبية' },
   { id: 'height_measure', name: 'جهاز قياس الطول', category: 'أجهزة طبية' },
   { id: 'bmi_scale', name: 'ميزان قياس كتلة الجسم', category: 'أجهزة طبية' },
+  { id: 'height_weight_scale_adult', name: 'ميزان طول و وزن الكتروني - كبار', category: 'أجهزة طبية' },
+  { id: 'height_weight_scale_child', name: 'ميزان طول و وزن الكتروني - اطفال', category: 'أجهزة طبية' },
   { id: 'autoclave', name: 'جهاز تعقيم (Autoclave)', category: 'أجهزة طبية' },
   { id: 'centrifuge', name: 'جهاز طرد مركزي', category: 'أجهزة طبية' },
   { id: 'microscope', name: 'مجهر', category: 'أجهزة طبية' },
