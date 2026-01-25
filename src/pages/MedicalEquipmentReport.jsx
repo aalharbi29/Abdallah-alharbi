@@ -34,6 +34,8 @@ import {
   Eye,
   X,
   Settings2,
+  CheckSquare,
+  Square,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
@@ -76,6 +78,9 @@ export default function MedicalEquipmentReport() {
   // Report settings
   const [reportTitle, setReportTitle] = useState("تقرير الأجهزة الطبية");
   const [showPreview, setShowPreview] = useState(false);
+  
+  // Selection
+  const [selectedIds, setSelectedIds] = useState([]);
 
   useEffect(() => {
     loadData();
@@ -171,6 +176,29 @@ export default function MedicalEquipmentReport() {
     setFilterManufacturer("all");
   };
 
+  const handleSelectAll = () => {
+    if (selectedIds.length === filteredEquipment.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filteredEquipment.map(item => item.id));
+    }
+  };
+
+  const handleSelectItem = (id) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(selectedIds.filter(i => i !== id));
+    } else {
+      setSelectedIds([...selectedIds, id]);
+    }
+  };
+
+  const getExportData = () => {
+    if (selectedIds.length > 0) {
+      return filteredEquipment.filter(item => selectedIds.includes(item.id));
+    }
+    return filteredEquipment;
+  };
+
   const getCategoryBadge = (category) => {
     const colors = {
       A: "bg-green-100 text-green-800",
@@ -192,6 +220,7 @@ export default function MedicalEquipmentReport() {
 
   const generateHTMLContent = () => {
     const visibleColumns = COLUMNS.filter(c => selectedColumns.includes(c.key));
+    const exportData = getExportData();
     
     return `
 <!DOCTYPE html>
@@ -239,15 +268,15 @@ export default function MedicalEquipmentReport() {
     
     <div class="stats">
       <div class="stat-card">
-        <div class="stat-value">${filteredEquipment.length}</div>
+        <div class="stat-value">${exportData.length}</div>
         <div class="stat-label">إجمالي الأجهزة</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">${[...new Set(filteredEquipment.map(e => e.health_center_name))].length}</div>
+        <div class="stat-value">${[...new Set(exportData.map(e => e.health_center_name))].length}</div>
         <div class="stat-label">عدد المراكز</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">${filteredEquipment.filter(e => e.status === 'يعمل').length}</div>
+        <div class="stat-value">${exportData.filter(e => e.status === 'يعمل').length}</div>
         <div class="stat-label">أجهزة تعمل</div>
       </div>
     </div>
@@ -268,7 +297,7 @@ export default function MedicalEquipmentReport() {
         </tr>
       </thead>
       <tbody>
-        ${filteredEquipment.map((item, index) => `
+        ${exportData.map((item, index) => `
           <tr>
             ${visibleColumns.map(col => {
               if (col.key === 'index') return `<td>${index + 1}</td>`;
@@ -305,10 +334,11 @@ export default function MedicalEquipmentReport() {
   const exportToExcel = () => {
     const visibleColumns = COLUMNS.filter(c => selectedColumns.includes(c.key));
     const headers = visibleColumns.map(c => c.label);
+    const exportData = getExportData();
     
     let csv = "\uFEFF" + headers.join(",") + "\n";
     
-    filteredEquipment.forEach((item, index) => {
+    exportData.forEach((item, index) => {
       const row = visibleColumns.map(col => {
         if (col.key === 'index') return index + 1;
         if (col.key === 'manufacturing_date') return item.manufacturing_date || item.manufacturing_year || '';
@@ -513,6 +543,9 @@ export default function MedicalEquipmentReport() {
             <span className="flex items-center gap-2">
               <FileText className="w-5 h-5 text-purple-600" />
               نتائج التقرير ({filteredEquipment.length} جهاز)
+              {selectedIds.length > 0 && (
+                <Badge className="bg-purple-100 text-purple-800">محدد: {selectedIds.length}</Badge>
+              )}
             </span>
             <div className="flex flex-wrap gap-2">
               <Button variant="outline" size="sm" onClick={handlePreview}>
@@ -540,6 +573,15 @@ export default function MedicalEquipmentReport() {
               <table className="w-full border-collapse text-sm">
                 <thead>
                   <tr className="bg-purple-50">
+                    <th className="border p-2 text-center w-10">
+                      <button onClick={handleSelectAll} className="hover:text-purple-600 transition-colors">
+                        {selectedIds.length === filteredEquipment.length && filteredEquipment.length > 0 ? (
+                          <CheckSquare className="w-5 h-5 text-purple-600" />
+                        ) : (
+                          <Square className="w-5 h-5" />
+                        )}
+                      </button>
+                    </th>
                     {COLUMNS.filter(c => selectedColumns.includes(c.key)).map((col) => (
                       <th key={col.key} className="border p-2 text-right text-xs font-bold">{col.label}</th>
                     ))}
@@ -547,7 +589,16 @@ export default function MedicalEquipmentReport() {
                 </thead>
                 <tbody>
                   {filteredEquipment.slice(0, 50).map((item, index) => (
-                    <tr key={item.id} className="hover:bg-gray-50">
+                    <tr key={item.id} className={`hover:bg-gray-50 ${selectedIds.includes(item.id) ? 'bg-purple-50' : ''}`}>
+                      <td className="border p-2 text-center">
+                        <button onClick={() => handleSelectItem(item.id)} className="hover:text-purple-600 transition-colors">
+                          {selectedIds.includes(item.id) ? (
+                            <CheckSquare className="w-5 h-5 text-purple-600" />
+                          ) : (
+                            <Square className="w-5 h-5" />
+                          )}
+                        </button>
+                      </td>
                       {COLUMNS.filter(c => selectedColumns.includes(c.key)).map((col) => (
                         <td key={col.key} className="border p-2 text-xs">
                           {col.key === 'index' && index + 1}
