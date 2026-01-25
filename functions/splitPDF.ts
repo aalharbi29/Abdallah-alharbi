@@ -1,5 +1,6 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.7.1';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 import { PDFDocument } from 'npm:pdf-lib@1.17.1';
+import { encode as base64Encode } from 'https://deno.land/std@0.208.0/encoding/base64.ts';
 
 Deno.serve(async (req) => {
     try {
@@ -34,6 +35,11 @@ Deno.serve(async (req) => {
 
         const splitPdfs = [];
 
+        // دالة لتحويل ArrayBuffer إلى Base64 بطريقة آمنة للذاكرة
+        const arrayBufferToBase64 = (buffer) => {
+            return base64Encode(new Uint8Array(buffer));
+        };
+
         if (splitType === 'each') {
             // تقسيم كل صفحة لملف منفصل - دعم حتى 100 صفحة
             const maxPages = Math.min(totalPages, 100);
@@ -43,8 +49,8 @@ Deno.serve(async (req) => {
                 const [copiedPage] = await newPdf.copyPages(pdfDoc, [i]);
                 newPdf.addPage(copiedPage);
                 
-                const pdfBytes = await newPdf.save();
-                const base64 = btoa(String.fromCharCode(...new Uint8Array(pdfBytes)));
+                const savedPdfBytes = await newPdf.save();
+                const base64 = arrayBufferToBase64(savedPdfBytes);
                 
                 splitPdfs.push({
                     filename: `page_${i + 1}.pdf`,
@@ -91,8 +97,8 @@ Deno.serve(async (req) => {
                 const copiedPages = await newPdf.copyPages(pdfDoc, pageIndices);
                 copiedPages.forEach(page => newPdf.addPage(page));
                 
-                const pdfBytes = await newPdf.save();
-                const base64 = btoa(String.fromCharCode(...new Uint8Array(pdfBytes)));
+                const savedPdfBytes = await newPdf.save();
+                const base64 = arrayBufferToBase64(savedPdfBytes);
                 
                 splitPdfs.push({
                     filename: `pages_${start + 1}_to_${end}.pdf`,
