@@ -1126,7 +1126,7 @@ export default function ViewAssignmentPage() {
           }
         `}</style>
         {/* Floating Controls */}
-        <div className="no-print absolute top-10 right-10 z-10 flex flex-col gap-3 items-end max-h-[80vh] overflow-y-auto">
+        <div className="no-print fixed md:absolute top-2 md:top-10 right-2 md:right-10 z-10 flex flex-col gap-2 md:gap-3 items-end max-h-[40vh] md:max-h-[80vh] overflow-y-auto bg-white/90 md:bg-transparent rounded-lg p-2 md:p-0 shadow-lg md:shadow-none">
             <div className="p-3 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg flex flex-wrap gap-2">
                  <Button onClick={() => navigate(createPageUrl(`EditAssignment?id=${assignment.id}`))}>
                     <Edit className="w-4 h-4 ml-2" />تعديل
