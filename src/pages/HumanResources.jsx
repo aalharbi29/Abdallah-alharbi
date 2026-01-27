@@ -449,14 +449,10 @@ export default function HumanResources() {
               </Button>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Search and Actions - محسّن */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
+        <div>
           <div className="bg-white/15 backdrop-blur-xl rounded-2xl border border-white/30 p-5 md:p-6 mb-6 no-print shadow-2xl">
             <div className="flex flex-col md:flex-row gap-4">
               <div className="flex-1 relative">
