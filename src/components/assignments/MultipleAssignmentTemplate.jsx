@@ -770,17 +770,17 @@ export default function MultipleAssignmentTemplate({
 
       {/* Font Settings Panel - Floating */}
       {onAssignmentsChange && (
-        <div className="no-print absolute top-2 left-[420px] bg-white/95 backdrop-blur rounded-lg shadow-lg p-3 z-50 text-xs border border-blue-200 w-56">
-          <h4 className="font-bold text-blue-700 mb-2 text-center border-b pb-1">🎨 تخصيص الخطوط</h4>
+        <div className="no-print hidden md:block absolute top-2 left-[320px] lg:left-[420px] bg-white/95 backdrop-blur rounded-lg shadow-lg p-2 md:p-3 z-50 text-[10px] md:text-xs border border-blue-200 w-44 md:w-56">
+          <h4 className="font-bold text-blue-700 mb-2 text-center border-b pb-1 text-[10px] md:text-xs">🎨 الخطوط</h4>
           
           {/* Title Font */}
-          <div className="mb-3">
-            <label className="text-gray-600 font-semibold block mb-1">العنوان:</label>
+          <div className="mb-2 md:mb-3">
+            <label className="text-gray-600 font-semibold block mb-1 text-[9px] md:text-xs">العنوان:</label>
             <div className="flex gap-1 items-center">
               <select 
                 value={titleFontFamily}
                 onChange={(e) => setTitleFontFamily(e.target.value)}
-                className="text-xs border rounded px-1 py-0.5 bg-white flex-1"
+                className="text-[9px] md:text-xs border rounded px-1 py-0.5 bg-white flex-1"
               >
                 {fontFamilies.map(f => (
                   <option key={f.value} value={f.value}>{f.label}</option>
@@ -790,7 +790,7 @@ export default function MultipleAssignmentTemplate({
                 type="number" 
                 value={titleFontSize}
                 onChange={(e) => setTitleFontSize(Number(e.target.value))}
-                className="w-14 text-xs border rounded px-1 py-0.5 text-center"
+                className="w-10 md:w-14 text-[9px] md:text-xs border rounded px-1 py-0.5 text-center"
                 min="14"
                 max="48"
               />
@@ -799,12 +799,12 @@ export default function MultipleAssignmentTemplate({
           
           {/* Global Font */}
           <div>
-            <label className="text-gray-600 font-semibold block mb-1">النص العام:</label>
+            <label className="text-gray-600 font-semibold block mb-1 text-[9px] md:text-xs">النص:</label>
             <div className="flex gap-1 items-center">
               <select 
                 value={globalFontFamily}
                 onChange={(e) => setGlobalFontFamily(e.target.value)}
-                className="text-xs border rounded px-1 py-0.5 bg-white flex-1"
+                className="text-[9px] md:text-xs border rounded px-1 py-0.5 bg-white flex-1"
               >
                 {fontFamilies.map(f => (
                   <option key={f.value} value={f.value}>{f.label}</option>
@@ -814,7 +814,7 @@ export default function MultipleAssignmentTemplate({
                 type="number" 
                 value={globalFontSize}
                 onChange={(e) => setGlobalFontSize(Number(e.target.value))}
-                className="w-14 text-xs border rounded px-1 py-0.5 text-center"
+                className="w-10 md:w-14 text-[9px] md:text-xs border rounded px-1 py-0.5 text-center"
                 min="8"
                 max="24"
               />
