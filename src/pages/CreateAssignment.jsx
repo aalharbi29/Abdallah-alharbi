@@ -701,15 +701,15 @@ export default function CreateAssignment() {
 
                     {selectedEmployee && (
                       <>
-                        <Card className="bg-gray-50 p-4 md:col-span-2">
-                            <p><strong>المركز الحالي:</strong> {selectedEmployee.المركز_الصحي}</p>
-                            <p><strong>المنصب:</strong> {selectedEmployee.position}</p>
+                        <Card className="bg-gray-50 p-2 md:p-4 md:col-span-2">
+                            <p className="text-xs md:text-sm"><strong>المركز:</strong> {selectedEmployee.المركز_الصحي}</p>
+                            <p className="text-xs md:text-sm"><strong>المنصب:</strong> {selectedEmployee.position}</p>
                         </Card>
 
                         <div className="md:col-span-2">
-                          <Label htmlFor="assigned_to_health_center">المركز المكلف به *</Label>
+                          <Label htmlFor="assigned_to_health_center" className="text-xs md:text-sm">المركز المكلف به *</Label>
                           <Select value={assignmentData.assigned_to_health_center} onValueChange={(value) => handleChange('assigned_to_health_center', value)}>
-                            <SelectTrigger><SelectValue placeholder="اختر المركز..." /></SelectTrigger>
+                            <SelectTrigger className="h-8 md:h-10 text-xs md:text-sm"><SelectValue placeholder="اختر..." /></SelectTrigger>
                             <SelectContent>
                               {(healthCenters || []).filter(c => c.اسم_المركز !== selectedEmployee.المركز_الصحي).map(center => (
                                 <SelectItem key={center.id} value={center.اسم_المركز}>{center.اسم_المركز}</SelectItem>
