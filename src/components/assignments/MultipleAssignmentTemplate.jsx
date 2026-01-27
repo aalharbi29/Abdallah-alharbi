@@ -649,15 +649,15 @@ export default function MultipleAssignmentTemplate({
 
       {/* Style Manager Panel */}
       {showActions && showStyleManager && (
-        <div className="no-print absolute top-24 right-2 bg-white/95 backdrop-blur rounded-lg shadow-xl p-3 z-50 w-80 max-h-[70vh] overflow-y-auto border-2 border-blue-200">
-          <div className="flex items-center justify-between mb-3 pb-2 border-b">
-            <h4 className="text-sm font-bold flex items-center gap-1">
-              <Star className="w-4 h-4 text-yellow-500" />
-              أنماط التكليف المتعدد
+        <div className="no-print fixed md:absolute top-20 md:top-24 right-2 bg-white/95 backdrop-blur rounded-lg shadow-xl p-2 md:p-3 z-[100] w-[calc(100vw-16px)] md:w-80 max-h-[60vh] md:max-h-[70vh] overflow-y-auto border-2 border-blue-200">
+          <div className="flex items-center justify-between mb-2 md:mb-3 pb-2 border-b">
+            <h4 className="text-xs md:text-sm font-bold flex items-center gap-1">
+              <Star className="w-3 h-3 md:w-4 md:h-4 text-yellow-500" />
+              أنماط التكليف
             </h4>
             <button 
               onClick={() => setShowStyleManager(false)}
-              className="text-gray-500 hover:text-gray-700 text-lg"
+              className="text-gray-500 hover:text-gray-700 text-xl md:text-lg p-1"
             >
               ×
             </button>
