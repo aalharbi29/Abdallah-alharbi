@@ -482,15 +482,16 @@ export default function CreateAssignment() {
                           </div>
                           
                           {useSpecificDays && (
-                            <div className="flex flex-wrap gap-2 mt-2">
+                            <div className="flex flex-wrap gap-1 md:gap-2 mt-2">
                               {daysOfWeek.map(day => (
-                                <div key={day} className="flex items-center space-x-1 space-x-reverse bg-white px-2 py-1 rounded border">
+                                <div key={day} className="flex items-center space-x-1 space-x-reverse bg-white px-1.5 md:px-2 py-0.5 md:py-1 rounded border">
                                   <Checkbox 
                                     id={`day-${day}`} 
                                     checked={selectedDays.includes(day)} 
-                                    onCheckedChange={() => toggleDay(day)} 
+                                    onCheckedChange={() => toggleDay(day)}
+                                    className="w-3 h-3 md:w-4 md:h-4"
                                   />
-                                  <Label htmlFor={`day-${day}`} className="cursor-pointer text-sm">{day}</Label>
+                                  <Label htmlFor={`day-${day}`} className="cursor-pointer text-[10px] md:text-sm">{day}</Label>
                                 </div>
                               ))}
                             </div>
@@ -498,20 +499,22 @@ export default function CreateAssignment() {
                         </div>
 
                         <div>
-                          <Label>تاريخ البداية</Label>
+                          <Label className="text-xs md:text-sm">تاريخ البداية</Label>
                           <Input 
                             type="date" 
                             value={assignmentData.start_date} 
-                            onChange={(e) => setAssignmentData(prev => ({...prev, start_date: e.target.value}))} 
+                            onChange={(e) => setAssignmentData(prev => ({...prev, start_date: e.target.value}))}
+                            className="h-8 md:h-10 text-xs md:text-sm"
                           />
                         </div>
 
                         <div>
-                          <Label>تاريخ النهاية</Label>
+                          <Label className="text-xs md:text-sm">تاريخ النهاية</Label>
                           <Input 
                             type="date" 
                             value={assignmentData.end_date} 
-                            onChange={(e) => setAssignmentData(prev => ({...prev, end_date: e.target.value}))} 
+                            onChange={(e) => setAssignmentData(prev => ({...prev, end_date: e.target.value}))}
+                            className="h-8 md:h-10 text-xs md:text-sm"
                           />
                         </div>
 
@@ -537,16 +540,15 @@ export default function CreateAssignment() {
                                 duration: assignmentData.duration_days,
                                 start_date: assignmentData.start_date,
                                 end_date: assignmentData.end_date,
-                                full_duration: fullDuration, // Add constructed full duration string
+                                full_duration: fullDuration,
                                 employee_record_id: selectedEmployee.id,
                                 gender: selectedEmployee.gender
                                 }]);
                               setSelectedEmployee(null);
-                              // Optional: Reset days if needed, or keep for next addition
                             }}
-                            className="w-full bg-blue-600"
+                            className="w-full bg-blue-600 h-8 md:h-10 text-xs md:text-sm"
                           >
-                            <Plus className="w-4 h-4 ml-2" /> إضافة للقائمة
+                            <Plus className="w-3 h-3 md:w-4 md:h-4 ml-1 md:ml-2" /> إضافة
                           </Button>
                         </div>
                       </div>
