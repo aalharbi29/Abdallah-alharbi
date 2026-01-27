@@ -1294,7 +1294,7 @@ export default function ViewAssignmentPage() {
             
             {/* Template Mode Selection - Hide if Multiple */}
             {templateMode !== 'multiple' && (
-              <div className="p-3 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg">
+              <div className="hidden md:block p-3 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg">
                 <h4 className="text-sm font-bold text-center border-b pb-2 mb-2">نوع القالب</h4>
                 <div className="flex gap-2">
                   <Button
