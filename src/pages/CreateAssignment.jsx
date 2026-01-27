@@ -338,10 +338,10 @@ export default function CreateAssignment() {
               {/* زر تحميل القالب */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-1 mr-2">
-                    <FolderOpen className="w-4 h-4" />
-                    تحميل قالب
-                    <ChevronDown className="w-3 h-3" />
+                  <Button variant="outline" size="sm" className="gap-1 text-[10px] md:text-sm h-7 md:h-9 px-2 md:px-3">
+                    <FolderOpen className="w-3 h-3 md:w-4 md:h-4" />
+                    <span className="hidden sm:inline">قالب</span>
+                    <ChevronDown className="w-2.5 h-2.5 md:w-3 md:h-3" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="start" className="w-64">
