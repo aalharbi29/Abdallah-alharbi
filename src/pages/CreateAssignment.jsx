@@ -673,14 +673,14 @@ export default function CreateAssignment() {
                                   </div>
                                   </div>
                                   ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
                     <div className="md:col-span-2">
-                      <Label>اختر الموظف *</Label>
+                      <Label className="text-xs md:text-sm">اختر الموظف *</Label>
                       <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
                         <PopoverTrigger asChild>
-                          <Button variant="outline" role="combobox" aria-expanded={popoverOpen} className="w-full justify-between">
-                            {selectedEmployee ? selectedEmployee.full_name_arabic : "اختر موظف..."}
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          <Button variant="outline" role="combobox" aria-expanded={popoverOpen} className="w-full justify-between h-8 md:h-10 text-xs md:text-sm">
+                            <span className="truncate">{selectedEmployee ? selectedEmployee.full_name_arabic : "اختر..."}</span>
+                            <ChevronsUpDown className="ml-1 md:ml-2 h-3 w-3 md:h-4 md:w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
