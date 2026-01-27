@@ -200,10 +200,10 @@ export default function MedicalEquipmentReport() {
   const clearFilters = () => {
     setSearchQuery("");
     setSelectedCenters([]);
-    setFilterCategory("all");
-    setFilterStatus("all");
-    setFilterDeviceType("all");
-    setFilterManufacturer("all");
+    setSelectedCategories([]);
+    setSelectedStatuses([]);
+    setSelectedDeviceTypes([]);
+    setSelectedManufacturers([]);
   };
 
   const handleSelectAll = () => {
