@@ -283,46 +283,47 @@ export default function TemplateStyleManager({
 
       {/* حوار إدارة الأنماط */}
       <Dialog open={showManageDialog} onOpenChange={setShowManageDialog}>
-        <DialogContent dir="rtl" className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent dir="rtl" className="max-w-[95vw] md:max-w-2xl max-h-[80vh] overflow-y-auto mx-2 p-3 md:p-6">
           <DialogHeader>
-            <DialogTitle>إدارة أنماط {templateType === 'flexible' ? 'القالب المرن' : templateType === 'multiple' ? 'التكليف المتعدد' : 'القالب القياسي'}</DialogTitle>
-            <DialogDescription>
-              تعديل وحذف ونسخ الأنماط المحفوظة
+            <DialogTitle className="text-sm md:text-base">إدارة أنماط {templateType === 'flexible' ? 'القالب المرن' : templateType === 'multiple' ? 'التكليف المتعدد' : 'القالب القياسي'}</DialogTitle>
+            <DialogDescription className="text-xs md:text-sm">
+              تعديل وحذف ونسخ الأنماط
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-3 py-4">
+          <div className="space-y-2 md:space-y-3 py-3 md:py-4">
             {styles.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-6 md:py-8 text-gray-500 text-xs md:text-sm">
                 لا توجد أنماط محفوظة بعد
               </div>
             ) : (
               styles.map((style) => (
                 <div 
                   key={style.id} 
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border"
+                  className="flex flex-col md:flex-row md:items-center justify-between p-2 md:p-3 bg-gray-50 rounded-lg border gap-2"
                 >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      {style.is_default && <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />}
-                      <span className="font-medium">{style.name}</span>
-                      <Badge variant="outline" className="text-xs">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1 md:gap-2 flex-wrap">
+                      {style.is_default && <Star className="w-3 h-3 md:w-4 md:h-4 text-yellow-500 fill-yellow-500" />}
+                      <span className="font-medium text-xs md:text-sm truncate">{style.name}</span>
+                      <Badge variant="outline" className="text-[9px] md:text-xs">
                         {style.template_type === 'flexible' ? 'مرن' : style.template_type === 'multiple' ? 'متعدد' : 'قياسي'}
                       </Badge>
                     </div>
                     {style.description && (
-                      <p className="text-xs text-gray-500 mt-1">{style.description}</p>
+                      <p className="text-[10px] md:text-xs text-gray-500 mt-1 truncate">{style.description}</p>
                     )}
                   </div>
                   
-                  <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-0.5 md:gap-1 flex-wrap justify-end">
                     <Button
                       size="sm"
                       variant="ghost"
                       onClick={() => handleLoadStyle(style)}
                       title="تحميل"
+                      className="h-7 w-7 md:h-8 md:w-8 p-0"
                     >
-                      <FolderOpen className="w-4 h-4" />
+                      <FolderOpen className="w-3 h-3 md:w-4 md:h-4" />
                     </Button>
                     <Button
                       size="sm"
@@ -334,17 +335,19 @@ export default function TemplateStyleManager({
                         setShowManageDialog(false);
                         setShowSaveDialog(true);
                       }}
-                      title="تحديث بالإعدادات الحالية"
+                      title="تحديث"
+                      className="h-7 w-7 md:h-8 md:w-8 p-0"
                     >
-                      <Edit className="w-4 h-4" />
+                      <Edit className="w-3 h-3 md:w-4 md:h-4" />
                     </Button>
                     <Button
                       size="sm"
                       variant="ghost"
                       onClick={() => handleDuplicateStyle(style)}
                       title="نسخ"
+                      className="h-7 w-7 md:h-8 md:w-8 p-0"
                     >
-                      <Copy className="w-4 h-4" />
+                      <Copy className="w-3 h-3 md:w-4 md:h-4" />
                     </Button>
                     {templateType !== 'multiple' && (
                       <Button
@@ -352,6 +355,7 @@ export default function TemplateStyleManager({
                         variant="ghost"
                         onClick={() => handleSyncToOther(style)}
                         title={`نسخ إلى القالب ${templateType === 'flexible' ? 'القياسي' : 'المرن'}`}
+                        className="h-7 w-7 md:h-8 md:w-8 p-0 text-xs"
                       >
                         🔄
                       </Button>
@@ -362,18 +366,19 @@ export default function TemplateStyleManager({
                         variant="ghost"
                         onClick={() => handleSetDefault(style)}
                         title="تعيين كافتراضي"
+                        className="h-7 w-7 md:h-8 md:w-8 p-0"
                       >
-                        <Star className="w-4 h-4" />
+                        <Star className="w-3 h-3 md:w-4 md:h-4" />
                       </Button>
                     )}
                     <Button
                       size="sm"
                       variant="ghost"
                       onClick={() => handleDeleteStyle(style)}
-                      className="text-red-500 hover:text-red-700"
+                      className="text-red-500 hover:text-red-700 h-7 w-7 md:h-8 md:w-8 p-0"
                       title="حذف"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
                     </Button>
                   </div>
                 </div>
@@ -382,7 +387,7 @@ export default function TemplateStyleManager({
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setShowManageDialog(false)}>
+            <Button variant="outline" onClick={() => setShowManageDialog(false)} className="h-8 md:h-10 text-xs md:text-sm">
               إغلاق
             </Button>
           </DialogFooter>
