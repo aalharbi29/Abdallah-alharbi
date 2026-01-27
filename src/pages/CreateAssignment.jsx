@@ -443,12 +443,12 @@ export default function CreateAssignment() {
                         </div>
                         
                         <div>
-                          <Label>جهة التكليف</Label>
+                          <Label className="text-xs md:text-sm">جهة التكليف</Label>
                           <Select 
                             value={assignmentData.assigned_to_health_center} 
                             onValueChange={(v) => setAssignmentData(prev => ({...prev, assigned_to_health_center: v}))}
                           >
-                            <SelectTrigger><SelectValue placeholder="اختر المركز..." /></SelectTrigger>
+                            <SelectTrigger className="h-8 md:h-10 text-xs md:text-sm"><SelectValue placeholder="اختر..." /></SelectTrigger>
                             <SelectContent>
                               {(healthCenters || []).map(center => (
                                 <SelectItem key={center.id} value={center.اسم_المركز}>{center.اسم_المركز}</SelectItem>
