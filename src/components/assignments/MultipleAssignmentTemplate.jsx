@@ -710,8 +710,8 @@ export default function MultipleAssignmentTemplate({
       )}
 
       {/* Controls Panel */}
-      <div className="no-print absolute top-2 left-2 bg-white/95 backdrop-blur rounded-lg shadow-lg p-3 z-50 flex flex-col gap-2 text-xs max-w-md border border-gray-200">
-        <div className="flex gap-2 items-center flex-wrap">
+      <div className="no-print hidden md:flex absolute top-2 left-2 bg-white/95 backdrop-blur rounded-lg shadow-lg p-2 md:p-3 z-50 flex-col gap-2 text-[10px] md:text-xs max-w-xs md:max-w-md border border-gray-200">
+        <div className="flex gap-1 md:gap-2 items-center flex-wrap">
           {onAssignmentsChange && (
             <>
               <label className="flex items-center gap-1 cursor-pointer">
@@ -723,24 +723,21 @@ export default function MultipleAssignmentTemplate({
                 />
                 ترقيم
               </label>
-              <span className="text-gray-300">|</span>
+              <span className="text-gray-300 hidden md:inline">|</span>
             </>
           )}
-          <span className="text-blue-600">🖱️ سحب</span>
-          <span className="text-gray-300">|</span>
-          <span className="text-purple-600">📝 Ctrl+/- و Ctrl+B</span>
+          <span className="text-blue-600 hidden md:inline">🖱️ سحب</span>
+          <span className="text-gray-300 hidden md:inline">|</span>
+          <span className="text-purple-600 hidden md:inline">📝 Ctrl+/-</span>
           {selectedElement && (
-            <>
-              <span className="text-gray-300">|</span>
-              <span className="text-green-600 font-bold">✓ {selectedElement === 'signature' ? 'التوقيع' : selectedElement === 'stamp' ? 'الختم' : 'اسم المدير'}</span>
-            </>
+            <span className="text-green-600 font-bold">✓ {selectedElement === 'signature' ? 'التوقيع' : selectedElement === 'stamp' ? 'الختم' : 'المدير'}</span>
           )}
         </div>
         
         {/* Font and Table Controls */}
         {onAssignmentsChange && (
           <div className="flex flex-col gap-2 border-t pt-2 mt-1">
-            <div className="flex gap-3 items-center flex-wrap">
+            <div className="flex gap-2 md:gap-3 items-center flex-wrap">
               {/* Table Border */}
               <div className="flex items-center gap-1">
                 <span className="text-gray-500">حدود:</span>
@@ -748,7 +745,7 @@ export default function MultipleAssignmentTemplate({
                   type="number" 
                   value={tableBorderWidth}
                   onChange={(e) => setTableBorderWidth(Number(e.target.value))}
-                  className="w-10 text-xs border rounded px-1 py-0.5 text-center"
+                  className="w-8 md:w-10 text-xs border rounded px-1 py-0.5 text-center"
                   min="0"
                   max="5"
                 />
@@ -756,12 +753,12 @@ export default function MultipleAssignmentTemplate({
               
               {/* Table Font Size */}
               <div className="flex items-center gap-1">
-                <span className="text-gray-500">جدول:</span>
+                <span className="text-gray-500">خط:</span>
                 <input 
                   type="number" 
                   value={tableFontSize}
                   onChange={(e) => setTableFontSize(Number(e.target.value))}
-                  className="w-10 text-xs border rounded px-1 py-0.5 text-center"
+                  className="w-8 md:w-10 text-xs border rounded px-1 py-0.5 text-center"
                   min="8"
                   max="18"
                 />
