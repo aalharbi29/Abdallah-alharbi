@@ -791,42 +791,44 @@ export default function AssignmentsPage() {
           </div>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <TabsList className="grid w-full max-w-lg grid-cols-3">
-              <TabsTrigger value="drafts" className="flex items-center gap-2 text-xs md:text-sm">
-                <Badge variant="secondary" className="text-xs bg-yellow-100 text-yellow-700">{draftAssignments.length}</Badge>
-                المسودات
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3 md:space-y-4">
+          <div className="flex flex-col gap-3">
+            <TabsList className="grid w-full grid-cols-3 h-auto">
+              <TabsTrigger value="drafts" className="flex items-center justify-center gap-1 text-[10px] md:text-sm py-2 px-1 md:px-3">
+                <Badge variant="secondary" className="text-[9px] md:text-xs bg-yellow-100 text-yellow-700 px-1 md:px-2">{draftAssignments.length}</Badge>
+                <span className="hidden sm:inline">المسودات</span>
+                <span className="sm:hidden">مسودة</span>
               </TabsTrigger>
-              <TabsTrigger value="active" className="flex items-center gap-2 text-xs md:text-sm">
-                <Badge variant="secondary" className="text-xs">{activeAssignments.length}</Badge>
-                المعتمدة
+              <TabsTrigger value="active" className="flex items-center justify-center gap-1 text-[10px] md:text-sm py-2 px-1 md:px-3">
+                <Badge variant="secondary" className="text-[9px] md:text-xs px-1 md:px-2">{activeAssignments.length}</Badge>
+                <span className="hidden sm:inline">المعتمدة</span>
+                <span className="sm:hidden">معتمد</span>
               </TabsTrigger>
-              <TabsTrigger value="archive" className="flex items-center gap-2 text-xs md:text-sm">
+              <TabsTrigger value="archive" className="flex items-center justify-center gap-1 text-[10px] md:text-sm py-2 px-1 md:px-3">
                 <Archive className="w-3 h-3 md:w-4 md:h-4" />
-                <Badge variant="secondary" className="text-xs">{archivedAssignments.length}</Badge>
-                الأرشيف
+                <Badge variant="secondary" className="text-[9px] md:text-xs px-1 md:px-2">{archivedAssignments.length}</Badge>
+                <span className="hidden sm:inline">الأرشيف</span>
               </TabsTrigger>
             </TabsList>
 
-            <div className="flex gap-2 items-center w-full max-w-xl">
+            <div className="flex gap-2 items-center w-full">
               <div className="relative flex-1">
-                <Search className="w-3 h-3 md:w-4 md:h-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                <Search className="w-3 h-3 md:w-4 md:h-4 absolute right-2 md:right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                 <Input
-                  placeholder="بحث باسم الموظف أو المركز..."
+                  placeholder="بحث..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pr-8 md:pr-10 text-sm"
+                  className="pr-7 md:pr-10 text-xs md:text-sm h-8 md:h-10"
                 />
               </div>
               
               <Popover open={showAdvancedFilters} onOpenChange={setShowAdvancedFilters}>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="relative">
-                    <SlidersHorizontal className="w-4 h-4 ml-1" />
-                    فلترة
+                  <Button variant="outline" size="sm" className="relative h-8 md:h-10 px-2 md:px-3">
+                    <SlidersHorizontal className="w-3 h-3 md:w-4 md:h-4" />
+                    <span className="hidden sm:inline mr-1">فلترة</span>
                     {activeFiltersCount > 0 && (
-                      <Badge className="absolute -top-2 -left-2 h-5 w-5 p-0 flex items-center justify-center bg-blue-600 text-white text-xs">
+                      <Badge className="absolute -top-1 -left-1 h-4 w-4 md:h-5 md:w-5 p-0 flex items-center justify-center bg-blue-600 text-white text-[9px] md:text-xs">
                         {activeFiltersCount}
                       </Badge>
                     )}
