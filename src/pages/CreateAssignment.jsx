@@ -614,8 +614,8 @@ export default function CreateAssignment() {
                                   <div>
                                   <Label className="mb-2 block text-xs md:text-sm">نقاط القرار</Label>
                                   {templateOptions.decisionPoints.map((point, idx) => (
-                                  <div key={idx} className="flex gap-2 mb-2 items-center">
-                                  <Badge variant="outline" className="h-8 w-8 flex justify-center items-center shrink-0">{idx + 1}</Badge>
+                                  <div key={idx} className="flex gap-1 md:gap-2 mb-2 items-center">
+                                  <Badge variant="outline" className="h-6 w-6 md:h-8 md:w-8 flex justify-center items-center shrink-0 text-[9px] md:text-xs">{idx + 1}</Badge>
                                   <Input 
                                   value={point}
                                   onChange={(e) => {
@@ -623,6 +623,7 @@ export default function CreateAssignment() {
                                   newPoints[idx] = e.target.value;
                                   setTemplateOptions(prev => ({...prev, decisionPoints: newPoints}));
                                   }}
+                                  className="h-7 md:h-9 text-xs md:text-sm"
                                   />
                                   <Button
                                   variant="ghost"
@@ -631,9 +632,9 @@ export default function CreateAssignment() {
                                   const newPoints = templateOptions.decisionPoints.filter((_, i) => i !== idx);
                                   setTemplateOptions(prev => ({...prev, decisionPoints: newPoints}));
                                   }}
-                                  className="text-red-500"
+                                  className="text-red-500 h-6 w-6 md:h-8 md:w-8 p-0"
                                   >
-                                  <Trash2 className="w-4 h-4" />
+                                  <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
                                   </Button>
                                   </div>
                                   ))}
@@ -641,34 +642,32 @@ export default function CreateAssignment() {
                                   variant="outline"
                                   size="sm"
                                   onClick={() => setTemplateOptions(prev => ({...prev, decisionPoints: [...prev.decisionPoints, '']}))}
-                                  className="mt-2"
+                                  className="mt-2 text-xs md:text-sm h-7 md:h-9"
                                   >
-                                  <Plus className="w-4 h-4 ml-2" /> إضافة نقطة
+                                  <Plus className="w-3 h-3 md:w-4 md:h-4 ml-1 md:ml-2" /> نقطة
                                   </Button>
                                   </div>
 
                                   <div>
                                   <div className="flex items-center justify-between mb-2">
-                                    <Label>خطاب حر (تحت الجدول)</Label>
-                                    <div className="flex items-center gap-2">
+                                    <Label className="text-xs md:text-sm">خطاب حر</Label>
+                                    <div className="flex items-center gap-1 md:gap-2">
                                       <Checkbox 
                                         id="showFreeText"
                                         checked={templateOptions.showFreeText !== false}
                                         onCheckedChange={(checked) => setTemplateOptions(prev => ({...prev, showFreeText: checked}))}
+                                        className="w-3 h-3 md:w-4 md:h-4"
                                       />
-                                      <Label htmlFor="showFreeText" className="text-sm cursor-pointer">إظهار مربع الخطاب الحر</Label>
+                                      <Label htmlFor="showFreeText" className="text-[10px] md:text-sm cursor-pointer">إظهار</Label>
                                     </div>
                                   </div>
                                   {templateOptions.showFreeText !== false && (
-                                    <>
-                                      <Textarea 
-                                        value={templateOptions.freeText}
-                                        onChange={(e) => setTemplateOptions(prev => ({...prev, freeText: e.target.value}))}
-                                        className="mt-1 h-24"
-                                        placeholder="اكتب هنا أي نص إضافي تريد إضافته تحت الجدول... (يمكن سحبه وتحريكه في المعاينة)"
-                                      />
-                                      <p className="text-xs text-gray-500 mt-1">💡 يمكنك سحب هذا النص والجدول إلى أي مكان في المعاينة</p>
-                                    </>
+                                    <Textarea 
+                                      value={templateOptions.freeText}
+                                      onChange={(e) => setTemplateOptions(prev => ({...prev, freeText: e.target.value}))}
+                                      className="mt-1 h-20 md:h-24 text-xs md:text-sm"
+                                      placeholder="نص إضافي..."
+                                    />
                                   )}
                                   </div>
                                   </div>
