@@ -64,10 +64,10 @@ export default function MedicalEquipmentReport() {
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCenters, setSelectedCenters] = useState([]);
-  const [filterCategory, setFilterCategory] = useState("all");
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [filterDeviceType, setFilterDeviceType] = useState("all");
-  const [filterManufacturer, setFilterManufacturer] = useState("all");
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedStatuses, setSelectedStatuses] = useState([]);
+  const [selectedDeviceTypes, setSelectedDeviceTypes] = useState([]);
+  const [selectedManufacturers, setSelectedManufacturers] = useState([]);
   
   // Column selection
   const [selectedColumns, setSelectedColumns] = useState(
