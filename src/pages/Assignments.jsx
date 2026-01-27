@@ -702,22 +702,24 @@ export default function AssignmentsPage() {
   return (
     <div className="p-4 md:p-6 bg-gradient-to-br from-gray-50 via-white to-purple-50/30 min-h-screen" dir="rtl">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 md:mb-8 gap-4 animate-fade-in">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-8 gap-3 md:gap-4 animate-fade-in">
           <div>
-            <h1 className="text-2xl md:text-4xl font-display text-gray-900 mb-2">سجل التكليفات</h1>
-            <p className="text-base md:text-lg text-gray-600 font-medium">استعراض وإدارة جميع تكليفات الموظفين والأرشيف</p>
+            <h1 className="text-xl md:text-4xl font-display text-gray-900 mb-1 md:mb-2">سجل التكليفات</h1>
+            <p className="text-sm md:text-lg text-gray-600 font-medium">إدارة تكليفات الموظفين</p>
           </div>
-          <div className="flex gap-2 items-center w-full md:w-auto">
+          <div className="flex flex-wrap gap-1 md:gap-2 items-center w-full md:w-auto">
             {selectedAssignments.length > 0 && (
-              <Button variant="destructive" onClick={handleBulkDelete} className="flex-1 md:flex-initial animate-in fade-in zoom-in">
-                <Trash2 className="w-4 h-4 ml-2" />
-                حذف المحدد ({selectedAssignments.length})
+              <Button variant="destructive" size="sm" onClick={handleBulkDelete} className="flex-1 md:flex-initial animate-in fade-in zoom-in text-xs md:text-sm">
+                <Trash2 className="w-3 h-3 md:w-4 md:h-4 ml-1 md:ml-2" />
+                <span className="hidden sm:inline">حذف </span>({selectedAssignments.length})
               </Button>
             )}
-            <ExportManager data={filteredAssignments} filename="تقرير_التكليفات" />
-            <Button onClick={() => window.print()} variant="outline" className="flex-1 md:flex-initial">
-              <Printer className="w-3 h-3 md:w-4 md:h-4 ml-2"/>
-              <span className="text-xs md:text-sm">طباعة</span>
+            <div className="hidden md:block">
+              <ExportManager data={filteredAssignments} filename="تقرير_التكليفات" />
+            </div>
+            <Button onClick={() => window.print()} variant="outline" size="sm" className="flex-1 md:flex-initial">
+              <Printer className="w-3 h-3 md:w-4 md:h-4 ml-1 md:ml-2"/>
+              <span className="hidden sm:inline text-xs md:text-sm">طباعة</span>
             </Button>
           </div>
         </div>
