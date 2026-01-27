@@ -404,12 +404,12 @@ export default function CreateAssignment() {
               <CardHeader className="p-3 md:p-6"><CardTitle className="text-sm md:text-lg">بيانات التكليف</CardTitle></CardHeader>
               <CardContent className="p-3 md:p-6">
                 {assignmentType === 'multiple' ? (
-                  <div className="space-y-6">
-                    <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
-                      <h3 className="font-bold mb-4 flex items-center gap-2">
-                        <Plus className="w-4 h-4" /> إضافة موظفين للقائمة
+                  <div className="space-y-3 md:space-y-6">
+                    <div className="p-3 md:p-4 bg-orange-50 border border-orange-200 rounded-lg">
+                      <h3 className="font-bold mb-3 md:mb-4 flex items-center gap-2 text-xs md:text-base">
+                        <Plus className="w-3 h-3 md:w-4 md:h-4" /> إضافة موظفين
                       </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-4 mb-3 md:mb-4">
                         <div className="md:col-span-1">
                           <Label>الموظف</Label>
                           <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
