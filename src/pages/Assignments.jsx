@@ -911,15 +911,15 @@ export default function AssignmentsPage() {
           </div>
 
           <TabsContent value="drafts">
-            <Card className="shadow-medium border-0">
-              <CardHeader className="border-b border-yellow-200/50 p-5 md:p-7 bg-gradient-to-r from-yellow-50 to-amber-50">
-                <CardTitle className="text-lg md:text-xl flex items-center gap-3 font-bold text-gray-800">
-                  <div className="w-11 h-11 bg-yellow-100 rounded-xl flex items-center justify-center shadow-md">
-                    <AlertTriangle className="w-6 h-6 text-yellow-600" />
+            <Card className="shadow-sm md:shadow-medium border-0">
+              <CardHeader className="border-b border-yellow-200/50 p-3 md:p-7 bg-gradient-to-r from-yellow-50 to-amber-50">
+                <CardTitle className="text-sm md:text-xl flex items-center gap-2 md:gap-3 font-bold text-gray-800">
+                  <div className="w-8 h-8 md:w-11 md:h-11 bg-yellow-100 rounded-lg md:rounded-xl flex items-center justify-center shadow-sm md:shadow-md">
+                    <AlertTriangle className="w-4 h-4 md:w-6 md:h-6 text-yellow-600" />
                   </div>
                   المسودات
                 </CardTitle>
-                <p className="text-sm md:text-base text-gray-600 mt-2 leading-relaxed">القرارات التي لم يتم اعتمادها بعد - لا تظهر كتكليفات رسمية</p>
+                <p className="text-xs md:text-base text-gray-600 mt-1 md:mt-2 hidden sm:block">القرارات التي لم يتم اعتمادها</p>
               </CardHeader>
               <CardContent className="p-0">
                 <AssignmentTable data={filteredAssignments} isDraft={true} />
@@ -928,15 +928,15 @@ export default function AssignmentsPage() {
           </TabsContent>
 
           <TabsContent value="active">
-            <Card className="shadow-medium border-0">
-              <CardHeader className="border-b border-green-200/50 p-5 md:p-7 bg-gradient-to-r from-green-50 to-emerald-50">
-                <CardTitle className="text-lg md:text-xl flex items-center gap-3 font-bold text-gray-800">
-                  <div className="w-11 h-11 bg-green-100 rounded-xl flex items-center justify-center shadow-md">
-                    <CheckCircle className="w-6 h-6 text-green-600" />
+            <Card className="shadow-sm md:shadow-medium border-0">
+              <CardHeader className="border-b border-green-200/50 p-3 md:p-7 bg-gradient-to-r from-green-50 to-emerald-50">
+                <CardTitle className="text-sm md:text-xl flex items-center gap-2 md:gap-3 font-bold text-gray-800">
+                  <div className="w-8 h-8 md:w-11 md:h-11 bg-green-100 rounded-lg md:rounded-xl flex items-center justify-center shadow-sm md:shadow-md">
+                    <CheckCircle className="w-4 h-4 md:w-6 md:h-6 text-green-600" />
                   </div>
-                  التكليفات المعتمدة
+                  المعتمدة
                 </CardTitle>
-                <p className="text-sm md:text-base text-gray-600 mt-2 leading-relaxed">القرارات الرسمية المعتمدة والنشطة</p>
+                <p className="text-xs md:text-base text-gray-600 mt-1 md:mt-2 hidden sm:block">القرارات الرسمية النشطة</p>
               </CardHeader>
               <CardContent className="p-0">
                 <AssignmentTable data={filteredAssignments} />
@@ -945,15 +945,15 @@ export default function AssignmentsPage() {
           </TabsContent>
 
           <TabsContent value="archive">
-            <Card className="shadow-medium border-0">
-              <CardHeader className="border-b border-gray-200/50 p-5 md:p-7 bg-gradient-to-r from-gray-50 to-slate-50">
-                <CardTitle className="flex items-center gap-3 text-lg md:text-xl font-bold text-gray-800">
-                  <div className="w-11 h-11 bg-gray-100 rounded-xl flex items-center justify-center shadow-md">
-                    <Archive className="w-6 h-6 text-gray-600" />
+            <Card className="shadow-sm md:shadow-medium border-0">
+              <CardHeader className="border-b border-gray-200/50 p-3 md:p-7 bg-gradient-to-r from-gray-50 to-slate-50">
+                <CardTitle className="flex items-center gap-2 md:gap-3 text-sm md:text-xl font-bold text-gray-800">
+                  <div className="w-8 h-8 md:w-11 md:h-11 bg-gray-100 rounded-lg md:rounded-xl flex items-center justify-center shadow-sm md:shadow-md">
+                    <Archive className="w-4 h-4 md:w-6 md:h-6 text-gray-600" />
                   </div>
-                  أرشيف التكليفات
+                  الأرشيف
                 </CardTitle>
-                <p className="text-sm md:text-base text-gray-600 mt-2 leading-relaxed">عرض جميع التكليفات المُنهاة أو المُلغاة</p>
+                <p className="text-xs md:text-base text-gray-600 mt-1 md:mt-2 hidden sm:block">التكليفات المُنهاة أو المُلغاة</p>
               </CardHeader>
               <CardContent className="p-0">
                 <AssignmentTable data={filteredAssignments} isArchive={true} />
