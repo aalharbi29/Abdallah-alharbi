@@ -554,41 +554,41 @@ export default function CreateAssignment() {
                       </div>
                     </div>
 
-                    <div className="border rounded-lg overflow-hidden">
-                      <table className="w-full text-sm text-right">
+                    <div className="border rounded-lg overflow-x-auto">
+                      <table className="w-full text-[10px] md:text-sm text-right min-w-[500px]">
                         <thead className="bg-gray-100">
                           <tr>
-                            <th className="p-3 border-b">الاسم</th>
-                            <th className="p-3 border-b">جهة العمل</th>
-                            <th className="p-3 border-b">المكلف بها</th>
-                            <th className="p-3 border-b">المدة</th>
-                            <th className="p-3 border-b">تاريخ البداية</th>
-                            <th className="p-3 border-b">تاريخ النهاية</th>
-                            <th className="p-3 border-b w-10"></th>
+                            <th className="p-1.5 md:p-3 border-b">الاسم</th>
+                            <th className="p-1.5 md:p-3 border-b hidden sm:table-cell">جهة العمل</th>
+                            <th className="p-1.5 md:p-3 border-b">المكلف بها</th>
+                            <th className="p-1.5 md:p-3 border-b">المدة</th>
+                            <th className="p-1.5 md:p-3 border-b hidden md:table-cell">من</th>
+                            <th className="p-1.5 md:p-3 border-b hidden md:table-cell">إلى</th>
+                            <th className="p-1.5 md:p-3 border-b w-8 md:w-10"></th>
                           </tr>
                         </thead>
                         <tbody>
                           {multipleAssignments.map((item, idx) => (
                             <tr key={item.id} className="border-b last:border-0 hover:bg-gray-50">
-                              <td className="p-3">{item.name}</td>
-                              <td className="p-3">{item.current_work}</td>
-                              <td className="p-3">{item.assigned_work}</td>
-                              <td className="p-3">{item.duration} يوم</td>
-                              <td className="p-3">{item.start_date}</td>
-                              <td className="p-3">{item.end_date}</td>
-                              <td className="p-3 text-center">
+                              <td className="p-1.5 md:p-3 truncate max-w-[80px] md:max-w-none">{item.name}</td>
+                              <td className="p-1.5 md:p-3 truncate max-w-[60px] md:max-w-none hidden sm:table-cell">{item.current_work}</td>
+                              <td className="p-1.5 md:p-3 truncate max-w-[60px] md:max-w-none">{item.assigned_work}</td>
+                              <td className="p-1.5 md:p-3">{item.duration}ي</td>
+                              <td className="p-1.5 md:p-3 hidden md:table-cell">{item.start_date}</td>
+                              <td className="p-1.5 md:p-3 hidden md:table-cell">{item.end_date}</td>
+                              <td className="p-1.5 md:p-3 text-center">
                                 <button 
                                   onClick={() => setMultipleAssignments(prev => prev.filter(i => i.id !== item.id))}
                                   className="text-red-500 hover:text-red-700"
                                   >
-                                  <Trash2 className="w-4 h-4" />
+                                  <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
                                   </button>
                                   </td>
                                   </tr>
                                   ))}
                                   {multipleAssignments.length === 0 && (
                                   <tr>
-                                  <td colSpan="7" className="p-8 text-center text-gray-500">لم يتم إضافة موظفين بعد</td>
+                                  <td colSpan="7" className="p-4 md:p-8 text-center text-gray-500 text-xs md:text-sm">لم يتم إضافة موظفين</td>
                                   </tr>
                                   )}
                                   </tbody>
