@@ -472,65 +472,101 @@ export default function MedicalEquipmentReport() {
             />
           </div>
 
-          {/* Filter Row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Filter Row - Multi-select badges */}
+          <div className="space-y-4">
+            {/* Categories */}
             <div>
-              <Label className="text-xs">الفئة</Label>
-              <Select value={filterCategory} onValueChange={setFilterCategory}>
-                <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="جميع الفئات" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">جميع الفئات</SelectItem>
-                  <SelectItem value="A">الفئة A</SelectItem>
-                  <SelectItem value="B">الفئة B</SelectItem>
-                  <SelectItem value="C">الفئة C</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label className="text-xs mb-2 block">الفئة (اختر فئة أو أكثر)</Label>
+              <div className="flex flex-wrap gap-2">
+                {["A", "B", "C"].map((cat) => (
+                  <Badge
+                    key={cat}
+                    variant={selectedCategories.includes(cat) ? "default" : "outline"}
+                    className={`cursor-pointer transition-all ${
+                      selectedCategories.includes(cat) 
+                        ? getCategoryBadge(cat) + " border-2"
+                        : "hover:bg-gray-100"
+                    }`}
+                    onClick={() => toggleCategory(cat)}
+                  >
+                    الفئة {cat}
+                  </Badge>
+                ))}
+              </div>
             </div>
+
+            {/* Statuses */}
             <div>
-              <Label className="text-xs">الحالة</Label>
-              <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="جميع الحالات" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">جميع الحالات</SelectItem>
-                  <SelectItem value="يعمل">يعمل</SelectItem>
-                  <SelectItem value="معطل">معطل</SelectItem>
-                  <SelectItem value="تحت الصيانة">تحت الصيانة</SelectItem>
-                  <SelectItem value="مستبعد">مستبعد</SelectItem>
-                </SelectContent>
-              </Select>
+              <Label className="text-xs mb-2 block">الحالة (اختر حالة أو أكثر)</Label>
+              <div className="flex flex-wrap gap-2">
+                {["يعمل", "معطل", "تحت الصيانة", "مستبعد"].map((status) => (
+                  <Badge
+                    key={status}
+                    variant={selectedStatuses.includes(status) ? "default" : "outline"}
+                    className={`cursor-pointer transition-all ${
+                      selectedStatuses.includes(status) 
+                        ? getStatusBadge(status) + " border-2"
+                        : "hover:bg-gray-100"
+                    }`}
+                    onClick={() => toggleStatus(status)}
+                  >
+                    {status}
+                  </Badge>
+                ))}
+              </div>
             </div>
-            <div>
-              <Label className="text-xs">الشركة المصنعة</Label>
-              <Select value={filterManufacturer} onValueChange={setFilterManufacturer}>
-                <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="جميع الشركات" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">جميع الشركات</SelectItem>
+
+            {/* Manufacturers */}
+            {uniqueManufacturers.length > 0 && (
+              <div>
+                <Label className="text-xs mb-2 block">الشركة المصنعة (اختر شركة أو أكثر)</Label>
+                <div className="flex flex-wrap gap-2 p-3 bg-gray-50 rounded-lg max-h-24 overflow-y-auto">
                   {uniqueManufacturers.map((m) => (
-                    <SelectItem key={m} value={m}>{m}</SelectItem>
+                    <Badge
+                      key={m}
+                      variant={selectedManufacturers.includes(m) ? "default" : "outline"}
+                      className={`cursor-pointer transition-all ${
+                        selectedManufacturers.includes(m) 
+                          ? "bg-blue-600 hover:bg-blue-700" 
+                          : "hover:bg-blue-50"
+                      }`}
+                      onClick={() => toggleManufacturer(m)}
+                    >
+                      {m}
+                    </Badge>
                   ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label className="text-xs">نوع الجهاز</Label>
-              <Select value={filterDeviceType} onValueChange={setFilterDeviceType}>
-                <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="جميع الأنواع" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">جميع الأنواع</SelectItem>
+                </div>
+                {selectedManufacturers.length > 0 && (
+                  <p className="text-xs text-blue-600 mt-1">تم اختيار {selectedManufacturers.length} شركة</p>
+                )}
+              </div>
+            )}
+
+            {/* Device Types */}
+            {uniqueDeviceTypes.length > 0 && (
+              <div>
+                <Label className="text-xs mb-2 block">نوع الجهاز (اختر نوع أو أكثر)</Label>
+                <div className="flex flex-wrap gap-2 p-3 bg-gray-50 rounded-lg max-h-32 overflow-y-auto">
                   {uniqueDeviceTypes.map((d) => (
-                    <SelectItem key={d} value={d}>{d}</SelectItem>
+                    <Badge
+                      key={d}
+                      variant={selectedDeviceTypes.includes(d) ? "default" : "outline"}
+                      className={`cursor-pointer transition-all ${
+                        selectedDeviceTypes.includes(d) 
+                          ? "bg-indigo-600 hover:bg-indigo-700" 
+                          : "hover:bg-indigo-50"
+                      }`}
+                      onClick={() => toggleDeviceType(d)}
+                    >
+                      {d}
+                    </Badge>
                   ))}
-                </SelectContent>
-              </Select>
-            </div>
+                </div>
+                {selectedDeviceTypes.length > 0 && (
+                  <p className="text-xs text-indigo-600 mt-1">تم اختيار {selectedDeviceTypes.length} نوع</p>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Centers Selection */}
