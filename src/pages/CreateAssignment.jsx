@@ -102,7 +102,8 @@ export default function CreateAssignment() {
       'يتم تنفيذ هذا القرار كلاً فيما يخصه.'
     ],
     customIntro: 'إن مدير شؤون المراكز الصحية بالحناكية وبناء على الصلاحيات الممنوحة لنا نظاماً\nعليه يقرر ما يلي:',
-    freeText: ''
+    freeText: '',
+    showFreeText: true
   });
 
   // Saved templates state
