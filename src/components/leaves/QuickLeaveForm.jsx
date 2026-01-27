@@ -105,6 +105,10 @@ export default function QuickLeaveForm({ employee, employees, onSubmit, onCancel
     }, [formData.start_date, lastChangedField]);
 
     const handleChange = (field, value) => {
+        // Track which field triggered the change
+        if (field === 'start_date' || field === 'end_date' || field === 'days_count') {
+            setLastChangedField(field);
+        }
         setFormData(prev => ({ ...prev, [field]: value }));
     };
 
