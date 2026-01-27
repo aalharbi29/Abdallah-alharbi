@@ -602,7 +602,13 @@ export default function HumanResources() {
           </DialogHeader>
           <QuickLeaveForm
             employee={selectedEmployee}
-            onClose={() => {
+            onSubmit={async (leaveData) => {
+              await base44.entities.Leave.create(leaveData);
+              setShowLeaveForm(false);
+              setSelectedEmployee(null);
+              loadData();
+            }}
+            onCancel={() => {
               setShowLeaveForm(false);
               setSelectedEmployee(null);
             }}
