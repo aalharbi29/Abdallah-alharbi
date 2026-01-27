@@ -556,138 +556,111 @@ export default function AssignmentsPage() {
         </TableHeader>
         <TableBody>
           {isLoading ? (
-            <TableRow><TableCell colSpan={isArchive ? "9" : "8"} className="text-center p-8">جاري تحميل البيانات...</TableCell></TableRow>
+            <TableRow><TableCell colSpan={isArchive ? "9" : "8"} className="text-center p-4 md:p-8 text-xs md:text-sm">جاري التحميل...</TableCell></TableRow>
           ) : data.length > 0 ? (
             data.map(assignment => (
               <TableRow 
                 key={assignment.id} 
-                className={`hover:bg-gray-50 cursor-pointer ${selectedAssignments.includes(assignment.id) ? 'bg-blue-50' : ''} ${isDraft ? 'bg-yellow-50/30' : ''}`}
+                className={`hover:bg-gray-50 cursor-pointer text-[10px] md:text-sm ${selectedAssignments.includes(assignment.id) ? 'bg-blue-50' : ''} ${isDraft ? 'bg-yellow-50/30' : ''}`}
                 onClick={() => toggleSelection(assignment.id)}
               >
-                <TableCell className="px-2">
+                <TableCell className="px-1 md:px-2">
                   <Checkbox 
                     checked={selectedAssignments.includes(assignment.id)}
                     onCheckedChange={() => toggleSelection(assignment.id)}
                     onClick={(e) => e.stopPropagation()}
+                    className="w-3 h-3 md:w-4 md:h-4"
                   />
                 </TableCell>
-                <TableCell className="font-medium text-right p-2 md:p-4">
-                  <div className="flex items-center gap-2">
+                <TableCell className="font-medium text-right px-1 md:px-3 py-2">
+                  <div className="flex items-center gap-1">
                     {assignment.assignment_template_type === 'multiple' && (
-                      <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 p-0.5 px-1" title="تكليف جماعي">
-                        <Layers className="w-3 h-3" />
+                      <Badge variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 p-0 px-0.5 hidden sm:flex" title="جماعي">
+                        <Layers className="w-2.5 h-2.5" />
                       </Badge>
                     )}
-                    <div className="text-sm md:text-base">{assignment.employee_name || 'غير محدد'}</div>
-                  </div>
-                  <div className="text-xs text-gray-500 md:hidden">{assignment.employee_national_id}</div>
-                </TableCell>
-                <TableCell className="text-right p-2 md:p-4">
-                  <div className="text-xs md:text-sm">{assignment.from_health_center || ''}</div>
-                </TableCell>
-                <TableCell className="text-right p-2 md:p-4">
-                  <div className="text-xs md:text-sm font-medium">{assignment.assigned_to_health_center || ''}</div>
-                </TableCell>
-                <TableCell className="text-right p-2 md:p-4">
-                  <div className="flex flex-col gap-1">
-                    <span className="text-xs md:text-sm">من: {assignment.start_date ? format(new Date(assignment.start_date), "yyyy-MM-dd") : 'غير محدد'}</span>
-                    <span className="text-xs md:text-sm">إلى: {assignment.end_date ? format(new Date(assignment.end_date), "yyyy-MM-dd") : 'غير محدد'}</span>
+                    <div className="text-[10px] md:text-sm truncate max-w-[60px] md:max-w-[150px]">{assignment.employee_name || '-'}</div>
                   </div>
                 </TableCell>
-                <TableCell className="text-right p-2 md:p-4">
-                  <Badge variant="secondary" className="text-xs">{assignment.duration_days || '-'} يوم</Badge>
+                <TableCell className="text-right px-1 md:px-3 py-2 hidden sm:table-cell">
+                  <div className="text-[10px] md:text-sm truncate max-w-[50px] md:max-w-[100px]">{assignment.from_health_center || '-'}</div>
                 </TableCell>
-                <TableCell className="text-right p-2 md:p-4">
+                <TableCell className="text-right px-1 md:px-3 py-2">
+                  <div className="text-[10px] md:text-sm truncate max-w-[50px] md:max-w-[100px] font-medium">{assignment.assigned_to_health_center || '-'}</div>
+                </TableCell>
+                <TableCell className="text-right px-1 md:px-3 py-2 hidden md:table-cell">
+                  <div className="text-[10px] md:text-xs">
+                    <div>{assignment.start_date ? format(new Date(assignment.start_date), "MM/dd") : '-'}</div>
+                    <div className="text-gray-400">{assignment.end_date ? format(new Date(assignment.end_date), "MM/dd") : ''}</div>
+                  </div>
+                </TableCell>
+                <TableCell className="text-right px-1 md:px-3 py-2">
+                  <Badge variant="secondary" className="text-[9px] md:text-xs px-1 py-0">{assignment.duration_days || '-'}ي</Badge>
+                </TableCell>
+                <TableCell className="text-right px-1 md:px-3 py-2 hidden sm:table-cell">
                   <AssignmentStatusBadge assignment={assignment} isArchive={isArchive} />
                 </TableCell>
                 {isArchive && (
-                  <TableCell className="text-right p-2 md:p-4">
-                    {assignment.completion_date ? (
-                      <span className="text-xs md:text-sm text-gray-600">
-                        {format(new Date(assignment.completion_date), "yyyy-MM-dd")}
-                      </span>
-                    ) : (
-                      <span className="text-xs text-gray-400">غير محدد</span>
-                    )}
+                  <TableCell className="text-right px-1 md:px-3 py-2 hidden lg:table-cell">
+                    <span className="text-[10px] md:text-xs text-gray-600">
+                      {assignment.completion_date ? format(new Date(assignment.completion_date), "MM/dd") : '-'}
+                    </span>
                   </TableCell>
                 )}
                 {isDraft && (
-                  <TableCell className="text-right p-2 md:p-4">
-                    <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-300">
-                      في انتظار الاعتماد
+                  <TableCell className="text-right px-1 md:px-3 py-2 hidden lg:table-cell">
+                    <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-300 text-[9px] px-1 py-0">
+                      انتظار
                     </Badge>
                   </TableCell>
                 )}
-                <TableCell className="no-print p-1 md:p-4">
-                  <div className="flex flex-col md:flex-row gap-1 md:gap-2">
-                    <div className="flex gap-1">
-                      <Link to={createPageUrl(`ViewAssignment?id=${assignment.id}`)}>
-                        <Button variant="outline" size="sm" className="text-xs md:text-sm px-2 md:px-3">
-                          <Eye className="w-3 h-3 md:w-4 md:h-4 ml-1" />
-                          <span className="hidden md:inline">عرض</span>
-                        </Button>
-                      </Link>
-
-                      <Button variant="outline" size="sm" onClick={() => handleExportPDF(assignment)} className="text-xs md:text-sm px-2 md:px-3 bg-red-50 hover:bg-red-100" disabled={isLoading}>
-                        <FileText className="w-3 h-3 md:w-4 md:h-4 ml-1" />
-                        <span className="hidden md:inline">PDF</span>
+                <TableCell className="no-print px-1 md:px-3 py-2">
+                  <div className="flex flex-wrap gap-0.5 md:gap-1 justify-center">
+                    <Link to={createPageUrl(`ViewAssignment?id=${assignment.id}`)}>
+                      <Button variant="outline" size="sm" className="h-6 md:h-8 px-1.5 md:px-2 text-[9px] md:text-xs">
+                        <Eye className="w-2.5 h-2.5 md:w-3.5 md:h-3.5" />
                       </Button>
+                    </Link>
 
-                      <Button variant="outline" size="sm" onClick={() => handleExportExcel(assignment)} className="text-xs md:text-sm px-2 md:px-3 bg-green-50 hover:bg-green-100">
-                        <Download className="w-3 h-3 md:w-4 md:h-4 ml-1" />
-                        <span className="hidden md:inline">Excel</span>
-                      </Button>
-                    </div>
+                    <Button variant="outline" size="sm" onClick={(e) => { e.stopPropagation(); handleExportPDF(assignment); }} className="h-6 md:h-8 px-1.5 md:px-2 text-[9px] md:text-xs bg-red-50" disabled={isLoading}>
+                      <FileText className="w-2.5 h-2.5 md:w-3.5 md:h-3.5" />
+                    </Button>
 
-                    {!isArchive ? (
+                    {!isArchive && (
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button variant="outline" size="sm" className="text-xs md:text-sm px-2 md:px-3" disabled={isArchiving}>
-                            {isArchiving ? <Loader2 className="animate-spin w-4 h-4" /> : "المزيد ▼"}
+                          <Button variant="outline" size="sm" className="h-6 md:h-8 px-1.5 md:px-2 text-[9px] md:text-xs" disabled={isArchiving} onClick={(e) => e.stopPropagation()}>
+                            ⋮
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                           <DropdownMenuItem onClick={() => handleStatusUpdate(assignment.id, 'completed')}>
-                            <CheckCircle className="w-4 h-4 ml-2 text-green-600" />
-                            إنهاء وأرشفة
+                            <CheckCircle className="w-3 h-3 md:w-4 md:h-4 ml-2 text-green-600" />
+                            إنهاء
                           </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => handleStatusUpdate(assignment.id, 'cancelled')}>
-                            <XCircle className="w-4 h-4 ml-2 text-red-600" />
-                            إلغاء وأرشفة
+                            <XCircle className="w-3 h-3 md:w-4 md:h-4 ml-2 text-red-600" />
+                            إلغاء
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDelete(assignment.id)} className="text-red-600">
+                            <Trash2 className="w-3 h-3 md:w-4 md:h-4 ml-2" />
+                            حذف
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
-                    ) : null}
+                    )}
 
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="destructive" size="sm" className="text-xs md:text-sm px-2 md:px-3">
-                          <Trash2 className="w-3 h-3 md:w-4 md:h-4 ml-1" />
-                          <span className="hidden md:inline">حذف</span>
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>تأكيد حذف التكليف</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            هل أنت متأكد من حذف تكليف الموظف "{assignment.employee_name || ''}"؟
-                            {isArchive ? " سيتم حذفه من الأرشيف نهائياً." : " لا يمكن التراجع عن هذا الإجراء."}
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>تراجع</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleDelete(assignment.id)} className="bg-red-600 hover:bg-red-700">
-                            نعم، احذف نهائياً
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                    {isArchive && (
+                      <Button variant="destructive" size="sm" className="h-6 md:h-8 px-1.5 md:px-2 text-[9px] md:text-xs" onClick={(e) => { e.stopPropagation(); handleDelete(assignment.id); }}>
+                        <Trash2 className="w-2.5 h-2.5 md:w-3.5 md:h-3.5" />
+                      </Button>
+                    )}
                   </div>
                 </TableCell>
               </TableRow>
             ))
           ) : (
-            <TableRow><TableCell colSpan={isArchive ? "9" : "8"} className="text-center p-8 text-gray-500">لا توجد تكليفات تطابق بحثك.</TableCell></TableRow>
+            <TableRow><TableCell colSpan={isArchive ? "9" : "8"} className="text-center p-4 md:p-8 text-xs md:text-sm text-gray-500">لا توجد نتائج</TableCell></TableRow>
           )}
         </TableBody>
       </Table>
