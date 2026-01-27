@@ -1083,21 +1083,21 @@ export default function CreateAssignment() {
         </Tabs>
 
         {(selectedEmployee || (assignmentType === 'multiple' && multipleAssignments.length > 0)) && (
-          <div className="flex justify-end mt-6">
+          <div className="flex justify-end mt-4 md:mt-6">
             <Button 
               onClick={handleSubmit} 
               disabled={isSaving} 
-              className="bg-green-600 hover:bg-green-700 gap-2"
+              className="bg-green-600 hover:bg-green-700 gap-1 md:gap-2 w-full md:w-auto text-xs md:text-sm h-9 md:h-10"
             >
               {isSaving ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <Loader2 className="w-3 h-3 md:w-4 md:h-4 animate-spin" />
                   جاري الحفظ...
                 </>
               ) : (
                 <>
-                  <Save className="w-4 h-4" />
-                  حفظ وإنشاء الخطاب
+                  <Save className="w-3 h-3 md:w-4 md:h-4" />
+                  حفظ وإنشاء
                 </>
               )}
             </Button>
