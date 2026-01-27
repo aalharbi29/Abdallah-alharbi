@@ -1356,10 +1356,18 @@ export default function ViewAssignmentPage() {
 
             {/* Flexible Template Controls - Now in sidebar */}
                     {templateMode === 'flexible' && (
-                      <div className="fixed left-4 top-20 bottom-4 w-80 bg-white/95 backdrop-blur-sm rounded-xl shadow-2xl border border-gray-200 z-40 flex flex-col overflow-hidden">
-                        <h4 className="text-sm font-bold text-center border-b pb-2 p-3 bg-gray-50 sticky top-0">
-                          <Settings2 className="w-4 h-4 inline ml-1" />
-                          خيارات التحكم الكاملة
+                      <div className="fixed left-2 md:left-4 top-20 bottom-4 w-[calc(100vw-1rem)] md:w-80 bg-white/95 backdrop-blur-sm rounded-xl shadow-2xl border border-gray-200 z-40 flex flex-col overflow-hidden max-h-[calc(100vh-6rem)]" id="flexible-controls-panel">
+                        <h4 className="text-sm font-bold text-center border-b pb-2 p-3 bg-gray-50 sticky top-0 flex items-center justify-between">
+                          <span className="flex items-center">
+                            <Settings2 className="w-4 h-4 inline ml-1" />
+                            خيارات التحكم
+                          </span>
+                          <button 
+                            onClick={() => document.getElementById('flexible-controls-panel').classList.toggle('hidden')}
+                            className="md:hidden p-1 hover:bg-gray-200 rounded text-gray-500"
+                          >
+                            ✕
+                          </button>
                         </h4>
                 
                 {/* مدير الأنماط */}
