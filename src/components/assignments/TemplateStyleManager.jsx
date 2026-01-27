@@ -173,17 +173,17 @@ export default function TemplateStyleManager({
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center gap-2 flex-wrap">
+      <div className="flex items-center gap-1 md:gap-2 flex-wrap">
         {/* زر تحميل نمط */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button size="sm" variant="outline" className="h-8 text-xs gap-1">
+            <Button size="sm" variant="outline" className="h-7 md:h-8 text-[10px] md:text-xs gap-1 px-2">
               <FolderOpen className="w-3 h-3" />
-              تحميل نمط
-              <ChevronDown className="w-3 h-3" />
+              <span className="hidden sm:inline">تحميل</span> نمط
+              <ChevronDown className="w-2.5 h-2.5 md:w-3 md:h-3" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-64">
+          <DropdownMenuContent align="start" className="w-56 md:w-64">
             {isLoading ? (
               <DropdownMenuItem disabled>جاري التحميل...</DropdownMenuItem>
             ) : styles.length === 0 ? (
@@ -194,17 +194,17 @@ export default function TemplateStyleManager({
                   <DropdownMenuItem 
                     key={style.id} 
                     onClick={() => handleLoadStyle(style)}
-                    className="flex items-center justify-between"
+                    className="flex items-center justify-between text-xs md:text-sm"
                   >
                     <div className="flex items-center gap-2">
                       {style.is_default && <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />}
-                      <span>{style.name}</span>
+                      <span className="truncate max-w-[150px]">{style.name}</span>
                     </div>
                     <Check className="w-3 h-3 opacity-0 group-hover:opacity-100" />
                   </DropdownMenuItem>
                 ))}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setShowManageDialog(true)}>
+                <DropdownMenuItem onClick={() => setShowManageDialog(true)} className="text-xs md:text-sm">
                   <Edit className="w-3 h-3 ml-2" />
                   إدارة الأنماط
                 </DropdownMenuItem>
@@ -223,17 +223,17 @@ export default function TemplateStyleManager({
             setNewStyleDescription('');
             setShowSaveDialog(true);
           }}
-          className="h-8 text-xs gap-1"
+          className="h-7 md:h-8 text-[10px] md:text-xs gap-1 px-2"
         >
           <Plus className="w-3 h-3" />
-          حفظ كنمط جديد
+          <span className="hidden sm:inline">حفظ</span> جديد
         </Button>
 
         {/* النمط الافتراضي الحالي */}
         {defaultStyle && (
-          <Badge variant="secondary" className="text-xs">
-            <Star className="w-3 h-3 ml-1 text-yellow-500 fill-yellow-500" />
-            الافتراضي: {defaultStyle.name}
+          <Badge variant="secondary" className="text-[9px] md:text-xs hidden sm:flex">
+            <Star className="w-2.5 h-2.5 md:w-3 md:h-3 ml-1 text-yellow-500 fill-yellow-500" />
+            <span className="truncate max-w-[80px]">{defaultStyle.name}</span>
           </Badge>
         )}
       </div>
