@@ -157,6 +157,38 @@ export default function MedicalEquipmentReport() {
     }
   };
 
+  const toggleCategory = (category) => {
+    if (selectedCategories.includes(category)) {
+      setSelectedCategories(selectedCategories.filter(c => c !== category));
+    } else {
+      setSelectedCategories([...selectedCategories, category]);
+    }
+  };
+
+  const toggleStatus = (status) => {
+    if (selectedStatuses.includes(status)) {
+      setSelectedStatuses(selectedStatuses.filter(s => s !== status));
+    } else {
+      setSelectedStatuses([...selectedStatuses, status]);
+    }
+  };
+
+  const toggleDeviceType = (deviceType) => {
+    if (selectedDeviceTypes.includes(deviceType)) {
+      setSelectedDeviceTypes(selectedDeviceTypes.filter(d => d !== deviceType));
+    } else {
+      setSelectedDeviceTypes([...selectedDeviceTypes, deviceType]);
+    }
+  };
+
+  const toggleManufacturer = (manufacturer) => {
+    if (selectedManufacturers.includes(manufacturer)) {
+      setSelectedManufacturers(selectedManufacturers.filter(m => m !== manufacturer));
+    } else {
+      setSelectedManufacturers([...selectedManufacturers, manufacturer]);
+    }
+  };
+
   const toggleColumn = (columnKey) => {
     if (selectedColumns.includes(columnKey)) {
       setSelectedColumns(selectedColumns.filter(c => c !== columnKey));
