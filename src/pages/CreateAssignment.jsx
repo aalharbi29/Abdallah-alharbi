@@ -458,24 +458,26 @@ export default function CreateAssignment() {
                         </div>
 
                         <div>
-                          <Label>المدة (أيام)</Label>
+                          <Label className="text-xs md:text-sm">المدة (أيام)</Label>
                           <Input 
                             type="number" 
                             value={assignmentData.duration_days} 
                             onChange={(e) => setAssignmentData(prev => ({...prev, duration_days: e.target.value}))}
-                            placeholder="مثال: 5"
+                            placeholder="5"
+                            className="h-8 md:h-10 text-xs md:text-sm"
                           />
                         </div>
 
-                        <div className="md:col-span-3 border p-3 rounded bg-gray-50">
+                        <div className="md:col-span-3 border p-2 md:p-3 rounded bg-gray-50">
                           <div className="flex items-center space-x-2 space-x-reverse mb-2">
                             <Checkbox 
                               id="useSpecificDays" 
                               checked={useSpecificDays} 
-                              onCheckedChange={setUseSpecificDays} 
+                              onCheckedChange={setUseSpecificDays}
+                              className="w-3 h-3 md:w-4 md:h-4"
                             />
-                            <Label htmlFor="useSpecificDays" className="cursor-pointer font-medium text-blue-700">
-                              تحديد أيام محددة (مثال: كل أحد وثلاثاء)
+                            <Label htmlFor="useSpecificDays" className="cursor-pointer font-medium text-blue-700 text-xs md:text-sm">
+                              أيام محددة
                             </Label>
                           </div>
                           
