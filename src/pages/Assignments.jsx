@@ -724,87 +724,67 @@ export default function AssignmentsPage() {
           </div>
         </div>
 
-        {/* بطاقات اختيار نوع التكليف */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+        {/* بطاقات اختيار نوع التكليف - مختصرة للجوال */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-8">
           <Link to={createPageUrl("CreateAssignment?type=standard")}>
-            <Card className="group hover:shadow-strong transition-all duration-300 border-0 cursor-pointer hover:scale-[1.02] bg-gradient-to-br from-blue-50 via-white to-blue-50/50 card-interactive">
-              <CardContent className="p-7 md:p-8">
-                <div className="flex items-center gap-5">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-strong group-hover:scale-110 group-hover:shadow-xl transition-all duration-300">
-                    <FileText className="w-9 h-9 text-white drop-shadow-md" />
+            <Card className="group hover:shadow-md transition-all duration-300 border cursor-pointer hover:scale-[1.02] bg-gradient-to-br from-blue-50 to-white h-full">
+              <CardContent className="p-3 md:p-6">
+                <div className="flex flex-col items-center text-center gap-2 md:gap-3">
+                  <div className="w-10 h-10 md:w-16 md:h-16 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md">
+                    <FileText className="w-5 h-5 md:w-8 md:h-8 text-white" />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">تكليف قياسي</h3>
-                    <p className="text-sm text-gray-600 leading-relaxed mb-3">قالب تكليف موحد بتنسيق ثابت وجاهز</p>
-                    <div className="flex gap-2 mt-3">
-                      <Badge className="bg-blue-100 text-blue-700 text-xs px-3 py-1 font-semibold">سريع</Badge>
-                      <Badge className="bg-green-100 text-green-700 text-xs px-3 py-1 font-semibold">موحد</Badge>
-                    </div>
+                  <div>
+                    <h3 className="text-xs md:text-base font-bold text-gray-900">قياسي</h3>
+                    <p className="text-[10px] md:text-xs text-gray-500 hidden md:block">قالب ثابت</p>
                   </div>
-                  <Plus className="w-7 h-7 text-blue-600 group-hover:scale-125 transition-transform duration-300" />
                 </div>
               </CardContent>
             </Card>
           </Link>
 
           <Link to={createPageUrl("CreateAssignment?type=flexible")}>
-            <Card className="group hover:shadow-strong transition-all duration-300 border-0 cursor-pointer hover:scale-[1.02] bg-gradient-to-br from-purple-50 via-white to-purple-50/50 card-interactive">
-              <CardContent className="p-7 md:p-8">
-                <div className="flex items-center gap-5">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-strong group-hover:scale-110 group-hover:shadow-xl transition-all duration-300">
-                    <Settings2 className="w-9 h-9 text-white drop-shadow-md" />
+            <Card className="group hover:shadow-md transition-all duration-300 border cursor-pointer hover:scale-[1.02] bg-gradient-to-br from-purple-50 to-white h-full">
+              <CardContent className="p-3 md:p-6">
+                <div className="flex flex-col items-center text-center gap-2 md:gap-3">
+                  <div className="w-10 h-10 md:w-16 md:h-16 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-md">
+                    <Settings2 className="w-5 h-5 md:w-8 md:h-8 text-white" />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">تكليف مرن</h3>
-                    <p className="text-sm text-gray-600 leading-relaxed mb-3">قالب قابل للتخصيص الكامل مع خيارات متقدمة</p>
-                    <div className="flex gap-2 mt-3">
-                      <Badge className="bg-purple-100 text-purple-700 text-xs px-3 py-1 font-semibold">مرن</Badge>
-                      <Badge className="bg-orange-100 text-orange-700 text-xs px-3 py-1 font-semibold">قابل للتخصيص</Badge>
-                    </div>
+                  <div>
+                    <h3 className="text-xs md:text-base font-bold text-gray-900">مرن</h3>
+                    <p className="text-[10px] md:text-xs text-gray-500 hidden md:block">قابل للتخصيص</p>
                   </div>
-                  <Plus className="w-7 h-7 text-purple-600 group-hover:scale-125 transition-transform duration-300" />
                 </div>
               </CardContent>
             </Card>
           </Link>
           
           <Link to={createPageUrl("CreateAssignment?type=multiple")}>
-            <Card className="group hover:shadow-strong transition-all duration-300 border-0 cursor-pointer hover:scale-[1.02] bg-gradient-to-br from-green-50 via-white to-green-50/50 card-interactive">
-              <CardContent className="p-7 md:p-8">
-                <div className="flex items-center gap-5">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-strong group-hover:scale-110 group-hover:shadow-xl transition-all duration-300">
-                    <Users className="w-9 h-9 text-white drop-shadow-md" />
+            <Card className="group hover:shadow-md transition-all duration-300 border cursor-pointer hover:scale-[1.02] bg-gradient-to-br from-green-50 to-white h-full">
+              <CardContent className="p-3 md:p-6">
+                <div className="flex flex-col items-center text-center gap-2 md:gap-3">
+                  <div className="w-10 h-10 md:w-16 md:h-16 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-md">
+                    <Users className="w-5 h-5 md:w-8 md:h-8 text-white" />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">تكليف جماعي</h3>
-                    <p className="text-sm text-gray-600 leading-relaxed mb-3">إصدار قرار تكليف واحد لمجموعة من الموظفين</p>
-                    <div className="flex gap-2 mt-3">
-                      <Badge className="bg-green-100 text-green-700 text-xs px-3 py-1 font-semibold">جماعي</Badge>
-                      <Badge className="bg-blue-100 text-blue-700 text-xs px-3 py-1 font-semibold">جدول</Badge>
-                    </div>
+                  <div>
+                    <h3 className="text-xs md:text-base font-bold text-gray-900">جماعي</h3>
+                    <p className="text-[10px] md:text-xs text-gray-500 hidden md:block">عدة موظفين</p>
                   </div>
-                  <Plus className="w-7 h-7 text-green-600 group-hover:scale-125 transition-transform duration-300" />
                 </div>
               </CardContent>
             </Card>
           </Link>
 
           <div onClick={() => navigate(createPageUrl('CreateAssignmentFromTemplate'))}>
-            <Card className="group hover:shadow-strong transition-all duration-300 border-0 cursor-pointer hover:scale-[1.02] bg-gradient-to-br from-orange-50 via-white to-orange-50/50 card-interactive">
-              <CardContent className="p-7 md:p-8">
-                <div className="flex items-center gap-5">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-strong group-hover:scale-110 group-hover:shadow-xl transition-all duration-300">
-                    <Edit className="w-9 h-9 text-white drop-shadow-md" />
+            <Card className="group hover:shadow-md transition-all duration-300 border cursor-pointer hover:scale-[1.02] bg-gradient-to-br from-orange-50 to-white h-full">
+              <CardContent className="p-3 md:p-6">
+                <div className="flex flex-col items-center text-center gap-2 md:gap-3">
+                  <div className="w-10 h-10 md:w-16 md:h-16 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-md">
+                    <Edit className="w-5 h-5 md:w-8 md:h-8 text-white" />
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">قرار من قالب تفاعلي</h3>
-                    <p className="text-sm text-gray-600 leading-relaxed mb-3">استخدم قوالب النماذج التفاعلية المحفوظة</p>
-                    <div className="flex gap-2 mt-3">
-                      <Badge className="bg-orange-100 text-orange-700 text-xs px-3 py-1 font-semibold">تفاعلي</Badge>
-                      <Badge className="bg-red-100 text-red-700 text-xs px-3 py-1 font-semibold">متقدم</Badge>
-                    </div>
+                  <div>
+                    <h3 className="text-xs md:text-base font-bold text-gray-900">تفاعلي</h3>
+                    <p className="text-[10px] md:text-xs text-gray-500 hidden md:block">من قالب</p>
                   </div>
-                  <Plus className="w-7 h-7 text-orange-600 group-hover:scale-125 transition-transform duration-300" />
                 </div>
               </CardContent>
             </Card>
