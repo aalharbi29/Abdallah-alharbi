@@ -240,41 +240,41 @@ export default function TemplateStyleManager({
 
       {/* حوار حفظ النمط */}
       <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
-        <DialogContent dir="rtl">
+        <DialogContent dir="rtl" className="max-w-[95vw] md:max-w-md mx-2 p-4 md:p-6">
           <DialogHeader>
-            <DialogTitle>{editingStyle ? 'تحديث النمط' : 'حفظ نمط جديد'}</DialogTitle>
-            <DialogDescription>
+            <DialogTitle className="text-sm md:text-base">{editingStyle ? 'تحديث النمط' : 'حفظ نمط جديد'}</DialogTitle>
+            <DialogDescription className="text-xs md:text-sm">
               {templateType === 'flexible' ? 'نمط للقالب المرن' : templateType === 'multiple' ? 'نمط للتكليف المتعدد' : 'نمط للقالب القياسي'}
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-4 py-4">
+          <div className="space-y-3 md:space-y-4 py-3 md:py-4">
             <div>
-              <Label>اسم النمط *</Label>
+              <Label className="text-xs md:text-sm">اسم النمط *</Label>
               <Input
                 value={newStyleName}
                 onChange={(e) => setNewStyleName(e.target.value)}
                 placeholder="مثال: نمط التكاليف الرسمية"
-                className="mt-1"
+                className="mt-1 h-8 md:h-10 text-xs md:text-sm"
               />
             </div>
             <div>
-              <Label>وصف (اختياري)</Label>
+              <Label className="text-xs md:text-sm">وصف (اختياري)</Label>
               <Textarea
                 value={newStyleDescription}
                 onChange={(e) => setNewStyleDescription(e.target.value)}
                 placeholder="وصف مختصر للنمط..."
-                className="mt-1 h-20"
+                className="mt-1 h-16 md:h-20 text-xs md:text-sm"
               />
             </div>
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowSaveDialog(false)}>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setShowSaveDialog(false)} className="h-8 md:h-10 text-xs md:text-sm">
               إلغاء
             </Button>
-            <Button onClick={handleSaveStyle}>
-              <Save className="w-4 h-4 ml-2" />
+            <Button onClick={handleSaveStyle} className="h-8 md:h-10 text-xs md:text-sm">
+              <Save className="w-3 h-3 md:w-4 md:h-4 ml-1 md:ml-2" />
               {editingStyle ? 'تحديث' : 'حفظ'}
             </Button>
           </DialogFooter>
