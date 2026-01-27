@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -58,50 +57,52 @@ export default function QuickLeaveForm({ employee, employees, onSubmit, onCancel
         }
     }, [selectedEmployee]);
 
-    // Effect to update end_date when start_date or days_count change
+    // Track which field was last changed to avoid circular updates
+    const [lastChangedField, setLastChangedField] = React.useState(null);
+
+    // Calculate end_date when days_count changes (user typed in days field)
     useEffect(() => {
+        if (lastChangedField !== 'days_count') return;
+        
         const days = parseInt(formData.days_count, 10);
         if (formData.start_date && !isNaN(days) && days > 0) {
             const startDate = new Date(formData.start_date);
             const endDate = addDays(startDate, days - 1);
             const newEndDate = endDate.toISOString().split('T')[0];
-            // Only update if the calculated end_date is different to prevent unnecessary re-renders
             if (formData.end_date !== newEndDate) {
-                setFormData(prev => ({
-                    ...prev,
-                    end_date: newEndDate
-                }));
-            }
-        } else if (formData.start_date && (isNaN(days) || days <= 0)) {
-            // If days_count becomes invalid or empty while start_date is set, clear end_date
-            if (formData.end_date !== '') {
-                setFormData(prev => ({ ...prev, end_date: '' }));
+                setFormData(prev => ({ ...prev, end_date: newEndDate }));
             }
         }
-    }, [formData.start_date, formData.days_count, formData.end_date]); // Added formData.end_date to dependencies
+    }, [formData.days_count, formData.start_date, lastChangedField]);
 
-    // Effect to update days_count when end_date changes
+    // Calculate days_count when end_date changes (user picked end date)
     useEffect(() => {
+        if (lastChangedField !== 'end_date') return;
+        
         if (formData.start_date && formData.end_date) {
             const start = new Date(formData.start_date);
             const end = new Date(formData.end_date);
             if (end >= start) {
                 const duration = differenceInDays(end, start) + 1;
-                // Only update if the calculated duration is different
                 if (parseInt(formData.days_count, 10) !== duration) {
                     setFormData(prev => ({ ...prev, days_count: duration.toString() }));
                 }
-            } else {
-                // If end_date is before start_date, reset days_count
-                if (formData.days_count !== '') {
-                    setFormData(prev => ({ ...prev, days_count: '' }));
-                }
             }
-        } else if (formData.days_count !== '' && !formData.start_date && !formData.end_date) {
-            // If both dates are cleared, clear days_count too
-            setFormData(prev => ({ ...prev, days_count: '' }));
         }
-    }, [formData.start_date, formData.end_date, formData.days_count]); // Added formData.days_count to dependencies
+    }, [formData.end_date, formData.start_date, lastChangedField]);
+
+    // Recalculate end_date when start_date changes (if days_count exists)
+    useEffect(() => {
+        if (lastChangedField !== 'start_date') return;
+        
+        const days = parseInt(formData.days_count, 10);
+        if (formData.start_date && !isNaN(days) && days > 0) {
+            const startDate = new Date(formData.start_date);
+            const endDate = addDays(startDate, days - 1);
+            const newEndDate = endDate.toISOString().split('T')[0];
+            setFormData(prev => ({ ...prev, end_date: newEndDate }));
+        }
+    }, [formData.start_date, lastChangedField]);
 
     const handleChange = (field, value) => {
         setFormData(prev => ({ ...prev, [field]: value }));
