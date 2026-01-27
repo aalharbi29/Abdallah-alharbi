@@ -643,14 +643,28 @@ export default function CreateAssignment() {
                                   </div>
 
                                   <div>
-                                  <Label>خطاب حر (تحت الجدول)</Label>
-                                  <Textarea 
-                                  value={templateOptions.freeText}
-                                  onChange={(e) => setTemplateOptions(prev => ({...prev, freeText: e.target.value}))}
-                                  className="mt-1 h-24"
-                                  placeholder="اكتب هنا أي نص إضافي تريد إضافته تحت الجدول... (يمكن سحبه وتحريكه في المعاينة)"
-                                  />
-                                  <p className="text-xs text-gray-500 mt-1">💡 يمكنك سحب هذا النص والجدول إلى أي مكان في المعاينة</p>
+                                  <div className="flex items-center justify-between mb-2">
+                                    <Label>خطاب حر (تحت الجدول)</Label>
+                                    <div className="flex items-center gap-2">
+                                      <Checkbox 
+                                        id="showFreeText"
+                                        checked={templateOptions.showFreeText !== false}
+                                        onCheckedChange={(checked) => setTemplateOptions(prev => ({...prev, showFreeText: checked}))}
+                                      />
+                                      <Label htmlFor="showFreeText" className="text-sm cursor-pointer">إظهار مربع الخطاب الحر</Label>
+                                    </div>
+                                  </div>
+                                  {templateOptions.showFreeText !== false && (
+                                    <>
+                                      <Textarea 
+                                        value={templateOptions.freeText}
+                                        onChange={(e) => setTemplateOptions(prev => ({...prev, freeText: e.target.value}))}
+                                        className="mt-1 h-24"
+                                        placeholder="اكتب هنا أي نص إضافي تريد إضافته تحت الجدول... (يمكن سحبه وتحريكه في المعاينة)"
+                                      />
+                                      <p className="text-xs text-gray-500 mt-1">💡 يمكنك سحب هذا النص والجدول إلى أي مكان في المعاينة</p>
+                                    </>
+                                  )}
                                   </div>
                                   </div>
                                   </div>
