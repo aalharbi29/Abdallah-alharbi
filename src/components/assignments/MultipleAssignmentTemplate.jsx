@@ -613,36 +613,36 @@ export default function MultipleAssignmentTemplate({
 
       {/* Action Buttons */}
       {showActions && (
-        <div className="no-print absolute top-2 right-2 bg-white/90 backdrop-blur rounded-lg shadow-lg p-2 z-50 flex flex-col gap-2">
-          <div className="flex gap-2">
+        <div className="no-print absolute top-2 right-2 bg-white/90 backdrop-blur rounded-lg shadow-lg p-1.5 md:p-2 z-50 flex flex-col gap-1.5 md:gap-2">
+          <div className="flex gap-1 md:gap-2">
             <Button
               size="sm"
               variant="outline"
               onClick={handlePrint}
-              className="gap-1"
+              className="gap-1 h-7 md:h-9 px-2 md:px-3 text-[10px] md:text-sm"
             >
-              <Printer className="w-4 h-4" />
-              طباعة
+              <Printer className="w-3 h-3 md:w-4 md:h-4" />
+              <span className="hidden sm:inline">طباعة</span>
             </Button>
             <Button
               size="sm"
               variant="outline"
               onClick={handleSaveToEmployeeFiles}
               disabled={isSavingToEmployee || assignments.length === 0}
-              className="gap-1"
+              className="gap-1 h-7 md:h-9 px-2 md:px-3 text-[10px] md:text-sm"
             >
-              {isSavingToEmployee ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              حفظ بملف الموظف
+              {isSavingToEmployee ? <Loader2 className="w-3 h-3 md:w-4 md:h-4 animate-spin" /> : <Save className="w-3 h-3 md:w-4 md:h-4" />}
+              <span className="hidden sm:inline">حفظ</span>
             </Button>
           </div>
           <Button
             size="sm"
             variant="outline"
             onClick={() => setShowStyleManager(!showStyleManager)}
-            className="gap-1 bg-blue-50 hover:bg-blue-100"
+            className="gap-1 bg-blue-50 hover:bg-blue-100 h-7 md:h-9 px-2 md:px-3 text-[10px] md:text-sm"
           >
-            <Settings2 className="w-4 h-4" />
-            {showStyleManager ? 'إخفاء' : 'إدارة الأنماط'}
+            <Settings2 className="w-3 h-3 md:w-4 md:h-4" />
+            {showStyleManager ? 'إخفاء' : 'أنماط'}
           </Button>
         </div>
       )}
