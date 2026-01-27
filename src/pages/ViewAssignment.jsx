@@ -1234,15 +1234,31 @@ export default function ViewAssignmentPage() {
                     <MessageCircle className="w-3 h-3 md:w-4 md:h-4" />
                 </Button>
             </div>
-            <div className="p-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg">
-                <Button variant="outline" onClick={() => navigate(createPageUrl("Assignments"))}>
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                    العودة لقائمة التكاليف
+            <div className="p-1 md:p-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg">
+                <Button variant="outline" size="sm" className="text-xs md:text-sm" onClick={() => navigate(createPageUrl("Assignments"))}>
+                    <ArrowRight className="w-3 h-3 md:w-4 md:h-4 ml-1 md:ml-2" />
+                    <span className="hidden sm:inline">العودة للتكاليف</span>
+                    <span className="sm:hidden">رجوع</span>
                 </Button>
             </div>
             
-            {/* Text Formatting Help */}
-            <div className="p-2 bg-purple-50 backdrop-blur-sm rounded-xl shadow-lg border border-purple-200 text-xs">
+            {/* Toggle button for mobile to show flexible controls */}
+            {templateMode === 'flexible' && (
+              <div className="md:hidden p-1 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-xs"
+                  onClick={() => document.getElementById('flexible-controls-panel')?.classList.toggle('hidden')}
+                >
+                  <Settings2 className="w-3 h-3 ml-1" />
+                  خيارات
+                </Button>
+              </div>
+            )}
+            
+            {/* Text Formatting Help - Hidden on mobile */}
+            <div className="hidden md:block p-2 bg-purple-50 backdrop-blur-sm rounded-xl shadow-lg border border-purple-200 text-xs">
                 <p className="font-bold text-purple-800 mb-1">📝 تنسيق النصوص:</p>
                 <p className="text-purple-600">• ظلل نص + <kbd className="bg-purple-200 px-1 rounded">Ctrl</kbd>+<kbd className="bg-purple-200 px-1 rounded">+</kbd> للتكبير</p>
                 <p className="text-purple-600">• ظلل نص + <kbd className="bg-purple-200 px-1 rounded">Ctrl</kbd>+<kbd className="bg-purple-200 px-1 rounded">-</kbd> للتصغير</p>
