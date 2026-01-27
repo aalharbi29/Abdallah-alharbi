@@ -775,9 +775,12 @@ export default function CenterMedicalEquipmentNew({ centerId, centerName, allCen
               />
             </div>
             <div>
-              <Label>تاريخ الصنع</Label>
+              <Label>سنة الصنع</Label>
               <Input
-                type="date"
+                type="number"
+                min="1900"
+                max={new Date().getFullYear()}
+                placeholder="مثال: 2020"
                 value={formData.manufacturing_date}
                 onChange={(e) => setFormData({ ...formData, manufacturing_date: e.target.value })}
               />
