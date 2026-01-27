@@ -529,7 +529,7 @@ export default function HumanResources() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Filters */}
         <EmployeeFilters
