@@ -400,9 +400,9 @@ export default function CreateAssignment() {
           </TabsList>
 
           <TabsContent value="basic">
-            <Card className="shadow-lg">
-              <CardHeader><CardTitle>بيانات التكليف</CardTitle></CardHeader>
-              <CardContent className="p-6">
+            <Card className="shadow-sm md:shadow-lg">
+              <CardHeader className="p-3 md:p-6"><CardTitle className="text-sm md:text-lg">بيانات التكليف</CardTitle></CardHeader>
+              <CardContent className="p-3 md:p-6">
                 {assignmentType === 'multiple' ? (
                   <div className="space-y-6">
                     <div className="p-4 bg-orange-50 border border-orange-200 rounded-lg">
