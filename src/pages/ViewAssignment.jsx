@@ -1214,24 +1214,24 @@ export default function ViewAssignmentPage() {
                     }}
                     className="bg-green-600 hover:bg-green-700"
                   >
-                    <CheckCircle className="w-4 h-4 ml-2" />اعتماد وحفظ
+                    <CheckCircle className="w-3 h-3 md:w-4 md:h-4 ml-1 md:ml-2" />
+                    <span className="hidden sm:inline">اعتماد</span>
                   </Button>
                 )}
-                <Button onClick={handleExportPDF} className="bg-red-600 hover:bg-red-700" disabled={isLoading}>
-                    <FileText className="w-4 h-4 ml-2" />
-                    {isLoading ? "..." : "PDF وحفظ"}
+                <Button size="sm" className="text-xs md:text-sm bg-red-600 hover:bg-red-700" onClick={handleExportPDF} disabled={isLoading}>
+                    <FileText className="w-3 h-3 md:w-4 md:h-4 ml-1 md:ml-2" />
+                    <span className="hidden sm:inline">{isLoading ? "..." : "PDF"}</span>
                 </Button>
-                <Button onClick={handleExportToWord} className="bg-blue-600 hover:bg-blue-700" disabled={isLoading}>
-                    <Download className="w-4 h-4 ml-2" />Word
+                <Button size="sm" className="text-xs md:text-sm bg-blue-600 hover:bg-blue-700" onClick={handleExportToWord} disabled={isLoading}>
+                    <Download className="w-3 h-3 md:w-4 md:h-4 ml-1 md:ml-2" />
+                    <span className="hidden sm:inline">Word</span>
                 </Button>
-                <Button onClick={handleExportAsEmail} className="bg-purple-600 hover:bg-purple-700" disabled={isLoading}>
-                    <MessageCircle className="w-4 h-4 ml-2" />بريد
+                <Button size="sm" className="text-xs md:text-sm bg-gray-600 hover:bg-gray-700" onClick={handlePrint}>
+                    <Printer className="w-3 h-3 md:w-4 md:h-4 ml-1 md:ml-2" />
+                    <span className="hidden sm:inline">طباعة</span>
                 </Button>
-                <Button onClick={handlePrint} className="bg-gray-600 hover:bg-gray-700">
-                    <Printer className="w-4 h-4 ml-2" />طباعة
-                </Button>
-                <Button onClick={handleSendWhatsApp} className="bg-green-600 hover:bg-green-700">
-                    <MessageCircle className="w-4 h-4 ml-2" />واتساب
+                <Button size="sm" className="text-xs md:text-sm bg-green-600 hover:bg-green-700" onClick={handleSendWhatsApp}>
+                    <MessageCircle className="w-3 h-3 md:w-4 md:h-4" />
                 </Button>
             </div>
             <div className="p-2 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg">
