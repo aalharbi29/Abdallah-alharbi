@@ -1105,8 +1105,8 @@ export default function CreateAssignment() {
         )}
 
         {/* Preview Section */}
-        <div className="mt-8">
-          <h2 className="text-xl font-bold mb-4">معاينة الخطاب</h2>
+        <div className="mt-4 md:mt-8">
+          <h2 className="text-sm md:text-xl font-bold mb-2 md:mb-4">معاينة</h2>
           {assignmentType === 'flexible' ? (
             <FlexibleAssignmentTemplate 
               assignment={{...assignmentData, employee_name: selectedEmployee?.full_name_arabic, employee_position: selectedEmployee?.position, gender: selectedEmployee?.gender}} 
