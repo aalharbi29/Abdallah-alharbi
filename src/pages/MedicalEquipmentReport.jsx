@@ -311,12 +311,14 @@ export default function MedicalEquipmentReport() {
       </div>
     </div>
 
-    ${(selectedCenters.length > 0 || filterCategory !== 'all' || filterManufacturer !== 'all') ? `
+    ${(selectedCenters.length > 0 || selectedCategories.length > 0 || selectedManufacturers.length > 0 || selectedStatuses.length > 0 || selectedDeviceTypes.length > 0) ? `
     <div class="filters-applied">
       <h4>🔍 الفلاتر المطبقة:</h4>
       ${selectedCenters.length > 0 ? selectedCenters.map(c => `<span class="filter-tag">${c}</span>`).join('') : ''}
-      ${filterCategory !== 'all' ? `<span class="filter-tag">الفئة: ${filterCategory}</span>` : ''}
-      ${filterManufacturer !== 'all' ? `<span class="filter-tag">الشركة: ${filterManufacturer}</span>` : ''}
+      ${selectedCategories.length > 0 ? selectedCategories.map(c => `<span class="filter-tag">فئة: ${c}</span>`).join('') : ''}
+      ${selectedStatuses.length > 0 ? selectedStatuses.map(s => `<span class="filter-tag">حالة: ${s}</span>`).join('') : ''}
+      ${selectedManufacturers.length > 0 ? selectedManufacturers.map(m => `<span class="filter-tag">شركة: ${m}</span>`).join('') : ''}
+      ${selectedDeviceTypes.length > 0 ? `<span class="filter-tag">أنواع: ${selectedDeviceTypes.length}</span>` : ''}
     </div>
     ` : ''}
     
