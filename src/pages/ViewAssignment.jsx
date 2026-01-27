@@ -1134,6 +1134,8 @@ export default function ViewAssignmentPage() {
                 </Button>
                 {(!assignment.approval_status || assignment.approval_status === 'draft') && (
                   <Button 
+                    size="sm"
+                    className="text-xs md:text-sm"
                     onClick={async () => {
                       if (confirm('هل أنت متأكد من اعتماد هذا القرار؟ سيصبح القرار رسمياً وسيتم حفظه في ملف الموظف بالشكل النهائي.')) {
                         try {
