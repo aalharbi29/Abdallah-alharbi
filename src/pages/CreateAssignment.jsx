@@ -316,23 +316,23 @@ export default function CreateAssignment() {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-2 md:p-6 bg-gray-50 min-h-screen">
       <div className="max-w-5xl mx-auto">
-        <div className="flex items-center gap-4 mb-8">
-          <Button variant="outline" onClick={() => navigate(createPageUrl("Assignments"))} size="icon">
-            <ArrowRight className="w-4 h-4" />
+        <div className="flex items-center gap-2 md:gap-4 mb-4 md:mb-8">
+          <Button variant="outline" onClick={() => navigate(createPageUrl("Assignments"))} size="sm">
+            <ArrowRight className="w-3 h-3 md:w-4 md:h-4" />
           </Button>
-          <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold text-gray-900">إنشاء تكليف جديد</h1>
+          <div className="flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-base md:text-3xl font-bold text-gray-900">تكليف جديد</h1>
               {assignmentType === 'flexible' && (
-                <Badge className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">قالب مرن</Badge>
+                <Badge className="bg-purple-100 text-purple-800 text-[9px] md:text-xs">مرن</Badge>
               )}
               {assignmentType === 'standard' && (
-                <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">قالب قياسي</Badge>
+                <Badge className="bg-blue-100 text-blue-800 text-[9px] md:text-xs">قياسي</Badge>
               )}
               {assignmentType === 'multiple' && (
-                <Badge className="bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200">تكليف متعدد</Badge>
+                <Badge className="bg-orange-100 text-orange-800 text-[9px] md:text-xs">جماعي</Badge>
               )}
               
               {/* زر تحميل القالب */}
