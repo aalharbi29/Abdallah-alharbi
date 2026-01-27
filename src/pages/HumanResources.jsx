@@ -466,54 +466,34 @@ export default function HumanResources() {
               </div>
               
               <div className="flex gap-2 flex-wrap">
-                <AnimatePresence>
-                  {selectedEmployees.size > 0 && (
-                    <>
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                      >
-                        <Button
-                          variant="outline"
-                          onClick={() => setShowBulkWhatsAppDialog(true)}
-                          className="gap-2 bg-green-500/30 hover:bg-green-500/40 text-white font-bold border-green-400/50 rounded-xl shadow-lg"
-                        >
-                          <MessageCircle className="w-4 h-4" />
-                          واتساب ({selectedEmployees.size})
-                        </Button>
-                      </motion.div>
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                      >
-                        <Button
-                          variant="outline"
-                          onClick={() => setShowBulkAssignmentDialog(true)}
-                          className="gap-2 bg-white/15 border-white/30 text-white font-bold hover:bg-white/25 rounded-xl shadow-lg"
-                        >
-                          <Award className="w-4 h-4" />
-                          تكليف ({selectedEmployees.size})
-                        </Button>
-                      </motion.div>
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                      >
-                        <Button
-                          variant="outline"
-                          onClick={() => setSelectedEmployees(new Set())}
-                          size="icon"
-                          className="bg-red-500/30 border-red-400/50 text-white font-bold hover:bg-red-500/40 rounded-xl shadow-lg"
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      </motion.div>
-                    </>
-                  )}
-                </AnimatePresence>
+                {selectedEmployees.size > 0 && (
+                  <>
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowBulkWhatsAppDialog(true)}
+                      className="gap-2 bg-green-500/30 hover:bg-green-500/40 text-white font-bold border-green-400/50 rounded-xl shadow-lg"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      واتساب ({selectedEmployees.size})
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => setShowBulkAssignmentDialog(true)}
+                      className="gap-2 bg-white/15 border-white/30 text-white font-bold hover:bg-white/25 rounded-xl shadow-lg"
+                    >
+                      <Award className="w-4 h-4" />
+                      تكليف ({selectedEmployees.size})
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => setSelectedEmployees(new Set())}
+                      size="icon"
+                      className="bg-red-500/30 border-red-400/50 text-white font-bold hover:bg-red-500/40 rounded-xl shadow-lg"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </>
+                )}
 
                 <ExportManager employees={filteredEmployees} />
                 <CustomExportManager employees={filteredEmployees} />
