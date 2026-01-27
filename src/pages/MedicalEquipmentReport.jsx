@@ -126,22 +126,20 @@ export default function MedicalEquipmentReport() {
       filtered = filtered.filter((item) => selectedCenters.includes(item.health_center_name));
     }
 
-    if (filterCategory && filterCategory !== "all") {
-      filtered = filtered.filter((item) => item.category === filterCategory);
+    if (selectedCategories.length > 0) {
+      filtered = filtered.filter((item) => selectedCategories.includes(item.category));
     }
 
-    if (filterStatus && filterStatus !== "all") {
-      filtered = filtered.filter((item) => item.status === filterStatus);
+    if (selectedStatuses.length > 0) {
+      filtered = filtered.filter((item) => selectedStatuses.includes(item.status));
     }
 
-    if (filterDeviceType && filterDeviceType !== "all") {
-      filtered = filtered.filter((item) => 
-        item.device_name?.toLowerCase().includes(filterDeviceType.toLowerCase())
-      );
+    if (selectedDeviceTypes.length > 0) {
+      filtered = filtered.filter((item) => selectedDeviceTypes.includes(item.device_name));
     }
 
-    if (filterManufacturer && filterManufacturer !== "all") {
-      filtered = filtered.filter((item) => item.manufacturer === filterManufacturer);
+    if (selectedManufacturers.length > 0) {
+      filtered = filtered.filter((item) => selectedManufacturers.includes(item.manufacturer));
     }
 
     setFilteredEquipment(filtered);
