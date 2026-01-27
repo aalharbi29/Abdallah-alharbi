@@ -1127,9 +1127,10 @@ export default function ViewAssignmentPage() {
         `}</style>
         {/* Floating Controls */}
         <div className="no-print fixed md:absolute top-2 md:top-10 right-2 md:right-10 z-10 flex flex-col gap-2 md:gap-3 items-end max-h-[40vh] md:max-h-[80vh] overflow-y-auto bg-white/90 md:bg-transparent rounded-lg p-2 md:p-0 shadow-lg md:shadow-none">
-            <div className="p-3 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg flex flex-wrap gap-2">
-                 <Button onClick={() => navigate(createPageUrl(`EditAssignment?id=${assignment.id}`))}>
-                    <Edit className="w-4 h-4 ml-2" />تعديل
+            <div className="p-2 md:p-3 bg-white/80 backdrop-blur-sm rounded-xl shadow-lg flex flex-wrap gap-1 md:gap-2">
+                 <Button size="sm" className="text-xs md:text-sm" onClick={() => navigate(createPageUrl(`EditAssignment?id=${assignment.id}`))}>
+                    <Edit className="w-3 h-3 md:w-4 md:h-4 ml-1 md:ml-2" />
+                    <span className="hidden sm:inline">تعديل</span>
                 </Button>
                 {(!assignment.approval_status || assignment.approval_status === 'draft') && (
                   <Button 
