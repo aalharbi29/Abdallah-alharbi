@@ -595,7 +595,7 @@ export default function MedicalEquipmentReport() {
           </div>
 
           {/* Clear Filters */}
-          {(selectedCenters.length > 0 || filterCategory !== 'all' || filterStatus !== 'all' || filterManufacturer !== 'all' || searchQuery) && (
+          {(selectedCenters.length > 0 || selectedCategories.length > 0 || selectedStatuses.length > 0 || selectedManufacturers.length > 0 || selectedDeviceTypes.length > 0 || searchQuery) && (
             <Button variant="ghost" size="sm" onClick={clearFilters} className="text-red-600">
               <X className="w-4 h-4 ml-1" />
               مسح جميع الفلاتر
