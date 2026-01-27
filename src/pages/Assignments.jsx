@@ -521,42 +521,37 @@ export default function AssignmentsPage() {
 
   const AssignmentTable = ({ data, isArchive = false, isDraft = false }) => (
     <div className="overflow-x-auto" dir="rtl">
-      <Table style={{ tableLayout: 'fixed' }}>
+      <Table style={{ tableLayout: 'auto' }} className="min-w-[600px] md:min-w-full">
         <TableHeader>
-          <TableRow>
-            <TableHead className="w-[40px] px-2">
+          <TableRow className="text-[10px] md:text-sm">
+            <TableHead className="w-[30px] md:w-[40px] px-1 md:px-2">
               <Checkbox 
                 checked={filteredAssignments.length > 0 && selectedAssignments.length === filteredAssignments.length}
                 onCheckedChange={toggleAll}
+                className="w-3 h-3 md:w-4 md:h-4"
               />
             </TableHead>
-            <TableHead className="text-right relative" style={{ width: `${columnWidths.name}px` }}>
-              اسم الموظف
-              <ColResizer columnKey="name" />
+            <TableHead className="text-right px-1 md:px-3 min-w-[80px] md:min-w-[150px]">
+              الموظف
             </TableHead>
-            <TableHead className="text-right relative" style={{ width: `${columnWidths.fromCenter}px` }}>
-              من المركز
-              <ColResizer columnKey="fromCenter" />
+            <TableHead className="text-right px-1 md:px-3 min-w-[60px] md:min-w-[120px] hidden sm:table-cell">
+              من
             </TableHead>
-            <TableHead className="text-right relative" style={{ width: `${columnWidths.toCenter}px` }}>
-              إلى المركز
-              <ColResizer columnKey="toCenter" />
+            <TableHead className="text-right px-1 md:px-3 min-w-[60px] md:min-w-[120px]">
+              إلى
             </TableHead>
-            <TableHead className="text-right relative" style={{ width: `${columnWidths.period}px` }}>
-              فترة التكليف
-              <ColResizer columnKey="period" />
+            <TableHead className="text-right px-1 md:px-3 min-w-[70px] md:min-w-[140px] hidden md:table-cell">
+              الفترة
             </TableHead>
-            <TableHead className="text-right relative" style={{ width: `${columnWidths.duration}px` }}>
+            <TableHead className="text-right px-1 md:px-3 min-w-[40px] md:min-w-[70px]">
               المدة
-              <ColResizer columnKey="duration" />
             </TableHead>
-            <TableHead className="text-right relative" style={{ width: `${columnWidths.status}px` }}>
+            <TableHead className="text-right px-1 md:px-3 min-w-[50px] md:min-w-[90px] hidden sm:table-cell">
               الحالة
-              <ColResizer columnKey="status" />
             </TableHead>
-            {isArchive && <TableHead className="text-right min-w-[100px]">تاريخ الإنهاء</TableHead>}
-            {isDraft && <TableHead className="text-right min-w-[100px]">حالة الاعتماد</TableHead>}
-            <TableHead className="text-center no-print" style={{ width: `${columnWidths.actions}px` }}>الإجراءات</TableHead>
+            {isArchive && <TableHead className="text-right px-1 md:px-3 min-w-[70px] hidden lg:table-cell">الإنهاء</TableHead>}
+            {isDraft && <TableHead className="text-right px-1 md:px-3 min-w-[70px] hidden lg:table-cell">الاعتماد</TableHead>}
+            <TableHead className="text-center no-print px-1 md:px-3 min-w-[100px] md:min-w-[200px]">إجراءات</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
