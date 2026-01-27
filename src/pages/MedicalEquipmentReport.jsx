@@ -88,7 +88,7 @@ export default function MedicalEquipmentReport() {
 
   useEffect(() => {
     applyFilters();
-  }, [equipment, searchQuery, selectedCenters, filterCategory, filterStatus, filterDeviceType, filterManufacturer]);
+  }, [equipment, searchQuery, selectedCenters, selectedCategories, selectedStatuses, selectedDeviceTypes, selectedManufacturers]);
 
   const loadData = async () => {
     setIsLoading(true);
