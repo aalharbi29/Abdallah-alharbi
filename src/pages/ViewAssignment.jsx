@@ -2222,77 +2222,82 @@ export default function ViewAssignmentPage() {
                     )}
                   </div>
 
-                  {/* تنسيق النصوص المتقدم */}
-                  <div className="border-t pt-3 mt-3">
-                    <Label className="text-xs font-bold block mb-3">🎨 تنسيق النصوص</Label>
+                  {/* تنسيق النصوص المتقدم - قابل للطي */}
+                  <details className="border-t pt-3 mt-3">
+                    <summary className="cursor-pointer text-xs font-bold mb-3 flex items-center gap-2 hover:text-blue-700">
+                      🎨 تنسيق النصوص
+                      <span className="text-[8px]">▼</span>
+                    </summary>
                     
-                    {Object.entries({
-                      title: 'العنوان',
-                      intro: 'المقدمة',
-                      paragraph1: 'الفقرة ١',
-                      paragraph2: 'الفقرة ٢',
-                      paragraph3: 'الفقرة ٣',
-                      paragraph4: 'الفقرة ٤',
-                      paragraph5: 'الفقرة ٥',
-                      closing: 'الختام',
-                      managerName: 'اسم المدير',
-                      tableHeaders: 'عناوين الجدول',
-                      tableData: 'بيانات الجدول'
-                    }).map(([key, label]) => (
-                      <div key={key} className="mb-3 p-2 bg-gray-50 rounded border">
-                        <Label className="text-xs font-semibold mb-2 block">{label}</Label>
-                        <div className="grid grid-cols-3 gap-2">
-                          <div>
-                            <Label className="text-[10px] text-gray-600">الحجم</Label>
-                            <Input
-                              type="number"
-                              min="8"
-                              max="36"
-                              value={textStyles[key].size}
-                              onChange={(e) => setTextStyles(prev => ({
-                                ...prev,
-                                [key]: { ...prev[key], size: parseInt(e.target.value) || 16 }
-                              }))}
-                              className="h-7 text-xs"
-                            />
-                          </div>
-                          <div>
-                            <Label className="text-[10px] text-gray-600">نوع الخط</Label>
-                            <select
-                              value={textStyles[key].font}
-                              onChange={(e) => setTextStyles(prev => ({
-                                ...prev,
-                                [key]: { ...prev[key], font: e.target.value }
-                              }))}
-                              className="h-7 text-xs w-full border rounded px-1"
-                            >
-                              <option value="Arial">Arial</option>
-                              <option value="Times New Roman">Times New Roman</option>
-                              <option value="Calibri">Calibri</option>
-                              <option value="Tahoma">Tahoma</option>
-                              <option value="Verdana">Verdana</option>
-                              <option value="Courier New">Courier New</option>
-                              <option value="PT Heading">PT Heading</option>
-                            </select>
-                          </div>
-                          <div className="flex items-end">
-                            <label className="flex items-center gap-1 cursor-pointer">
-                              <input
-                                type="checkbox"
-                                checked={textStyles[key].bold}
+                    <div className="mt-3 space-y-3">
+                      {Object.entries({
+                        title: 'العنوان',
+                        intro: 'المقدمة',
+                        paragraph1: 'الفقرة ١',
+                        paragraph2: 'الفقرة ٢',
+                        paragraph3: 'الفقرة ٣',
+                        paragraph4: 'الفقرة ٤',
+                        paragraph5: 'الفقرة ٥',
+                        closing: 'الختام',
+                        managerName: 'اسم المدير',
+                        tableHeaders: 'عناوين الجدول',
+                        tableData: 'بيانات الجدول'
+                      }).map(([key, label]) => (
+                        <div key={key} className="mb-3 p-2 bg-gray-50 rounded border">
+                          <Label className="text-xs font-semibold mb-2 block">{label}</Label>
+                          <div className="grid grid-cols-3 gap-2">
+                            <div>
+                              <Label className="text-[10px] text-gray-600">الحجم</Label>
+                              <Input
+                                type="number"
+                                min="8"
+                                max="36"
+                                value={textStyles[key].size}
                                 onChange={(e) => setTextStyles(prev => ({
                                   ...prev,
-                                  [key]: { ...prev[key], bold: e.target.checked }
+                                  [key]: { ...prev[key], size: parseInt(e.target.value) || 16 }
                                 }))}
-                                className="w-4 h-4"
+                                className="h-7 text-xs"
                               />
-                              <span className="text-[10px]">عريض</span>
-                            </label>
+                            </div>
+                            <div>
+                              <Label className="text-[10px] text-gray-600">نوع الخط</Label>
+                              <select
+                                value={textStyles[key].font}
+                                onChange={(e) => setTextStyles(prev => ({
+                                  ...prev,
+                                  [key]: { ...prev[key], font: e.target.value }
+                                }))}
+                                className="h-7 text-xs w-full border rounded px-1"
+                              >
+                                <option value="Arial">Arial</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Calibri">Calibri</option>
+                                <option value="Tahoma">Tahoma</option>
+                                <option value="Verdana">Verdana</option>
+                                <option value="Courier New">Courier New</option>
+                                <option value="PT Heading">PT Heading</option>
+                              </select>
+                            </div>
+                            <div className="flex items-end">
+                              <label className="flex items-center gap-1 cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  checked={textStyles[key].bold}
+                                  onChange={(e) => setTextStyles(prev => ({
+                                    ...prev,
+                                    [key]: { ...prev[key], bold: e.target.checked }
+                                  }))}
+                                  className="w-4 h-4"
+                                />
+                                <span className="text-[10px]">عريض</span>
+                              </label>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  </details>
 
                   {/* تمكين سحب الفقرات */}
                   <div className="p-3 bg-indigo-50 rounded-lg border border-indigo-200 space-y-3">
@@ -2591,7 +2596,20 @@ export default function ViewAssignmentPage() {
                 onIntroChange={setCustomIntro}
                 onDecisionPointsChange={setMultipleDecisionPoints}
                 onClosingChange={setCustomClosing}
-                onFreeTextChange={setMultipleFreeText}
+                onFreeTextChange={(newText) => {
+                  setMultipleFreeText(newText);
+                  // تحديث نص الخطاب الحر بناءً على جنس الموظف الأول
+                  const firstEmployee = multipleAssignmentsList[0];
+                  if (firstEmployee && newText.includes('بيانات')) {
+                    const isFemale = firstEmployee.gender === 'أنثى';
+                    const updatedText = isFemale 
+                      ? newText.replace(/بياناته/g, 'بياناتها').replace(/بيانات\s+ه/g, 'بيانات ها')
+                      : newText.replace(/بياناتها/g, 'بياناته').replace(/بيانات\s+ها/g, 'بيانات ه');
+                    if (updatedText !== newText) {
+                      setMultipleFreeText(updatedText);
+                    }
+                  }
+                }}
                 onAssignmentsChange={handleMultipleAssignmentsChange}
               />
               {/* Add Save Button specifically for Multiple Template */}

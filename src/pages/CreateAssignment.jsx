@@ -180,6 +180,13 @@ export default function CreateAssignment() {
       gender: employee.gender,
     }));
     setPopoverOpen(false);
+    
+    // تحديث الخطاب الحر تلقائياً عند اختيار الموظف
+    if (assignmentType === 'multiple' && assignmentData.assigned_to_health_center) {
+      const isFemale = employee.gender === 'أنثى';
+      const autoText = `تكليف الموضح${isFemale ? 'ة' : ''} بيانات${isFemale ? 'ها' : 'ه'} أعلاه بالعمل في <strong>${assignmentData.assigned_to_health_center}</strong> خلال الفترة المحددة.`;
+      setTemplateOptions(prev => ({...prev, freeText: autoText}));
+    }
   };
 
   const handleChange = (field, value) => {
@@ -447,7 +454,15 @@ export default function CreateAssignment() {
                           <Label className="text-xs md:text-sm">جهة التكليف</Label>
                           <Select 
                             value={assignmentData.assigned_to_health_center} 
-                            onValueChange={(v) => setAssignmentData(prev => ({...prev, assigned_to_health_center: v}))}
+                            onValueChange={(v) => {
+                              setAssignmentData(prev => ({...prev, assigned_to_health_center: v}));
+                              // تحديث الخطاب الحر عند تغيير جهة التكليف
+                              if (selectedEmployee && assignmentType === 'multiple') {
+                                const isFemale = selectedEmployee.gender === 'أنثى';
+                                const autoText = `تكليف الموضح${isFemale ? 'ة' : ''} بيانات${isFemale ? 'ها' : 'ه'} أعلاه بالعمل في <strong>${v}</strong> خلال الفترة المحددة.`;
+                                setTemplateOptions(prev => ({...prev, freeText: autoText}));
+                              }
+                            }}
                           >
                             <SelectTrigger className="h-8 md:h-10 text-xs md:text-sm"><SelectValue placeholder="اختر..." /></SelectTrigger>
                             <SelectContent>
@@ -521,35 +536,45 @@ export default function CreateAssignment() {
 
                         <div className="flex items-end">
                           <Button 
-                            onClick={() => {
-                              if (!selectedEmployee) return alert('اختر موظفاً');
-                              
-                              let fullDuration = '';
-                              if (useSpecificDays && selectedDays.length > 0) {
-                                const daysStr = selectedDays.join(' و ');
-                                fullDuration = `كل ${daysStr} خلال الفترة من\n${assignmentData.start_date} إلى ${assignmentData.end_date}`;
-                              }
+                           onClick={() => {
+                             if (!selectedEmployee) return alert('اختر موظفاً');
 
-                              setMultipleAssignments(prev => [...prev, {
-                                id: Date.now(),
-                                name: selectedEmployee.full_name_arabic,
-                                position: selectedEmployee.position,
-                                national_id: selectedEmployee.رقم_الهوية,
-                                employee_id: selectedEmployee.رقم_الموظف,
-                                current_work: assignmentData.from_health_center || selectedEmployee.المركز_الصحي,
-                                assigned_work: assignmentData.assigned_to_health_center,
-                                duration: assignmentData.duration_days,
-                                start_date: assignmentData.start_date,
-                                end_date: assignmentData.end_date,
-                                full_duration: fullDuration,
-                                employee_record_id: selectedEmployee.id,
-                                gender: selectedEmployee.gender
-                                }]);
-                              setSelectedEmployee(null);
-                            }}
-                            className="w-full bg-blue-600 h-8 md:h-10 text-xs md:text-sm"
+                             let fullDuration = '';
+                             if (useSpecificDays && selectedDays.length > 0) {
+                               const daysStr = selectedDays.join(' و ');
+                               fullDuration = `كل ${daysStr} خلال الفترة من\n${assignmentData.start_date} إلى ${assignmentData.end_date}`;
+                             }
+
+                             const newEmployee = {
+                               id: Date.now(),
+                               name: selectedEmployee.full_name_arabic,
+                               position: selectedEmployee.position,
+                               national_id: selectedEmployee.رقم_الهوية,
+                               employee_id: selectedEmployee.رقم_الموظف,
+                               current_work: assignmentData.from_health_center || selectedEmployee.المركز_الصحي,
+                               assigned_work: assignmentData.assigned_to_health_center,
+                               duration: assignmentData.duration_days,
+                               start_date: assignmentData.start_date,
+                               end_date: assignmentData.end_date,
+                               full_duration: fullDuration,
+                               employee_record_id: selectedEmployee.id,
+                               gender: selectedEmployee.gender
+                             };
+
+                             setMultipleAssignments(prev => [...prev, newEmployee]);
+
+                             // تحديث الخطاب الحر تلقائياً بناءً على الجنس
+                             if (assignmentData.assigned_to_health_center) {
+                               const isFemale = selectedEmployee.gender === 'أنثى';
+                               const autoText = `تكليف الموضح${isFemale ? 'ة' : ''} بيانات${isFemale ? 'ها' : 'ه'} أعلاه بالعمل في <strong>${assignmentData.assigned_to_health_center}</strong> خلال الفترة المحددة.`;
+                               setTemplateOptions(prev => ({...prev, freeText: autoText}));
+                             }
+
+                             setSelectedEmployee(null);
+                           }}
+                           className="w-full bg-blue-600 h-8 md:h-10 text-xs md:text-sm"
                           >
-                            <Plus className="w-3 h-3 md:w-4 md:h-4 ml-1 md:ml-2" /> إضافة
+                           <Plus className="w-3 h-3 md:w-4 md:h-4 ml-1 md:ml-2" /> إضافة
                           </Button>
                         </div>
                       </div>
@@ -663,13 +688,21 @@ export default function CreateAssignment() {
                                     </div>
                                   </div>
                                   {templateOptions.showFreeText !== false && (
-                                    <Textarea 
-                                      value={templateOptions.freeText}
-                                      onChange={(e) => setTemplateOptions(prev => ({...prev, freeText: e.target.value}))}
-                                      className="mt-1 h-20 md:h-24 text-xs md:text-sm"
+                                    <div 
+                                      contentEditable
+                                      suppressContentEditableWarning
+                                      onInput={(e) => {
+                                        setTemplateOptions(prev => ({...prev, freeText: e.currentTarget.innerHTML}));
+                                      }}
+                                      className="mt-1 min-h-[80px] md:min-h-[96px] text-xs md:text-sm border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                      style={{ whiteSpace: 'pre-wrap' }}
+                                      dangerouslySetInnerHTML={{ __html: templateOptions.freeText || '' }}
                                       placeholder="نص إضافي..."
                                     />
                                   )}
+                                  <p className="text-[9px] md:text-xs text-gray-500 mt-1">
+                                    💡 استخدم Ctrl+B للتعريض • عند اختيار موظف سيتم تحديث النص تلقائياً
+                                  </p>
                                   </div>
                                   </div>
                                   </div>

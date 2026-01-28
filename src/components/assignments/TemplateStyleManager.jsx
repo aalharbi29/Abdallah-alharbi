@@ -60,24 +60,31 @@ export default function TemplateStyleManager({
     }
 
     try {
+      // حفظ النمط بالكامل مع جميع الإعدادات والمواقع والأحجام
+      const completeStyleData = {
+        ...currentStyleData,
+        savedAt: new Date().toISOString(),
+        version: '2.0' // لتتبع إصدار النمط
+      };
+
       if (editingStyle) {
         // تحديث نمط موجود
         await base44.entities.AssignmentTemplateStyle.update(editingStyle.id, {
           name: newStyleName,
           description: newStyleDescription,
-          style_data: JSON.stringify(currentStyleData)
+          style_data: JSON.stringify(completeStyleData)
         });
-        alert('✅ تم تحديث النمط بنجاح');
+        alert('✅ تم تحديث النمط بنجاح مع جميع الإعدادات والمواقع');
       } else {
         // إنشاء نمط جديد
         await base44.entities.AssignmentTemplateStyle.create({
           name: newStyleName,
           description: newStyleDescription,
           template_type: templateType,
-          style_data: JSON.stringify(currentStyleData),
+          style_data: JSON.stringify(completeStyleData),
           is_default: false
         });
-        alert('✅ تم حفظ النمط بنجاح');
+        alert('✅ تم حفظ النمط بنجاح مع جميع الإعدادات والمواقع');
       }
       
       setShowSaveDialog(false);
@@ -93,8 +100,17 @@ export default function TemplateStyleManager({
   const handleLoadStyle = (style) => {
     try {
       const styleData = JSON.parse(style.style_data);
+      // تحميل كامل الإعدادات بما فيها المواقع والأحجام والخطوط
       onLoadStyle(styleData);
-      alert(`✅ تم تحميل النمط: ${style.name}`);
+      
+      // عرض معلومات تفصيلية عن النمط المحمل
+      const details = [];
+      if (styleData.customTitle) details.push('العنوان');
+      if (styleData.textStyles) details.push('الخطوط');
+      if (styleData.signaturePosition || styleData.stampPosition) details.push('المواقع');
+      if (styleData.freeText) details.push('النص الحر');
+      
+      alert(`✅ تم تحميل النمط: ${style.name}\n\nالإعدادات المحملة: ${details.join('، ') || 'جميع الإعدادات'}`);
     } catch (error) {
       alert('فشل في تحميل النمط: ' + error.message);
     }
