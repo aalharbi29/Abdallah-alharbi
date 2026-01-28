@@ -257,13 +257,14 @@ export default function CreateAssignment() {
         // Create records for each employee with template_options
         const groupId = crypto.randomUUID();
 
-        // حفظ خيارات القالب للتكليف المتعدد
+        // حفظ خيارات القالب للتكليف المتعدد مع جميع الإعدادات
         const multipleTemplateOptions = JSON.stringify({
           customTitle: templateOptions.customTitle || 'قرار تكليف',
           customIntro: templateOptions.customIntro,
           decisionPoints: templateOptions.decisionPoints,
           customClosing: templateOptions.customClosing,
-          freeText: templateOptions.freeText
+          freeText: templateOptions.freeText,
+          showFreeText: templateOptions.showFreeText
         });
 
         const createdIds = [];

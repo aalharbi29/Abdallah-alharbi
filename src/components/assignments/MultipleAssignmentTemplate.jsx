@@ -768,59 +768,64 @@ export default function MultipleAssignmentTemplate({
         )}
       </div>
 
-      {/* Font Settings Panel - Floating */}
+      {/* Font Settings Panel - Collapsible */}
       {onAssignmentsChange && (
-        <div className="no-print hidden md:block absolute top-2 left-[320px] lg:left-[420px] bg-white/95 backdrop-blur rounded-lg shadow-lg p-2 md:p-3 z-50 text-[10px] md:text-xs border border-blue-200 w-44 md:w-56">
-          <h4 className="font-bold text-blue-700 mb-2 text-center border-b pb-1 text-[10px] md:text-xs">🎨 الخطوط</h4>
+        <details className="no-print hidden md:block absolute top-2 left-[320px] lg:left-[420px] bg-white/95 backdrop-blur rounded-lg shadow-lg p-2 md:p-3 z-50 text-[10px] md:text-xs border border-blue-200 w-44 md:w-56">
+          <summary className="font-bold text-blue-700 text-center cursor-pointer hover:text-blue-900 text-[10px] md:text-xs list-none flex items-center justify-center gap-1">
+            🎨 الخطوط
+            <span className="text-[8px]">▼</span>
+          </summary>
           
-          {/* Title Font */}
-          <div className="mb-2 md:mb-3">
-            <label className="text-gray-600 font-semibold block mb-1 text-[9px] md:text-xs">العنوان:</label>
-            <div className="flex gap-1 items-center">
-              <select 
-                value={titleFontFamily}
-                onChange={(e) => setTitleFontFamily(e.target.value)}
-                className="text-[9px] md:text-xs border rounded px-1 py-0.5 bg-white flex-1"
-              >
-                {fontFamilies.map(f => (
-                  <option key={f.value} value={f.value}>{f.label}</option>
-                ))}
-              </select>
-              <input 
-                type="number" 
-                value={titleFontSize}
-                onChange={(e) => setTitleFontSize(Number(e.target.value))}
-                className="w-10 md:w-14 text-[9px] md:text-xs border rounded px-1 py-0.5 text-center"
-                min="14"
-                max="48"
-              />
+          <div className="mt-2 pt-2 border-t">
+            {/* Title Font */}
+            <div className="mb-2 md:mb-3">
+              <label className="text-gray-600 font-semibold block mb-1 text-[9px] md:text-xs">العنوان:</label>
+              <div className="flex gap-1 items-center">
+                <select 
+                  value={titleFontFamily}
+                  onChange={(e) => setTitleFontFamily(e.target.value)}
+                  className="text-[9px] md:text-xs border rounded px-1 py-0.5 bg-white flex-1"
+                >
+                  {fontFamilies.map(f => (
+                    <option key={f.value} value={f.value}>{f.label}</option>
+                  ))}
+                </select>
+                <input 
+                  type="number" 
+                  value={titleFontSize}
+                  onChange={(e) => setTitleFontSize(Number(e.target.value))}
+                  className="w-10 md:w-14 text-[9px] md:text-xs border rounded px-1 py-0.5 text-center"
+                  min="14"
+                  max="48"
+                />
+              </div>
+            </div>
+            
+            {/* Global Font */}
+            <div>
+              <label className="text-gray-600 font-semibold block mb-1 text-[9px] md:text-xs">النص:</label>
+              <div className="flex gap-1 items-center">
+                <select 
+                  value={globalFontFamily}
+                  onChange={(e) => setGlobalFontFamily(e.target.value)}
+                  className="text-[9px] md:text-xs border rounded px-1 py-0.5 bg-white flex-1"
+                >
+                  {fontFamilies.map(f => (
+                    <option key={f.value} value={f.value}>{f.label}</option>
+                  ))}
+                </select>
+                <input 
+                  type="number" 
+                  value={globalFontSize}
+                  onChange={(e) => setGlobalFontSize(Number(e.target.value))}
+                  className="w-10 md:w-14 text-[9px] md:text-xs border rounded px-1 py-0.5 text-center"
+                  min="8"
+                  max="24"
+                />
+              </div>
             </div>
           </div>
-          
-          {/* Global Font */}
-          <div>
-            <label className="text-gray-600 font-semibold block mb-1 text-[9px] md:text-xs">النص:</label>
-            <div className="flex gap-1 items-center">
-              <select 
-                value={globalFontFamily}
-                onChange={(e) => setGlobalFontFamily(e.target.value)}
-                className="text-[9px] md:text-xs border rounded px-1 py-0.5 bg-white flex-1"
-              >
-                {fontFamilies.map(f => (
-                  <option key={f.value} value={f.value}>{f.label}</option>
-                ))}
-              </select>
-              <input 
-                type="number" 
-                value={globalFontSize}
-                onChange={(e) => setGlobalFontSize(Number(e.target.value))}
-                className="w-10 md:w-14 text-[9px] md:text-xs border rounded px-1 py-0.5 text-center"
-                min="8"
-                max="24"
-              />
-            </div>
-          </div>
-        </div>
+        </details>
       )}
 
       <div style={{ marginTop: '50px' }}>
@@ -1092,16 +1097,17 @@ export default function MultipleAssignmentTemplate({
             {onFreeTextChange ? (
               <div className="free-text-box border-2 border-dashed border-gray-300 rounded-lg p-3 bg-yellow-50/50 hover:border-blue-400 transition-colors relative">
                 <p className="free-text-label text-xs text-gray-500 mb-2 no-print">خطاب حر (قابل للسحب والتحريك)</p>
-                <textarea
-                  value={freeText}
-                  onChange={(e) => {
-                    setFreeText(e.target.value);
-                    if (onFreeTextChange) onFreeTextChange(e.target.value);
+                <div 
+                  contentEditable
+                  suppressContentEditableWarning
+                  onInput={(e) => {
+                    const newText = e.currentTarget.innerHTML;
+                    setFreeText(newText);
+                    if (onFreeTextChange) onFreeTextChange(newText);
                   }}
-                  className="w-full bg-transparent border-none outline-none resize-y text-sm leading-relaxed min-h-[100px]"
-                  rows={4}
-                  placeholder="اكتب هنا نص حر إضافي..."
-                  style={{ lineHeight: '1.8' }}
+                  className="w-full bg-transparent border-none outline-none text-sm leading-relaxed min-h-[100px] focus:bg-blue-50/30 rounded p-2"
+                  style={{ lineHeight: '1.8', whiteSpace: 'pre-wrap' }}
+                  dangerouslySetInnerHTML={{ __html: freeText || '' }}
                 />
                 <div className="absolute left-2 top-2 no-print">
                   <VoiceInput
@@ -1118,7 +1124,7 @@ export default function MultipleAssignmentTemplate({
               </div>
             ) : freeText ? (
               <div className="px-2">
-                <p className="text-sm leading-relaxed whitespace-pre-wrap">{freeText}</p>
+                <div className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: freeText }} />
               </div>
             ) : null}
           </div>

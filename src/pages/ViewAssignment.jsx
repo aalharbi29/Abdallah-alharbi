@@ -435,6 +435,9 @@ export default function ViewAssignmentPage() {
           if (savedOptions.freeText !== undefined) {
             setMultipleFreeText(savedOptions.freeText);
           }
+          if (savedOptions.showFreeText !== undefined && !savedOptions.showFreeText) {
+            setMultipleFreeText(''); // إخفاء النص الحر إذا كان معطلاً
+          }
 
           console.log('✅ تم تحميل خيارات القالب المحفوظة من التكليف');
         } catch (e) {
@@ -537,15 +540,22 @@ export default function ViewAssignmentPage() {
 
       await Promise.all(updates);
       
-      // حفظ جميع خيارات القالب المتعدد
+      // حفظ جميع خيارات القالب المتعدد بشكل شامل
       const templateOptions = JSON.stringify({
         customTitle,
         customIntro,
         decisionPoints: multipleDecisionPoints,
         customClosing,
-        freeText: multipleFreeText
+        freeText: multipleFreeText,
+        showFreeText: !!multipleFreeText
       });
-      await base44.entities.Assignment.update(assignment.id, { template_options: templateOptions });
+      
+      // تحديث جميع التكاليف في المجموعة بنفس الخيارات
+      await Promise.all(
+        multipleAssignmentsList.map(item => 
+          base44.entities.Assignment.update(item.id, { template_options: templateOptions })
+        )
+      );
 
       toast.success('✅ تم حفظ التغييرات بنجاح');
     } catch (error) {
