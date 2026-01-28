@@ -494,11 +494,11 @@ export default function MultipleAssignmentTemplate({
       const endDay = row.end_date ? getDayName(row.end_date) : '';
       
       if (row.duration) {
-        result = `(${row.duration} يوم)\n`;
+        result = `(${row.duration} يوم)<br/>`;
       }
       result += `من ${startDay} ${row.start_date}`;
       if (row.end_date) {
-        result += `\nإلى ${endDay} ${row.end_date}`;
+        result += `<br/>إلى ${endDay} ${row.end_date}`;
       }
     }
     return result || '-';
@@ -712,26 +712,26 @@ export default function MultipleAssignmentTemplate({
       {/* Controls Panel */}
       <div className="no-print hidden md:flex absolute top-2 left-2 bg-white/95 backdrop-blur rounded-lg shadow-lg p-2 md:p-3 z-50 flex-col gap-2 text-[10px] md:text-xs max-w-xs md:max-w-md border border-gray-200">
         <div className="flex gap-1 md:gap-2 items-center flex-wrap">
-          {onAssignmentsChange && (
-            <>
-              <label className="flex items-center gap-1 cursor-pointer">
-                <input 
-                  type="checkbox" 
-                  checked={showNumbering} 
-                  onChange={(e) => setShowNumbering(e.target.checked)}
-                  className="w-3 h-3"
-                />
-                ترقيم
-              </label>
-              <span className="text-gray-300 hidden md:inline">|</span>
-            </>
-          )}
-          <span className="text-blue-600 hidden md:inline">🖱️ سحب</span>
-          <span className="text-gray-300 hidden md:inline">|</span>
-          <span className="text-purple-600 hidden md:inline">📝 Ctrl+/-</span>
-          {selectedElement && (
-            <span className="text-green-600 font-bold">✓ {selectedElement === 'signature' ? 'التوقيع' : selectedElement === 'stamp' ? 'الختم' : 'المدير'}</span>
-          )}
+        {onAssignmentsChange && (
+          <>
+            <label className="flex items-center gap-1 cursor-pointer">
+              <input 
+                type="checkbox" 
+                checked={showNumbering} 
+                onChange={(e) => setShowNumbering(e.target.checked)}
+                className="w-3 h-3"
+              />
+              ترقيم
+            </label>
+            <span className="text-gray-300 hidden md:inline">|</span>
+          </>
+        )}
+        <span className="text-blue-600 hidden md:inline">🖱️ سحب</span>
+        <span className="text-gray-300 hidden md:inline">|</span>
+        <span className="text-purple-600 hidden md:inline">📝 Ctrl+B تعريض</span>
+        {selectedElement && (
+          <span className="text-green-600 font-bold">✓ {selectedElement === 'signature' ? 'التوقيع' : selectedElement === 'stamp' ? 'الختم' : 'المدير'}</span>
+        )}
         </div>
         
         {/* Font and Table Controls */}
@@ -994,24 +994,38 @@ export default function MultipleAssignmentTemplate({
                               borderRight: `${tableBorderWidth}px solid black`,
                               fontSize: `${tableFontSize}px`,
                               fontFamily: globalFontFamily,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center'
                             }}
                           >
-                            <textarea
-                              className={`w-full h-full text-center bg-transparent border-none outline-none resize-none ${onAssignmentsChange ? 'focus:bg-blue-50 rounded cursor-text' : ''}`}
+                            <div
+                              contentEditable={onAssignmentsChange}
+                              suppressContentEditableWarning
+                              onInput={(e) => {
+                                if(onAssignmentsChange) {
+                                  onAssignmentsChange(rowIndex, col.id, e.currentTarget.innerHTML);
+                                }
+                              }}
+                              onKeyDown={(e) => {
+                                if (e.ctrlKey && e.key.toLowerCase() === 'b') {
+                                  e.preventDefault();
+                                  document.execCommand('bold', false, null);
+                                }
+                              }}
+                              className={`w-full text-center bg-transparent border-none outline-none ${onAssignmentsChange ? 'focus:bg-blue-50 rounded cursor-text' : ''}`}
                               style={{ 
                                 fontSize: `${tableFontSize}px`, 
                                 fontFamily: globalFontFamily, 
                                 whiteSpace: 'pre-wrap',
                                 lineHeight: '1.4',
-                                minHeight: `${rowHeight - 8}px`
+                                minHeight: `${rowHeight - 8}px`,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                padding: '4px'
                               }}
-                              value={displayValue || ''}
-                              readOnly={!onAssignmentsChange}
-                              onChange={(e) => {
-                                if(onAssignmentsChange) {
-                                  onAssignmentsChange(rowIndex, col.id, e.target.value);
-                                }
-                              }}
+                              dangerouslySetInnerHTML={{ __html: displayValue || '' }}
                             />
                           </div>
                         );
