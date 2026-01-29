@@ -548,27 +548,38 @@ export default function FillEmailRecoveryForm() {
             {/* بريد الادارة - خلية واحدة ممتدة */}
             <tr>
               <td 
-                className="editable-cell"
-                contentEditable
-                suppressContentEditableWarning
-                onBlur={(e) => handleInputChange('adminEmail', e.currentTarget.textContent)}
+                colSpan="2"
                 style={{ 
                   borderBottom: `1px solid ${innerBorderColor}`,
-                  borderLeft: `1px solid ${innerBorderColor}`
+                  padding: 0
                 }}
               >
-                {formData.adminEmail}
-              </td>
-              <td 
-                className="p-3 text-right font-semibold"
-                contentEditable
-                suppressContentEditableWarning
-                style={{ 
-                  outline: 'none',
-                  borderBottom: `1px solid ${innerBorderColor}`
-                }}
-              >
-                بريد الادارة
+                <div className="flex">
+                  <div 
+                    className="editable-cell flex-1"
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) => handleInputChange('adminEmail', e.currentTarget.textContent)}
+                    style={{ 
+                      borderLeft: `1px solid ${innerBorderColor}`,
+                      minWidth: '200px'
+                    }}
+                  >
+                    {formData.adminEmail}
+                  </div>
+                  <div 
+                    className="p-3 text-right font-semibold"
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ 
+                      outline: 'none',
+                      width: '120px',
+                      flexShrink: 0
+                    }}
+                  >
+                    بريد الادارة
+                  </div>
+                </div>
               </td>
             </tr>
             {/* خانة الأقواس */}
