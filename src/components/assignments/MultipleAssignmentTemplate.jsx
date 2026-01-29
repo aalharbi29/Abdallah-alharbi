@@ -114,6 +114,7 @@ export default function MultipleAssignmentTemplate({
   const [selectedElement, setSelectedElement] = useState(null); // 'signature', 'stamp', or 'managerName'
   const [showStyleManager, setShowStyleManager] = useState(false);
   const [activeVoiceField, setActiveVoiceField] = useState(null);
+  const [isGeneratingText, setIsGeneratingText] = useState(false);
 
   const addColumn = () => {
     const newId = `col_${Date.now()}`;
@@ -1186,34 +1187,108 @@ export default function MultipleAssignmentTemplate({
             )}
             {onFreeTextChange ? (
               <div className="free-text-box border-2 border-dashed border-gray-300 rounded-lg p-3 bg-yellow-50/50 hover:border-blue-400 transition-colors relative">
-                <p className="free-text-label text-xs text-gray-500 mb-2 no-print">خطاب حر (قابل للسحب والتحريك)</p>
+                <div className="flex items-center justify-between mb-2 no-print">
+                  <p className="free-text-label text-xs text-gray-500">خطاب حر (قابل للتعديل والسحب)</p>
+                  <div className="flex gap-1">
+                    <button
+                      onClick={async () => {
+                        if (assignments.length === 0) {
+                          toast.error('لا يوجد موظفين لتوليد النص');
+                          return;
+                        }
+                        setIsGeneratingText(true);
+                        try {
+                          const firstEmp = assignments[0];
+                          const isFemale = firstEmp.gender === 'أنثى';
+                          const empCount = assignments.length;
+                          const toCenter = firstEmp.assigned_work || '';
+                          const duration = firstEmp.full_duration || `${firstEmp.duration || ''} يوم`;
+                          
+                          const prompt = `أنت كاتب رسمي متخصص في صياغة خطابات التكليف الحكومية السعودية.
+اكتب فقرة واحدة مختصرة (2-3 جمل) لخطاب تكليف رسمي بناءً على المعلومات التالية:
+- عدد الموظفين: ${empCount}
+- ${empCount === 1 ? `اسم الموظف: ${firstEmp.name}` : 'تكليف جماعي لعدة موظفين'}
+- جنس الموظف ${empCount === 1 ? (isFemale ? 'أنثى' : 'ذكر') : 'متعدد'}
+- جهة التكليف: ${toCenter}
+- المدة: ${duration}
+
+اكتب الفقرة بصيغة رسمية مناسبة للخطابات الحكومية، مع مراعاة:
+1. استخدام الضمائر الصحيحة حسب الجنس ${empCount === 1 ? (isFemale ? '(المؤنث)' : '(المذكر)') : '(الجمع)'}
+2. ذكر جهة التكليف بشكل واضح
+3. الإشارة للمدة المحددة
+4. صياغة رسمية مختصرة
+
+اكتب الفقرة فقط بدون أي مقدمات أو تفسيرات.`;
+
+                          const response = await base44.integrations.Core.InvokeLLM({
+                            prompt,
+                            response_json_schema: {
+                              type: "object",
+                              properties: {
+                                text: { type: "string", description: "نص الفقرة" }
+                              },
+                              required: ["text"]
+                            }
+                          });
+                          
+                          const generatedText = response.text || response;
+                          setFreeText(generatedText);
+                          if (onFreeTextChange) onFreeTextChange(generatedText);
+                          toast.success('تم توليد النص بنجاح');
+                        } catch (error) {
+                          console.error('Error generating text:', error);
+                          toast.error('فشل في توليد النص');
+                        } finally {
+                          setIsGeneratingText(false);
+                        }
+                      }}
+                      disabled={isGeneratingText}
+                      className="px-2 py-1 text-xs bg-purple-500 text-white rounded hover:bg-purple-600 disabled:opacity-50 flex items-center gap-1"
+                      title="توليد نص ذكي بناءً على سياق التكليف"
+                    >
+                      {isGeneratingText ? <Loader2 size={12} className="animate-spin" /> : '✨'}
+                      <span className="hidden sm:inline">توليد ذكي</span>
+                    </button>
+                    <VoiceInput
+                      onResult={(text) => {
+                        const newText = freeText + ' ' + text;
+                        setFreeText(newText);
+                        if (onFreeTextChange) onFreeTextChange(newText);
+                      }}
+                      size="sm"
+                      variant="ghost"
+                      className="h-6 w-6"
+                    />
+                  </div>
+                </div>
                 <div 
                   contentEditable
                   suppressContentEditableWarning
+                  dir="rtl"
                   onInput={(e) => {
                     const newText = e.currentTarget.innerHTML;
                     setFreeText(newText);
                     if (onFreeTextChange) onFreeTextChange(newText);
                   }}
+                  onKeyDown={(e) => {
+                    if (e.ctrlKey && e.key.toLowerCase() === 'b') {
+                      e.preventDefault();
+                      document.execCommand('bold', false, null);
+                    }
+                  }}
                   className="w-full bg-transparent border-none outline-none text-sm leading-relaxed min-h-[100px] focus:bg-blue-50/30 rounded p-2"
-                  style={{ lineHeight: '1.8', whiteSpace: 'pre-wrap' }}
+                  style={{ 
+                    lineHeight: '1.8', 
+                    whiteSpace: 'pre-wrap',
+                    direction: 'rtl',
+                    textAlign: 'right',
+                    unicodeBidi: 'embed'
+                  }}
                   dangerouslySetInnerHTML={{ __html: freeText || '' }}
                 />
-                <div className="absolute left-2 top-2 no-print">
-                  <VoiceInput
-                    onResult={(text) => {
-                      const newText = freeText + ' ' + text;
-                      setFreeText(newText);
-                      if (onFreeTextChange) onFreeTextChange(newText);
-                    }}
-                    size="sm"
-                    variant="ghost"
-                    className="h-6 w-6"
-                  />
-                </div>
               </div>
             ) : freeText ? (
-              <div className="px-2">
+              <div className="px-2" dir="rtl" style={{ textAlign: 'right' }}>
                 <div className="text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: freeText }} />
               </div>
             ) : null}
