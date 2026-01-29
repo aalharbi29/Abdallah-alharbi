@@ -51,6 +51,63 @@ export default function AIAnnouncementDesigner() {
   const [showImageEditor, setShowImageEditor] = useState(false);
   const [imageToEdit, setImageToEdit] = useState(null);
   const [imageFilters, setImageFilters] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
+
+  // معالجة السحب والإفلات
+  const handleDrop = async (e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    const files = e.dataTransfer?.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      if (file.type.startsWith('image/')) {
+        await uploadImage(file);
+      } else {
+        alert('الرجاء إفلات ملف صورة فقط');
+      }
+    }
+  };
+
+  // معالجة اللصق
+  const handlePaste = async (e) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+
+    for (const item of items) {
+      if (item.type.startsWith('image/')) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (file) {
+          await uploadImage(file);
+        }
+        break;
+      }
+    }
+  };
+
+  // رفع الصورة
+  const uploadImage = async (file) => {
+    setIsGeneratingImage(true);
+    try {
+      const uploadResult = await base44.integrations.Core.UploadFile({ file });
+      
+      await base44.entities.AnnouncementImage.create({
+        title: file.name || 'صورة ملصوقة',
+        description: 'صورة مرفوعة من المستخدم',
+        image_url: uploadResult.file_url,
+        source: 'uploaded',
+        tags: ['مرفوع', 'مخصص']
+      });
+
+      setGeneratedImage(uploadResult.file_url);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      alert('فشل في رفع الصورة');
+    } finally {
+      setIsGeneratingImage(false);
+    }
+  };
 
   // توليد الفيديو
   const [videoPrompt, setVideoPrompt] = useState('');
