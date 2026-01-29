@@ -714,44 +714,80 @@ export default function CreateAssignment() {
                                       />
                                       <button
                                         onClick={async () => {
-                                          if (!selectedEmployee || !assignmentData.assigned_to_health_center) {
-                                            alert('اختر موظفاً وجهة التكليف أولاً');
+                                          // التوليد الذكي للتكليف الجماعي
+                                          if (multipleAssignments.length === 0) {
+                                            alert('أضف موظفين للتكليف أولاً');
                                             return;
                                           }
                                           setIsSaving(true);
                                           try {
-                                            const isFemale = selectedEmployee.gender === 'أنثى';
-                                            const toCenter = assignmentData.assigned_to_health_center;
-                                            const duration = assignmentData.duration_days > 0 ? 
-                                              `${assignmentData.duration_days} ${assignmentData.duration_days === 1 ? 'يوم' : assignmentData.duration_days === 2 ? 'يومان' : 'أيام'}` :
-                                              '';
-                                            const startDate = assignmentData.start_date;
-                                            const endDate = assignmentData.end_date;
+                                            const empCount = multipleAssignments.length;
+                                            const existingText = templateOptions.freeText || '';
+                                            
+                                            // تحليل جنس الموظفين
+                                            const maleCount = multipleAssignments.filter(e => e.gender !== 'أنثى').length;
+                                            const femaleCount = multipleAssignments.filter(e => e.gender === 'أنثى').length;
+                                            
+                                            // تحديد صيغة العدد والجنس
+                                            let genderForm = '';
+                                            let numberForm = '';
+                                            
+                                            if (empCount === 1) {
+                                              numberForm = 'مفرد';
+                                              genderForm = femaleCount === 1 ? 'مؤنث' : 'مذكر';
+                                            } else if (empCount === 2) {
+                                              numberForm = 'مثنى';
+                                              if (maleCount === 2) genderForm = 'مذكر';
+                                              else if (femaleCount === 2) genderForm = 'مؤنث';
+                                              else genderForm = 'مختلط';
+                                            } else {
+                                              numberForm = 'جمع';
+                                              if (maleCount === empCount) genderForm = 'مذكر';
+                                              else if (femaleCount === empCount) genderForm = 'مؤنث';
+                                              else genderForm = 'مختلط';
+                                            }
+                                            
+                                            // جمع أسماء جهات التكليف المختلفة
+                                            const uniqueCenters = [...new Set(multipleAssignments.map(e => e.assigned_work))];
+                                            const centersText = uniqueCenters.join(' و ');
+                                            
+                                            // أسماء الموظفين
+                                            const employeeNames = multipleAssignments.map(e => e.name).join('، ');
                                             
                                             const prompt = `أنت كاتب رسمي متخصص في صياغة خطابات التكليف الحكومية السعودية.
-اكتب فقرة واحدة مختصرة (2-3 جمل) لخطاب تكليف رسمي بناءً على المعلومات التالية:
-- اسم الموظف: ${selectedEmployee.full_name_arabic}
-- جنس الموظف: ${isFemale ? 'أنثى' : 'ذكر'}
-- المنصب: ${selectedEmployee.position}
-- جهة العمل الحالية: ${selectedEmployee.المركز_الصحي}
-- جهة التكليف: ${toCenter}
-- المدة: ${duration}
-${startDate && endDate ? `- من تاريخ ${startDate} إلى ${endDate}` : ''}
 
-اكتب الفقرة بصيغة رسمية مناسبة للخطابات الحكومية، مع مراعاة:
-1. استخدام الضمائر الصحيحة حسب جنس الموظف ${isFemale ? '(المؤنث - مثل: الموضحة بياناتها)' : '(المذكر - مثل: الموضح بياناته)'}
-2. ذكر جهة التكليف "${toCenter}" بشكل واضح
-3. الإشارة للمدة المحددة
-4. صياغة رسمية مختصرة ومباشرة
+${existingText ? `لديك نص سابق يجب تعديله ليتناسب مع البيانات الجديدة:
+"${existingText}"
 
-اكتب الفقرة فقط بدون أي مقدمات أو تفسيرات.`;
+المطلوب: تعديل هذا النص السابق ليتوافق مع البيانات الجديدة أدناه، مع الحفاظ على الأسلوب والصيغة العامة قدر الإمكان.` : 'اكتب فقرة واحدة مختصرة (2-3 جمل) لخطاب تكليف رسمي.'}
+
+البيانات الجديدة:
+- عدد الموظفين: ${empCount}
+- أسماء الموظفين: ${employeeNames}
+- صيغة العدد: ${numberForm}
+- صيغة الجنس: ${genderForm} (${maleCount} ذكور، ${femaleCount} إناث)
+- جهة/جهات التكليف: ${centersText}
+${assignmentData.start_date && assignmentData.end_date ? `- الفترة: من ${assignmentData.start_date} إلى ${assignmentData.end_date}` : ''}
+${assignmentData.duration_days ? `- المدة: ${assignmentData.duration_days} يوم` : ''}
+
+قواعد التعديل المهمة:
+1. صيغة المفرد المذكر: "الموضح بياناته أعلاه" / "تكليفه" / "له"
+2. صيغة المفرد المؤنث: "الموضحة بياناتها أعلاه" / "تكليفها" / "لها"
+3. صيغة المثنى المذكر: "الموضح بياناتهما أعلاه" / "تكليفهما" / "لهما"
+4. صيغة المثنى المؤنث: "الموضح بياناتهما أعلاه" / "تكليفهما" / "لهما"
+5. صيغة الجمع المذكر أو المختلط: "الموضح بياناتهم أعلاه" / "تكليفهم" / "لهم"
+6. صيغة الجمع المؤنث: "الموضح بياناتهن أعلاه" / "تكليفهن" / "لهن"
+
+استبدل أي أسماء مراكز سابقة بـ "${centersText}".
+
+اكتب الفقرة المعدلة فقط بدون أي مقدمات أو تفسيرات.`;
 
                                             const response = await base44.integrations.Core.InvokeLLM({
                                               prompt,
                                               response_json_schema: {
                                                 type: "object",
                                                 properties: {
-                                                  text: { type: "string", description: "نص الفقرة" }
+                                                  text: { type: "string", description: "نص الفقرة المعدلة" }
                                                 },
                                                 required: ["text"]
                                               }
@@ -759,7 +795,7 @@ ${startDate && endDate ? `- من تاريخ ${startDate} إلى ${endDate}` : ''
                                             
                                             const generatedText = response.text || response;
                                             setTemplateOptions(prev => ({...prev, freeText: generatedText}));
-                                            alert('✅ تم توليد النص بنجاح - يمكنك تعديله الآن');
+                                            alert('✅ تم توليد/تعديل النص بنجاح');
                                           } catch (error) {
                                             console.error('Error generating text:', error);
                                             alert('فشل في توليد النص: ' + error.message);
