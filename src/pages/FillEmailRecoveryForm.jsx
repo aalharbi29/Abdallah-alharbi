@@ -274,6 +274,8 @@ export default function FillEmailRecoveryForm() {
       >
         {/* الشعار والعنوان - بجانب شعار التجمع */}
         <div className="flex justify-end items-start" style={{ marginTop: '50px', marginLeft: '380px' }}>
+          {/* خط فاصل أزرق */}
+          <div style={{ width: '1px', backgroundColor: '#0ea5e9', height: '50px', marginLeft: '15px' }}></div>
           <div className="text-right">
             <h1 
               className="text-lg font-bold"
