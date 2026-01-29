@@ -296,10 +296,10 @@ export default function FillEmailRecoveryForm() {
         {/* عنوان النموذج */}
         <div className="text-center my-8">
           <h2 
-            className="text-xl font-bold underline"
+            className="text-xl font-bold"
             contentEditable
             suppressContentEditableWarning
-            style={{ outline: 'none', color: '#dc2626', textDecorationColor: '#dc2626' }}
+            style={{ outline: 'none', color: '#dc2626', borderBottom: '2px solid #dc2626', display: 'inline-block', paddingBottom: '4px' }}
           >
             طلب إنشاء أو استعادة بريد إلكتروني
           </h2>
