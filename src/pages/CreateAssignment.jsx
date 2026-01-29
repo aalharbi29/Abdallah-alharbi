@@ -553,7 +553,8 @@ export default function CreateAssignment() {
                              let fullDuration = '';
                              if (useSpecificDays && selectedDays.length > 0) {
                                const daysStr = selectedDays.join(' و ');
-                               fullDuration = `كل ${daysStr} خلال الفترة من\n${assignmentData.start_date} إلى ${assignmentData.end_date}`;
+                               const formatDateDMY = (d) => d ? d.split('-').reverse().join('-') : '';
+                               fullDuration = `كل ${daysStr} خلال الفترة من\n${formatDateDMY(assignmentData.start_date)} إلى ${formatDateDMY(assignmentData.end_date)}`;
                              }
 
                              const newEmployee = {
