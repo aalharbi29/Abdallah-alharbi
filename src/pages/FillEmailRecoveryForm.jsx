@@ -572,7 +572,7 @@ export default function FillEmailRecoveryForm() {
             {additionalRows.map((row, index) => (
               <tr key={index} className="relative group">
                 <td 
-                  className="p-3 text-left font-semibold relative"
+                  className="p-3 text-center font-semibold relative"
                   style={{ 
                     borderTop: `1px solid ${innerBorderColor}`
                   }}
@@ -593,7 +593,7 @@ export default function FillEmailRecoveryForm() {
                   </button>
                 </td>
                 <td 
-                  className="editable-cell text-left"
+                  className="editable-cell text-center"
                   contentEditable
                   suppressContentEditableWarning
                   onBlur={(e) => updateRow(index, 'value', e.currentTarget.textContent)}
