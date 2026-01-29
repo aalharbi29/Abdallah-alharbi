@@ -284,9 +284,9 @@ export default function FillEmailRecoveryForm() {
               Shared Services for Digital Health & Technology
             </p>
           </div>
-          <div className="w-20 h-20">
+          <div className="w-24 h-24">
             <img 
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/aca0c88a0_.png" 
+              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/a3b5521d7_image.png" 
               alt="Logo"
               className="w-full h-full object-contain"
             />
