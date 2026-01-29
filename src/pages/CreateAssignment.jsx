@@ -688,20 +688,95 @@ export default function CreateAssignment() {
                                     </div>
                                   </div>
                                   {templateOptions.showFreeText !== false && (
-                                    <div 
-                                      contentEditable
-                                      suppressContentEditableWarning
-                                      onInput={(e) => {
-                                        setTemplateOptions(prev => ({...prev, freeText: e.currentTarget.innerHTML}));
-                                      }}
-                                      className="mt-1 min-h-[80px] md:min-h-[96px] text-xs md:text-sm border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                      style={{ whiteSpace: 'pre-wrap' }}
-                                      dangerouslySetInnerHTML={{ __html: templateOptions.freeText || '' }}
-                                      placeholder="نص إضافي..."
-                                    />
+                                    <>
+                                      <div 
+                                        contentEditable
+                                        suppressContentEditableWarning
+                                        dir="rtl"
+                                        onInput={(e) => {
+                                          setTemplateOptions(prev => ({...prev, freeText: e.currentTarget.innerHTML}));
+                                        }}
+                                        onKeyDown={(e) => {
+                                          if (e.ctrlKey && e.key.toLowerCase() === 'b') {
+                                            e.preventDefault();
+                                            document.execCommand('bold', false, null);
+                                          }
+                                        }}
+                                        className="mt-1 min-h-[80px] md:min-h-[96px] text-xs md:text-sm border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                        style={{ 
+                                          whiteSpace: 'pre-wrap',
+                                          direction: 'rtl',
+                                          textAlign: 'right',
+                                          unicodeBidi: 'embed'
+                                        }}
+                                        dangerouslySetInnerHTML={{ __html: templateOptions.freeText || '' }}
+                                        placeholder="نص إضافي..."
+                                      />
+                                      <button
+                                        onClick={async () => {
+                                          if (!selectedEmployee || !assignmentData.assigned_to_health_center) {
+                                            alert('اختر موظفاً وجهة التكليف أولاً');
+                                            return;
+                                          }
+                                          setIsSaving(true);
+                                          try {
+                                            const isFemale = selectedEmployee.gender === 'أنثى';
+                                            const toCenter = assignmentData.assigned_to_health_center;
+                                            const duration = assignmentData.duration_days > 0 ? 
+                                              `${assignmentData.duration_days} ${assignmentData.duration_days === 1 ? 'يوم' : assignmentData.duration_days === 2 ? 'يومان' : 'أيام'}` :
+                                              '';
+                                            const startDate = assignmentData.start_date;
+                                            const endDate = assignmentData.end_date;
+                                            
+                                            const prompt = `أنت كاتب رسمي متخصص في صياغة خطابات التكليف الحكومية السعودية.
+اكتب فقرة واحدة مختصرة (2-3 جمل) لخطاب تكليف رسمي بناءً على المعلومات التالية:
+- اسم الموظف: ${selectedEmployee.full_name_arabic}
+- جنس الموظف: ${isFemale ? 'أنثى' : 'ذكر'}
+- المنصب: ${selectedEmployee.position}
+- جهة العمل الحالية: ${selectedEmployee.المركز_الصحي}
+- جهة التكليف: ${toCenter}
+- المدة: ${duration}
+${startDate && endDate ? `- من تاريخ ${startDate} إلى ${endDate}` : ''}
+
+اكتب الفقرة بصيغة رسمية مناسبة للخطابات الحكومية، مع مراعاة:
+1. استخدام الضمائر الصحيحة حسب جنس الموظف ${isFemale ? '(المؤنث - مثل: الموضحة بياناتها)' : '(المذكر - مثل: الموضح بياناته)'}
+2. ذكر جهة التكليف "${toCenter}" بشكل واضح
+3. الإشارة للمدة المحددة
+4. صياغة رسمية مختصرة ومباشرة
+
+اكتب الفقرة فقط بدون أي مقدمات أو تفسيرات.`;
+
+                                            const response = await base44.integrations.Core.InvokeLLM({
+                                              prompt,
+                                              response_json_schema: {
+                                                type: "object",
+                                                properties: {
+                                                  text: { type: "string", description: "نص الفقرة" }
+                                                },
+                                                required: ["text"]
+                                              }
+                                            });
+                                            
+                                            const generatedText = response.text || response;
+                                            setTemplateOptions(prev => ({...prev, freeText: generatedText}));
+                                            alert('✅ تم توليد النص بنجاح - يمكنك تعديله الآن');
+                                          } catch (error) {
+                                            console.error('Error generating text:', error);
+                                            alert('فشل في توليد النص: ' + error.message);
+                                          } finally {
+                                            setIsSaving(false);
+                                          }
+                                        }}
+                                        className="mt-1 px-2 md:px-3 py-1 text-[10px] md:text-xs bg-purple-500 text-white rounded hover:bg-purple-600 disabled:opacity-50 flex items-center gap-1"
+                                        disabled={isSaving}
+                                      >
+                                        {isSaving ? <Loader2 size={12} className="animate-spin" /> : '✨'}
+                                        <span>توليد ذكي</span>
+                                      </button>
+                                    </>
                                   )}
                                   <p className="text-[9px] md:text-xs text-gray-500 mt-1">
-                                    💡 استخدم Ctrl+B للتعريض • عند اختيار موظف سيتم تحديث النص تلقائياً
+                                    💡 استخدم Ctrl+B للتعريض • زر "توليد ذكي" لكتابة نص متناسق مع التكليف
                                   </p>
                                   </div>
                                   </div>
