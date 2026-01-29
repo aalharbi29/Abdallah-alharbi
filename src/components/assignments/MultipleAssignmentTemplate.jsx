@@ -1268,34 +1268,46 @@ export default function MultipleAssignmentTemplate({
                               justifyContent: 'center'
                             }}
                           >
-                            <div
-                              contentEditable={onAssignmentsChange}
-                              suppressContentEditableWarning
-                              onInput={(e) => {
-                                if(onAssignmentsChange) {
+                            {onAssignmentsChange ? (
+                              <div
+                                contentEditable={true}
+                                suppressContentEditableWarning
+                                onBlur={(e) => {
                                   onAssignmentsChange(rowIndex, col.id, e.currentTarget.innerHTML);
-                                }
-                              }}
-                              onKeyDown={(e) => {
-                                if (e.ctrlKey && e.key.toLowerCase() === 'b') {
-                                  e.preventDefault();
-                                  document.execCommand('bold', false, null);
-                                }
-                              }}
-                              className={`w-full text-center bg-transparent border-none outline-none ${onAssignmentsChange ? 'focus:bg-blue-50 rounded cursor-text' : ''}`}
-                              style={{ 
-                                fontSize: `${tableFontSize}px`, 
-                                fontFamily: globalFontFamily, 
-                                whiteSpace: 'pre-wrap',
-                                lineHeight: '1.4',
-                                minHeight: `${rowHeight - 8}px`,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                padding: '4px'
-                              }}
-                              dangerouslySetInnerHTML={{ __html: displayValue || '' }}
-                            />
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.ctrlKey && e.key.toLowerCase() === 'b') {
+                                    e.preventDefault();
+                                    document.execCommand('bold', false, null);
+                                  }
+                                }}
+                                className="w-full text-center bg-transparent border-none outline-none focus:bg-blue-50 rounded cursor-text"
+                                style={{ 
+                                  fontSize: `${tableFontSize}px`, 
+                                  fontFamily: globalFontFamily, 
+                                  whiteSpace: 'pre-wrap',
+                                  lineHeight: '1.4',
+                                  minHeight: `${rowHeight - 8}px`,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  padding: '4px'
+                                }}
+                                dangerouslySetInnerHTML={{ __html: displayValue || '' }}
+                              />
+                            ) : (
+                              <div
+                                className="w-full text-center"
+                                style={{ 
+                                  fontSize: `${tableFontSize}px`, 
+                                  fontFamily: globalFontFamily, 
+                                  whiteSpace: 'pre-wrap',
+                                  lineHeight: '1.4',
+                                  padding: '4px'
+                                }}
+                                dangerouslySetInnerHTML={{ __html: displayValue || '' }}
+                              />
+                            )}
                           </div>
                         );
                       })}
