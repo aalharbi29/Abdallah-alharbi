@@ -672,6 +672,15 @@ export default function MultipleAssignmentTemplate({
     }
   };
 
+  const formatDateDMY = (dateStr) => {
+    if (!dateStr) return '';
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    }
+    return dateStr;
+  };
+
   const buildFullDuration = (row) => {
     if (row.full_duration) return row.full_duration;
     
@@ -683,9 +692,9 @@ export default function MultipleAssignmentTemplate({
       if (row.duration) {
         result = `(${row.duration} يوم)<br/>`;
       }
-      result += `من ${startDay} ${row.start_date}`;
+      result += `من ${startDay} ${formatDateDMY(row.start_date)}`;
       if (row.end_date) {
-        result += `<br/>إلى ${endDay} ${row.end_date}`;
+        result += `<br/>إلى ${endDay} ${formatDateDMY(row.end_date)}`;
       }
     }
     return result || '-';
