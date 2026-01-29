@@ -2611,9 +2611,10 @@ export default function ViewAssignmentPage() {
                   }
                 }}
                 onAssignmentsChange={handleMultipleAssignmentsChange}
+                showActions={true}
               />
               {/* Add Save Button specifically for Multiple Template */}
-              <div className="absolute top-4 left-4 no-print">
+              <div className="absolute top-4 left-4 no-print z-50">
                 <Button 
                   onClick={saveMultipleAssignmentsData}
                   className="bg-green-600 hover:bg-green-700 shadow-lg"

@@ -40,6 +40,9 @@ export default function MultipleAssignmentTemplate({
   onAssignmentsChange,
   onFreeTextChange,
   showActions = true,
+  // Additional style options for full customization
+  savedStyleData = null,
+  onStyleDataChange,
 }) {
   const containerRef = useRef(null);
   const [isSavingToEmployee, setIsSavingToEmployee] = useState(false);
@@ -682,7 +685,16 @@ export default function MultipleAssignmentTemplate({
               customIntro,
               decisionPoints,
               customClosing,
-              freeText
+              freeText,
+              tableBorderWidth,
+              tableFontSize,
+              tableFontFamily,
+              globalFontSize,
+              globalFontFamily,
+              titleFontSize,
+              titleFontFamily,
+              managerFontSize,
+              rowHeights
             }}
             onLoadStyle={(styleData) => {
               if (styleData.columns) setColumns(styleData.columns);
@@ -698,18 +710,30 @@ export default function MultipleAssignmentTemplate({
               if (styleData.signatureSize !== undefined) setSignatureSize(styleData.signatureSize);
               if (styleData.currentStampSize !== undefined) setCurrentStampSize(styleData.currentStampSize);
               if (styleData.showNumbering !== undefined) setShowNumbering(styleData.showNumbering);
+              if (styleData.tableBorderWidth !== undefined) setTableBorderWidth(styleData.tableBorderWidth);
+              if (styleData.tableFontSize !== undefined) setTableFontSize(styleData.tableFontSize);
+              if (styleData.tableFontFamily) setTableFontFamily(styleData.tableFontFamily);
+              if (styleData.globalFontSize !== undefined) setGlobalFontSize(styleData.globalFontSize);
+              if (styleData.globalFontFamily) setGlobalFontFamily(styleData.globalFontFamily);
+              if (styleData.titleFontSize !== undefined) setTitleFontSize(styleData.titleFontSize);
+              if (styleData.titleFontFamily) setTitleFontFamily(styleData.titleFontFamily);
+              if (styleData.managerFontSize !== undefined) setManagerFontSize(styleData.managerFontSize);
+              if (styleData.rowHeights) setRowHeights(styleData.rowHeights);
               if (onTitleChange && styleData.customTitle) onTitleChange(styleData.customTitle);
               if (onIntroChange && styleData.customIntro) onIntroChange(styleData.customIntro);
               if (onDecisionPointsChange && styleData.decisionPoints) onDecisionPointsChange(styleData.decisionPoints);
               if (onClosingChange && styleData.customClosing) onClosingChange(styleData.customClosing);
-              if (onFreeTextChange && styleData.freeText) setFreeText(styleData.freeText);
-              toast.success('تم تحميل النمط بنجاح');
+              if (onFreeTextChange && styleData.freeText) {
+                setFreeText(styleData.freeText);
+                onFreeTextChange(styleData.freeText);
+              }
+              toast.success('تم تحميل النمط بنجاح مع جميع الإعدادات');
             }}
           />
         </div>
       )}
 
-      {/* Controls Panel */}
+      {/* Controls Panel - Enhanced */}
       <div className="no-print hidden md:flex absolute top-2 left-2 bg-white/95 backdrop-blur rounded-lg shadow-lg p-2 md:p-3 z-50 flex-col gap-2 text-[10px] md:text-xs max-w-xs md:max-w-md border border-gray-200">
         <div className="flex gap-1 md:gap-2 items-center flex-wrap">
         {onAssignmentsChange && (
@@ -733,38 +757,90 @@ export default function MultipleAssignmentTemplate({
           <span className="text-green-600 font-bold">✓ {selectedElement === 'signature' ? 'التوقيع' : selectedElement === 'stamp' ? 'الختم' : 'المدير'}</span>
         )}
         </div>
-        
+
         {/* Font and Table Controls */}
         {onAssignmentsChange && (
-          <div className="flex flex-col gap-2 border-t pt-2 mt-1">
-            <div className="flex gap-2 md:gap-3 items-center flex-wrap">
-              {/* Table Border */}
-              <div className="flex items-center gap-1">
-                <span className="text-gray-500">حدود:</span>
-                <input 
-                  type="number" 
-                  value={tableBorderWidth}
-                  onChange={(e) => setTableBorderWidth(Number(e.target.value))}
-                  className="w-8 md:w-10 text-xs border rounded px-1 py-0.5 text-center"
-                  min="0"
-                  max="5"
-                />
+          <details className="border-t pt-2 mt-1">
+            <summary className="cursor-pointer text-xs font-semibold text-gray-700 hover:text-blue-600 flex items-center gap-1">
+              ⚙️ تنسيق الجدول والخطوط
+              <span className="text-[8px]">▼</span>
+            </summary>
+            <div className="flex flex-col gap-2 pt-2 mt-1">
+              <div className="flex gap-2 md:gap-3 items-center flex-wrap">
+                {/* Table Border */}
+                <div className="flex items-center gap-1">
+                  <span className="text-gray-500">حدود:</span>
+                  <input 
+                    type="number" 
+                    value={tableBorderWidth}
+                    onChange={(e) => setTableBorderWidth(Number(e.target.value))}
+                    className="w-8 md:w-10 text-xs border rounded px-1 py-0.5 text-center"
+                    min="0"
+                    max="5"
+                  />
+                </div>
+
+                {/* Table Font Size */}
+                <div className="flex items-center gap-1">
+                  <span className="text-gray-500">خط الجدول:</span>
+                  <input 
+                    type="number" 
+                    value={tableFontSize}
+                    onChange={(e) => setTableFontSize(Number(e.target.value))}
+                    className="w-8 md:w-10 text-xs border rounded px-1 py-0.5 text-center"
+                    min="8"
+                    max="18"
+                  />
+                </div>
               </div>
-              
-              {/* Table Font Size */}
-              <div className="flex items-center gap-1">
-                <span className="text-gray-500">خط:</span>
-                <input 
-                  type="number" 
-                  value={tableFontSize}
-                  onChange={(e) => setTableFontSize(Number(e.target.value))}
-                  className="w-8 md:w-10 text-xs border rounded px-1 py-0.5 text-center"
-                  min="8"
-                  max="18"
-                />
+
+              {/* Global Font Size */}
+              <div className="flex gap-2 md:gap-3 items-center flex-wrap">
+                <div className="flex items-center gap-1">
+                  <span className="text-gray-500">خط النص:</span>
+                  <input 
+                    type="number" 
+                    value={globalFontSize}
+                    onChange={(e) => setGlobalFontSize(Number(e.target.value))}
+                    className="w-8 md:w-10 text-xs border rounded px-1 py-0.5 text-center"
+                    min="10"
+                    max="24"
+                  />
+                </div>
+
+                {/* Title Font Size */}
+                <div className="flex items-center gap-1">
+                  <span className="text-gray-500">العنوان:</span>
+                  <input 
+                    type="number" 
+                    value={titleFontSize}
+                    onChange={(e) => setTitleFontSize(Number(e.target.value))}
+                    className="w-8 md:w-10 text-xs border rounded px-1 py-0.5 text-center"
+                    min="16"
+                    max="48"
+                  />
+                </div>
+              </div>
+
+              {/* Font Family Selection */}
+              <div className="flex gap-2 items-center">
+                <span className="text-gray-500">الخط:</span>
+                <select 
+                  value={globalFontFamily}
+                  onChange={(e) => {
+                    setGlobalFontFamily(e.target.value);
+                    setTableFontFamily(e.target.value);
+                    setTitleFontFamily(e.target.value);
+                  }}
+                  className="text-xs border rounded px-1 py-0.5 bg-white flex-1"
+                >
+                  {fontFamilies.map(f => (
+                    <option key={f.value} value={f.value}>{f.label}</option>
+                  ))}
+                </select>
               </div>
             </div>
-          </div>
+          </details>
         )}
       </div>
 
