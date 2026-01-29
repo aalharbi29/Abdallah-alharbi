@@ -331,25 +331,7 @@ export default function FillEmailRecoveryForm() {
             </tr>
             <tr>
               <td 
-                className="editable-cell"
-                contentEditable
-                suppressContentEditableWarning
-                onBlur={(e) => handleInputChange('entityName', e.currentTarget.textContent)}
-                style={{ 
-                  borderBottom: `1px solid ${innerBorderColor}`,
-                  borderLeft: `1px solid ${innerBorderColor}`,
-                  width: `${table1ColWidths.value}px`,
-                  position: 'relative'
-                }}
-              >
-                {formData.entityName}
-                <div 
-                  className="resize-handle no-print"
-                  onMouseDown={(e) => handleResizeStart(e, 1, 'value', table1ColWidths.value)}
-                />
-              </td>
-              <td 
-                className="p-3 text-right font-semibold"
+                className="p-3 text-left font-semibold"
                 contentEditable
                 suppressContentEditableWarning
                 style={{ 
@@ -365,22 +347,28 @@ export default function FillEmailRecoveryForm() {
                   onMouseDown={(e) => handleResizeStart(e, 1, 'label', table1ColWidths.label)}
                 />
               </td>
+              <td 
+                className="editable-cell text-left"
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => handleInputChange('entityName', e.currentTarget.textContent)}
+                style={{ 
+                  borderBottom: `1px solid ${innerBorderColor}`,
+                  borderRight: `1px solid ${innerBorderColor}`,
+                  width: `${table1ColWidths.value}px`,
+                  position: 'relative'
+                }}
+              >
+                {formData.entityName}
+                <div 
+                  className="resize-handle no-print"
+                  onMouseDown={(e) => handleResizeStart(e, 1, 'value', table1ColWidths.value)}
+                />
+              </td>
             </tr>
             <tr>
               <td 
-                className="editable-cell"
-                contentEditable
-                suppressContentEditableWarning
-                onBlur={(e) => handleInputChange('managerName', e.currentTarget.textContent)}
-                style={{ 
-                  borderBottom: `1px solid ${innerBorderColor}`,
-                  borderLeft: `1px solid ${innerBorderColor}`
-                }}
-              >
-                {formData.managerName}
-              </td>
-              <td 
-                className="p-3 text-right font-semibold"
+                className="p-3 text-left font-semibold"
                 contentEditable
                 suppressContentEditableWarning
                 style={{ 
@@ -390,26 +378,38 @@ export default function FillEmailRecoveryForm() {
               >
                 مدير الادارة
               </td>
+              <td 
+                className="editable-cell text-left"
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => handleInputChange('managerName', e.currentTarget.textContent)}
+                style={{ 
+                  borderBottom: `1px solid ${innerBorderColor}`,
+                  borderRight: `1px solid ${innerBorderColor}`
+                }}
+              >
+                {formData.managerName}
+              </td>
             </tr>
             <tr>
               <td 
-                className="editable-cell"
-                contentEditable
-                suppressContentEditableWarning
-                onBlur={(e) => handleInputChange('managerEmailPhone', e.currentTarget.textContent)}
-                style={{ 
-                  borderLeft: `1px solid ${innerBorderColor}`
-                }}
-              >
-                {formData.managerEmailPhone}
-              </td>
-              <td 
-                className="p-3 text-right font-semibold"
+                className="p-3 text-left font-semibold"
                 contentEditable
                 suppressContentEditableWarning
                 style={{ outline: 'none' }}
               >
                 (بريد / رقم) مدير الادارة
+              </td>
+              <td 
+                className="editable-cell text-left"
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => handleInputChange('managerEmailPhone', e.currentTarget.textContent)}
+                style={{ 
+                  borderRight: `1px solid ${innerBorderColor}`
+                }}
+              >
+                {formData.managerEmailPhone}
               </td>
             </tr>
           </tbody>
@@ -448,25 +448,7 @@ export default function FillEmailRecoveryForm() {
             </tr>
             <tr>
               <td 
-                className="editable-cell"
-                contentEditable
-                suppressContentEditableWarning
-                onBlur={(e) => handleInputChange('recipientName', e.currentTarget.textContent)}
-                style={{ 
-                  borderBottom: `1px solid ${innerBorderColor}`,
-                  borderLeft: `1px solid ${innerBorderColor}`,
-                  width: `${table2ColWidths.value}px`,
-                  position: 'relative'
-                }}
-              >
-                {formData.recipientName}
-                <div 
-                  className="resize-handle no-print"
-                  onMouseDown={(e) => handleResizeStart(e, 2, 'value', table2ColWidths.value)}
-                />
-              </td>
-              <td 
-                className="p-3 text-right font-semibold"
+                className="p-3 text-left font-semibold"
                 contentEditable
                 suppressContentEditableWarning
                 style={{ 
@@ -482,22 +464,28 @@ export default function FillEmailRecoveryForm() {
                   onMouseDown={(e) => handleResizeStart(e, 2, 'label', table2ColWidths.label)}
                 />
               </td>
+              <td 
+                className="editable-cell text-left"
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => handleInputChange('recipientName', e.currentTarget.textContent)}
+                style={{ 
+                  borderBottom: `1px solid ${innerBorderColor}`,
+                  borderRight: `1px solid ${innerBorderColor}`,
+                  width: `${table2ColWidths.value}px`,
+                  position: 'relative'
+                }}
+              >
+                {formData.recipientName}
+                <div 
+                  className="resize-handle no-print"
+                  onMouseDown={(e) => handleResizeStart(e, 2, 'value', table2ColWidths.value)}
+                />
+              </td>
             </tr>
             <tr>
               <td 
-                className="editable-cell"
-                contentEditable
-                suppressContentEditableWarning
-                onBlur={(e) => handleInputChange('recipientEmail', e.currentTarget.textContent)}
-                style={{ 
-                  borderBottom: `1px solid ${innerBorderColor}`,
-                  borderLeft: `1px solid ${innerBorderColor}`
-                }}
-              >
-                {formData.recipientEmail}
-              </td>
-              <td 
-                className="p-3 text-right font-semibold"
+                className="p-3 text-left font-semibold"
                 contentEditable
                 suppressContentEditableWarning
                 style={{ 
@@ -506,6 +494,18 @@ export default function FillEmailRecoveryForm() {
                 }}
               >
                 بريد المستلم
+              </td>
+              <td 
+                className="editable-cell text-left"
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => handleInputChange('recipientEmail', e.currentTarget.textContent)}
+                style={{ 
+                  borderBottom: `1px solid ${innerBorderColor}`,
+                  borderRight: `1px solid ${innerBorderColor}`
+                }}
+              >
+                {formData.recipientEmail}
               </td>
             </tr>
             {/* خانة رقم الجوال مع نمط مختلف */}
@@ -517,21 +517,21 @@ export default function FillEmailRecoveryForm() {
                   padding: 0
                 }}
               >
-                <div className="flex">
+                <div className="flex flex-row-reverse">
                   <div 
-                    className="editable-cell flex-1"
+                    className="editable-cell flex-1 text-left"
                     contentEditable
                     suppressContentEditableWarning
                     onBlur={(e) => handleInputChange('recipientPhone', e.currentTarget.textContent)}
                     style={{ 
-                      borderLeft: `1px solid ${innerBorderColor}`,
+                      borderRight: `1px solid ${innerBorderColor}`,
                       minWidth: '200px'
                     }}
                   >
                     {formData.recipientPhone}
                   </div>
                   <div 
-                    className="p-3 text-right font-semibold"
+                    className="p-3 text-left font-semibold"
                     contentEditable
                     suppressContentEditableWarning
                     style={{ 
@@ -572,19 +572,7 @@ export default function FillEmailRecoveryForm() {
             {additionalRows.map((row, index) => (
               <tr key={index} className="relative group">
                 <td 
-                  className="editable-cell"
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) => updateRow(index, 'value', e.currentTarget.textContent)}
-                  style={{ 
-                    borderTop: `1px solid ${innerBorderColor}`,
-                    borderLeft: `1px solid ${innerBorderColor}`
-                  }}
-                >
-                  {row.value}
-                </td>
-                <td 
-                  className="p-3 text-right font-semibold relative"
+                  className="p-3 text-left font-semibold relative"
                   style={{ 
                     borderTop: `1px solid ${innerBorderColor}`
                   }}
@@ -599,10 +587,22 @@ export default function FillEmailRecoveryForm() {
                   </span>
                   <button
                     onClick={() => removeRow(index)}
-                    className="no-print absolute left-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 transition-opacity"
+                    className="no-print absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 transition-opacity"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
+                </td>
+                <td 
+                  className="editable-cell text-left"
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={(e) => updateRow(index, 'value', e.currentTarget.textContent)}
+                  style={{ 
+                    borderTop: `1px solid ${innerBorderColor}`,
+                    borderRight: `1px solid ${innerBorderColor}`
+                  }}
+                >
+                  {row.value}
                 </td>
               </tr>
             ))}
