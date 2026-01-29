@@ -172,10 +172,12 @@ export default function FillEmailRecoveryForm() {
             left: 0;
             top: 0;
             width: 210mm;
+            min-height: 297mm;
             padding: 15mm;
+            direction: rtl;
           }
           .no-print { display: none !important; }
-          @page { size: A4; margin: 10mm; }
+          @page { size: A4 portrait; margin: 10mm; }
           .resize-handle { display: none !important; }
         }
         .editable-cell {
@@ -183,12 +185,18 @@ export default function FillEmailRecoveryForm() {
           padding: 10px 15px;
           outline: none;
           transition: background-color 0.2s;
+          text-align: right;
+          direction: rtl;
         }
         .editable-cell:focus {
           background-color: #f0f9ff;
         }
         .editable-cell:hover {
           background-color: #f8fafc;
+        }
+        table td {
+          text-align: right;
+          direction: rtl;
         }
         .resize-handle {
           position: absolute;
@@ -287,7 +295,7 @@ export default function FillEmailRecoveryForm() {
             className="text-xl font-bold underline"
             contentEditable
             suppressContentEditableWarning
-            style={{ outline: 'none', color: '#0ea5e9', textDecorationColor: '#0ea5e9' }}
+            style={{ outline: 'none', color: '#dc2626', textDecorationColor: '#dc2626' }}
           >
             طلب إنشاء أو استعادة بريد إلكتروني
           </h2>
@@ -408,18 +416,6 @@ export default function FillEmailRecoveryForm() {
           <div style={{ width: '60%', borderBottom: `1px solid ${innerBorderColor}` }}></div>
         </div>
 
-        {/* عنوان الجدول الثاني */}
-        <div className="text-center mb-2">
-          <p 
-            className="font-bold text-base"
-            contentEditable
-            suppressContentEditableWarning
-            style={{ outline: 'none' }}
-          >
-            بيانات مستلم البريد الالكتروني
-          </p>
-        </div>
-
         {/* الجدول الثاني - بيانات مستلم البريد */}
         <table 
           className="w-full" 
@@ -429,6 +425,23 @@ export default function FillEmailRecoveryForm() {
           }}
         >
           <tbody>
+            {/* عنوان الجدول الثاني داخل الجدول */}
+            <tr>
+              <td 
+                colSpan="2" 
+                className="p-3 text-center font-bold"
+                contentEditable
+                suppressContentEditableWarning
+                style={{ 
+                  outline: 'none',
+                  borderBottom: `1px solid ${innerBorderColor}`,
+                  fontSize: '16px',
+                  textAlign: 'center'
+                }}
+              >
+                بيانات مستلم البريد الالكتروني
+              </td>
+            </tr>
             <tr>
               <td 
                 className="editable-cell"
