@@ -273,7 +273,7 @@ export default function FillEmailRecoveryForm() {
         }}
       >
         {/* الشعار والعنوان - بجانب شعار التجمع */}
-        <div className="flex justify-end items-start" style={{ marginTop: '15px', marginLeft: '120px' }}>
+        <div className="flex justify-end items-start" style={{ marginTop: '15px', marginLeft: '200px' }}>
           <div className="text-right">
             <h1 
               className="text-lg font-bold"
