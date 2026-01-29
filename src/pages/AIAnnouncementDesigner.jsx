@@ -925,6 +925,46 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                   </div>
                 </div>
 
+                {/* منطقة السحب والإفلات واللصق */}
+                <div 
+                  className={`relative border-2 border-dashed rounded-2xl p-6 mb-4 transition-all cursor-pointer ${
+                    isDragging 
+                      ? 'border-pink-500 bg-pink-500/20' 
+                      : 'border-white/30 hover:border-white/50 bg-white/5'
+                  }`}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDragging(true);
+                  }}
+                  onDragLeave={() => setIsDragging(false)}
+                  onDrop={handleDrop}
+                  onPaste={handlePaste}
+                  onClick={() => document.getElementById('custom-upload')?.click()}
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.ctrlKey && e.key === 'v') {
+                      // اللصق يتم معالجته عبر onPaste
+                    }
+                  }}
+                >
+                  <div className="text-center">
+                    <Upload className={`w-10 h-10 mx-auto mb-3 ${isDragging ? 'text-pink-400' : 'text-white/50'}`} />
+                    <p className="text-white/80 font-medium mb-1">
+                      {isDragging ? 'أفلت الصورة هنا' : 'اسحب وأفلت صورة هنا'}
+                    </p>
+                    <p className="text-white/50 text-sm">
+                      أو <span className="text-pink-400">اضغط للاختيار</span> أو <span className="text-pink-400">Ctrl+V</span> للصق
+                    </p>
+                  </div>
+                  <input
+                    id="custom-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleUploadCustomImage}
+                    className="hidden"
+                  />
+                </div>
+
                 <div className="grid grid-cols-3 gap-3">
                   <Button
                     onClick={generateImage}
@@ -950,19 +990,14 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                     المكتبة
                   </Button>
 
-                  <label htmlFor="custom-upload" className="cursor-pointer">
-                    <div className="h-12 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 flex items-center justify-center gap-2 text-white transition-colors">
-                      <Upload className="w-4 h-4" />
-                      <span className="text-sm">رفع</span>
-                    </div>
-                  </label>
-                  <input
-                    id="custom-upload"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleUploadCustomImage}
-                    className="hidden"
-                  />
+                  <Button
+                    variant="outline"
+                    onClick={() => document.getElementById('custom-upload')?.click()}
+                    className="border-white/20 text-white hover:bg-white/10 h-12 rounded-xl"
+                  >
+                    <Upload className="w-4 h-4 ml-2" />
+                    رفع
+                  </Button>
                 </div>
 
                 {generatedImage && (
