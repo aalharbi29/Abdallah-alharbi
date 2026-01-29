@@ -15,7 +15,7 @@ import { Command, CommandInput, CommandEmpty, CommandGroup, CommandItem } from "
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Save, ChevronsUpDown, Settings2, Table, List, Loader2, Plus, Trash2, FolderOpen, ChevronDown } from "lucide-react";
+import { ArrowRight, Save, ChevronsUpDown, Settings2, Table, List, Loader2, Plus, Trash2, FolderOpen, ChevronDown, ChevronUp } from "lucide-react";
 import { createPageUrl } from "@/utils";
 import { differenceInDays } from "date-fns";
 import FlexibleAssignmentTemplate from "@/components/assignments/FlexibleAssignmentTemplate";
@@ -109,6 +109,17 @@ export default function CreateAssignment() {
   // Saved templates state
   const [savedTemplates, setSavedTemplates] = useState([]);
   const [loadingTemplates, setLoadingTemplates] = useState(false);
+  
+  // Collapsible sections state for multiple assignment customization
+  const [collapsedSections, setCollapsedSections] = useState({
+    intro: false,
+    decisionPoints: false,
+    freeText: false
+  });
+  
+  const toggleSection = (section) => {
+    setCollapsedSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
 
   useEffect(() => {
     async function fetchData() {
