@@ -380,26 +380,7 @@ export default function AIAnnouncementDesigner() {
       return;
     }
 
-    setIsGeneratingImage(true);
-    try {
-      const uploadResult = await base44.integrations.Core.UploadFile({ file });
-      
-      await base44.entities.AnnouncementImage.create({
-        title: file.name,
-        description: 'صورة مرفوعة من المستخدم',
-        image_url: uploadResult.file_url,
-        source: 'uploaded',
-        tags: ['مرفوع', 'مخصص']
-      });
-
-      setGeneratedImage(uploadResult.file_url);
-      alert('تم رفع الصورة بنجاح');
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      alert('فشل في رفع الصورة');
-    } finally {
-      setIsGeneratingImage(false);
-    }
+    await uploadImage(file);
   };
 
   const handleEditImage = () => {
