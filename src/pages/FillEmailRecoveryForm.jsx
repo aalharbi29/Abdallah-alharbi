@@ -254,7 +254,15 @@ export default function FillEmailRecoveryForm() {
       <div 
         ref={printRef}
         className="print-area max-w-4xl mx-auto bg-white shadow-lg"
-        style={{ fontFamily: 'Arial, sans-serif', padding: '40px 50px' }}
+        style={{ 
+          fontFamily: 'Arial, sans-serif', 
+          padding: '40px 50px',
+          backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/a3b5521d7_image.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          minHeight: '297mm'
+        }}
       >
         {/* الشعار والعنوان */}
         <div className="flex justify-between items-start mb-2">
