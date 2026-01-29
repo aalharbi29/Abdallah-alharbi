@@ -9,6 +9,188 @@ import { toast } from 'sonner';
 import TemplateStyleManager from './TemplateStyleManager';
 import VoiceInput from '@/components/ui/VoiceInput';
 
+// مكون منفصل للنص الحر لتجنب مشكلة انتقال المؤشر
+const FreeTextEditor = ({ freeText, setFreeText, onFreeTextChange, assignments, isGeneratingText, setIsGeneratingText }) => {
+  const editorRef = React.useRef(null);
+  
+  const handleInput = (e) => {
+    // لا نستخدم dangerouslySetInnerHTML مع onInput
+    // بدلاً من ذلك نحدّث الـ state فقط عند الحاجة للتزامن مع المكون الأب
+    const newText = e.currentTarget.innerHTML;
+    // نستخدم callback مباشرة بدون إعادة تعيين الـ innerHTML
+    if (onFreeTextChange) onFreeTextChange(newText);
+  };
+  
+  const handleBlur = (e) => {
+    // نحدّث الـ state عند مغادرة الحقل فقط
+    const newText = e.currentTarget.innerHTML;
+    setFreeText(newText);
+    if (onFreeTextChange) onFreeTextChange(newText);
+  };
+
+  const handleGenerateText = async () => {
+    if (assignments.length === 0) {
+      toast.error('لا يوجد موظفين لتوليد النص');
+      return;
+    }
+    setIsGeneratingText(true);
+    try {
+      const empCount = assignments.length;
+      const existingText = editorRef.current?.innerHTML || freeText || '';
+      
+      const maleCount = assignments.filter(e => e.gender !== 'أنثى').length;
+      const femaleCount = assignments.filter(e => e.gender === 'أنثى').length;
+      
+      let genderForm = '';
+      let numberForm = '';
+      
+      if (empCount === 1) {
+        numberForm = 'مفرد';
+        genderForm = femaleCount === 1 ? 'مؤنث' : 'مذكر';
+      } else if (empCount === 2) {
+        numberForm = 'مثنى';
+        if (maleCount === 2) genderForm = 'مذكر';
+        else if (femaleCount === 2) genderForm = 'مؤنث';
+        else genderForm = 'مختلط';
+      } else {
+        numberForm = 'جمع';
+        if (maleCount === empCount) genderForm = 'مذكر';
+        else if (femaleCount === empCount) genderForm = 'مؤنث';
+        else genderForm = 'مختلط';
+      }
+      
+      const uniqueCenters = [...new Set(assignments.map(e => e.assigned_work).filter(Boolean))];
+      const centersText = uniqueCenters.join(' و ');
+      const employeeNames = assignments.map(e => e.name).join('، ');
+      const firstEmp = assignments[0];
+      const duration = firstEmp.full_duration || `${firstEmp.duration || ''} يوم`;
+      
+      const prompt = `أنت كاتب رسمي متخصص في صياغة خطابات التكليف الحكومية السعودية.
+
+${existingText ? `لديك نص سابق يجب تعديله ليتناسب مع البيانات الجديدة:
+"${existingText}"
+
+المطلوب: تعديل هذا النص السابق ليتوافق مع البيانات الجديدة أدناه، مع الحفاظ على الأسلوب والصيغة العامة قدر الإمكان.` : 'اكتب فقرة واحدة مختصرة (2-3 جمل) لخطاب تكليف رسمي.'}
+
+البيانات الجديدة:
+- عدد الموظفين: ${empCount}
+- أسماء الموظفين: ${employeeNames}
+- صيغة العدد: ${numberForm}
+- صيغة الجنس: ${genderForm} (${maleCount} ذكور، ${femaleCount} إناث)
+- جهة/جهات التكليف: ${centersText}
+- المدة: ${duration}
+
+قواعد التعديل المهمة:
+1. صيغة المفرد المذكر: "الموضح بياناته أعلاه" / "تكليفه" / "له"
+2. صيغة المفرد المؤنث: "الموضحة بياناتها أعلاه" / "تكليفها" / "لها"
+3. صيغة المثنى المذكر: "الموضح بياناتهما أعلاه" / "تكليفهما" / "لهما"
+4. صيغة المثنى المؤنث: "الموضح بياناتهما أعلاه" / "تكليفهما" / "لهما"
+5. صيغة الجمع المذكر أو المختلط: "الموضح بياناتهم أعلاه" / "تكليفهم" / "لهم"
+6. صيغة الجمع المؤنث: "الموضح بياناتهن أعلاه" / "تكليفهن" / "لهن"
+
+استبدل أي أسماء مراكز سابقة بـ "${centersText}".
+
+اكتب الفقرة المعدلة فقط بدون أي مقدمات أو تفسيرات.`;
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            text: { type: "string", description: "نص الفقرة المعدلة" }
+          },
+          required: ["text"]
+        }
+      });
+      
+      const generatedText = response.text || response;
+      if (editorRef.current) {
+        editorRef.current.innerHTML = generatedText;
+      }
+      setFreeText(generatedText);
+      if (onFreeTextChange) onFreeTextChange(generatedText);
+      toast.success('تم توليد/تعديل النص بنجاح');
+    } catch (error) {
+      console.error('Error generating text:', error);
+      toast.error('فشل في توليد النص');
+    } finally {
+      setIsGeneratingText(false);
+    }
+  };
+
+  // تعيين المحتوى الأولي فقط عند التحميل
+  React.useEffect(() => {
+    if (editorRef.current && freeText && !editorRef.current.innerHTML) {
+      editorRef.current.innerHTML = freeText;
+    }
+  }, []);
+
+  // تحديث المحتوى عند تغيير freeText من الخارج (مثل التوليد الذكي)
+  React.useEffect(() => {
+    if (editorRef.current && freeText !== editorRef.current.innerHTML) {
+      // فقط نحدث إذا كان المحتوى مختلفاً تماماً (من مصدر خارجي)
+      const currentText = editorRef.current.innerHTML;
+      if (currentText !== freeText && document.activeElement !== editorRef.current) {
+        editorRef.current.innerHTML = freeText || '';
+      }
+    }
+  }, [freeText]);
+
+  return (
+    <div className="free-text-box border-2 border-dashed border-gray-300 rounded-lg p-3 bg-yellow-50/50 hover:border-blue-400 transition-colors relative">
+      <div className="flex items-center justify-between mb-2 no-print">
+        <p className="free-text-label text-xs text-gray-500">خطاب حر (قابل للتعديل والسحب)</p>
+        <div className="flex gap-1">
+          <button
+            onClick={handleGenerateText}
+            disabled={isGeneratingText}
+            className="px-2 py-1 text-xs bg-purple-500 text-white rounded hover:bg-purple-600 disabled:opacity-50 flex items-center gap-1"
+            title="توليد نص ذكي بناءً على سياق التكليف"
+          >
+            {isGeneratingText ? <Loader2 size={12} className="animate-spin" /> : '✨'}
+            <span className="hidden sm:inline">توليد ذكي</span>
+          </button>
+          <VoiceInput
+            onResult={(text) => {
+              if (editorRef.current) {
+                editorRef.current.innerHTML = editorRef.current.innerHTML + ' ' + text;
+                const newText = editorRef.current.innerHTML;
+                setFreeText(newText);
+                if (onFreeTextChange) onFreeTextChange(newText);
+              }
+            }}
+            size="sm"
+            variant="ghost"
+            className="h-6 w-6"
+          />
+        </div>
+      </div>
+      <div 
+        ref={editorRef}
+        contentEditable
+        suppressContentEditableWarning
+        dir="rtl"
+        onInput={handleInput}
+        onBlur={handleBlur}
+        onKeyDown={(e) => {
+          if (e.ctrlKey && e.key.toLowerCase() === 'b') {
+            e.preventDefault();
+            document.execCommand('bold', false, null);
+          }
+        }}
+        className="w-full bg-transparent border-none outline-none text-sm leading-relaxed min-h-[100px] focus:bg-blue-50/30 rounded p-2"
+        style={{ 
+          lineHeight: '1.8', 
+          whiteSpace: 'pre-wrap',
+          direction: 'rtl',
+          textAlign: 'right',
+          unicodeBidi: 'embed'
+        }}
+      />
+    </div>
+  );
+};
+
 const getDayName = (dateString) => {
   try {
     const date = new Date(dateString);
