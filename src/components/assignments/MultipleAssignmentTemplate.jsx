@@ -1198,34 +1198,76 @@ export default function MultipleAssignmentTemplate({
                         }
                         setIsGeneratingText(true);
                         try {
-                          const firstEmp = assignments[0];
-                          const isFemale = firstEmp.gender === 'أنثى';
                           const empCount = assignments.length;
-                          const toCenter = firstEmp.assigned_work || '';
+                          const existingText = freeText || '';
+                          
+                          // تحليل جنس الموظفين
+                          const maleCount = assignments.filter(e => e.gender !== 'أنثى').length;
+                          const femaleCount = assignments.filter(e => e.gender === 'أنثى').length;
+                          
+                          // تحديد صيغة العدد والجنس
+                          let genderForm = '';
+                          let numberForm = '';
+                          
+                          if (empCount === 1) {
+                            numberForm = 'مفرد';
+                            genderForm = femaleCount === 1 ? 'مؤنث' : 'مذكر';
+                          } else if (empCount === 2) {
+                            numberForm = 'مثنى';
+                            if (maleCount === 2) genderForm = 'مذكر';
+                            else if (femaleCount === 2) genderForm = 'مؤنث';
+                            else genderForm = 'مختلط';
+                          } else {
+                            numberForm = 'جمع';
+                            if (maleCount === empCount) genderForm = 'مذكر';
+                            else if (femaleCount === empCount) genderForm = 'مؤنث';
+                            else genderForm = 'مختلط';
+                          }
+                          
+                          // جمع أسماء جهات التكليف المختلفة
+                          const uniqueCenters = [...new Set(assignments.map(e => e.assigned_work).filter(Boolean))];
+                          const centersText = uniqueCenters.join(' و ');
+                          
+                          // أسماء الموظفين
+                          const employeeNames = assignments.map(e => e.name).join('، ');
+                          
+                          // المدة
+                          const firstEmp = assignments[0];
                           const duration = firstEmp.full_duration || `${firstEmp.duration || ''} يوم`;
                           
                           const prompt = `أنت كاتب رسمي متخصص في صياغة خطابات التكليف الحكومية السعودية.
-اكتب فقرة واحدة مختصرة (2-3 جمل) لخطاب تكليف رسمي بناءً على المعلومات التالية:
+
+${existingText ? `لديك نص سابق يجب تعديله ليتناسب مع البيانات الجديدة:
+"${existingText}"
+
+المطلوب: تعديل هذا النص السابق ليتوافق مع البيانات الجديدة أدناه، مع الحفاظ على الأسلوب والصيغة العامة قدر الإمكان.` : 'اكتب فقرة واحدة مختصرة (2-3 جمل) لخطاب تكليف رسمي.'}
+
+البيانات الجديدة:
 - عدد الموظفين: ${empCount}
-- ${empCount === 1 ? `اسم الموظف: ${firstEmp.name}` : 'تكليف جماعي لعدة موظفين'}
-- جنس الموظف ${empCount === 1 ? (isFemale ? 'أنثى' : 'ذكر') : 'متعدد'}
-- جهة التكليف: ${toCenter}
+- أسماء الموظفين: ${employeeNames}
+- صيغة العدد: ${numberForm}
+- صيغة الجنس: ${genderForm} (${maleCount} ذكور، ${femaleCount} إناث)
+- جهة/جهات التكليف: ${centersText}
 - المدة: ${duration}
 
-اكتب الفقرة بصيغة رسمية مناسبة للخطابات الحكومية، مع مراعاة:
-1. استخدام الضمائر الصحيحة حسب الجنس ${empCount === 1 ? (isFemale ? '(المؤنث)' : '(المذكر)') : '(الجمع)'}
-2. ذكر جهة التكليف بشكل واضح
-3. الإشارة للمدة المحددة
-4. صياغة رسمية مختصرة
+قواعد التعديل المهمة:
+1. صيغة المفرد المذكر: "الموضح بياناته أعلاه" / "تكليفه" / "له"
+2. صيغة المفرد المؤنث: "الموضحة بياناتها أعلاه" / "تكليفها" / "لها"
+3. صيغة المثنى المذكر: "الموضح بياناتهما أعلاه" / "تكليفهما" / "لهما"
+4. صيغة المثنى المؤنث: "الموضح بياناتهما أعلاه" / "تكليفهما" / "لهما"
+5. صيغة الجمع المذكر أو المختلط: "الموضح بياناتهم أعلاه" / "تكليفهم" / "لهم"
+6. صيغة الجمع المؤنث: "الموضح بياناتهن أعلاه" / "تكليفهن" / "لهن"
 
-اكتب الفقرة فقط بدون أي مقدمات أو تفسيرات.`;
+استبدل أي أسماء مراكز سابقة بـ "${centersText}".
+
+اكتب الفقرة المعدلة فقط بدون أي مقدمات أو تفسيرات.`;
 
                           const response = await base44.integrations.Core.InvokeLLM({
                             prompt,
                             response_json_schema: {
                               type: "object",
                               properties: {
-                                text: { type: "string", description: "نص الفقرة" }
+                                text: { type: "string", description: "نص الفقرة المعدلة" }
                               },
                               required: ["text"]
                             }
@@ -1234,7 +1276,7 @@ export default function MultipleAssignmentTemplate({
                           const generatedText = response.text || response;
                           setFreeText(generatedText);
                           if (onFreeTextChange) onFreeTextChange(generatedText);
-                          toast.success('تم توليد النص بنجاح');
+                          toast.success('تم توليد/تعديل النص بنجاح');
                         } catch (error) {
                           console.error('Error generating text:', error);
                           toast.error('فشل في توليد النص');
