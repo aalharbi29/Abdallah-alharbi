@@ -98,7 +98,11 @@ export default function FillEmailRecoveryForm() {
         entityName: center.اسم_المركز || "",
         managerName: manager?.full_name_arabic || "",
         managerEmailPhone: manager ? `${manager.email || ""} / ${manager.phone || ""}` : "",
-        adminEmail: center.ايميل_المركز || ""
+        adminEmail: center.ايميل_المركز || "",
+        // بيانات المستلم = بيانات مدير المركز
+        recipientName: manager?.full_name_arabic || "",
+        recipientEmail: manager?.email || "",
+        recipientPhone: manager?.phone || ""
       }));
     }
   };
