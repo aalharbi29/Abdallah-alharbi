@@ -140,13 +140,15 @@ export default function FillEmailRecoveryForm() {
       scale: 2,
       useCORS: true,
       allowTaint: true,
-      backgroundColor: '#ffffff'
+      backgroundColor: '#ffffff',
+      height: element.scrollHeight,
+      windowHeight: element.scrollHeight
     });
     
     const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF('p', 'mm', 'a4');
     const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    const pdfHeight = pdf.internal.pageSize.getHeight();
     
     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
     pdf.save(`طلب_استعادة_بريد_${formData.entityName || 'مركز'}.pdf`);
@@ -270,9 +272,9 @@ export default function FillEmailRecoveryForm() {
           minHeight: '297mm'
         }}
       >
-        {/* الشعار والعنوان */}
-        <div className="flex justify-end items-start mb-2" style={{ marginTop: '10px' }}>
-          <div className="text-left" style={{ marginLeft: '20px' }}>
+        {/* الشعار والعنوان - بجانب شعار التجمع */}
+        <div className="flex justify-start items-start" style={{ marginTop: '60px', marginRight: '30px' }}>
+          <div className="text-right">
             <p 
               className="text-sm mb-1"
               contentEditable
@@ -301,7 +303,7 @@ export default function FillEmailRecoveryForm() {
         </div>
         
         {/* عنوان النموذج */}
-        <div className="text-center my-8">
+        <div className="text-center" style={{ marginTop: '40px', marginBottom: '30px' }}>
           <h2 
             className="text-xl font-bold"
             contentEditable
