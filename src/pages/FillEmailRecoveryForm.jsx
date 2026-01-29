@@ -545,24 +545,35 @@ export default function FillEmailRecoveryForm() {
                 </div>
               </td>
             </tr>
-            {/* بريد الادارة - خلية واحدة ممتدة */}
+            {/* بريد الادارة والأقواس في صف واحد */}
             <tr>
               <td 
                 colSpan="2"
                 style={{ 
-                  borderBottom: `1px solid ${innerBorderColor}`,
                   padding: 0
                 }}
               >
-                <div className="flex">
+                <div className="flex items-center">
                   <div 
-                    className="editable-cell flex-1"
+                    className="editable-cell text-center"
+                    contentEditable
+                    suppressContentEditableWarning
+                    style={{ 
+                      borderLeft: `1px solid ${innerBorderColor}`,
+                      flex: 1,
+                      fontSize: '16px'
+                    }}
+                  >
+                    (                                                            )
+                  </div>
+                  <div 
+                    className="editable-cell"
                     contentEditable
                     suppressContentEditableWarning
                     onBlur={(e) => handleInputChange('adminEmail', e.currentTarget.textContent)}
                     style={{ 
                       borderLeft: `1px solid ${innerBorderColor}`,
-                      minWidth: '200px'
+                      minWidth: '180px'
                     }}
                   >
                     {formData.adminEmail}
@@ -580,21 +591,6 @@ export default function FillEmailRecoveryForm() {
                     بريد الادارة
                   </div>
                 </div>
-              </td>
-            </tr>
-            {/* خانة الأقواس */}
-            <tr>
-              <td 
-                colSpan="2"
-                className="editable-cell text-center"
-                contentEditable
-                suppressContentEditableWarning
-                style={{ 
-                  minHeight: '45px',
-                  fontSize: '18px'
-                }}
-              >
-                (                                                                                                    )
               </td>
             </tr>
 
