@@ -545,19 +545,26 @@ export default function FillEmailRecoveryForm() {
                 </div>
               </td>
             </tr>
-            {/* بريد الادارة داخل الأقواس - خلية واحدة مدمجة */}
+            {/* بريد الادارة فوق الايميل في خلية واحدة */}
             <tr>
               <td 
                 colSpan="2"
                 className="editable-cell text-center"
-                contentEditable
-                suppressContentEditableWarning
                 style={{ 
                   fontSize: '16px',
-                  direction: 'rtl'
+                  direction: 'rtl',
+                  padding: '12px'
                 }}
               >
-                بريد الادارة ( {formData.adminEmail || '                                        '} )
+                <div className="font-semibold mb-1">بريد الادارة</div>
+                <div 
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={(e) => handleInputChange('adminEmail', e.currentTarget.textContent)}
+                  style={{ outline: 'none' }}
+                >
+                  ( {formData.adminEmail || '                                        '} )
+                </div>
               </td>
             </tr>
 
