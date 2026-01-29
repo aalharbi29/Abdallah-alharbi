@@ -177,11 +177,17 @@ export default function FillEmailRecoveryForm() {
             top: 0;
             width: 210mm;
             min-height: 297mm;
-            padding: 15mm;
+            padding: 15mm 20mm;
             direction: rtl;
+            background-image: url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/a3b5521d7_image.png) !important;
+            background-size: 100% 100% !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           .no-print { display: none !important; }
-          @page { size: A4 portrait; margin: 10mm; }
+          @page { size: A4 portrait; margin: 0; }
           .resize-handle { display: none !important; }
         }
         .editable-cell {
@@ -258,15 +264,15 @@ export default function FillEmailRecoveryForm() {
           fontFamily: 'Arial, sans-serif', 
           padding: '40px 50px',
           backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/a3b5521d7_image.png)',
-          backgroundSize: 'cover',
+          backgroundSize: '100% 100%',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
           minHeight: '297mm'
         }}
       >
         {/* الشعار والعنوان */}
-        <div className="flex justify-between items-start mb-2">
-          <div className="text-right flex-1">
+        <div className="flex justify-end items-start mb-2" style={{ marginTop: '10px' }}>
+          <div className="text-left" style={{ marginLeft: '20px' }}>
             <p 
               className="text-sm mb-1"
               contentEditable
@@ -292,7 +298,6 @@ export default function FillEmailRecoveryForm() {
               Shared Services for Digital Health & Technology
             </p>
           </div>
-
         </div>
         
         {/* عنوان النموذج */}
