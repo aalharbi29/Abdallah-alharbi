@@ -286,13 +286,13 @@ export default function FillEmailRecoveryForm() {
               الخدمات المشتركة للصحة الرقمية والتقنية
             </h1>
             <p 
-              className="text-sm"
-              contentEditable
-              suppressContentEditableWarning
-              style={{ outline: 'none', color: '#0ea5e9' }}
-            >
-              Shared Services for Digital Health & Technology
-            </p>
+                              className="text-sm"
+                              contentEditable
+                              suppressContentEditableWarning
+                              style={{ outline: 'none', color: '#6b7280' }}
+                            >
+                              Shared Services for Digital Health & Technology
+                            </p>
           </div>
         </div>
         
