@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { GripVertical, Plus, Printer, Save, Loader2, Settings2, Star, Mic } from 'lucide-react';
+import { GripVertical, Plus, Printer, Save, Loader2, Settings2, Star, Mic, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
@@ -221,6 +221,7 @@ export default function MultipleAssignmentTemplate({
   onClosingChange,
   onAssignmentsChange,
   onFreeTextChange,
+  onDeleteRow, // callback لحذف صف
   showActions = true,
   // Additional style options for full customization
   savedStyleData = null,
@@ -1296,6 +1297,20 @@ export default function MultipleAssignmentTemplate({
                           onMouseDown={(e) => handleRowResizeStart(e, rowIndex, rowHeight)}
                           title="اسحب لتغيير ارتفاع الصف"
                         />
+                      )}
+                      {/* Delete row button */}
+                      {onDeleteRow && (
+                        <button
+                          onClick={() => {
+                            if (window.confirm('هل تريد حذف هذا الصف؟')) {
+                              onDeleteRow(rowIndex);
+                            }
+                          }}
+                          className="no-print absolute -left-6 top-1/2 -translate-y-1/2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover/row:opacity-100 hover:bg-red-600 transition-opacity z-20"
+                          title="حذف الصف"
+                        >
+                          <Trash2 size={12} />
+                        </button>
                       )}
                     </div>
                   );
