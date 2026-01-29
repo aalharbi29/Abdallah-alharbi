@@ -632,199 +632,224 @@ export default function CreateAssignment() {
                                   </table>
                                   </div>
 
-                                  {/* Multiple Template Customization */}
-                                  <div className="mt-3 md:mt-6 p-3 md:p-4 bg-gray-50 border border-gray-200 rounded-lg space-y-3 md:space-y-4">
+                                  {/* Multiple Template Customization - Collapsible */}
+                                  <div className="mt-3 md:mt-6 p-3 md:p-4 bg-gray-50 border border-gray-200 rounded-lg space-y-2 md:space-y-3">
                                   <h3 className="font-bold text-gray-900 flex items-center gap-2 text-xs md:text-base">
                                   <Settings2 className="w-3 h-3 md:w-4 md:h-4" />
                                   تخصيص النص
                                   </h3>
 
-                                  <div>
-                                  <Label className="text-xs md:text-sm">المقدمة</Label>
-                                  <Textarea 
-                                  value={templateOptions.customIntro}
-                                  onChange={(e) => setTemplateOptions(prev => ({...prev, customIntro: e.target.value}))}
-                                  className="mt-1 h-16 md:h-20 text-xs md:text-sm"
-                                  />
+                                  {/* المقدمة - قابلة للطي */}
+                                  <div className="border rounded-lg overflow-hidden">
+                                    <button
+                                      onClick={() => toggleSection('intro')}
+                                      className="w-full flex items-center justify-between p-2 bg-blue-50 hover:bg-blue-100 transition-colors"
+                                    >
+                                      <Label className="text-xs md:text-sm cursor-pointer font-semibold">المقدمة</Label>
+                                      {collapsedSections.intro ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+                                    </button>
+                                    {!collapsedSections.intro && (
+                                      <div className="p-2">
+                                        <Textarea 
+                                          value={templateOptions.customIntro}
+                                          onChange={(e) => setTemplateOptions(prev => ({...prev, customIntro: e.target.value}))}
+                                          className="mt-1 h-16 md:h-20 text-xs md:text-sm"
+                                        />
+                                      </div>
+                                    )}
                                   </div>
 
-                                  <div>
-                                  <Label className="mb-2 block text-xs md:text-sm">نقاط القرار</Label>
-                                  {templateOptions.decisionPoints.map((point, idx) => (
-                                  <div key={idx} className="flex gap-1 md:gap-2 mb-2 items-center">
-                                  <Badge variant="outline" className="h-6 w-6 md:h-8 md:w-8 flex justify-center items-center shrink-0 text-[9px] md:text-xs">{idx + 1}</Badge>
-                                  <Input 
-                                  value={point}
-                                  onChange={(e) => {
-                                  const newPoints = [...templateOptions.decisionPoints];
-                                  newPoints[idx] = e.target.value;
-                                  setTemplateOptions(prev => ({...prev, decisionPoints: newPoints}));
-                                  }}
-                                  className="h-7 md:h-9 text-xs md:text-sm"
-                                  />
-                                  <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => {
-                                  const newPoints = templateOptions.decisionPoints.filter((_, i) => i !== idx);
-                                  setTemplateOptions(prev => ({...prev, decisionPoints: newPoints}));
-                                  }}
-                                  className="text-red-500 h-6 w-6 md:h-8 md:w-8 p-0"
-                                  >
-                                  <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
-                                  </Button>
-                                  </div>
-                                  ))}
-                                  <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => setTemplateOptions(prev => ({...prev, decisionPoints: [...prev.decisionPoints, '']}))}
-                                  className="mt-2 text-xs md:text-sm h-7 md:h-9"
-                                  >
-                                  <Plus className="w-3 h-3 md:w-4 md:h-4 ml-1 md:ml-2" /> نقطة
-                                  </Button>
+                                  {/* نقاط القرار - قابلة للطي */}
+                                  <div className="border rounded-lg overflow-hidden">
+                                    <button
+                                      onClick={() => toggleSection('decisionPoints')}
+                                      className="w-full flex items-center justify-between p-2 bg-green-50 hover:bg-green-100 transition-colors"
+                                    >
+                                      <Label className="text-xs md:text-sm cursor-pointer font-semibold">نقاط القرار</Label>
+                                      {collapsedSections.decisionPoints ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+                                    </button>
+                                    {!collapsedSections.decisionPoints && (
+                                      <div className="p-2 space-y-2">
+                                        {templateOptions.decisionPoints.map((point, idx) => (
+                                          <div key={idx} className="flex gap-1 md:gap-2 items-center">
+                                            <Badge variant="outline" className="h-6 w-6 md:h-8 md:w-8 flex justify-center items-center shrink-0 text-[9px] md:text-xs">{idx + 1}</Badge>
+                                            <Input 
+                                              value={point}
+                                              onChange={(e) => {
+                                                const newPoints = [...templateOptions.decisionPoints];
+                                                newPoints[idx] = e.target.value;
+                                                setTemplateOptions(prev => ({...prev, decisionPoints: newPoints}));
+                                              }}
+                                              className="h-7 md:h-9 text-xs md:text-sm"
+                                            />
+                                            <Button
+                                              variant="ghost"
+                                              size="sm"
+                                              onClick={() => {
+                                                const newPoints = templateOptions.decisionPoints.filter((_, i) => i !== idx);
+                                                setTemplateOptions(prev => ({...prev, decisionPoints: newPoints}));
+                                              }}
+                                              className="text-red-500 h-6 w-6 md:h-8 md:w-8 p-0"
+                                            >
+                                              <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
+                                            </Button>
+                                          </div>
+                                        ))}
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          onClick={() => setTemplateOptions(prev => ({...prev, decisionPoints: [...prev.decisionPoints, '']}))}
+                                          className="mt-2 text-xs md:text-sm h-7 md:h-9"
+                                        >
+                                          <Plus className="w-3 h-3 md:w-4 md:h-4 ml-1 md:ml-2" /> نقطة
+                                        </Button>
+                                      </div>
+                                    )}
                                   </div>
 
-                                  <div>
-                                  <div className="flex items-center justify-between mb-2">
-                                    <Label className="text-xs md:text-sm">خطاب حر</Label>
-                                    <div className="flex items-center gap-1 md:gap-2">
-                                      <Checkbox 
-                                        id="showFreeText"
-                                        checked={templateOptions.showFreeText !== false}
-                                        onCheckedChange={(checked) => setTemplateOptions(prev => ({...prev, showFreeText: checked}))}
-                                        className="w-3 h-3 md:w-4 md:h-4"
-                                      />
-                                      <Label htmlFor="showFreeText" className="text-[10px] md:text-sm cursor-pointer">إظهار</Label>
-                                    </div>
-                                  </div>
-                                  {templateOptions.showFreeText !== false && (
-                                    <>
-                                      <div 
-                                        contentEditable
-                                        suppressContentEditableWarning
-                                        dir="rtl"
-                                        onInput={(e) => {
-                                          setTemplateOptions(prev => ({...prev, freeText: e.currentTarget.innerHTML}));
-                                        }}
-                                        onKeyDown={(e) => {
-                                          if (e.ctrlKey && e.key.toLowerCase() === 'b') {
-                                            e.preventDefault();
-                                            document.execCommand('bold', false, null);
-                                          }
-                                        }}
-                                        className="mt-1 min-h-[80px] md:min-h-[96px] text-xs md:text-sm border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
-                                        style={{ 
-                                          whiteSpace: 'pre-wrap',
-                                          direction: 'rtl',
-                                          textAlign: 'right',
-                                          unicodeBidi: 'embed'
-                                        }}
-                                        dangerouslySetInnerHTML={{ __html: templateOptions.freeText || '' }}
-                                        placeholder="نص إضافي..."
-                                      />
-                                      <button
-                                        onClick={async () => {
-                                          // التوليد الذكي للتكليف الجماعي
-                                          if (multipleAssignments.length === 0) {
-                                            alert('أضف موظفين للتكليف أولاً');
-                                            return;
-                                          }
-                                          setIsSaving(true);
-                                          try {
-                                            const empCount = multipleAssignments.length;
-                                            const existingText = templateOptions.freeText || '';
-                                            
-                                            // تحليل جنس الموظفين
-                                            const maleCount = multipleAssignments.filter(e => e.gender !== 'أنثى').length;
-                                            const femaleCount = multipleAssignments.filter(e => e.gender === 'أنثى').length;
-                                            
-                                            // تحديد صيغة العدد والجنس
-                                            let genderForm = '';
-                                            let numberForm = '';
-                                            
-                                            if (empCount === 1) {
-                                              numberForm = 'مفرد';
-                                              genderForm = femaleCount === 1 ? 'مؤنث' : 'مذكر';
-                                            } else if (empCount === 2) {
-                                              numberForm = 'مثنى';
-                                              if (maleCount === 2) genderForm = 'مذكر';
-                                              else if (femaleCount === 2) genderForm = 'مؤنث';
-                                              else genderForm = 'مختلط';
-                                            } else {
-                                              numberForm = 'جمع';
-                                              if (maleCount === empCount) genderForm = 'مذكر';
-                                              else if (femaleCount === empCount) genderForm = 'مؤنث';
-                                              else genderForm = 'مختلط';
+                                  {/* الخطاب الحر - قابل للطي */}
+                                  <div className="border rounded-lg overflow-hidden">
+                                    <button
+                                      onClick={() => toggleSection('freeText')}
+                                      className="w-full flex items-center justify-between p-2 bg-yellow-50 hover:bg-yellow-100 transition-colors"
+                                    >
+                                      <div className="flex items-center gap-2">
+                                        <Label className="text-xs md:text-sm cursor-pointer font-semibold">خطاب حر</Label>
+                                        <div className="flex items-center gap-1">
+                                          <Checkbox 
+                                            id="showFreeText"
+                                            checked={templateOptions.showFreeText !== false}
+                                            onCheckedChange={(checked) => setTemplateOptions(prev => ({...prev, showFreeText: checked}))}
+                                            className="w-3 h-3 md:w-4 md:h-4"
+                                            onClick={(e) => e.stopPropagation()}
+                                          />
+                                          <Label htmlFor="showFreeText" className="text-[10px] md:text-sm cursor-pointer" onClick={(e) => e.stopPropagation()}>إظهار</Label>
+                                        </div>
+                                      </div>
+                                      {collapsedSections.freeText ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+                                    </button>
+                                    {!collapsedSections.freeText && templateOptions.showFreeText !== false && (
+                                      <div className="p-2">
+                                        <div 
+                                          contentEditable
+                                          suppressContentEditableWarning
+                                          dir="rtl"
+                                          onInput={(e) => {
+                                            setTemplateOptions(prev => ({...prev, freeText: e.currentTarget.innerHTML}));
+                                          }}
+                                          onKeyDown={(e) => {
+                                            if (e.ctrlKey && e.key.toLowerCase() === 'b') {
+                                              e.preventDefault();
+                                              document.execCommand('bold', false, null);
                                             }
-                                            
-                                            // جمع أسماء جهات التكليف المختلفة
-                                            const uniqueCenters = [...new Set(multipleAssignments.map(e => e.assigned_work))];
-                                            const centersText = uniqueCenters.join(' و ');
-                                            
-                                            // أسماء الموظفين
-                                            const employeeNames = multipleAssignments.map(e => e.name).join('، ');
-                                            
-                                            const prompt = `أنت كاتب رسمي متخصص في صياغة خطابات التكليف الحكومية السعودية.
+                                          }}
+                                          className="mt-1 min-h-[80px] md:min-h-[96px] text-xs md:text-sm border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                                          style={{ 
+                                            whiteSpace: 'pre-wrap',
+                                            direction: 'rtl',
+                                            textAlign: 'right',
+                                            unicodeBidi: 'embed'
+                                          }}
+                                          dangerouslySetInnerHTML={{ __html: templateOptions.freeText || '' }}
+                                          placeholder="نص إضافي..."
+                                        />
+                                        <button
+                                          onClick={async () => {
+                                            // التوليد الذكي للتكليف الجماعي
+                                            if (multipleAssignments.length === 0) {
+                                              alert('أضف موظفين للتكليف أولاً');
+                                              return;
+                                            }
+                                            setIsSaving(true);
+                                            try {
+                                              const empCount = multipleAssignments.length;
+                                              const existingText = templateOptions.freeText || '';
 
-${existingText ? `لديك نص سابق يجب تعديله ليتناسب مع البيانات الجديدة:
-"${existingText}"
+                                              const maleCount = multipleAssignments.filter(e => e.gender !== 'أنثى').length;
+                                              const femaleCount = multipleAssignments.filter(e => e.gender === 'أنثى').length;
 
-المطلوب: تعديل هذا النص السابق ليتوافق مع البيانات الجديدة أدناه، مع الحفاظ على الأسلوب والصيغة العامة قدر الإمكان.` : 'اكتب فقرة واحدة مختصرة (2-3 جمل) لخطاب تكليف رسمي.'}
+                                              let genderForm = '';
+                                              let numberForm = '';
 
-البيانات الجديدة:
-- عدد الموظفين: ${empCount}
-- أسماء الموظفين: ${employeeNames}
-- صيغة العدد: ${numberForm}
-- صيغة الجنس: ${genderForm} (${maleCount} ذكور، ${femaleCount} إناث)
-- جهة/جهات التكليف: ${centersText}
-${assignmentData.start_date && assignmentData.end_date ? `- الفترة: من ${assignmentData.start_date} إلى ${assignmentData.end_date}` : ''}
-${assignmentData.duration_days ? `- المدة: ${assignmentData.duration_days} يوم` : ''}
-
-قواعد التعديل المهمة:
-1. صيغة المفرد المذكر: "الموضح بياناته أعلاه" / "تكليفه" / "له"
-2. صيغة المفرد المؤنث: "الموضحة بياناتها أعلاه" / "تكليفها" / "لها"
-3. صيغة المثنى المذكر: "الموضح بياناتهما أعلاه" / "تكليفهما" / "لهما"
-4. صيغة المثنى المؤنث: "الموضح بياناتهما أعلاه" / "تكليفهما" / "لهما"
-5. صيغة الجمع المذكر أو المختلط: "الموضح بياناتهم أعلاه" / "تكليفهم" / "لهم"
-6. صيغة الجمع المؤنث: "الموضح بياناتهن أعلاه" / "تكليفهن" / "لهن"
-
-استبدل أي أسماء مراكز سابقة بـ "${centersText}".
-
-اكتب الفقرة المعدلة فقط بدون أي مقدمات أو تفسيرات.`;
-
-                                            const response = await base44.integrations.Core.InvokeLLM({
-                                              prompt,
-                                              response_json_schema: {
-                                                type: "object",
-                                                properties: {
-                                                  text: { type: "string", description: "نص الفقرة المعدلة" }
-                                                },
-                                                required: ["text"]
+                                              if (empCount === 1) {
+                                                numberForm = 'مفرد';
+                                                genderForm = femaleCount === 1 ? 'مؤنث' : 'مذكر';
+                                              } else if (empCount === 2) {
+                                                numberForm = 'مثنى';
+                                                if (maleCount === 2) genderForm = 'مذكر';
+                                                else if (femaleCount === 2) genderForm = 'مؤنث';
+                                                else genderForm = 'مختلط';
+                                              } else {
+                                                numberForm = 'جمع';
+                                                if (maleCount === empCount) genderForm = 'مذكر';
+                                                else if (femaleCount === empCount) genderForm = 'مؤنث';
+                                                else genderForm = 'مختلط';
                                               }
-                                            });
-                                            
-                                            const generatedText = response.text || response;
-                                            setTemplateOptions(prev => ({...prev, freeText: generatedText}));
-                                            alert('✅ تم توليد/تعديل النص بنجاح');
-                                          } catch (error) {
-                                            console.error('Error generating text:', error);
-                                            alert('فشل في توليد النص: ' + error.message);
-                                          } finally {
-                                            setIsSaving(false);
-                                          }
-                                        }}
-                                        className="mt-1 px-2 md:px-3 py-1 text-[10px] md:text-xs bg-purple-500 text-white rounded hover:bg-purple-600 disabled:opacity-50 flex items-center gap-1"
-                                        disabled={isSaving}
-                                      >
-                                        {isSaving ? <Loader2 size={12} className="animate-spin" /> : '✨'}
-                                        <span>توليد ذكي</span>
-                                      </button>
-                                    </>
-                                  )}
-                                  <p className="text-[9px] md:text-xs text-gray-500 mt-1">
-                                    💡 استخدم Ctrl+B للتعريض • زر "توليد ذكي" لكتابة نص متناسق مع التكليف
-                                  </p>
+
+                                              const uniqueCenters = [...new Set(multipleAssignments.map(e => e.assigned_work))];
+                                              const centersText = uniqueCenters.join(' و ');
+                                              const employeeNames = multipleAssignments.map(e => e.name).join('، ');
+
+                                              const prompt = `أنت كاتب رسمي متخصص في صياغة خطابات التكليف الحكومية السعودية.
+
+                                  ${existingText ? `لديك نص سابق يجب تعديله ليتناسب مع البيانات الجديدة:
+                                  "${existingText}"
+
+                                  المطلوب: تعديل هذا النص السابق ليتوافق مع البيانات الجديدة أدناه، مع الحفاظ على الأسلوب والصيغة العامة قدر الإمكان.` : 'اكتب فقرة واحدة مختصرة (2-3 جمل) لخطاب تكليف رسمي.'}
+
+                                  البيانات الجديدة:
+                                  - عدد الموظفين: ${empCount}
+                                  - أسماء الموظفين: ${employeeNames}
+                                  - صيغة العدد: ${numberForm}
+                                  - صيغة الجنس: ${genderForm} (${maleCount} ذكور، ${femaleCount} إناث)
+                                  - جهة/جهات التكليف: ${centersText}
+                                  ${assignmentData.start_date && assignmentData.end_date ? `- الفترة: من ${assignmentData.start_date} إلى ${assignmentData.end_date}` : ''}
+                                  ${assignmentData.duration_days ? `- المدة: ${assignmentData.duration_days} يوم` : ''}
+
+                                  قواعد التعديل المهمة:
+                                  1. صيغة المفرد المذكر: "الموضح بياناته أعلاه" / "تكليفه" / "له"
+                                  2. صيغة المفرد المؤنث: "الموضحة بياناتها أعلاه" / "تكليفها" / "لها"
+                                  3. صيغة المثنى المذكر: "الموضح بياناتهما أعلاه" / "تكليفهما" / "لهما"
+                                  4. صيغة المثنى المؤنث: "الموضح بياناتهما أعلاه" / "تكليفهما" / "لهما"
+                                  5. صيغة الجمع المذكر أو المختلط: "الموضح بياناتهم أعلاه" / "تكليفهم" / "لهم"
+                                  6. صيغة الجمع المؤنث: "الموضح بياناتهن أعلاه" / "تكليفهن" / "لهن"
+
+                                  استبدل أي أسماء مراكز سابقة بـ "${centersText}".
+
+                                  اكتب الفقرة المعدلة فقط بدون أي مقدمات أو تفسيرات.`;
+
+                                              const response = await base44.integrations.Core.InvokeLLM({
+                                                prompt,
+                                                response_json_schema: {
+                                                  type: "object",
+                                                  properties: {
+                                                    text: { type: "string", description: "نص الفقرة المعدلة" }
+                                                  },
+                                                  required: ["text"]
+                                                }
+                                              });
+
+                                              const generatedText = response.text || response;
+                                              setTemplateOptions(prev => ({...prev, freeText: generatedText}));
+                                              alert('✅ تم توليد/تعديل النص بنجاح');
+                                            } catch (error) {
+                                              console.error('Error generating text:', error);
+                                              alert('فشل في توليد النص: ' + error.message);
+                                            } finally {
+                                              setIsSaving(false);
+                                            }
+                                          }}
+                                          className="mt-1 px-2 md:px-3 py-1 text-[10px] md:text-xs bg-purple-500 text-white rounded hover:bg-purple-600 disabled:opacity-50 flex items-center gap-1"
+                                          disabled={isSaving}
+                                        >
+                                          {isSaving ? <Loader2 size={12} className="animate-spin" /> : '✨'}
+                                          <span>توليد ذكي</span>
+                                        </button>
+                                        <p className="text-[9px] md:text-xs text-gray-500 mt-1">
+                                          💡 استخدم Ctrl+B للتعريض • زر "توليد ذكي" لكتابة نص متناسق مع التكليف
+                                        </p>
+                                      </div>
+                                    )}
                                   </div>
                                   </div>
                                   </div>
@@ -1295,6 +1320,9 @@ ${assignmentData.duration_days ? `- المدة: ${assignmentData.duration_days} 
                   if (updated[rowIdx]) updated[rowIdx][colId] = value;
                   return updated;
                 });
+              }}
+              onDeleteRow={(rowIdx) => {
+                setMultipleAssignments(prev => prev.filter((_, i) => i !== rowIdx));
               }}
             />
           ) : (
