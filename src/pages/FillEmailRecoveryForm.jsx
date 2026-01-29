@@ -331,7 +331,7 @@ export default function FillEmailRecoveryForm() {
             </tr>
             <tr>
               <td 
-                className="p-3 text-left font-semibold"
+                className="p-3 text-center font-semibold"
                 contentEditable
                 suppressContentEditableWarning
                 style={{ 
@@ -348,7 +348,7 @@ export default function FillEmailRecoveryForm() {
                 />
               </td>
               <td 
-                className="editable-cell text-left"
+                className="editable-cell text-center"
                 contentEditable
                 suppressContentEditableWarning
                 onBlur={(e) => handleInputChange('entityName', e.currentTarget.textContent)}
@@ -368,7 +368,7 @@ export default function FillEmailRecoveryForm() {
             </tr>
             <tr>
               <td 
-                className="p-3 text-left font-semibold"
+                className="p-3 text-center font-semibold"
                 contentEditable
                 suppressContentEditableWarning
                 style={{ 
@@ -379,7 +379,7 @@ export default function FillEmailRecoveryForm() {
                 مدير الادارة
               </td>
               <td 
-                className="editable-cell text-left"
+                className="editable-cell text-center"
                 contentEditable
                 suppressContentEditableWarning
                 onBlur={(e) => handleInputChange('managerName', e.currentTarget.textContent)}
@@ -393,7 +393,7 @@ export default function FillEmailRecoveryForm() {
             </tr>
             <tr>
               <td 
-                className="p-3 text-left font-semibold"
+                className="p-3 text-center font-semibold"
                 contentEditable
                 suppressContentEditableWarning
                 style={{ outline: 'none' }}
@@ -401,7 +401,7 @@ export default function FillEmailRecoveryForm() {
                 (بريد / رقم) مدير الادارة
               </td>
               <td 
-                className="editable-cell text-left"
+                className="editable-cell text-center"
                 contentEditable
                 suppressContentEditableWarning
                 onBlur={(e) => handleInputChange('managerEmailPhone', e.currentTarget.textContent)}
@@ -448,7 +448,7 @@ export default function FillEmailRecoveryForm() {
             </tr>
             <tr>
               <td 
-                className="p-3 text-left font-semibold"
+                className="p-3 text-center font-semibold"
                 contentEditable
                 suppressContentEditableWarning
                 style={{ 
@@ -465,7 +465,7 @@ export default function FillEmailRecoveryForm() {
                 />
               </td>
               <td 
-                className="editable-cell text-left"
+                className="editable-cell text-center"
                 contentEditable
                 suppressContentEditableWarning
                 onBlur={(e) => handleInputChange('recipientName', e.currentTarget.textContent)}
@@ -485,7 +485,7 @@ export default function FillEmailRecoveryForm() {
             </tr>
             <tr>
               <td 
-                className="p-3 text-left font-semibold"
+                className="p-3 text-center font-semibold"
                 contentEditable
                 suppressContentEditableWarning
                 style={{ 
@@ -496,7 +496,7 @@ export default function FillEmailRecoveryForm() {
                 بريد المستلم
               </td>
               <td 
-                className="editable-cell text-left"
+                className="editable-cell text-center"
                 contentEditable
                 suppressContentEditableWarning
                 onBlur={(e) => handleInputChange('recipientEmail', e.currentTarget.textContent)}
@@ -519,7 +519,7 @@ export default function FillEmailRecoveryForm() {
               >
                 <div className="flex flex-row-reverse">
                   <div 
-                    className="editable-cell flex-1 text-left"
+                    className="editable-cell flex-1 text-center"
                     contentEditable
                     suppressContentEditableWarning
                     onBlur={(e) => handleInputChange('recipientPhone', e.currentTarget.textContent)}
@@ -531,7 +531,7 @@ export default function FillEmailRecoveryForm() {
                     {formData.recipientPhone}
                   </div>
                   <div 
-                    className="p-3 text-left font-semibold"
+                    className="p-3 text-center font-semibold"
                     contentEditable
                     suppressContentEditableWarning
                     style={{ 
