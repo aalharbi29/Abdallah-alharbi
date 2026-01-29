@@ -545,52 +545,19 @@ export default function FillEmailRecoveryForm() {
                 </div>
               </td>
             </tr>
-            {/* بريد الادارة والأقواس في صف واحد */}
+            {/* بريد الادارة داخل الأقواس - خلية واحدة مدمجة */}
             <tr>
               <td 
                 colSpan="2"
+                className="editable-cell text-center"
+                contentEditable
+                suppressContentEditableWarning
                 style={{ 
-                  padding: 0
+                  fontSize: '16px',
+                  direction: 'rtl'
                 }}
               >
-                <div className="flex items-center">
-                  <div 
-                    className="editable-cell text-center"
-                    contentEditable
-                    suppressContentEditableWarning
-                    style={{ 
-                      borderLeft: `1px solid ${innerBorderColor}`,
-                      flex: 1,
-                      fontSize: '16px'
-                    }}
-                  >
-                    (                                                            )
-                  </div>
-                  <div 
-                    className="editable-cell"
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) => handleInputChange('adminEmail', e.currentTarget.textContent)}
-                    style={{ 
-                      borderLeft: `1px solid ${innerBorderColor}`,
-                      minWidth: '180px'
-                    }}
-                  >
-                    {formData.adminEmail}
-                  </div>
-                  <div 
-                    className="p-3 text-right font-semibold"
-                    contentEditable
-                    suppressContentEditableWarning
-                    style={{ 
-                      outline: 'none',
-                      width: '120px',
-                      flexShrink: 0
-                    }}
-                  >
-                    بريد الادارة
-                  </div>
-                </div>
+                بريد الادارة ( {formData.adminEmail || '                                        '} )
               </td>
             </tr>
 
