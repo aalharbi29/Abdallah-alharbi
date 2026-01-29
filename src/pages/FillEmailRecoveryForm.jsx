@@ -273,16 +273,8 @@ export default function FillEmailRecoveryForm() {
         }}
       >
         {/* الشعار والعنوان - بجانب شعار التجمع */}
-        <div className="flex justify-start items-start" style={{ marginTop: '60px', marginRight: '30px' }}>
+        <div className="flex justify-end items-start" style={{ marginTop: '15px', marginLeft: '180px' }}>
           <div className="text-right">
-            <p 
-              className="text-sm mb-1"
-              contentEditable
-              suppressContentEditableWarning
-              style={{ outline: 'none', color: '#0ea5e9' }}
-            >
-              Med-hc-digital@moh.gov.sa
-            </p>
             <h1 
               className="text-lg font-bold"
               contentEditable
