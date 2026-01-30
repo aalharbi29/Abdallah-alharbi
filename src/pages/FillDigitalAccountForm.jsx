@@ -671,21 +671,30 @@ export default function FillDigitalAccountForm() {
 
             {/* Row 3: Signatures */}
             <tr>
-              <td style={{ width: '50%', padding: '10px', textAlign: 'right' }}>
-                <div style={{ fontWeight: 'bold', marginBottom: '4px', fontSize: '11px' }}>اسم الموظف:</div>
-                <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('employeeName', e.currentTarget.textContent)} style={{ display: 'block', borderBottom: '1px solid #000', minHeight: '25px', padding: '4px' }}>
-                  {formData.employeeName}
-                </span>
-                <div style={{ textAlign: 'center', marginTop: '10px' }}>
-                  <div style={{ fontWeight: 'bold', marginBottom: '4px', fontSize: '9px' }}>الختم / Stamp</div>
-                  <div style={{ border: '1px solid #000', height: '35px', width: '50px', margin: '0 auto' }}></div>
+              <td colSpan="2" style={{ padding: '10px' }}>
+                <div className="flex justify-between items-center">
+                  {/* اسم الموظف - يسار */}
+                  <div style={{ width: '35%', textAlign: 'right' }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '4px', fontSize: '11px' }}>اسم الموظف:</div>
+                    <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('employeeName', e.currentTarget.textContent)} style={{ display: 'block', borderBottom: '1px solid #000', minHeight: '25px', padding: '4px' }}>
+                      {formData.employeeName}
+                    </span>
+                  </div>
+
+                  {/* الختم - وسط */}
+                  <div style={{ width: '20%', textAlign: 'center' }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}>الختم / Stamp</div>
+                    <div style={{ border: '1px solid #000', height: '50px', width: '70px', margin: '0 auto' }}></div>
+                  </div>
+
+                  {/* اعتماد الرئيس المباشر - يمين */}
+                  <div style={{ width: '35%', textAlign: 'left' }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '4px', fontSize: '11px' }}>اعتماد الرئيس المباشر:</div>
+                    <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('managerApproval', e.currentTarget.textContent)} style={{ display: 'block', borderBottom: '1px solid #000', minHeight: '25px', padding: '4px' }}>
+                      {formData.managerApproval}
+                    </span>
+                  </div>
                 </div>
-              </td>
-              <td style={{ width: '50%', padding: '10px', textAlign: 'left' }}>
-                <div style={{ fontWeight: 'bold', marginBottom: '4px', fontSize: '11px' }}>اعتماد الرئيس المباشر:</div>
-                <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('managerApproval', e.currentTarget.textContent)} style={{ display: 'block', borderBottom: '1px solid #000', minHeight: '25px', padding: '4px' }}>
-                  {formData.managerApproval}
-                </span>
               </td>
             </tr>
           </tbody>
