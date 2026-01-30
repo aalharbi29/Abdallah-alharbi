@@ -246,6 +246,14 @@ export default function FillDigitalAccountForm() {
       >
         {/* Header */}
         <div className="flex justify-between items-start mb-6" style={{ marginTop: '40px' }}>
+          <div className="text-right" style={{ flex: 1 }}>
+            <h2 className="text-sm font-bold" style={{ color: '#0ea5e9' }}>
+              الخدمات المشتركة للصحة الرقمية والتقنية
+            </h2>
+          </div>
+          
+          <div style={{ width: '2px', backgroundColor: '#0ea5e9', height: '40px', margin: '0 20px' }}></div>
+          
           <div className="text-left" style={{ flex: 1 }}>
             <h2 className="text-sm font-bold" style={{ color: '#0ea5e9' }}>
               Shared Services for Digital Health & Technology
@@ -253,14 +261,6 @@ export default function FillDigitalAccountForm() {
             <p className="text-xs" style={{ color: '#0ea5e9', marginTop: '4px' }}>
               Med-hc-digital@moh.gov.sa
             </p>
-          </div>
-          
-          <div style={{ width: '2px', backgroundColor: '#0ea5e9', height: '40px', margin: '0 20px' }}></div>
-          
-          <div className="text-right" style={{ flex: 1 }}>
-            <h2 className="text-sm font-bold" style={{ color: '#0ea5e9' }}>
-              الخدمات المشتركة للصحة الرقمية والتقنية
-            </h2>
           </div>
         </div>
 
@@ -274,40 +274,6 @@ export default function FillDigitalAccountForm() {
           <tbody>
             {/* System Row */}
             <tr>
-              <td style={{ width: '50%', padding: '8px' }}>
-                <div className="flex items-center justify-between">
-                  <span style={{ fontWeight: 'bold' }}>*System:</span>
-                  <div className="flex gap-4" style={{ fontSize: '10px' }}>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox" 
-                        checked={formData.systemRaqeem}
-                        onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.systemRaqeem && '☑'} Raqeem</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.systemMedica}
-                        onChange={(e) => handleInputChange('systemMedica', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.systemMedica && '☑'} Medica cloud</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.systemMawid}
-                        onChange={(e) => handleInputChange('systemMawid', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.systemMawid && '☑'} Mawid</span>
-                    </label>
-                  </div>
-                </div>
-              </td>
               <td style={{ width: '50%', padding: '8px', textAlign: 'right' }}>
                 <div className="flex items-center justify-between">
                   <div className="flex gap-4" style={{ fontSize: '10px' }}>
@@ -342,53 +308,44 @@ export default function FillDigitalAccountForm() {
                   <span style={{ fontWeight: 'bold' }}>:النظام*</span>
                 </div>
               </td>
-            </tr>
-
-            {/* Request Type Row */}
-            <tr>
-              <td style={{ padding: '8px' }}>
-                <div>
-                  <span style={{ fontWeight: 'bold' }}>*Type of Request:</span>
-                  <div className="grid grid-cols-2 gap-2 mt-2" style={{ fontSize: '10px' }}>
+              <td style={{ width: '50%', padding: '8px' }}>
+                <div className="flex items-center justify-between">
+                  <span style={{ fontWeight: 'bold' }}>*System:</span>
+                  <div className="flex gap-4" style={{ fontSize: '10px' }}>
                     <label className="flex items-center gap-1">
                       <input 
-                        type="checkbox"
-                        checked={formData.createNew}
-                        onChange={(e) => handleInputChange('createNew', e.target.checked)}
+                        type="checkbox" 
+                        checked={formData.systemRaqeem}
+                        onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)}
                         className="no-print"
                       />
-                      <span>{formData.createNew && '☑'} Create a new user name</span>
+                      <span>{formData.systemRaqeem && '☑'} Raqeem</span>
                     </label>
                     <label className="flex items-center gap-1">
                       <input 
                         type="checkbox"
-                        checked={formData.restorePassword}
-                        onChange={(e) => handleInputChange('restorePassword', e.target.checked)}
+                        checked={formData.systemMedica}
+                        onChange={(e) => handleInputChange('systemMedica', e.target.checked)}
                         className="no-print"
                       />
-                      <span>{formData.restorePassword && '☑'} Restore password</span>
+                      <span>{formData.systemMedica && '☑'} Medica cloud</span>
                     </label>
                     <label className="flex items-center gap-1">
                       <input 
                         type="checkbox"
-                        checked={formData.deleteUser}
-                        onChange={(e) => handleInputChange('deleteUser', e.target.checked)}
+                        checked={formData.systemMawid}
+                        onChange={(e) => handleInputChange('systemMawid', e.target.checked)}
                         className="no-print"
                       />
-                      <span>{formData.deleteUser && '☑'} Delete a user name</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.relocateUser}
-                        onChange={(e) => handleInputChange('relocateUser', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.relocateUser && '☑'} Relocate a user name</span>
+                      <span>{formData.systemMawid && '☑'} Mawid</span>
                     </label>
                   </div>
                 </div>
               </td>
+            </tr>
+
+            {/* Request Type Row */}
+            <tr>
               <td style={{ padding: '8px', textAlign: 'right' }}>
                 <div>
                   <span style={{ fontWeight: 'bold' }}>:نوع الطلب*</span>
@@ -432,22 +389,53 @@ export default function FillDigitalAccountForm() {
                   </div>
                 </div>
               </td>
+              <td style={{ padding: '8px' }}>
+                <div>
+                  <span style={{ fontWeight: 'bold' }}>*Type of Request:</span>
+                  <div className="grid grid-cols-2 gap-2 mt-2" style={{ fontSize: '10px' }}>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.createNew}
+                        onChange={(e) => handleInputChange('createNew', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.createNew && '☑'} Create a new user name</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.restorePassword}
+                        onChange={(e) => handleInputChange('restorePassword', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.restorePassword && '☑'} Restore password</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.deleteUser}
+                        onChange={(e) => handleInputChange('deleteUser', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.deleteUser && '☑'} Delete a user name</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.relocateUser}
+                        onChange={(e) => handleInputChange('relocateUser', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.relocateUser && '☑'} Relocate a user name</span>
+                    </label>
+                  </div>
+                </div>
+              </td>
             </tr>
 
             {/* Reason Row */}
             <tr>
-              <td style={{ padding: '8px' }}>
-                <span style={{ fontWeight: 'bold' }}>*Reason: </span>
-                <span 
-                  className="editable-cell"
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) => handleInputChange('reason', e.currentTarget.textContent)}
-                  style={{ display: 'inline-block', minWidth: '300px', borderBottom: '1px dotted #999' }}
-                >
-                  {formData.reason}
-                </span>
-              </td>
               <td style={{ padding: '8px', textAlign: 'right' }}>
                 <span 
                   className="editable-cell"
@@ -460,66 +448,24 @@ export default function FillDigitalAccountForm() {
                 </span>
                 <span style={{ fontWeight: 'bold' }}> :السبب*</span>
               </td>
+              <td style={{ padding: '8px' }}>
+                <span style={{ fontWeight: 'bold' }}>*Reason: </span>
+                <span 
+                  className="editable-cell"
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={(e) => handleInputChange('reason', e.currentTarget.textContent)}
+                  style={{ display: 'inline-block', minWidth: '300px', borderBottom: '1px dotted #999' }}
+                >
+                  {formData.reason}
+                </span>
+              </td>
             </tr>
 
             {/* Staff Name Section */}
             <tr>
               <td colSpan="2" style={{ padding: '8px' }}>
                 <div className="flex justify-between">
-                  <div style={{ width: '48%' }}>
-                    <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>*Staff Name:</div>
-                    <div className="space-y-2">
-                      <div className="flex items-center">
-                        <span style={{ width: '60px' }}>First:</span>
-                        <span 
-                          className="editable-cell"
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) => handleInputChange('firstName', e.currentTarget.textContent)}
-                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
-                        >
-                          {formData.firstName}
-                        </span>
-                      </div>
-                      <div className="flex items-center">
-                        <span style={{ width: '60px' }}>Second:</span>
-                        <span 
-                          className="editable-cell"
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) => handleInputChange('secondName', e.currentTarget.textContent)}
-                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
-                        >
-                          {formData.secondName}
-                        </span>
-                      </div>
-                      <div className="flex items-center">
-                        <span style={{ width: '60px' }}>Third:</span>
-                        <span 
-                          className="editable-cell"
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) => handleInputChange('thirdName', e.currentTarget.textContent)}
-                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
-                        >
-                          {formData.thirdName}
-                        </span>
-                      </div>
-                      <div className="flex items-center">
-                        <span style={{ width: '60px' }}>Family:</span>
-                        <span 
-                          className="editable-cell"
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) => handleInputChange('familyName', e.currentTarget.textContent)}
-                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
-                        >
-                          {formData.familyName}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
                   <div style={{ width: '48%', textAlign: 'right' }}>
                     <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>:اسم الموظف*</div>
                     <div className="space-y-2">
@@ -573,6 +519,60 @@ export default function FillDigitalAccountForm() {
                       </div>
                     </div>
                   </div>
+                  
+                  <div style={{ width: '48%' }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>*Staff Name:</div>
+                    <div className="space-y-2">
+                      <div className="flex items-center">
+                        <span style={{ width: '60px' }}>First:</span>
+                        <span 
+                          className="editable-cell"
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) => handleInputChange('firstName', e.currentTarget.textContent)}
+                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
+                        >
+                          {formData.firstName}
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <span style={{ width: '60px' }}>Second:</span>
+                        <span 
+                          className="editable-cell"
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) => handleInputChange('secondName', e.currentTarget.textContent)}
+                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
+                        >
+                          {formData.secondName}
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <span style={{ width: '60px' }}>Third:</span>
+                        <span 
+                          className="editable-cell"
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) => handleInputChange('thirdName', e.currentTarget.textContent)}
+                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
+                        >
+                          {formData.thirdName}
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <span style={{ width: '60px' }}>Family:</span>
+                        <span 
+                          className="editable-cell"
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) => handleInputChange('familyName', e.currentTarget.textContent)}
+                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
+                        >
+                          {formData.familyName}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </td>
             </tr>
@@ -587,18 +587,6 @@ export default function FillDigitalAccountForm() {
               { enLabel: 'Contact Phone:', arLabel: 'رقم التواصل:', field: 'contactPhone' }
             ].map((item, idx) => (
               <tr key={idx}>
-                <td style={{ padding: '8px' }}>
-                  <span style={{ fontWeight: 'bold' }}>{item.enLabel} </span>
-                  <span 
-                    className="editable-cell"
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)}
-                    style={{ display: 'inline-block', minWidth: '250px', borderBottom: '1px dotted #999' }}
-                  >
-                    {formData[item.field]}
-                  </span>
-                </td>
                 <td style={{ padding: '8px', textAlign: 'right' }}>
                   <span 
                     className="editable-cell"
@@ -611,72 +599,23 @@ export default function FillDigitalAccountForm() {
                   </span>
                   <span style={{ fontWeight: 'bold' }}> {item.arLabel}</span>
                 </td>
+                <td style={{ padding: '8px' }}>
+                  <span style={{ fontWeight: 'bold' }}>{item.enLabel} </span>
+                  <span 
+                    className="editable-cell"
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)}
+                    style={{ display: 'inline-block', minWidth: '250px', borderBottom: '1px dotted #999' }}
+                  >
+                    {formData[item.field]}
+                  </span>
+                </td>
               </tr>
             ))}
 
             {/* Occupation Row */}
             <tr>
-              <td style={{ padding: '8px' }}>
-                <div>
-                  <span style={{ fontWeight: 'bold' }}>*Occupation:</span>
-                  <div className="grid grid-cols-3 gap-2 mt-2" style={{ fontSize: '10px' }}>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.receptionist}
-                        onChange={(e) => handleInputChange('receptionist', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.receptionist && '☑'} Receptionist</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.nurse}
-                        onChange={(e) => handleInputChange('nurse', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.nurse && '☑'} Nurse</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.physician}
-                        onChange={(e) => handleInputChange('physician', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.physician && '☑'} physician</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.facilityManager}
-                        onChange={(e) => handleInputChange('facilityManager', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.facilityManager && '☑'} Facility Manger</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.pharmacist}
-                        onChange={(e) => handleInputChange('pharmacist', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.pharmacist && '☑'} Pharmacist</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.labTechnician}
-                        onChange={(e) => handleInputChange('labTechnician', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.labTechnician && '☑'} Lab Technician</span>
-                    </label>
-                  </div>
-                </div>
-              </td>
               <td style={{ padding: '8px', textAlign: 'right' }}>
                 <div>
                   <span style={{ fontWeight: 'bold' }}>:المهنة*</span>
@@ -738,6 +677,67 @@ export default function FillDigitalAccountForm() {
                   </div>
                 </div>
               </td>
+              <td style={{ padding: '8px' }}>
+                <div>
+                  <span style={{ fontWeight: 'bold' }}>*Occupation:</span>
+                  <div className="grid grid-cols-3 gap-2 mt-2" style={{ fontSize: '10px' }}>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.receptionist}
+                        onChange={(e) => handleInputChange('receptionist', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.receptionist && '☑'} Receptionist</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.nurse}
+                        onChange={(e) => handleInputChange('nurse', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.nurse && '☑'} Nurse</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.physician}
+                        onChange={(e) => handleInputChange('physician', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.physician && '☑'} physician</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.facilityManager}
+                        onChange={(e) => handleInputChange('facilityManager', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.facilityManager && '☑'} Facility Manger</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.pharmacist}
+                        onChange={(e) => handleInputChange('pharmacist', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.pharmacist && '☑'} Pharmacist</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.labTechnician}
+                        onChange={(e) => handleInputChange('labTechnician', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.labTechnician && '☑'} Lab Technician</span>
+                    </label>
+                  </div>
+                </div>
+              </td>
             </tr>
 
             {/* Additional Info */}
@@ -748,18 +748,6 @@ export default function FillDigitalAccountForm() {
               { enLabel: 'Recruitment privilege:', arLabel: 'الصلاحيات المطلوبة:', field: 'recruitmentPrivilege' }
             ].map((item, idx) => (
               <tr key={idx}>
-                <td style={{ padding: '8px' }}>
-                  <span style={{ fontWeight: 'bold' }}>{item.enLabel} </span>
-                  <span 
-                    className="editable-cell"
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)}
-                    style={{ display: 'inline-block', minWidth: '250px', borderBottom: '1px dotted #999' }}
-                  >
-                    {formData[item.field]}
-                  </span>
-                </td>
                 <td style={{ padding: '8px', textAlign: 'right' }}>
                   <span 
                     className="editable-cell"
@@ -772,22 +760,34 @@ export default function FillDigitalAccountForm() {
                   </span>
                   <span style={{ fontWeight: 'bold' }}> {item.arLabel}</span>
                 </td>
+                <td style={{ padding: '8px' }}>
+                  <span style={{ fontWeight: 'bold' }}>{item.enLabel} </span>
+                  <span 
+                    className="editable-cell"
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)}
+                    style={{ display: 'inline-block', minWidth: '250px', borderBottom: '1px dotted #999' }}
+                  >
+                    {formData[item.field]}
+                  </span>
+                </td>
               </tr>
             ))}
 
             {/* Commitment Statement */}
             <tr>
-              <td style={{ padding: '12px', fontSize: '9px', lineHeight: '1.6' }}>
+              <td style={{ padding: '12px', fontSize: '9px', lineHeight: '1.6', textAlign: 'right' }}>
                 <p>
-                  I Will safeguard and will not disclose my username and password. Any access to information system by my username and password is my responsibility. If I believe someone else has logged into my account, I will immediately report the breach to digital health & technology department and will immediately change my password.
+                  اتعهد بالمحافظة على اسم وكلمة السر الخاصة بي ولن اعطيها لأي شخص اخر، أي وصول إلى نظام المعلومات باستخدام اسم المستخدم. وكلمة المرور الخاصين بي هو مسؤوليتي وإذا علمت ان هناك شخص اخر استخدم حسابي فسوف أقوم بإبلاغ المسؤول بقسم الصحة الرقمية والتكنولوجيا عن ذلك وتغير كلمة السر.
                 </p>
                 <p style={{ textAlign: 'center', marginTop: '8px', fontWeight: 'bold', color: '#0ea5e9' }}>
                   med-hc-digital@moh.gov.sa
                 </p>
               </td>
-              <td style={{ padding: '12px', fontSize: '9px', lineHeight: '1.6', textAlign: 'right' }}>
+              <td style={{ padding: '12px', fontSize: '9px', lineHeight: '1.6' }}>
                 <p>
-                  اتعهد بالمحافظة على اسم وكلمة السر الخاصة بي ولن اعطيها لأي شخص اخر، أي وصول إلى نظام المعلومات باستخدام اسم المستخدم. وكلمة المرور الخاصين بي هو مسؤوليتي وإذا علمت ان هناك شخص اخر استخدم حسابي فسوف أقوم بإبلاغ المسؤول بقسم الصحة الرقمية والتكنولوجيا عن ذلك وتغير كلمة السر.
+                  I Will safeguard and will not disclose my username and password. Any access to information system by my username and password is my responsibility. If I believe someone else has logged into my account, I will immediately report the breach to digital health & technology department and will immediately change my password.
                 </p>
                 <p style={{ textAlign: 'center', marginTop: '8px', fontWeight: 'bold', color: '#0ea5e9' }}>
                   med-hc-digital@moh.gov.sa
@@ -797,14 +797,14 @@ export default function FillDigitalAccountForm() {
 
             {/* Manager Note */}
             <tr>
-              <td style={{ padding: '8px', fontSize: '9px' }}>
-                <p style={{ fontWeight: 'bold' }}>
-                  *The direct manager must provide us with the employee's data in the event of assignment or transfer outside the center or hospital.
-                </p>
-              </td>
               <td style={{ padding: '8px', fontSize: '9px', textAlign: 'right' }}>
                 <p style={{ fontWeight: 'bold' }}>
                   * على الرئيس المباشر تزويدنا ببيانات الموظف في حال التكليف او النقل خارج المركز أو المستشفى
+                </p>
+              </td>
+              <td style={{ padding: '8px', fontSize: '9px' }}>
+                <p style={{ fontWeight: 'bold' }}>
+                  *The direct manager must provide us with the employee's data in the event of assignment or transfer outside the center or hospital.
                 </p>
               </td>
             </tr>
@@ -813,26 +813,6 @@ export default function FillDigitalAccountForm() {
             <tr>
               <td colSpan="2" style={{ padding: '8px' }}>
                 <div className="flex justify-between items-center">
-                  <div style={{ width: '30%', textAlign: 'left' }}>
-                    <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>Direct Manager Approval</div>
-                    <span 
-                      className="editable-cell"
-                      contentEditable
-                      suppressContentEditableWarning
-                      onBlur={(e) => handleInputChange('managerApproval', e.currentTarget.textContent)}
-                      style={{ display: 'block', borderBottom: '1px solid #999', minHeight: '30px' }}
-                    >
-                      {formData.managerApproval}
-                    </span>
-                  </div>
-                  
-                  <div style={{ width: '30%', textAlign: 'center' }}>
-                    <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>Stamp</div>
-                    <div style={{ border: '1px solid #999', height: '60px' }}>
-                      
-                    </div>
-                  </div>
-                  
                   <div style={{ width: '30%', textAlign: 'right' }}>
                     <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>اسم الموظف:</div>
                     <span 
@@ -845,11 +825,26 @@ export default function FillDigitalAccountForm() {
                       {formData.employeeName}
                     </span>
                   </div>
-                </div>
-                
-                <div className="flex justify-around mt-4" style={{ fontSize: '10px' }}>
-                  <div style={{ textAlign: 'center' }}>اعتماد الرئيس المباشر</div>
-                  <div style={{ textAlign: 'center' }}>الختم</div>
+                  
+                  <div style={{ width: '30%', textAlign: 'center' }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>الختم / Stamp</div>
+                    <div style={{ border: '1px solid #999', height: '60px' }}>
+                      
+                    </div>
+                  </div>
+                  
+                  <div style={{ width: '30%', textAlign: 'left' }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>اعتماد الرئيس المباشر</div>
+                    <span 
+                      className="editable-cell"
+                      contentEditable
+                      suppressContentEditableWarning
+                      onBlur={(e) => handleInputChange('managerApproval', e.currentTarget.textContent)}
+                      style={{ display: 'block', borderBottom: '1px solid #999', minHeight: '30px' }}
+                    >
+                      {formData.managerApproval}
+                    </span>
+                  </div>
                 </div>
               </td>
             </tr>
