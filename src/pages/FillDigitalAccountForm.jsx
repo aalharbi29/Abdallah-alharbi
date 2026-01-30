@@ -325,22 +325,66 @@ export default function FillDigitalAccountForm() {
             {/* نوع الطلب */}
             <tr>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
-                <span style={{ fontWeight: 'bold' }}>نوع الطلب:</span>
-                <div className="grid grid-cols-2 gap-2 mt-2" style={{ direction: 'rtl' }}>
-                  <CheckboxField checked={formData.createNew} onChange={(e) => handleInputChange('createNew', e.target.checked)} labelAr="انشاء مستخدم جديد" isArabic />
-                  <CheckboxField checked={formData.restorePassword} onChange={(e) => handleInputChange('restorePassword', e.target.checked)} labelAr="استعادة كلمة مرور" isArabic />
-                  <CheckboxField checked={formData.deleteUser} onChange={(e) => handleInputChange('deleteUser', e.target.checked)} labelAr="الغاء اسم مستخدم" isArabic />
-                  <CheckboxField checked={formData.relocateUser} onChange={(e) => handleInputChange('relocateUser', e.target.checked)} labelAr="نقل اسم مستخدم" isArabic />
-                </div>
+                <span style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>نوع الطلب:</span>
+                <table style={{ width: '100%', borderCollapse: 'collapse', border: '2px solid #000' }}>
+                  <tbody>
+                    <tr>
+                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                        <input type="checkbox" checked={formData.createNew} onChange={(e) => handleInputChange('createNew', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
+                        {formData.createNew && <span className="print-only">☑</span>}
+                      </td>
+                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>انشاء مستخدم جديد</td>
+                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                        <input type="checkbox" checked={formData.restorePassword} onChange={(e) => handleInputChange('restorePassword', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
+                        {formData.restorePassword && <span className="print-only">☑</span>}
+                      </td>
+                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>استعادة كلمة مرور</td>
+                    </tr>
+                    <tr>
+                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                        <input type="checkbox" checked={formData.deleteUser} onChange={(e) => handleInputChange('deleteUser', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
+                        {formData.deleteUser && <span className="print-only">☑</span>}
+                      </td>
+                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>الغاء اسم مستخدم</td>
+                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                        <input type="checkbox" checked={formData.relocateUser} onChange={(e) => handleInputChange('relocateUser', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
+                        {formData.relocateUser && <span className="print-only">☑</span>}
+                      </td>
+                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>نقل اسم مستخدم</td>
+                    </tr>
+                  </tbody>
+                </table>
               </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
-                <span style={{ fontWeight: 'bold' }}>*Type of Request:</span>
-                <div className="grid grid-cols-2 gap-2 mt-2">
-                  <CheckboxField checked={formData.createNew} onChange={(e) => handleInputChange('createNew', e.target.checked)} labelEn="Create a new user name" />
-                  <CheckboxField checked={formData.restorePassword} onChange={(e) => handleInputChange('restorePassword', e.target.checked)} labelEn="Restore password" />
-                  <CheckboxField checked={formData.deleteUser} onChange={(e) => handleInputChange('deleteUser', e.target.checked)} labelEn="Delete a user name" />
-                  <CheckboxField checked={formData.relocateUser} onChange={(e) => handleInputChange('relocateUser', e.target.checked)} labelEn="Relocate a user name" />
-                </div>
+                <span style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>*Type of Request:</span>
+                <table style={{ width: '100%', borderCollapse: 'collapse', border: '2px solid #000' }}>
+                  <tbody>
+                    <tr>
+                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                        <input type="checkbox" checked={formData.createNew} onChange={(e) => handleInputChange('createNew', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
+                        {formData.createNew && <span className="print-only">☑</span>}
+                      </td>
+                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Create a new user name</td>
+                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                        <input type="checkbox" checked={formData.restorePassword} onChange={(e) => handleInputChange('restorePassword', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
+                        {formData.restorePassword && <span className="print-only">☑</span>}
+                      </td>
+                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Restore password</td>
+                    </tr>
+                    <tr>
+                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                        <input type="checkbox" checked={formData.deleteUser} onChange={(e) => handleInputChange('deleteUser', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
+                        {formData.deleteUser && <span className="print-only">☑</span>}
+                      </td>
+                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Delete a user name</td>
+                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                        <input type="checkbox" checked={formData.relocateUser} onChange={(e) => handleInputChange('relocateUser', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
+                        {formData.relocateUser && <span className="print-only">☑</span>}
+                      </td>
+                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Relocate a user name</td>
+                    </tr>
+                  </tbody>
+                </table>
               </td>
             </tr>
             {/* Separator */}
