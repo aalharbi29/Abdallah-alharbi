@@ -250,20 +250,20 @@ export default function FillDigitalAccountForm() {
 
             {/* Row 2: Content - النظام */}
             <tr>
+              <td style={{ width: '50%', padding: '8px', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
+                <span style={{ fontWeight: 'bold' }}>النظام:</span>
+                <div className="flex gap-4 mt-2 justify-end">
+                  <CheckboxField checked={formData.systemRaqeem} onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)} labelAr="رقيم" isArabic />
+                  <CheckboxField checked={formData.systemMedica} onChange={(e) => handleInputChange('systemMedica', e.target.checked)} labelAr="ميديكا كلاود" isArabic />
+                  <CheckboxField checked={formData.systemMawid} onChange={(e) => handleInputChange('systemMawid', e.target.checked)} labelAr="موعد" isArabic />
+                </div>
+              </td>
               <td style={{ width: '50%', padding: '8px', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <span style={{ fontWeight: 'bold' }}>*System:</span>
                 <div className="flex gap-4 mt-2">
                   <CheckboxField checked={formData.systemRaqeem} onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)} labelEn="Raqeem" />
                   <CheckboxField checked={formData.systemMedica} onChange={(e) => handleInputChange('systemMedica', e.target.checked)} labelEn="Medica cloud" />
                   <CheckboxField checked={formData.systemMawid} onChange={(e) => handleInputChange('systemMawid', e.target.checked)} labelEn="Mawid" />
-                </div>
-              </td>
-              <td style={{ width: '50%', padding: '8px', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
-                <span style={{ fontWeight: 'bold' }}>النظام:</span>
-                <div className="flex gap-4 mt-2 justify-start">
-                  <CheckboxField checked={formData.systemRaqeem} onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)} labelAr="رقيم" isArabic />
-                  <CheckboxField checked={formData.systemMedica} onChange={(e) => handleInputChange('systemMedica', e.target.checked)} labelAr="ميديكا كلاود" isArabic />
-                  <CheckboxField checked={formData.systemMawid} onChange={(e) => handleInputChange('systemMawid', e.target.checked)} labelAr="موعد" isArabic />
                 </div>
               </td>
             </tr>
@@ -276,15 +276,6 @@ export default function FillDigitalAccountForm() {
 
             {/* نوع الطلب */}
             <tr>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
-                <span style={{ fontWeight: 'bold' }}>*Type of Request:</span>
-                <div className="grid grid-cols-2 gap-2 mt-2">
-                  <CheckboxField checked={formData.createNew} onChange={(e) => handleInputChange('createNew', e.target.checked)} labelEn="Create a new user name" />
-                  <CheckboxField checked={formData.restorePassword} onChange={(e) => handleInputChange('restorePassword', e.target.checked)} labelEn="Restore password" />
-                  <CheckboxField checked={formData.deleteUser} onChange={(e) => handleInputChange('deleteUser', e.target.checked)} labelEn="Delete a user name" />
-                  <CheckboxField checked={formData.relocateUser} onChange={(e) => handleInputChange('relocateUser', e.target.checked)} labelEn="Relocate a user name" />
-                </div>
-              </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 <span style={{ fontWeight: 'bold' }}>نوع الطلب:</span>
                 <div className="grid grid-cols-2 gap-2 mt-2" style={{ direction: 'rtl' }}>
@@ -292,6 +283,15 @@ export default function FillDigitalAccountForm() {
                   <CheckboxField checked={formData.restorePassword} onChange={(e) => handleInputChange('restorePassword', e.target.checked)} labelAr="استعادة كلمة مرور" isArabic />
                   <CheckboxField checked={formData.deleteUser} onChange={(e) => handleInputChange('deleteUser', e.target.checked)} labelAr="الغاء اسم مستخدم" isArabic />
                   <CheckboxField checked={formData.relocateUser} onChange={(e) => handleInputChange('relocateUser', e.target.checked)} labelAr="نقل اسم مستخدم" isArabic />
+                </div>
+              </td>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
+                <span style={{ fontWeight: 'bold' }}>*Type of Request:</span>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <CheckboxField checked={formData.createNew} onChange={(e) => handleInputChange('createNew', e.target.checked)} labelEn="Create a new user name" />
+                  <CheckboxField checked={formData.restorePassword} onChange={(e) => handleInputChange('restorePassword', e.target.checked)} labelEn="Restore password" />
+                  <CheckboxField checked={formData.deleteUser} onChange={(e) => handleInputChange('deleteUser', e.target.checked)} labelEn="Delete a user name" />
+                  <CheckboxField checked={formData.relocateUser} onChange={(e) => handleInputChange('relocateUser', e.target.checked)} labelEn="Relocate a user name" />
                 </div>
               </td>
             </tr>
@@ -304,14 +304,14 @@ export default function FillDigitalAccountForm() {
 
             {/* السبب */}
             <tr>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
-                <span style={{ fontWeight: 'bold' }}>*Reason: </span>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
+                <span style={{ fontWeight: 'bold' }}>السبب: </span>
                 <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('reason', e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', minWidth: '200px' }}>
                   {formData.reason}
                 </span>
               </td>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
-                <span style={{ fontWeight: 'bold' }}>السبب: </span>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
+                <span style={{ fontWeight: 'bold' }}>*Reason: </span>
                 <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('reason', e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', minWidth: '200px' }}>
                   {formData.reason}
                 </span>
@@ -326,24 +326,6 @@ export default function FillDigitalAccountForm() {
 
             {/* اسم الموظف */}
             <tr>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
-                <span style={{ fontWeight: 'bold' }}>*Staff Name:</span>
-                <div className="space-y-1 mt-2">
-                  {[
-                    { label: 'First', field: 'firstName' },
-                    { label: 'Second', field: 'secondName' },
-                    { label: 'Third', field: 'thirdName' },
-                    { label: 'Family', field: 'familyName' }
-                  ].map(item => (
-                    <div key={item.field} className="flex items-center gap-2">
-                      <span style={{ width: '50px' }}>{item.label}:</span>
-                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
-                        {formData[item.field]}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 <span style={{ fontWeight: 'bold' }}>اسم الموظف:</span>
                 <div className="space-y-1 mt-2">
@@ -362,6 +344,24 @@ export default function FillDigitalAccountForm() {
                   ))}
                 </div>
               </td>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
+                <span style={{ fontWeight: 'bold' }}>*Staff Name:</span>
+                <div className="space-y-1 mt-2">
+                  {[
+                    { label: 'First', field: 'firstName' },
+                    { label: 'Second', field: 'secondName' },
+                    { label: 'Third', field: 'thirdName' },
+                    { label: 'Family', field: 'familyName' }
+                  ].map(item => (
+                    <div key={item.field} className="flex items-center gap-2">
+                      <span style={{ width: '50px' }}>{item.label}:</span>
+                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
+                        {formData[item.field]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </td>
             </tr>
             {/* Separator */}
             <tr>
@@ -372,23 +372,6 @@ export default function FillDigitalAccountForm() {
 
             {/* البيانات العامة */}
             <tr>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
-                {[
-                  { label: 'ID NO', field: 'idNumber' },
-                  { label: 'Date of birth', field: 'birthDate' },
-                  { label: 'MOH email', field: 'mohEmail' },
-                  { label: 'SCFHS number', field: 'scfhsNumber' },
-                  { label: 'End date of (internship\\contract)', field: 'endDate' },
-                  { label: 'Contact Phone', field: 'contactPhone' }
-                ].map(item => (
-                  <div key={item.field} className="flex items-center gap-2 mb-1">
-                    <span style={{ minWidth: '160px' }}>{item.label}:</span>
-                    <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
-                      {formData[item.field]}
-                    </span>
-                  </div>
-                ))}
-              </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 {[
                   { label: 'رقم الهوية/ الإقامة', field: 'idNumber' },
@@ -406,6 +389,23 @@ export default function FillDigitalAccountForm() {
                   </div>
                 ))}
               </td>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
+                {[
+                  { label: 'ID NO', field: 'idNumber' },
+                  { label: 'Date of birth', field: 'birthDate' },
+                  { label: 'MOH email', field: 'mohEmail' },
+                  { label: 'SCFHS number', field: 'scfhsNumber' },
+                  { label: 'End date of (internship\\contract)', field: 'endDate' },
+                  { label: 'Contact Phone', field: 'contactPhone' }
+                ].map(item => (
+                  <div key={item.field} className="flex items-center gap-2 mb-1">
+                    <span style={{ minWidth: '160px' }}>{item.label}:</span>
+                    <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
+                      {formData[item.field]}
+                    </span>
+                  </div>
+                ))}
+              </td>
             </tr>
             {/* Separator */}
             <tr>
@@ -416,32 +416,6 @@ export default function FillDigitalAccountForm() {
 
             {/* المهنة */}
             <tr>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
-                <span style={{ fontWeight: 'bold' }}>*Occupation:</span>
-                <div className="grid grid-cols-3 gap-2 mt-2">
-                  <CheckboxField checked={formData.receptionist} onChange={(e) => handleInputChange('receptionist', e.target.checked)} labelEn="Receptionist" />
-                  <CheckboxField checked={formData.nurse} onChange={(e) => handleInputChange('nurse', e.target.checked)} labelEn="Nurse" />
-                  <CheckboxField checked={formData.physician} onChange={(e) => handleInputChange('physician', e.target.checked)} labelEn="Physician" />
-                  <CheckboxField checked={formData.facilityManager} onChange={(e) => handleInputChange('facilityManager', e.target.checked)} labelEn="Facility Manager" />
-                  <CheckboxField checked={formData.pharmacist} onChange={(e) => handleInputChange('pharmacist', e.target.checked)} labelEn="Pharmacist" />
-                  <CheckboxField checked={formData.labTechnician} onChange={(e) => handleInputChange('labTechnician', e.target.checked)} labelEn="Lab Technician" />
-                </div>
-                <div className="space-y-1 mt-3">
-                  {[
-                    { label: 'Organization', field: 'organization' },
-                    { label: 'Department', field: 'department' },
-                    { label: 'Specialization', field: 'specialization' },
-                    { label: 'Recruitment privilege', field: 'recruitmentPrivilege' }
-                  ].map(item => (
-                    <div key={item.field} className="flex items-center gap-2">
-                      <span style={{ minWidth: '120px' }}>{item.label}:</span>
-                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
-                        {formData[item.field]}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 <span style={{ fontWeight: 'bold' }}>المهنة:</span>
                 <div className="grid grid-cols-3 gap-2 mt-2">
@@ -468,23 +442,36 @@ export default function FillDigitalAccountForm() {
                   ))}
                 </div>
               </td>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
+                <span style={{ fontWeight: 'bold' }}>*Occupation:</span>
+                <div className="grid grid-cols-3 gap-2 mt-2">
+                  <CheckboxField checked={formData.receptionist} onChange={(e) => handleInputChange('receptionist', e.target.checked)} labelEn="Receptionist" />
+                  <CheckboxField checked={formData.nurse} onChange={(e) => handleInputChange('nurse', e.target.checked)} labelEn="Nurse" />
+                  <CheckboxField checked={formData.physician} onChange={(e) => handleInputChange('physician', e.target.checked)} labelEn="Physician" />
+                  <CheckboxField checked={formData.facilityManager} onChange={(e) => handleInputChange('facilityManager', e.target.checked)} labelEn="Facility Manager" />
+                  <CheckboxField checked={formData.pharmacist} onChange={(e) => handleInputChange('pharmacist', e.target.checked)} labelEn="Pharmacist" />
+                  <CheckboxField checked={formData.labTechnician} onChange={(e) => handleInputChange('labTechnician', e.target.checked)} labelEn="Lab Technician" />
+                </div>
+                <div className="space-y-1 mt-3">
+                  {[
+                    { label: 'Organization', field: 'organization' },
+                    { label: 'Department', field: 'department' },
+                    { label: 'Specialization', field: 'specialization' },
+                    { label: 'Recruitment privilege', field: 'recruitmentPrivilege' }
+                  ].map(item => (
+                    <div key={item.field} className="flex items-center gap-2">
+                      <span style={{ minWidth: '120px' }}>{item.label}:</span>
+                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
+                        {formData[item.field]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </td>
             </tr>
 
             {/* التعهد */}
             <tr>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
-                <div style={{ backgroundColor: '#f8f9fa', padding: '8px', fontSize: '9px', lineHeight: '1.5' }}>
-                  <p>
-                    I Will safeguard and will not disclose my username and password. Any access to information system by my username and password is my responsibility. If I believe someone else has logged into my account, I will immediately report the breach to digital health & technology department and will immediately change my password.
-                  </p>
-                  <p style={{ textAlign: 'center', marginTop: '4px', fontWeight: 'bold', color: '#0ea5e9' }}>
-                    med-hc-digital@moh.gov.sa
-                  </p>
-                </div>
-                <div style={{ fontSize: '9px', marginTop: '6px', fontWeight: 'bold' }}>
-                  *The direct manager must provide us with the employee's data in the event of assignment or transfer outside the center or hospital.
-                </div>
-              </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 <div style={{ backgroundColor: '#f8f9fa', padding: '8px', fontSize: '9px', lineHeight: '1.5' }}>
                   <p>
@@ -496,6 +483,19 @@ export default function FillDigitalAccountForm() {
                 </div>
                 <div style={{ fontSize: '9px', marginTop: '6px', fontWeight: 'bold' }}>
                   * على الرئيس المباشر تزويدنا ببيانات الموظف في حال التكليف أو النقل خارج المركز أو المستشفى
+                </div>
+              </td>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
+                <div style={{ backgroundColor: '#f8f9fa', padding: '8px', fontSize: '9px', lineHeight: '1.5' }}>
+                  <p>
+                    I Will safeguard and will not disclose my username and password. Any access to information system by my username and password is my responsibility. If I believe someone else has logged into my account, I will immediately report the breach to digital health & technology department and will immediately change my password.
+                  </p>
+                  <p style={{ textAlign: 'center', marginTop: '4px', fontWeight: 'bold', color: '#0ea5e9' }}>
+                    med-hc-digital@moh.gov.sa
+                  </p>
+                </div>
+                <div style={{ fontSize: '9px', marginTop: '6px', fontWeight: 'bold' }}>
+                  *The direct manager must provide us with the employee's data in the event of assignment or transfer outside the center or hospital.
                 </div>
               </td>
             </tr>
