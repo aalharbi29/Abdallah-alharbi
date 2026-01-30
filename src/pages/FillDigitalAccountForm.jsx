@@ -354,7 +354,7 @@ export default function FillDigitalAccountForm() {
             top: 0;
             width: 210mm;
             min-height: 297mm;
-            padding: 25mm 25mm 25mm 25mm;
+            padding: 25mm 30mm 25mm 30mm;
             margin: 0;
             direction: rtl;
             box-sizing: border-box;
