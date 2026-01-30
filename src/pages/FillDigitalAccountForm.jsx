@@ -13,36 +13,36 @@ export default function FillDigitalAccountForm() {
   const printRef = useRef(null);
 
   const departmentsList = [
-    { ar: "قسم طب الأسرة", en: "Family Medicine Department" },
-    { ar: "قسم الأمراض المزمنة", en: "Chronic Diseases Department" },
-    { ar: "قسم الاستقبال والتسجيل", en: "Reception & Registration Department" },
-    { ar: "قسم الأسنان", en: "Dental Department" },
-    { ar: "قسم الصيدلية", en: "Pharmacy Department" },
-    { ar: "قسم المختبر", en: "Laboratory Department" },
-    { ar: "قسم الأشعة", en: "Radiology Department" },
-    { ar: "قسم التمريض", en: "Nursing Department" },
-    { ar: "قسم التطعيمات", en: "Vaccination Department" },
-    { ar: "قسم صحة الطفل", en: "Child Health Department" },
-    { ar: "قسم رعاية الحوامل", en: "Antenatal Care Department" },
-    { ar: "قسم التثقيف الصحي", en: "Health Education Department" },
-    { ar: "قسم الطوارئ", en: "Emergency Department" },
-    { ar: "قسم الإدارة", en: "Administration Department" }
+    "قسم طب الأسرة",
+    "قسم الأمراض المزمنة",
+    "قسم الاستقبال والتسجيل",
+    "قسم الأسنان",
+    "قسم الصيدلية",
+    "قسم المختبر",
+    "قسم الأشعة",
+    "قسم التمريض",
+    "قسم التطعيمات",
+    "قسم صحة الطفل",
+    "قسم رعاية الحوامل",
+    "قسم التثقيف الصحي",
+    "قسم الطوارئ",
+    "قسم الإدارة"
   ];
 
   const privilegesList = [
-    { ar: "صلاحية طبيب", en: "Physician Privilege" },
-    { ar: "صلاحية استقبال", en: "Receptionist Privilege" },
-    { ar: "صلاحية ممرض", en: "Nurse Privilege" },
-    { ar: "صلاحية صيدلي", en: "Pharmacist Privilege" },
-    { ar: "صلاحية تطعيمات", en: "Vaccination Privilege" },
-    { ar: "صلاحية حوامل", en: "Antenatal Privilege" },
-    { ar: "صلاحية طفل سليم", en: "Well Child Privilege" },
-    { ar: "صلاحية مدرب صحي", en: "Health Coach Privilege" },
-    { ar: "صلاحية مختبر", en: "Laboratory Privilege" },
-    { ar: "صلاحية أشعة", en: "Radiology Privilege" },
-    { ar: "صلاحية أسنان", en: "Dental Privilege" },
-    { ar: "صلاحية إدارية", en: "Administrative Privilege" },
-    { ar: "صلاحية مدير منشأة", en: "Facility Manager Privilege" }
+    "صلاحية طبيب",
+    "صلاحية استقبال",
+    "صلاحية ممرض",
+    "صلاحية صيدلي",
+    "صلاحية تطعيمات",
+    "صلاحية حوامل",
+    "صلاحية طفل سليم",
+    "صلاحية مدرب صحي",
+    "صلاحية مختبر",
+    "صلاحية أشعة",
+    "صلاحية أسنان",
+    "صلاحية إدارية",
+    "صلاحية مدير منشأة"
   ];
 
   const reasonsList = [
@@ -50,27 +50,70 @@ export default function FillDigitalAccountForm() {
     { ar: "تكليف مؤقت", en: "Temporary Assignment" },
     { ar: "تكليف دائم", en: "Permanent Assignment" },
     { ar: "نقل", en: "Transfer" },
-    { ar: "لا توجد له صلاحيات سابقاً", en: "No Previous Privileges" },
+    { ar: "لا توجد له صلاحيات سابقا", en: "No Previous Privileges" },
     { ar: "إضافة صلاحيات جديدة", en: "Add New Privileges" }
   ];
 
-  const translateCenter = (centerName) => {
-    if (!centerName) return "";
-    return centerName
-      .replace("مركز صحي", "Health Center")
-      .replace("مستشفى", "Hospital")
+  const departmentsTranslations = {
+    "قسم طب الأسرة": "Family Medicine Dept.",
+    "قسم الأمراض المزمنة": "Chronic Diseases Dept.",
+    "قسم الاستقبال والتسجيل": "Reception & Registration Dept.",
+    "قسم الأسنان": "Dental Dept.",
+    "قسم الصيدلية": "Pharmacy Dept.",
+    "قسم المختبر": "Laboratory Dept.",
+    "قسم الأشعة": "Radiology Dept.",
+    "قسم التمريض": "Nursing Dept.",
+    "قسم التطعيمات": "Vaccination Dept.",
+    "قسم صحة الطفل": "Child Health Dept.",
+    "قسم رعاية الحوامل": "Antenatal Care Dept.",
+    "قسم التثقيف الصحي": "Health Education Dept.",
+    "قسم الطوارئ": "Emergency Dept.",
+    "قسم الإدارة": "Administration Dept."
+  };
+
+  const privilegesTranslations = {
+    "صلاحية طبيب": "Physician Privilege",
+    "صلاحية استقبال": "Reception Privilege",
+    "صلاحية ممرض": "Nurse Privilege",
+    "صلاحية صيدلي": "Pharmacist Privilege",
+    "صلاحية تطعيمات": "Vaccination Privilege",
+    "صلاحية حوامل": "Antenatal Privilege",
+    "صلاحية طفل سليم": "Well Baby Privilege",
+    "صلاحية مدرب صحي": "Health Coach Privilege",
+    "صلاحية مختبر": "Laboratory Privilege",
+    "صلاحية أشعة": "Radiology Privilege",
+    "صلاحية أسنان": "Dental Privilege",
+    "صلاحية إدارية": "Administrative Privilege",
+    "صلاحية مدير منشأة": "Facility Manager Privilege"
+  };
+
+  const translateToEnglish = (text) => {
+    if (!text) return "";
+    // Translate departments
+    if (departmentsTranslations[text]) return departmentsTranslations[text];
+    // Translate privileges list
+    const privileges = text.split("، ");
+    const translated = privileges.map(p => privilegesTranslations[p] || p);
+    return translated.join(", ");
+  };
+
+  const translateCenterName = (name) => {
+    if (!name) return "";
+    // Common translations for health center names
+    return name
+      .replace("مركز صحي", "PHC")
       .replace("الهميج", "Al-Humaij")
       .replace("الحناكية", "Al-Hanakiyah")
       .replace("المهد", "Al-Mahd")
-      .replace("العيص", "Al-Eis")
-      .replace("هدية", "Hadiah")
-      .replace("المضيق", "Al-Mudaiq")
+      .replace("السويرقية", "Al-Suwairqiyah")
+      .replace("العيص", "Al-Ais")
+      .replace("هدية", "Hadiyah")
+      .replace("ام العيال", "Umm Al-Iyal")
+      .replace("الفريش", "Al-Furaish")
       .replace("النخيل", "Al-Nakheel")
-      .replace("الصويدرة", "Al-Suwaydrah")
-      .replace("السد", "Al-Sad")
-      .replace("الحمنة", "Al-Hamnah")
-      .replace("الدار البيضاء", "Al-Dar Al-Bayda")
-      .replace("الفريش", "Al-Furaish");
+      .replace("الصويدرة", "Al-Suwaidira")
+      .replace("العاقول", "Al-Aqool")
+      .replace("صفينة", "Safina");
   };
 
   const [formData, setFormData] = useState({
@@ -102,13 +145,10 @@ export default function FillDigitalAccountForm() {
     department: "",
     specialization: "",
     recruitmentPrivilege: "",
-    recruitmentPrivilegeEn: "",
     selectedPrivileges: [],
     employeeName: "",
     employeeNameEn: "",
     managerApproval: "",
-    organizationEn: "",
-    departmentEn: "",
     reasonEn: ""
   });
 
@@ -140,7 +180,6 @@ export default function FillDigitalAccountForm() {
     if (employee) {
       const names = employee.full_name_arabic?.split(" ") || [];
       const namesEn = employee.full_name_english?.split(" ") || [];
-      const centerName = employee.المركز_الصحي || "";
       setFormData(prev => ({
         ...prev,
         firstName: names[0] || "",
@@ -157,8 +196,7 @@ export default function FillDigitalAccountForm() {
         scfhsNumber: employee.scfhs_classification || "",
         endDate: employee.contract_end_date || "",
         contactPhone: employee.phone || "",
-        organization: centerName,
-        organizationEn: translateCenter(centerName),
+        organization: employee.المركز_الصحي || "",
         department: employee.department || "",
         specialization: employee.position || "",
         employeeName: employee.full_name_arabic || "",
@@ -310,10 +348,7 @@ export default function FillDigitalAccountForm() {
               </SelectContent>
             </Select>
             
-            <Select value={formData.organization} onValueChange={(val) => {
-              handleInputChange('organization', val);
-              handleInputChange('organizationEn', translateCenter(val));
-            }}>
+            <Select value={formData.organization} onValueChange={(val) => handleInputChange('organization', val)}>
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="اختر المركز..." />
               </SelectTrigger>
@@ -324,17 +359,13 @@ export default function FillDigitalAccountForm() {
               </SelectContent>
             </Select>
             
-            <Select value={formData.department} onValueChange={(val) => {
-              const dept = departmentsList.find(d => d.ar === val);
-              handleInputChange('department', val);
-              handleInputChange('departmentEn', dept?.en || '');
-            }}>
+            <Select value={formData.department} onValueChange={(val) => handleInputChange('department', val)}>
               <SelectTrigger className="w-44">
                 <SelectValue placeholder="اختر القسم..." />
               </SelectTrigger>
               <SelectContent>
                 {departmentsList.map(dept => (
-                  <SelectItem key={dept.ar} value={dept.ar}>{dept.ar}</SelectItem>
+                  <SelectItem key={dept} value={dept}>{dept}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -356,29 +387,24 @@ export default function FillDigitalAccountForm() {
           <span className="text-sm font-medium">الصلاحيات:</span>
           <div className="flex flex-wrap gap-1">
             {privilegesList.map(priv => (
-              <label key={priv.ar} className="flex items-center gap-1 px-2 py-1 rounded border cursor-pointer hover:bg-gray-50 text-xs">
+              <label key={priv} className="flex items-center gap-1 px-2 py-1 rounded border cursor-pointer hover:bg-gray-50 text-xs">
                 <input 
                   type="checkbox" 
-                  checked={formData.selectedPrivileges?.includes(priv.ar) || false}
+                  checked={formData.selectedPrivileges?.includes(priv) || false}
                   onChange={(e) => {
                     const current = formData.selectedPrivileges || [];
                     if (e.target.checked) {
-                      const newPrivs = [...current, priv.ar];
-                      const newPrivsEn = privilegesList.filter(p => newPrivs.includes(p.ar)).map(p => p.en);
-                      handleInputChange('selectedPrivileges', newPrivs);
-                      handleInputChange('recruitmentPrivilege', newPrivs.join('، '));
-                      handleInputChange('recruitmentPrivilegeEn', newPrivsEn.join(', '));
+                      handleInputChange('selectedPrivileges', [...current, priv]);
+                      handleInputChange('recruitmentPrivilege', [...current, priv].join('، '));
                     } else {
-                      const updated = current.filter(p => p !== priv.ar);
-                      const updatedEn = privilegesList.filter(p => updated.includes(p.ar)).map(p => p.en);
+                      const updated = current.filter(p => p !== priv);
                       handleInputChange('selectedPrivileges', updated);
                       handleInputChange('recruitmentPrivilege', updated.join('، '));
-                      handleInputChange('recruitmentPrivilegeEn', updatedEn.join(', '));
                     }
                   }}
                   className="w-3 h-3"
                 />
-                {priv.ar.replace('صلاحية ', '')}
+                {priv.replace('صلاحية ', '')}
               </label>
             ))}
           </div>
@@ -576,13 +602,13 @@ export default function FillDigitalAccountForm() {
             <tr>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 <span style={{ fontWeight: 'bold' }}>السبب: </span>
-                <span style={{ borderBottom: '1px dotted #666', minWidth: '200px' }}>
+                <span style={{ borderBottom: '1px dotted #666', minWidth: '200px', display: 'inline-block' }}>
                   {formData.reason}
                 </span>
               </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <span style={{ fontWeight: 'bold' }}>*Reason: </span>
-                <span style={{ borderBottom: '1px dotted #666', minWidth: '200px' }}>
+                <span style={{ borderBottom: '1px dotted #666', minWidth: '200px', display: 'inline-block' }}>
                   {formData.reasonEn}
                 </span>
               </td>
@@ -788,11 +814,11 @@ export default function FillDigitalAccountForm() {
                 <div className="space-y-1 mt-3">
                   <div className="flex items-center gap-2">
                     <span style={{ minWidth: '120px' }}>Organization:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.organizationEn}</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{translateCenterName(formData.organization)}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span style={{ minWidth: '120px' }}>Department:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.departmentEn}</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{departmentsTranslations[formData.department] || formData.department}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span style={{ minWidth: '120px' }}>Specialization:</span>
@@ -800,7 +826,7 @@ export default function FillDigitalAccountForm() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span style={{ minWidth: '120px' }}>Recruitment privilege:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.recruitmentPrivilegeEn}</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{translateToEnglish(formData.recruitmentPrivilege)}</span>
                   </div>
                 </div>
               </td>
