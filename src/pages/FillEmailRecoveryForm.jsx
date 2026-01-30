@@ -641,32 +641,7 @@ export default function FillEmailRecoveryForm() {
           </p>
         </div>
 
-        {/* تذييل الصفحة */}
-        <div className="mt-16 text-center">
-          <h3 
-            className="text-lg font-bold"
-            contentEditable
-            suppressContentEditableWarning
-            style={{ outline: 'none', color: '#0ea5e9' }}
-          >
-            تجمع المدينة المنورة الصحي
-          </h3>
-          <p 
-            contentEditable
-            suppressContentEditableWarning
-            style={{ outline: 'none', color: '#0ea5e9' }}
-          >
-            Madinah Health Cluster
-          </p>
-          <p 
-            className="text-sm text-gray-500"
-            contentEditable
-            suppressContentEditableWarning
-            style={{ outline: 'none' }}
-          >
-            Empowered by Health Holding co.
-          </p>
-        </div>
+
       </div>
     </div>
   );
