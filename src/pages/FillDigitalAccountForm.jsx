@@ -99,21 +99,38 @@ export default function FillDigitalAccountForm() {
 
   const translateCenterName = (name) => {
     if (!name) return "";
-    // Common translations for health center names
-    return name
-      .replace("مركز صحي", "PHC")
-      .replace("الهميج", "Al-Humaij")
-      .replace("الحناكية", "Al-Hanakiyah")
-      .replace("المهد", "Al-Mahd")
-      .replace("السويرقية", "Al-Suwairqiyah")
-      .replace("العيص", "Al-Ais")
-      .replace("هدية", "Hadiyah")
-      .replace("ام العيال", "Umm Al-Iyal")
-      .replace("الفريش", "Al-Furaish")
-      .replace("النخيل", "Al-Nakheel")
-      .replace("الصويدرة", "Al-Suwaidira")
-      .replace("العاقول", "Al-Aqool")
-      .replace("صفينة", "Safina");
+    
+    // Extract the center name part (after مركز صحي)
+    let centerName = name.replace("مركز صحي ", "").replace("مركز صحي", "").trim();
+    
+    // Translations for center names
+    const translations = {
+      "الهميج": "Al-Humaij",
+      "الحناكية": "Al-Hanakiyah",
+      "المهد": "Al-Mahd",
+      "السويرقية": "Al-Suwairqiyah",
+      "العيص": "Al-Ais",
+      "هدية": "Hadiyah",
+      "ام العيال": "Umm Al-Iyal",
+      "الفريش": "Al-Furaish",
+      "النخيل": "Al-Nakheel",
+      "الصويدرة": "Al-Suwaidira",
+      "العاقول": "Al-Aqool",
+      "صفينة": "Safina",
+      "ارجا": "Arja",
+      "الدار البيضاء": "Al-Dar Al-Bayda",
+      "الحمنة": "Al-Hamnah",
+      "المضيق": "Al-Mudaiq",
+      "السد": "Al-Sad"
+    };
+    
+    const translatedName = translations[centerName] || centerName;
+    
+    // Return format like "Arja Health Center"
+    if (name.includes("مركز صحي")) {
+      return `${translatedName} Health Center`;
+    }
+    return translatedName;
   };
 
   const [formData, setFormData] = useState({
