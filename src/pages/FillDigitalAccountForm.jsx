@@ -143,10 +143,21 @@ export default function FillDigitalAccountForm() {
       "العاقول": "Al-Aqool",
       "صفينة": "Safina",
       "ارجا": "Arja",
+      "عرجاء": "Arja",
       "الدار البيضاء": "Al-Dar Al-Bayda",
       "الحمنة": "Al-Hamnah",
       "المضيق": "Al-Mudaiq",
-      "السد": "Al-Sad"
+      "السد": "Al-Sad",
+      "صخيبرة": "Sukhaybira",
+      "الثمد": "Al-Thamad",
+      "المليليح": "Al-Mulaylih",
+      "ام البرك": "Umm Al-Birak",
+      "الحائط": "Al-Hait",
+      "البركة": "Al-Baraka",
+      "الحسو": "Al-Hasu",
+      "العشاش": "Al-Eshash",
+      "الجابرية": "Al-Jabriyah",
+      "الفقعلي": "Al-Faqali"
     };
     
     const translatedName = translations[centerName] || centerName;
@@ -232,15 +243,6 @@ export default function FillDigitalAccountForm() {
       const isLabTechnician = position.includes("مختبر") || position.includes("lab");
       const isFacilityManager = position.includes("مدير") || position.includes("manager");
       
-      // Get center manager name
-      const centerName = employee.المركز_الصحي || "";
-      const center = healthCenters.find(c => c.اسم_المركز === centerName);
-      let managerName = "";
-      if (center && center.المدير) {
-        const manager = employees.find(e => e.id === center.المدير);
-        managerName = manager?.full_name_arabic || "";
-      }
-      
       setFormData(prev => ({
         ...prev,
         firstName: names[0] || "",
@@ -257,12 +259,10 @@ export default function FillDigitalAccountForm() {
         scfhsNumber: employee.scfhs_classification || "",
         endDate: employee.contract_end_date || "",
         contactPhone: employee.phone || "",
-        organization: centerName,
         department: employee.department || "",
         specialization: employee.position || "",
         employeeName: employee.full_name_arabic || "",
         employeeNameEn: employee.full_name_english || "",
-        managerApproval: managerName,
         physician: isPhysician,
         nurse: isNurse,
         receptionist: isReceptionist,
@@ -416,7 +416,15 @@ export default function FillDigitalAccountForm() {
               </SelectContent>
             </Select>
             
-            <Select value={formData.organization} onValueChange={(val) => handleInputChange('organization', val)}>
+            <Select value={formData.organization} onValueChange={(val) => {
+              handleInputChange('organization', val);
+              // Get manager of selected center
+              const center = healthCenters.find(c => c.اسم_المركز === val);
+              if (center && center.المدير) {
+                const manager = employees.find(e => e.id === center.المدير);
+                handleInputChange('managerApproval', manager?.full_name_arabic || "");
+              }
+            }}>
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="اختر المركز..." />
               </SelectTrigger>
