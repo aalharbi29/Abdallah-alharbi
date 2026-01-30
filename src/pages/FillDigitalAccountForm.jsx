@@ -74,6 +74,7 @@ export default function FillDigitalAccountForm() {
     department: "",
     specialization: "",
     recruitmentPrivilege: "",
+    selectedPrivileges: [],
     employeeName: "",
     managerApproval: ""
   });
@@ -252,29 +253,82 @@ export default function FillDigitalAccountForm() {
       `}</style>
 
       {/* Controls */}
-      <div className="no-print max-w-4xl mx-auto mb-4 flex flex-wrap gap-2 justify-between items-center">
-        <Select onValueChange={handleEmployeeSelect}>
-          <SelectTrigger className="w-64">
-            <SelectValue placeholder="اختر الموظف..." />
-          </SelectTrigger>
-          <SelectContent>
-            {employees.map(emp => (
-              <SelectItem key={emp.id} value={emp.id}>
-                {emp.full_name_arabic}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="no-print max-w-4xl mx-auto mb-4 bg-white rounded-lg shadow p-4 space-y-3">
+        <div className="flex flex-wrap gap-2 justify-between items-center">
+          <div className="flex flex-wrap gap-2">
+            <Select onValueChange={handleEmployeeSelect}>
+              <SelectTrigger className="w-52">
+                <SelectValue placeholder="اختر الموظف..." />
+              </SelectTrigger>
+              <SelectContent>
+                {employees.map(emp => (
+                  <SelectItem key={emp.id} value={emp.id}>
+                    {emp.full_name_arabic}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
+            <Select value={formData.organization} onValueChange={(val) => handleInputChange('organization', val)}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="اختر المركز..." />
+              </SelectTrigger>
+              <SelectContent>
+                {healthCenters.map(center => (
+                  <SelectItem key={center.id} value={center.اسم_المركز}>{center.اسم_المركز}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
+            <Select value={formData.department} onValueChange={(val) => handleInputChange('department', val)}>
+              <SelectTrigger className="w-44">
+                <SelectValue placeholder="اختر القسم..." />
+              </SelectTrigger>
+              <SelectContent>
+                {departmentsList.map(dept => (
+                  <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div className="flex gap-2">
+            <Button onClick={handlePrint} variant="outline" className="gap-2">
+              <Printer className="w-4 h-4" />
+              طباعة
+            </Button>
+            <Button onClick={handleExportPDF} className="gap-2 bg-red-600 hover:bg-red-700">
+              <Download className="w-4 h-4" />
+              PDF
+            </Button>
+          </div>
+        </div>
         
-        <div className="flex gap-2">
-          <Button onClick={handlePrint} variant="outline" className="gap-2">
-            <Printer className="w-4 h-4" />
-            طباعة
-          </Button>
-          <Button onClick={handleExportPDF} className="gap-2 bg-red-600 hover:bg-red-700">
-            <Download className="w-4 h-4" />
-            PDF
-          </Button>
+        <div className="flex flex-wrap gap-2 items-center">
+          <span className="text-sm font-medium">الصلاحيات:</span>
+          <div className="flex flex-wrap gap-1">
+            {privilegesList.map(priv => (
+              <label key={priv} className="flex items-center gap-1 px-2 py-1 rounded border cursor-pointer hover:bg-gray-50 text-xs">
+                <input 
+                  type="checkbox" 
+                  checked={formData.selectedPrivileges?.includes(priv) || false}
+                  onChange={(e) => {
+                    const current = formData.selectedPrivileges || [];
+                    if (e.target.checked) {
+                      handleInputChange('selectedPrivileges', [...current, priv]);
+                      handleInputChange('recruitmentPrivilege', [...current, priv].join('، '));
+                    } else {
+                      const updated = current.filter(p => p !== priv);
+                      handleInputChange('selectedPrivileges', updated);
+                      handleInputChange('recruitmentPrivilege', updated.join('، '));
+                    }
+                  }}
+                  className="w-3 h-3"
+                />
+                {priv.replace('صلاحية ', '')}
+              </label>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -601,51 +655,19 @@ export default function FillDigitalAccountForm() {
                 <div className="space-y-1 mt-3">
                   <div className="flex items-center gap-2">
                     <span style={{ minWidth: '100px', textAlign: 'right' }}>المنشأة:</span>
-                    <select 
-                      className="no-print flex-1 border border-gray-300 rounded px-2 py-1 text-xs"
-                      value={formData.organization}
-                      onChange={(e) => handleInputChange('organization', e.target.value)}
-                    >
-                      <option value="">اختر المركز...</option>
-                      {healthCenters.map(center => (
-                        <option key={center.id} value={center.اسم_المركز}>{center.اسم_المركز}</option>
-                      ))}
-                    </select>
-                    <span className="print-only" style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.organization}</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.organization}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span style={{ minWidth: '100px', textAlign: 'right' }}>القسم:</span>
-                    <select 
-                      className="no-print flex-1 border border-gray-300 rounded px-2 py-1 text-xs"
-                      value={formData.department}
-                      onChange={(e) => handleInputChange('department', e.target.value)}
-                    >
-                      <option value="">اختر القسم...</option>
-                      {departmentsList.map(dept => (
-                        <option key={dept} value={dept}>{dept}</option>
-                      ))}
-                    </select>
-                    <span className="print-only" style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.department}</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.department}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span style={{ minWidth: '100px', textAlign: 'right' }}>التخصص:</span>
-                    <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('specialization', e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
-                      {formData.specialization}
-                    </span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.specialization}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span style={{ minWidth: '100px', textAlign: 'right' }}>الصلاحيات المطلوبة:</span>
-                    <select 
-                      className="no-print flex-1 border border-gray-300 rounded px-2 py-1 text-xs"
-                      value={formData.recruitmentPrivilege}
-                      onChange={(e) => handleInputChange('recruitmentPrivilege', e.target.value)}
-                    >
-                      <option value="">اختر الصلاحية...</option>
-                      {privilegesList.map(priv => (
-                        <option key={priv} value={priv}>{priv}</option>
-                      ))}
-                    </select>
-                    <span className="print-only" style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.recruitmentPrivilege}</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.recruitmentPrivilege}</span>
                   </div>
                 </div>
               </td>
