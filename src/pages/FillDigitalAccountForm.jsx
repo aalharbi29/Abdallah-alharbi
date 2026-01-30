@@ -252,18 +252,13 @@ export default function FillDigitalAccountForm() {
         style={{ padding: '20mm 20mm 15mm 20mm', fontFamily: 'Arial, sans-serif' }}
       >
         {/* Header */}
-        <div className="flex justify-between items-start mb-4">
-          <div className="text-right" style={{ flex: 1 }}>
-            <h2 className="text-sm font-bold" style={{ color: '#0ea5e9' }}>
-              الخدمات المشتركة للصحة الرقمية والتقنية
-            </h2>
-          </div>
-          <div style={{ width: '2px', backgroundColor: '#0ea5e9', height: '30px', margin: '0 15px' }}></div>
-          <div className="text-left" style={{ flex: 1 }}>
-            <h2 className="text-sm font-bold" style={{ color: '#0ea5e9' }}>
-              Shared Services for Digital Health & Technology
-            </h2>
-          </div>
+        <div className="text-center mb-4">
+          <h2 className="text-sm font-bold" style={{ color: '#0ea5e9' }}>
+            الخدمات المشتركة للصحة الرقمية والتقنية
+          </h2>
+          <p className="text-xs" style={{ color: '#6b7280', fontWeight: 'normal', marginTop: '2px' }}>
+            Shared Services for Digital Health & Technology
+          </p>
         </div>
 
         {/* Main Table */}
