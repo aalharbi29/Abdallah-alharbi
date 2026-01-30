@@ -97,6 +97,31 @@ export default function FillDigitalAccountForm() {
     return translated.join(", ");
   };
 
+  const specializationsTranslations = {
+    "طبيب": "Physician",
+    "طبيب عام": "General Physician",
+    "طبيب أسرة": "Family Physician",
+    "طبيب أسنان": "Dentist",
+    "ممرض": "Nurse",
+    "ممرضة": "Nurse",
+    "فني تمريض": "Nursing Technician",
+    "صيدلي": "Pharmacist",
+    "فني صيدلة": "Pharmacy Technician",
+    "فني مختبر": "Lab Technician",
+    "فني أشعة": "Radiology Technician",
+    "أخصائي تغذية": "Nutritionist",
+    "أخصائي علاج طبيعي": "Physiotherapist",
+    "موظف استقبال": "Receptionist",
+    "إداري": "Administrative",
+    "مدير مركز": "Center Manager",
+    "مشرف": "Supervisor"
+  };
+
+  const translateSpecialization = (spec) => {
+    if (!spec) return "";
+    return specializationsTranslations[spec] || spec;
+  };
+
   const translateCenterName = (name) => {
     if (!name) return "";
     
@@ -134,10 +159,10 @@ export default function FillDigitalAccountForm() {
   };
 
   const [formData, setFormData] = useState({
-    systemRaqeem: false,
+    systemRaqeem: true,
     systemMedica: false,
     systemMawid: false,
-    createNew: false,
+    createNew: true,
     restorePassword: false,
     deleteUser: false,
     relocateUser: false,
@@ -197,6 +222,25 @@ export default function FillDigitalAccountForm() {
     if (employee) {
       const names = employee.full_name_arabic?.split(" ") || [];
       const namesEn = employee.full_name_english?.split(" ") || [];
+      const position = employee.position?.toLowerCase() || "";
+      
+      // Auto-select occupation based on position
+      const isPhysician = position.includes("طبيب") || position.includes("doctor");
+      const isNurse = position.includes("ممرض") || position.includes("تمريض") || position.includes("nurse");
+      const isReceptionist = position.includes("استقبال") || position.includes("reception");
+      const isPharmacist = position.includes("صيدل") || position.includes("pharma");
+      const isLabTechnician = position.includes("مختبر") || position.includes("lab");
+      const isFacilityManager = position.includes("مدير") || position.includes("manager");
+      
+      // Get center manager name
+      const centerName = employee.المركز_الصحي || "";
+      const center = healthCenters.find(c => c.اسم_المركز === centerName);
+      let managerName = "";
+      if (center && center.المدير) {
+        const manager = employees.find(e => e.id === center.المدير);
+        managerName = manager?.full_name_arabic || "";
+      }
+      
       setFormData(prev => ({
         ...prev,
         firstName: names[0] || "",
@@ -213,11 +257,18 @@ export default function FillDigitalAccountForm() {
         scfhsNumber: employee.scfhs_classification || "",
         endDate: employee.contract_end_date || "",
         contactPhone: employee.phone || "",
-        organization: employee.المركز_الصحي || "",
+        organization: centerName,
         department: employee.department || "",
         specialization: employee.position || "",
         employeeName: employee.full_name_arabic || "",
-        employeeNameEn: employee.full_name_english || ""
+        employeeNameEn: employee.full_name_english || "",
+        managerApproval: managerName,
+        physician: isPhysician,
+        nurse: isNurse,
+        receptionist: isReceptionist,
+        pharmacist: isPharmacist,
+        labTechnician: isLabTechnician,
+        facilityManager: isFacilityManager
       }));
     }
   };
@@ -839,7 +890,7 @@ export default function FillDigitalAccountForm() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span style={{ minWidth: '120px' }}>Specialization:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.specialization}</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{translateSpecialization(formData.specialization)}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span style={{ minWidth: '120px' }}>Recruitment privilege:</span>
@@ -882,14 +933,14 @@ export default function FillDigitalAccountForm() {
             {/* Row 3: Signatures */}
             <tr style={{ position: 'relative' }}>
               <td style={{ width: '50%', padding: '10px', textAlign: 'right', verticalAlign: 'top' }}>
-                                  <div style={{ fontWeight: 'bold', marginBottom: '4px', fontSize: '11px' }}>اسم الموظف:</div>
-                                  <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('employeeName', e.currentTarget.textContent)} style={{ display: 'block', minHeight: '25px', padding: '4px' }}>
+                                  <div style={{ fontWeight: 'bold', marginBottom: '4px', fontSize: '12px' }}>اسم الموظف:</div>
+                                  <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('employeeName', e.currentTarget.textContent)} style={{ display: 'block', minHeight: '25px', padding: '4px', fontWeight: 'bold', fontSize: '11px' }}>
                                     {formData.employeeName}
                                   </span>
                                 </td>
                                 <td style={{ width: '50%', padding: '10px', textAlign: 'center', verticalAlign: 'top' }}>
-                                  <div style={{ fontWeight: 'bold', marginBottom: '4px', fontSize: '11px', textAlign: 'center' }}>اعتماد الرئيس المباشر:</div>
-                                  <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('managerApproval', e.currentTarget.textContent)} style={{ display: 'block', minHeight: '25px', padding: '4px', textAlign: 'center' }}>
+                                  <div style={{ fontWeight: 'bold', marginBottom: '4px', fontSize: '12px', textAlign: 'center' }}>اعتماد الرئيس المباشر:</div>
+                                  <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('managerApproval', e.currentTarget.textContent)} style={{ display: 'block', minHeight: '25px', padding: '4px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px' }}>
                                     {formData.managerApproval}
                                   </span>
                                 </td>
