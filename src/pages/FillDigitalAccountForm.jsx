@@ -160,7 +160,7 @@ export default function FillDigitalAccountForm() {
             left: 0;
             top: 0;
             width: 210mm;
-            padding: 8mm 12mm;
+            padding: 20mm 20mm 15mm 20mm;
             direction: rtl;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
@@ -227,7 +227,7 @@ export default function FillDigitalAccountForm() {
       <div 
         ref={printRef}
         className="print-area max-w-4xl mx-auto bg-white shadow-lg"
-        style={{ padding: '20px 30px', fontFamily: 'Arial, sans-serif' }}
+        style={{ padding: '20mm 20mm 15mm 20mm', fontFamily: 'Arial, sans-serif' }}
       >
         {/* Header */}
         <div className="flex justify-between items-start mb-4">
