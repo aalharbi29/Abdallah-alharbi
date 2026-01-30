@@ -1,55 +1,64 @@
-import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowRight, Save, Printer, Download, CheckCircle, Edit3 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { createPageUrl } from '@/utils';
-import SmartDateInput from '../components/ui/smart-date-input';
-import FormElementEditor from '../components/form_builder/FormElementEditor';
+import React, { useState, useEffect, useRef } from "react";
+import { base44 } from "@/api/base44Client";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Printer, Download, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function FillDigitalAccountForm() {
-  const navigate = useNavigate();
   const [employees, setEmployees] = useState([]);
   const [healthCenters, setHealthCenters] = useState([]);
-  const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [selectedElement, setSelectedElement] = useState(null);
-  const [elementStyles, setElementStyles] = useState({});
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const printRef = useRef(null);
 
   const [formData, setFormData] = useState({
-    system_type: [],
-    request_type: '',
-    reason: '',
-    employee_id: '',
-    employee_name_first: '',
-    employee_name_second: '',
-    employee_name_third: '',
-    employee_name_family: '',
-    employee_name_arabic: '',
-    employee_name_english: '',
-    national_id: '',
-    birth_date: null,
-    moh_email: '',
-    scfhs_number: '',
-    contract_end_date: null,
-    contact_phone: '',
-    occupation: [],
-    organization: '',
-    department: '',
-    specialization: '',
-    recruitment_privilege: '',
-    commitment_accepted: false,
-    direct_manager_name: '',
-    direct_manager_name_english: '',
-    direct_manager_approval_date: null,
-    status: 'مسودة'
+    // System
+    systemRaqeem: false,
+    systemMedica: false,
+    systemMawid: false,
+    
+    // Type of Request
+    createNew: false,
+    restorePassword: false,
+    deleteUser: false,
+    relocateUser: false,
+    
+    // Reason
+    reason: "",
+    
+    // Staff Name
+    firstName: "",
+    secondName: "",
+    thirdName: "",
+    familyName: "",
+    
+    // Other Info
+    idNumber: "",
+    birthDate: "",
+    mohEmail: "",
+    scfhsNumber: "",
+    endDate: "",
+    contactPhone: "",
+    
+    // Occupation
+    receptionist: false,
+    nurse: false,
+    physician: false,
+    facilityManager: false,
+    pharmacist: false,
+    labTechnician: false,
+    
+    // Additional Info
+    organization: "",
+    department: "",
+    specialization: "",
+    recruitmentPrivilege: "",
+    
+    // Approval
+    employeeName: "",
+    managerApproval: ""
   });
 
   useEffect(() => {
@@ -57,743 +66,796 @@ export default function FillDigitalAccountForm() {
   }, []);
 
   const loadData = async () => {
-    setIsLoading(true);
     try {
+      setIsLoading(true);
       const [employeesData, centersData] = await Promise.all([
-        base44.entities.Employee.list('-updated_date', 500),
+        base44.entities.Employee.list(),
         base44.entities.HealthCenter.list()
       ]);
-      setEmployees(Array.isArray(employeesData) ? employeesData : []);
-      setHealthCenters(Array.isArray(centersData) ? centersData : []);
+      setEmployees(employeesData || []);
+      setHealthCenters(centersData || []);
     } catch (error) {
-      console.error('Error loading data:', error);
+      console.error("Error loading data:", error);
+      toast.error("فشل في تحميل البيانات");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleEmployeeSelect = async (employeeId) => {
+  const handleEmployeeSelect = (employeeId) => {
     const employee = employees.find(e => e.id === employeeId);
+    setSelectedEmployee(employee);
+    
     if (employee) {
-      setSelectedEmployee(employee);
-      
-      const nameParts = (employee.full_name_arabic || '').split(' ');
-      
-      let managerName = '';
-      let managerNameEnglish = '';
-      
-      const healthCenter = healthCenters.find(c => c.اسم_المركز === employee.المركز_الصحي);
-      if (healthCenter && healthCenter.المدير) {
-        const manager = employees.find(e => e.رقم_الموظف === healthCenter.المدير);
-        if (manager) {
-          managerName = manager.full_name_arabic || '';
-          managerNameEnglish = manager.full_name_arabic || '';
-        }
-      }
-      
+      const names = employee.full_name_arabic?.split(" ") || [];
       setFormData(prev => ({
         ...prev,
-        employee_id: employee.id,
-        employee_name_first: nameParts[0] || '',
-        employee_name_second: nameParts[1] || '',
-        employee_name_third: nameParts[2] || '',
-        employee_name_family: nameParts[3] || nameParts[nameParts.length - 1] || '',
-        employee_name_arabic: employee.full_name_arabic || '',
-        employee_name_english: employee.full_name_arabic || '',
-        national_id: employee.رقم_الهوية || '',
-        birth_date: employee.birth_date ? new Date(employee.birth_date) : null,
-        moh_email: employee.email || '',
-        contact_phone: employee.phone || '',
-        occupation: employee.position ? [employee.position] : [],
-        organization: employee.المركز_الصحي || '',
-        department: employee.department || '',
-        specialization: employee.position || '',
-        recruitment_privilege: '',
-        contract_end_date: employee.contract_end_date ? new Date(employee.contract_end_date) : null,
-        direct_manager_name: managerName,
-        direct_manager_name_english: managerNameEnglish
+        firstName: names[0] || "",
+        secondName: names[1] || "",
+        thirdName: names[2] || "",
+        familyName: names[3] || "",
+        idNumber: employee.رقم_الهوية || "",
+        birthDate: employee.birth_date || "",
+        mohEmail: employee.email || "",
+        scfhsNumber: employee.scfhs_classification || "",
+        endDate: employee.contract_end_date || "",
+        contactPhone: employee.phone || "",
+        organization: employee.المركز_الصحي || "",
+        department: employee.department || "",
+        specialization: employee.position || "",
+        employeeName: employee.full_name_arabic || ""
       }));
     }
   };
 
-  const handleSystemToggle = (system) => {
-    setFormData(prev => {
-      const newSystems = prev.system_type.includes(system)
-        ? prev.system_type.filter(s => s !== system)
-        : [...prev.system_type, system];
-      return { ...prev, system_type: newSystems };
-    });
-  };
-
-  const handleOccupationToggle = (occupation) => {
-    setFormData(prev => {
-      const newOccupations = prev.occupation.includes(occupation)
-        ? prev.occupation.filter(o => o !== occupation)
-        : [...prev.occupation, occupation];
-      return { ...prev, occupation: newOccupations };
-    });
-  };
-
-  const handleSave = async () => {
-    try {
-      await base44.entities.DigitalAccountRequest.create(formData);
-      alert('✅ تم حفظ الطلب بنجاح');
-      navigate(createPageUrl('InteractiveForms'));
-    } catch (error) {
-      console.error('Error saving:', error);
-      alert('حدث خطأ أثناء حفظ الطلب');
-    }
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handlePrint = () => {
     window.print();
   };
 
-  const handleElementClick = (e, elementId) => {
-    if (!isEditMode) return;
-    e.stopPropagation();
-    setSelectedElement(elementId);
+  const handleExportPDF = async () => {
+    const html2canvas = (await import('html2canvas')).default;
+    const { jsPDF } = await import('jspdf');
+    
+    const element = printRef.current;
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff'
+    });
+    
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`نموذج_انشاء_حساب_${formData.firstName || 'موظف'}.pdf`);
+    toast.success("تم تصدير الملف بنجاح");
   };
 
-  const handleStyleUpdate = (elementId, styles) => {
-    setElementStyles(prev => ({
-      ...prev,
-      [elementId]: styles
-    }));
-  };
-
-  const getElementStyle = (elementId) => {
-    return elementStyles[elementId] || {};
-  };
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <span className="mr-2">جاري تحميل البيانات...</span>
+      </div>
+    );
+  }
 
   return (
-    <>
-      {/* خلفية الشعار المستقلة - ثابتة على كامل الصفحة */}
-      <div 
-        className="fixed inset-0 pointer-events-none print-background"
-        style={{
-          backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/44e7acbe3_page_1.jpg)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          zIndex: -1
-        }}
-      />
-
-      <div 
-        className="min-h-screen p-4 md:p-6" 
-        dir="rtl"
-        style={{
-          backgroundColor: 'transparent'
-        }}
-      >
-        <div className="flex gap-4 max-w-7xl mx-auto">
-          {/* لوحة التحكم */}
-          {isEditMode && selectedElement && (
-            <div className="fixed left-4 top-20 z-50">
-              <FormElementEditor
-                element={getElementStyle(selectedElement)}
-                onUpdate={(styles) => handleStyleUpdate(selectedElement, styles)}
-                onClose={() => setSelectedElement(null)}
-              />
-            </div>
-          )}
-
-          <div className="flex-1 max-w-5xl mx-auto">
-            {/* Header */}
-            <div className="flex items-center gap-4 mb-6 no-print">
-              <Button variant="outline" onClick={() => navigate(createPageUrl('InteractiveForms'))} size="icon">
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-              <div className="flex-1">
-                <h1 className="text-2xl font-bold text-gray-900">نموذج إنشاء/إيقاف حساب رقمي</h1>
-                <p className="text-gray-600 text-sm">رقيم - ميديكا كلاود - موعد</p>
-              </div>
-              <div className="flex gap-2">
-                <Button 
-                  onClick={() => setIsEditMode(!isEditMode)} 
-                  variant={isEditMode ? 'default' : 'outline'}
-                  className={isEditMode ? 'bg-purple-600 hover:bg-purple-700' : ''}
-                >
-                  <Edit3 className="w-4 h-4 ml-2" />
-                  {isEditMode ? 'إيقاف التحرير' : 'تحرير التصميم'}
-                </Button>
-                <Button onClick={handleSave} className="bg-green-600 hover:bg-green-700">
-                  <Save className="w-4 h-4 ml-2" />
-                  حفظ
-                </Button>
-                <Button onClick={handlePrint} variant="outline">
-                  <Printer className="w-4 h-4 ml-2" />
-                  طباعة
-                </Button>
-              </div>
-            </div>
-
-            {/* اختيار الموظف */}
-            <Card className="mb-6 no-print">
-              <CardHeader>
-                <CardTitle className="text-lg">اختيار الموظف</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Select onValueChange={handleEmployeeSelect} value={formData.employee_id}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="اختر الموظف..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {employees.map(emp => (
-                      <SelectItem key={emp.id} value={emp.id}>
-                        {emp.full_name_arabic} - {emp.رقم_الموظف} - {emp.المركز_الصحي}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </CardContent>
-            </Card>
-
-            {/* الشعار والعنوان - خارج الجدول */}
-            <div 
-              className={`text-center mb-4 print-area-header ${isEditMode ? 'cursor-pointer hover:ring-2 hover:ring-purple-400 rounded p-2' : ''}`}
-              onClick={(e) => handleElementClick(e, 'header')}
-              style={getElementStyle('header')}
-            >
-              <div className="flex items-center justify-center gap-3 mb-2">
-                <svg viewBox="0 0 100 100" className="w-16 h-16">
-                  <defs>
-                    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" style={{ stopColor: '#0ea5e9', stopOpacity: 1 }} />
-                      <stop offset="100%" style={{ stopColor: '#0284c7', stopOpacity: 1 }} />
-                    </linearGradient>
-                  </defs>
-                  <circle cx="50" cy="50" r="48" fill="url(#blueGrad)" />
-                  <path d="M50 20 L60 40 L80 40 L65 55 L70 75 L50 60 L30 75 L35 55 L20 40 L40 40 Z" fill="white" />
-                </svg>
-              </div>
-              <h1 
-                className={`text-sky-600 font-bold mb-1 ${isEditMode ? 'cursor-pointer hover:bg-purple-50' : ''}`}
-                style={{ fontSize: '16px', ...getElementStyle('title') }}
-                onClick={(e) => handleElementClick(e, 'title')}
-              >
-                الخدمات المشتركة للصحة الرقمية والتقنية
-              </h1>
-              <p 
-                className={`text-gray-400 ${isEditMode ? 'cursor-pointer hover:bg-purple-50' : ''}`}
-                style={{ fontSize: '12px', ...getElementStyle('subtitle') }}
-                onClick={(e) => handleElementClick(e, 'subtitle')}
-              >
-                Shared Services for Digital Health & Technology
-              </p>
-            </div>
-
-            {/* النموذج الرسمي */}
-            <div 
-              className={`bg-white border border-black print-area ${isEditMode ? 'cursor-pointer' : ''}`}
-              style={{ 
-                width: '210mm', 
-                margin: '0 auto', 
-                padding: '0',
-                ...getElementStyle('main-container') 
-              }}
-              onClick={(e) => handleElementClick(e, 'main-container')}
-            >
-              {/* عنوان النموذج */}
-              <div 
-                className={`border-b border-black text-center py-1 ${isEditMode ? 'cursor-pointer hover:bg-purple-50' : ''}`}
-                style={getElementStyle('form-title-container')}
-                onClick={(e) => handleElementClick(e, 'form-title-container')}
-              >
-                <h2 
-                  className={`${isEditMode ? 'cursor-pointer' : ''}`}
-                  style={{ fontSize: '13px', fontWeight: 'normal', ...getElementStyle('form-title') }}
-                  onClick={(e) => handleElementClick(e, 'form-title')}
-                >
-                  نموذج إنشاء إيقاف حساب
-                </h2>
-              </div>
-
-              <div style={{ fontSize: '10px' }}>
-                {/* جدول النظام ونوع الطلب */}
-                <table 
-                  className={`w-full border-collapse border border-black ${isEditMode ? 'cursor-pointer hover:ring-2 hover:ring-purple-400' : ''}`}
-                  style={getElementStyle('table-system-request')}
-                  onClick={(e) => handleElementClick(e, 'table-system-request')}
-                >
-                  <tbody>
-                    <tr>
-                      {/* يمين - عربي - النظام */}
-                      <td className="border border-black p-2 align-top text-right" style={{ width: '50%' }}>
-                        <strong style={{ fontSize: '11px' }}>النظام:</strong>
-                        <table className="w-full border-collapse mt-1">
-                          <tbody>
-                            <tr>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px', width: '30%' }}>ميديكا كلاود</td>
-                              <td className="border border-black text-center p-0.5" style={{ width: '10%' }}><Checkbox checked={formData.system_type.includes('Medica cloud')} onCheckedChange={() => handleSystemToggle('Medica cloud')} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px', width: '30%' }}>رقيم</td>
-                              <td className="border border-black text-center p-0.5" style={{ width: '10%' }}><Checkbox checked={formData.system_type.includes('Raqeem')} onCheckedChange={() => handleSystemToggle('Raqeem')} className="scale-75" /></td>
-                            </tr>
-                            <tr>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}></td>
-                              <td className="border border-black text-center p-0.5"></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>موعد</td>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.system_type.includes('Mawid')} onCheckedChange={() => handleSystemToggle('Mawid')} className="scale-75" /></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-
-                      {/* يسار - إنجليزي - النظام */}
-                      <td 
-                        className={`border border-black p-2 align-top ${isEditMode ? 'cursor-pointer hover:bg-purple-50' : ''}`}
-                        style={{ width: '50%', ...getElementStyle('cell-system-en') }}
-                        onClick={(e) => handleElementClick(e, 'cell-system-en')}
-                      >
-                        <strong style={{ fontSize: '11px', ...getElementStyle('label-system-en') }} onClick={(e) => handleElementClick(e, 'label-system-en')}>*System:</strong>
-                        <table className="w-full border-collapse mt-1">
-                          <tbody>
-                            <tr>
-                              <td className="border border-black text-center p-0.5" style={{ width: '10%' }}><Checkbox checked={formData.system_type.includes('Raqeem')} onCheckedChange={() => handleSystemToggle('Raqeem')} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px', width: '30%' }}>Raqeem</td>
-                              <td className="border border-black text-center p-0.5" style={{ width: '10%' }}><Checkbox checked={formData.system_type.includes('Medica cloud')} onCheckedChange={() => handleSystemToggle('Medica cloud')} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px', width: '30%' }}>Medica cloud</td>
-                            </tr>
-                            <tr>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.system_type.includes('Mawid')} onCheckedChange={() => handleSystemToggle('Mawid')} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Mawid</td>
-                              <td className="border border-black text-center p-0.5"></td>
-                              <td className="border border-black text-center p-0.5"></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                    
-                    <tr>
-                      {/* يمين - عربي - نوع الطلب */}
-                      <td className="border border-black p-2 align-top text-right">
-                        <strong style={{ fontSize: '11px' }}>نوع الطلب:</strong>
-                        <table className="w-full border-collapse mt-1">
-                          <tbody>
-                            <tr>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px', width: '30%' }}>استعادة كلمة مرور</td>
-                              <td className="border border-black text-center p-0.5" style={{ width: '10%' }}><Checkbox checked={formData.request_type === 'استعادة كلمة مرور'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'استعادة كلمة مرور' }))} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px', width: '30%' }}>انشاء مستخدم جديد</td>
-                              <td className="border border-black text-center p-0.5" style={{ width: '10%' }}><Checkbox checked={formData.request_type === 'انشاء مستخدم جديد'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'انشاء مستخدم جديد' }))} className="scale-75" /></td>
-                            </tr>
-                            <tr>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>نقل اسم مستخدم</td>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.request_type === 'نقل اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'نقل اسم مستخدم' }))} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>الغاء اسم مستخدم</td>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.request_type === 'الغاء اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'الغاء اسم مستخدم' }))} className="scale-75" /></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-
-                      {/* يسار - إنجليزي - نوع الطلب */}
-                      <td className="border border-black p-2 align-top">
-                        <strong style={{ fontSize: '11px' }}>*Type of Request:</strong>
-                        <table className="w-full border-collapse mt-1">
-                          <tbody>
-                            <tr>
-                              <td className="border border-black text-center p-0.5" style={{ width: '10%' }}><Checkbox checked={formData.request_type === 'استعادة كلمة مرور'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'استعادة كلمة مرور' }))} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px', width: '30%' }}>Restore password</td>
-                              <td className="border border-black text-center p-0.5" style={{ width: '10%' }}><Checkbox checked={formData.request_type === 'انشاء مستخدم جديد'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'انشاء مستخدم جديد' }))} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px', width: '30%' }}>Create a new user name</td>
-                            </tr>
-                            <tr>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.request_type === 'نقل اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'نقل اسم مستخدم' }))} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Relocate a user name</td>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.request_type === 'الغاء اسم مستخدم'} onCheckedChange={(c) => c && setFormData(p => ({ ...p, request_type: 'الغاء اسم مستخدم' }))} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Delete a user name</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                {/* السبب */}
-                <table className="w-full border-collapse border border-black">
-                  <tbody>
-                    <tr>
-                      <td className="border border-black p-1" style={{ width: '50%', fontSize: '10px' }}>
-                        <strong style={{ fontWeight: 'bold' }}>*Reason: </strong>
-                        <span className="border-b border-dotted border-gray-600 inline-block w-3/4 mx-1"></span>
-                      </td>
-                      <td className="border border-black p-1 text-right" style={{ width: '50%', fontSize: '10px' }}>
-                        <strong style={{ fontWeight: 'bold' }}>السبب: </strong>
-                        <Input value={formData.reason} onChange={(e) => setFormData(p => ({ ...p, reason: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-600 w-3/4 h-5 px-1 text-right" style={{ fontSize: '10px' }} />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                {/* اسم الموظف */}
-                <table className="w-full border-collapse border border-black">
-                  <tbody>
-                    <tr>
-                      <td className="border border-black p-2" style={{ width: '50%' }}>
-                        <strong style={{ fontSize: '10px', fontWeight: 'bold' }}>*Staff Name:</strong>
-                        <div className="space-y-0.5 mt-1" style={{ fontSize: '9px' }}>
-                          <div>First: <span className="border-b border-dotted border-gray-600 inline-block w-3/4 mx-1"></span></div>
-                          <div>Second: <span className="border-b border-dotted border-gray-600 inline-block w-3/4 mx-1"></span></div>
-                          <div>Third: <span className="border-b border-dotted border-gray-600 inline-block w-3/4 mx-1"></span></div>
-                          <div>Family: <span className="border-b border-dotted border-gray-600 inline-block w-3/4 mx-1"></span></div>
-                        </div>
-                      </td>
-                      <td className="border border-black p-2 text-right" style={{ width: '50%' }}>
-                        <strong style={{ fontSize: '10px', fontWeight: 'bold' }}>اسم الموظف:</strong>
-                        <div className="space-y-0.5 mt-1" style={{ fontSize: '9px' }}>
-                          <div>الأول : <Input value={formData.employee_name_first} onChange={(e) => setFormData(p => ({ ...p, employee_name_first: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-600 w-3/4 h-5 px-1 text-right" style={{ fontSize: '9px' }} /></div>
-                          <div>الثاني : <Input value={formData.employee_name_second} onChange={(e) => setFormData(p => ({ ...p, employee_name_second: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-600 w-3/4 h-5 px-1 text-right" style={{ fontSize: '9px' }} /></div>
-                          <div>الثالث: <Input value={formData.employee_name_third} onChange={(e) => setFormData(p => ({ ...p, employee_name_third: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-600 w-3/4 h-5 px-1 text-right" style={{ fontSize: '9px' }} /></div>
-                          <div>العائلة : <Input value={formData.employee_name_family} onChange={(e) => setFormData(p => ({ ...p, employee_name_family: e.target.value }))} className="inline-block border-0 border-b border-dotted border-gray-600 w-3/4 h-5 px-1 text-right" style={{ fontSize: '9px' }} /></div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                {/* البيانات الشخصية */}
-                <table className="w-full border-collapse border border-black">
-                  <tbody>
-                    <tr>
-                      <td className="border-l border-black p-1" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
-                        <strong style={{ fontWeight: 'bold' }}>ID NO: </strong>
-                        <Input 
-                          value={formData.national_id} 
-                          onChange={(e) => setFormData(p => ({ ...p, national_id: e.target.value }))} 
-                          className="inline-block border-0 w-2/3 h-5 px-1" 
-                          style={{ fontSize: '9px' }} 
-                        />
-                      </td>
-                      <td className="p-1 text-right" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
-                        <strong style={{ fontWeight: 'bold' }}>رقم الهوية/ الإقامة: </strong>
-                        <Input 
-                          value={formData.national_id} 
-                          onChange={(e) => setFormData(p => ({ ...p, national_id: e.target.value }))} 
-                          className="inline-block border-0 w-2/3 h-5 px-1 text-right" 
-                          style={{ fontSize: '9px' }} 
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="border-l border-black p-1" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
-                        <strong style={{ fontWeight: 'bold' }}>Date of birth: </strong>
-                        <span className="inline-block w-2/3 mx-1">{formData.birth_date ? new Date(formData.birth_date).toLocaleDateString('en-GB') : ''}</span>
-                      </td>
-                      <td className="p-1 text-right" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
-                        <strong style={{ fontWeight: 'bold' }}>تاريخ الميلاد: </strong>
-                        <span className="inline-block w-2/3 mx-1">{formData.birth_date ? new Date(formData.birth_date).toLocaleDateString('ar-SA') : ''}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="border-l border-black p-1" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
-                        <strong style={{ fontWeight: 'bold' }}>MOH email: </strong>
-                        <Input 
-                          value={formData.moh_email} 
-                          onChange={(e) => setFormData(p => ({ ...p, moh_email: e.target.value }))} 
-                          className="inline-block border-0 w-2/3 h-5 px-1" 
-                          style={{ fontSize: '9px' }} 
-                        />
-                      </td>
-                      <td className="p-1 text-right" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
-                        <strong style={{ fontWeight: 'bold' }}>البريد الوزاري: </strong>
-                        <Input 
-                          value={formData.moh_email} 
-                          onChange={(e) => setFormData(p => ({ ...p, moh_email: e.target.value }))} 
-                          className="inline-block border-0 w-2/3 h-5 px-1 text-right" 
-                          style={{ fontSize: '9px' }} 
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="border-l border-black p-1" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
-                        <strong style={{ fontWeight: 'bold' }}>SCFHS number: </strong>
-                        <Input 
-                          value={formData.scfhs_number} 
-                          onChange={(e) => setFormData(p => ({ ...p, scfhs_number: e.target.value }))} 
-                          className="inline-block border-0 w-2/3 h-5 px-1" 
-                          style={{ fontSize: '9px' }} 
-                        />
-                      </td>
-                      <td className="p-1 text-right" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
-                        <strong style={{ fontWeight: 'bold' }}>رقم التصنيف إن وجد: </strong>
-                        <Input 
-                          value={formData.scfhs_number} 
-                          onChange={(e) => setFormData(p => ({ ...p, scfhs_number: e.target.value }))} 
-                          className="inline-block border-0 w-2/3 h-5 px-1 text-right" 
-                          style={{ fontSize: '9px' }} 
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="border-l border-black p-1" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
-                        <strong style={{ fontWeight: 'bold' }}>End date of (internship\contract): </strong>
-                        <span className="inline-block w-2/3 mx-1">{formData.contract_end_date ? new Date(formData.contract_end_date).toLocaleDateString('en-GB') : ''}</span>
-                      </td>
-                      <td className="p-1 text-right" style={{ width: '50%', fontSize: '9px', borderBottom: 'none' }}>
-                        <strong style={{ fontWeight: 'bold' }}>تاريخ انتهاء (التدريب/ العقد): </strong>
-                        <span className="inline-block w-2/3 mx-1">{formData.contract_end_date ? new Date(formData.contract_end_date).toLocaleDateString('ar-SA') : ''}</span>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="border-l border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
-                        <strong style={{ fontWeight: 'bold' }}>Contact Phone: </strong>
-                        <Input 
-                          value={formData.contact_phone} 
-                          onChange={(e) => setFormData(p => ({ ...p, contact_phone: e.target.value }))} 
-                          className="inline-block border-0 w-2/3 h-5 px-1" 
-                          style={{ fontSize: '9px' }} 
-                        />
-                      </td>
-                      <td className="p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
-                        <strong style={{ fontWeight: 'bold' }}>رقم التواصل: </strong>
-                        <Input 
-                          value={formData.contact_phone} 
-                          onChange={(e) => setFormData(p => ({ ...p, contact_phone: e.target.value }))} 
-                          className="inline-block border-0 w-2/3 h-5 px-1 text-right" 
-                          style={{ fontSize: '9px' }} 
-                        />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                {/* المهنة */}
-                <table className="w-full border-collapse border border-black">
-                  <tbody>
-                    <tr>
-                      <td className="border border-black p-2 align-top" style={{ width: '50%' }}>
-                        <strong style={{ fontSize: '10px', fontWeight: 'bold' }}>*Occupation:</strong>
-                        <table className="w-full border-collapse mt-1">
-                          <tbody>
-                            <tr>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Receptionist</td>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.occupation.includes('استقبال')} onCheckedChange={() => handleOccupationToggle('استقبال')} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Nurse</td>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.occupation.includes('تمريض')} onCheckedChange={() => handleOccupationToggle('تمريض')} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>physician</td>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.occupation.includes('طبيب')} onCheckedChange={() => handleOccupationToggle('طبيب')} className="scale-75" /></td>
-                            </tr>
-                            <tr>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Facility Manger</td>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.occupation.includes('مدير منشأة')} onCheckedChange={() => handleOccupationToggle('مدير منشأة')} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Pharmacist</td>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.occupation.includes('صيدلي')} onCheckedChange={() => handleOccupationToggle('صيدلي')} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>Lab Technician</td>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.occupation.includes('مختبر')} onCheckedChange={() => handleOccupationToggle('مختبر')} className="scale-75" /></td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-
-                      <td className="border border-black p-2 align-top text-right" style={{ width: '50%' }}>
-                        <strong style={{ fontSize: '10px', fontWeight: 'bold' }}>المهنة :</strong>
-                        <table className="w-full border-collapse mt-1" dir="rtl">
-                          <tbody>
-                            <tr>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.occupation.includes('طبيب')} onCheckedChange={() => handleOccupationToggle('طبيب')} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>طبيب</td>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.occupation.includes('تمريض')} onCheckedChange={() => handleOccupationToggle('تمريض')} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>تمريض</td>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.occupation.includes('استقبال')} onCheckedChange={() => handleOccupationToggle('استقبال')} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>استقبال</td>
-                            </tr>
-                            <tr>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.occupation.includes('مختبر')} onCheckedChange={() => handleOccupationToggle('مختبر')} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>مختبر</td>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.occupation.includes('صيدلي')} onCheckedChange={() => handleOccupationToggle('صيدلي')} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>صيدلي</td>
-                              <td className="border border-black text-center p-0.5"><Checkbox checked={formData.occupation.includes('مدير منشأة')} onCheckedChange={() => handleOccupationToggle('مدير منشأة')} className="scale-75" /></td>
-                              <td className="border border-black text-center p-0.5" style={{ fontSize: '9px' }}>مدير منشأة</td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                {/* بيانات الجهة */}
-                <table className="w-full border-collapse border border-black">
-                  <tbody>
-                    <tr>
-                      <td className="border border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
-                        <strong style={{ fontWeight: 'bold' }}>Organization: </strong>
-                        <Input value={formData.organization} onChange={(e) => setFormData(p => ({ ...p, organization: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1" style={{ fontSize: '9px' }} />
-                      </td>
-                      <td className="border border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
-                        <strong style={{ fontWeight: 'bold' }}>المنشأة: </strong>
-                        <Input value={formData.organization} onChange={(e) => setFormData(p => ({ ...p, organization: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1 text-right" style={{ fontSize: '9px' }} />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="border border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
-                        <strong style={{ fontWeight: 'bold' }}>Department: </strong>
-                        <Input value={formData.department} onChange={(e) => setFormData(p => ({ ...p, department: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1" style={{ fontSize: '9px' }} />
-                      </td>
-                      <td className="border border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
-                        <strong style={{ fontWeight: 'bold' }}>القسم : </strong>
-                        <Input value={formData.department} onChange={(e) => setFormData(p => ({ ...p, department: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1 text-right" style={{ fontSize: '9px' }} />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="border border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
-                        <strong style={{ fontWeight: 'bold' }}>Specialization: </strong>
-                        <Input value={formData.specialization} onChange={(e) => setFormData(p => ({ ...p, specialization: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1" style={{ fontSize: '9px' }} />
-                      </td>
-                      <td className="border border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
-                        <strong style={{ fontWeight: 'bold' }}>التخصص: </strong>
-                        <Input value={formData.specialization} onChange={(e) => setFormData(p => ({ ...p, specialization: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1 text-right" style={{ fontSize: '9px' }} />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="border border-black p-1" style={{ width: '50%', fontSize: '9px' }}>
-                        <strong style={{ fontWeight: 'bold' }}>Recruitment privilege: </strong>
-                        <Input value={formData.recruitment_privilege} onChange={(e) => setFormData(p => ({ ...p, recruitment_privilege: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1" style={{ fontSize: '9px' }} />
-                      </td>
-                      <td className="border border-black p-1 text-right" style={{ width: '50%', fontSize: '9px' }}>
-                        <strong style={{ fontWeight: 'bold' }}>الصلاحيات المطلوبة : </strong>
-                        <Input value={formData.recruitment_privilege} onChange={(e) => setFormData(p => ({ ...p, recruitment_privilege: e.target.value }))} className="inline-block border-0 w-2/3 h-5 px-1 text-right" style={{ fontSize: '9px' }} />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                {/* التعهد */}
-                <table className="w-full border-collapse border border-black">
-                  <tbody>
-                    <tr>
-                      <td className="border border-black p-2 align-top" style={{ width: '50%' }}>
-                        <div className="border border-black p-2" style={{ fontSize: '8px', lineHeight: '1.3' }}>
-                          <p className="mb-1">I Will safeguard and will not disclose my username and password. Any access to informatio system by my username and password is my responsibility. If I believe someone else has logged into my account, I will immediately report the breach to digital health & technology department and will immediately change my password.</p>
-                          <p className="text-blue-600 text-center">med-hc-digital@moh.gov.sa</p>
-                        </div>
-                      </td>
-                      <td className="border border-black p-2 align-top text-right" style={{ width: '50%' }}>
-                        <div className="border border-black p-2" style={{ fontSize: '8px', lineHeight: '1.3' }}>
-                          <p className="mb-1">اتعهد بالمحافظة على اسم وكلمة السر الخاصة بي ولن اعطيها لأي شخص اخر، أي وصول إلى نظام المعلومات باستخدام اسم المستخدم. وكلمة المرور الخاصين بي هو مسؤوليتي وإذا علمت ان هناك شخص اخر استخدم حسابي فسوف أقوم بإبلاغ المسؤول بقسم الصحة الرقمية والتكنولوجيا عن ذلك وتغير كلمة السر .</p>
-                          <p className="text-blue-600 text-center">med-hc-digital@moh.gov.sa</p>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                {/* ملاحظة الرئيس المباشر */}
-                <table className="w-full border-collapse border border-black">
-                  <tbody>
-                    <tr>
-                      <td className="border border-black p-1.5" style={{ width: '50%', fontSize: '8px', lineHeight: '1.3' }}>
-                        <strong style={{ fontWeight: 'bold' }}>*The direct manager must provide us with the employee's data in the event of assignment or transfer outside the center or hospital.</strong>
-                      </td>
-                      <td className="border border-black p-1.5 text-right" style={{ width: '50%', fontSize: '8px', lineHeight: '1.3' }}>
-                        <strong style={{ fontWeight: 'bold' }}>* على الرئيس المباشر تزويدنا ببيانات الموظف في حال التكليف او النقل خارج المركز أو المستشفى</strong>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                {/* التوقيعات */}
-                <table className="w-full border-collapse border border-black">
-                  <tbody>
-                    <tr>
-                      <td className="border border-black p-2 text-center align-top" style={{ fontSize: '10px', width: '33%' }}>
-                        <strong style={{ fontWeight: 'bold' }}>الختم</strong>
-                        <div className="mt-8"></div>
-                      </td>
-                      <td className="border border-black p-2 text-center align-top" style={{ fontSize: '10px', width: '34%' }}>
-                        <div>
-                          <strong style={{ fontWeight: 'bold' }}>اعتماد الرئيس المباشر</strong>
-                          <div className="mt-1 text-right px-2" style={{ fontSize: '9px' }}>
-                            <strong>الاسم:</strong> {formData.direct_manager_name}
-                          </div>
-                          <div className="text-left px-2" style={{ fontSize: '8px', color: '#666' }}>
-                            <strong>Name:</strong> {formData.direct_manager_name_english}
-                          </div>
-                          <div className="mt-4 border-b border-dotted border-gray-600 mx-4"></div>
-                          <div className="text-xs text-gray-500 mt-1">التوقيع</div>
-                        </div>
-                      </td>
-                      <td className="border border-black p-2 text-center align-top" style={{ fontSize: '10px', width: '33%' }}>
-                        <div>
-                          <strong style={{ fontWeight: 'bold' }}>اسم الموظف</strong>
-                          <div className="mt-1 text-right px-2" style={{ fontSize: '9px' }}>
-                            <strong>{formData.employee_name_arabic}</strong>
-                          </div>
-                          <div className="text-left px-2" style={{ fontSize: '8px', color: '#666' }}>
-                            {formData.employee_name_english}
-                          </div>
-                          <div className="mt-4 border-b border-dotted border-gray-600 mx-4"></div>
-                          <div className="text-xs text-gray-500 mt-1">التوقيع</div>
-                        </div>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Footer */}
-              <div className="text-center py-2" style={{ fontSize: '10px' }}>
-                <div className="h-8 bg-gradient-to-r from-transparent via-blue-400 to-transparent" style={{ height: '3px', margin: '8px 0' }}></div>
-                <p className="font-bold text-blue-600">تجمع المدينة الصحي</p>
-                <p className="text-gray-600" style={{ fontSize: '9px' }}>Madinah Health Cluster</p>
-                <p className="text-gray-400" style={{ fontSize: '8px' }}>Empowered by Health Holding co.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {isEditMode && (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-purple-600 text-white px-6 py-3 rounded-full shadow-2xl z-50">
-          <p className="text-sm font-medium">🎨 وضع التحرير نشط - اضغط على أي عنصر لتعديله</p>
-        </div>
-      )}
-
+    <div className="min-h-screen bg-gray-100 p-4" dir="rtl">
       <style>{`
         @media print {
-          @page {
-            size: A4;
-            margin: 0;
-          }
-          
-          .print-background {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            width: 210mm !important;
-            height: 297mm !important;
-            background-size: 210mm 297mm !important;
-            background-position: center !important;
-            background-repeat: no-repeat !important;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-            z-index: -1 !important;
-            visibility: visible !important;
-          }
-          
           body * { visibility: hidden; }
           .print-area, .print-area * { visibility: visible; }
-          .print-background { visibility: visible !important; }
           .print-area {
             position: absolute;
             left: 0;
             top: 0;
-            width: 100%;
-            padding: 20mm;
-            background: transparent !important;
+            width: 210mm;
+            padding: 10mm 15mm;
+            direction: rtl;
+            background-image: url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/a3b5521d7_image.png) !important;
+            background-size: 100% 100% !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           .no-print { display: none !important; }
+          @page { size: A4 portrait; margin: 0; }
         }
-        ${isEditMode ? `
-          .cursor-pointer:hover {
-            outline: 2px dashed #a855f7;
-            outline-offset: 2px;
-          }
-        ` : ''}
+        
+        .editable-cell {
+          padding: 4px 8px;
+          outline: none;
+          text-align: center;
+          min-height: 24px;
+        }
+        
+        .editable-cell:focus {
+          background-color: #f0f9ff;
+        }
+        
+        table {
+          border-collapse: collapse;
+          width: 100%;
+        }
+        
+        td {
+          border: 1px solid #000;
+          padding: 4px 8px;
+          font-size: 11px;
+          vertical-align: middle;
+        }
+        
+        .form-title {
+          background-color: #e6f2ff;
+          font-weight: bold;
+          text-align: center;
+          padding: 8px;
+          font-size: 14px;
+        }
       `}</style>
-    </>
+
+      {/* Controls */}
+      <div className="no-print max-w-4xl mx-auto mb-4 flex flex-wrap gap-2 justify-between items-center">
+        <Select onValueChange={handleEmployeeSelect}>
+          <SelectTrigger className="w-64">
+            <SelectValue placeholder="اختر الموظف..." />
+          </SelectTrigger>
+          <SelectContent>
+            {employees.map(emp => (
+              <SelectItem key={emp.id} value={emp.id}>
+                {emp.full_name_arabic}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        
+        <div className="flex gap-2">
+          <Button onClick={handlePrint} variant="outline" className="gap-2">
+            <Printer className="w-4 h-4" />
+            طباعة
+          </Button>
+          <Button onClick={handleExportPDF} className="gap-2 bg-red-600 hover:bg-red-700">
+            <Download className="w-4 h-4" />
+            PDF
+          </Button>
+        </div>
+      </div>
+
+      {/* Form */}
+      <div 
+        ref={printRef}
+        className="print-area max-w-4xl mx-auto bg-white shadow-lg"
+        style={{ 
+          padding: '30px 40px',
+          fontFamily: 'Arial, sans-serif',
+          backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/a3b5521d7_image.png)',
+          backgroundSize: '100% 100%',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          minHeight: '297mm'
+        }}
+      >
+        {/* Header */}
+        <div className="flex justify-between items-start mb-6" style={{ marginTop: '40px' }}>
+          <div className="text-left" style={{ flex: 1 }}>
+            <h2 className="text-sm font-bold" style={{ color: '#0ea5e9' }}>
+              Shared Services for Digital Health & Technology
+            </h2>
+            <p className="text-xs" style={{ color: '#0ea5e9', marginTop: '4px' }}>
+              Med-hc-digital@moh.gov.sa
+            </p>
+          </div>
+          
+          <div style={{ width: '2px', backgroundColor: '#0ea5e9', height: '40px', margin: '0 20px' }}></div>
+          
+          <div className="text-right" style={{ flex: 1 }}>
+            <h2 className="text-sm font-bold" style={{ color: '#0ea5e9' }}>
+              الخدمات المشتركة للصحة الرقمية والتقنية
+            </h2>
+          </div>
+        </div>
+
+        {/* Form Title */}
+        <div className="form-title" style={{ marginBottom: '15px' }}>
+          نموذج انشاء إيقاف حساب
+        </div>
+
+        {/* Main Table */}
+        <table style={{ fontSize: '10px' }}>
+          <tbody>
+            {/* System Row */}
+            <tr>
+              <td style={{ width: '50%', padding: '8px' }}>
+                <div className="flex items-center justify-between">
+                  <span style={{ fontWeight: 'bold' }}>*System:</span>
+                  <div className="flex gap-4" style={{ fontSize: '10px' }}>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox" 
+                        checked={formData.systemRaqeem}
+                        onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.systemRaqeem && '☑'} Raqeem</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.systemMedica}
+                        onChange={(e) => handleInputChange('systemMedica', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.systemMedica && '☑'} Medica cloud</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.systemMawid}
+                        onChange={(e) => handleInputChange('systemMawid', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.systemMawid && '☑'} Mawid</span>
+                    </label>
+                  </div>
+                </div>
+              </td>
+              <td style={{ width: '50%', padding: '8px', textAlign: 'right' }}>
+                <div className="flex items-center justify-between">
+                  <div className="flex gap-4" style={{ fontSize: '10px' }}>
+                    <label className="flex items-center gap-1">
+                      <span>رقيم {formData.systemRaqeem && '☑'}</span>
+                      <input 
+                        type="checkbox"
+                        checked={formData.systemRaqeem}
+                        onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)}
+                        className="no-print"
+                      />
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <span>ميديكا كلاود {formData.systemMedica && '☑'}</span>
+                      <input 
+                        type="checkbox"
+                        checked={formData.systemMedica}
+                        onChange={(e) => handleInputChange('systemMedica', e.target.checked)}
+                        className="no-print"
+                      />
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <span>موعد {formData.systemMawid && '☑'}</span>
+                      <input 
+                        type="checkbox"
+                        checked={formData.systemMawid}
+                        onChange={(e) => handleInputChange('systemMawid', e.target.checked)}
+                        className="no-print"
+                      />
+                    </label>
+                  </div>
+                  <span style={{ fontWeight: 'bold' }}>:النظام*</span>
+                </div>
+              </td>
+            </tr>
+
+            {/* Request Type Row */}
+            <tr>
+              <td style={{ padding: '8px' }}>
+                <div>
+                  <span style={{ fontWeight: 'bold' }}>*Type of Request:</span>
+                  <div className="grid grid-cols-2 gap-2 mt-2" style={{ fontSize: '10px' }}>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.createNew}
+                        onChange={(e) => handleInputChange('createNew', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.createNew && '☑'} Create a new user name</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.restorePassword}
+                        onChange={(e) => handleInputChange('restorePassword', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.restorePassword && '☑'} Restore password</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.deleteUser}
+                        onChange={(e) => handleInputChange('deleteUser', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.deleteUser && '☑'} Delete a user name</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.relocateUser}
+                        onChange={(e) => handleInputChange('relocateUser', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.relocateUser && '☑'} Relocate a user name</span>
+                    </label>
+                  </div>
+                </div>
+              </td>
+              <td style={{ padding: '8px', textAlign: 'right' }}>
+                <div>
+                  <span style={{ fontWeight: 'bold' }}>:نوع الطلب*</span>
+                  <div className="grid grid-cols-2 gap-2 mt-2" style={{ fontSize: '10px' }}>
+                    <label className="flex items-center gap-1 justify-end">
+                      <span>استعادة كلمة مرور {formData.restorePassword && '☑'}</span>
+                      <input 
+                        type="checkbox"
+                        checked={formData.restorePassword}
+                        onChange={(e) => handleInputChange('restorePassword', e.target.checked)}
+                        className="no-print"
+                      />
+                    </label>
+                    <label className="flex items-center gap-1 justify-end">
+                      <span>انشاء مستخدم جديد {formData.createNew && '☑'}</span>
+                      <input 
+                        type="checkbox"
+                        checked={formData.createNew}
+                        onChange={(e) => handleInputChange('createNew', e.target.checked)}
+                        className="no-print"
+                      />
+                    </label>
+                    <label className="flex items-center gap-1 justify-end">
+                      <span>نقل اسم مستخدم {formData.relocateUser && '☑'}</span>
+                      <input 
+                        type="checkbox"
+                        checked={formData.relocateUser}
+                        onChange={(e) => handleInputChange('relocateUser', e.target.checked)}
+                        className="no-print"
+                      />
+                    </label>
+                    <label className="flex items-center gap-1 justify-end">
+                      <span>الغاء اسم مستخدم {formData.deleteUser && '☑'}</span>
+                      <input 
+                        type="checkbox"
+                        checked={formData.deleteUser}
+                        onChange={(e) => handleInputChange('deleteUser', e.target.checked)}
+                        className="no-print"
+                      />
+                    </label>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            {/* Reason Row */}
+            <tr>
+              <td style={{ padding: '8px' }}>
+                <span style={{ fontWeight: 'bold' }}>*Reason: </span>
+                <span 
+                  className="editable-cell"
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={(e) => handleInputChange('reason', e.currentTarget.textContent)}
+                  style={{ display: 'inline-block', minWidth: '300px', borderBottom: '1px dotted #999' }}
+                >
+                  {formData.reason}
+                </span>
+              </td>
+              <td style={{ padding: '8px', textAlign: 'right' }}>
+                <span 
+                  className="editable-cell"
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={(e) => handleInputChange('reason', e.currentTarget.textContent)}
+                  style={{ display: 'inline-block', minWidth: '300px', borderBottom: '1px dotted #999' }}
+                >
+                  {formData.reason}
+                </span>
+                <span style={{ fontWeight: 'bold' }}> :السبب*</span>
+              </td>
+            </tr>
+
+            {/* Staff Name Section */}
+            <tr>
+              <td colSpan="2" style={{ padding: '8px' }}>
+                <div className="flex justify-between">
+                  <div style={{ width: '48%' }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>*Staff Name:</div>
+                    <div className="space-y-2">
+                      <div className="flex items-center">
+                        <span style={{ width: '60px' }}>First:</span>
+                        <span 
+                          className="editable-cell"
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) => handleInputChange('firstName', e.currentTarget.textContent)}
+                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
+                        >
+                          {formData.firstName}
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <span style={{ width: '60px' }}>Second:</span>
+                        <span 
+                          className="editable-cell"
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) => handleInputChange('secondName', e.currentTarget.textContent)}
+                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
+                        >
+                          {formData.secondName}
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <span style={{ width: '60px' }}>Third:</span>
+                        <span 
+                          className="editable-cell"
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) => handleInputChange('thirdName', e.currentTarget.textContent)}
+                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
+                        >
+                          {formData.thirdName}
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <span style={{ width: '60px' }}>Family:</span>
+                        <span 
+                          className="editable-cell"
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) => handleInputChange('familyName', e.currentTarget.textContent)}
+                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
+                        >
+                          {formData.familyName}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div style={{ width: '48%', textAlign: 'right' }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>:اسم الموظف*</div>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-end">
+                        <span 
+                          className="editable-cell"
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) => handleInputChange('firstName', e.currentTarget.textContent)}
+                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
+                        >
+                          {formData.firstName}
+                        </span>
+                        <span style={{ width: '60px', textAlign: 'right' }}>: الأول</span>
+                      </div>
+                      <div className="flex items-center justify-end">
+                        <span 
+                          className="editable-cell"
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) => handleInputChange('secondName', e.currentTarget.textContent)}
+                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
+                        >
+                          {formData.secondName}
+                        </span>
+                        <span style={{ width: '60px', textAlign: 'right' }}>: الثاني</span>
+                      </div>
+                      <div className="flex items-center justify-end">
+                        <span 
+                          className="editable-cell"
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) => handleInputChange('thirdName', e.currentTarget.textContent)}
+                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
+                        >
+                          {formData.thirdName}
+                        </span>
+                        <span style={{ width: '60px', textAlign: 'right' }}>: الثالث</span>
+                      </div>
+                      <div className="flex items-center justify-end">
+                        <span 
+                          className="editable-cell"
+                          contentEditable
+                          suppressContentEditableWarning
+                          onBlur={(e) => handleInputChange('familyName', e.currentTarget.textContent)}
+                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
+                        >
+                          {formData.familyName}
+                        </span>
+                        <span style={{ width: '60px', textAlign: 'right' }}>: العائلة</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            {/* ID and Other Info */}
+            {[
+              { enLabel: 'ID NO:', arLabel: 'رقم الهوية/ الإقامة:', field: 'idNumber' },
+              { enLabel: 'Date of birth:', arLabel: 'تاريخ الميلاد:', field: 'birthDate' },
+              { enLabel: 'MOH email:', arLabel: 'البريد الوزاري:', field: 'mohEmail' },
+              { enLabel: 'SCFHS number:', arLabel: 'رقم التصنيف إن وجد:', field: 'scfhsNumber' },
+              { enLabel: 'End date of (internship\\contract):', arLabel: 'تاريخ انتهاء (التدريب/ العقد):', field: 'endDate' },
+              { enLabel: 'Contact Phone:', arLabel: 'رقم التواصل:', field: 'contactPhone' }
+            ].map((item, idx) => (
+              <tr key={idx}>
+                <td style={{ padding: '8px' }}>
+                  <span style={{ fontWeight: 'bold' }}>{item.enLabel} </span>
+                  <span 
+                    className="editable-cell"
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)}
+                    style={{ display: 'inline-block', minWidth: '250px', borderBottom: '1px dotted #999' }}
+                  >
+                    {formData[item.field]}
+                  </span>
+                </td>
+                <td style={{ padding: '8px', textAlign: 'right' }}>
+                  <span 
+                    className="editable-cell"
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)}
+                    style={{ display: 'inline-block', minWidth: '250px', borderBottom: '1px dotted #999' }}
+                  >
+                    {formData[item.field]}
+                  </span>
+                  <span style={{ fontWeight: 'bold' }}> {item.arLabel}</span>
+                </td>
+              </tr>
+            ))}
+
+            {/* Occupation Row */}
+            <tr>
+              <td style={{ padding: '8px' }}>
+                <div>
+                  <span style={{ fontWeight: 'bold' }}>*Occupation:</span>
+                  <div className="grid grid-cols-3 gap-2 mt-2" style={{ fontSize: '10px' }}>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.receptionist}
+                        onChange={(e) => handleInputChange('receptionist', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.receptionist && '☑'} Receptionist</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.nurse}
+                        onChange={(e) => handleInputChange('nurse', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.nurse && '☑'} Nurse</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.physician}
+                        onChange={(e) => handleInputChange('physician', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.physician && '☑'} physician</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.facilityManager}
+                        onChange={(e) => handleInputChange('facilityManager', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.facilityManager && '☑'} Facility Manger</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.pharmacist}
+                        onChange={(e) => handleInputChange('pharmacist', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.pharmacist && '☑'} Pharmacist</span>
+                    </label>
+                    <label className="flex items-center gap-1">
+                      <input 
+                        type="checkbox"
+                        checked={formData.labTechnician}
+                        onChange={(e) => handleInputChange('labTechnician', e.target.checked)}
+                        className="no-print"
+                      />
+                      <span>{formData.labTechnician && '☑'} Lab Technician</span>
+                    </label>
+                  </div>
+                </div>
+              </td>
+              <td style={{ padding: '8px', textAlign: 'right' }}>
+                <div>
+                  <span style={{ fontWeight: 'bold' }}>:المهنة*</span>
+                  <div className="grid grid-cols-3 gap-2 mt-2" style={{ fontSize: '10px' }}>
+                    <label className="flex items-center gap-1 justify-end">
+                      <span>طبيب {formData.physician && '☑'}</span>
+                      <input 
+                        type="checkbox"
+                        checked={formData.physician}
+                        onChange={(e) => handleInputChange('physician', e.target.checked)}
+                        className="no-print"
+                      />
+                    </label>
+                    <label className="flex items-center gap-1 justify-end">
+                      <span>تمريض {formData.nurse && '☑'}</span>
+                      <input 
+                        type="checkbox"
+                        checked={formData.nurse}
+                        onChange={(e) => handleInputChange('nurse', e.target.checked)}
+                        className="no-print"
+                      />
+                    </label>
+                    <label className="flex items-center gap-1 justify-end">
+                      <span>استقبال {formData.receptionist && '☑'}</span>
+                      <input 
+                        type="checkbox"
+                        checked={formData.receptionist}
+                        onChange={(e) => handleInputChange('receptionist', e.target.checked)}
+                        className="no-print"
+                      />
+                    </label>
+                    <label className="flex items-center gap-1 justify-end">
+                      <span>صيدلي {formData.pharmacist && '☑'}</span>
+                      <input 
+                        type="checkbox"
+                        checked={formData.pharmacist}
+                        onChange={(e) => handleInputChange('pharmacist', e.target.checked)}
+                        className="no-print"
+                      />
+                    </label>
+                    <label className="flex items-center gap-1 justify-end">
+                      <span>مختبر {formData.labTechnician && '☑'}</span>
+                      <input 
+                        type="checkbox"
+                        checked={formData.labTechnician}
+                        onChange={(e) => handleInputChange('labTechnician', e.target.checked)}
+                        className="no-print"
+                      />
+                    </label>
+                    <label className="flex items-center gap-1 justify-end">
+                      <span>مدير منشأة {formData.facilityManager && '☑'}</span>
+                      <input 
+                        type="checkbox"
+                        checked={formData.facilityManager}
+                        onChange={(e) => handleInputChange('facilityManager', e.target.checked)}
+                        className="no-print"
+                      />
+                    </label>
+                  </div>
+                </div>
+              </td>
+            </tr>
+
+            {/* Additional Info */}
+            {[
+              { enLabel: 'Organization:', arLabel: 'المنشأة:', field: 'organization' },
+              { enLabel: 'Department:', arLabel: 'القسم:', field: 'department' },
+              { enLabel: 'Specialization:', arLabel: 'التخصص:', field: 'specialization' },
+              { enLabel: 'Recruitment privilege:', arLabel: 'الصلاحيات المطلوبة:', field: 'recruitmentPrivilege' }
+            ].map((item, idx) => (
+              <tr key={idx}>
+                <td style={{ padding: '8px' }}>
+                  <span style={{ fontWeight: 'bold' }}>{item.enLabel} </span>
+                  <span 
+                    className="editable-cell"
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)}
+                    style={{ display: 'inline-block', minWidth: '250px', borderBottom: '1px dotted #999' }}
+                  >
+                    {formData[item.field]}
+                  </span>
+                </td>
+                <td style={{ padding: '8px', textAlign: 'right' }}>
+                  <span 
+                    className="editable-cell"
+                    contentEditable
+                    suppressContentEditableWarning
+                    onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)}
+                    style={{ display: 'inline-block', minWidth: '250px', borderBottom: '1px dotted #999' }}
+                  >
+                    {formData[item.field]}
+                  </span>
+                  <span style={{ fontWeight: 'bold' }}> {item.arLabel}</span>
+                </td>
+              </tr>
+            ))}
+
+            {/* Commitment Statement */}
+            <tr>
+              <td style={{ padding: '12px', fontSize: '9px', lineHeight: '1.6' }}>
+                <p>
+                  I Will safeguard and will not disclose my username and password. Any access to information system by my username and password is my responsibility. If I believe someone else has logged into my account, I will immediately report the breach to digital health & technology department and will immediately change my password.
+                </p>
+                <p style={{ textAlign: 'center', marginTop: '8px', fontWeight: 'bold', color: '#0ea5e9' }}>
+                  med-hc-digital@moh.gov.sa
+                </p>
+              </td>
+              <td style={{ padding: '12px', fontSize: '9px', lineHeight: '1.6', textAlign: 'right' }}>
+                <p>
+                  اتعهد بالمحافظة على اسم وكلمة السر الخاصة بي ولن اعطيها لأي شخص اخر، أي وصول إلى نظام المعلومات باستخدام اسم المستخدم. وكلمة المرور الخاصين بي هو مسؤوليتي وإذا علمت ان هناك شخص اخر استخدم حسابي فسوف أقوم بإبلاغ المسؤول بقسم الصحة الرقمية والتكنولوجيا عن ذلك وتغير كلمة السر.
+                </p>
+                <p style={{ textAlign: 'center', marginTop: '8px', fontWeight: 'bold', color: '#0ea5e9' }}>
+                  med-hc-digital@moh.gov.sa
+                </p>
+              </td>
+            </tr>
+
+            {/* Manager Note */}
+            <tr>
+              <td style={{ padding: '8px', fontSize: '9px' }}>
+                <p style={{ fontWeight: 'bold' }}>
+                  *The direct manager must provide us with the employee's data in the event of assignment or transfer outside the center or hospital.
+                </p>
+              </td>
+              <td style={{ padding: '8px', fontSize: '9px', textAlign: 'right' }}>
+                <p style={{ fontWeight: 'bold' }}>
+                  * على الرئيس المباشر تزويدنا ببيانات الموظف في حال التكليف او النقل خارج المركز أو المستشفى
+                </p>
+              </td>
+            </tr>
+
+            {/* Approval Section */}
+            <tr>
+              <td colSpan="2" style={{ padding: '8px' }}>
+                <div className="flex justify-between items-center">
+                  <div style={{ width: '30%', textAlign: 'left' }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>Direct Manager Approval</div>
+                    <span 
+                      className="editable-cell"
+                      contentEditable
+                      suppressContentEditableWarning
+                      onBlur={(e) => handleInputChange('managerApproval', e.currentTarget.textContent)}
+                      style={{ display: 'block', borderBottom: '1px solid #999', minHeight: '30px' }}
+                    >
+                      {formData.managerApproval}
+                    </span>
+                  </div>
+                  
+                  <div style={{ width: '30%', textAlign: 'center' }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>Stamp</div>
+                    <div style={{ border: '1px solid #999', height: '60px' }}>
+                      
+                    </div>
+                  </div>
+                  
+                  <div style={{ width: '30%', textAlign: 'right' }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>اسم الموظف:</div>
+                    <span 
+                      className="editable-cell"
+                      contentEditable
+                      suppressContentEditableWarning
+                      onBlur={(e) => handleInputChange('employeeName', e.currentTarget.textContent)}
+                      style={{ display: 'block', borderBottom: '1px solid #999', minHeight: '30px' }}
+                    >
+                      {formData.employeeName}
+                    </span>
+                  </div>
+                </div>
+                
+                <div className="flex justify-around mt-4" style={{ fontSize: '10px' }}>
+                  <div style={{ textAlign: 'center' }}>اعتماد الرئيس المباشر</div>
+                  <div style={{ textAlign: 'center' }}>الختم</div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
