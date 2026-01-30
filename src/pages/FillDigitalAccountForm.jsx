@@ -186,6 +186,14 @@ export default function FillDigitalAccountForm() {
           border: 1px solid #000;
           vertical-align: top;
         }
+        .print-only {
+          display: none;
+        }
+        @media print {
+          .print-only {
+            display: inline;
+          }
+        }
       `}</style>
 
       {/* Controls */}
@@ -251,20 +259,60 @@ export default function FillDigitalAccountForm() {
             {/* Row 2: Content - النظام */}
             <tr>
               <td style={{ width: '50%', padding: '8px', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
-                <span style={{ fontWeight: 'bold' }}>النظام:</span>
-                <div className="flex gap-4 mt-2 justify-end">
-                  <CheckboxField checked={formData.systemRaqeem} onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)} labelAr="رقيم" isArabic />
-                  <CheckboxField checked={formData.systemMedica} onChange={(e) => handleInputChange('systemMedica', e.target.checked)} labelAr="ميديكا كلاود" isArabic />
-                  <CheckboxField checked={formData.systemMawid} onChange={(e) => handleInputChange('systemMawid', e.target.checked)} labelAr="موعد" isArabic />
-                </div>
+                <span style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>النظام:</span>
+                <table style={{ width: '100%', borderCollapse: 'collapse', border: '2px solid #000' }}>
+                  <tbody>
+                    <tr>
+                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                        <input type="checkbox" checked={formData.systemRaqeem} onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
+                        {formData.systemRaqeem && <span className="print-only">☑</span>}
+                      </td>
+                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>رقيم</td>
+                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                        <input type="checkbox" checked={formData.systemMedica} onChange={(e) => handleInputChange('systemMedica', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
+                        {formData.systemMedica && <span className="print-only">☑</span>}
+                      </td>
+                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>ميديكا كلاود</td>
+                    </tr>
+                    <tr>
+                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                        <input type="checkbox" checked={formData.systemMawid} onChange={(e) => handleInputChange('systemMawid', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
+                        {formData.systemMawid && <span className="print-only">☑</span>}
+                      </td>
+                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>موعد</td>
+                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}></td>
+                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}></td>
+                    </tr>
+                  </tbody>
+                </table>
               </td>
               <td style={{ width: '50%', padding: '8px', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
-                <span style={{ fontWeight: 'bold' }}>*System:</span>
-                <div className="flex gap-4 mt-2">
-                  <CheckboxField checked={formData.systemRaqeem} onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)} labelEn="Raqeem" />
-                  <CheckboxField checked={formData.systemMedica} onChange={(e) => handleInputChange('systemMedica', e.target.checked)} labelEn="Medica cloud" />
-                  <CheckboxField checked={formData.systemMawid} onChange={(e) => handleInputChange('systemMawid', e.target.checked)} labelEn="Mawid" />
-                </div>
+                <span style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>*System:</span>
+                <table style={{ width: '100%', borderCollapse: 'collapse', border: '2px solid #000' }}>
+                  <tbody>
+                    <tr>
+                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                        <input type="checkbox" checked={formData.systemRaqeem} onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
+                        {formData.systemRaqeem && <span className="print-only">☑</span>}
+                      </td>
+                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Raqeem</td>
+                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                        <input type="checkbox" checked={formData.systemMedica} onChange={(e) => handleInputChange('systemMedica', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
+                        {formData.systemMedica && <span className="print-only">☑</span>}
+                      </td>
+                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Medica cloud</td>
+                    </tr>
+                    <tr>
+                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                        <input type="checkbox" checked={formData.systemMawid} onChange={(e) => handleInputChange('systemMawid', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
+                        {formData.systemMawid && <span className="print-only">☑</span>}
+                      </td>
+                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Mawid</td>
+                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}></td>
+                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}></td>
+                    </tr>
+                  </tbody>
+                </table>
               </td>
             </tr>
             {/* Separator */}
