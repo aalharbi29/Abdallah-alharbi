@@ -260,56 +260,56 @@ export default function FillDigitalAccountForm() {
             <tr>
               <td style={{ width: '50%', padding: '8px', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 <span style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>النظام:</span>
-                <table style={{ width: '100%', borderCollapse: 'collapse', border: '2px solid #000' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #000' }}>
                   <tbody>
                     <tr>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
                         <input type="checkbox" checked={formData.systemRaqeem} onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.systemRaqeem && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>رقيم</td>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>رقيم</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
                         <input type="checkbox" checked={formData.systemMedica} onChange={(e) => handleInputChange('systemMedica', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.systemMedica && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>ميديكا كلاود</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>ميديكا كلاود</td>
                     </tr>
                     <tr>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
                         <input type="checkbox" checked={formData.systemMawid} onChange={(e) => handleInputChange('systemMawid', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.systemMawid && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>موعد</td>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}></td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}></td>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>موعد</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}></td>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}></td>
                     </tr>
                   </tbody>
                 </table>
               </td>
               <td style={{ width: '50%', padding: '8px', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <span style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>*System:</span>
-                <table style={{ width: '100%', borderCollapse: 'collapse', border: '2px solid #000' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #000' }}>
                   <tbody>
                     <tr>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
                         <input type="checkbox" checked={formData.systemRaqeem} onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.systemRaqeem && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Raqeem</td>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>Raqeem</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
                         <input type="checkbox" checked={formData.systemMedica} onChange={(e) => handleInputChange('systemMedica', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.systemMedica && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Medica cloud</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>Medica cloud</td>
                     </tr>
                     <tr>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
                         <input type="checkbox" checked={formData.systemMawid} onChange={(e) => handleInputChange('systemMawid', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.systemMawid && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Mawid</td>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}></td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}></td>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>Mawid</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}></td>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}></td>
                     </tr>
                   </tbody>
                 </table>
@@ -326,62 +326,62 @@ export default function FillDigitalAccountForm() {
             <tr>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 <span style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>نوع الطلب:</span>
-                <table style={{ width: '100%', borderCollapse: 'collapse', border: '2px solid #000' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #000' }}>
                   <tbody>
                     <tr>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
                         <input type="checkbox" checked={formData.createNew} onChange={(e) => handleInputChange('createNew', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.createNew && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>انشاء مستخدم جديد</td>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>انشاء مستخدم جديد</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
                         <input type="checkbox" checked={formData.restorePassword} onChange={(e) => handleInputChange('restorePassword', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.restorePassword && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>استعادة كلمة مرور</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>استعادة كلمة مرور</td>
                     </tr>
                     <tr>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
                         <input type="checkbox" checked={formData.deleteUser} onChange={(e) => handleInputChange('deleteUser', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.deleteUser && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>الغاء اسم مستخدم</td>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>الغاء اسم مستخدم</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
                         <input type="checkbox" checked={formData.relocateUser} onChange={(e) => handleInputChange('relocateUser', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.relocateUser && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>نقل اسم مستخدم</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>نقل اسم مستخدم</td>
                     </tr>
                   </tbody>
                 </table>
               </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <span style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>*Type of Request:</span>
-                <table style={{ width: '100%', borderCollapse: 'collapse', border: '2px solid #000' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #000' }}>
                   <tbody>
                     <tr>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
                         <input type="checkbox" checked={formData.createNew} onChange={(e) => handleInputChange('createNew', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.createNew && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Create a new user name</td>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>Create a new user name</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
                         <input type="checkbox" checked={formData.restorePassword} onChange={(e) => handleInputChange('restorePassword', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.restorePassword && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Restore password</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>Restore password</td>
                     </tr>
                     <tr>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
                         <input type="checkbox" checked={formData.deleteUser} onChange={(e) => handleInputChange('deleteUser', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.deleteUser && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Delete a user name</td>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>Delete a user name</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
                         <input type="checkbox" checked={formData.relocateUser} onChange={(e) => handleInputChange('relocateUser', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.relocateUser && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Relocate a user name</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>Relocate a user name</td>
                     </tr>
                   </tbody>
                 </table>
@@ -510,41 +510,41 @@ export default function FillDigitalAccountForm() {
             <tr>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 <span style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>المهنة:</span>
-                <table style={{ width: '100%', borderCollapse: 'collapse', border: '2px solid #000' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #000' }}>
                   <tbody>
                     <tr>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
                         <input type="checkbox" checked={formData.physician} onChange={(e) => handleInputChange('physician', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.physician && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>طبيب</td>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>طبيب</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
                         <input type="checkbox" checked={formData.nurse} onChange={(e) => handleInputChange('nurse', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.nurse && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>تمريض</td>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>تمريض</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
                         <input type="checkbox" checked={formData.receptionist} onChange={(e) => handleInputChange('receptionist', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.receptionist && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>استقبال</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>استقبال</td>
                     </tr>
                     <tr>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
                         <input type="checkbox" checked={formData.pharmacist} onChange={(e) => handleInputChange('pharmacist', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.pharmacist && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>صيدلي</td>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>صيدلي</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
                         <input type="checkbox" checked={formData.labTechnician} onChange={(e) => handleInputChange('labTechnician', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.labTechnician && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>مختبر</td>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>مختبر</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
                         <input type="checkbox" checked={formData.facilityManager} onChange={(e) => handleInputChange('facilityManager', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.facilityManager && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>مدير منشأة</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>مدير منشأة</td>
                     </tr>
                   </tbody>
                 </table>
@@ -566,41 +566,41 @@ export default function FillDigitalAccountForm() {
               </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <span style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>*Occupation:</span>
-                <table style={{ width: '100%', borderCollapse: 'collapse', border: '2px solid #000' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', border: '1px solid #000' }}>
                   <tbody>
                     <tr>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
                         <input type="checkbox" checked={formData.physician} onChange={(e) => handleInputChange('physician', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.physician && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Physician</td>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>Physician</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
                         <input type="checkbox" checked={formData.nurse} onChange={(e) => handleInputChange('nurse', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.nurse && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Nurse</td>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>Nurse</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
                         <input type="checkbox" checked={formData.receptionist} onChange={(e) => handleInputChange('receptionist', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.receptionist && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Receptionist</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>Receptionist</td>
                     </tr>
                     <tr>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
                         <input type="checkbox" checked={formData.pharmacist} onChange={(e) => handleInputChange('pharmacist', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.pharmacist && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Pharmacist</td>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>Pharmacist</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
                         <input type="checkbox" checked={formData.labTechnician} onChange={(e) => handleInputChange('labTechnician', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.labTechnician && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Lab Technician</td>
-                      <td style={{ border: '2px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>Lab Technician</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center', backgroundColor: '#f0f0f0' }}>
                         <input type="checkbox" checked={formData.facilityManager} onChange={(e) => handleInputChange('facilityManager', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.facilityManager && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '2px solid #000', padding: '4px', fontSize: '10px' }}>Facility Manager</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>Facility Manager</td>
                     </tr>
                   </tbody>
                 </table>
@@ -625,7 +625,7 @@ export default function FillDigitalAccountForm() {
             {/* التعهد */}
             <tr>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
-                <div style={{ backgroundColor: '#f8f9fa', padding: '8px', fontSize: '9px', lineHeight: '1.5', border: '2px solid #000' }}>
+                <div style={{ backgroundColor: '#f8f9fa', padding: '8px', fontSize: '9px', lineHeight: '1.5', border: '1px solid #000' }}>
                   <p>
                     اتعهد بالمحافظة على اسم وكلمة السر الخاصة بي ولن اعطيها لأي شخص اخر، أي وصول إلى نظام المعلومات باستخدام اسم المستخدم وكلمة المرور الخاصين بي هو مسؤوليتي وإذا علمت ان هناك شخص اخر استخدم حسابي فسوف أقوم بإبلاغ المسؤول بقسم الصحة الرقمية والتكنولوجيا عن ذلك وتغير كلمة السر.
                   </p>
@@ -638,7 +638,7 @@ export default function FillDigitalAccountForm() {
                 </div>
               </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
-                <div style={{ backgroundColor: '#f8f9fa', padding: '8px', fontSize: '9px', lineHeight: '1.5', border: '2px solid #000' }}>
+                <div style={{ backgroundColor: '#f8f9fa', padding: '8px', fontSize: '9px', lineHeight: '1.5', border: '1px solid #000' }}>
                   <p>
                     I Will safeguard and will not disclose my username and password. Any access to information system by my username and password is my responsibility. If I believe someone else has logged into my account, I will immediately report the breach to digital health & technology department and will immediately change my password.
                   </p>
