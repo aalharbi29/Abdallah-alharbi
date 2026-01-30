@@ -13,37 +13,65 @@ export default function FillDigitalAccountForm() {
   const printRef = useRef(null);
 
   const departmentsList = [
-    "قسم طب الأسرة",
-    "قسم الأمراض المزمنة",
-    "قسم الاستقبال والتسجيل",
-    "قسم الأسنان",
-    "قسم الصيدلية",
-    "قسم المختبر",
-    "قسم الأشعة",
-    "قسم التمريض",
-    "قسم التطعيمات",
-    "قسم صحة الطفل",
-    "قسم رعاية الحوامل",
-    "قسم التثقيف الصحي",
-    "قسم الطوارئ",
-    "قسم الإدارة"
+    { ar: "قسم طب الأسرة", en: "Family Medicine Department" },
+    { ar: "قسم الأمراض المزمنة", en: "Chronic Diseases Department" },
+    { ar: "قسم الاستقبال والتسجيل", en: "Reception & Registration Department" },
+    { ar: "قسم الأسنان", en: "Dental Department" },
+    { ar: "قسم الصيدلية", en: "Pharmacy Department" },
+    { ar: "قسم المختبر", en: "Laboratory Department" },
+    { ar: "قسم الأشعة", en: "Radiology Department" },
+    { ar: "قسم التمريض", en: "Nursing Department" },
+    { ar: "قسم التطعيمات", en: "Vaccination Department" },
+    { ar: "قسم صحة الطفل", en: "Child Health Department" },
+    { ar: "قسم رعاية الحوامل", en: "Antenatal Care Department" },
+    { ar: "قسم التثقيف الصحي", en: "Health Education Department" },
+    { ar: "قسم الطوارئ", en: "Emergency Department" },
+    { ar: "قسم الإدارة", en: "Administration Department" }
   ];
 
   const privilegesList = [
-    "صلاحية طبيب",
-    "صلاحية استقبال",
-    "صلاحية ممرض",
-    "صلاحية صيدلي",
-    "صلاحية تطعيمات",
-    "صلاحية حوامل",
-    "صلاحية طفل سليم",
-    "صلاحية مدرب صحي",
-    "صلاحية مختبر",
-    "صلاحية أشعة",
-    "صلاحية أسنان",
-    "صلاحية إدارية",
-    "صلاحية مدير منشأة"
+    { ar: "صلاحية طبيب", en: "Physician Privilege" },
+    { ar: "صلاحية استقبال", en: "Receptionist Privilege" },
+    { ar: "صلاحية ممرض", en: "Nurse Privilege" },
+    { ar: "صلاحية صيدلي", en: "Pharmacist Privilege" },
+    { ar: "صلاحية تطعيمات", en: "Vaccination Privilege" },
+    { ar: "صلاحية حوامل", en: "Antenatal Privilege" },
+    { ar: "صلاحية طفل سليم", en: "Well Child Privilege" },
+    { ar: "صلاحية مدرب صحي", en: "Health Coach Privilege" },
+    { ar: "صلاحية مختبر", en: "Laboratory Privilege" },
+    { ar: "صلاحية أشعة", en: "Radiology Privilege" },
+    { ar: "صلاحية أسنان", en: "Dental Privilege" },
+    { ar: "صلاحية إدارية", en: "Administrative Privilege" },
+    { ar: "صلاحية مدير منشأة", en: "Facility Manager Privilege" }
   ];
+
+  const reasonsList = [
+    { ar: "تعيين جديد", en: "New Appointment" },
+    { ar: "تكليف مؤقت", en: "Temporary Assignment" },
+    { ar: "تكليف دائم", en: "Permanent Assignment" },
+    { ar: "نقل", en: "Transfer" },
+    { ar: "لا توجد له صلاحيات سابقاً", en: "No Previous Privileges" },
+    { ar: "إضافة صلاحيات جديدة", en: "Add New Privileges" }
+  ];
+
+  const translateCenter = (centerName) => {
+    if (!centerName) return "";
+    return centerName
+      .replace("مركز صحي", "Health Center")
+      .replace("مستشفى", "Hospital")
+      .replace("الهميج", "Al-Humaij")
+      .replace("الحناكية", "Al-Hanakiyah")
+      .replace("المهد", "Al-Mahd")
+      .replace("العيص", "Al-Eis")
+      .replace("هدية", "Hadiah")
+      .replace("المضيق", "Al-Mudaiq")
+      .replace("النخيل", "Al-Nakheel")
+      .replace("الصويدرة", "Al-Suwaydrah")
+      .replace("السد", "Al-Sad")
+      .replace("الحمنة", "Al-Hamnah")
+      .replace("الدار البيضاء", "Al-Dar Al-Bayda")
+      .replace("الفريش", "Al-Furaish");
+  };
 
   const [formData, setFormData] = useState({
     systemRaqeem: false,
@@ -74,9 +102,14 @@ export default function FillDigitalAccountForm() {
     department: "",
     specialization: "",
     recruitmentPrivilege: "",
+    recruitmentPrivilegeEn: "",
     selectedPrivileges: [],
     employeeName: "",
-    managerApproval: ""
+    employeeNameEn: "",
+    managerApproval: "",
+    organizationEn: "",
+    departmentEn: "",
+    reasonEn: ""
   });
 
   useEffect(() => {
@@ -106,22 +139,30 @@ export default function FillDigitalAccountForm() {
     
     if (employee) {
       const names = employee.full_name_arabic?.split(" ") || [];
+      const namesEn = employee.full_name_english?.split(" ") || [];
+      const centerName = employee.المركز_الصحي || "";
       setFormData(prev => ({
         ...prev,
         firstName: names[0] || "",
         secondName: names[1] || "",
         thirdName: names[2] || "",
         familyName: names[3] || "",
+        firstNameEn: namesEn[0] || "",
+        secondNameEn: namesEn[1] || "",
+        thirdNameEn: namesEn[2] || "",
+        familyNameEn: namesEn[3] || "",
         idNumber: employee.رقم_الهوية || "",
         birthDate: employee.birth_date || "",
         mohEmail: employee.email || "",
         scfhsNumber: employee.scfhs_classification || "",
         endDate: employee.contract_end_date || "",
         contactPhone: employee.phone || "",
-        organization: employee.المركز_الصحي || "",
+        organization: centerName,
+        organizationEn: translateCenter(centerName),
         department: employee.department || "",
         specialization: employee.position || "",
-        employeeName: employee.full_name_arabic || ""
+        employeeName: employee.full_name_arabic || "",
+        employeeNameEn: employee.full_name_english || ""
       }));
     }
   };
@@ -269,7 +310,10 @@ export default function FillDigitalAccountForm() {
               </SelectContent>
             </Select>
             
-            <Select value={formData.organization} onValueChange={(val) => handleInputChange('organization', val)}>
+            <Select value={formData.organization} onValueChange={(val) => {
+              handleInputChange('organization', val);
+              handleInputChange('organizationEn', translateCenter(val));
+            }}>
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="اختر المركز..." />
               </SelectTrigger>
@@ -280,13 +324,17 @@ export default function FillDigitalAccountForm() {
               </SelectContent>
             </Select>
             
-            <Select value={formData.department} onValueChange={(val) => handleInputChange('department', val)}>
+            <Select value={formData.department} onValueChange={(val) => {
+              const dept = departmentsList.find(d => d.ar === val);
+              handleInputChange('department', val);
+              handleInputChange('departmentEn', dept?.en || '');
+            }}>
               <SelectTrigger className="w-44">
                 <SelectValue placeholder="اختر القسم..." />
               </SelectTrigger>
               <SelectContent>
                 {departmentsList.map(dept => (
-                  <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                  <SelectItem key={dept.ar} value={dept.ar}>{dept.ar}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -308,24 +356,50 @@ export default function FillDigitalAccountForm() {
           <span className="text-sm font-medium">الصلاحيات:</span>
           <div className="flex flex-wrap gap-1">
             {privilegesList.map(priv => (
-              <label key={priv} className="flex items-center gap-1 px-2 py-1 rounded border cursor-pointer hover:bg-gray-50 text-xs">
+              <label key={priv.ar} className="flex items-center gap-1 px-2 py-1 rounded border cursor-pointer hover:bg-gray-50 text-xs">
                 <input 
                   type="checkbox" 
-                  checked={formData.selectedPrivileges?.includes(priv) || false}
+                  checked={formData.selectedPrivileges?.includes(priv.ar) || false}
                   onChange={(e) => {
                     const current = formData.selectedPrivileges || [];
                     if (e.target.checked) {
-                      handleInputChange('selectedPrivileges', [...current, priv]);
-                      handleInputChange('recruitmentPrivilege', [...current, priv].join('، '));
+                      const newPrivs = [...current, priv.ar];
+                      const newPrivsEn = privilegesList.filter(p => newPrivs.includes(p.ar)).map(p => p.en);
+                      handleInputChange('selectedPrivileges', newPrivs);
+                      handleInputChange('recruitmentPrivilege', newPrivs.join('، '));
+                      handleInputChange('recruitmentPrivilegeEn', newPrivsEn.join(', '));
                     } else {
-                      const updated = current.filter(p => p !== priv);
+                      const updated = current.filter(p => p !== priv.ar);
+                      const updatedEn = privilegesList.filter(p => updated.includes(p.ar)).map(p => p.en);
                       handleInputChange('selectedPrivileges', updated);
                       handleInputChange('recruitmentPrivilege', updated.join('، '));
+                      handleInputChange('recruitmentPrivilegeEn', updatedEn.join(', '));
                     }
                   }}
                   className="w-3 h-3"
                 />
-                {priv.replace('صلاحية ', '')}
+                {priv.ar.replace('صلاحية ', '')}
+              </label>
+            ))}
+          </div>
+        </div>
+        
+        <div className="flex flex-wrap gap-2 items-center">
+          <span className="text-sm font-medium">السبب:</span>
+          <div className="flex flex-wrap gap-1">
+            {reasonsList.map(reason => (
+              <label key={reason.ar} className="flex items-center gap-1 px-2 py-1 rounded border cursor-pointer hover:bg-gray-50 text-xs">
+                <input 
+                  type="radio" 
+                  name="reason"
+                  checked={formData.reason === reason.ar}
+                  onChange={() => {
+                    handleInputChange('reason', reason.ar);
+                    handleInputChange('reasonEn', reason.en);
+                  }}
+                  className="w-3 h-3"
+                />
+                {reason.ar}
               </label>
             ))}
           </div>
@@ -502,14 +576,14 @@ export default function FillDigitalAccountForm() {
             <tr>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 <span style={{ fontWeight: 'bold' }}>السبب: </span>
-                <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('reason', e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', minWidth: '200px' }}>
+                <span style={{ borderBottom: '1px dotted #666', minWidth: '200px' }}>
                   {formData.reason}
                 </span>
               </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <span style={{ fontWeight: 'bold' }}>*Reason: </span>
-                <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('reason', e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', minWidth: '200px' }}>
-                  {formData.reason}
+                <span style={{ borderBottom: '1px dotted #666', minWidth: '200px' }}>
+                  {formData.reasonEn}
                 </span>
               </td>
             </tr>
@@ -544,10 +618,10 @@ export default function FillDigitalAccountForm() {
                 <span style={{ fontWeight: 'bold' }}>*Staff Name:</span>
                 <div className="space-y-1 mt-2">
                   {[
-                    { label: 'First', field: 'firstName' },
-                    { label: 'Second', field: 'secondName' },
-                    { label: 'Third', field: 'thirdName' },
-                    { label: 'Family', field: 'familyName' }
+                    { label: 'First', field: 'firstNameEn' },
+                    { label: 'Second', field: 'secondNameEn' },
+                    { label: 'Third', field: 'thirdNameEn' },
+                    { label: 'Family', field: 'familyNameEn' }
                   ].map(item => (
                     <div key={item.field} className="flex items-center gap-2">
                       <span style={{ width: '50px' }}>{item.label}:</span>
@@ -714,11 +788,11 @@ export default function FillDigitalAccountForm() {
                 <div className="space-y-1 mt-3">
                   <div className="flex items-center gap-2">
                     <span style={{ minWidth: '120px' }}>Organization:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.organization}</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.organizationEn}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span style={{ minWidth: '120px' }}>Department:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.department}</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.departmentEn}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span style={{ minWidth: '120px' }}>Specialization:</span>
@@ -726,7 +800,7 @@ export default function FillDigitalAccountForm() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span style={{ minWidth: '120px' }}>Recruitment privilege:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.recruitmentPrivilege}</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.recruitmentPrivilegeEn}</span>
                   </div>
                 </div>
               </td>
