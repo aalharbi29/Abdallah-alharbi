@@ -249,14 +249,7 @@ export default function FillDigitalAccountForm() {
       <div 
         ref={printRef}
         className="print-area max-w-4xl mx-auto bg-white shadow-lg"
-        style={{ 
-          padding: '20mm 20mm 15mm 20mm', 
-          fontFamily: 'Arial, sans-serif',
-          backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/c67fcad25_image.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
+        style={{ padding: '20mm 20mm 15mm 20mm', fontFamily: 'Arial, sans-serif' }}
       >
         {/* Header */}
         <div className="text-center mb-4">
