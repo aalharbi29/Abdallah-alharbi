@@ -173,7 +173,7 @@ export default function FillDigitalAccountForm() {
             top: 0;
             width: 210mm;
             min-height: 297mm;
-            padding: 25mm 20mm 15mm 20mm;
+            padding: 25mm 25mm 20mm 25mm;
             margin: 0;
             direction: rtl;
             box-sizing: border-box;
@@ -249,7 +249,7 @@ export default function FillDigitalAccountForm() {
       <div 
         ref={printRef}
         className="print-area max-w-4xl mx-auto bg-white shadow-lg"
-        style={{ padding: '25mm 20mm 15mm 20mm', fontFamily: 'Arial, sans-serif' }}
+        style={{ padding: '25mm 25mm 20mm 25mm', fontFamily: 'Arial, sans-serif' }}
       >
         {/* Header */}
         <div className="text-center mb-4">
