@@ -147,11 +147,7 @@ export default function FillDigitalAccountForm() {
     </label>
   );
 
-  const Separator = () => (
-    <div style={{ padding: '0 20px', margin: '8px 0' }}>
-      <div style={{ borderBottom: '2px solid #000', width: '100%' }}></div>
-    </div>
-  );
+
 
   return (
     <div className="min-h-screen bg-gray-100 p-4" dir="rtl">
