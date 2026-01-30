@@ -153,20 +153,46 @@ export default function FillDigitalAccountForm() {
     <div className="min-h-screen bg-gray-100 p-4" dir="rtl">
       <style>{`
         @media print {
-          body * { visibility: hidden; }
-          .print-area, .print-area * { visibility: visible; }
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          body {
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+          body * { 
+            visibility: hidden; 
+          }
+          .print-area, .print-area * { 
+            visibility: visible; 
+          }
           .print-area {
             position: absolute;
             left: 0;
             top: 0;
             width: 210mm;
+            min-height: 297mm;
             padding: 20mm 20mm 15mm 20mm;
+            margin: 0;
             direction: rtl;
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
+            box-sizing: border-box;
+            background: white;
           }
-          .no-print { display: none !important; }
-          @page { size: A4 portrait; margin: 0; }
+          .print-area table {
+            width: 100% !important;
+            table-layout: fixed;
+          }
+          .no-print { 
+            display: none !important; 
+          }
+          .print-only {
+            display: inline !important;
+          }
+          @page { 
+            size: A4 portrait; 
+            margin: 0; 
+          }
         }
         .editable-cell {
           padding: 2px 6px;
@@ -181,6 +207,7 @@ export default function FillDigitalAccountForm() {
           border-collapse: collapse;
           width: 100%;
           font-size: 10px;
+          table-layout: fixed;
         }
         .form-table td {
           border: 1px solid #000;
@@ -188,11 +215,6 @@ export default function FillDigitalAccountForm() {
         }
         .print-only {
           display: none;
-        }
-        @media print {
-          .print-only {
-            display: inline;
-          }
         }
       `}</style>
 
