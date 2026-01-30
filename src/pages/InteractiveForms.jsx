@@ -62,7 +62,14 @@ const interactiveForms = [
     link: createPageUrl("AdvancedFormEditor"),
     category: "أدوات متقدمة"
   },
-
+  {
+    title: "طلب انشاء حساب رقيم",
+    description: "نموذج إنشاء/إيقاف حساب في أنظمة رقيم وميديكا وموعد",
+    icon: FilePenLine,
+    color: "from-cyan-500 to-blue-600",
+    link: createPageUrl("FillDigitalAccountForm"),
+    category: "الحسابات الرقمية"
+  }
 ];
 
 export default function InteractiveForms() {
