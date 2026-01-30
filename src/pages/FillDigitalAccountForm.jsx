@@ -689,7 +689,7 @@ export default function FillDigitalAccountForm() {
               <td colSpan="2" style={{ padding: '0', border: 'none', position: 'relative', height: '0' }}>
                 <div style={{ position: 'absolute', top: '-60px', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', backgroundColor: 'white', padding: '2px 8px' }}>
                   <div style={{ fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}>الختم / Stamp</div>
-                  <div style={{ border: '1px solid #000', height: '40px', width: '55px', margin: '0 auto', backgroundColor: 'white' }}></div>
+                  <div style={{ border: '1px solid #000', height: '30px', width: '40px', margin: '0 auto', backgroundColor: 'white' }}></div>
                 </div>
               </td>
             </tr>
