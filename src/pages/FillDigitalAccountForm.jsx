@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Printer, Download, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { Checkbox } from "@/components/ui/checkbox";
 
 export default function FillDigitalAccountForm() {
   const [employees, setEmployees] = useState([]);
@@ -14,49 +13,34 @@ export default function FillDigitalAccountForm() {
   const printRef = useRef(null);
 
   const [formData, setFormData] = useState({
-    // System
     systemRaqeem: false,
     systemMedica: false,
     systemMawid: false,
-    
-    // Type of Request
     createNew: false,
     restorePassword: false,
     deleteUser: false,
     relocateUser: false,
-    
-    // Reason
     reason: "",
-    
-    // Staff Name
     firstName: "",
     secondName: "",
     thirdName: "",
     familyName: "",
-    
-    // Other Info
     idNumber: "",
     birthDate: "",
     mohEmail: "",
     scfhsNumber: "",
     endDate: "",
     contactPhone: "",
-    
-    // Occupation
     receptionist: false,
     nurse: false,
     physician: false,
     facilityManager: false,
     pharmacist: false,
     labTechnician: false,
-    
-    // Additional Info
     organization: "",
     department: "",
     specialization: "",
     recruitmentPrivilege: "",
-    
-    // Approval
     employeeName: "",
     managerApproval: ""
   });
@@ -147,6 +131,28 @@ export default function FillDigitalAccountForm() {
     );
   }
 
+  const CheckboxField = ({ checked, onChange, labelAr, labelEn, isArabic }) => (
+    <label className="flex items-center gap-1 cursor-pointer" style={{ fontSize: '10px' }}>
+      {isArabic ? (
+        <>
+          <span>{labelAr} {checked && '☑'}</span>
+          <input type="checkbox" checked={checked} onChange={onChange} className="no-print w-3 h-3" />
+        </>
+      ) : (
+        <>
+          <input type="checkbox" checked={checked} onChange={onChange} className="no-print w-3 h-3" />
+          <span>{checked && '☑'} {labelEn}</span>
+        </>
+      )}
+    </label>
+  );
+
+  const Separator = () => (
+    <div style={{ padding: '0 20px', margin: '8px 0' }}>
+      <div style={{ borderBottom: '2px solid #000', width: '100%' }}></div>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-gray-100 p-4" dir="rtl">
       <style>{`
@@ -158,48 +164,31 @@ export default function FillDigitalAccountForm() {
             left: 0;
             top: 0;
             width: 210mm;
-            padding: 10mm 15mm;
+            padding: 8mm 12mm;
             direction: rtl;
-            background-image: url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/a3b5521d7_image.png) !important;
-            background-size: 100% 100% !important;
-            background-position: center !important;
-            background-repeat: no-repeat !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
           .no-print { display: none !important; }
           @page { size: A4 portrait; margin: 0; }
         }
-        
         .editable-cell {
-          padding: 4px 8px;
+          padding: 2px 6px;
           outline: none;
-          text-align: center;
-          min-height: 24px;
+          min-height: 20px;
+          display: inline-block;
         }
-        
         .editable-cell:focus {
           background-color: #f0f9ff;
         }
-        
-        table {
+        .form-table {
           border-collapse: collapse;
           width: 100%;
+          font-size: 10px;
         }
-        
-        td {
+        .form-table td {
           border: 1px solid #000;
-          padding: 4px 8px;
-          font-size: 11px;
-          vertical-align: middle;
-        }
-        
-        .form-title {
-          background-color: #e6f2ff;
-          font-weight: bold;
-          text-align: center;
-          padding: 8px;
-          font-size: 14px;
+          vertical-align: top;
         }
       `}</style>
 
@@ -234,614 +223,298 @@ export default function FillDigitalAccountForm() {
       <div 
         ref={printRef}
         className="print-area max-w-4xl mx-auto bg-white shadow-lg"
-        style={{ 
-          padding: '30px 40px',
-          fontFamily: 'Arial, sans-serif',
-          backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/a3b5521d7_image.png)',
-          backgroundSize: '100% 100%',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          minHeight: '297mm'
-        }}
+        style={{ padding: '20px 30px', fontFamily: 'Arial, sans-serif' }}
       >
         {/* Header */}
-        <div className="flex justify-between items-start mb-6" style={{ marginTop: '40px' }}>
+        <div className="flex justify-between items-start mb-4">
           <div className="text-right" style={{ flex: 1 }}>
             <h2 className="text-sm font-bold" style={{ color: '#0ea5e9' }}>
               الخدمات المشتركة للصحة الرقمية والتقنية
             </h2>
           </div>
-          
-          <div style={{ width: '2px', backgroundColor: '#0ea5e9', height: '40px', margin: '0 20px' }}></div>
-          
+          <div style={{ width: '2px', backgroundColor: '#0ea5e9', height: '30px', margin: '0 15px' }}></div>
           <div className="text-left" style={{ flex: 1 }}>
             <h2 className="text-sm font-bold" style={{ color: '#0ea5e9' }}>
               Shared Services for Digital Health & Technology
             </h2>
-            <p className="text-xs" style={{ color: '#0ea5e9', marginTop: '4px' }}>
-              Med-hc-digital@moh.gov.sa
-            </p>
           </div>
         </div>
 
-        {/* Form Title */}
-        <div className="form-title" style={{ marginBottom: '15px' }}>
-          نموذج انشاء إيقاف حساب
-        </div>
-
         {/* Main Table */}
-        <table style={{ fontSize: '10px' }}>
+        <table className="form-table">
           <tbody>
-            {/* System Row */}
+            {/* Row 1: Title */}
             <tr>
-              <td style={{ width: '50%', padding: '8px', textAlign: 'right' }}>
-                <div className="flex items-center justify-between">
-                  <div className="flex gap-4" style={{ fontSize: '10px' }}>
-                    <label className="flex items-center gap-1">
-                      <span>رقيم {formData.systemRaqeem && '☑'}</span>
-                      <input 
-                        type="checkbox"
-                        checked={formData.systemRaqeem}
-                        onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)}
-                        className="no-print"
-                      />
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <span>ميديكا كلاود {formData.systemMedica && '☑'}</span>
-                      <input 
-                        type="checkbox"
-                        checked={formData.systemMedica}
-                        onChange={(e) => handleInputChange('systemMedica', e.target.checked)}
-                        className="no-print"
-                      />
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <span>موعد {formData.systemMawid && '☑'}</span>
-                      <input 
-                        type="checkbox"
-                        checked={formData.systemMawid}
-                        onChange={(e) => handleInputChange('systemMawid', e.target.checked)}
-                        className="no-print"
-                      />
-                    </label>
+              <td colSpan="2" style={{ padding: '10px', textAlign: 'center', backgroundColor: '#e6f2ff' }}>
+                <span style={{ fontWeight: 'bold', fontSize: '14px', color: '#1e3a5f' }}>
+                  نموذج انشاء إيقاف حساب
+                </span>
+              </td>
+            </tr>
+
+            {/* Row 2: Content */}
+            <tr>
+              {/* Arabic Side */}
+              <td style={{ width: '50%', padding: '10px' }}>
+                {/* النظام */}
+                <div style={{ marginBottom: '6px' }}>
+                  <span style={{ fontWeight: 'bold' }}>النظام:</span>
+                  <div className="flex gap-4 mt-2 justify-end">
+                    <CheckboxField checked={formData.systemRaqeem} onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)} labelAr="رقيم" isArabic />
+                    <CheckboxField checked={formData.systemMedica} onChange={(e) => handleInputChange('systemMedica', e.target.checked)} labelAr="ميديكا كلاود" isArabic />
+                    <CheckboxField checked={formData.systemMawid} onChange={(e) => handleInputChange('systemMawid', e.target.checked)} labelAr="موعد" isArabic />
                   </div>
-                  <span style={{ fontWeight: 'bold' }}>:النظام*</span>
+                </div>
+                <Separator />
+
+                {/* نوع الطلب */}
+                <div style={{ marginBottom: '6px' }}>
+                  <span style={{ fontWeight: 'bold' }}>نوع الطلب:</span>
+                  <div className="grid grid-cols-2 gap-2 mt-2" style={{ direction: 'rtl' }}>
+                    <CheckboxField checked={formData.createNew} onChange={(e) => handleInputChange('createNew', e.target.checked)} labelAr="انشاء مستخدم جديد" isArabic />
+                    <CheckboxField checked={formData.restorePassword} onChange={(e) => handleInputChange('restorePassword', e.target.checked)} labelAr="استعادة كلمة مرور" isArabic />
+                    <CheckboxField checked={formData.deleteUser} onChange={(e) => handleInputChange('deleteUser', e.target.checked)} labelAr="الغاء اسم مستخدم" isArabic />
+                    <CheckboxField checked={formData.relocateUser} onChange={(e) => handleInputChange('relocateUser', e.target.checked)} labelAr="نقل اسم مستخدم" isArabic />
+                  </div>
+                </div>
+                <Separator />
+
+                {/* السبب */}
+                <div style={{ marginBottom: '6px' }}>
+                  <span style={{ fontWeight: 'bold' }}>السبب: </span>
+                  <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('reason', e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', minWidth: '200px' }}>
+                    {formData.reason}
+                  </span>
+                </div>
+                <Separator />
+
+                {/* اسم الموظف */}
+                <div style={{ marginBottom: '6px' }}>
+                  <span style={{ fontWeight: 'bold' }}>اسم الموظف:</span>
+                  <div className="space-y-1 mt-2">
+                    {[
+                      { label: 'الأول', field: 'firstName' },
+                      { label: 'الثاني', field: 'secondName' },
+                      { label: 'الثالث', field: 'thirdName' },
+                      { label: 'العائلة', field: 'familyName' }
+                    ].map(item => (
+                      <div key={item.field} className="flex items-center gap-2 justify-end">
+                        <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
+                          {formData[item.field]}
+                        </span>
+                        <span style={{ width: '50px' }}>{item.label}:</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <Separator />
+
+                {/* البيانات العامة */}
+                <div style={{ marginBottom: '6px' }}>
+                  {[
+                    { label: 'رقم الهوية/ الإقامة', field: 'idNumber' },
+                    { label: 'تاريخ الميلاد', field: 'birthDate' },
+                    { label: 'البريد الوزاري', field: 'mohEmail' },
+                    { label: 'رقم التصنيف إن وجد', field: 'scfhsNumber' },
+                    { label: 'تاريخ انتهاء (التدريب/ العقد)', field: 'endDate' },
+                    { label: 'رقم التواصل', field: 'contactPhone' }
+                  ].map(item => (
+                    <div key={item.field} className="flex items-center gap-2 justify-end mb-1">
+                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
+                        {formData[item.field]}
+                      </span>
+                      <span style={{ minWidth: '140px', textAlign: 'right' }}>{item.label}:</span>
+                    </div>
+                  ))}
+                </div>
+                <Separator />
+
+                {/* المهنة */}
+                <div style={{ marginBottom: '6px' }}>
+                  <span style={{ fontWeight: 'bold' }}>المهنة:</span>
+                  <div className="grid grid-cols-3 gap-2 mt-2">
+                    <CheckboxField checked={formData.physician} onChange={(e) => handleInputChange('physician', e.target.checked)} labelAr="طبيب" isArabic />
+                    <CheckboxField checked={formData.nurse} onChange={(e) => handleInputChange('nurse', e.target.checked)} labelAr="تمريض" isArabic />
+                    <CheckboxField checked={formData.receptionist} onChange={(e) => handleInputChange('receptionist', e.target.checked)} labelAr="استقبال" isArabic />
+                    <CheckboxField checked={formData.pharmacist} onChange={(e) => handleInputChange('pharmacist', e.target.checked)} labelAr="صيدلي" isArabic />
+                    <CheckboxField checked={formData.labTechnician} onChange={(e) => handleInputChange('labTechnician', e.target.checked)} labelAr="مختبر" isArabic />
+                    <CheckboxField checked={formData.facilityManager} onChange={(e) => handleInputChange('facilityManager', e.target.checked)} labelAr="مدير منشأة" isArabic />
+                  </div>
+                  <div className="space-y-1 mt-3">
+                    {[
+                      { label: 'المنشأة', field: 'organization' },
+                      { label: 'القسم', field: 'department' },
+                      { label: 'التخصص', field: 'specialization' },
+                      { label: 'الصلاحيات المطلوبة', field: 'recruitmentPrivilege' }
+                    ].map(item => (
+                      <div key={item.field} className="flex items-center gap-2 justify-end">
+                        <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
+                          {formData[item.field]}
+                        </span>
+                        <span style={{ minWidth: '100px', textAlign: 'right' }}>{item.label}:</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* التعهد */}
+                <div style={{ backgroundColor: '#f8f9fa', padding: '8px', marginTop: '8px', fontSize: '9px', lineHeight: '1.5' }}>
+                  <p>
+                    اتعهد بالمحافظة على اسم وكلمة السر الخاصة بي ولن اعطيها لأي شخص اخر، أي وصول إلى نظام المعلومات باستخدام اسم المستخدم وكلمة المرور الخاصين بي هو مسؤوليتي وإذا علمت ان هناك شخص اخر استخدم حسابي فسوف أقوم بإبلاغ المسؤول بقسم الصحة الرقمية والتكنولوجيا عن ذلك وتغير كلمة السر.
+                  </p>
+                  <p style={{ textAlign: 'center', marginTop: '4px', fontWeight: 'bold', color: '#0ea5e9' }}>
+                    med-hc-digital@moh.gov.sa
+                  </p>
+                </div>
+
+                {/* ملاحظة المدير */}
+                <div style={{ fontSize: '9px', marginTop: '6px', fontWeight: 'bold' }}>
+                  * على الرئيس المباشر تزويدنا ببيانات الموظف في حال التكليف أو النقل خارج المركز أو المستشفى
                 </div>
               </td>
-              <td style={{ width: '50%', padding: '8px' }}>
-                <div className="flex items-center justify-between">
+
+              {/* English Side */}
+              <td style={{ width: '50%', padding: '10px' }}>
+                {/* System */}
+                <div style={{ marginBottom: '6px' }}>
                   <span style={{ fontWeight: 'bold' }}>*System:</span>
-                  <div className="flex gap-4" style={{ fontSize: '10px' }}>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox" 
-                        checked={formData.systemRaqeem}
-                        onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.systemRaqeem && '☑'} Raqeem</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.systemMedica}
-                        onChange={(e) => handleInputChange('systemMedica', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.systemMedica && '☑'} Medica cloud</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.systemMawid}
-                        onChange={(e) => handleInputChange('systemMawid', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.systemMawid && '☑'} Mawid</span>
-                    </label>
+                  <div className="flex gap-4 mt-2">
+                    <CheckboxField checked={formData.systemRaqeem} onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)} labelEn="Raqeem" />
+                    <CheckboxField checked={formData.systemMedica} onChange={(e) => handleInputChange('systemMedica', e.target.checked)} labelEn="Medica cloud" />
+                    <CheckboxField checked={formData.systemMawid} onChange={(e) => handleInputChange('systemMawid', e.target.checked)} labelEn="Mawid" />
                   </div>
                 </div>
-              </td>
-            </tr>
+                <Separator />
 
-            {/* Request Type Row */}
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'right' }}>
-                <div>
-                  <span style={{ fontWeight: 'bold' }}>:نوع الطلب*</span>
-                  <div className="grid grid-cols-2 gap-2 mt-2" style={{ fontSize: '10px' }}>
-                    <label className="flex items-center gap-1 justify-end">
-                      <span>استعادة كلمة مرور {formData.restorePassword && '☑'}</span>
-                      <input 
-                        type="checkbox"
-                        checked={formData.restorePassword}
-                        onChange={(e) => handleInputChange('restorePassword', e.target.checked)}
-                        className="no-print"
-                      />
-                    </label>
-                    <label className="flex items-center gap-1 justify-end">
-                      <span>انشاء مستخدم جديد {formData.createNew && '☑'}</span>
-                      <input 
-                        type="checkbox"
-                        checked={formData.createNew}
-                        onChange={(e) => handleInputChange('createNew', e.target.checked)}
-                        className="no-print"
-                      />
-                    </label>
-                    <label className="flex items-center gap-1 justify-end">
-                      <span>نقل اسم مستخدم {formData.relocateUser && '☑'}</span>
-                      <input 
-                        type="checkbox"
-                        checked={formData.relocateUser}
-                        onChange={(e) => handleInputChange('relocateUser', e.target.checked)}
-                        className="no-print"
-                      />
-                    </label>
-                    <label className="flex items-center gap-1 justify-end">
-                      <span>الغاء اسم مستخدم {formData.deleteUser && '☑'}</span>
-                      <input 
-                        type="checkbox"
-                        checked={formData.deleteUser}
-                        onChange={(e) => handleInputChange('deleteUser', e.target.checked)}
-                        className="no-print"
-                      />
-                    </label>
-                  </div>
-                </div>
-              </td>
-              <td style={{ padding: '8px' }}>
-                <div>
+                {/* Type of Request */}
+                <div style={{ marginBottom: '6px' }}>
                   <span style={{ fontWeight: 'bold' }}>*Type of Request:</span>
-                  <div className="grid grid-cols-2 gap-2 mt-2" style={{ fontSize: '10px' }}>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.createNew}
-                        onChange={(e) => handleInputChange('createNew', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.createNew && '☑'} Create a new user name</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.restorePassword}
-                        onChange={(e) => handleInputChange('restorePassword', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.restorePassword && '☑'} Restore password</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.deleteUser}
-                        onChange={(e) => handleInputChange('deleteUser', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.deleteUser && '☑'} Delete a user name</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.relocateUser}
-                        onChange={(e) => handleInputChange('relocateUser', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.relocateUser && '☑'} Relocate a user name</span>
-                    </label>
+                  <div className="grid grid-cols-2 gap-2 mt-2">
+                    <CheckboxField checked={formData.createNew} onChange={(e) => handleInputChange('createNew', e.target.checked)} labelEn="Create a new user name" />
+                    <CheckboxField checked={formData.restorePassword} onChange={(e) => handleInputChange('restorePassword', e.target.checked)} labelEn="Restore password" />
+                    <CheckboxField checked={formData.deleteUser} onChange={(e) => handleInputChange('deleteUser', e.target.checked)} labelEn="Delete a user name" />
+                    <CheckboxField checked={formData.relocateUser} onChange={(e) => handleInputChange('relocateUser', e.target.checked)} labelEn="Relocate a user name" />
                   </div>
                 </div>
-              </td>
-            </tr>
+                <Separator />
 
-            {/* Reason Row */}
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'right' }}>
-                <span 
-                  className="editable-cell"
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) => handleInputChange('reason', e.currentTarget.textContent)}
-                  style={{ display: 'inline-block', minWidth: '300px', borderBottom: '1px dotted #999' }}
-                >
-                  {formData.reason}
-                </span>
-                <span style={{ fontWeight: 'bold' }}> :السبب*</span>
-              </td>
-              <td style={{ padding: '8px' }}>
-                <span style={{ fontWeight: 'bold' }}>*Reason: </span>
-                <span 
-                  className="editable-cell"
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) => handleInputChange('reason', e.currentTarget.textContent)}
-                  style={{ display: 'inline-block', minWidth: '300px', borderBottom: '1px dotted #999' }}
-                >
-                  {formData.reason}
-                </span>
-              </td>
-            </tr>
-
-            {/* Staff Name Section */}
-            <tr>
-              <td colSpan="2" style={{ padding: '8px' }}>
-                <div className="flex justify-between">
-                  <div style={{ width: '48%', textAlign: 'right' }}>
-                    <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>:اسم الموظف*</div>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-end">
-                        <span 
-                          className="editable-cell"
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) => handleInputChange('firstName', e.currentTarget.textContent)}
-                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
-                        >
-                          {formData.firstName}
-                        </span>
-                        <span style={{ width: '60px', textAlign: 'right' }}>: الأول</span>
-                      </div>
-                      <div className="flex items-center justify-end">
-                        <span 
-                          className="editable-cell"
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) => handleInputChange('secondName', e.currentTarget.textContent)}
-                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
-                        >
-                          {formData.secondName}
-                        </span>
-                        <span style={{ width: '60px', textAlign: 'right' }}>: الثاني</span>
-                      </div>
-                      <div className="flex items-center justify-end">
-                        <span 
-                          className="editable-cell"
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) => handleInputChange('thirdName', e.currentTarget.textContent)}
-                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
-                        >
-                          {formData.thirdName}
-                        </span>
-                        <span style={{ width: '60px', textAlign: 'right' }}>: الثالث</span>
-                      </div>
-                      <div className="flex items-center justify-end">
-                        <span 
-                          className="editable-cell"
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) => handleInputChange('familyName', e.currentTarget.textContent)}
-                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
-                        >
-                          {formData.familyName}
-                        </span>
-                        <span style={{ width: '60px', textAlign: 'right' }}>: العائلة</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div style={{ width: '48%' }}>
-                    <div style={{ fontWeight: 'bold', marginBottom: '8px' }}>*Staff Name:</div>
-                    <div className="space-y-2">
-                      <div className="flex items-center">
-                        <span style={{ width: '60px' }}>First:</span>
-                        <span 
-                          className="editable-cell"
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) => handleInputChange('firstName', e.currentTarget.textContent)}
-                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
-                        >
-                          {formData.firstName}
-                        </span>
-                      </div>
-                      <div className="flex items-center">
-                        <span style={{ width: '60px' }}>Second:</span>
-                        <span 
-                          className="editable-cell"
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) => handleInputChange('secondName', e.currentTarget.textContent)}
-                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
-                        >
-                          {formData.secondName}
-                        </span>
-                      </div>
-                      <div className="flex items-center">
-                        <span style={{ width: '60px' }}>Third:</span>
-                        <span 
-                          className="editable-cell"
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) => handleInputChange('thirdName', e.currentTarget.textContent)}
-                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
-                        >
-                          {formData.thirdName}
-                        </span>
-                      </div>
-                      <div className="flex items-center">
-                        <span style={{ width: '60px' }}>Family:</span>
-                        <span 
-                          className="editable-cell"
-                          contentEditable
-                          suppressContentEditableWarning
-                          onBlur={(e) => handleInputChange('familyName', e.currentTarget.textContent)}
-                          style={{ flex: 1, borderBottom: '1px dotted #999' }}
-                        >
-                          {formData.familyName}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-
-            {/* ID and Other Info */}
-            {[
-              { enLabel: 'ID NO:', arLabel: 'رقم الهوية/ الإقامة:', field: 'idNumber' },
-              { enLabel: 'Date of birth:', arLabel: 'تاريخ الميلاد:', field: 'birthDate' },
-              { enLabel: 'MOH email:', arLabel: 'البريد الوزاري:', field: 'mohEmail' },
-              { enLabel: 'SCFHS number:', arLabel: 'رقم التصنيف إن وجد:', field: 'scfhsNumber' },
-              { enLabel: 'End date of (internship\\contract):', arLabel: 'تاريخ انتهاء (التدريب/ العقد):', field: 'endDate' },
-              { enLabel: 'Contact Phone:', arLabel: 'رقم التواصل:', field: 'contactPhone' }
-            ].map((item, idx) => (
-              <tr key={idx}>
-                <td style={{ padding: '8px', textAlign: 'right' }}>
-                  <span 
-                    className="editable-cell"
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)}
-                    style={{ display: 'inline-block', minWidth: '250px', borderBottom: '1px dotted #999' }}
-                  >
-                    {formData[item.field]}
+                {/* Reason */}
+                <div style={{ marginBottom: '6px' }}>
+                  <span style={{ fontWeight: 'bold' }}>*Reason: </span>
+                  <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('reason', e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', minWidth: '200px' }}>
+                    {formData.reason}
                   </span>
-                  <span style={{ fontWeight: 'bold' }}> {item.arLabel}</span>
-                </td>
-                <td style={{ padding: '8px' }}>
-                  <span style={{ fontWeight: 'bold' }}>{item.enLabel} </span>
-                  <span 
-                    className="editable-cell"
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)}
-                    style={{ display: 'inline-block', minWidth: '250px', borderBottom: '1px dotted #999' }}
-                  >
-                    {formData[item.field]}
-                  </span>
-                </td>
-              </tr>
-            ))}
+                </div>
+                <Separator />
 
-            {/* Occupation Row */}
-            <tr>
-              <td style={{ padding: '8px', textAlign: 'right' }}>
-                <div>
-                  <span style={{ fontWeight: 'bold' }}>:المهنة*</span>
-                  <div className="grid grid-cols-3 gap-2 mt-2" style={{ fontSize: '10px' }}>
-                    <label className="flex items-center gap-1 justify-end">
-                      <span>طبيب {formData.physician && '☑'}</span>
-                      <input 
-                        type="checkbox"
-                        checked={formData.physician}
-                        onChange={(e) => handleInputChange('physician', e.target.checked)}
-                        className="no-print"
-                      />
-                    </label>
-                    <label className="flex items-center gap-1 justify-end">
-                      <span>تمريض {formData.nurse && '☑'}</span>
-                      <input 
-                        type="checkbox"
-                        checked={formData.nurse}
-                        onChange={(e) => handleInputChange('nurse', e.target.checked)}
-                        className="no-print"
-                      />
-                    </label>
-                    <label className="flex items-center gap-1 justify-end">
-                      <span>استقبال {formData.receptionist && '☑'}</span>
-                      <input 
-                        type="checkbox"
-                        checked={formData.receptionist}
-                        onChange={(e) => handleInputChange('receptionist', e.target.checked)}
-                        className="no-print"
-                      />
-                    </label>
-                    <label className="flex items-center gap-1 justify-end">
-                      <span>صيدلي {formData.pharmacist && '☑'}</span>
-                      <input 
-                        type="checkbox"
-                        checked={formData.pharmacist}
-                        onChange={(e) => handleInputChange('pharmacist', e.target.checked)}
-                        className="no-print"
-                      />
-                    </label>
-                    <label className="flex items-center gap-1 justify-end">
-                      <span>مختبر {formData.labTechnician && '☑'}</span>
-                      <input 
-                        type="checkbox"
-                        checked={formData.labTechnician}
-                        onChange={(e) => handleInputChange('labTechnician', e.target.checked)}
-                        className="no-print"
-                      />
-                    </label>
-                    <label className="flex items-center gap-1 justify-end">
-                      <span>مدير منشأة {formData.facilityManager && '☑'}</span>
-                      <input 
-                        type="checkbox"
-                        checked={formData.facilityManager}
-                        onChange={(e) => handleInputChange('facilityManager', e.target.checked)}
-                        className="no-print"
-                      />
-                    </label>
+                {/* Staff Name */}
+                <div style={{ marginBottom: '6px' }}>
+                  <span style={{ fontWeight: 'bold' }}>*Staff Name:</span>
+                  <div className="space-y-1 mt-2">
+                    {[
+                      { label: 'First', field: 'firstName' },
+                      { label: 'Second', field: 'secondName' },
+                      { label: 'Third', field: 'thirdName' },
+                      { label: 'Family', field: 'familyName' }
+                    ].map(item => (
+                      <div key={item.field} className="flex items-center gap-2">
+                        <span style={{ width: '50px' }}>{item.label}:</span>
+                        <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
+                          {formData[item.field]}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </td>
-              <td style={{ padding: '8px' }}>
-                <div>
+                <Separator />
+
+                {/* General Info */}
+                <div style={{ marginBottom: '6px' }}>
+                  {[
+                    { label: 'ID NO', field: 'idNumber' },
+                    { label: 'Date of birth', field: 'birthDate' },
+                    { label: 'MOH email', field: 'mohEmail' },
+                    { label: 'SCFHS number', field: 'scfhsNumber' },
+                    { label: 'End date of (internship\\contract)', field: 'endDate' },
+                    { label: 'Contact Phone', field: 'contactPhone' }
+                  ].map(item => (
+                    <div key={item.field} className="flex items-center gap-2 mb-1">
+                      <span style={{ minWidth: '160px' }}>{item.label}:</span>
+                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
+                        {formData[item.field]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <Separator />
+
+                {/* Occupation */}
+                <div style={{ marginBottom: '6px' }}>
                   <span style={{ fontWeight: 'bold' }}>*Occupation:</span>
-                  <div className="grid grid-cols-3 gap-2 mt-2" style={{ fontSize: '10px' }}>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.receptionist}
-                        onChange={(e) => handleInputChange('receptionist', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.receptionist && '☑'} Receptionist</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.nurse}
-                        onChange={(e) => handleInputChange('nurse', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.nurse && '☑'} Nurse</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.physician}
-                        onChange={(e) => handleInputChange('physician', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.physician && '☑'} physician</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.facilityManager}
-                        onChange={(e) => handleInputChange('facilityManager', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.facilityManager && '☑'} Facility Manger</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.pharmacist}
-                        onChange={(e) => handleInputChange('pharmacist', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.pharmacist && '☑'} Pharmacist</span>
-                    </label>
-                    <label className="flex items-center gap-1">
-                      <input 
-                        type="checkbox"
-                        checked={formData.labTechnician}
-                        onChange={(e) => handleInputChange('labTechnician', e.target.checked)}
-                        className="no-print"
-                      />
-                      <span>{formData.labTechnician && '☑'} Lab Technician</span>
-                    </label>
+                  <div className="grid grid-cols-3 gap-2 mt-2">
+                    <CheckboxField checked={formData.receptionist} onChange={(e) => handleInputChange('receptionist', e.target.checked)} labelEn="Receptionist" />
+                    <CheckboxField checked={formData.nurse} onChange={(e) => handleInputChange('nurse', e.target.checked)} labelEn="Nurse" />
+                    <CheckboxField checked={formData.physician} onChange={(e) => handleInputChange('physician', e.target.checked)} labelEn="Physician" />
+                    <CheckboxField checked={formData.facilityManager} onChange={(e) => handleInputChange('facilityManager', e.target.checked)} labelEn="Facility Manager" />
+                    <CheckboxField checked={formData.pharmacist} onChange={(e) => handleInputChange('pharmacist', e.target.checked)} labelEn="Pharmacist" />
+                    <CheckboxField checked={formData.labTechnician} onChange={(e) => handleInputChange('labTechnician', e.target.checked)} labelEn="Lab Technician" />
                   </div>
+                  <div className="space-y-1 mt-3">
+                    {[
+                      { label: 'Organization', field: 'organization' },
+                      { label: 'Department', field: 'department' },
+                      { label: 'Specialization', field: 'specialization' },
+                      { label: 'Recruitment privilege', field: 'recruitmentPrivilege' }
+                    ].map(item => (
+                      <div key={item.field} className="flex items-center gap-2">
+                        <span style={{ minWidth: '120px' }}>{item.label}:</span>
+                        <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
+                          {formData[item.field]}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Commitment */}
+                <div style={{ backgroundColor: '#f8f9fa', padding: '8px', marginTop: '8px', fontSize: '9px', lineHeight: '1.5' }}>
+                  <p>
+                    I Will safeguard and will not disclose my username and password. Any access to information system by my username and password is my responsibility. If I believe someone else has logged into my account, I will immediately report the breach to digital health & technology department and will immediately change my password.
+                  </p>
+                  <p style={{ textAlign: 'center', marginTop: '4px', fontWeight: 'bold', color: '#0ea5e9' }}>
+                    med-hc-digital@moh.gov.sa
+                  </p>
+                </div>
+
+                {/* Manager Note */}
+                <div style={{ fontSize: '9px', marginTop: '6px', fontWeight: 'bold' }}>
+                  *The direct manager must provide us with the employee's data in the event of assignment or transfer outside the center or hospital.
                 </div>
               </td>
             </tr>
 
-            {/* Additional Info */}
-            {[
-              { enLabel: 'Organization:', arLabel: 'المنشأة:', field: 'organization' },
-              { enLabel: 'Department:', arLabel: 'القسم:', field: 'department' },
-              { enLabel: 'Specialization:', arLabel: 'التخصص:', field: 'specialization' },
-              { enLabel: 'Recruitment privilege:', arLabel: 'الصلاحيات المطلوبة:', field: 'recruitmentPrivilege' }
-            ].map((item, idx) => (
-              <tr key={idx}>
-                <td style={{ padding: '8px', textAlign: 'right' }}>
-                  <span 
-                    className="editable-cell"
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)}
-                    style={{ display: 'inline-block', minWidth: '250px', borderBottom: '1px dotted #999' }}
-                  >
-                    {formData[item.field]}
-                  </span>
-                  <span style={{ fontWeight: 'bold' }}> {item.arLabel}</span>
-                </td>
-                <td style={{ padding: '8px' }}>
-                  <span style={{ fontWeight: 'bold' }}>{item.enLabel} </span>
-                  <span 
-                    className="editable-cell"
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)}
-                    style={{ display: 'inline-block', minWidth: '250px', borderBottom: '1px dotted #999' }}
-                  >
-                    {formData[item.field]}
-                  </span>
-                </td>
-              </tr>
-            ))}
-
-            {/* Commitment Statement */}
+            {/* Row 3: Signatures */}
             <tr>
-              <td style={{ padding: '12px', fontSize: '9px', lineHeight: '1.6', textAlign: 'right' }}>
-                <p>
-                  اتعهد بالمحافظة على اسم وكلمة السر الخاصة بي ولن اعطيها لأي شخص اخر، أي وصول إلى نظام المعلومات باستخدام اسم المستخدم. وكلمة المرور الخاصين بي هو مسؤوليتي وإذا علمت ان هناك شخص اخر استخدم حسابي فسوف أقوم بإبلاغ المسؤول بقسم الصحة الرقمية والتكنولوجيا عن ذلك وتغير كلمة السر.
-                </p>
-                <p style={{ textAlign: 'center', marginTop: '8px', fontWeight: 'bold', color: '#0ea5e9' }}>
-                  med-hc-digital@moh.gov.sa
-                </p>
-              </td>
-              <td style={{ padding: '12px', fontSize: '9px', lineHeight: '1.6' }}>
-                <p>
-                  I Will safeguard and will not disclose my username and password. Any access to information system by my username and password is my responsibility. If I believe someone else has logged into my account, I will immediately report the breach to digital health & technology department and will immediately change my password.
-                </p>
-                <p style={{ textAlign: 'center', marginTop: '8px', fontWeight: 'bold', color: '#0ea5e9' }}>
-                  med-hc-digital@moh.gov.sa
-                </p>
-              </td>
-            </tr>
-
-            {/* Manager Note */}
-            <tr>
-              <td style={{ padding: '8px', fontSize: '9px', textAlign: 'right' }}>
-                <p style={{ fontWeight: 'bold' }}>
-                  * على الرئيس المباشر تزويدنا ببيانات الموظف في حال التكليف او النقل خارج المركز أو المستشفى
-                </p>
-              </td>
-              <td style={{ padding: '8px', fontSize: '9px' }}>
-                <p style={{ fontWeight: 'bold' }}>
-                  *The direct manager must provide us with the employee's data in the event of assignment or transfer outside the center or hospital.
-                </p>
-              </td>
-            </tr>
-
-            {/* Approval Section */}
-            <tr>
-              <td colSpan="2" style={{ padding: '8px' }}>
+              <td colSpan="2" style={{ padding: '10px' }}>
                 <div className="flex justify-between items-center">
-                  <div style={{ width: '30%', textAlign: 'right' }}>
-                    <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>اسم الموظف:</div>
-                    <span 
-                      className="editable-cell"
-                      contentEditable
-                      suppressContentEditableWarning
-                      onBlur={(e) => handleInputChange('employeeName', e.currentTarget.textContent)}
-                      style={{ display: 'block', borderBottom: '1px solid #999', minHeight: '30px' }}
-                    >
+                  {/* اسم الموظف - يسار */}
+                  <div style={{ width: '35%', textAlign: 'right' }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '4px', fontSize: '11px' }}>اسم الموظف:</div>
+                    <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('employeeName', e.currentTarget.textContent)} style={{ display: 'block', borderBottom: '1px solid #000', minHeight: '25px', padding: '4px' }}>
                       {formData.employeeName}
                     </span>
                   </div>
                   
-                  <div style={{ width: '30%', textAlign: 'center' }}>
-                    <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>الختم / Stamp</div>
-                    <div style={{ border: '1px solid #999', height: '60px' }}>
-                      
-                    </div>
+                  {/* الختم - وسط */}
+                  <div style={{ width: '20%', textAlign: 'center' }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '4px', fontSize: '10px' }}>الختم / Stamp</div>
+                    <div style={{ border: '1px solid #000', height: '50px', width: '70px', margin: '0 auto' }}></div>
                   </div>
                   
-                  <div style={{ width: '30%', textAlign: 'left' }}>
-                    <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>اعتماد الرئيس المباشر</div>
-                    <span 
-                      className="editable-cell"
-                      contentEditable
-                      suppressContentEditableWarning
-                      onBlur={(e) => handleInputChange('managerApproval', e.currentTarget.textContent)}
-                      style={{ display: 'block', borderBottom: '1px solid #999', minHeight: '30px' }}
-                    >
+                  {/* اعتماد الرئيس المباشر - يمين */}
+                  <div style={{ width: '35%', textAlign: 'left' }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '4px', fontSize: '11px' }}>اعتماد الرئيس المباشر:</div>
+                    <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('managerApproval', e.currentTarget.textContent)} style={{ display: 'block', borderBottom: '1px solid #000', minHeight: '25px', padding: '4px' }}>
                       {formData.managerApproval}
                     </span>
                   </div>
