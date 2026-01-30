@@ -250,7 +250,7 @@ export default function FillDigitalAccountForm() {
 
             {/* Row 2: Content - النظام */}
             <tr>
-              <td style={{ width: '50%', padding: '8px', borderBottom: 'none' }}>
+              <td style={{ width: '50%', padding: '8px', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 <span style={{ fontWeight: 'bold' }}>النظام:</span>
                 <div className="flex gap-4 mt-2 justify-end">
                   <CheckboxField checked={formData.systemRaqeem} onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)} labelAr="رقيم" isArabic />
@@ -258,7 +258,7 @@ export default function FillDigitalAccountForm() {
                   <CheckboxField checked={formData.systemMawid} onChange={(e) => handleInputChange('systemMawid', e.target.checked)} labelAr="موعد" isArabic />
                 </div>
               </td>
-              <td style={{ width: '50%', padding: '8px', borderBottom: 'none' }}>
+              <td style={{ width: '50%', padding: '8px', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <span style={{ fontWeight: 'bold' }}>*System:</span>
                 <div className="flex gap-4 mt-2">
                   <CheckboxField checked={formData.systemRaqeem} onChange={(e) => handleInputChange('systemRaqeem', e.target.checked)} labelEn="Raqeem" />
@@ -276,7 +276,7 @@ export default function FillDigitalAccountForm() {
 
             {/* نوع الطلب */}
             <tr>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none' }}>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 <span style={{ fontWeight: 'bold' }}>نوع الطلب:</span>
                 <div className="grid grid-cols-2 gap-2 mt-2" style={{ direction: 'rtl' }}>
                   <CheckboxField checked={formData.createNew} onChange={(e) => handleInputChange('createNew', e.target.checked)} labelAr="انشاء مستخدم جديد" isArabic />
@@ -285,7 +285,7 @@ export default function FillDigitalAccountForm() {
                   <CheckboxField checked={formData.relocateUser} onChange={(e) => handleInputChange('relocateUser', e.target.checked)} labelAr="نقل اسم مستخدم" isArabic />
                 </div>
               </td>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none' }}>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <span style={{ fontWeight: 'bold' }}>*Type of Request:</span>
                 <div className="grid grid-cols-2 gap-2 mt-2">
                   <CheckboxField checked={formData.createNew} onChange={(e) => handleInputChange('createNew', e.target.checked)} labelEn="Create a new user name" />
@@ -304,13 +304,13 @@ export default function FillDigitalAccountForm() {
 
             {/* السبب */}
             <tr>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none' }}>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 <span style={{ fontWeight: 'bold' }}>السبب: </span>
                 <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('reason', e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', minWidth: '200px' }}>
                   {formData.reason}
                 </span>
               </td>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none' }}>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <span style={{ fontWeight: 'bold' }}>*Reason: </span>
                 <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('reason', e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', minWidth: '200px' }}>
                   {formData.reason}
@@ -326,7 +326,7 @@ export default function FillDigitalAccountForm() {
 
             {/* اسم الموظف */}
             <tr>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none' }}>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 <span style={{ fontWeight: 'bold' }}>اسم الموظف:</span>
                 <div className="space-y-1 mt-2">
                   {[
@@ -344,7 +344,7 @@ export default function FillDigitalAccountForm() {
                   ))}
                 </div>
               </td>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none' }}>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <span style={{ fontWeight: 'bold' }}>*Staff Name:</span>
                 <div className="space-y-1 mt-2">
                   {[
@@ -372,7 +372,7 @@ export default function FillDigitalAccountForm() {
 
             {/* البيانات العامة */}
             <tr>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none' }}>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 {[
                   { label: 'رقم الهوية/ الإقامة', field: 'idNumber' },
                   { label: 'تاريخ الميلاد', field: 'birthDate' },
@@ -389,7 +389,7 @@ export default function FillDigitalAccountForm() {
                   </div>
                 ))}
               </td>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none' }}>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 {[
                   { label: 'ID NO', field: 'idNumber' },
                   { label: 'Date of birth', field: 'birthDate' },
@@ -416,7 +416,7 @@ export default function FillDigitalAccountForm() {
 
             {/* المهنة */}
             <tr>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none' }}>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 <span style={{ fontWeight: 'bold' }}>المهنة:</span>
                 <div className="grid grid-cols-3 gap-2 mt-2">
                   <CheckboxField checked={formData.physician} onChange={(e) => handleInputChange('physician', e.target.checked)} labelAr="طبيب" isArabic />
@@ -442,7 +442,7 @@ export default function FillDigitalAccountForm() {
                   ))}
                 </div>
               </td>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none' }}>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <span style={{ fontWeight: 'bold' }}>*Occupation:</span>
                 <div className="grid grid-cols-3 gap-2 mt-2">
                   <CheckboxField checked={formData.receptionist} onChange={(e) => handleInputChange('receptionist', e.target.checked)} labelEn="Receptionist" />
@@ -472,7 +472,7 @@ export default function FillDigitalAccountForm() {
 
             {/* التعهد */}
             <tr>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none' }}>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 <div style={{ backgroundColor: '#f8f9fa', padding: '8px', fontSize: '9px', lineHeight: '1.5' }}>
                   <p>
                     اتعهد بالمحافظة على اسم وكلمة السر الخاصة بي ولن اعطيها لأي شخص اخر، أي وصول إلى نظام المعلومات باستخدام اسم المستخدم وكلمة المرور الخاصين بي هو مسؤوليتي وإذا علمت ان هناك شخص اخر استخدم حسابي فسوف أقوم بإبلاغ المسؤول بقسم الصحة الرقمية والتكنولوجيا عن ذلك وتغير كلمة السر.
@@ -485,7 +485,7 @@ export default function FillDigitalAccountForm() {
                   * على الرئيس المباشر تزويدنا ببيانات الموظف في حال التكليف أو النقل خارج المركز أو المستشفى
                 </div>
               </td>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none' }}>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <div style={{ backgroundColor: '#f8f9fa', padding: '8px', fontSize: '9px', lineHeight: '1.5' }}>
                   <p>
                     I Will safeguard and will not disclose my username and password. Any access to information system by my username and password is my responsibility. If I believe someone else has logged into my account, I will immediately report the breach to digital health & technology department and will immediately change my password.
