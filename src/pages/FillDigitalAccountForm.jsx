@@ -12,6 +12,39 @@ export default function FillDigitalAccountForm() {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const printRef = useRef(null);
 
+  const departmentsList = [
+    "قسم طب الأسرة",
+    "قسم الأمراض المزمنة",
+    "قسم الاستقبال والتسجيل",
+    "قسم الأسنان",
+    "قسم الصيدلية",
+    "قسم المختبر",
+    "قسم الأشعة",
+    "قسم التمريض",
+    "قسم التطعيمات",
+    "قسم صحة الطفل",
+    "قسم رعاية الحوامل",
+    "قسم التثقيف الصحي",
+    "قسم الطوارئ",
+    "قسم الإدارة"
+  ];
+
+  const privilegesList = [
+    "صلاحية طبيب",
+    "صلاحية استقبال",
+    "صلاحية ممرض",
+    "صلاحية صيدلي",
+    "صلاحية تطعيمات",
+    "صلاحية حوامل",
+    "صلاحية طفل سليم",
+    "صلاحية مدرب صحي",
+    "صلاحية مختبر",
+    "صلاحية أشعة",
+    "صلاحية أسنان",
+    "صلاحية إدارية",
+    "صلاحية مدير منشأة"
+  ];
+
   const [formData, setFormData] = useState({
     systemRaqeem: false,
     systemMedica: false,
@@ -266,8 +299,8 @@ export default function FillDigitalAccountForm() {
           <tbody>
             {/* Row 1: Title */}
             <tr>
-              <td colSpan="2" style={{ padding: '10px', textAlign: 'center', backgroundColor: '#e6f2ff' }}>
-                <span style={{ fontWeight: 'bold', fontSize: '14px', color: '#1e3a5f' }}>
+              <td colSpan="2" style={{ padding: '10px', textAlign: 'center' }}>
+                <span style={{ fontWeight: 'bold', fontSize: '14px', color: '#0ea5e9' }}>
                   نموذج انشاء إيقاف حساب
                 </span>
               </td>
@@ -335,7 +368,7 @@ export default function FillDigitalAccountForm() {
             {/* Separator */}
             <tr>
               <td colSpan="2" style={{ padding: '0 15px', border: 'none' }}>
-                <div style={{ borderBottom: '2px solid #000', width: '100%' }}></div>
+                <div style={{ borderBottom: '1px solid #000', width: '100%' }}></div>
               </td>
             </tr>
 
@@ -407,7 +440,7 @@ export default function FillDigitalAccountForm() {
             {/* Separator */}
             <tr>
               <td colSpan="2" style={{ padding: '0 15px', border: 'none' }}>
-                <div style={{ borderBottom: '2px solid #000', width: '100%' }}></div>
+                <div style={{ borderBottom: '1px solid #000', width: '100%' }}></div>
               </td>
             </tr>
 
@@ -429,7 +462,7 @@ export default function FillDigitalAccountForm() {
             {/* Separator */}
             <tr>
               <td colSpan="2" style={{ padding: '0 15px', border: 'none' }}>
-                <div style={{ borderBottom: '2px solid #000', width: '100%' }}></div>
+                <div style={{ borderBottom: '1px solid #000', width: '100%' }}></div>
               </td>
             </tr>
 
@@ -475,7 +508,7 @@ export default function FillDigitalAccountForm() {
             {/* Separator */}
             <tr>
               <td colSpan="2" style={{ padding: '0 15px', border: 'none' }}>
-                <div style={{ borderBottom: '2px solid #000', width: '100%' }}></div>
+                <div style={{ borderBottom: '1px solid #000', width: '100%' }}></div>
               </td>
             </tr>
 
@@ -519,7 +552,7 @@ export default function FillDigitalAccountForm() {
             {/* Separator */}
             <tr>
               <td colSpan="2" style={{ padding: '0 15px', border: 'none' }}>
-                <div style={{ borderBottom: '2px solid #000', width: '100%' }}></div>
+                <div style={{ borderBottom: '1px solid #000', width: '100%' }}></div>
               </td>
             </tr>
 
@@ -566,19 +599,54 @@ export default function FillDigitalAccountForm() {
                   </tbody>
                 </table>
                 <div className="space-y-1 mt-3">
-                  {[
-                    { label: 'المنشأة', field: 'organization' },
-                    { label: 'القسم', field: 'department' },
-                    { label: 'التخصص', field: 'specialization' },
-                    { label: 'الصلاحيات المطلوبة', field: 'recruitmentPrivilege' }
-                  ].map(item => (
-                    <div key={item.field} className="flex items-center gap-2">
-                      <span style={{ minWidth: '100px', textAlign: 'right' }}>{item.label}:</span>
-                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
-                        {formData[item.field]}
-                      </span>
-                    </div>
-                  ))}
+                  <div className="flex items-center gap-2">
+                    <span style={{ minWidth: '100px', textAlign: 'right' }}>المنشأة:</span>
+                    <select 
+                      className="no-print flex-1 border border-gray-300 rounded px-2 py-1 text-xs"
+                      value={formData.organization}
+                      onChange={(e) => handleInputChange('organization', e.target.value)}
+                    >
+                      <option value="">اختر المركز...</option>
+                      {healthCenters.map(center => (
+                        <option key={center.id} value={center.اسم_المركز}>{center.اسم_المركز}</option>
+                      ))}
+                    </select>
+                    <span className="print-only" style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.organization}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span style={{ minWidth: '100px', textAlign: 'right' }}>القسم:</span>
+                    <select 
+                      className="no-print flex-1 border border-gray-300 rounded px-2 py-1 text-xs"
+                      value={formData.department}
+                      onChange={(e) => handleInputChange('department', e.target.value)}
+                    >
+                      <option value="">اختر القسم...</option>
+                      {departmentsList.map(dept => (
+                        <option key={dept} value={dept}>{dept}</option>
+                      ))}
+                    </select>
+                    <span className="print-only" style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.department}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span style={{ minWidth: '100px', textAlign: 'right' }}>التخصص:</span>
+                    <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('specialization', e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
+                      {formData.specialization}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span style={{ minWidth: '100px', textAlign: 'right' }}>الصلاحيات المطلوبة:</span>
+                    <select 
+                      className="no-print flex-1 border border-gray-300 rounded px-2 py-1 text-xs"
+                      value={formData.recruitmentPrivilege}
+                      onChange={(e) => handleInputChange('recruitmentPrivilege', e.target.value)}
+                    >
+                      <option value="">اختر الصلاحية...</option>
+                      {privilegesList.map(priv => (
+                        <option key={priv} value={priv}>{priv}</option>
+                      ))}
+                    </select>
+                    <span className="print-only" style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.recruitmentPrivilege}</span>
+                  </div>
                 </div>
               </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
@@ -622,19 +690,22 @@ export default function FillDigitalAccountForm() {
                   </tbody>
                 </table>
                 <div className="space-y-1 mt-3">
-                  {[
-                    { label: 'Organization', field: 'organization' },
-                    { label: 'Department', field: 'department' },
-                    { label: 'Specialization', field: 'specialization' },
-                    { label: 'Recruitment privilege', field: 'recruitmentPrivilege' }
-                  ].map(item => (
-                    <div key={item.field} className="flex items-center gap-2">
-                      <span style={{ minWidth: '120px' }}>{item.label}:</span>
-                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
-                        {formData[item.field]}
-                      </span>
-                    </div>
-                  ))}
+                  <div className="flex items-center gap-2">
+                    <span style={{ minWidth: '120px' }}>Organization:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.organization}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span style={{ minWidth: '120px' }}>Department:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.department}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span style={{ minWidth: '120px' }}>Specialization:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.specialization}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span style={{ minWidth: '120px' }}>Recruitment privilege:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.recruitmentPrivilege}</span>
+                  </div>
                 </div>
               </td>
             </tr>
