@@ -887,23 +887,23 @@ export default function FillDigitalAccountForm() {
                   </tbody>
                 </table>
                 <div style={{ marginTop: '4px' }}>
-                  <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
-                    <span style={{ fontWeight: 'bold', display: 'inline' }}>المنشأة: </span>
-                    <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline', minWidth: '80px' }}>{formData.organization || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}</span>
-                  </div>
-                  <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
-                    <span style={{ fontWeight: 'bold', display: 'inline' }}>القسم: </span>
-                    <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline', minWidth: '80px' }}>{formData.department || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}</span>
-                  </div>
-                  <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
-                    <span style={{ fontWeight: 'bold', display: 'inline' }}>التخصص: </span>
-                    <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline', minWidth: '80px' }}>{formData.specialization || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}</span>
-                  </div>
-                  <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
-                    <span style={{ fontWeight: 'bold', display: 'inline' }}>الصلاحيات المطلوبة: </span>
-                    <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline', minWidth: '80px' }}>{formData.recruitmentPrivilege || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}</span>
-                  </div>
-                </div>
+                                        <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                          <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>المنشأة: </span>
+                                          <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', flex: 1, minHeight: '14px' }}>{formData.organization || '\u00A0'}</span>
+                                        </div>
+                                        <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                          <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>القسم: </span>
+                                          <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', flex: 1, minHeight: '14px' }}>{formData.department || '\u00A0'}</span>
+                                        </div>
+                                        <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                          <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>التخصص: </span>
+                                          <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', flex: 1, minHeight: '14px' }}>{formData.specialization || '\u00A0'}</span>
+                                        </div>
+                                        <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                          <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>الصلاحيات المطلوبة: </span>
+                                          <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', flex: 1, minHeight: '14px' }}>{formData.recruitmentPrivilege || '\u00A0'}</span>
+                                        </div>
+                                      </div>
               </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <span style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>*Occupation:</span>
