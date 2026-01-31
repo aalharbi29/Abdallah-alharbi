@@ -944,24 +944,24 @@ export default function FillDigitalAccountForm() {
                     </tr>
                   </tbody>
                 </table>
-                <div className="space-y-1 mt-3">
-                                        <div className="flex items-center gap-2">
-                                          <span style={{ minWidth: '120px', fontWeight: 'bold' }}>Organization:</span>
-                                          <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{translateCenterName(formData.organization)}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                          <span style={{ minWidth: '120px', fontWeight: 'bold' }}>Department:</span>
-                                          <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{departmentsTranslations[formData.department] || formData.department}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                          <span style={{ minWidth: '120px', fontWeight: 'bold' }}>Specialization:</span>
-                                          <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{translateSpecialization(formData.specialization)}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                          <span style={{ minWidth: '120px', fontWeight: 'bold' }}>Recruitment privilege:</span>
-                                          <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{translateToEnglish(formData.recruitmentPrivilege)}</span>
-                                        </div>
-                                      </div>
+                <div style={{ marginTop: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
+                    <span style={{ minWidth: '120px', fontWeight: 'bold' }}>Organization:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{translateCenterName(formData.organization)}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
+                    <span style={{ minWidth: '120px', fontWeight: 'bold' }}>Department:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{departmentsTranslations[formData.department] || formData.department}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
+                    <span style={{ minWidth: '120px', fontWeight: 'bold' }}>Specialization:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{translateSpecialization(formData.specialization)}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
+                    <span style={{ minWidth: '120px', fontWeight: 'bold' }}>Recruitment privilege:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{translateToEnglish(formData.recruitmentPrivilege)}</span>
+                  </div>
+                </div>
               </td>
             </tr>
 
