@@ -757,41 +757,41 @@ export default function FillDigitalAccountForm() {
             {/* اسم الموظف */}
             <tr>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
-                <span style={{ fontWeight: 'bold' }}>اسم الموظف:</span>
-                <div style={{ marginTop: '2px' }}>
-                  {[
-                    { label: 'الأول', field: 'firstName' },
-                    { label: 'الثاني', field: 'secondName' },
-                    { label: 'الثالث', field: 'thirdName' },
-                    { label: 'العائلة', field: 'familyName' }
-                  ].map(item => (
-                    <div key={item.field} style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
-                      <span style={{ fontWeight: 'bold', display: 'inline' }}>{item.label}: </span>
-                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline', minWidth: '80px' }}>
-                        {formData[item.field] || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </td>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
-                <span style={{ fontWeight: 'bold' }}>*Staff Name:</span>
-                <div style={{ marginTop: '2px' }}>
-                  {[
-                    { label: 'First', field: 'firstNameEn' },
-                    { label: 'Second', field: 'secondNameEn' },
-                    { label: 'Third', field: 'thirdNameEn' },
-                    { label: 'Family', field: 'familyNameEn' }
-                  ].map(item => (
-                    <div key={item.field} style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
-                      <span style={{ fontWeight: 'bold', display: 'inline' }}>{item.label}: </span>
-                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline', minWidth: '80px' }}>
-                        {formData[item.field] || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </td>
+                                    <span style={{ fontWeight: 'bold' }}>اسم الموظف:</span>
+                                    <div style={{ marginTop: '2px' }}>
+                                      {[
+                                        { label: 'الأول', field: 'firstName' },
+                                        { label: 'الثاني', field: 'secondName' },
+                                        { label: 'الثالث', field: 'thirdName' },
+                                        { label: 'العائلة', field: 'familyName' }
+                                      ].map(item => (
+                                        <div key={item.field} style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                          <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>{item.label}: </span>
+                                          <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', flex: 1, minHeight: '14px' }}>
+                                            {formData[item.field] || '\u00A0'}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </td>
+                                  <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
+                                    <span style={{ fontWeight: 'bold' }}>*Staff Name:</span>
+                                    <div style={{ marginTop: '2px' }}>
+                                      {[
+                                        { label: 'First', field: 'firstNameEn' },
+                                        { label: 'Second', field: 'secondNameEn' },
+                                        { label: 'Third', field: 'thirdNameEn' },
+                                        { label: 'Family', field: 'familyNameEn' }
+                                      ].map(item => (
+                                        <div key={item.field} style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                          <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>{item.label}: </span>
+                                          <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', flex: 1, minHeight: '14px' }}>
+                                            {formData[item.field] || '\u00A0'}
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </td>
             </tr>
             {/* Separator */}
             <tr>
@@ -803,39 +803,39 @@ export default function FillDigitalAccountForm() {
             {/* البيانات العامة */}
             <tr>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
-                {[
-                  { label: 'رقم الهوية/ الإقامة', field: 'idNumber' },
-                  { label: 'تاريخ الميلاد', field: 'birthDate' },
-                  { label: 'البريد الوزاري', field: 'mohEmail' },
-                  { label: 'رقم التصنيف إن وجد', field: 'scfhsNumber' },
-                  { label: 'تاريخ انتهاء (التدريب/ العقد)', field: 'endDate' },
-                  { label: 'رقم التواصل', field: 'contactPhone' }
-                ].map(item => (
-                  <div key={item.field} style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
-                    <span style={{ fontWeight: 'bold', display: 'inline' }}>{item.label}: </span>
-                    <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline' }}>
-                      {formData[item.field]}
-                    </span>
-                  </div>
-                ))}
-              </td>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
-                {[
-                  { label: 'ID NO', field: 'idNumber' },
-                  { label: 'Date of birth', field: 'birthDate' },
-                  { label: 'MOH email', field: 'mohEmail' },
-                  { label: 'SCFHS number', field: 'scfhsNumber' },
-                  { label: 'End date of (internship\\contract)', field: 'endDate' },
-                  { label: 'Contact Phone', field: 'contactPhone' }
-                ].map(item => (
-                  <div key={item.field} style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
-                    <span style={{ fontWeight: 'bold', display: 'inline' }}>{item.label}: </span>
-                    <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline' }}>
-                      {formData[item.field]}
-                    </span>
-                  </div>
-                ))}
-              </td>
+                                    {[
+                                      { label: 'رقم الهوية/ الإقامة', field: 'idNumber' },
+                                      { label: 'تاريخ الميلاد', field: 'birthDate' },
+                                      { label: 'البريد الوزاري', field: 'mohEmail' },
+                                      { label: 'رقم التصنيف إن وجد', field: 'scfhsNumber' },
+                                      { label: 'تاريخ انتهاء (التدريب/ العقد)', field: 'endDate' },
+                                      { label: 'رقم التواصل', field: 'contactPhone' }
+                                    ].map(item => (
+                                      <div key={item.field} style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>{item.label}: </span>
+                                        <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', flex: 1, minHeight: '14px' }}>
+                                          {formData[item.field] || '\u00A0'}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </td>
+                                  <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
+                                    {[
+                                      { label: 'ID NO', field: 'idNumber' },
+                                      { label: 'Date of birth', field: 'birthDate' },
+                                      { label: 'MOH email', field: 'mohEmail' },
+                                      { label: 'SCFHS number', field: 'scfhsNumber' },
+                                      { label: 'End date of (internship\\contract)', field: 'endDate' },
+                                      { label: 'Contact Phone', field: 'contactPhone' }
+                                    ].map(item => (
+                                      <div key={item.field} style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>{item.label}: </span>
+                                        <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', flex: 1, minHeight: '14px' }}>
+                                          {formData[item.field] || '\u00A0'}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </td>
             </tr>
             {/* Separator */}
             <tr>
