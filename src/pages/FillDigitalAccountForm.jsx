@@ -569,7 +569,7 @@ export default function FillDigitalAccountForm() {
         }}
       >
         {/* Header - moved to be next to logo in background */}
-                    <div style={{ position: 'absolute', top: '8mm', right: '55mm', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ position: 'absolute', top: '25mm', right: '40mm', display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <div style={{ borderLeft: '2px solid #0ea5e9', height: '30px' }}></div>
                       <div style={{ textAlign: 'right' }}>
                         <h2 style={{ fontSize: '10px', fontWeight: 'bold', color: '#0ea5e9', margin: 0 }}>
