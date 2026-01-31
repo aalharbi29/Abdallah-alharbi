@@ -710,7 +710,7 @@ export default function FillDigitalAccountForm() {
                         <input type="checkbox" checked={formData.createNew} onChange={(e) => handleInputChange('createNew', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.createNew && <span className="print-only">☑</span>}
                       </td>
-                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px' }}>Create a new user name</td>
+                      <td style={{ border: '1px solid #000', padding: '4px', fontSize: '10px', whiteSpace: 'nowrap' }}>Create a new user name</td>
                       <td style={{ border: '1px solid #000', padding: '4px', width: '25px', textAlign: 'center' }}>
                         <input type="checkbox" checked={formData.restorePassword} onChange={(e) => handleInputChange('restorePassword', e.target.checked)} className="no-print" style={{ width: '14px', height: '14px' }} />
                         {formData.restorePassword && <span className="print-only">☑</span>}
