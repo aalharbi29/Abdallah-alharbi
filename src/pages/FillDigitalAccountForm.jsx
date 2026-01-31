@@ -172,7 +172,15 @@ export default function FillDigitalAccountForm() {
       "خيف حسين": "Khaif Hussein",
       "ذا الحليفة": "Dha Al-Hulaifa",
       "شعب الرمان": "Shiab Al-Rumman",
-      "مسيجيد": "Musaijeed"
+      "مسيجيد": "Musaijeed",
+      "بطحي": "Batahi",
+      "طلال": "Talal",
+      "هدبان": "Hadban",
+      "الماوية": "Al-Mawiyah",
+      "المحفر": "Al-Mahfar",
+      "الشقران": "Al-Shuqran",
+      "العقدة": "Al-Uqdah",
+      "بلغة": "Bulgha"
     };
     
     // Try to find translation
@@ -570,7 +578,7 @@ export default function FillDigitalAccountForm() {
         }}
       >
         {/* Header - moved to be next to logo in background */}
-                    <div style={{ position: 'absolute', top: '25mm', right: '48mm', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ position: 'absolute', top: '20mm', right: '48mm', display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <div style={{ borderLeft: '2px solid #0ea5e9', height: '35px' }}></div>
                         <div style={{ textAlign: 'right' }}>
                           <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: '#0ea5e9', margin: 0 }}>
@@ -583,7 +591,7 @@ export default function FillDigitalAccountForm() {
                       </div>
 
         {/* Main Table */}
-        <table className="form-table" style={{ marginTop: '55px' }}>
+        <table className="form-table" style={{ marginTop: '60px' }}>
           <tbody>
             {/* Row 1: Title */}
             <tr>
