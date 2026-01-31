@@ -730,18 +730,22 @@ export default function FillDigitalAccountForm() {
 
             {/* السبب */}
             <tr>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'center' }}>
-                                    <span style={{ fontWeight: 'bold' }}>السبب: </span>
-                                    <span style={{ borderBottom: '1px dotted #666', flex: 1, display: 'inline-block', fontWeight: 'bold', minWidth: '150px' }}>
-                                                              {formData.reason || '\u00A0'}
-                                                            </span>
-                                  </td>
-                                  <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'center' }}>
-                                    <span style={{ fontWeight: 'bold' }}>*Reason: </span>
-                                    <span style={{ borderBottom: '1px dotted #666', flex: 1, display: 'inline-block', fontWeight: 'bold', minWidth: '150px' }}>
-                                                              {formData.reasonEn || '\u00A0'}
-                                                            </span>
-                                  </td>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>السبب: </span>
+                                        <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold', minHeight: '16px' }}>
+                                          {formData.reason || '\u00A0'}
+                                        </span>
+                                      </div>
+                                    </td>
+                                    <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
+                                      <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>*Reason: </span>
+                                        <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold', minHeight: '16px' }}>
+                                          {formData.reasonEn || '\u00A0'}
+                                        </span>
+                                      </div>
+                                    </td>
             </tr>
             {/* Separator */}
             <tr>
