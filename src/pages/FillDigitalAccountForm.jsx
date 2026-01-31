@@ -372,30 +372,32 @@ export default function FillDigitalAccountForm() {
           html, body {
             margin: 0 !important;
             padding: 0 !important;
-            width: 210mm !important;
-            height: 297mm !important;
+            background: white !important;
           }
           body * { 
             visibility: hidden; 
           }
           .print-area, .print-area * { 
-            visibility: visible; 
+            visibility: visible !important; 
           }
           .print-area {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100% !important;
-            min-height: 100% !important;
-            padding: 0 !important;
+            position: fixed !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 210mm !important;
+            height: 297mm !important;
+            padding: 25mm 30mm 25mm 30mm !important;
             margin: 0 !important;
-            direction: rtl;
-            box-sizing: border-box;
-            background: white;
+            direction: rtl !important;
+            box-sizing: border-box !important;
+            background: white !important;
+            overflow: hidden !important;
+            box-shadow: none !important;
+            max-width: none !important;
           }
           .print-area table {
             width: 100% !important;
-            table-layout: fixed;
+            table-layout: fixed !important;
           }
           .no-print { 
             display: none !important; 
@@ -405,7 +407,7 @@ export default function FillDigitalAccountForm() {
           }
           @page { 
             size: A4 portrait; 
-            margin: 25mm 30mm 25mm 30mm;
+            margin: 0 !important;
           }
         }
         .editable-cell {
