@@ -776,16 +776,16 @@ export default function FillDigitalAccountForm() {
               </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <span style={{ fontWeight: 'bold' }}>*Staff Name:</span>
-                <div style={{ marginTop: '4px' }}>
+                <div style={{ marginTop: '2px' }}>
                   {[
                     { label: 'First', field: 'firstNameEn' },
                     { label: 'Second', field: 'secondNameEn' },
                     { label: 'Third', field: 'thirdNameEn' },
                     { label: 'Family', field: 'familyNameEn' }
                   ].map(item => (
-                    <div key={item.field} style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
-                      <span style={{ width: '50px', fontWeight: 'bold' }}>{item.label}:</span>
-                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>
+                    <div key={item.field} style={{ display: 'flex', alignItems: 'baseline', marginBottom: '1px', gap: '0' }}>
+                      <span style={{ width: '45px', fontWeight: 'bold', fontSize: '10px' }}>{item.label}:</span>
+                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold', fontSize: '10px' }}>
                         {formData[item.field]}
                       </span>
                     </div>
