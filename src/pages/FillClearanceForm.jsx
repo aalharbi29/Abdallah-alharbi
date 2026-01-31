@@ -276,37 +276,18 @@ export default function FillClearanceForm() {
         {/* Main Content */}
         <div style={{ padding: '30px 40px' }}>
           
-          {/* BAIN Logo and Title Row */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
-            {/* Left BAIN Logo */}
-            <div style={{ width: '80px' }}>
-              <div style={{ color: '#3498db', fontWeight: 'bold', fontSize: '20px', fontFamily: 'Arial' }}>
-                بـيـن
-              </div>
-              <div style={{ color: '#3498db', fontSize: '12px', fontWeight: 'bold', letterSpacing: '2px' }}>BAIN</div>
-            </div>
-            
-            {/* Title */}
-            <div style={{ flex: 1, textAlign: 'center' }}>
-              <h1 style={{ 
-                fontSize: '18px', 
-                fontWeight: 'bold', 
-                color: '#333',
-                textDecoration: 'underline',
-                textUnderlineOffset: '4px',
-                margin: '0'
-              }}>
-                بـراءة ذمـة
-              </h1>
-            </div>
-            
-            {/* Right BAIN Logo */}
-            <div style={{ width: '80px', textAlign: 'left' }}>
-              <div style={{ color: '#3498db', fontWeight: 'bold', fontSize: '20px', fontFamily: 'Arial' }}>
-                بـيـن
-              </div>
-              <div style={{ color: '#3498db', fontSize: '12px', fontWeight: 'bold', letterSpacing: '2px' }}>BAIN</div>
-            </div>
+          {/* Title Row */}
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <h1 style={{ 
+              fontSize: '18px', 
+              fontWeight: 'bold', 
+              color: '#333',
+              textDecoration: 'underline',
+              textUnderlineOffset: '4px',
+              margin: '0'
+            }}>
+              بـراءة ذمـة
+            </h1>
           </div>
 
           {/* Employee Info Table */}
@@ -477,19 +458,11 @@ export default function FillClearanceForm() {
           left: '40px', 
           right: '40px',
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent: 'flex-start',
           alignItems: 'flex-end'
         }}>
-          {/* Left BAIN Logo */}
-          <div style={{ width: '80px' }}>
-            <div style={{ color: '#3498db', fontWeight: 'bold', fontSize: '24px', fontFamily: 'Arial', opacity: 0.3 }}>
-              بـيـن
-            </div>
-            <div style={{ color: '#3498db', fontSize: '14px', fontWeight: 'bold', letterSpacing: '2px', opacity: 0.3 }}>BAIN</div>
-          </div>
-          
-          {/* Right Footer Text */}
-          <div style={{ textAlign: 'left' }}>
+          {/* Footer Text */}
+          <div style={{ textAlign: 'right' }}>
             <div style={{ color: '#3498db', fontWeight: 'bold', fontSize: '14px' }}>
               تجمع المدينة المنورة الصحي
             </div>
