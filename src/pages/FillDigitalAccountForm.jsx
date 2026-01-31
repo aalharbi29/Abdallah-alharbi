@@ -763,8 +763,8 @@ export default function FillDigitalAccountForm() {
                   ].map(item => (
                     <div key={item.field} style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
                       <span style={{ fontWeight: 'bold', display: 'inline' }}>{item.label}: </span>
-                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline' }}>
-                        {formData[item.field]}
+                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline', minWidth: '80px' }}>
+                        {formData[item.field] || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}
                       </span>
                     </div>
                   ))}
@@ -781,8 +781,8 @@ export default function FillDigitalAccountForm() {
                   ].map(item => (
                     <div key={item.field} style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
                       <span style={{ fontWeight: 'bold', display: 'inline' }}>{item.label}: </span>
-                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline' }}>
-                        {formData[item.field]}
+                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline', minWidth: '80px' }}>
+                        {formData[item.field] || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}
                       </span>
                     </div>
                   ))}
