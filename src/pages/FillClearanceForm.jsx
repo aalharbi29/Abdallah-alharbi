@@ -109,6 +109,8 @@ export default function FillClearanceForm() {
   }
 
   const formStyles = `
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+    
     @media print {
       * {
         -webkit-print-color-adjust: exact !important;
@@ -159,6 +161,14 @@ export default function FillClearanceForm() {
       .editable-field:hover {
         background-color: #f0f9ff;
       }
+    }
+    .font-bold-title {
+      font-family: 'Cairo', 'GE SS Two Bold', Arial, sans-serif;
+      font-weight: 700;
+    }
+    .font-regular {
+      font-family: 'Cairo', 'GE SS Two', Arial, sans-serif;
+      font-weight: 400;
     }
   `;
 
@@ -248,39 +258,49 @@ export default function FillClearanceForm() {
           minHeight: '297mm',
           padding: '0',
           margin: '0 auto',
-          fontFamily: 'Arial, sans-serif',
           position: 'relative',
           boxSizing: 'border-box'
         }}
       >
-        {/* Header Section */}
+        {/* Header Section - White background with text and logo */}
         <div style={{ 
-          backgroundColor: '#3498db',
-          padding: '15px 30px',
+          padding: '20px 40px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'
         }}>
-          <div style={{ color: 'white', fontSize: '14px', fontWeight: 'bold', textAlign: 'center', flex: 1 }}>
+          <div className="font-bold-title" style={{ color: '#3498db', fontSize: '14px', textAlign: 'center', flex: 1 }}>
             إدارة الموارد البشرية بالرعاية الأولية بتجمع المدينة المنورة
           </div>
-          <div style={{ width: '60px' }}>
-            <img 
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Saudi_Ministry_of_Health_Logo.svg/1200px-Saudi_Ministry_of_Health_Logo.svg.png" 
-              alt="MOH Logo" 
-              style={{ width: '50px', height: 'auto', filter: 'brightness(0) invert(1)' }}
-            />
+          {/* Madinah Health Cluster Logo */}
+          <div style={{ width: '70px', textAlign: 'left' }}>
+            <svg viewBox="0 0 100 100" width="60" height="60">
+              {/* Main hexagonal shape */}
+              <polygon 
+                points="50,5 90,25 90,75 50,95 10,75 10,25" 
+                fill="none" 
+                stroke="#2196F3" 
+                strokeWidth="2"
+              />
+              {/* Inner design - abstract health symbol */}
+              <circle cx="50" cy="40" r="15" fill="none" stroke="#2196F3" strokeWidth="2"/>
+              <path d="M35,55 Q50,70 65,55" fill="none" stroke="#2196F3" strokeWidth="2"/>
+              <circle cx="50" cy="40" r="5" fill="#2196F3"/>
+              {/* Small circles representing connection */}
+              <circle cx="30" cy="35" r="3" fill="#4CAF50"/>
+              <circle cx="70" cy="35" r="3" fill="#4CAF50"/>
+              <circle cx="50" cy="65" r="3" fill="#4CAF50"/>
+            </svg>
           </div>
         </div>
 
-        {/* Main Content */}
-        <div style={{ padding: '30px 40px' }}>
+        {/* Main Content - pushed down */}
+        <div style={{ padding: '20px 40px', marginTop: '20px' }}>
           
           {/* Title Row */}
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <h1 style={{ 
+          <div style={{ textAlign: 'center', marginBottom: '25px' }}>
+            <h1 className="font-bold-title" style={{ 
               fontSize: '18px', 
-              fontWeight: 'bold', 
               color: '#333',
               textDecoration: 'underline',
               textUnderlineOffset: '4px',
@@ -299,42 +319,42 @@ export default function FillClearanceForm() {
           }}>
             <thead>
               <tr>
-                <th style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', fontWeight: 'bold', backgroundColor: '#fff' }}>الاســـــــم</th>
-                <th style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', fontWeight: 'bold', backgroundColor: '#fff' }}>الوظيفه</th>
-                <th style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', fontWeight: 'bold', backgroundColor: '#fff' }}>رقم الوظيفة</th>
-                <th style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', fontWeight: 'bold', backgroundColor: '#fff' }}>الجنسية</th>
-                <th style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', fontWeight: 'bold', backgroundColor: '#fff' }}>رقم الهوية</th>
-                <th style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', fontWeight: 'bold', backgroundColor: '#fff' }}>جهة العمل</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الاســـــــم</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الوظيفه</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>رقم الوظيفة</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الجنسية</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>رقم الهوية</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>جهة العمل</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center', minHeight: '35px', height: '35px' }}>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center', minHeight: '35px', height: '35px' }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('employeeName', e.currentTarget.textContent)}>
                     {formData.employeeName || '\u00A0'}
                   </span>
                 </td>
-                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center' }}>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center' }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('position', e.currentTarget.textContent)}>
                     {formData.position || '\u00A0'}
                   </span>
                 </td>
-                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center' }}>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center' }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('positionNumber', e.currentTarget.textContent)}>
                     {formData.positionNumber || '\u00A0'}
                   </span>
                 </td>
-                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center' }}>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center' }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('nationality', e.currentTarget.textContent)}>
                     {formData.nationality || '\u00A0'}
                   </span>
                 </td>
-                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center' }}>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center' }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('idNumber', e.currentTarget.textContent)}>
                     {formData.idNumber || '\u00A0'}
                   </span>
                 </td>
-                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center' }}>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center' }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('workPlace', e.currentTarget.textContent)}>
                     {formData.workPlace || '\u00A0'}
                   </span>
@@ -343,13 +363,12 @@ export default function FillClearanceForm() {
             </tbody>
           </table>
 
-          {/* Certificate Text */}
-          <div style={{ 
-            textAlign: 'right', 
+          {/* Certificate Text - Centered */}
+          <div className="font-regular" style={{ 
+            textAlign: 'center', 
             lineHeight: '2.0',
             fontSize: '14px',
-            marginBottom: '20px',
-            paddingRight: '0'
+            marginBottom: '20px'
           }}>
             <p style={{ marginBottom: '10px' }}>
               تشهد الموارد البشرية بالرعاية الاولية بتجمع المدينة المنورة بأن الموضح اسمه وبياناته
@@ -383,8 +402,8 @@ export default function FillClearanceForm() {
           </div>
 
           {/* Signature Section Title */}
-          <div style={{ textAlign: 'right', marginBottom: '15px', marginTop: '25px' }}>
-            <p style={{ fontSize: '14px', fontWeight: 'normal' }}>
+          <div className="font-regular" style={{ textAlign: 'right', marginBottom: '15px', marginTop: '25px' }}>
+            <p style={{ fontSize: '14px' }}>
               وعلى ذلك جرى التوقيع :
             </p>
           </div>
@@ -398,17 +417,17 @@ export default function FillClearanceForm() {
           }}>
             <thead>
               <tr>
-                <th style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', fontWeight: 'bold', backgroundColor: '#fff', width: '40px' }}>م</th>
-                <th style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', fontWeight: 'bold', backgroundColor: '#fff' }}>الوظيفة</th>
-                <th style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', fontWeight: 'bold', backgroundColor: '#fff' }}>الاسم</th>
-                <th style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', fontWeight: 'bold', backgroundColor: '#fff', width: '100px' }}>التوقيع</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '40px' }}>م</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الوظيفة</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الاسم</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '100px' }}>التوقيع</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>1</td>
-                <td style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>الرئيس المباشر</td>
-                <td style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>1</td>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>الرئيس المباشر</td>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('directSupervisorName', e.currentTarget.textContent)}>
                     {formData.directSupervisorName || '\u00A0'}
                   </span>
@@ -416,9 +435,9 @@ export default function FillClearanceForm() {
                 <td style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}></td>
               </tr>
               <tr>
-                <td style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>2</td>
-                <td style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>امين العهده في المركز / ادارة</td>
-                <td style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>2</td>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>امين العهده في المركز / ادارة</td>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('custodianName', e.currentTarget.textContent)}>
                     {formData.custodianName || '\u00A0'}
                   </span>
@@ -426,9 +445,9 @@ export default function FillClearanceForm() {
                 <td style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}></td>
               </tr>
               <tr>
-                <td style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>3</td>
-                <td style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>محاسب الرواتب بالموارد البشرية بالرعاية الاولية</td>
-                <td style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>3</td>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>محاسب الرواتب بالموارد البشرية بالرعاية الاولية</td>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('accountantName', e.currentTarget.textContent)}>
                     {formData.accountantName || '\u00A0'}
                   </span>
@@ -440,12 +459,12 @@ export default function FillClearanceForm() {
 
           {/* HR Manager Signature */}
           <div style={{ marginTop: '60px', textAlign: 'center' }}>
-            <p style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '15px' }}>
+            <p className="font-bold-title" style={{ fontSize: '16px', marginBottom: '20px' }}>
               <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('hrManagerName', e.currentTarget.textContent)}>
                 {formData.hrManagerName}
               </span>
             </p>
-            <p style={{ fontSize: '13px', color: '#333' }}>
+            <p className="font-regular" style={{ fontSize: '13px', color: '#333' }}>
               مدير إدارة الموارد البشرية بالرعاية الأولية
             </p>
           </div>
@@ -458,18 +477,18 @@ export default function FillClearanceForm() {
           left: '40px', 
           right: '40px',
           display: 'flex',
-          justifyContent: 'flex-start',
+          justifyContent: 'flex-end',
           alignItems: 'flex-end'
         }}>
           {/* Footer Text */}
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ color: '#3498db', fontWeight: 'bold', fontSize: '14px' }}>
+          <div style={{ textAlign: 'left' }}>
+            <div className="font-bold-title" style={{ color: '#3498db', fontSize: '14px' }}>
               تجمع المدينة المنورة الصحي
             </div>
-            <div style={{ color: '#3498db', fontSize: '13px', fontWeight: 'bold' }}>
+            <div className="font-bold-title" style={{ color: '#3498db', fontSize: '13px' }}>
               Madinah Health Cluster
             </div>
-            <div style={{ color: '#888', fontSize: '10px' }}>
+            <div className="font-regular" style={{ color: '#888', fontSize: '10px' }}>
               Empowered by Health Holding co.
             </div>
           </div>
