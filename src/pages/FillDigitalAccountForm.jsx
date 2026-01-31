@@ -368,11 +368,15 @@ export default function FillDigitalAccountForm() {
           * {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+            margin: 0 !important;
+            padding: 0 !important;
           }
           html, body {
             margin: 0 !important;
             padding: 0 !important;
             background: white !important;
+            width: 100% !important;
+            height: 100% !important;
           }
           body * { 
             visibility: hidden; 
@@ -381,19 +385,21 @@ export default function FillDigitalAccountForm() {
             visibility: visible !important; 
           }
           .print-area {
-            position: fixed !important;
+            position: absolute !important;
             left: 0 !important;
             top: 0 !important;
             width: 210mm !important;
-            height: 297mm !important;
-            padding: 25mm 30mm 25mm 30mm !important;
+            min-height: auto !important;
+            height: auto !important;
+            padding: 20mm 25mm 20mm 25mm !important;
             margin: 0 !important;
             direction: rtl !important;
             box-sizing: border-box !important;
             background: white !important;
-            overflow: hidden !important;
+            overflow: visible !important;
             box-shadow: none !important;
-            max-width: none !important;
+            max-width: 210mm !important;
+            transform: none !important;
           }
           .print-area table {
             width: 100% !important;
