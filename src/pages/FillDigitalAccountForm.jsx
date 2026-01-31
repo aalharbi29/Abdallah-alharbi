@@ -885,24 +885,24 @@ export default function FillDigitalAccountForm() {
                     </tr>
                   </tbody>
                 </table>
-                <div className="space-y-1 mt-3">
-                                        <div className="flex items-center gap-2">
-                                          <span style={{ minWidth: '100px', textAlign: 'right', fontWeight: 'bold' }}>المنشأة:</span>
-                                          <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.organization}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                          <span style={{ minWidth: '100px', textAlign: 'right', fontWeight: 'bold' }}>القسم:</span>
-                                          <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.department}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                          <span style={{ minWidth: '100px', textAlign: 'right', fontWeight: 'bold' }}>التخصص:</span>
-                                          <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.specialization}</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                          <span style={{ minWidth: '100px', textAlign: 'right', fontWeight: 'bold' }}>الصلاحيات المطلوبة:</span>
-                                          <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.recruitmentPrivilege}</span>
-                                        </div>
-                                      </div>
+                <div style={{ marginTop: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
+                    <span style={{ minWidth: '100px', textAlign: 'right', fontWeight: 'bold' }}>المنشأة:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.organization}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
+                    <span style={{ minWidth: '100px', textAlign: 'right', fontWeight: 'bold' }}>القسم:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.department}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
+                    <span style={{ minWidth: '100px', textAlign: 'right', fontWeight: 'bold' }}>التخصص:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.specialization}</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
+                    <span style={{ minWidth: '100px', textAlign: 'right', fontWeight: 'bold' }}>الصلاحيات المطلوبة:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.recruitmentPrivilege}</span>
+                  </div>
+                </div>
               </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <span style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>*Occupation:</span>
