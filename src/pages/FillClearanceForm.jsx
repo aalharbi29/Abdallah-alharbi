@@ -264,7 +264,7 @@ export default function FillClearanceForm() {
       >
         {/* Header Section - White background with text and logo */}
         <div style={{ 
-          padding: '25mm 30mm 0 30mm',
+          padding: '15mm 10mm 0 10mm',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'
@@ -276,7 +276,7 @@ export default function FillClearanceForm() {
         </div>
 
         {/* Main Content - pushed down */}
-        <div style={{ padding: '0 30mm', marginTop: '10mm' }}>
+        <div style={{ padding: '0 10mm', marginTop: '20mm' }}>
           
           {/* Title Row */}
           <div style={{ textAlign: 'center', marginBottom: '25px' }}>
@@ -345,7 +345,7 @@ export default function FillClearanceForm() {
           </table>
 
           {/* Certificate Text - Centered */}
-          <div className="font-regular" style={{ 
+          <div className="font-bold-title" style={{ 
             textAlign: 'center', 
             lineHeight: '2.0',
             fontSize: '14px',
@@ -383,7 +383,7 @@ export default function FillClearanceForm() {
           </div>
 
           {/* Signature Section Title */}
-          <div className="font-regular" style={{ textAlign: 'right', marginBottom: '15px', marginTop: '25px' }}>
+          <div className="font-bold-title" style={{ textAlign: 'right', marginBottom: '8px', marginTop: '25px' }}>
             <p style={{ fontSize: '14px' }}>
               وعلى ذلك جرى التوقيع :
             </p>
@@ -445,7 +445,7 @@ export default function FillClearanceForm() {
                 {formData.hrManagerName}
               </span>
             </p>
-            <p className="font-regular" style={{ fontSize: '13px', color: '#333' }}>
+            <p className="font-bold-title" style={{ fontSize: '13px', color: '#333' }}>
               مدير إدارة الموارد البشرية بالرعاية الأولية
             </p>
           </div>
@@ -455,8 +455,8 @@ export default function FillClearanceForm() {
         <div style={{ 
           position: 'absolute', 
           bottom: '20mm', 
-          left: '30mm', 
-          right: '30mm',
+          left: '10mm', 
+          right: '10mm',
           display: 'flex',
           justifyContent: 'flex-end',
           alignItems: 'flex-end'
