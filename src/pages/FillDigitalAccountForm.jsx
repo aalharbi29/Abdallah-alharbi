@@ -530,10 +530,10 @@ export default function FillDigitalAccountForm() {
             {/* Row 1: Title */}
             <tr>
               <td colSpan="2" style={{ padding: '10px', textAlign: 'center' }}>
-                <span style={{ fontWeight: 'bold', fontSize: '14px', color: '#0ea5e9' }}>
-                  نموذج انشاء إيقاف حساب
-                </span>
-              </td>
+                                    <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#0ea5e9', textAlign: 'center', width: '100%' }}>
+                                      نموذج انشاء إيقاف حساب
+                                    </div>
+                                  </td>
             </tr>
 
             {/* Row 2: Content - النظام */}
@@ -676,18 +676,18 @@ export default function FillDigitalAccountForm() {
 
             {/* السبب */}
             <tr>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
-                <span style={{ fontWeight: 'bold' }}>السبب: </span>
-                <span style={{ borderBottom: '1px dotted #666', minWidth: '200px', display: 'inline-block' }}>
-                  {formData.reason}
-                </span>
-              </td>
-              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
-                <span style={{ fontWeight: 'bold' }}>*Reason: </span>
-                <span style={{ borderBottom: '1px dotted #666', minWidth: '200px', display: 'inline-block' }}>
-                  {formData.reasonEn}
-                </span>
-              </td>
+              <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'center' }}>
+                                    <span style={{ fontWeight: 'bold' }}>السبب: </span>
+                                    <span style={{ borderBottom: '1px dotted #666', minWidth: '200px', display: 'inline-block', fontWeight: 'bold' }}>
+                                      {formData.reason}
+                                    </span>
+                                  </td>
+                                  <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'center' }}>
+                                    <span style={{ fontWeight: 'bold' }}>*Reason: </span>
+                                    <span style={{ borderBottom: '1px dotted #666', minWidth: '200px', display: 'inline-block', fontWeight: 'bold' }}>
+                                      {formData.reasonEn}
+                                    </span>
+                                  </td>
             </tr>
             {/* Separator */}
             <tr>
@@ -700,39 +700,39 @@ export default function FillDigitalAccountForm() {
             <tr>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 <span style={{ fontWeight: 'bold' }}>اسم الموظف:</span>
-                <div className="space-y-1 mt-2">
-                  {[
-                    { label: 'الأول', field: 'firstName' },
-                    { label: 'الثاني', field: 'secondName' },
-                    { label: 'الثالث', field: 'thirdName' },
-                    { label: 'العائلة', field: 'familyName' }
-                  ].map(item => (
-                    <div key={item.field} className="flex items-center gap-2">
-                      <span style={{ width: '50px' }}>{item.label}:</span>
-                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
-                        {formData[item.field]}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                                      <div className="space-y-1 mt-2">
+                                        {[
+                                          { label: 'الأول', field: 'firstName' },
+                                          { label: 'الثاني', field: 'secondName' },
+                                          { label: 'الثالث', field: 'thirdName' },
+                                          { label: 'العائلة', field: 'familyName' }
+                                        ].map(item => (
+                                          <div key={item.field} className="flex items-center gap-2">
+                                            <span style={{ width: '50px' }}>{item.label}:</span>
+                                            <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>
+                                              {formData[item.field]}
+                                            </span>
+                                          </div>
+                                        ))}
+                                      </div>
               </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <span style={{ fontWeight: 'bold' }}>*Staff Name:</span>
-                <div className="space-y-1 mt-2">
-                  {[
-                    { label: 'First', field: 'firstNameEn' },
-                    { label: 'Second', field: 'secondNameEn' },
-                    { label: 'Third', field: 'thirdNameEn' },
-                    { label: 'Family', field: 'familyNameEn' }
-                  ].map(item => (
-                    <div key={item.field} className="flex items-center gap-2">
-                      <span style={{ width: '50px' }}>{item.label}:</span>
-                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
-                        {formData[item.field]}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                                      <div className="space-y-1 mt-2">
+                                        {[
+                                          { label: 'First', field: 'firstNameEn' },
+                                          { label: 'Second', field: 'secondNameEn' },
+                                          { label: 'Third', field: 'thirdNameEn' },
+                                          { label: 'Family', field: 'familyNameEn' }
+                                        ].map(item => (
+                                          <div key={item.field} className="flex items-center gap-2">
+                                            <span style={{ width: '50px' }}>{item.label}:</span>
+                                            <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>
+                                              {formData[item.field]}
+                                            </span>
+                                          </div>
+                                        ))}
+                                      </div>
               </td>
             </tr>
             {/* Separator */}
@@ -746,37 +746,37 @@ export default function FillDigitalAccountForm() {
             <tr>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 {[
-                  { label: 'رقم الهوية/ الإقامة', field: 'idNumber' },
-                  { label: 'تاريخ الميلاد', field: 'birthDate' },
-                  { label: 'البريد الوزاري', field: 'mohEmail' },
-                  { label: 'رقم التصنيف إن وجد', field: 'scfhsNumber' },
-                  { label: 'تاريخ انتهاء (التدريب/ العقد)', field: 'endDate' },
-                  { label: 'رقم التواصل', field: 'contactPhone' }
-                ].map(item => (
-                  <div key={item.field} className="flex items-center gap-2 mb-1">
-                    <span style={{ minWidth: '140px', textAlign: 'right' }}>{item.label}:</span>
-                    <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
-                      {formData[item.field]}
-                    </span>
-                  </div>
-                ))}
+                                        { label: 'رقم الهوية/ الإقامة', field: 'idNumber' },
+                                        { label: 'تاريخ الميلاد', field: 'birthDate' },
+                                        { label: 'البريد الوزاري', field: 'mohEmail' },
+                                        { label: 'رقم التصنيف إن وجد', field: 'scfhsNumber' },
+                                        { label: 'تاريخ انتهاء (التدريب/ العقد)', field: 'endDate' },
+                                        { label: 'رقم التواصل', field: 'contactPhone' }
+                                      ].map(item => (
+                                        <div key={item.field} className="flex items-center gap-2 mb-1">
+                                          <span style={{ minWidth: '140px', textAlign: 'right' }}>{item.label}:</span>
+                                          <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>
+                                            {formData[item.field]}
+                                          </span>
+                                        </div>
+                                      ))}
               </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 {[
-                  { label: 'ID NO', field: 'idNumber' },
-                  { label: 'Date of birth', field: 'birthDate' },
-                  { label: 'MOH email', field: 'mohEmail' },
-                  { label: 'SCFHS number', field: 'scfhsNumber' },
-                  { label: 'End date of (internship\\contract)', field: 'endDate' },
-                  { label: 'Contact Phone', field: 'contactPhone' }
-                ].map(item => (
-                  <div key={item.field} className="flex items-center gap-2 mb-1">
-                    <span style={{ minWidth: '160px' }}>{item.label}:</span>
-                    <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1 }}>
-                      {formData[item.field]}
-                    </span>
-                  </div>
-                ))}
+                                        { label: 'ID NO', field: 'idNumber' },
+                                        { label: 'Date of birth', field: 'birthDate' },
+                                        { label: 'MOH email', field: 'mohEmail' },
+                                        { label: 'SCFHS number', field: 'scfhsNumber' },
+                                        { label: 'End date of (internship\\contract)', field: 'endDate' },
+                                        { label: 'Contact Phone', field: 'contactPhone' }
+                                      ].map(item => (
+                                        <div key={item.field} className="flex items-center gap-2 mb-1">
+                                          <span style={{ minWidth: '160px' }}>{item.label}:</span>
+                                          <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>
+                                            {formData[item.field]}
+                                          </span>
+                                        </div>
+                                      ))}
               </td>
             </tr>
             {/* Separator */}
@@ -829,23 +829,23 @@ export default function FillDigitalAccountForm() {
                   </tbody>
                 </table>
                 <div className="space-y-1 mt-3">
-                  <div className="flex items-center gap-2">
-                    <span style={{ minWidth: '100px', textAlign: 'right' }}>المنشأة:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.organization}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span style={{ minWidth: '100px', textAlign: 'right' }}>القسم:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.department}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span style={{ minWidth: '100px', textAlign: 'right' }}>التخصص:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.specialization}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span style={{ minWidth: '100px', textAlign: 'right' }}>الصلاحيات المطلوبة:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{formData.recruitmentPrivilege}</span>
-                  </div>
-                </div>
+                                        <div className="flex items-center gap-2">
+                                          <span style={{ minWidth: '100px', textAlign: 'right' }}>المنشأة:</span>
+                                          <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.organization}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <span style={{ minWidth: '100px', textAlign: 'right' }}>القسم:</span>
+                                          <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.department}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <span style={{ minWidth: '100px', textAlign: 'right' }}>التخصص:</span>
+                                          <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.specialization}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <span style={{ minWidth: '100px', textAlign: 'right' }}>الصلاحيات المطلوبة:</span>
+                                          <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.recruitmentPrivilege}</span>
+                                        </div>
+                                      </div>
               </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <span style={{ fontWeight: 'bold', display: 'block', marginBottom: '6px' }}>*Occupation:</span>
@@ -888,23 +888,23 @@ export default function FillDigitalAccountForm() {
                   </tbody>
                 </table>
                 <div className="space-y-1 mt-3">
-                  <div className="flex items-center gap-2">
-                    <span style={{ minWidth: '120px' }}>Organization:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{translateCenterName(formData.organization)}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span style={{ minWidth: '120px' }}>Department:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{departmentsTranslations[formData.department] || formData.department}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span style={{ minWidth: '120px' }}>Specialization:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{translateSpecialization(formData.specialization)}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span style={{ minWidth: '120px' }}>Recruitment privilege:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1 }}>{translateToEnglish(formData.recruitmentPrivilege)}</span>
-                  </div>
-                </div>
+                                        <div className="flex items-center gap-2">
+                                          <span style={{ minWidth: '120px' }}>Organization:</span>
+                                          <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{translateCenterName(formData.organization)}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <span style={{ minWidth: '120px' }}>Department:</span>
+                                          <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{departmentsTranslations[formData.department] || formData.department}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <span style={{ minWidth: '120px' }}>Specialization:</span>
+                                          <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{translateSpecialization(formData.specialization)}</span>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <span style={{ minWidth: '120px' }}>Recruitment privilege:</span>
+                                          <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{translateToEnglish(formData.recruitmentPrivilege)}</span>
+                                        </div>
+                                      </div>
               </td>
             </tr>
 
@@ -957,7 +957,7 @@ export default function FillDigitalAccountForm() {
             <tr>
               <td colSpan="2" style={{ padding: '0', border: 'none', position: 'relative', height: '0' }}>
                 <div style={{ position: 'absolute', top: '-45px', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', backgroundColor: 'white', padding: '2px 8px' }}>
-                                        <div style={{ border: '1px solid #000', height: '20px', width: '40px', margin: '0 auto', backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px', fontWeight: 'bold' }}>الختم</div>
+                                        <div style={{ border: '1px solid #000', height: '20px', width: '40px', margin: '0 auto', backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px', fontWeight: 'bold', textAlign: 'center' }}>الختم</div>
                                       </div>
               </td>
             </tr>
