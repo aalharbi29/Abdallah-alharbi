@@ -137,6 +137,7 @@ export default function FillDigitalAccountForm() {
       "العيص": "Al-Ais",
       "هدية": "Hadiyah",
       "ام العيال": "Umm Al-Iyal",
+      "أم العيال": "Umm Al-Iyal",
       "الفريش": "Al-Furaish",
       "النخيل": "Al-Nakheel",
       "الصويدرة": "Al-Suwaidira",
@@ -144,6 +145,7 @@ export default function FillDigitalAccountForm() {
       "صفينة": "Safina",
       "ارجا": "Arja",
       "عرجاء": "Arja",
+      "أرجا": "Arja",
       "الدار البيضاء": "Al-Dar Al-Bayda",
       "الحمنة": "Al-Hamnah",
       "المضيق": "Al-Mudaiq",
@@ -152,15 +154,44 @@ export default function FillDigitalAccountForm() {
       "الثمد": "Al-Thamad",
       "المليليح": "Al-Mulaylih",
       "ام البرك": "Umm Al-Birak",
+      "أم البرك": "Umm Al-Birak",
       "الحائط": "Al-Hait",
       "البركة": "Al-Baraka",
       "الحسو": "Al-Hasu",
       "العشاش": "Al-Eshash",
       "الجابرية": "Al-Jabriyah",
-      "الفقعلي": "Al-Faqali"
+      "الفقعلي": "Al-Faqali",
+      "الفقير": "Al-Faqeer",
+      "النجيل": "Al-Najeel",
+      "الرويضة": "Al-Ruwaida",
+      "الشقرة": "Al-Shaqra",
+      "المسيجيد": "Al-Musaijeed",
+      "الهميجة": "Al-Humaija",
+      "بئر عشر": "Bir Ashr",
+      "بدائع العش": "Badai Al-Esh",
+      "خيف حسين": "Khaif Hussein",
+      "ذا الحليفة": "Dha Al-Hulaifa",
+      "شعب الرمان": "Shiab Al-Rumman",
+      "مسيجيد": "Musaijeed"
     };
     
-    const translatedName = translations[centerName] || centerName;
+    // Try to find translation
+    let translatedName = translations[centerName];
+    
+    // If not found, try matching partial name
+    if (!translatedName) {
+      for (const [arabicName, englishName] of Object.entries(translations)) {
+        if (centerName.includes(arabicName) || arabicName.includes(centerName)) {
+          translatedName = englishName;
+          break;
+        }
+      }
+    }
+    
+    // If still not found, use original
+    if (!translatedName) {
+      translatedName = centerName;
+    }
     
     // Return format like "Arja Health Center"
     if (name.includes("مركز صحي")) {
@@ -512,7 +543,7 @@ export default function FillDigitalAccountForm() {
       <div 
         ref={printRef}
         className="print-area max-w-4xl mx-auto bg-white shadow-lg"
-        style={{ padding: '25mm 25mm 25mm 25mm', fontFamily: 'Arial, sans-serif', fontWeight: '600' }}
+        style={{ padding: '25mm 30mm 25mm 30mm', fontFamily: 'Arial, sans-serif', fontWeight: '600' }}
       >
         {/* Header */}
         <div className="text-center mb-4">
@@ -957,7 +988,7 @@ export default function FillDigitalAccountForm() {
             <tr>
               <td colSpan="2" style={{ padding: '0', border: 'none', position: 'relative', height: '0' }}>
                 <div style={{ position: 'absolute', top: '-45px', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', backgroundColor: 'white', padding: '2px 8px' }}>
-                                        <div style={{ border: '1px solid #000', height: '20px', width: '40px', margin: '0 auto', backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '8px', fontWeight: 'bold', textAlign: 'center' }}>الختم</div>
+                                        <div style={{ border: '1px solid #000', height: '25px', width: '50px', margin: '0 auto', backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 'bold' }}>الختم</div>
                                       </div>
               </td>
             </tr>
