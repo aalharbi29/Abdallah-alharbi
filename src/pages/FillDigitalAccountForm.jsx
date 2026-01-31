@@ -733,8 +733,8 @@ export default function FillDigitalAccountForm() {
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'center' }}>
                                     <span style={{ fontWeight: 'bold' }}>السبب: </span>
                                     <span style={{ borderBottom: '1px dotted #666', minWidth: '200px', display: 'inline-block', fontWeight: 'bold' }}>
-                                      {formData.reason}
-                                    </span>
+                                                              {formData.reason || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}
+                                                            </span>
                                   </td>
                                   <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'center' }}>
                                     <span style={{ fontWeight: 'bold' }}>*Reason: </span>
