@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck } from 'lucide-react';
+import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 
@@ -69,14 +69,6 @@ const interactiveForms = [
     color: "from-cyan-500 to-blue-600",
     link: createPageUrl("FillDigitalAccountForm"),
     category: "الحسابات الرقمية"
-  },
-  {
-    title: "براءة ذمة",
-    description: "نموذج براءة ذمة للموظف من الناحية الإدارية والمالية",
-    icon: FileCheck,
-    color: "from-emerald-500 to-teal-600",
-    link: createPageUrl("FillClearanceForm"),
-    category: "الموارد البشرية"
   }
 ];
 

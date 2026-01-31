@@ -71,7 +71,6 @@ import Fill205Form from './pages/Fill205Form';
 import Fill205FormComplete from './pages/Fill205FormComplete';
 import Fill205FormPart2 from './pages/Fill205FormPart2';
 import FillAllowanceForm from './pages/FillAllowanceForm';
-import FillClearanceForm from './pages/FillClearanceForm';
 import FillDigitalAccountForm from './pages/FillDigitalAccountForm';
 import FillEmailRecoveryForm from './pages/FillEmailRecoveryForm';
 import FillEquipmentRequestForm from './pages/FillEquipmentRequestForm';
@@ -132,7 +131,6 @@ export const PAGES = {
     "Fill205FormComplete": Fill205FormComplete,
     "Fill205FormPart2": Fill205FormPart2,
     "FillAllowanceForm": FillAllowanceForm,
-    "FillClearanceForm": FillClearanceForm,
     "FillDigitalAccountForm": FillDigitalAccountForm,
     "FillEmailRecoveryForm": FillEmailRecoveryForm,
     "FillEquipmentRequestForm": FillEquipmentRequestForm,
