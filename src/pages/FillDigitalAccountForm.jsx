@@ -883,21 +883,21 @@ export default function FillDigitalAccountForm() {
                   </tbody>
                 </table>
                 <div style={{ marginTop: '4px' }}>
-                  <div style={{ display: 'flex', alignItems: 'baseline', marginBottom: '1px', gap: '0' }}>
-                    <span style={{ minWidth: '90px', textAlign: 'right', fontWeight: 'bold', fontSize: '10px' }}>المنشأة:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold', fontSize: '10px' }}>{formData.organization}</span>
+                  <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
+                    <span style={{ fontWeight: 'bold', display: 'inline' }}>المنشأة: </span>
+                    <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline' }}>{formData.organization}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'baseline', marginBottom: '1px', gap: '0' }}>
-                    <span style={{ minWidth: '90px', textAlign: 'right', fontWeight: 'bold', fontSize: '10px' }}>القسم:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold', fontSize: '10px' }}>{formData.department}</span>
+                  <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
+                    <span style={{ fontWeight: 'bold', display: 'inline' }}>القسم: </span>
+                    <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline' }}>{formData.department}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'baseline', marginBottom: '1px', gap: '0' }}>
-                    <span style={{ minWidth: '90px', textAlign: 'right', fontWeight: 'bold', fontSize: '10px' }}>التخصص:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold', fontSize: '10px' }}>{formData.specialization}</span>
+                  <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
+                    <span style={{ fontWeight: 'bold', display: 'inline' }}>التخصص: </span>
+                    <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline' }}>{formData.specialization}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'baseline', marginBottom: '1px', gap: '0' }}>
-                    <span style={{ minWidth: '90px', textAlign: 'right', fontWeight: 'bold', fontSize: '10px' }}>الصلاحيات المطلوبة:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold', fontSize: '10px' }}>{formData.recruitmentPrivilege}</span>
+                  <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
+                    <span style={{ fontWeight: 'bold', display: 'inline' }}>الصلاحيات المطلوبة: </span>
+                    <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline' }}>{formData.recruitmentPrivilege}</span>
                   </div>
                 </div>
               </td>
