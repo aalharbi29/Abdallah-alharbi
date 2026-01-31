@@ -369,14 +369,6 @@ export default function FillDigitalAccountForm() {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;
-            margin: 0 !important;
-            padding: 0 !important;
-          }
-          .print-area {
-            background-image: url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/ed6005694_image.png) !important;
-            background-size: 100% 100% !important;
-            background-position: center !important;
-            background-repeat: no-repeat !important;
           }
           html, body {
             margin: 0 !important;
@@ -396,17 +388,21 @@ export default function FillDigitalAccountForm() {
             left: 0 !important;
             top: 0 !important;
             width: 210mm !important;
-            min-height: auto !important;
-            height: auto !important;
+            min-height: 297mm !important;
+            height: 297mm !important;
             padding: 20mm 25mm 20mm 25mm !important;
             margin: 0 !important;
             direction: rtl !important;
             box-sizing: border-box !important;
-            background: white !important;
             overflow: visible !important;
             box-shadow: none !important;
             max-width: 210mm !important;
             transform: none !important;
+            background-image: url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/ed6005694_image.png) !important;
+            background-size: 100% 100% !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            background-color: white !important;
           }
           .print-area table {
             width: 100% !important;
