@@ -368,8 +368,15 @@ export default function FillDigitalAccountForm() {
           * {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+            color-adjust: exact !important;
             margin: 0 !important;
             padding: 0 !important;
+          }
+          .print-area {
+            background-image: url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/ed6005694_image.png) !important;
+            background-size: 100% 100% !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
           }
           html, body {
             margin: 0 !important;
