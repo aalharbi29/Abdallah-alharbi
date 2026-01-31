@@ -885,7 +885,7 @@ export default function FillDigitalAccountForm() {
                 <div style={{ marginTop: '4px' }}>
                   <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
                     <span style={{ fontWeight: 'bold', display: 'inline' }}>المنشأة: </span>
-                    <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline' }}>{formData.organization}</span>
+                    <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline', minWidth: '80px' }}>{formData.organization || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}</span>
                   </div>
                   <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
                     <span style={{ fontWeight: 'bold', display: 'inline' }}>القسم: </span>
