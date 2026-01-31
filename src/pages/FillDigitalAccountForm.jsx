@@ -708,7 +708,7 @@ export default function FillDigitalAccountForm() {
                                           { label: 'العائلة', field: 'familyName' }
                                         ].map(item => (
                                           <div key={item.field} className="flex items-center gap-2">
-                                            <span style={{ width: '50px' }}>{item.label}:</span>
+                                            <span style={{ width: '50px', fontWeight: 'bold' }}>{item.label}:</span>
                                             <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>
                                               {formData[item.field]}
                                             </span>
@@ -726,7 +726,7 @@ export default function FillDigitalAccountForm() {
                                           { label: 'Family', field: 'familyNameEn' }
                                         ].map(item => (
                                           <div key={item.field} className="flex items-center gap-2">
-                                            <span style={{ width: '50px' }}>{item.label}:</span>
+                                            <span style={{ width: '50px', fontWeight: 'bold' }}>{item.label}:</span>
                                             <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>
                                               {formData[item.field]}
                                             </span>
@@ -754,7 +754,7 @@ export default function FillDigitalAccountForm() {
                                         { label: 'رقم التواصل', field: 'contactPhone' }
                                       ].map(item => (
                                         <div key={item.field} className="flex items-center gap-2 mb-1">
-                                          <span style={{ minWidth: '140px', textAlign: 'right' }}>{item.label}:</span>
+                                          <span style={{ minWidth: '140px', textAlign: 'right', fontWeight: 'bold' }}>{item.label}:</span>
                                           <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>
                                             {formData[item.field]}
                                           </span>
@@ -771,7 +771,7 @@ export default function FillDigitalAccountForm() {
                                         { label: 'Contact Phone', field: 'contactPhone' }
                                       ].map(item => (
                                         <div key={item.field} className="flex items-center gap-2 mb-1">
-                                          <span style={{ minWidth: '160px' }}>{item.label}:</span>
+                                          <span style={{ minWidth: '160px', fontWeight: 'bold' }}>{item.label}:</span>
                                           <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>
                                             {formData[item.field]}
                                           </span>
@@ -830,19 +830,19 @@ export default function FillDigitalAccountForm() {
                 </table>
                 <div className="space-y-1 mt-3">
                                         <div className="flex items-center gap-2">
-                                          <span style={{ minWidth: '100px', textAlign: 'right' }}>المنشأة:</span>
+                                          <span style={{ minWidth: '100px', textAlign: 'right', fontWeight: 'bold' }}>المنشأة:</span>
                                           <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.organization}</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                          <span style={{ minWidth: '100px', textAlign: 'right' }}>القسم:</span>
+                                          <span style={{ minWidth: '100px', textAlign: 'right', fontWeight: 'bold' }}>القسم:</span>
                                           <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.department}</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                          <span style={{ minWidth: '100px', textAlign: 'right' }}>التخصص:</span>
+                                          <span style={{ minWidth: '100px', textAlign: 'right', fontWeight: 'bold' }}>التخصص:</span>
                                           <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.specialization}</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                          <span style={{ minWidth: '100px', textAlign: 'right' }}>الصلاحيات المطلوبة:</span>
+                                          <span style={{ minWidth: '100px', textAlign: 'right', fontWeight: 'bold' }}>الصلاحيات المطلوبة:</span>
                                           <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.recruitmentPrivilege}</span>
                                         </div>
                                       </div>
@@ -889,19 +889,19 @@ export default function FillDigitalAccountForm() {
                 </table>
                 <div className="space-y-1 mt-3">
                                         <div className="flex items-center gap-2">
-                                          <span style={{ minWidth: '120px' }}>Organization:</span>
+                                          <span style={{ minWidth: '120px', fontWeight: 'bold' }}>Organization:</span>
                                           <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{translateCenterName(formData.organization)}</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                          <span style={{ minWidth: '120px' }}>Department:</span>
+                                          <span style={{ minWidth: '120px', fontWeight: 'bold' }}>Department:</span>
                                           <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{departmentsTranslations[formData.department] || formData.department}</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                          <span style={{ minWidth: '120px' }}>Specialization:</span>
+                                          <span style={{ minWidth: '120px', fontWeight: 'bold' }}>Specialization:</span>
                                           <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{translateSpecialization(formData.specialization)}</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                          <span style={{ minWidth: '120px' }}>Recruitment privilege:</span>
+                                          <span style={{ minWidth: '120px', fontWeight: 'bold' }}>Recruitment privilege:</span>
                                           <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{translateToEnglish(formData.recruitmentPrivilege)}</span>
                                         </div>
                                       </div>
