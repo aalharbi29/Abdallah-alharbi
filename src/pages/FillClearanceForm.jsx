@@ -1,472 +1,500 @@
-import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
-import { Employee } from '@/entities/Employee';
+import React, { useState, useEffect, useRef } from "react";
+import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Loader2, Printer, Save, ArrowRight, Settings2, Plus, GripVertical, Trash2, Eye, Download, AlignCenter, Type } from "lucide-react";
-import { useNavigate } from 'react-router-dom';
-import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import EmployeeSelector from '@/components/health_centers/EmployeeSelector';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { 
-  ParagraphBlock,
-  GenericGridBlock,
-  LayoutRowBlock,
-  SignatureGridBlock,
-  CenterTextBlock
-} from "@/components/clearance_form/FormBlocks";
-import { FreeTextBlock } from "@/components/clearance_form/FreeTextBlock";
-
-// Re-defined Initial Blocks using Granular Components
-const initialBlocks = [
-  {
-    id: 'header_layout',
-    type: 'layout_row',
-    data: {
-      rightContent: 'إدارة الموارد البشرية بالرعاية الأولية\nتجمع المدينة المنورة الصحي',
-      centerContent: 'براءة ذمة',
-      imageUrl: 'https://cdn.worldvectorlogo.com/logos/ministry-of-health-saudi-arabia-1.svg'
-    }
-  },
-  {
-    id: 'employee_data_grid',
-    type: 'generic_grid',
-    data: {
-      columns: [
-        { label: "الاســــــــــــم", name: "employee_name", width: "20%" },
-        { label: "الوظيفة", name: "position", width: "15%" },
-        { label: "رقم الوظيفة", name: "job_number", width: "15%" },
-        { label: "الجنسية", name: "nationality", width: "15%" },
-        { label: "رقم الهوية", name: "national_id", width: "15%" },
-        { label: "جهة العمل", name: "workplace", width: "20%" }
-      ]
-    }
-  },
-  {
-    id: 'intro_paragraph',
-    type: 'paragraph',
-    data: {
-      items: [
-        { id: 1, type: 'text', value: 'تشهد الموارد البشرية بالرعاية الاولية بتجمع المدينة المنورة الصحي بأن الموضح اسمه وبياناته أعلاه برئ الذمة من الناحية الإدارية والمالية وقد سلم جميع ما بعهدته وذلك نظراً' },
-      ]
-    }
-  },
-  {
-    id: 'decision_details',
-    type: 'paragraph',
-    data: {
-      items: [
-        { id: 1, type: 'text', value: 'لقرار' },
-        { id: 2, type: 'field', key: 'decision_reason', width: '150px', placeholder: 'سبب القرار' },
-        { id: 3, type: 'text', value: 'ورقم' },
-        { id: 4, type: 'field', key: 'decision_number', width: '100px', placeholder: 'الرقم' },
-        { id: 5, type: 'text', value: 'وتاريخ' },
-        { id: 6, type: 'field', key: 'decision_date', width: '80px', placeholder: 'DD/MM' },
-        { id: 7, type: 'text', value: '/' },
-        { id: 8, type: 'field', key: 'decision_year', width: '60px', placeholder: '1445' },
-        { id: 9, type: 'text', value: 'هـ .' },
-      ]
-    }
-  },
-  {
-    id: 'signatures_section',
-    type: 'signature_grid',
-    data: {
-      title: 'وعلى ذلك جرى التوقيع :',
-      rows: [
-        { role: 'الرئيس المباشر', nameField: 'direct_manager_name' },
-        { role: 'امين العهده في المركز / ادارة', nameField: 'custody_keeper_name' },
-        { role: 'محاسب الرواتب بالموارد البشرية بالرعاية الاولية', nameField: 'payroll_accountant_name' }
-      ]
-    }
-  },
-  {
-    id: 'footer_manager',
-    type: 'center_text',
-    data: {
-      text: 'أ.تركي بن عبدالرحمن الغامدي',
-      subText: 'مدير إدارة الموارد البشرية بالرعاية الأولية'
-    }
-  }
-];
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Printer, Download, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function FillClearanceForm() {
-  const navigate = useNavigate();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [blocks, setBlocks] = useState(initialBlocks);
-  
-  const [formData, setFormData] = useState({
-    employee_name: '',
-    position: '',
-    job_number: '',
-    nationality: '',
-    national_id: '',
-    workplace: '',
-    decision_reason: '',
-    decision_number: '',
-    decision_date: '',
-    decision_year: '1445',
-    direct_manager_name: '',
-    custody_keeper_name: '',
-    payroll_accountant_name: '',
-  });
-  
   const [employees, setEmployees] = useState([]);
-  const [importDialogOpen, setImportDialogOpen] = useState(false);
+  const [healthCenters, setHealthCenters] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const printRef = useRef(null);
 
-  // Load employees for import
+  const [formData, setFormData] = useState({
+    employeeName: "",
+    position: "",
+    positionNumber: "",
+    nationality: "",
+    idNumber: "",
+    workPlace: "",
+    reason: "",
+    decisionNumber: "",
+    decisionDateDay: "",
+    decisionDateMonth: "",
+    decisionDateYear: "",
+    directSupervisorName: "",
+    custodianName: "",
+    treasurerName: "",
+    accountantName: "",
+    hrManagerName: "أ / تركي بن عبد الرحمن الغامدي"
+  });
+
   useEffect(() => {
-    const loadEmployees = async () => {
-      try {
-        const data = await Employee.list();
-        setEmployees(data || []);
-      } catch (e) {
-        console.error("Failed to load employees", e);
-      }
-    };
-    loadEmployees();
+    loadData();
   }, []);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+  const loadData = async () => {
+    try {
+      setIsLoading(true);
+      const [employeesData, centersData] = await Promise.all([
+        base44.entities.Employee.list(),
+        base44.entities.HealthCenter.list()
+      ]);
+      setEmployees(employeesData || []);
+      setHealthCenters(centersData || []);
+    } catch (error) {
+      console.error("Error loading data:", error);
+      toast.error("فشل في تحميل البيانات");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEmployeeSelect = (employeeId) => {
+    const employee = employees.find(e => e.id === employeeId);
+    setSelectedEmployee(employee);
+    
+    if (employee) {
+      setFormData(prev => ({
+        ...prev,
+        employeeName: employee.full_name_arabic || "",
+        position: employee.position || "",
+        positionNumber: employee.رقم_الموظف || "",
+        nationality: employee.nationality || "سعودي",
+        idNumber: employee.رقم_الهوية || "",
+        workPlace: employee.المركز_الصحي || ""
+      }));
+    }
+  };
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
   const handlePrint = () => {
     window.print();
   };
 
-  const handleImportEmployee = (employeeId) => {
-    const employee = employees.find(e => e.id === employeeId);
-    if (employee) {
-      setFormData(prev => ({
-        ...prev,
-        employee_name: employee.full_name_arabic,
-        position: employee.position,
-        job_number: employee.رقم_الموظف, // Using the arabic key from entity
-        nationality: employee.nationality,
-        national_id: employee.رقم_الهوية, // Using the arabic key from entity
-        workplace: employee.المركز_الصحي, // Using the arabic key from entity
-      }));
-      setImportDialogOpen(false);
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (!formData.employee_name || !formData.national_id) {
-      alert('يرجى تعبئة البيانات الأساسية للموظف');
-      return;
-    }
-
-    setIsSubmitting(true);
-    try {
-      await base44.entities.ClearanceForm.create({
-        ...formData,
-        status: 'submitted',
-        // Optionally save the layout/structure here if needed for future
-        // layout: JSON.stringify(blocks) 
-      });
-      alert('تم حفظ النموذج بنجاح');
-    } catch (error) {
-      console.error('Error saving form:', error);
-      alert('حدث خطأ أثناء الحفظ');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // Drag and Drop Handlers
-  const onDragEnd = (result) => {
-    if (!result.destination) return;
+  const handleExportPDF = async () => {
+    const html2canvas = (await import('html2canvas')).default;
+    const { jsPDF } = await import('jspdf');
     
-    const newBlocks = Array.from(blocks);
-    const [reorderedItem] = newBlocks.splice(result.source.index, 1);
-    newBlocks.splice(result.destination.index, 0, reorderedItem);
+    const element = printRef.current;
+    const canvas = await html2canvas(element, {
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff'
+    });
     
-    setBlocks(newBlocks);
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+    
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`براءة_ذمة_${formData.employeeName || 'موظف'}.pdf`);
+    toast.success("تم تصدير الملف بنجاح");
   };
 
-  const updateBlock = (id, newData) => {
-    setBlocks(prev => prev.map(b => b.id === id ? { ...b, data: newData } : b));
-  };
-
-  const deleteBlock = (id) => {
-    if (confirm('هل أنت متأكد من حذف هذا الجزء؟')) {
-      setBlocks(prev => prev.filter(b => b.id !== id));
-    }
-  };
-
-  const addBlock = (type, index) => {
-    const newBlock = {
-      id: `block_${Date.now()}`,
-      type,
-      data: getDefaultDataForType(type)
-    };
-    const newBlocks = [...blocks];
-    newBlocks.splice(index + 1, 0, newBlock);
-    setBlocks(newBlocks);
-  };
-
-  const getDefaultDataForType = (type) => {
-    switch(type) {
-      case 'paragraph': return { items: [{ id: 1, type: 'text', value: 'نص جديد...' }] };
-      case 'layout_row': return { rightContent: 'نص أيمن', centerContent: 'عنوان', imageUrl: '' };
-      case 'generic_grid': return { columns: [{ label: 'عمود 1', name: 'col1' }] };
-      case 'signature_grid': return { title: 'التوقيعات', rows: [{ role: 'دور جديد', nameField: `sig_${Date.now()}` }] };
-      case 'center_text': return { text: 'نص مركزي', subText: '' };
-      case 'free_text': return { text: 'اكتب نصك الحر هنا...', fontSize: 16, align: 'right', bold: false, italic: false, underline: false };
-      default: return {};
-    }
-  };
-
-  const renderBlock = (block, index) => {
-    const commonProps = {
-      block,
-      isEditMode,
-      formData,
-      onInputChange: handleInputChange,
-      onUpdateBlock: updateBlock
-    };
-
-    let Component;
-    switch(block.type) {
-      case 'layout_row': Component = LayoutRowBlock; break;
-      case 'generic_grid': Component = GenericGridBlock; break;
-      case 'paragraph': Component = ParagraphBlock; break;
-      case 'signature_grid': Component = SignatureGridBlock; break;
-      case 'center_text': Component = CenterTextBlock; break;
-      case 'free_text': Component = FreeTextBlock; break;
-      default: return null;
-    }
-
+  if (isLoading) {
     return (
-      <Draggable key={block.id} draggableId={block.id} index={index} isDragDisabled={!isEditMode}>
-        {(provided, snapshot) => (
-          <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            className={`relative group transition-all ${
-              isEditMode 
-                ? 'mb-6 p-4 border-2 border-dashed border-gray-200 rounded-lg hover:border-blue-300 bg-white' 
-                : ''
-            } ${snapshot.isDragging ? 'shadow-xl ring-2 ring-blue-400 z-50' : ''}`}
-          >
-            {isEditMode && (
-              <div className="absolute -right-3 top-1/2 -translate-y-1/2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <div 
-                  {...provided.dragHandleProps}
-                  className="p-2 bg-gray-100 rounded-full shadow cursor-grab hover:bg-blue-50 text-gray-600 hover:text-blue-600"
-                  title="سحب"
-                >
-                  <GripVertical className="w-4 h-4" />
-                </div>
-                <button 
-                  onClick={() => deleteBlock(block.id)}
-                  className="p-2 bg-red-50 rounded-full shadow cursor-pointer hover:bg-red-100 text-red-500"
-                  title="حذف"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            )}
-
-            {/* The Content */}
-            <Component {...commonProps} />
-
-            {/* Add Button Between Blocks */}
-            {isEditMode && (
-              <div className="absolute -bottom-5 left-1/2 -translate-x-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button 
-                      variant="default" 
-                      size="sm" 
-                      className="rounded-full h-9 px-4 shadow-lg bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-                    >
-                      <Plus className="w-4 h-4 ml-1" />
-                      إضافة عنصر
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-64">
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => addBlock('free_text', index)}
-                        className="flex-col h-auto py-3"
-                      >
-                        <Type className="w-5 h-5 mb-1" />
-                        <span className="text-xs">نص حر</span>
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => addBlock('paragraph', index)}
-                        className="flex-col h-auto py-3"
-                      >
-                        <Plus className="w-5 h-5 mb-1" />
-                        <span className="text-xs">فقرة</span>
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => addBlock('generic_grid', index)}
-                        className="flex-col h-auto py-3"
-                      >
-                        <GripVertical className="w-5 h-5 mb-1" />
-                        <span className="text-xs">جدول</span>
-                      </Button>
-                      <Button 
-                        variant="outline" 
-                        size="sm" 
-                        onClick={() => addBlock('center_text', index)}
-                        className="flex-col h-auto py-3"
-                      >
-                        <AlignCenter className="w-5 h-5 mb-1" />
-                        <span className="text-xs">نص مركزي</span>
-                      </Button>
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              </div>
-            )}
-          </div>
-        )}
-      </Draggable>
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+        <span className="mr-2">جاري تحميل البيانات...</span>
+      </div>
     );
-  };
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-2 md:p-4 lg:p-8 print:bg-white print:p-0">
-      <div className="max-w-4xl mx-auto print:max-w-none">
-        {/* Actions Bar - Hidden in Print */}
-        <div className="mb-4 md:mb-6 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-3 print:hidden bg-white p-3 md:p-4 rounded-lg shadow-sm border">
-          <div className="flex gap-2 w-full md:w-auto">
-            <Button variant="outline" onClick={() => navigate(-1)} className="gap-2 touch-target flex-1 md:flex-initial">
-              <ArrowRight className="w-4 h-4" />
-              <span className="text-xs md:text-sm">عودة</span>
-            </Button>
-            <Button 
-              variant={isEditMode ? "default" : "outline"}
-              onClick={() => setIsEditMode(!isEditMode)} 
-              className={`gap-2 touch-target flex-1 md:flex-initial ${isEditMode ? 'bg-blue-600 hover:bg-blue-700' : ''}`}
-            >
-              {isEditMode ? <Eye className="w-4 h-4" /> : <Settings2 className="w-4 h-4" />}
-              <span className="text-xs md:text-sm">{isEditMode ? 'معاينة' : 'تعديل'}</span>
-            </Button>
+    <div className="min-h-screen bg-gray-100 p-4" dir="rtl">
+      <style>{`
+        @media print {
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
+          }
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: white !important;
+            width: 100% !important;
+            height: 100% !important;
+          }
+          body * { 
+            visibility: hidden; 
+          }
+          .print-area, .print-area * { 
+            visibility: visible !important; 
+          }
+          .print-area {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 210mm !important;
+            min-height: 297mm !important;
+            height: 297mm !important;
+            padding: 15mm 20mm !important;
+            margin: 0 !important;
+            direction: rtl !important;
+            box-sizing: border-box !important;
+            overflow: visible !important;
+            box-shadow: none !important;
+            background-color: white !important;
+          }
+          .no-print { 
+            display: none !important; 
+          }
+          .print-only {
+            display: inline !important;
+          }
+          @page { 
+            size: A4 portrait; 
+            margin: 0 !important;
+          }
+        }
+        .editable-cell {
+          padding: 2px 4px;
+          outline: none;
+          min-height: 20px;
+          display: inline-block;
+        }
+        .editable-cell:focus {
+          background-color: #f0f9ff;
+        }
+        .print-only {
+          display: none;
+        }
+      `}</style>
+
+      {/* Controls */}
+      <div className="no-print max-w-4xl mx-auto mb-4 bg-white rounded-lg shadow p-4 space-y-3">
+        <div className="flex flex-wrap gap-2 justify-between items-center">
+          <div className="flex flex-wrap gap-2">
+            <Select onValueChange={handleEmployeeSelect}>
+              <SelectTrigger className="w-64">
+                <SelectValue placeholder="اختر الموظف..." />
+              </SelectTrigger>
+              <SelectContent>
+                {employees.map(emp => (
+                  <SelectItem key={emp.id} value={emp.id}>
+                    {emp.full_name_arabic}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          <div className="flex gap-2 w-full md:w-auto">
-            <Dialog open={importDialogOpen} onOpenChange={setImportDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="gap-2 touch-target flex-1 md:flex-initial">
-                  <Download className="w-4 h-4" />
-                  <span className="text-xs md:text-sm">استيراد</span>
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>استيراد بيانات موظف</DialogTitle>
-                  <DialogDescription>
-                    اختر موظفاً لتعبئة بياناته في النموذج تلقائياً
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="py-4">
-                  <EmployeeSelector 
-                    employees={employees} 
-                    onSelect={handleImportEmployee}
-                    placeholder="ابحث عن موظف..." 
-                  />
-                </div>
-              </DialogContent>
-            </Dialog>
-            <Button variant="outline" onClick={handlePrint} className="gap-2 touch-target flex-1 md:flex-initial">
+          
+          <div className="flex gap-2">
+            <Button onClick={handlePrint} variant="outline" className="gap-2">
               <Printer className="w-4 h-4" />
-              <span className="text-xs md:text-sm">طباعة</span>
+              طباعة
             </Button>
-            <Button onClick={handleSubmit} disabled={isSubmitting || isEditMode} className="gap-2 bg-green-600 hover:bg-green-700 touch-target flex-1 md:flex-initial">
-              {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-              <span className="text-xs md:text-sm">حفظ</span>
+            <Button onClick={handleExportPDF} className="gap-2 bg-red-600 hover:bg-red-700">
+              <Download className="w-4 h-4" />
+              PDF
             </Button>
           </div>
         </div>
-
-        {/* Warning for Edit Mode */}
-        {isEditMode && (
-          <div className="mb-4 bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-300 text-blue-900 px-3 md:px-4 py-3 md:py-4 rounded-lg flex items-start gap-3 print:hidden shadow-md">
-            <Settings2 className="w-5 h-5 md:w-6 md:h-6 flex-shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <p className="text-sm md:text-base font-bold mb-1">
-                وضع التحرير المتقدم نشط
-              </p>
-              <ul className="text-xs md:text-sm space-y-1 text-blue-700">
-                <li>• اسحب الأقسام لتغيير ترتيبها</li>
-                <li>• انقر على أيقونات التنسيق لتعديل الخطوط والأحجام</li>
-                <li>• استخدم زر "إضافة عنصر" بين الأقسام لإدراج نصوص وجداول جديدة</li>
-                <li>• يمكنك تعديل أي نص مباشرة في النموذج</li>
-              </ul>
+        
+        {/* Additional form fields */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div>
+            <label className="text-sm font-medium">السبب</label>
+            <Input 
+              value={formData.reason} 
+              onChange={(e) => handleInputChange('reason', e.target.value)}
+              placeholder="نقل / استقالة / ..."
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium">رقم القرار</label>
+            <Input 
+              value={formData.decisionNumber} 
+              onChange={(e) => handleInputChange('decisionNumber', e.target.value)}
+              placeholder="رقم القرار"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium">تاريخ القرار (يوم/شهر/سنة)</label>
+            <div className="flex gap-1">
+              <Input 
+                value={formData.decisionDateDay} 
+                onChange={(e) => handleInputChange('decisionDateDay', e.target.value)}
+                placeholder="يوم"
+                className="w-16"
+              />
+              <Input 
+                value={formData.decisionDateMonth} 
+                onChange={(e) => handleInputChange('decisionDateMonth', e.target.value)}
+                placeholder="شهر"
+                className="w-16"
+              />
+              <Input 
+                value={formData.decisionDateYear} 
+                onChange={(e) => handleInputChange('decisionDateYear', e.target.value)}
+                placeholder="سنة"
+                className="w-20"
+              />
             </div>
           </div>
-        )}
+        </div>
+      </div>
 
-        {/* Form Container */}
-        <Card 
-          className={`bg-white p-8 md:p-12 shadow-lg print:shadow-none print:border-0 print:p-0 transition-all ${isEditMode ? 'ring-4 ring-blue-50/50 scale-[0.99]' : ''} relative`} 
-          id="clearance-form"
-          style={{
-            backgroundImage: `url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/c0d0cb403_.png)`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat'
-          }}
-        >
-          <style>{`
-            @media print {
-              body * { visibility: hidden; }
-              #clearance-form, #clearance-form * { visibility: visible; }
-              #clearance-form { 
-                position: absolute; 
-                left: 0; 
-                top: 0; 
-                width: 100%; 
-                margin: 0; 
-                padding: 20mm; 
-                transform: none !important;
-                background-image: url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/c0d0cb403_.png) !important;
-                background-size: cover !important;
-                background-position: center !important;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-              }
-              .no-print { display: none !important; }
-              /* Make inputs look like text in print */
-              input, textarea { border: none !important; background: transparent !important; resize: none; }
-            }
-          `}</style>
+      {/* Form Preview */}
+      <div 
+        ref={printRef}
+        className="print-area max-w-4xl mx-auto bg-white shadow-lg"
+        style={{ 
+          padding: '15mm 20mm',
+          fontFamily: 'Arial, sans-serif',
+          minHeight: '297mm',
+          position: 'relative'
+        }}
+      >
+        {/* Header with logos */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+          {/* Right Logo - MOH */}
+          <div style={{ width: '80px' }}>
+            <img 
+              src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f9/Saudi_Ministry_of_Health_Logo.svg/1200px-Saudi_Ministry_of_Health_Logo.svg.png" 
+              alt="MOH Logo" 
+              style={{ width: '70px', height: 'auto' }}
+            />
+          </div>
+          
+          {/* Left Logo - BAIN */}
+          <div style={{ width: '100px', textAlign: 'left' }}>
+            <div style={{ color: '#0ea5e9', fontWeight: 'bold', fontSize: '24px', fontFamily: 'Arial' }}>
+              <span style={{ letterSpacing: '2px' }}>ب ـيـ ـن</span>
+            </div>
+            <div style={{ color: '#0ea5e9', fontSize: '14px', fontWeight: 'bold' }}>BAIN</div>
+          </div>
+        </div>
 
-          <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="form-blocks">
-              {(provided) => (
-                <div 
-                  {...provided.droppableProps} 
-                  ref={provided.innerRef}
-                  className="space-y-2"
-                >
-                  {blocks.map((block, index) => renderBlock(block, index))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
+        {/* Title */}
+        <div style={{ textAlign: 'center', marginBottom: '25px' }}>
+          <h1 style={{ 
+            fontSize: '22px', 
+            fontWeight: 'bold', 
+            color: '#333',
+            textDecoration: 'underline',
+            textUnderlineOffset: '6px'
+          }}>
+            براءه ذمة
+          </h1>
+        </div>
 
-        </Card>
+        {/* Employee Info Table */}
+        <table style={{ 
+          width: '100%', 
+          borderCollapse: 'collapse', 
+          marginBottom: '25px',
+          fontSize: '12px'
+        }}>
+          <thead>
+            <tr style={{ backgroundColor: '#f8f9fa' }}>
+              <th style={{ border: '1px solid #333', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>الاسـم</th>
+              <th style={{ border: '1px solid #333', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>الوظيفه</th>
+              <th style={{ border: '1px solid #333', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>رقم الوظيفة</th>
+              <th style={{ border: '1px solid #333', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>الجنسية</th>
+              <th style={{ border: '1px solid #333', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>رقم الهوية</th>
+              <th style={{ border: '1px solid #333', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>جهة العمل</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center', minHeight: '30px' }}>
+                <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('employeeName', e.currentTarget.textContent)}>
+                  {formData.employeeName || '\u00A0'}
+                </span>
+              </td>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center' }}>
+                <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('position', e.currentTarget.textContent)}>
+                  {formData.position || '\u00A0'}
+                </span>
+              </td>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center' }}>
+                <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('positionNumber', e.currentTarget.textContent)}>
+                  {formData.positionNumber || '\u00A0'}
+                </span>
+              </td>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center' }}>
+                <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('nationality', e.currentTarget.textContent)}>
+                  {formData.nationality || '\u00A0'}
+                </span>
+              </td>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center' }}>
+                <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('idNumber', e.currentTarget.textContent)}>
+                  {formData.idNumber || '\u00A0'}
+                </span>
+              </td>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center' }}>
+                <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('workPlace', e.currentTarget.textContent)}>
+                  {formData.workPlace || '\u00A0'}
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        {/* Certificate Text */}
+        <div style={{ 
+          textAlign: 'center', 
+          lineHeight: '2.2',
+          fontSize: '14px',
+          marginBottom: '30px',
+          padding: '0 20px'
+        }}>
+          <p style={{ marginBottom: '15px' }}>
+            تشهد إدارة الموارد البشرية بالرعاية الأولية بتجمع المدينة المنورة الصحي
+          </p>
+          <p style={{ marginBottom: '15px' }}>
+            بأن الموضح اسمه أعلاه بريء الذمة من الناحية الإدارية والمالية وقد سلم جميع
+          </p>
+          <p style={{ marginBottom: '15px' }}>
+            ما بعهدته وذلك نظراً لـ 
+            <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('reason', e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #333', padding: '0 20px', minWidth: '150px', display: 'inline-block' }}>
+              {formData.reason || '...........................'}
+            </span>
+            بناءً على القرار
+          </p>
+          <p>
+            رقم / 
+            <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('decisionNumber', e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #333', padding: '0 10px', minWidth: '80px', display: 'inline-block' }}>
+              {formData.decisionNumber || '........................'}
+            </span>
+            وتاريـخ 
+            <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('decisionDateDay', e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '30px', display: 'inline-block' }}>
+              {formData.decisionDateDay || '.....'}
+            </span>
+            /
+            <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('decisionDateMonth', e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '30px', display: 'inline-block' }}>
+              {formData.decisionDateMonth || '.....'}
+            </span>
+            /
+            <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('decisionDateYear', e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '40px', display: 'inline-block' }}>
+              {formData.decisionDateYear || '14.........'}
+            </span>
+            هـ .
+          </p>
+        </div>
+
+        {/* Signature Section Title */}
+        <div style={{ textAlign: 'center', marginBottom: '15px' }}>
+          <p style={{ fontSize: '14px', fontWeight: 'bold', textDecoration: 'underline', textUnderlineOffset: '4px' }}>
+            وعلى ذلك جرى التوقيع :
+          </p>
+        </div>
+
+        {/* Signatures Table */}
+        <table style={{ 
+          width: '100%', 
+          borderCollapse: 'collapse', 
+          marginBottom: '40px',
+          fontSize: '12px'
+        }}>
+          <thead>
+            <tr style={{ backgroundColor: '#f8f9fa' }}>
+              <th style={{ border: '1px solid #333', padding: '8px', textAlign: 'center', fontWeight: 'bold', width: '40px' }}>م</th>
+              <th style={{ border: '1px solid #333', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>الوظيفة</th>
+              <th style={{ border: '1px solid #333', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>الاسم</th>
+              <th style={{ border: '1px solid #333', padding: '8px', textAlign: 'center', fontWeight: 'bold', width: '100px' }}>التوقيع</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>١</td>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center' }}>الرئيس المباشر</td>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center' }}>
+                <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('directSupervisorName', e.currentTarget.textContent)}>
+                  {formData.directSupervisorName || '\u00A0'}
+                </span>
+              </td>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center' }}></td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>٢</td>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center' }}>امين العهدة في المركز / ادارة</td>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center' }}>
+                <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('custodianName', e.currentTarget.textContent)}>
+                  {formData.custodianName || '\u00A0'}
+                </span>
+              </td>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center' }}></td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>٣</td>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center' }}>أمين الصندوق بالرعاية الأولية</td>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center' }}>
+                <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('treasurerName', e.currentTarget.textContent)}>
+                  {formData.treasurerName || '\u00A0'}
+                </span>
+              </td>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center' }}></td>
+            </tr>
+            <tr>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>٤</td>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center' }}>محاسب الرواتب الموارد البشرية بالرعاية الأولية</td>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center' }}>
+                <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('accountantName', e.currentTarget.textContent)}>
+                  {formData.accountantName || '\u00A0'}
+                </span>
+              </td>
+              <td style={{ border: '1px solid #333', padding: '8px', textAlign: 'center' }}></td>
+            </tr>
+          </tbody>
+        </table>
+
+        {/* HR Manager Signature */}
+        <div style={{ marginTop: '40px', borderTop: '1px solid #333', width: '250px', paddingTop: '15px' }}>
+          <p style={{ fontSize: '14px', fontWeight: 'bold', marginBottom: '10px' }}>
+            <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('hrManagerName', e.currentTarget.textContent)}>
+              {formData.hrManagerName}
+            </span>
+          </p>
+          <p style={{ fontSize: '12px', color: '#555', marginBottom: '5px' }}>
+            مدير إدارة الموارد البشرية بالرعاية الأولية
+          </p>
+          <p style={{ fontSize: '12px', color: '#555' }}>
+            بتجمع المدينة المنورة الصحي
+          </p>
+        </div>
+
+        {/* Footer */}
+        <div style={{ 
+          position: 'absolute', 
+          bottom: '15mm', 
+          left: '20mm', 
+          right: '20mm',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          borderTop: '1px solid #eee',
+          paddingTop: '10px'
+        }}>
+          <div style={{ textAlign: 'right' }}>
+            <div style={{ color: '#0ea5e9', fontWeight: 'bold', fontSize: '12px' }}>
+              تجمع المدينة المنورة الصحي
+            </div>
+            <div style={{ color: '#0ea5e9', fontSize: '11px', fontWeight: 'bold' }}>
+              Madinah Health Cluster
+            </div>
+            <div style={{ color: '#888', fontSize: '9px' }}>
+              Empowered by Health Holding co.
+            </div>
+          </div>
+          <div style={{ width: '60px', textAlign: 'left' }}>
+            <div style={{ color: '#0ea5e9', fontWeight: 'bold', fontSize: '16px' }}>
+              ب ـيـ ـن
+            </div>
+            <div style={{ color: '#0ea5e9', fontSize: '10px', fontWeight: 'bold' }}>BAIN</div>
+          </div>
+        </div>
       </div>
     </div>
   );
