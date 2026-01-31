@@ -272,26 +272,7 @@ export default function FillClearanceForm() {
           <div className="font-bold-title" style={{ color: '#3498db', fontSize: '14px', textAlign: 'center', flex: 1 }}>
             إدارة الموارد البشرية بالرعاية الأولية بتجمع المدينة المنورة
           </div>
-          {/* Madinah Health Cluster Logo */}
-          <div style={{ width: '70px', textAlign: 'left' }}>
-            <svg viewBox="0 0 100 100" width="60" height="60">
-              {/* Main hexagonal shape */}
-              <polygon 
-                points="50,5 90,25 90,75 50,95 10,75 10,25" 
-                fill="none" 
-                stroke="#2196F3" 
-                strokeWidth="2"
-              />
-              {/* Inner design - abstract health symbol */}
-              <circle cx="50" cy="40" r="15" fill="none" stroke="#2196F3" strokeWidth="2"/>
-              <path d="M35,55 Q50,70 65,55" fill="none" stroke="#2196F3" strokeWidth="2"/>
-              <circle cx="50" cy="40" r="5" fill="#2196F3"/>
-              {/* Small circles representing connection */}
-              <circle cx="30" cy="35" r="3" fill="#4CAF50"/>
-              <circle cx="70" cy="35" r="3" fill="#4CAF50"/>
-              <circle cx="50" cy="65" r="3" fill="#4CAF50"/>
-            </svg>
-          </div>
+
         </div>
 
         {/* Main Content - pushed down */}
