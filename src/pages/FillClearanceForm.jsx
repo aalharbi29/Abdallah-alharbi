@@ -411,8 +411,8 @@ export default function FillClearanceForm() {
             <thead>
               <tr>
                 <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '8%' }}>م</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '42%' }}>الوظيفة</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '30%' }}>الاسم</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '38%' }}>الوظيفة</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '34%' }}>الاسم</th>
                 <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '20%' }}>التوقيع</th>
               </tr>
             </thead>
@@ -452,12 +452,12 @@ export default function FillClearanceForm() {
 
           {/* HR Manager Signature */}
           <div style={{ textAlign: 'center' }}>
-            <p className="font-bold-title" style={{ fontSize: '16px', marginBottom: '15px' }}>
+            <p className="font-bold-title" style={{ fontSize: '16px', marginBottom: '25px' }}>
               <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('hrManagerName', e.currentTarget.textContent)}>
                 {formData.hrManagerName}
               </span>
             </p>
-            <p className="font-bold-title" style={{ fontSize: '13px', color: '#333', marginTop: '10px' }}>
+            <p className="font-bold-title" style={{ fontSize: '13px', color: '#333', marginTop: '0' }}>
               مدير إدارة الموارد البشرية بالرعاية الأولية
             </p>
           </div>
