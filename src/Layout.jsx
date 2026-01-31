@@ -58,7 +58,6 @@ const getNavigationItems = (t) => [
       { name: t('nav.forms') + " - " + t('forms.formTemplates'), href: createPageUrl("Forms?type=contract_renewal"), icon: RefreshCw },
       { name: "Equipment Request", href: createPageUrl("FillNonMedicalEquipmentForm"), icon: FilePlus },
       { name: "Additional Forms", href: createPageUrl("Forms?type=additional"), icon: FilePlus },
-      { name: "Clearance Form", href: createPageUrl("FillClearanceForm"), icon: FileCheck },
             { name: "تكليف مهمة رسمية", href: createPageUrl("FillOfficialAssignmentForm"), icon: FileText },
                         { name: "طلب استعادة بريد", href: createPageUrl("FillEmailRecoveryForm"), icon: Mail },
                       ]
