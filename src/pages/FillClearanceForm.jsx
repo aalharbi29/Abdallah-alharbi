@@ -276,7 +276,7 @@ export default function FillClearanceForm() {
         </div>
 
         {/* Main Content - pushed down */}
-        <div style={{ padding: '0 10mm', marginTop: '20mm' }}>
+        <div style={{ padding: '0 10mm', marginTop: '30mm' }}>
           
           {/* Title Row */}
           <div style={{ textAlign: 'center', marginBottom: '25px' }}>
@@ -300,12 +300,12 @@ export default function FillClearanceForm() {
           }}>
             <thead>
               <tr>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الاســـــــم</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الوظيفه</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>رقم الوظيفة</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الجنسية</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>رقم الهوية</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>جهة العمل</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الاســـــــم</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الوظيفه</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>رقم الوظيفة</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الجنسية</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>رقم الهوية</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>جهة العمل</th>
               </tr>
             </thead>
             <tbody>
@@ -383,8 +383,8 @@ export default function FillClearanceForm() {
           </div>
 
           {/* Signature Section Title */}
-          <div className="font-bold-title" style={{ textAlign: 'right', marginBottom: '8px', marginTop: '25px' }}>
-            <p style={{ fontSize: '14px' }}>
+          <div className="font-bold-title" style={{ textAlign: 'center', marginBottom: '15mm', marginTop: '25px' }}>
+            <p style={{ fontSize: '14px', margin: 0 }}>
               وعلى ذلك جرى التوقيع :
             </p>
           </div>
@@ -393,59 +393,59 @@ export default function FillClearanceForm() {
           <table style={{ 
             width: '100%', 
             borderCollapse: 'collapse', 
-            marginBottom: '50px',
+            marginBottom: '25mm',
             fontSize: '12px'
           }}>
             <thead>
               <tr>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '40px' }}>م</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الوظيفة</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الاسم</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '100px' }}>التوقيع</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '40px' }}>م</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الوظيفة</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الاسم</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '100px' }}>التوقيع</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>1</td>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>الرئيس المباشر</td>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>1</td>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>الرئيس المباشر</td>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('directSupervisorName', e.currentTarget.textContent)}>
                     {formData.directSupervisorName || '\u00A0'}
                   </span>
                 </td>
-                <td style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}></td>
+                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}></td>
               </tr>
               <tr>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>2</td>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>امين العهده في المركز / ادارة</td>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>2</td>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>امين العهده في المركز / ادارة</td>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('custodianName', e.currentTarget.textContent)}>
                     {formData.custodianName || '\u00A0'}
                   </span>
                 </td>
-                <td style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}></td>
+                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}></td>
               </tr>
               <tr>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>3</td>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>محاسب الرواتب بالموارد البشرية بالرعاية الاولية</td>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>3</td>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>محاسب الرواتب بالموارد البشرية بالرعاية الاولية</td>
+                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('accountantName', e.currentTarget.textContent)}>
                     {formData.accountantName || '\u00A0'}
                   </span>
                 </td>
-                <td style={{ border: '1px solid #333', padding: '10px 8px', textAlign: 'center' }}></td>
+                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}></td>
               </tr>
             </tbody>
           </table>
 
           {/* HR Manager Signature */}
-          <div style={{ marginTop: '60px', textAlign: 'center' }}>
-            <p className="font-bold-title" style={{ fontSize: '16px', marginBottom: '20px' }}>
+          <div style={{ textAlign: 'center' }}>
+            <p className="font-bold-title" style={{ fontSize: '16px', marginBottom: '15px' }}>
               <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('hrManagerName', e.currentTarget.textContent)}>
                 {formData.hrManagerName}
               </span>
             </p>
-            <p className="font-bold-title" style={{ fontSize: '13px', color: '#333' }}>
+            <p className="font-bold-title" style={{ fontSize: '13px', color: '#333', marginTop: '10px' }}>
               مدير إدارة الموارد البشرية بالرعاية الأولية
             </p>
           </div>
