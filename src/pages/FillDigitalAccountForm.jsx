@@ -582,7 +582,7 @@ export default function FillDigitalAccountForm() {
                     </div>
 
         {/* Main Table */}
-        <table className="form-table">
+        <table className="form-table" style={{ marginTop: '35px' }}>
           <tbody>
             {/* Row 1: Title */}
             <tr>
