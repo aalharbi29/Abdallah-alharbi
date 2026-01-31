@@ -288,7 +288,7 @@ export default function FillClearanceForm() {
         </div>
 
         {/* Main Content - pushed down */}
-        <div style={{ padding: '0 10mm', marginTop: '30mm' }}>
+        <div style={{ padding: '0 10mm', marginTop: '40mm' }}>
           
           {/* Title Row */}
           <div style={{ textAlign: 'center', marginBottom: '25px' }}>
@@ -452,7 +452,7 @@ export default function FillClearanceForm() {
 
           {/* HR Manager Signature */}
           <div style={{ textAlign: 'center' }}>
-            <p className="font-bold-title" style={{ fontSize: '16px', marginBottom: '25px' }}>
+            <p className="font-bold-title" style={{ fontSize: '16px', marginBottom: '35px' }}>
               <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('hrManagerName', e.currentTarget.textContent)}>
                 {formData.hrManagerName}
               </span>
