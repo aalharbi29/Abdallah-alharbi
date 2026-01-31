@@ -264,7 +264,7 @@ export default function FillClearanceForm() {
       >
         {/* Header Section - White background with text and logo */}
         <div style={{ 
-          padding: '20px 40px',
+          padding: '25mm 30mm 0 30mm',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'
@@ -276,7 +276,7 @@ export default function FillClearanceForm() {
         </div>
 
         {/* Main Content - pushed down */}
-        <div style={{ padding: '20px 40px', marginTop: '20px' }}>
+        <div style={{ padding: '0 30mm', marginTop: '10mm' }}>
           
           {/* Title Row */}
           <div style={{ textAlign: 'center', marginBottom: '25px' }}>
@@ -454,9 +454,9 @@ export default function FillClearanceForm() {
         {/* Footer */}
         <div style={{ 
           position: 'absolute', 
-          bottom: '20px', 
-          left: '40px', 
-          right: '40px',
+          bottom: '20mm', 
+          left: '30mm', 
+          right: '30mm',
           display: 'flex',
           justifyContent: 'flex-end',
           alignItems: 'flex-end'
