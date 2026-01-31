@@ -558,6 +558,7 @@ export default function FillDigitalAccountForm() {
         ref={printRef}
         className="print-area max-w-4xl mx-auto bg-white shadow-lg"
         style={{ 
+          position: 'relative',
           padding: '25mm 30mm 25mm 30mm', 
           fontFamily: 'Arial, sans-serif', 
           fontWeight: '600',
