@@ -897,7 +897,7 @@ export default function FillDigitalAccountForm() {
                   </div>
                   <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
                     <span style={{ fontWeight: 'bold', display: 'inline' }}>الصلاحيات المطلوبة: </span>
-                    <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline' }}>{formData.recruitmentPrivilege}</span>
+                    <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline', minWidth: '80px' }}>{formData.recruitmentPrivilege || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}</span>
                   </div>
                 </div>
               </td>
