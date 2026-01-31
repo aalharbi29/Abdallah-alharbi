@@ -946,23 +946,23 @@ export default function FillDigitalAccountForm() {
                   </tbody>
                 </table>
                 <div style={{ marginTop: '4px' }}>
-                  <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
-                    <span style={{ fontWeight: 'bold', display: 'inline' }}>Organization: </span>
-                    <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline', minWidth: '80px' }}>{translateCenterName(formData.organization) || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}</span>
-                  </div>
-                  <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
-                    <span style={{ fontWeight: 'bold', display: 'inline' }}>Department: </span>
-                    <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline', minWidth: '80px' }}>{departmentsTranslations[formData.department] || formData.department || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}</span>
-                  </div>
-                  <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
-                    <span style={{ fontWeight: 'bold', display: 'inline' }}>Specialization: </span>
-                    <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline', minWidth: '80px' }}>{translateSpecialization(formData.specialization) || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}</span>
-                  </div>
-                  <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4' }}>
-                    <span style={{ fontWeight: 'bold', display: 'inline' }}>Recruitment privilege: </span>
-                    <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', display: 'inline', minWidth: '80px' }}>{translateToEnglish(formData.recruitmentPrivilege) || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}</span>
-                  </div>
-                </div>
+                                        <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                          <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>Organization: </span>
+                                          <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', flex: 1, minHeight: '14px' }}>{translateCenterName(formData.organization) || '\u00A0'}</span>
+                                        </div>
+                                        <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                          <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>Department: </span>
+                                          <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', flex: 1, minHeight: '14px' }}>{departmentsTranslations[formData.department] || formData.department || '\u00A0'}</span>
+                                        </div>
+                                        <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                          <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>Specialization: </span>
+                                          <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', flex: 1, minHeight: '14px' }}>{translateSpecialization(formData.specialization) || '\u00A0'}</span>
+                                        </div>
+                                        <div style={{ marginBottom: '1px', fontSize: '10px', lineHeight: '1.4', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                          <span style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>Recruitment privilege: </span>
+                                          <span style={{ borderBottom: '1px dotted #666', fontWeight: 'bold', flex: 1, minHeight: '14px' }}>{translateToEnglish(formData.recruitmentPrivilege) || '\u00A0'}</span>
+                                        </div>
+                                      </div>
               </td>
             </tr>
 
