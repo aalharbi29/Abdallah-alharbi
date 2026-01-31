@@ -71,6 +71,7 @@ import Fill205Form from './pages/Fill205Form';
 import Fill205FormComplete from './pages/Fill205FormComplete';
 import Fill205FormPart2 from './pages/Fill205FormPart2';
 import FillAllowanceForm from './pages/FillAllowanceForm';
+import FillClearanceForm from './pages/FillClearanceForm';
 import FillDigitalAccountForm from './pages/FillDigitalAccountForm';
 import FillEmailRecoveryForm from './pages/FillEmailRecoveryForm';
 import FillEquipmentRequestForm from './pages/FillEquipmentRequestForm';
@@ -103,7 +104,6 @@ import StatisticsHijri from './pages/StatisticsHijri';
 import ViewAssignment from './pages/ViewAssignment';
 import ViewEquipmentRequest from './pages/ViewEquipmentRequest';
 import ViewExcellentEmployeeCertificate from './pages/ViewExcellentEmployeeCertificate';
-import FillClearanceForm from './pages/FillClearanceForm';
 import __Layout from './Layout.jsx';
 
 
@@ -132,6 +132,7 @@ export const PAGES = {
     "Fill205FormComplete": Fill205FormComplete,
     "Fill205FormPart2": Fill205FormPart2,
     "FillAllowanceForm": FillAllowanceForm,
+    "FillClearanceForm": FillClearanceForm,
     "FillDigitalAccountForm": FillDigitalAccountForm,
     "FillEmailRecoveryForm": FillEmailRecoveryForm,
     "FillEquipmentRequestForm": FillEquipmentRequestForm,
@@ -164,7 +165,6 @@ export const PAGES = {
     "ViewAssignment": ViewAssignment,
     "ViewEquipmentRequest": ViewEquipmentRequest,
     "ViewExcellentEmployeeCertificate": ViewExcellentEmployeeCertificate,
-    "FillClearanceForm": FillClearanceForm,
 }
 
 export const pagesConfig = {

@@ -52,11 +52,22 @@ export default function FillClearanceForm() {
     }
   };
 
-  const handleEmployeeSelect = (employeeId) => {
+  const handleEmployeeSelect = async (employeeId) => {
     const employee = employees.find(e => e.id === employeeId);
     setSelectedEmployee(employee);
     
     if (employee) {
+      // Find direct supervisor name from health center
+      let supervisorName = "";
+      if (employee.المركز_الصحي) {
+        const center = healthCenters.find(c => c.اسم_المركز === employee.المركز_الصحي);
+        if (center && center.المدير) {
+          // Find director name from employees
+          const director = employees.find(e => e.id === center.المدير);
+          supervisorName = director?.full_name_arabic || "";
+        }
+      }
+      
       setFormData(prev => ({
         ...prev,
         employeeName: employee.full_name_arabic || "",
@@ -64,7 +75,8 @@ export default function FillClearanceForm() {
         positionNumber: employee.رقم_الموظف || "",
         nationality: employee.nationality || "",
         idNumber: employee.رقم_الهوية || "",
-        workPlace: employee.المركز_الصحي || ""
+        workPlace: employee.المركز_الصحي || "",
+        directSupervisorName: supervisorName
       }));
     }
   };
@@ -310,32 +322,32 @@ export default function FillClearanceForm() {
             </thead>
             <tbody>
               <tr>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center', minHeight: '35px', height: '35px' }}>
+                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center', minHeight: '35px', height: '35px', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('employeeName', e.currentTarget.textContent)}>
                     {formData.employeeName || '\u00A0'}
                   </span>
                 </td>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center' }}>
+                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('position', e.currentTarget.textContent)}>
                     {formData.position || '\u00A0'}
                   </span>
                 </td>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center' }}>
+                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('positionNumber', e.currentTarget.textContent)}>
                     {formData.positionNumber || '\u00A0'}
                   </span>
                 </td>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center' }}>
+                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('nationality', e.currentTarget.textContent)}>
                     {formData.nationality || '\u00A0'}
                   </span>
                 </td>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center' }}>
+                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('idNumber', e.currentTarget.textContent)}>
                     {formData.idNumber || '\u00A0'}
                   </span>
                 </td>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center' }}>
+                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('workPlace', e.currentTarget.textContent)}>
                     {formData.workPlace || '\u00A0'}
                   </span>
@@ -383,13 +395,13 @@ export default function FillClearanceForm() {
           </div>
 
           {/* Signature Section Title */}
-          <div className="font-bold-title" style={{ textAlign: 'center', marginBottom: '15mm', marginTop: '25px' }}>
+          <div className="font-bold-title" style={{ textAlign: 'right', marginBottom: '8mm', marginTop: '25px', paddingRight: '5mm' }}>
             <p style={{ fontSize: '14px', margin: 0 }}>
               وعلى ذلك جرى التوقيع :
             </p>
           </div>
 
-          {/* Signatures Table */}
+          {/* Signatures Table - Column widths: م=8%, الوظيفة=42%, الاسم=30%, التوقيع=20% */}
           <table style={{ 
             width: '100%', 
             borderCollapse: 'collapse', 
@@ -398,17 +410,17 @@ export default function FillClearanceForm() {
           }}>
             <thead>
               <tr>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '40px' }}>م</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الوظيفة</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الاسم</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '100px' }}>التوقيع</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '8%' }}>م</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '42%' }}>الوظيفة</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '30%' }}>الاسم</th>
+                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '20%' }}>التوقيع</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>1</td>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>الرئيس المباشر</td>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>
+                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>الرئيس المباشر</td>
+                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('directSupervisorName', e.currentTarget.textContent)}>
                     {formData.directSupervisorName || '\u00A0'}
                   </span>
@@ -417,8 +429,8 @@ export default function FillClearanceForm() {
               </tr>
               <tr>
                 <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>2</td>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>امين العهده في المركز / ادارة</td>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>
+                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>امين العهده في المركز / ادارة</td>
+                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('custodianName', e.currentTarget.textContent)}>
                     {formData.custodianName || '\u00A0'}
                   </span>
@@ -427,8 +439,8 @@ export default function FillClearanceForm() {
               </tr>
               <tr>
                 <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>3</td>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>محاسب الرواتب بالموارد البشرية بالرعاية الاولية</td>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>
+                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>محاسب الرواتب بالموارد البشرية بالرعاية الاولية</td>
+                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
                   <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('accountantName', e.currentTarget.textContent)}>
                     {formData.accountantName || '\u00A0'}
                   </span>
