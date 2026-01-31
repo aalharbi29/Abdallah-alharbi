@@ -561,10 +561,10 @@ export default function FillDigitalAccountForm() {
             {/* Row 1: Title */}
             <tr>
               <td colSpan="2" style={{ padding: '10px', textAlign: 'center' }}>
-                                    <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#0ea5e9', textAlign: 'center', width: '100%' }}>
-                                      نموذج انشاء إيقاف حساب
-                                    </div>
-                                  </td>
+                      <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#0ea5e9', textAlign: 'center', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        نموذج انشاء إيقاف حساب
+                      </div>
+                    </td>
             </tr>
 
             {/* Row 2: Content - النظام */}
@@ -988,8 +988,8 @@ export default function FillDigitalAccountForm() {
             <tr>
               <td colSpan="2" style={{ padding: '0', border: 'none', position: 'relative', height: '0' }}>
                 <div style={{ position: 'absolute', top: '-45px', left: '50%', transform: 'translateX(-50%)', textAlign: 'center', backgroundColor: 'white', padding: '2px 8px' }}>
-                                        <div style={{ border: '1px solid #000', height: '25px', width: '50px', margin: '0 auto', backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 'bold' }}>الختم</div>
-                                      </div>
+                      <div style={{ border: '1px solid #000', height: '30px', width: '60px', margin: '0 auto', backgroundColor: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 'bold' }}>الختم</div>
+                    </div>
               </td>
             </tr>
           </tbody>
