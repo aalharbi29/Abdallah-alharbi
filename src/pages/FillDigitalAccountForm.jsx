@@ -732,8 +732,8 @@ export default function FillDigitalAccountForm() {
             <tr>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'center' }}>
                                     <span style={{ fontWeight: 'bold' }}>السبب: </span>
-                                    <span style={{ borderBottom: '1px dotted #666', minWidth: '200px', display: 'inline-block', fontWeight: 'bold' }}>
-                                                              {formData.reason || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}
+                                    <span style={{ borderBottom: '1px dotted #666', flex: 1, display: 'inline-block', fontWeight: 'bold', minWidth: '150px' }}>
+                                                              {formData.reason || '\u00A0'}
                                                             </span>
                                   </td>
                                   <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'center' }}>
