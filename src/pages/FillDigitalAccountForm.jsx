@@ -369,9 +369,11 @@ export default function FillDigitalAccountForm() {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
-          body {
+          html, body {
             margin: 0 !important;
             padding: 0 !important;
+            width: 210mm !important;
+            height: 297mm !important;
           }
           body * { 
             visibility: hidden; 
@@ -383,10 +385,10 @@ export default function FillDigitalAccountForm() {
             position: absolute;
             left: 0;
             top: 0;
-            width: 210mm;
-            min-height: 297mm;
-            padding: 25mm 30mm 25mm 30mm;
-            margin: 0;
+            width: 100% !important;
+            min-height: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
             direction: rtl;
             box-sizing: border-box;
             background: white;
@@ -403,7 +405,7 @@ export default function FillDigitalAccountForm() {
           }
           @page { 
             size: A4 portrait; 
-            margin: 0; 
+            margin: 25mm 30mm 25mm 30mm;
           }
         }
         .editable-cell {
