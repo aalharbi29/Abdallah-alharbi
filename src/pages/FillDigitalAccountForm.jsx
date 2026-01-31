@@ -886,22 +886,22 @@ export default function FillDigitalAccountForm() {
                     </tr>
                   </tbody>
                 </table>
-                <div style={{ marginTop: '6px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
-                    <span style={{ minWidth: '100px', textAlign: 'right', fontWeight: 'bold' }}>المنشأة:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.organization}</span>
+                <div style={{ marginTop: '4px' }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', marginBottom: '1px', gap: '0' }}>
+                    <span style={{ minWidth: '90px', textAlign: 'right', fontWeight: 'bold', fontSize: '10px' }}>المنشأة:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold', fontSize: '10px' }}>{formData.organization}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
-                    <span style={{ minWidth: '100px', textAlign: 'right', fontWeight: 'bold' }}>القسم:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.department}</span>
+                  <div style={{ display: 'flex', alignItems: 'baseline', marginBottom: '1px', gap: '0' }}>
+                    <span style={{ minWidth: '90px', textAlign: 'right', fontWeight: 'bold', fontSize: '10px' }}>القسم:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold', fontSize: '10px' }}>{formData.department}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
-                    <span style={{ minWidth: '100px', textAlign: 'right', fontWeight: 'bold' }}>التخصص:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.specialization}</span>
+                  <div style={{ display: 'flex', alignItems: 'baseline', marginBottom: '1px', gap: '0' }}>
+                    <span style={{ minWidth: '90px', textAlign: 'right', fontWeight: 'bold', fontSize: '10px' }}>التخصص:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold', fontSize: '10px' }}>{formData.specialization}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
-                    <span style={{ minWidth: '100px', textAlign: 'right', fontWeight: 'bold' }}>الصلاحيات المطلوبة:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{formData.recruitmentPrivilege}</span>
+                  <div style={{ display: 'flex', alignItems: 'baseline', marginBottom: '1px', gap: '0' }}>
+                    <span style={{ minWidth: '90px', textAlign: 'right', fontWeight: 'bold', fontSize: '10px' }}>الصلاحيات المطلوبة:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold', fontSize: '10px' }}>{formData.recruitmentPrivilege}</span>
                   </div>
                 </div>
               </td>
@@ -945,22 +945,22 @@ export default function FillDigitalAccountForm() {
                     </tr>
                   </tbody>
                 </table>
-                <div style={{ marginTop: '6px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
-                    <span style={{ minWidth: '120px', fontWeight: 'bold' }}>Organization:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{translateCenterName(formData.organization)}</span>
+                <div style={{ marginTop: '4px' }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', marginBottom: '1px', gap: '0' }}>
+                    <span style={{ minWidth: '110px', fontWeight: 'bold', fontSize: '10px' }}>Organization:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold', fontSize: '10px' }}>{translateCenterName(formData.organization)}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
-                    <span style={{ minWidth: '120px', fontWeight: 'bold' }}>Department:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{departmentsTranslations[formData.department] || formData.department}</span>
+                  <div style={{ display: 'flex', alignItems: 'baseline', marginBottom: '1px', gap: '0' }}>
+                    <span style={{ minWidth: '110px', fontWeight: 'bold', fontSize: '10px' }}>Department:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold', fontSize: '10px' }}>{departmentsTranslations[formData.department] || formData.department}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
-                    <span style={{ minWidth: '120px', fontWeight: 'bold' }}>Specialization:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{translateSpecialization(formData.specialization)}</span>
+                  <div style={{ display: 'flex', alignItems: 'baseline', marginBottom: '1px', gap: '0' }}>
+                    <span style={{ minWidth: '110px', fontWeight: 'bold', fontSize: '10px' }}>Specialization:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold', fontSize: '10px' }}>{translateSpecialization(formData.specialization)}</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
-                    <span style={{ minWidth: '120px', fontWeight: 'bold' }}>Recruitment privilege:</span>
-                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>{translateToEnglish(formData.recruitmentPrivilege)}</span>
+                  <div style={{ display: 'flex', alignItems: 'baseline', marginBottom: '1px', gap: '0' }}>
+                    <span style={{ minWidth: '110px', fontWeight: 'bold', fontSize: '10px' }}>Recruitment privilege:</span>
+                    <span style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold', fontSize: '10px' }}>{translateToEnglish(formData.recruitmentPrivilege)}</span>
                   </div>
                 </div>
               </td>
