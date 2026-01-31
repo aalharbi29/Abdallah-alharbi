@@ -571,16 +571,16 @@ export default function FillDigitalAccountForm() {
       >
         {/* Header - moved to be next to logo in background */}
                     <div style={{ position: 'absolute', top: '25mm', right: '40mm', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <div style={{ borderLeft: '2px solid #0ea5e9', height: '30px' }}></div>
-                      <div style={{ textAlign: 'right' }}>
-                        <h2 style={{ fontSize: '12px', fontWeight: 'bold', color: '#0ea5e9', margin: 0 }}>
-                          الخدمات المشتركة للصحة الرقمية والتقنية
-                        </h2>
-                        <p style={{ fontSize: '9px', color: '#6b7280', fontWeight: 'normal', margin: 0 }}>
-                          Shared Services for Digital Health & Technology
-                        </p>
+                        <div style={{ borderLeft: '2px solid #0ea5e9', height: '35px' }}></div>
+                        <div style={{ textAlign: 'right' }}>
+                          <h2 style={{ fontSize: '15px', fontWeight: 'bold', color: '#0ea5e9', margin: 0 }}>
+                            الخدمات المشتركة للصحة الرقمية والتقنية
+                          </h2>
+                          <p style={{ fontSize: '12px', color: '#6b7280', fontWeight: 'normal', margin: 0 }}>
+                            Shared Services for Digital Health & Technology
+                          </p>
+                        </div>
                       </div>
-                    </div>
 
         {/* Main Table */}
         <table className="form-table" style={{ marginTop: '55px' }}>
