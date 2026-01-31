@@ -828,9 +828,9 @@ export default function FillDigitalAccountForm() {
                   { label: 'End date of (internship\\contract)', field: 'endDate' },
                   { label: 'Contact Phone', field: 'contactPhone' }
                 ].map(item => (
-                  <div key={item.field} style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
-                    <span style={{ minWidth: '160px', fontWeight: 'bold' }}>{item.label}:</span>
-                    <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>
+                  <div key={item.field} style={{ display: 'flex', alignItems: 'baseline', marginBottom: '1px', gap: '0' }}>
+                    <span style={{ minWidth: '150px', fontWeight: 'bold', fontSize: '10px' }}>{item.label}:</span>
+                    <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold', fontSize: '10px' }}>
                       {formData[item.field]}
                     </span>
                   </div>
