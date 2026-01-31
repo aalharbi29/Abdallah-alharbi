@@ -739,8 +739,8 @@ export default function FillDigitalAccountForm() {
                                   <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'center' }}>
                                     <span style={{ fontWeight: 'bold' }}>*Reason: </span>
                                     <span style={{ borderBottom: '1px dotted #666', minWidth: '200px', display: 'inline-block', fontWeight: 'bold' }}>
-                                      {formData.reasonEn}
-                                    </span>
+                                                              {formData.reasonEn || '\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0'}
+                                                            </span>
                                   </td>
             </tr>
             {/* Separator */}
