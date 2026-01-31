@@ -757,21 +757,21 @@ export default function FillDigitalAccountForm() {
             <tr>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'rtl', textAlign: 'right' }}>
                 <span style={{ fontWeight: 'bold' }}>اسم الموظف:</span>
-                                      <div className="space-y-1 mt-2">
-                                        {[
-                                          { label: 'الأول', field: 'firstName' },
-                                          { label: 'الثاني', field: 'secondName' },
-                                          { label: 'الثالث', field: 'thirdName' },
-                                          { label: 'العائلة', field: 'familyName' }
-                                        ].map(item => (
-                                          <div key={item.field} className="flex items-center gap-2">
-                                            <span style={{ width: '50px', fontWeight: 'bold' }}>{item.label}:</span>
-                                            <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>
-                                              {formData[item.field]}
-                                            </span>
-                                          </div>
-                                        ))}
-                                      </div>
+                <div style={{ marginTop: '4px' }}>
+                  {[
+                    { label: 'الأول', field: 'firstName' },
+                    { label: 'الثاني', field: 'secondName' },
+                    { label: 'الثالث', field: 'thirdName' },
+                    { label: 'العائلة', field: 'familyName' }
+                  ].map(item => (
+                    <div key={item.field} style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
+                      <span style={{ width: '50px', fontWeight: 'bold' }}>{item.label}:</span>
+                      <span className="editable-cell" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange(item.field, e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #666', flex: 1, fontWeight: 'bold' }}>
+                        {formData[item.field]}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </td>
               <td style={{ padding: '8px', borderTop: 'none', borderBottom: 'none', direction: 'ltr', textAlign: 'left' }}>
                 <span style={{ fontWeight: 'bold' }}>*Staff Name:</span>
