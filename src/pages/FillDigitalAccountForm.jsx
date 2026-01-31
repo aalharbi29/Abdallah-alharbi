@@ -424,10 +424,11 @@ export default function FillDigitalAccountForm() {
           }
         }
         .editable-cell {
-          padding: 2px 6px;
+          padding: 0 2px;
           outline: none;
-          min-height: 20px;
-          display: inline-block;
+          min-height: 16px;
+          display: inline;
+          margin: 0;
         }
         .editable-cell:focus {
           background-color: #f0f9ff;
