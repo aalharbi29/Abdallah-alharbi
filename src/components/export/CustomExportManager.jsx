@@ -46,6 +46,7 @@ export default function CustomExportManager({
   const [preambleText, setPreambleText] = useState("");
   const [footerText, setFooterText] = useState("");
   const [includeSignature, setIncludeSignature] = useState(true);
+  const [dateFormat, setDateFormat] = useState("hijri"); // hijri or gregorian
 
   // تعريف الحقول المتاحة حسب النوع
   const fieldDefinitions = useMemo(() => {
