@@ -300,7 +300,7 @@ export default function FillClearanceForm() {
           </div>
 
         {/* Main Content - pushed down */}
-        <div style={{ padding: '0 10mm', marginTop: '40mm' }}>
+        <div style={{ padding: '0 10mm', marginTop: '35mm' }}>
           
           {/* Title Row */}
           <div style={{ textAlign: 'center', marginBottom: '25px' }}>
