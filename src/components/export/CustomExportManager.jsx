@@ -158,6 +158,22 @@ export default function CustomExportManager({
     return age;
   };
 
+  // دالة تنسيق التواريخ حسب الاختيار
+  const formatDate = (dateValue, isHijriField = false) => {
+    if (!dateValue) return '';
+    // إذا كان الحقل هجري أصلاً (مثل contract_end_date_hijri) نعرضه كما هو
+    if (isHijriField) return dateValue;
+    // للتواريخ الميلادية
+    if (dateFormat === 'hijri') {
+      return new Date(dateValue).toLocaleDateString('ar-SA-u-ca-islamic', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+    return new Date(dateValue).toLocaleDateString('ar-SA');
+  };
+
   // معاينة البيانات المختارة
   const previewData = useMemo(() => {
     if (!sortedExportData || sortedExportData.length === 0 || !selectedFields.length) return [];
@@ -173,15 +189,17 @@ export default function CustomExportManager({
           filteredItem[field] = item.employees ? item.employees.length : 0;
         } else if (field === 'age') {
           filteredItem[field] = calculateAge(item.birth_date);
+        } else if (field === 'contract_end_date_hijri' || field === 'hire_date_hijri' || field === 'birth_date_hijri' || field === 'start_work_date_hijri') {
+          filteredItem[field] = item[field] || '';
         } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date' || field === 'start_work_date') {
-          filteredItem[field] = item[field] ? new Date(item[field]).toLocaleDateString('ar-SA') : '';
+          filteredItem[field] = formatDate(item[field]);
         } else {
           filteredItem[field] = item[field] || '';
         }
       });
       return filteredItem;
     });
-  }, [exportData, selectedFields, type]);
+  }, [exportData, selectedFields, type, dateFormat]);
 
   const generateCSV = () => {
     if (!selectedFields.length || !sortedExportData || sortedExportData.length === 0) return '';
