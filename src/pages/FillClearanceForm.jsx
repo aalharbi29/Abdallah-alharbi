@@ -456,30 +456,8 @@ export default function FillClearanceForm() {
           </div>
         </div>
 
-        {/* Footer */}
-        <div style={{ 
-          position: 'absolute', 
-          bottom: '20mm', 
-          left: '10mm', 
-          right: '10mm',
-          display: 'flex',
-          justifyContent: 'flex-end',
-          alignItems: 'flex-end'
-        }}>
-          {/* Footer Text */}
-          <div style={{ textAlign: 'left' }}>
-            <div className="font-bold-title" style={{ color: '#3498db', fontSize: '14px' }}>
-              تجمع المدينة المنورة الصحي
-            </div>
-            <div className="font-bold-title" style={{ color: '#3498db', fontSize: '13px' }}>
-              Madinah Health Cluster
-            </div>
-            <div className="font-regular" style={{ color: '#888', fontSize: '10px' }}>
-              Empowered by Health Holding co.
-            </div>
-          </div>
+        {/* Footer - removed, now part of background image */}
         </div>
-      </div>
     </div>
   );
 }
