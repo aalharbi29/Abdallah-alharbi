@@ -271,14 +271,21 @@ export default function FillClearanceForm() {
           padding: '0',
           margin: '0 auto',
           position: 'relative',
-          boxSizing: 'border-box',
-          backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/65b0f8bf8_image.png)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          boxSizing: 'border-box'
         }}
       >
-        {/* Header Section - removed, now part of background image */}
+        {/* Header Section - White background with text and logo */}
+        <div style={{ 
+          padding: '15mm 10mm 0 10mm',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <div className="font-bold-title" style={{ color: '#3498db', fontSize: '14px', textAlign: 'center', flex: 1 }}>
+            إدارة الموارد البشرية بالرعاية الأولية بتجمع المدينة المنورة
+          </div>
+
+        </div>
 
         {/* Main Content - pushed down */}
         <div style={{ padding: '0 10mm', marginTop: '40mm' }}>
@@ -456,7 +463,29 @@ export default function FillClearanceForm() {
           </div>
         </div>
 
-        {/* Footer - removed, now part of background image */}
+        {/* Footer */}
+        <div style={{ 
+          position: 'absolute', 
+          bottom: '20mm', 
+          left: '10mm', 
+          right: '10mm',
+          display: 'flex',
+          justifyContent: 'flex-end',
+          alignItems: 'flex-end'
+        }}>
+          {/* Footer Text */}
+          <div style={{ textAlign: 'left' }}>
+            <div className="font-bold-title" style={{ color: '#3498db', fontSize: '14px' }}>
+              تجمع المدينة المنورة الصحي
+            </div>
+            <div className="font-bold-title" style={{ color: '#3498db', fontSize: '13px' }}>
+              Madinah Health Cluster
+            </div>
+            <div className="font-regular" style={{ color: '#888', fontSize: '10px' }}>
+              Empowered by Health Holding co.
+            </div>
+          </div>
+        </div>
         </div>
     </div>
   );
