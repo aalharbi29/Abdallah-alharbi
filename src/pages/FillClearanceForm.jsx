@@ -280,16 +280,16 @@ export default function FillClearanceForm() {
       >
         {/* Header Section - White background with text and logo */}
         <div style={{ 
-          padding: '25mm 5mm 0 10mm',
-          display: 'flex',
-          justifyContent: 'flex-end',
-          alignItems: 'center'
-        }}>
-          <div className="font-bold-title" style={{ color: '#3498db', fontSize: '14px', textAlign: 'right' }}>
-            إدارة الموارد البشرية بالرعاية الأولية بتجمع المدينة المنورة
-          </div>
+            padding: '25mm 5mm 0 10mm',
+            display: 'flex',
+            justifyContent: 'flex-start',
+            alignItems: 'center'
+          }}>
+            <div className="font-bold-title" style={{ color: '#3498db', fontSize: '14px', textAlign: 'left' }}>
+              إدارة الموارد البشرية بالرعاية الأولية بتجمع المدينة المنورة
+            </div>
 
-        </div>
+          </div>
 
         {/* Main Content - pushed down */}
         <div style={{ padding: '0 10mm', marginTop: '40mm' }}>
