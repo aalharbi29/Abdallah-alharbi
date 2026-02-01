@@ -479,10 +479,10 @@ export default function FillClearanceForm() {
         <div style={{ 
           position: 'absolute', 
           bottom: '20mm', 
-          left: '10mm', 
-          right: '20mm',
+          left: '20mm', 
+          right: '10mm',
           display: 'flex',
-          justifyContent: 'flex-end',
+          justifyContent: 'flex-start',
           alignItems: 'flex-end'
         }}>
           {/* Footer Text */}
