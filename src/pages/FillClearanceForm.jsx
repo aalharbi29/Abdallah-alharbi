@@ -280,12 +280,18 @@ export default function FillClearanceForm() {
       >
         {/* Header Section - White background with text and logo */}
         <div style={{ 
-            padding: '25mm 35mm 0 10mm',
+            padding: '27mm 39mm 0 10mm',
             display: 'flex',
             justifyContent: 'flex-start',
             alignItems: 'center'
           }}>
-            <div className="font-bold-title" style={{ color: '#3498db', fontSize: '14px', textAlign: 'left' }}>
+            <div className="font-bold-title" style={{ 
+              color: '#3498db', 
+              fontSize: '14px', 
+              textAlign: 'left',
+              borderLeft: '2px solid #3498db',
+              paddingLeft: '8px'
+            }}>
               إدارة الموارد البشرية بالرعاية الأولية بتجمع المدينة المنورة
             </div>
 
