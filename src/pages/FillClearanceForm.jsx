@@ -324,46 +324,46 @@ export default function FillClearanceForm() {
           }}>
             <thead>
               <tr>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الاســـــــم</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الوظيفه</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>رقم الوظيفة</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الجنسية</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>رقم الهوية</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>جهة العمل</th>
+                <th className="font-bold-title" style={{ border: '1px solid #888', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الاســـــــم</th>
+                                      <th className="font-bold-title" style={{ border: '1px solid #888', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الوظيفه</th>
+                                      <th className="font-bold-title" style={{ border: '1px solid #888', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>رقم الوظيفة</th>
+                                      <th className="font-bold-title" style={{ border: '1px solid #888', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الجنسية</th>
+                                      <th className="font-bold-title" style={{ border: '1px solid #888', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>رقم الهوية</th>
+                                      <th className="font-bold-title" style={{ border: '1px solid #888', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>جهة العمل</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center', minHeight: '35px', height: '35px', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
-                  <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('employeeName', e.currentTarget.textContent)}>
-                    {formData.employeeName || '\u00A0'}
-                  </span>
-                </td>
-                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
-                  <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('position', e.currentTarget.textContent)}>
-                    {formData.position || '\u00A0'}
-                  </span>
-                </td>
-                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
-                  <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('positionNumber', e.currentTarget.textContent)}>
-                    {formData.positionNumber || '\u00A0'}
-                  </span>
-                </td>
-                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
-                  <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('nationality', e.currentTarget.textContent)}>
-                    {formData.nationality || '\u00A0'}
-                  </span>
-                </td>
-                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
-                  <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('idNumber', e.currentTarget.textContent)}>
-                    {formData.idNumber || '\u00A0'}
-                  </span>
-                </td>
-                <td style={{ border: '1px solid #333', padding: '12px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
-                  <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('workPlace', e.currentTarget.textContent)}>
-                    {formData.workPlace || '\u00A0'}
-                  </span>
-                </td>
+                <td style={{ border: '1px solid #888', padding: '12px 8px', textAlign: 'center', minHeight: '35px', height: '35px', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
+                                        <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('employeeName', e.currentTarget.textContent)}>
+                                          {formData.employeeName || '\u00A0'}
+                                        </span>
+                                      </td>
+                                      <td style={{ border: '1px solid #888', padding: '12px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
+                                        <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('position', e.currentTarget.textContent)}>
+                                          {formData.position || '\u00A0'}
+                                        </span>
+                                      </td>
+                                      <td style={{ border: '1px solid #888', padding: '12px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
+                                        <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('positionNumber', e.currentTarget.textContent)}>
+                                          {formData.positionNumber || '\u00A0'}
+                                        </span>
+                                      </td>
+                                      <td style={{ border: '1px solid #888', padding: '12px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
+                                        <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('nationality', e.currentTarget.textContent)}>
+                                          {formData.nationality || '\u00A0'}
+                                        </span>
+                                      </td>
+                                      <td style={{ border: '1px solid #888', padding: '12px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
+                                        <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('idNumber', e.currentTarget.textContent)}>
+                                          {formData.idNumber || '\u00A0'}
+                                        </span>
+                                      </td>
+                                      <td style={{ border: '1px solid #888', padding: '12px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
+                                        <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('workPlace', e.currentTarget.textContent)}>
+                                          {formData.workPlace || '\u00A0'}
+                                        </span>
+                                      </td>
               </tr>
             </tbody>
           </table>
@@ -417,48 +417,48 @@ export default function FillClearanceForm() {
           <table style={{ 
             width: '100%', 
             borderCollapse: 'collapse', 
-            marginBottom: '25mm',
+            marginBottom: '20mm',
             fontSize: '12px'
           }}>
             <thead>
               <tr>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '8%' }}>م</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '38%' }}>الوظيفة</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '34%' }}>الاسم</th>
-                <th className="font-bold-title" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '20%' }}>التوقيع</th>
+                <th className="font-bold-title" style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '8%' }}>م</th>
+                                      <th className="font-bold-title" style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '38%' }}>الوظيفة</th>
+                                      <th className="font-bold-title" style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '34%' }}>الاسم</th>
+                                      <th className="font-bold-title" style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', width: '20%' }}>التوقيع</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>1</td>
-                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>الرئيس المباشر</td>
-                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
-                  <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('directSupervisorName', e.currentTarget.textContent)}>
-                    {formData.directSupervisorName || '\u00A0'}
-                  </span>
-                </td>
-                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}></td>
-              </tr>
-              <tr>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>2</td>
-                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>امين العهده في المركز / ادارة</td>
-                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
-                  <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('custodianName', e.currentTarget.textContent)}>
-                    {formData.custodianName || '\u00A0'}
-                  </span>
-                </td>
-                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}></td>
-              </tr>
-              <tr>
-                <td className="font-regular" style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}>3</td>
-                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>محاسب الرواتب بالموارد البشرية بالرعاية الاولية</td>
-                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
-                  <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('accountantName', e.currentTarget.textContent)}>
-                    {formData.accountantName || '\u00A0'}
-                  </span>
-                </td>
-                <td style={{ border: '1px solid #333', padding: '5px 8px', textAlign: 'center' }}></td>
-              </tr>
+                                    <td className="font-regular" style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}>1</td>
+                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'right', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>الرئيس المباشر</td>
+                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
+                                      <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('directSupervisorName', e.currentTarget.textContent)}>
+                                        {formData.directSupervisorName || '\u00A0'}
+                                      </span>
+                                    </td>
+                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}></td>
+                                  </tr>
+                                  <tr>
+                                    <td className="font-regular" style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}>2</td>
+                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'right', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>امين العهده في المركز / ادارة</td>
+                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
+                                      <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('custodianName', e.currentTarget.textContent)}>
+                                        {formData.custodianName || '\u00A0'}
+                                      </span>
+                                    </td>
+                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}></td>
+                                  </tr>
+                                  <tr>
+                                    <td className="font-regular" style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}>3</td>
+                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'right', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>محاسب الرواتب بالموارد البشرية بالرعاية الاولية</td>
+                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
+                                      <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('accountantName', e.currentTarget.textContent)}>
+                                        {formData.accountantName || '\u00A0'}
+                                      </span>
+                                    </td>
+                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}></td>
+                                  </tr>
             </tbody>
           </table>
 
