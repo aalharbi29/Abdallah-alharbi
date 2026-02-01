@@ -286,14 +286,14 @@ export default function FillClearanceForm() {
             alignItems: 'center'
           }}>
             <div className="font-bold-title" style={{ 
-              color: '#3498db', 
-              fontSize: '14px', 
-              textAlign: 'left',
-              borderLeft: '2px solid #3498db',
-              paddingLeft: '8px'
-            }}>
-              إدارة الموارد البشرية بالرعاية الأولية بتجمع المدينة المنورة
-            </div>
+                              color: '#3498db', 
+                              fontSize: '14px', 
+                              textAlign: 'left',
+                              borderRight: '3px solid #3498db',
+                              paddingRight: '10px'
+                            }}>
+                              إدارة الموارد البشرية بالرعاية الأولية بتجمع المدينة المنورة
+                            </div>
 
           </div>
 
