@@ -290,7 +290,9 @@ export default function FillClearanceForm() {
                               fontSize: '14px', 
                               textAlign: 'left',
                               borderRight: '3px solid #3498db',
-                              paddingRight: '10px'
+                              paddingRight: '10px',
+                              paddingTop: '2mm',
+                              paddingBottom: '2mm'
                             }}>
                               إدارة الموارد البشرية بالرعاية الأولية بتجمع المدينة المنورة
                             </div>
