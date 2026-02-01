@@ -280,7 +280,7 @@ export default function FillClearanceForm() {
       >
         {/* Header Section - White background with text and logo */}
         <div style={{ 
-            padding: '25mm 15mm 0 10mm',
+            padding: '25mm 35mm 0 10mm',
             display: 'flex',
             justifyContent: 'flex-start',
             alignItems: 'center'
