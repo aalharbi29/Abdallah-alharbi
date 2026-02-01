@@ -255,8 +255,10 @@ export default function CustomExportManager({
         return item.employees ? item.employees.length : 0;
       } else if (field === 'age') {
         return calculateAge(item.birth_date);
+      } else if (field === 'contract_end_date_hijri' || field === 'hire_date_hijri' || field === 'birth_date_hijri' || field === 'start_work_date_hijri') {
+        return item[field] || '';
       } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date' || field === 'start_work_date') {
-        return item[field] ? new Date(item[field]).toLocaleDateString('ar-SA') : '';
+        return formatDate(item[field]);
       } else {
         return item[field] || '';
       }
