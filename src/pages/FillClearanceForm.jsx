@@ -271,7 +271,11 @@ export default function FillClearanceForm() {
           padding: '0',
           margin: '0 auto',
           position: 'relative',
-          boxSizing: 'border-box'
+          boxSizing: 'border-box',
+          backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/65b0f8bf8_image.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
         }}
       >
         {/* Header Section - White background with text and logo */}
