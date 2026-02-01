@@ -744,6 +744,20 @@ export default function CustomExportManager({
                     <Checkbox id="includeSignature" checked={includeSignature} onCheckedChange={setIncludeSignature} />
                     <Label htmlFor="includeSignature" className="cursor-pointer">إدراج التوقيع والختم الرسمي</Label>
                   </div>
+
+                  <div className="pt-4 border-t mt-4">
+                    <Label className="mb-3 block font-semibold">تنسيق التواريخ في التصدير</Label>
+                    <RadioGroup value={dateFormat} onValueChange={setDateFormat} className="flex gap-6">
+                      <div className="flex items-center space-x-2 space-x-reverse">
+                        <RadioGroupItem value="hijri" id="hijri" />
+                        <Label htmlFor="hijri" className="cursor-pointer">هجري</Label>
+                      </div>
+                      <div className="flex items-center space-x-2 space-x-reverse">
+                        <RadioGroupItem value="gregorian" id="gregorian" />
+                        <Label htmlFor="gregorian" className="cursor-pointer">ميلادي</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
                 </CardContent>
               </Card>
 
