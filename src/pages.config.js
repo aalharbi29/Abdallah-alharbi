@@ -61,7 +61,6 @@ import CreateAssignment from './pages/CreateAssignment';
 import CreateAssignmentFromTemplate from './pages/CreateAssignmentFromTemplate';
 import CreateHolidayAssignmentLetter from './pages/CreateHolidayAssignmentLetter';
 import Dashboard from './pages/Dashboard';
-import DataExtractor from './pages/DataExtractor';
 import DateConverter from './pages/DateConverter';
 import EditAssignment from './pages/EditAssignment';
 import EmployeeArchive from './pages/EmployeeArchive';
@@ -122,7 +121,6 @@ export const PAGES = {
     "CreateAssignmentFromTemplate": CreateAssignmentFromTemplate,
     "CreateHolidayAssignmentLetter": CreateHolidayAssignmentLetter,
     "Dashboard": Dashboard,
-    "DataExtractor": DataExtractor,
     "DateConverter": DateConverter,
     "EditAssignment": EditAssignment,
     "EmployeeArchive": EmployeeArchive,

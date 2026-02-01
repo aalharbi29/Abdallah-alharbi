@@ -45,7 +45,7 @@ const getNavigationItems = (t) => [
   { name: t('nav.employeeDataRequest'), href: createPageUrl("EmployeeDataRequest"), icon: FileBarChart },
   { name: t('nav.healthCentersReport'), href: createPageUrl("HealthCentersReport"), icon: BarChart3 },
   { name: t('nav.bulkUpdateCenterData'), href: createPageUrl("BulkUpdateCenterData"), icon: RefreshCw },
-  { name: t('nav.dataExtractor'), href: createPageUrl("DataExtractor"), icon: FileText },
+  
   { name: t('nav.interactiveForms'), href: createPageUrl("InteractiveForms"), icon: Edit },
   {
     name: t('nav.forms'),
