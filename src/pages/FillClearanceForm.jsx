@@ -482,11 +482,11 @@ export default function FillClearanceForm() {
           left: '10mm', 
           right: '10mm',
           display: 'flex',
-          justifyContent: 'flex-end',
+          justifyContent: 'flex-start',
           alignItems: 'flex-end'
         }}>
           {/* Footer Text */}
-          <div style={{ textAlign: 'left' }}>
+          <div style={{ textAlign: 'right' }}>
             <div className="font-bold-title" style={{ color: '#3498db', fontSize: '14px' }}>
               تجمع المدينة المنورة الصحي
             </div>
