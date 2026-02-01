@@ -278,18 +278,7 @@ export default function FillClearanceForm() {
           backgroundRepeat: 'no-repeat'
         }}
       >
-        {/* Header Section - White background with text and logo */}
-        <div style={{ 
-          padding: '15mm 10mm 0 10mm',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <div className="font-bold-title" style={{ color: '#3498db', fontSize: '14px', textAlign: 'center', flex: 1 }}>
-            إدارة الموارد البشرية بالرعاية الأولية بتجمع المدينة المنورة
-          </div>
-
-        </div>
+        {/* Header Section - removed, now part of background image */}
 
         {/* Main Content - pushed down */}
         <div style={{ padding: '0 10mm', marginTop: '40mm' }}>
