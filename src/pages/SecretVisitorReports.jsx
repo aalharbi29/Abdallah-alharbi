@@ -79,12 +79,15 @@ export default function SecretVisitorReports() {
     }
   };
 
+  const [analysisProgress, setAnalysisProgress] = useState({ current: 0, total: 0, extracted: 0 });
+
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     try {
       setIsAnalyzing(true);
+      setAnalysisProgress({ current: 0, total: 0, extracted: 0 });
       toast.info("جاري رفع وتحليل التقرير...");
 
       // Upload file
@@ -101,66 +104,117 @@ export default function SecretVisitorReports() {
         status: "جديد"
       });
 
-      // Analyze with AI
       const centerNames = healthCenters.map(c => c.اسم_المركز).join(", ");
       
-      const analysisResult = await base44.integrations.Core.InvokeLLM({
-        prompt: `قم بتحليل تقرير الزائر السري التالي واستخرج جميع الملاحظات.
-        
-المراكز الصحية المتاحة: ${centerNames}
-
-لكل ملاحظة، حدد:
-1. اسم المركز الصحي (يجب أن يكون من القائمة المتاحة)
-2. القسم (مثل: الاستقبال، العيادات، الصيدلية، المختبر، الأشعة، التمريض، النظافة، الصيانة، الإدارة)
-3. تصنيف الملاحظة (مثل: خدمة العملاء، النظافة، المظهر العام، الالتزام بالمواعيد، جودة الخدمة، السلامة)
-4. وصف الملاحظة
-5. درجة الخطورة (حرجة، عالية، متوسطة، منخفضة)
-
-أعد النتائج بتنسيق JSON.`,
+      // Step 1: Get total count first
+      const countResult = await base44.integrations.Core.InvokeLLM({
+        prompt: `قم بتحليل هذا التقرير وأعطني العدد الإجمالي للملاحظات الموجودة فيه فقط.`,
         file_urls: [file_url],
         response_json_schema: {
           type: "object",
           properties: {
-            observations: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  health_center_name: { type: "string" },
-                  department: { type: "string" },
-                  category: { type: "string" },
-                  description: { type: "string" },
-                  severity: { type: "string" }
-                }
-              }
-            }
+            total_observations: { type: "number" },
+            centers_mentioned: { type: "array", items: { type: "string" } }
           }
         }
       });
 
-      // Create observations
-      const extractedObs = analysisResult.observations || [];
-      for (const obs of extractedObs) {
-        await base44.entities.SecretVisitObservation.create({
+      const totalExpected = countResult.total_observations || 100;
+      const batchSize = 50; // Extract 50 observations at a time
+      const totalBatches = Math.ceil(totalExpected / batchSize);
+      
+      setAnalysisProgress({ current: 0, total: totalBatches, extracted: 0 });
+      
+      let allObservations = [];
+      let lastExtractedIds = [];
+
+      // Step 2: Extract in batches
+      for (let batch = 0; batch < totalBatches; batch++) {
+        setAnalysisProgress(prev => ({ ...prev, current: batch + 1 }));
+        
+        const skipDescription = lastExtractedIds.length > 0 
+          ? `تجاهل الملاحظات التالية التي تم استخراجها مسبقاً:\n${lastExtractedIds.slice(-10).join('\n')}\n\n` 
+          : '';
+
+        const batchResult = await base44.integrations.Core.InvokeLLM({
+          prompt: `قم بتحليل تقرير الزائر السري واستخرج الملاحظات من رقم ${batch * batchSize + 1} إلى ${(batch + 1) * batchSize}.
+
+${skipDescription}المراكز الصحية المتاحة: ${centerNames}
+
+لكل ملاحظة، حدد:
+1. اسم المركز الصحي (يجب أن يكون من القائمة المتاحة أو "غير محدد")
+2. القسم (الاستقبال، العيادات، الصيدلية، المختبر، الأشعة، التمريض، النظافة، الصيانة، الإدارة، أخرى)
+3. تصنيف الملاحظة (خدمة العملاء، النظافة، المظهر العام، الالتزام بالمواعيد، جودة الخدمة، السلامة، أخرى)
+4. وصف الملاحظة بالتفصيل
+5. درجة الخطورة (حرجة، عالية، متوسطة، منخفضة)
+
+استخرج أكبر عدد ممكن من الملاحظات (حتى 50 ملاحظة) في هذه الدفعة.`,
+          file_urls: [file_url],
+          response_json_schema: {
+            type: "object",
+            properties: {
+              observations: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    health_center_name: { type: "string" },
+                    department: { type: "string" },
+                    category: { type: "string" },
+                    description: { type: "string" },
+                    severity: { type: "string" }
+                  }
+                }
+              },
+              has_more: { type: "boolean" }
+            }
+          }
+        });
+
+        const batchObs = batchResult.observations || [];
+        
+        // Filter duplicates based on description
+        const existingDescriptions = new Set(allObservations.map(o => o.description?.trim().toLowerCase()));
+        const newObs = batchObs.filter(o => !existingDescriptions.has(o.description?.trim().toLowerCase()));
+        
+        allObservations = [...allObservations, ...newObs];
+        lastExtractedIds = newObs.slice(-10).map(o => o.description?.slice(0, 50));
+        
+        setAnalysisProgress(prev => ({ ...prev, extracted: allObservations.length }));
+        
+        // Stop if no new observations or explicitly no more
+        if (newObs.length === 0 || batchResult.has_more === false) {
+          break;
+        }
+      }
+
+      // Step 3: Save all observations
+      toast.info(`جاري حفظ ${allObservations.length} ملاحظة...`);
+      
+      // Bulk create in chunks of 20
+      for (let i = 0; i < allObservations.length; i += 20) {
+        const chunk = allObservations.slice(i, i + 20);
+        const records = chunk.map(obs => ({
           report_id: report.id,
           health_center_name: obs.health_center_name || "غير محدد",
           department: obs.department || "غير محدد",
           category: obs.category || "أخرى",
           description: obs.description,
-          severity: obs.severity || "متوسطة",
+          severity: ["حرجة", "عالية", "متوسطة", "منخفضة"].includes(obs.severity) ? obs.severity : "متوسطة",
           status: "جديدة"
-        });
+        }));
+        
+        await base44.entities.SecretVisitObservation.bulkCreate(records);
       }
 
       // Update report
       await base44.entities.SecretVisitReport.update(report.id, {
         analysis_status: "تم التحليل",
-        total_observations: extractedObs.length,
-        status: "تم الفرز",
-        extracted_data: JSON.stringify(analysisResult)
+        total_observations: allObservations.length,
+        status: "تم الفرز"
       });
 
-      toast.success(`تم تحليل التقرير واستخراج ${extractedObs.length} ملاحظة`);
+      toast.success(`تم تحليل التقرير واستخراج ${allObservations.length} ملاحظة بنجاح!`);
       loadData();
       setActiveTab("observations");
 
@@ -169,6 +223,7 @@ export default function SecretVisitorReports() {
       toast.error("فشل في تحليل التقرير");
     } finally {
       setIsAnalyzing(false);
+      setAnalysisProgress({ current: 0, total: 0, extracted: 0 });
     }
   };
 
