@@ -6,66 +6,52 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
-  Plus, 
+  Upload, 
   FileText, 
   Eye, 
   AlertTriangle, 
   CheckCircle, 
   Clock, 
-  Upload,
   Search,
-  Filter,
   Building2,
-  Calendar,
-  User,
   Loader2,
   ClipboardList,
-  BarChart3
+  Sparkles,
+  FileCheck,
+  Send,
+  Settings,
+  Plus
 } from "lucide-react";
 import { toast } from "sonner";
-import { format } from "date-fns";
-import { ar } from "date-fns/locale";
 
 export default function SecretVisitorReports() {
   const [reports, setReports] = useState([]);
   const [observations, setObservations] = useState([]);
   const [healthCenters, setHealthCenters] = useState([]);
-  const [employees, setEmployees] = useState([]);
+  const [responseTemplates, setResponseTemplates] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState("reports");
-  const [showNewReportDialog, setShowNewReportDialog] = useState(false);
-  const [showNewObservationDialog, setShowNewObservationDialog] = useState(false);
-  const [selectedReport, setSelectedReport] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [activeTab, setActiveTab] = useState("upload");
   const [searchTerm, setSearchTerm] = useState("");
+  const [filterCenter, setFilterCenter] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
-  const [filterSeverity, setFilterSeverity] = useState("all");
-
-  const [newReport, setNewReport] = useState({
-    report_number: "",
-    health_center_name: "",
-    visit_date: "",
-    visit_time: "",
-    visitor_name: "",
-    overall_rating: "",
-    summary: "",
-    status: "جديد"
-  });
-
-  const [newObservation, setNewObservation] = useState({
-    report_id: "",
-    health_center_name: "",
-    department: "",
+  
+  const [selectedObservation, setSelectedObservation] = useState(null);
+  const [showResponseDialog, setShowResponseDialog] = useState(false);
+  const [showTemplateDialog, setShowTemplateDialog] = useState(false);
+  
+  const [newTemplate, setNewTemplate] = useState({
+    title: "",
     category: "",
-    description: "",
-    severity: "متوسطة",
-    responsible_employee_name: "",
-    executing_department: "",
-    deadline_days: "",
-    status: "جديدة"
+    department: "",
+    severity: "الكل",
+    response_text: "",
+    corrective_action: "",
+    estimated_days: ""
   });
 
   useEffect(() => {
@@ -75,16 +61,16 @@ export default function SecretVisitorReports() {
   const loadData = async () => {
     try {
       setIsLoading(true);
-      const [reportsData, observationsData, centersData, employeesData] = await Promise.all([
+      const [reportsData, observationsData, centersData, templatesData] = await Promise.all([
         base44.entities.SecretVisitReport.list(),
         base44.entities.SecretVisitObservation.list(),
         base44.entities.HealthCenter.list(),
-        base44.entities.Employee.list()
+        base44.entities.ResponseTemplate.list()
       ]);
       setReports(reportsData || []);
       setObservations(observationsData || []);
       setHealthCenters(centersData || []);
-      setEmployees(employeesData || []);
+      setResponseTemplates(templatesData || []);
     } catch (error) {
       console.error("Error loading data:", error);
       toast.error("فشل في تحميل البيانات");
@@ -93,68 +79,167 @@ export default function SecretVisitorReports() {
     }
   };
 
-  const handleCreateReport = async () => {
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
     try {
+      setIsAnalyzing(true);
+      toast.info("جاري رفع وتحليل التقرير...");
+
+      // Upload file
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+
+      // Create report record
       const reportNumber = `SR-${Date.now().toString().slice(-6)}`;
-      await base44.entities.SecretVisitReport.create({
-        ...newReport,
-        report_number: reportNumber
-      });
-      toast.success("تم إنشاء التقرير بنجاح");
-      setShowNewReportDialog(false);
-      setNewReport({
-        report_number: "",
-        health_center_name: "",
-        visit_date: "",
-        visit_time: "",
-        visitor_name: "",
-        overall_rating: "",
-        summary: "",
+      const report = await base44.entities.SecretVisitReport.create({
+        report_number: reportNumber,
+        file_url: file_url,
+        file_name: file.name,
+        upload_date: new Date().toISOString().split('T')[0],
+        analysis_status: "قيد التحليل",
         status: "جديد"
       });
+
+      // Analyze with AI
+      const centerNames = healthCenters.map(c => c.اسم_المركز).join(", ");
+      
+      const analysisResult = await base44.integrations.Core.InvokeLLM({
+        prompt: `قم بتحليل تقرير الزائر السري التالي واستخرج جميع الملاحظات.
+        
+المراكز الصحية المتاحة: ${centerNames}
+
+لكل ملاحظة، حدد:
+1. اسم المركز الصحي (يجب أن يكون من القائمة المتاحة)
+2. القسم (مثل: الاستقبال، العيادات، الصيدلية، المختبر، الأشعة، التمريض، النظافة، الصيانة، الإدارة)
+3. تصنيف الملاحظة (مثل: خدمة العملاء، النظافة، المظهر العام، الالتزام بالمواعيد، جودة الخدمة، السلامة)
+4. وصف الملاحظة
+5. درجة الخطورة (حرجة، عالية، متوسطة، منخفضة)
+
+أعد النتائج بتنسيق JSON.`,
+        file_urls: [file_url],
+        response_json_schema: {
+          type: "object",
+          properties: {
+            observations: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  health_center_name: { type: "string" },
+                  department: { type: "string" },
+                  category: { type: "string" },
+                  description: { type: "string" },
+                  severity: { type: "string" }
+                }
+              }
+            }
+          }
+        }
+      });
+
+      // Create observations
+      const extractedObs = analysisResult.observations || [];
+      for (const obs of extractedObs) {
+        await base44.entities.SecretVisitObservation.create({
+          report_id: report.id,
+          health_center_name: obs.health_center_name || "غير محدد",
+          department: obs.department || "غير محدد",
+          category: obs.category || "أخرى",
+          description: obs.description,
+          severity: obs.severity || "متوسطة",
+          status: "جديدة"
+        });
+      }
+
+      // Update report
+      await base44.entities.SecretVisitReport.update(report.id, {
+        analysis_status: "تم التحليل",
+        total_observations: extractedObs.length,
+        status: "تم الفرز",
+        extracted_data: JSON.stringify(analysisResult)
+      });
+
+      toast.success(`تم تحليل التقرير واستخراج ${extractedObs.length} ملاحظة`);
       loadData();
+      setActiveTab("observations");
+
     } catch (error) {
-      toast.error("فشل في إنشاء التقرير");
+      console.error("Error:", error);
+      toast.error("فشل في تحليل التقرير");
+    } finally {
+      setIsAnalyzing(false);
     }
   };
 
-  const handleCreateObservation = async () => {
+  const getMatchingTemplates = (observation) => {
+    return responseTemplates.filter(t => {
+      const categoryMatch = !t.category || t.category === observation.category;
+      const deptMatch = !t.department || t.department === observation.department;
+      const severityMatch = t.severity === "الكل" || t.severity === observation.severity;
+      return categoryMatch && deptMatch && severityMatch && t.is_active !== false;
+    });
+  };
+
+  const applyTemplate = async (template) => {
+    if (!selectedObservation) return;
+
+    const deadlineDate = template.estimated_days 
+      ? new Date(Date.now() + template.estimated_days * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      : null;
+
     try {
-      const deadlineDate = newObservation.deadline_days 
-        ? new Date(Date.now() + newObservation.deadline_days * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-        : null;
-      
-      await base44.entities.SecretVisitObservation.create({
-        ...newObservation,
-        deadline_date: deadlineDate
+      await base44.entities.SecretVisitObservation.update(selectedObservation.id, {
+        selected_response_template: template.title,
+        response_text: template.response_text,
+        deadline_days: template.estimated_days,
+        deadline_date: deadlineDate,
+        executing_department: template.corrective_action,
+        status: "تم التكليف"
       });
-      toast.success("تم إضافة الملاحظة بنجاح");
-      setShowNewObservationDialog(false);
-      setNewObservation({
-        report_id: "",
-        health_center_name: "",
-        department: "",
-        category: "",
-        description: "",
-        severity: "متوسطة",
-        responsible_employee_name: "",
-        executing_department: "",
-        deadline_days: "",
-        status: "جديدة"
-      });
+      toast.success("تم تطبيق قالب الرد");
+      setShowResponseDialog(false);
       loadData();
     } catch (error) {
-      toast.error("فشل في إضافة الملاحظة");
+      toast.error("فشل في تطبيق القالب");
     }
   };
 
   const updateObservationStatus = async (id, newStatus) => {
     try {
-      await base44.entities.SecretVisitObservation.update(id, { status: newStatus });
+      const updates = { status: newStatus };
+      if (newStatus === "تم الحل") {
+        updates.response_date = new Date().toISOString().split('T')[0];
+      }
+      await base44.entities.SecretVisitObservation.update(id, updates);
       toast.success("تم تحديث الحالة");
       loadData();
     } catch (error) {
       toast.error("فشل في تحديث الحالة");
+    }
+  };
+
+  const handleCreateTemplate = async () => {
+    try {
+      await base44.entities.ResponseTemplate.create({
+        ...newTemplate,
+        estimated_days: newTemplate.estimated_days ? parseInt(newTemplate.estimated_days) : null,
+        is_active: true
+      });
+      toast.success("تم إنشاء القالب");
+      setShowTemplateDialog(false);
+      setNewTemplate({
+        title: "",
+        category: "",
+        department: "",
+        severity: "الكل",
+        response_text: "",
+        corrective_action: "",
+        estimated_days: ""
+      });
+      loadData();
+    } catch (error) {
+      toast.error("فشل في إنشاء القالب");
     }
   };
 
@@ -174,30 +259,32 @@ export default function SecretVisitorReports() {
       "تم التكليف": "bg-purple-100 text-purple-800",
       "قيد المعالجة": "bg-yellow-100 text-yellow-800",
       "تم الحل": "bg-green-100 text-green-800",
-      "تم التحقق": "bg-emerald-100 text-emerald-800",
-      "مغلقة": "bg-gray-100 text-gray-800",
-      "جديد": "bg-blue-100 text-blue-800",
-      "قيد المراجعة": "bg-yellow-100 text-yellow-800",
-      "تم التوزيع": "bg-purple-100 text-purple-800",
-      "مغلق": "bg-gray-100 text-gray-800"
+      "مغلقة": "bg-gray-100 text-gray-800"
     };
     return colors[status] || "bg-gray-100 text-gray-800";
   };
 
   const filteredObservations = observations.filter(obs => {
     const matchesSearch = obs.description?.includes(searchTerm) || 
-                          obs.health_center_name?.includes(searchTerm) ||
-                          obs.department?.includes(searchTerm);
+                          obs.health_center_name?.includes(searchTerm);
+    const matchesCenter = filterCenter === "all" || obs.health_center_name === filterCenter;
     const matchesStatus = filterStatus === "all" || obs.status === filterStatus;
-    const matchesSeverity = filterSeverity === "all" || obs.severity === filterSeverity;
-    return matchesSearch && matchesStatus && matchesSeverity;
+    return matchesSearch && matchesCenter && matchesStatus;
   });
+
+  // Group by center
+  const observationsByCenter = filteredObservations.reduce((acc, obs) => {
+    const center = obs.health_center_name || "غير محدد";
+    if (!acc[center]) acc[center] = [];
+    acc[center].push(obs);
+    return acc;
+  }, {});
 
   const stats = {
     total: observations.length,
     critical: observations.filter(o => o.severity === "حرجة").length,
     pending: observations.filter(o => ["جديدة", "تم التكليف", "قيد المعالجة"].includes(o.status)).length,
-    resolved: observations.filter(o => ["تم الحل", "تم التحقق", "مغلقة"].includes(o.status)).length
+    resolved: observations.filter(o => ["تم الحل", "مغلقة"].includes(o.status)).length
   };
 
   if (isLoading) {
@@ -218,21 +305,15 @@ export default function SecretVisitorReports() {
             <Eye className="w-8 h-8 text-green-600" />
             برنامج الزائر السري
           </h1>
-          <p className="text-gray-500 mt-1">إدارة تقارير الزيارات السرية ومتابعة الملاحظات</p>
+          <p className="text-gray-500 mt-1">رفع وتحليل التقارير ومتابعة الملاحظات</p>
         </div>
-        <div className="flex gap-2">
-          <Button onClick={() => setShowNewReportDialog(true)} className="bg-green-600 hover:bg-green-700">
-            <Plus className="w-4 h-4 ml-2" />
-            تقرير جديد
-          </Button>
-          <Button onClick={() => setShowNewObservationDialog(true)} variant="outline">
-            <Plus className="w-4 h-4 ml-2" />
-            ملاحظة جديدة
-          </Button>
-        </div>
+        <Button onClick={() => setShowTemplateDialog(true)} variant="outline">
+          <Settings className="w-4 h-4 ml-2" />
+          إدارة قوالب الرد
+        </Button>
       </div>
 
-      {/* Stats Cards */}
+      {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
           <CardContent className="p-4">
@@ -282,74 +363,41 @@ export default function SecretVisitorReports() {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2 max-w-md">
-          <TabsTrigger value="reports">التقارير</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3 max-w-lg">
+          <TabsTrigger value="upload">رفع تقرير</TabsTrigger>
           <TabsTrigger value="observations">الملاحظات</TabsTrigger>
+          <TabsTrigger value="reports">التقارير</TabsTrigger>
         </TabsList>
 
-        {/* Reports Tab */}
-        <TabsContent value="reports" className="space-y-4">
-          <div className="grid gap-4">
-            {reports.length === 0 ? (
-              <Card className="p-8 text-center">
-                <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">لا توجد تقارير حتى الآن</p>
-                <Button onClick={() => setShowNewReportDialog(true)} className="mt-4">
-                  إنشاء أول تقرير
-                </Button>
-              </Card>
-            ) : (
-              reports.map(report => (
-                <Card key={report.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Badge variant="outline">{report.report_number}</Badge>
-                          <Badge className={getStatusColor(report.status)}>{report.status}</Badge>
-                        </div>
-                        <h3 className="font-semibold text-lg">{report.health_center_name}</h3>
-                        <div className="flex flex-wrap gap-4 mt-2 text-sm text-gray-500">
-                          <span className="flex items-center gap-1">
-                            <Calendar className="w-4 h-4" />
-                            {report.visit_date}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <User className="w-4 h-4" />
-                            {report.visitor_name}
-                          </span>
-                          {report.overall_rating && (
-                            <span className="flex items-center gap-1">
-                              <BarChart3 className="w-4 h-4" />
-                              التقييم: {report.overall_rating}/10
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => {
-                            setSelectedReport(report);
-                            setNewObservation(prev => ({
-                              ...prev,
-                              report_id: report.id,
-                              health_center_name: report.health_center_name
-                            }));
-                            setShowNewObservationDialog(true);
-                          }}
-                        >
-                          <Plus className="w-4 h-4 ml-1" />
-                          إضافة ملاحظة
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            )}
-          </div>
+        {/* Upload Tab */}
+        <TabsContent value="upload" className="space-y-4">
+          <Card className="border-2 border-dashed border-gray-300 hover:border-green-400 transition-colors">
+            <CardContent className="p-8">
+              {isAnalyzing ? (
+                <div className="text-center py-8">
+                  <Loader2 className="w-16 h-16 animate-spin text-green-600 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-700">جاري تحليل التقرير بالذكاء الاصطناعي...</h3>
+                  <p className="text-gray-500 mt-2">يتم استخراج الملاحظات وتصنيفها حسب المراكز</p>
+                </div>
+              ) : (
+                <label className="cursor-pointer block text-center py-8">
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                  <Upload className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-700">اسحب الملف هنا أو انقر للرفع</h3>
+                  <p className="text-gray-500 mt-2">PDF, Word, Excel, أو صور</p>
+                  <div className="mt-4 flex items-center justify-center gap-2 text-green-600">
+                    <Sparkles className="w-5 h-5" />
+                    <span className="font-medium">سيتم تحليل التقرير واستخراج الملاحظات تلقائياً</span>
+                  </div>
+                </label>
+              )}
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Observations Tab */}
@@ -365,6 +413,19 @@ export default function SecretVisitorReports() {
                 className="pr-10"
               />
             </div>
+            <Select value={filterCenter} onValueChange={setFilterCenter}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="المركز" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">جميع المراكز</SelectItem>
+                {healthCenters.map(center => (
+                  <SelectItem key={center.id} value={center.اسم_المركز}>
+                    {center.اسم_المركز}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Select value={filterStatus} onValueChange={setFilterStatus}>
               <SelectTrigger className="w-40">
                 <SelectValue placeholder="الحالة" />
@@ -378,299 +439,273 @@ export default function SecretVisitorReports() {
                 <SelectItem value="مغلقة">مغلقة</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={filterSeverity} onValueChange={setFilterSeverity}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="الخطورة" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">جميع المستويات</SelectItem>
-                <SelectItem value="حرجة">حرجة</SelectItem>
-                <SelectItem value="عالية">عالية</SelectItem>
-                <SelectItem value="متوسطة">متوسطة</SelectItem>
-                <SelectItem value="منخفضة">منخفضة</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
 
-          {/* Observations List */}
-          <div className="space-y-3">
-            {filteredObservations.length === 0 ? (
-              <Card className="p-8 text-center">
-                <AlertTriangle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">لا توجد ملاحظات</p>
-              </Card>
-            ) : (
-              filteredObservations.map(obs => (
-                <Card key={obs.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex flex-col gap-3">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <Badge className={getSeverityColor(obs.severity)}>{obs.severity}</Badge>
-                          <Badge className={getStatusColor(obs.status)}>{obs.status}</Badge>
-                          <Badge variant="outline">{obs.department}</Badge>
-                          <Badge variant="outline">{obs.category}</Badge>
+          {/* Grouped by Center */}
+          {Object.keys(observationsByCenter).length === 0 ? (
+            <Card className="p-8 text-center">
+              <FileText className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-500">لا توجد ملاحظات</p>
+              <Button onClick={() => setActiveTab("upload")} className="mt-4">
+                رفع تقرير جديد
+              </Button>
+            </Card>
+          ) : (
+            Object.entries(observationsByCenter).map(([centerName, centerObs]) => (
+              <Card key={centerName} className="overflow-hidden">
+                <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 py-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Building2 className="w-5 h-5 text-green-600" />
+                    {centerName}
+                    <Badge variant="outline" className="mr-auto">{centerObs.length} ملاحظة</Badge>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0 divide-y">
+                  {centerObs.map(obs => (
+                    <div key={obs.id} className="p-4 hover:bg-gray-50">
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <Badge className={getSeverityColor(obs.severity)}>{obs.severity}</Badge>
+                            <Badge className={getStatusColor(obs.status)}>{obs.status}</Badge>
+                            {obs.department && <Badge variant="outline">{obs.department}</Badge>}
+                            {obs.category && <Badge variant="outline">{obs.category}</Badge>}
+                          </div>
+                        </div>
+                        <p className="text-gray-800">{obs.description}</p>
+                        
+                        {obs.response_text && (
+                          <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+                            <p className="text-sm font-medium text-green-800 mb-1">الرد المعتمد:</p>
+                            <p className="text-sm text-green-700">{obs.response_text}</p>
+                          </div>
+                        )}
+
+                        <div className="flex flex-wrap gap-2 pt-2">
+                          {obs.status === "جديدة" && (
+                            <Button 
+                              size="sm" 
+                              onClick={() => {
+                                setSelectedObservation(obs);
+                                setShowResponseDialog(true);
+                              }}
+                            >
+                              <FileCheck className="w-4 h-4 ml-1" />
+                              اختيار رد
+                            </Button>
+                          )}
+                          {obs.status === "تم التكليف" && (
+                            <Button size="sm" variant="outline" onClick={() => updateObservationStatus(obs.id, "قيد المعالجة")}>
+                              بدء المعالجة
+                            </Button>
+                          )}
+                          {obs.status === "قيد المعالجة" && (
+                            <Button size="sm" className="bg-green-600 hover:bg-green-700" onClick={() => updateObservationStatus(obs.id, "تم الحل")}>
+                              <CheckCircle className="w-4 h-4 ml-1" />
+                              تم الحل
+                            </Button>
+                          )}
+                          {obs.status === "تم الحل" && (
+                            <Button size="sm" variant="outline" onClick={() => updateObservationStatus(obs.id, "مغلقة")}>
+                              إغلاق
+                            </Button>
+                          )}
                         </div>
                       </div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </TabsContent>
+
+        {/* Reports Tab */}
+        <TabsContent value="reports" className="space-y-4">
+          {reports.length === 0 ? (
+            <Card className="p-8 text-center">
+              <Upload className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-500">لا توجد تقارير مرفوعة</p>
+            </Card>
+          ) : (
+            reports.map(report => (
+              <Card key={report.id} className="hover:shadow-md transition-shadow">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <FileText className="w-10 h-10 text-green-600" />
                       <div>
-                        <p className="font-medium text-gray-900">{obs.description}</p>
-                        <p className="text-sm text-gray-500 mt-1">
-                          <Building2 className="w-4 h-4 inline ml-1" />
-                          {obs.health_center_name}
+                        <p className="font-semibold">{report.file_name}</p>
+                        <p className="text-sm text-gray-500">
+                          {report.report_number} • {report.upload_date}
                         </p>
                       </div>
-                      <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-                        {obs.responsible_employee_name && (
-                          <span>المسؤول: {obs.responsible_employee_name}</span>
-                        )}
-                        {obs.executing_department && (
-                          <span>الجهة المنفذة: {obs.executing_department}</span>
-                        )}
-                        {obs.deadline_date && (
-                          <span className="text-red-600">الموعد النهائي: {obs.deadline_date}</span>
-                        )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Badge className={report.analysis_status === "تم التحليل" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"}>
+                        {report.analysis_status}
+                      </Badge>
+                      {report.total_observations && (
+                        <Badge variant="outline">{report.total_observations} ملاحظة</Badge>
+                      )}
+                      <Button variant="outline" size="sm" asChild>
+                        <a href={report.file_url} target="_blank" rel="noopener noreferrer">
+                          <Eye className="w-4 h-4" />
+                        </a>
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </TabsContent>
+      </Tabs>
+
+      {/* Response Dialog */}
+      <Dialog open={showResponseDialog} onOpenChange={setShowResponseDialog}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>اختيار قالب الرد</DialogTitle>
+          </DialogHeader>
+          {selectedObservation && (
+            <div className="space-y-4">
+              <div className="bg-gray-50 p-3 rounded-lg">
+                <p className="font-medium text-gray-700 mb-1">الملاحظة:</p>
+                <p className="text-gray-600">{selectedObservation.description}</p>
+                <div className="flex gap-2 mt-2">
+                  <Badge className={getSeverityColor(selectedObservation.severity)}>{selectedObservation.severity}</Badge>
+                  <Badge variant="outline">{selectedObservation.department}</Badge>
+                  <Badge variant="outline">{selectedObservation.category}</Badge>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <h4 className="font-semibold">قوالب الرد المقترحة:</h4>
+                {getMatchingTemplates(selectedObservation).length === 0 ? (
+                  <p className="text-gray-500 text-center py-4">لا توجد قوالب مطابقة</p>
+                ) : (
+                  getMatchingTemplates(selectedObservation).map(template => (
+                    <Card key={template.id} className="hover:border-green-300 cursor-pointer transition-colors" onClick={() => applyTemplate(template)}>
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <h5 className="font-semibold text-green-700">{template.title}</h5>
+                            <p className="text-sm text-gray-600 mt-1">{template.response_text}</p>
+                            {template.corrective_action && (
+                              <p className="text-sm text-gray-500 mt-1">الإجراء: {template.corrective_action}</p>
+                            )}
+                          </div>
+                          {template.estimated_days && (
+                            <Badge variant="outline">{template.estimated_days} يوم</Badge>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))
+                )}
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Template Management Dialog */}
+      <Dialog open={showTemplateDialog} onOpenChange={setShowTemplateDialog}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>إدارة قوالب الرد</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {/* Add New Template */}
+            <Card>
+              <CardHeader className="py-3">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Plus className="w-4 h-4" />
+                  إضافة قالب جديد
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label>عنوان القالب</Label>
+                    <Input 
+                      value={newTemplate.title}
+                      onChange={(e) => setNewTemplate({...newTemplate, title: e.target.value})}
+                      placeholder="مثال: رد على ملاحظة النظافة"
+                    />
+                  </div>
+                  <div>
+                    <Label>التصنيف</Label>
+                    <Input 
+                      value={newTemplate.category}
+                      onChange={(e) => setNewTemplate({...newTemplate, category: e.target.value})}
+                      placeholder="مثال: النظافة"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label>القسم</Label>
+                    <Input 
+                      value={newTemplate.department}
+                      onChange={(e) => setNewTemplate({...newTemplate, department: e.target.value})}
+                      placeholder="مثال: النظافة"
+                    />
+                  </div>
+                  <div>
+                    <Label>مدة التنفيذ (أيام)</Label>
+                    <Input 
+                      type="number"
+                      value={newTemplate.estimated_days}
+                      onChange={(e) => setNewTemplate({...newTemplate, estimated_days: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label>نص الرد</Label>
+                  <Textarea 
+                    value={newTemplate.response_text}
+                    onChange={(e) => setNewTemplate({...newTemplate, response_text: e.target.value})}
+                    placeholder="اكتب نص الرد الجاهز..."
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <Label>الإجراء التصحيحي</Label>
+                  <Input 
+                    value={newTemplate.corrective_action}
+                    onChange={(e) => setNewTemplate({...newTemplate, corrective_action: e.target.value})}
+                    placeholder="مثال: تكثيف جولات النظافة"
+                  />
+                </div>
+                <Button onClick={handleCreateTemplate} className="w-full">
+                  <Plus className="w-4 h-4 ml-2" />
+                  إضافة القالب
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Existing Templates */}
+            <div className="space-y-2">
+              <h4 className="font-semibold">القوالب الحالية ({responseTemplates.length})</h4>
+              {responseTemplates.map(template => (
+                <Card key={template.id}>
+                  <CardContent className="p-3">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="font-medium">{template.title}</p>
+                        <p className="text-sm text-gray-500">{template.response_text?.slice(0, 100)}...</p>
                       </div>
-                      <div className="flex gap-2 pt-2 border-t">
-                        {obs.status === "جديدة" && (
-                          <Button size="sm" variant="outline" onClick={() => updateObservationStatus(obs.id, "تم التكليف")}>
-                            تكليف
-                          </Button>
-                        )}
-                        {obs.status === "تم التكليف" && (
-                          <Button size="sm" variant="outline" onClick={() => updateObservationStatus(obs.id, "قيد المعالجة")}>
-                            بدء المعالجة
-                          </Button>
-                        )}
-                        {obs.status === "قيد المعالجة" && (
-                          <Button size="sm" className="bg-green-600 hover:bg-green-700" onClick={() => updateObservationStatus(obs.id, "تم الحل")}>
-                            تم الحل
-                          </Button>
-                        )}
-                        {obs.status === "تم الحل" && (
-                          <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700" onClick={() => updateObservationStatus(obs.id, "مغلقة")}>
-                            إغلاق
-                          </Button>
-                        )}
+                      <div className="flex gap-1">
+                        {template.category && <Badge variant="outline" className="text-xs">{template.category}</Badge>}
+                        {template.estimated_days && <Badge variant="outline" className="text-xs">{template.estimated_days} يوم</Badge>}
                       </div>
                     </div>
                   </CardContent>
                 </Card>
-              ))
-            )}
-          </div>
-        </TabsContent>
-      </Tabs>
-
-      {/* New Report Dialog */}
-      <Dialog open={showNewReportDialog} onOpenChange={setShowNewReportDialog}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>تقرير زيارة سرية جديد</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label>المركز الصحي</Label>
-              <Select 
-                value={newReport.health_center_name} 
-                onValueChange={(v) => setNewReport({...newReport, health_center_name: v})}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="اختر المركز" />
-                </SelectTrigger>
-                <SelectContent>
-                  {healthCenters.map(center => (
-                    <SelectItem key={center.id} value={center.اسم_المركز}>
-                      {center.اسم_المركز}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              ))}
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label>تاريخ الزيارة</Label>
-                <Input 
-                  type="date" 
-                  value={newReport.visit_date}
-                  onChange={(e) => setNewReport({...newReport, visit_date: e.target.value})}
-                />
-              </div>
-              <div>
-                <Label>وقت الزيارة</Label>
-                <Input 
-                  type="time" 
-                  value={newReport.visit_time}
-                  onChange={(e) => setNewReport({...newReport, visit_time: e.target.value})}
-                />
-              </div>
-            </div>
-            <div>
-              <Label>اسم الزائر</Label>
-              <Input 
-                value={newReport.visitor_name}
-                onChange={(e) => setNewReport({...newReport, visitor_name: e.target.value})}
-                placeholder="أدخل اسم الزائر السري"
-              />
-            </div>
-            <div>
-              <Label>التقييم العام (من 10)</Label>
-              <Input 
-                type="number" 
-                min="1" 
-                max="10"
-                value={newReport.overall_rating}
-                onChange={(e) => setNewReport({...newReport, overall_rating: e.target.value})}
-              />
-            </div>
-            <div>
-              <Label>ملخص التقرير</Label>
-              <Textarea 
-                value={newReport.summary}
-                onChange={(e) => setNewReport({...newReport, summary: e.target.value})}
-                placeholder="اكتب ملخصاً للتقرير..."
-                rows={3}
-              />
-            </div>
-            <Button onClick={handleCreateReport} className="w-full bg-green-600 hover:bg-green-700">
-              إنشاء التقرير
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* New Observation Dialog */}
-      <Dialog open={showNewObservationDialog} onOpenChange={setShowNewObservationDialog}>
-        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>إضافة ملاحظة جديدة</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            {!newObservation.report_id && (
-              <div>
-                <Label>التقرير</Label>
-                <Select 
-                  value={newObservation.report_id} 
-                  onValueChange={(v) => {
-                    const report = reports.find(r => r.id === v);
-                    setNewObservation({
-                      ...newObservation, 
-                      report_id: v,
-                      health_center_name: report?.health_center_name || ""
-                    });
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="اختر التقرير" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {reports.map(report => (
-                      <SelectItem key={report.id} value={report.id}>
-                        {report.report_number} - {report.health_center_name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <Label>القسم</Label>
-                <Select 
-                  value={newObservation.department} 
-                  onValueChange={(v) => setNewObservation({...newObservation, department: v})}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="اختر القسم" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {["الاستقبال", "العيادات", "الصيدلية", "المختبر", "الأشعة", "التمريض", "النظافة", "الصيانة", "الإدارة", "أخرى"].map(dept => (
-                      <SelectItem key={dept} value={dept}>{dept}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>التصنيف</Label>
-                <Select 
-                  value={newObservation.category} 
-                  onValueChange={(v) => setNewObservation({...newObservation, category: v})}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="اختر التصنيف" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {["خدمة العملاء", "النظافة والتعقيم", "المظهر العام", "الالتزام بالمواعيد", "جودة الخدمة", "السلامة", "التوثيق", "أخرى"].map(cat => (
-                      <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div>
-              <Label>درجة الخطورة</Label>
-              <Select 
-                value={newObservation.severity} 
-                onValueChange={(v) => setNewObservation({...newObservation, severity: v})}
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="حرجة">حرجة</SelectItem>
-                  <SelectItem value="عالية">عالية</SelectItem>
-                  <SelectItem value="متوسطة">متوسطة</SelectItem>
-                  <SelectItem value="منخفضة">منخفضة</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>وصف الملاحظة</Label>
-              <Textarea 
-                value={newObservation.description}
-                onChange={(e) => setNewObservation({...newObservation, description: e.target.value})}
-                placeholder="اكتب وصفاً تفصيلياً للملاحظة..."
-                rows={3}
-              />
-            </div>
-            <div>
-              <Label>الموظف المسؤول</Label>
-              <Select 
-                value={newObservation.responsible_employee_name} 
-                onValueChange={(v) => setNewObservation({...newObservation, responsible_employee_name: v})}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="اختر المسؤول" />
-                </SelectTrigger>
-                <SelectContent>
-                  {employees.map(emp => (
-                    <SelectItem key={emp.id} value={emp.full_name_arabic}>
-                      {emp.full_name_arabic}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>الجهة المنفذة</Label>
-              <Input 
-                value={newObservation.executing_department}
-                onChange={(e) => setNewObservation({...newObservation, executing_department: e.target.value})}
-                placeholder="مثال: قسم الصيانة، إدارة المركز..."
-              />
-            </div>
-            <div>
-              <Label>مدة التنفيذ (بالأيام)</Label>
-              <Input 
-                type="number" 
-                min="1"
-                value={newObservation.deadline_days}
-                onChange={(e) => setNewObservation({...newObservation, deadline_days: e.target.value})}
-                placeholder="عدد الأيام المتاحة للتنفيذ"
-              />
-            </div>
-            <Button onClick={handleCreateObservation} className="w-full bg-green-600 hover:bg-green-700">
-              إضافة الملاحظة
-            </Button>
           </div>
         </DialogContent>
       </Dialog>
