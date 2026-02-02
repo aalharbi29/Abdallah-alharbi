@@ -432,7 +432,21 @@ ${skipDescription}المراكز الصحية المتاحة: ${centerNames}
                 <div className="text-center py-8">
                   <Loader2 className="w-16 h-16 animate-spin text-green-600 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-gray-700">جاري تحليل التقرير بالذكاء الاصطناعي...</h3>
-                  <p className="text-gray-500 mt-2">يتم استخراج الملاحظات وتصنيفها حسب المراكز</p>
+                  {analysisProgress.total > 0 && (
+                    <div className="mt-4 max-w-md mx-auto">
+                      <div className="flex justify-between text-sm text-gray-600 mb-2">
+                        <span>الدفعة {analysisProgress.current} من {analysisProgress.total}</span>
+                        <span>تم استخراج {analysisProgress.extracted} ملاحظة</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-3">
+                        <div 
+                          className="bg-green-600 h-3 rounded-full transition-all duration-300" 
+                          style={{ width: `${(analysisProgress.current / analysisProgress.total) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  )}
+                  <p className="text-gray-500 mt-4">يتم استخراج الملاحظات على دفعات لضمان عدم فقدان أي ملاحظة</p>
                 </div>
               ) : (
                 <label className="cursor-pointer block text-center py-8">
