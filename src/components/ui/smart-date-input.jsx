@@ -51,70 +51,30 @@ function daysBetween(date1, date2) {
   return Math.round((date2 - date1) / oneDay);
 }
 
-// تحويل ميلادي إلى هجري باستخدام تقويم أم القرى
+// تحويل ميلادي إلى هجري باستخدام Intl API الرسمية (تقويم أم القرى)
 const convertGregorianToHijri = (gregorianDate) => {
   try {
     const gDate = new Date(gregorianDate);
     if (isNaN(gDate.getTime())) return '';
     
-    // البحث عن السنة الهجرية المناسبة
-    let hijriYear = null;
-    let yearStartDate = null;
+    // استخدام Intl.DateTimeFormat مع تقويم أم القرى الرسمي
+    const formatter = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric'
+    });
     
-    for (const [year, startDate] of Object.entries(ummAlQuraStartDates)) {
-      const yearStart = parseYYYYMMDD(startDate);
-      const nextYear = parseInt(year) + 1;
-      const nextYearStart = ummAlQuraStartDates[nextYear] ? parseYYYYMMDD(ummAlQuraStartDates[nextYear]) : null;
-      
-      if (gDate >= yearStart && (!nextYearStart || gDate < nextYearStart)) {
-        hijriYear = parseInt(year);
-        yearStartDate = yearStart;
-        break;
-      }
-    }
+    const parts = formatter.formatToParts(gDate);
+    const day = parts.find(p => p.type === 'day')?.value || '';
+    const month = parts.find(p => p.type === 'month')?.value || '';
+    const year = parts.find(p => p.type === 'year')?.value || '';
     
-    if (!hijriYear || !yearStartDate) {
-      // استخدم الطريقة القديمة كـ fallback
-      return new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-      }).format(gDate);
-    }
+    if (!day || !month || !year) return '';
     
-    // حساب عدد الأيام من بداية السنة الهجرية
-    const daysFromYearStart = daysBetween(yearStartDate, gDate);
+    const dayStr = day.padStart(2, '0');
+    const monthStr = month.padStart(2, '0');
     
-    // الحصول على أطوال الأشهر لهذه السنة
-    const monthLengths = ummAlQuraData[hijriYear];
-    if (!monthLengths) {
-      return new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
-      }).format(gDate);
-    }
-    
-    // تحديد الشهر واليوم
-    let remainingDays = daysFromYearStart;
-    let hijriMonth = 1;
-    
-    for (let m = 0; m < 12; m++) {
-      if (remainingDays < monthLengths[m]) {
-        hijriMonth = m + 1;
-        break;
-      }
-      remainingDays -= monthLengths[m];
-      if (m === 11) hijriMonth = 12;
-    }
-    
-    const hijriDay = remainingDays + 1;
-    
-    // تنسيق النتيجة
-    const dayStr = hijriDay.toString().padStart(2, '0');
-    const monthStr = hijriMonth.toString().padStart(2, '0');
-    
-    return `${dayStr}/${monthStr}/${hijriYear}`;
+    return `${dayStr}/${monthStr}/${year}`;
   } catch (error) {
     console.error('Gregorian to Hijri conversion error:', error);
     return '';
