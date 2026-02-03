@@ -32,7 +32,8 @@ export default function CustomExportManager({
   employees, // إضافة دعم لكلا الاسمين
   defaultFilename = "تقرير", 
   availableFields,
-  type = "employees" // employees, departments, healthcenters
+  type = "employees", // employees, departments, healthcenters
+  selectedCount = 0 // عدد المحددين
 }) {
   // استخدام data أو employees أيهما متوفر
   const exportData = data || employees || [];
