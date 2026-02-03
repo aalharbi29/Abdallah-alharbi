@@ -54,14 +54,24 @@ function daysBetween(date1, date2) {
 // تحويل ميلادي إلى هجري باستخدام Intl API الرسمية (تقويم أم القرى)
 const convertGregorianToHijri = (gregorianDate) => {
   try {
-    const gDate = new Date(gregorianDate);
+    // تحليل التاريخ بطريقة صحيحة لتجنب مشاكل المنطقة الزمنية
+    let gDate;
+    if (typeof gregorianDate === 'string' && gregorianDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      const [year, month, day] = gregorianDate.split('-').map(Number);
+      // إنشاء التاريخ بتوقيت منتصف النهار UTC لتجنب الانزلاق
+      gDate = new Date(Date.UTC(year, month - 1, day, 12, 0, 0));
+    } else {
+      gDate = new Date(gregorianDate);
+    }
+    
     if (isNaN(gDate.getTime())) return '';
     
-    // استخدام Intl.DateTimeFormat مع تقويم أم القرى الرسمي
+    // استخدام Intl.DateTimeFormat مع تقويم أم القرى الرسمي وتوقيت UTC
     const formatter = new Intl.DateTimeFormat('en-u-ca-islamic-umalqura', {
       year: 'numeric',
       month: 'numeric',
-      day: 'numeric'
+      day: 'numeric',
+      timeZone: 'UTC'
     });
     
     const parts = formatter.formatToParts(gDate);
