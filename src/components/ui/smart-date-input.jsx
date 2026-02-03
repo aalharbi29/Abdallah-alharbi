@@ -160,7 +160,7 @@ const ummAlQuraData = {
   1500: [29,30,29,30,29,30,30,29,30,30,29,30]
 };
 
-// التحويل من الهجري إلى الميلادي باستخدام تقويم أم القرى
+// التحويل من الهجري إلى الميلادي باستخدام جداول أم القرى الدقيقة
 function convertHijriToGregorian(hijriString) {
   try {
     const parts = hijriString.split('/');
@@ -179,7 +179,7 @@ function convertHijriToGregorian(hijriString) {
       return '';
     }
     
-    // الحصول على تاريخ بداية السنة الهجرية
+    // الحصول على تاريخ بداية السنة الهجرية بتوقيت UTC
     const yearStartDate = parseYYYYMMDD(ummAlQuraStartDates[hYear]);
     
     // حساب عدد الأيام من بداية السنة
@@ -191,14 +191,17 @@ function convertHijriToGregorian(hijriString) {
     }
     daysToAdd += hDay - 1;
     
-    // إضافة الأيام إلى تاريخ بداية السنة
-    const resultDate = new Date(yearStartDate);
-    resultDate.setDate(resultDate.getDate() + daysToAdd);
+    // إضافة الأيام إلى تاريخ بداية السنة باستخدام UTC لتجنب مشاكل المنطقة الزمنية
+    const resultDate = new Date(Date.UTC(
+      yearStartDate.getFullYear(),
+      yearStartDate.getMonth(),
+      yearStartDate.getDate() + daysToAdd
+    ));
     
     // تنسيق التاريخ
-    const year = resultDate.getFullYear().toString();
-    const month = (resultDate.getMonth() + 1).toString().padStart(2, '0');
-    const day = resultDate.getDate().toString().padStart(2, '0');
+    const year = resultDate.getUTCFullYear().toString();
+    const month = (resultDate.getUTCMonth() + 1).toString().padStart(2, '0');
+    const day = resultDate.getUTCDate().toString().padStart(2, '0');
     
     return `${year}-${month}-${day}`;
   } catch (error) {
