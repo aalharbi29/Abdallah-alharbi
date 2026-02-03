@@ -97,13 +97,13 @@ import PowerPointEditor from './pages/PowerPointEditor';
 import QuickNotes from './pages/QuickNotes';
 import Reports from './pages/Reports';
 import SavedForms from './pages/SavedForms';
+import SecretVisitorReports from './pages/SecretVisitorReports';
 import Settings from './pages/Settings';
 import StatisticsGregorian from './pages/StatisticsGregorian';
 import StatisticsHijri from './pages/StatisticsHijri';
 import ViewAssignment from './pages/ViewAssignment';
 import ViewEquipmentRequest from './pages/ViewEquipmentRequest';
 import ViewExcellentEmployeeCertificate from './pages/ViewExcellentEmployeeCertificate';
-import SecretVisitorReports from './pages/SecretVisitorReports';
 import __Layout from './Layout.jsx';
 
 
@@ -158,13 +158,13 @@ export const PAGES = {
     "QuickNotes": QuickNotes,
     "Reports": Reports,
     "SavedForms": SavedForms,
+    "SecretVisitorReports": SecretVisitorReports,
     "Settings": Settings,
     "StatisticsGregorian": StatisticsGregorian,
     "StatisticsHijri": StatisticsHijri,
     "ViewAssignment": ViewAssignment,
     "ViewEquipmentRequest": ViewEquipmentRequest,
     "ViewExcellentEmployeeCertificate": ViewExcellentEmployeeCertificate,
-    "SecretVisitorReports": SecretVisitorReports,
 }
 
 export const pagesConfig = {

@@ -495,8 +495,11 @@ export default function HumanResources() {
                   </>
                 )}
 
-                <ExportManager employees={filteredEmployees} />
-                <CustomExportManager employees={filteredEmployees} />
+                <ExportManager employees={selectedEmployees.size > 0 ? filteredEmployees.filter(e => selectedEmployees.has(e.id)) : filteredEmployees} />
+                <CustomExportManager 
+                  employees={selectedEmployees.size > 0 ? filteredEmployees.filter(e => selectedEmployees.has(e.id)) : filteredEmployees}
+                  selectedCount={selectedEmployees.size}
+                />
 
                 <Button 
                   variant="outline" 
