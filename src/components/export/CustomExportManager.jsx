@@ -678,7 +678,7 @@ export default function CustomExportManager({
       <DialogTrigger asChild>
         <Button className="bg-green-600 hover:bg-green-700">
           <Settings2 className="w-4 h-4 ml-2" />
-          تصدير مخصص
+          تصدير مخصص {selectedCount > 0 ? `(${selectedCount})` : ''}
         </Button>
       </DialogTrigger>
       
