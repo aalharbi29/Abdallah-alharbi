@@ -53,6 +53,8 @@ export default function EmployeeIntroductionLetter() {
   const [showAddSignatureDialog, setShowAddSignatureDialog] = useState(false);
   const [newStampData, setNewStampData] = useState({ name: '', owner_name: '', owner_title: '' });
   const [newSignatureData, setNewSignatureData] = useState({ name: '', owner_name: '', owner_title: '' });
+  const [editingStamp, setEditingStamp] = useState(null);
+  const [editingSignature, setEditingSignature] = useState(null);
   
   // إعدادات الختم والتوقيع
   const [stampSettings, setStampSettings] = useState({
