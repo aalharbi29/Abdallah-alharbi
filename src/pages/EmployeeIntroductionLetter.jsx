@@ -44,16 +44,27 @@ export default function EmployeeIntroductionLetter() {
     directorTitle: 'المشرف على المراكز الصحية'
   });
   
+  // الأختام والتوقيعات من النظام
+  const [systemStamps, setSystemStamps] = useState([]);
+  const [systemSignatures, setSystemSignatures] = useState([]);
+  const [isUploadingStamp, setIsUploadingStamp] = useState(false);
+  const [isUploadingSignature, setIsUploadingSignature] = useState(false);
+  const [showAddStampDialog, setShowAddStampDialog] = useState(false);
+  const [showAddSignatureDialog, setShowAddSignatureDialog] = useState(false);
+  const [newStampData, setNewStampData] = useState({ name: '', owner_name: '', owner_title: '' });
+  const [newSignatureData, setNewSignatureData] = useState({ name: '', owner_name: '', owner_title: '' });
+  
   // إعدادات الختم والتوقيع
   const [stampSettings, setStampSettings] = useState({
     showStamp: true,
-    selectedStamp: OFFICIAL_STAMPS[2],
+    selectedStamp: null,
     stampPosition: { x: 400, y: 680 },
     stampSize: 100
   });
   
   const [signatureSettings, setSignatureSettings] = useState({
     showSignature: true,
+    selectedSignature: null,
     signaturePosition: { x: 400, y: 600 },
     signatureSize: 120
   });
@@ -62,6 +73,7 @@ export default function EmployeeIntroductionLetter() {
 
   useEffect(() => {
     loadEmployees();
+    loadStampsAndSignatures();
   }, []);
 
   const loadEmployees = async () => {
