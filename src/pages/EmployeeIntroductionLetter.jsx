@@ -37,10 +37,45 @@ export default function EmployeeIntroductionLetter() {
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  // قوالب الخطابات المتاحة
+  const letterTemplates = {
+    'خطاب تعريف بالراتب': {
+      title: 'خطاب تعريف بالراتب',
+      getText: (emp) => `نفيدكم بأن المذكور أعلاه / ${emp?.full_name_arabic || '...............'} يعمل لدى وزارة الصحة - إدارة المراكز الصحية بالحناكية بوظيفة (${emp?.position || 'غير محدد'}) وذلك اعتباراً من تاريخ تعيينه ولا يزال على رأس العمل حتى تاريخه.
+
+أُعطي هذا الخطاب بناءً على طلبه دون أدنى مسؤولية على الجهة المصدرة.`
+    },
+    'خطاب تعريف بالعمل': {
+      title: 'خطاب تعريف بالعمل',
+      getText: (emp) => `نفيدكم بأن المذكور أعلاه / ${emp?.full_name_arabic || '...............'} يعمل لدى وزارة الصحة - إدارة المراكز الصحية بالحناكية بوظيفة (${emp?.position || 'غير محدد'}) منذ تاريخ ${emp?.hire_date ? new Date(emp.hire_date).toLocaleDateString('ar-SA') : '...............'} ولا يزال على رأس العمل حتى تاريخه.
+
+أُعطي هذا الخطاب بناءً على طلبه لتقديمه لمن يهمه الأمر.`
+    },
+    'خطاب مباشرة عمل': {
+      title: 'خطاب مباشرة عمل',
+      getText: (emp) => `نفيدكم بأن المذكور أعلاه / ${emp?.full_name_arabic || '...............'} قد باشر عمله لدى وزارة الصحة - إدارة المراكز الصحية بالحناكية بوظيفة (${emp?.position || 'غير محدد'}) اعتباراً من تاريخ اليوم.
+
+أُعطي هذا الخطاب بناءً على طلبه لتقديمه للجهات المختصة.`
+    },
+    'شهادة خبرة': {
+      title: 'شهادة خبرة',
+      getText: (emp) => `نشهد بأن المذكور أعلاه / ${emp?.full_name_arabic || '...............'} قد عمل لدى وزارة الصحة - إدارة المراكز الصحية بالحناكية بوظيفة (${emp?.position || 'غير محدد'}) خلال الفترة من ${emp?.hire_date ? new Date(emp.hire_date).toLocaleDateString('ar-SA') : '...............'} وحتى تاريخه.
+
+وقد أثبت خلال فترة عمله كفاءة وإخلاصاً في أداء مهامه الوظيفية.
+
+أُعطيت هذه الشهادة بناءً على طلبه دون أدنى مسؤولية على الجهة المصدرة.`
+    },
+    'خطاب مخصص': {
+      title: 'خطاب مخصص',
+      getText: () => ''
+    }
+  };
+
   const [letterSettings, setLetterSettings] = useState({
     letterNumber: '',
     letterDate: new Date().toISOString().split('T')[0],
     recipient: 'من يهمه الأمر',
+    letterType: 'خطاب تعريف بالراتب',
     customText: '',
     directorName: 'مدير إدارة المراكز الصحية بالحناكية',
     directorTitle: 'المشرف على المراكز الصحية'
