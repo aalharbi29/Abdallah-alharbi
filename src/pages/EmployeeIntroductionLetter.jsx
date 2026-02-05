@@ -488,20 +488,38 @@ export default function EmployeeIntroductionLetter() {
                   </div>
                   
                   {systemStamps.length > 0 ? (
-                    <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto">
+                    <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
                       {systemStamps.map(stamp => (
-                        <button
+                        <div
                           key={stamp.id}
-                          onClick={() => setStampSettings({...stampSettings, selectedStamp: stamp})}
-                          className={`p-2 rounded-lg text-xs flex flex-col items-center gap-1 transition-all ${
+                          className={`relative p-2 rounded-lg text-xs transition-all group ${
                             stampSettings.selectedStamp?.id === stamp.id
                               ? 'ring-2 ring-blue-500 bg-blue-50'
                               : 'border hover:bg-gray-50'
                           }`}
                         >
-                          <img src={stamp.image_url} alt={stamp.name} className="w-10 h-10 object-contain" />
-                          <span className="truncate w-full text-center">{stamp.name}</span>
-                        </button>
+                          <button
+                            onClick={() => setStampSettings({...stampSettings, selectedStamp: stamp})}
+                            className="w-full flex flex-col items-center gap-1"
+                          >
+                            <img src={stamp.image_url} alt={stamp.name} className="w-10 h-10 object-contain" />
+                            <span className="truncate w-full text-center">{stamp.name}</span>
+                          </button>
+                          <div className="absolute top-1 left-1 opacity-0 group-hover:opacity-100 flex gap-1 transition-opacity">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setEditingStamp(stamp); }}
+                              className="p-1 bg-white rounded shadow hover:bg-blue-50"
+                            >
+                              <Pencil className="w-3 h-3 text-blue-600" />
+                            </button>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleDeleteStamp(stamp); }}
+                              className="p-1 bg-white rounded shadow hover:bg-red-50"
+                            >
+                              <Trash2 className="w-3 h-3 text-red-600" />
+                            </button>
+                          </div>
+                        </div>
                       ))}
                     </div>
                   ) : (
