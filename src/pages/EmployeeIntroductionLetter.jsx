@@ -981,7 +981,7 @@ export default function EmployeeIntroductionLetter() {
                   {/* عنوان الخطاب */}
                   <div className="text-center mb-8">
                     <h2 className="text-2xl font-bold text-green-800 underline decoration-2 underline-offset-8">
-                      خطاب تعريف بالراتب
+                      {letterTemplates[letterSettings.letterType]?.title || letterSettings.letterType}
                     </h2>
                   </div>
 
