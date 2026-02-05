@@ -713,6 +713,88 @@ export default function EmployeeIntroductionLetter() {
               </CardContent>
             </Card>
 
+            {/* نافذة تعديل الختم */}
+            <Dialog open={!!editingStamp} onOpenChange={() => setEditingStamp(null)}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>تعديل الختم</DialogTitle>
+                </DialogHeader>
+                {editingStamp && (
+                  <div className="space-y-3">
+                    <div className="flex justify-center">
+                      <img src={editingStamp.image_url} alt={editingStamp.name} className="w-20 h-20 object-contain" />
+                    </div>
+                    <div>
+                      <Label className="text-xs">اسم الختم</Label>
+                      <Input
+                        value={editingStamp.name}
+                        onChange={(e) => setEditingStamp({...editingStamp, name: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs">اسم المسؤول</Label>
+                      <Input
+                        value={editingStamp.owner_name || ''}
+                        onChange={(e) => setEditingStamp({...editingStamp, owner_name: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs">المسمى الوظيفي</Label>
+                      <Input
+                        value={editingStamp.owner_title || ''}
+                        onChange={(e) => setEditingStamp({...editingStamp, owner_title: e.target.value})}
+                      />
+                    </div>
+                    <div className="flex gap-2 justify-end">
+                      <Button variant="outline" onClick={() => setEditingStamp(null)}>إلغاء</Button>
+                      <Button onClick={handleUpdateStamp}>حفظ التغييرات</Button>
+                    </div>
+                  </div>
+                )}
+              </DialogContent>
+            </Dialog>
+
+            {/* نافذة تعديل التوقيع */}
+            <Dialog open={!!editingSignature} onOpenChange={() => setEditingSignature(null)}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>تعديل التوقيع</DialogTitle>
+                </DialogHeader>
+                {editingSignature && (
+                  <div className="space-y-3">
+                    <div className="flex justify-center">
+                      <img src={editingSignature.image_url} alt={editingSignature.name} className="w-24 h-12 object-contain" />
+                    </div>
+                    <div>
+                      <Label className="text-xs">اسم التوقيع</Label>
+                      <Input
+                        value={editingSignature.name}
+                        onChange={(e) => setEditingSignature({...editingSignature, name: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs">اسم المسؤول</Label>
+                      <Input
+                        value={editingSignature.owner_name || ''}
+                        onChange={(e) => setEditingSignature({...editingSignature, owner_name: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <Label className="text-xs">المسمى الوظيفي</Label>
+                      <Input
+                        value={editingSignature.owner_title || ''}
+                        onChange={(e) => setEditingSignature({...editingSignature, owner_title: e.target.value})}
+                      />
+                    </div>
+                    <div className="flex gap-2 justify-end">
+                      <Button variant="outline" onClick={() => setEditingSignature(null)}>إلغاء</Button>
+                      <Button onClick={handleUpdateSignature}>حفظ التغييرات</Button>
+                    </div>
+                  </div>
+                )}
+              </DialogContent>
+            </Dialog>
+
             {/* أزرار التصدير */}
             <div className="flex gap-2">
               <Button onClick={handlePrint} variant="outline" className="flex-1">
