@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Slider } from '@/components/ui/slider';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { 
   FileText, 
   User, 
@@ -20,19 +21,14 @@ import {
   Move,
   CheckCircle,
   Building2,
-  PenTool
+  PenTool,
+  Plus,
+  Upload,
+  Loader2
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-
-// الأختام الرسمية
-const OFFICIAL_STAMPS = [
-  { id: 'ministry', name: 'ختم وزارة الصحة', emoji: '🏥', color: '#047857' },
-  { id: 'region', name: 'ختم المنطقة', emoji: '🏛️', color: '#1e40af' },
-  { id: 'management', name: 'ختم الإدارة', emoji: '📋', color: '#7c3aed' },
-  { id: 'center', name: 'ختم المركز', emoji: '🏨', color: '#0891b2' }
-];
 
 export default function EmployeeIntroductionLetter() {
   const [employees, setEmployees] = useState([]);
