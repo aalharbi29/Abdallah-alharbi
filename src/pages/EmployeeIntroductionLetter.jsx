@@ -73,7 +73,15 @@ export default function EmployeeIntroductionLetter() {
     signatureSize: 120
   });
 
+  // موضع اسم المدير
+  const [directorPosition, setDirectorPosition] = useState({ x: 350, y: 20 });
+
+  // حالة السحب
+  const [dragging, setDragging] = useState(null);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+
   const letterRef = useRef(null);
+  const signatureAreaRef = useRef(null);
 
   useEffect(() => {
     loadEmployees();
