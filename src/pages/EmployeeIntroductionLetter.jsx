@@ -378,12 +378,13 @@ export default function EmployeeIntroductionLetter() {
     }
   };
 
-  // النص الافتراضي للخطاب
+  // النص الافتراضي للخطاب بناءً على النوع المحدد
   const getDefaultLetterText = () => {
-    if (!selectedEmployee) return '';
-    return `نفيدكم بأن المذكور أعلاه / ${selectedEmployee.full_name_arabic} يعمل لدى وزارة الصحة - إدارة المراكز الصحية بالحناكية بوظيفة (${selectedEmployee.position || 'غير محدد'}) وذلك اعتباراً من تاريخ تعيينه ولا يزال على رأس العمل حتى تاريخه.
-
-أُعطي هذا الخطاب بناءً على طلبه دون أدنى مسؤولية على الجهة المصدرة.`;
+    const template = letterTemplates[letterSettings.letterType];
+    if (template && letterSettings.letterType !== 'خطاب مخصص') {
+      return template.getText(selectedEmployee);
+    }
+    return letterSettings.customText;
   };
 
   return (
