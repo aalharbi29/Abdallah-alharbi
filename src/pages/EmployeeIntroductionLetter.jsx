@@ -734,14 +734,18 @@ export default function EmployeeIntroductionLetter() {
                         top: '20px'
                       }}
                     >
-                      <p className="font-bold text-lg">{letterSettings.directorName}</p>
-                      <p className="text-gray-600">{letterSettings.directorTitle}</p>
+                      <p className="font-bold text-lg">
+                        {signatureSettings.selectedSignature?.owner_name || letterSettings.directorName}
+                      </p>
+                      <p className="text-gray-600">
+                        {signatureSettings.selectedSignature?.owner_title || letterSettings.directorTitle}
+                      </p>
                     </div>
 
-                    {/* التوقيع */}
-                    {signatureSettings.showSignature && (
+                    {/* التوقيع من النظام */}
+                    {signatureSettings.showSignature && signatureSettings.selectedSignature && (
                       <img
-                        src={generateSignatureImage()}
+                        src={signatureSettings.selectedSignature.image_url}
                         alt="التوقيع"
                         className="absolute"
                         style={{
@@ -753,10 +757,10 @@ export default function EmployeeIntroductionLetter() {
                       />
                     )}
 
-                    {/* الختم */}
+                    {/* الختم من النظام */}
                     {stampSettings.showStamp && stampSettings.selectedStamp && (
                       <img
-                        src={generateStampImage(stampSettings.selectedStamp)}
+                        src={stampSettings.selectedStamp.image_url}
                         alt="الختم"
                         className="absolute"
                         style={{
