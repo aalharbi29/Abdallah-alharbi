@@ -997,24 +997,24 @@ export default function EmployeeIntroductionLetter() {
                       <table className="w-full text-sm">
                         <tbody>
                           <tr className="border-b">
-                            <td className="py-1.5 font-bold" style={{width: '15%'}}>الاسم:</td>
-                            <td className="py-1.5" colSpan={3}>{selectedEmployee.full_name_arabic}</td>
+                            <td className="py-1.5 font-bold text-center" style={{width: '15%'}}>الاسم:</td>
+                            <td className="py-1.5 text-center" colSpan={3}>{selectedEmployee.full_name_arabic}</td>
                           </tr>
                           <tr className="border-b">
-                            <td className="py-1.5 font-bold">رقم الهوية:</td>
-                            <td className="py-1.5" style={{width: '35%'}}>{selectedEmployee.رقم_الهوية || 'غير محدد'}</td>
-                            <td className="py-1.5 font-bold" style={{width: '15%'}}>الرقم الوظيفي:</td>
-                            <td className="py-1.5">{selectedEmployee.رقم_الموظف || 'غير محدد'}</td>
+                            <td className="py-1.5 font-bold text-center">رقم الهوية:</td>
+                            <td className="py-1.5 text-center" style={{width: '35%'}}>{selectedEmployee.رقم_الهوية || 'غير محدد'}</td>
+                            <td className="py-1.5 font-bold text-center" style={{width: '15%'}}>الرقم الوظيفي:</td>
+                            <td className="py-1.5 text-center">{selectedEmployee.رقم_الموظف || 'غير محدد'}</td>
                           </tr>
                           <tr className="border-b">
-                            <td className="py-1.5 font-bold">الوظيفة:</td>
-                            <td className="py-1.5">{selectedEmployee.position || 'غير محدد'}</td>
-                            <td className="py-1.5 font-bold">نوع العقد:</td>
-                            <td className="py-1.5">{selectedEmployee.contract_type || 'غير محدد'}</td>
+                            <td className="py-1.5 font-bold text-center">الوظيفة:</td>
+                            <td className="py-1.5 text-center">{selectedEmployee.position || 'غير محدد'}</td>
+                            <td className="py-1.5 font-bold text-center">نوع العقد:</td>
+                            <td className="py-1.5 text-center">{selectedEmployee.contract_type || 'غير محدد'}</td>
                           </tr>
                           <tr>
-                            <td className="py-1.5 font-bold">جهة العمل:</td>
-                            <td className="py-1.5" colSpan={3}>{selectedEmployee.المركز_الصحي || 'إدارة المراكز الصحية'}</td>
+                            <td className="py-1.5 font-bold text-center">جهة العمل:</td>
+                            <td className="py-1.5 text-center" colSpan={3}>{selectedEmployee.المركز_الصحي || 'إدارة المراكز الصحية'}</td>
                           </tr>
                         </tbody>
                       </table>
