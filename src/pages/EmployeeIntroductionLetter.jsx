@@ -164,6 +164,72 @@ export default function EmployeeIntroductionLetter() {
     }
   };
 
+  const handleUpdateStamp = async () => {
+    if (!editingStamp) return;
+    try {
+      await base44.entities.StampSignature.update(editingStamp.id, {
+        name: editingStamp.name,
+        owner_name: editingStamp.owner_name,
+        owner_title: editingStamp.owner_title
+      });
+      setSystemStamps(prev => prev.map(s => s.id === editingStamp.id ? editingStamp : s));
+      if (stampSettings.selectedStamp?.id === editingStamp.id) {
+        setStampSettings(prev => ({ ...prev, selectedStamp: editingStamp }));
+      }
+      setEditingStamp(null);
+    } catch (error) {
+      console.error('Error updating stamp:', error);
+      alert('حدث خطأ أثناء التحديث');
+    }
+  };
+
+  const handleDeleteStamp = async (stamp) => {
+    if (!confirm('هل أنت متأكد من حذف هذا الختم؟')) return;
+    try {
+      await base44.entities.StampSignature.delete(stamp.id);
+      setSystemStamps(prev => prev.filter(s => s.id !== stamp.id));
+      if (stampSettings.selectedStamp?.id === stamp.id) {
+        setStampSettings(prev => ({ ...prev, selectedStamp: null }));
+      }
+    } catch (error) {
+      console.error('Error deleting stamp:', error);
+      alert('حدث خطأ أثناء الحذف');
+    }
+  };
+
+  const handleUpdateSignature = async () => {
+    if (!editingSignature) return;
+    try {
+      await base44.entities.StampSignature.update(editingSignature.id, {
+        name: editingSignature.name,
+        owner_name: editingSignature.owner_name,
+        owner_title: editingSignature.owner_title
+      });
+      setSystemSignatures(prev => prev.map(s => s.id === editingSignature.id ? editingSignature : s));
+      if (signatureSettings.selectedSignature?.id === editingSignature.id) {
+        setSignatureSettings(prev => ({ ...prev, selectedSignature: editingSignature }));
+      }
+      setEditingSignature(null);
+    } catch (error) {
+      console.error('Error updating signature:', error);
+      alert('حدث خطأ أثناء التحديث');
+    }
+  };
+
+  const handleDeleteSignature = async (sig) => {
+    if (!confirm('هل أنت متأكد من حذف هذا التوقيع؟')) return;
+    try {
+      await base44.entities.StampSignature.delete(sig.id);
+      setSystemSignatures(prev => prev.filter(s => s.id !== sig.id));
+      if (signatureSettings.selectedSignature?.id === sig.id) {
+        setSignatureSettings(prev => ({ ...prev, selectedSignature: null }));
+      }
+    } catch (error) {
+      console.error('Error deleting signature:', error);
+      alert('حدث خطأ أثناء الحذف');
+    }
+  };
+
   // فلترة الموظفين
   const filteredEmployees = employees.filter(emp => {
     if (!searchQuery) return true;
