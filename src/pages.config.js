@@ -65,6 +65,7 @@ import DateConverter from './pages/DateConverter';
 import EditAssignment from './pages/EditAssignment';
 import EmployeeArchive from './pages/EmployeeArchive';
 import EmployeeDataRequest from './pages/EmployeeDataRequest';
+import EmployeeIntroductionLetter from './pages/EmployeeIntroductionLetter';
 import EmployeeProfile from './pages/EmployeeProfile';
 import Fill205Form from './pages/Fill205Form';
 import Fill205FormComplete from './pages/Fill205FormComplete';
@@ -105,7 +106,6 @@ import StatisticsHijri from './pages/StatisticsHijri';
 import ViewAssignment from './pages/ViewAssignment';
 import ViewEquipmentRequest from './pages/ViewEquipmentRequest';
 import ViewExcellentEmployeeCertificate from './pages/ViewExcellentEmployeeCertificate';
-import EmployeeIntroductionLetter from './pages/EmployeeIntroductionLetter';
 import __Layout from './Layout.jsx';
 
 
@@ -128,6 +128,7 @@ export const PAGES = {
     "EditAssignment": EditAssignment,
     "EmployeeArchive": EmployeeArchive,
     "EmployeeDataRequest": EmployeeDataRequest,
+    "EmployeeIntroductionLetter": EmployeeIntroductionLetter,
     "EmployeeProfile": EmployeeProfile,
     "Fill205Form": Fill205Form,
     "Fill205FormComplete": Fill205FormComplete,
@@ -168,7 +169,6 @@ export const PAGES = {
     "ViewAssignment": ViewAssignment,
     "ViewEquipmentRequest": ViewEquipmentRequest,
     "ViewExcellentEmployeeCertificate": ViewExcellentEmployeeCertificate,
-    "EmployeeIntroductionLetter": EmployeeIntroductionLetter,
 }
 
 export const pagesConfig = {
