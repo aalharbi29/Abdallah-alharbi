@@ -512,16 +512,35 @@ export default function EmployeeIntroductionLetter() {
                     onChange={(e) => setLetterSettings({...letterSettings, directorTitle: e.target.value})}
                   />
                 </div>
-                
+
                 <div>
-                  <Label className="text-xs">نص مخصص (اختياري)</Label>
-                  <Textarea
-                    value={letterSettings.customText}
-                    onChange={(e) => setLetterSettings({...letterSettings, customText: e.target.value})}
-                    placeholder="اترك فارغاً لاستخدام النص الافتراضي"
-                    rows={3}
-                  />
+                  <Label className="text-xs">نوع الخطاب</Label>
+                  <Select
+                    value={letterSettings.letterType}
+                    onValueChange={(value) => setLetterSettings({...letterSettings, letterType: value, customText: value === 'خطاب مخصص' ? letterSettings.customText : ''})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.keys(letterTemplates).map(type => (
+                        <SelectItem key={type} value={type}>{type}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
+                
+                {letterSettings.letterType === 'خطاب مخصص' && (
+                  <div>
+                    <Label className="text-xs">نص الخطاب المخصص</Label>
+                    <Textarea
+                      value={letterSettings.customText}
+                      onChange={(e) => setLetterSettings({...letterSettings, customText: e.target.value})}
+                      placeholder="اكتب نص الخطاب هنا..."
+                      rows={4}
+                    />
+                  </div>
+                )}
               </CardContent>
             </Card>
 
