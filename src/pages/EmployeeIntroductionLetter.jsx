@@ -24,7 +24,9 @@ import {
   PenTool,
   Plus,
   Upload,
-  Loader2
+  Loader2,
+  Pencil,
+  Trash2
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import html2canvas from 'html2canvas';
