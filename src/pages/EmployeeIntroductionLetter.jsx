@@ -88,6 +88,68 @@ export default function EmployeeIntroductionLetter() {
     loadStampsAndSignatures();
   }, []);
 
+  // دوال السحب والإفلات
+  const handleMouseDown = (e, type) => {
+    e.preventDefault();
+    const rect = signatureAreaRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    let elementX, elementY;
+    if (type === 'stamp') {
+      elementX = stampSettings.stampPosition.x;
+      elementY = stampSettings.stampPosition.y - 600;
+    } else if (type === 'signature') {
+      elementX = signatureSettings.signaturePosition.x - 60;
+      elementY = signatureSettings.signaturePosition.y - 530;
+    } else if (type === 'director') {
+      elementX = directorPosition.x;
+      elementY = directorPosition.y;
+    }
+
+    setDragOffset({
+      x: e.clientX - rect.left - elementX,
+      y: e.clientY - rect.top - elementY
+    });
+    setDragging(type);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!dragging || !signatureAreaRef.current) return;
+
+    const rect = signatureAreaRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left - dragOffset.x;
+    const y = e.clientY - rect.top - dragOffset.y;
+
+    if (dragging === 'stamp') {
+      setStampSettings(prev => ({
+        ...prev,
+        stampPosition: { x: Math.max(0, Math.min(x + 50, 550)), y: Math.max(0, Math.min(y + 600, 800)) }
+      }));
+    } else if (dragging === 'signature') {
+      setSignatureSettings(prev => ({
+        ...prev,
+        signaturePosition: { x: Math.max(0, Math.min(x + 60, 550)), y: Math.max(0, Math.min(y + 530, 750)) }
+      }));
+    } else if (dragging === 'director') {
+      setDirectorPosition({ x: Math.max(0, Math.min(x, 500)), y: Math.max(0, Math.min(y, 150)) });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setDragging(null);
+  };
+
+  useEffect(() => {
+    if (dragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [dragging, dragOffset]);
+
   const loadEmployees = async () => {
     setIsLoading(true);
     try {
