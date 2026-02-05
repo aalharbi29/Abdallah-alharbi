@@ -635,20 +635,38 @@ export default function EmployeeIntroductionLetter() {
                   </div>
                   
                   {systemSignatures.length > 0 ? (
-                    <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto">
+                    <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
                       {systemSignatures.map(sig => (
-                        <button
+                        <div
                           key={sig.id}
-                          onClick={() => setSignatureSettings({...signatureSettings, selectedSignature: sig})}
-                          className={`p-2 rounded-lg text-xs flex flex-col items-center gap-1 transition-all ${
+                          className={`relative p-2 rounded-lg text-xs transition-all group ${
                             signatureSettings.selectedSignature?.id === sig.id
                               ? 'ring-2 ring-green-500 bg-green-50'
                               : 'border hover:bg-gray-50'
                           }`}
                         >
-                          <img src={sig.image_url} alt={sig.name} className="w-12 h-8 object-contain" />
-                          <span className="truncate w-full text-center">{sig.name}</span>
-                        </button>
+                          <button
+                            onClick={() => setSignatureSettings({...signatureSettings, selectedSignature: sig})}
+                            className="w-full flex flex-col items-center gap-1"
+                          >
+                            <img src={sig.image_url} alt={sig.name} className="w-12 h-8 object-contain" />
+                            <span className="truncate w-full text-center">{sig.name}</span>
+                          </button>
+                          <div className="absolute top-1 left-1 opacity-0 group-hover:opacity-100 flex gap-1 transition-opacity">
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setEditingSignature(sig); }}
+                              className="p-1 bg-white rounded shadow hover:bg-blue-50"
+                            >
+                              <Pencil className="w-3 h-3 text-blue-600" />
+                            </button>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); handleDeleteSignature(sig); }}
+                              className="p-1 bg-white rounded shadow hover:bg-red-50"
+                            >
+                              <Trash2 className="w-3 h-3 text-red-600" />
+                            </button>
+                          </div>
+                        </div>
                       ))}
                     </div>
                   ) : (
