@@ -93,23 +93,23 @@ export default function EmployeeIntroductionLetter() {
   const [editingStamp, setEditingStamp] = useState(null);
   const [editingSignature, setEditingSignature] = useState(null);
   
-  // إعدادات الختم والتوقيع
+  // إعدادات الختم والتوقيع - القيم الافتراضية المحفوظة
   const [stampSettings, setStampSettings] = useState({
     showStamp: true,
     selectedStamp: null,
-    stampPosition: { x: 400, y: 680 },
+    stampPosition: { x: 120, y: 700 },
     stampSize: 100
   });
   
   const [signatureSettings, setSignatureSettings] = useState({
     showSignature: true,
     selectedSignature: null,
-    signaturePosition: { x: 400, y: 600 },
+    signaturePosition: { x: 170, y: 620 },
     signatureSize: 120
   });
 
-  // موضع اسم المدير
-  const [directorPosition, setDirectorPosition] = useState({ x: 350, y: 20 });
+  // موضع اسم المدير - القيم الافتراضية المحفوظة
+  const [directorPosition, setDirectorPosition] = useState({ x: 100, y: 20 });
 
   // حالة السحب
   const [dragging, setDragging] = useState(null);
