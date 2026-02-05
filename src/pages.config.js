@@ -95,6 +95,7 @@ import NoteSorter from './pages/NoteSorter';
 import PDFEditor from './pages/PDFEditor';
 import PowerPointEditor from './pages/PowerPointEditor';
 import QuickNotes from './pages/QuickNotes';
+import QuickSignArchive from './pages/QuickSignArchive';
 import Reports from './pages/Reports';
 import SavedForms from './pages/SavedForms';
 import SecretVisitorReports from './pages/SecretVisitorReports';
@@ -104,7 +105,7 @@ import StatisticsHijri from './pages/StatisticsHijri';
 import ViewAssignment from './pages/ViewAssignment';
 import ViewEquipmentRequest from './pages/ViewEquipmentRequest';
 import ViewExcellentEmployeeCertificate from './pages/ViewExcellentEmployeeCertificate';
-import QuickSignArchive from './pages/QuickSignArchive';
+import EmployeeIntroductionLetter from './pages/EmployeeIntroductionLetter';
 import __Layout from './Layout.jsx';
 
 
@@ -157,6 +158,7 @@ export const PAGES = {
     "PDFEditor": PDFEditor,
     "PowerPointEditor": PowerPointEditor,
     "QuickNotes": QuickNotes,
+    "QuickSignArchive": QuickSignArchive,
     "Reports": Reports,
     "SavedForms": SavedForms,
     "SecretVisitorReports": SecretVisitorReports,
@@ -166,7 +168,7 @@ export const PAGES = {
     "ViewAssignment": ViewAssignment,
     "ViewEquipmentRequest": ViewEquipmentRequest,
     "ViewExcellentEmployeeCertificate": ViewExcellentEmployeeCertificate,
-    "QuickSignArchive": QuickSignArchive,
+    "EmployeeIntroductionLetter": EmployeeIntroductionLetter,
 }
 
 export const pagesConfig = {
