@@ -88,6 +88,80 @@ export default function EmployeeIntroductionLetter() {
     }
   };
 
+  const loadStampsAndSignatures = async () => {
+    try {
+      const data = await base44.entities.StampSignature.list('-created_date', 50);
+      const items = Array.isArray(data) ? data : [];
+      setSystemStamps(items.filter(item => item.type === 'stamp' && item.is_active !== false));
+      setSystemSignatures(items.filter(item => item.type === 'signature' && item.is_active !== false));
+      
+      // تعيين الختم والتوقيع الافتراضي
+      const defaultStamp = items.find(item => item.type === 'stamp' && item.is_default);
+      const defaultSignature = items.find(item => item.type === 'signature' && item.is_default);
+      
+      if (defaultStamp) {
+        setStampSettings(prev => ({ ...prev, selectedStamp: defaultStamp }));
+      }
+      if (defaultSignature) {
+        setSignatureSettings(prev => ({ ...prev, selectedSignature: defaultSignature }));
+      }
+    } catch (error) {
+      console.error('Error loading stamps and signatures:', error);
+    }
+  };
+
+  const handleUploadStamp = async (file) => {
+    if (!file) return;
+    setIsUploadingStamp(true);
+    try {
+      const uploadResult = await base44.integrations.Core.UploadFile({ file });
+      const newStamp = await base44.entities.StampSignature.create({
+        name: newStampData.name || 'ختم جديد',
+        type: 'stamp',
+        image_url: uploadResult.file_url,
+        owner_name: newStampData.owner_name || '',
+        owner_title: newStampData.owner_title || '',
+        is_default: systemStamps.length === 0,
+        is_active: true
+      });
+      setSystemStamps(prev => [...prev, newStamp]);
+      setStampSettings(prev => ({ ...prev, selectedStamp: newStamp }));
+      setShowAddStampDialog(false);
+      setNewStampData({ name: '', owner_name: '', owner_title: '' });
+    } catch (error) {
+      console.error('Error uploading stamp:', error);
+      alert('حدث خطأ أثناء رفع الختم');
+    } finally {
+      setIsUploadingStamp(false);
+    }
+  };
+
+  const handleUploadSignature = async (file) => {
+    if (!file) return;
+    setIsUploadingSignature(true);
+    try {
+      const uploadResult = await base44.integrations.Core.UploadFile({ file });
+      const newSignature = await base44.entities.StampSignature.create({
+        name: newSignatureData.name || 'توقيع جديد',
+        type: 'signature',
+        image_url: uploadResult.file_url,
+        owner_name: newSignatureData.owner_name || '',
+        owner_title: newSignatureData.owner_title || '',
+        is_default: systemSignatures.length === 0,
+        is_active: true
+      });
+      setSystemSignatures(prev => [...prev, newSignature]);
+      setSignatureSettings(prev => ({ ...prev, selectedSignature: newSignature }));
+      setShowAddSignatureDialog(false);
+      setNewSignatureData({ name: '', owner_name: '', owner_title: '' });
+    } catch (error) {
+      console.error('Error uploading signature:', error);
+      alert('حدث خطأ أثناء رفع التوقيع');
+    } finally {
+      setIsUploadingSignature(false);
+    }
+  };
+
   // فلترة الموظفين
   const filteredEmployees = employees.filter(emp => {
     if (!searchQuery) return true;
