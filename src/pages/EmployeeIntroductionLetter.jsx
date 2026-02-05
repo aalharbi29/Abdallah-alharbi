@@ -354,28 +354,93 @@ export default function EmployeeIntroductionLetter() {
               <CardHeader className="pb-3">
                 <CardTitle className="text-base flex items-center gap-2">
                   <Stamp className="w-4 h-4" />
-                  الختم والتوقيع
+                  الختم
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <Label className="text-xs mb-2 block">نوع الختم</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {OFFICIAL_STAMPS.map(stamp => (
-                      <button
-                        key={stamp.id}
-                        onClick={() => setStampSettings({...stampSettings, selectedStamp: stamp})}
-                        className={`p-2 rounded-lg text-xs flex flex-col items-center gap-1 transition-all ${
-                          stampSettings.selectedStamp?.id === stamp.id
-                            ? 'ring-2 ring-blue-500 bg-blue-50'
-                            : 'border hover:bg-gray-50'
-                        }`}
-                      >
-                        <span className="text-xl">{stamp.emoji}</span>
-                        <span>{stamp.name}</span>
-                      </button>
-                    ))}
+                  <div className="flex items-center justify-between mb-2">
+                    <Label className="text-xs">اختر الختم من النظام</Label>
+                    <Dialog open={showAddStampDialog} onOpenChange={setShowAddStampDialog}>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="h-7 text-xs">
+                          <Plus className="w-3 h-3 ml-1" />
+                          إضافة ختم
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>إضافة ختم جديد</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-3">
+                          <div>
+                            <Label className="text-xs">اسم الختم</Label>
+                            <Input
+                              value={newStampData.name}
+                              onChange={(e) => setNewStampData({...newStampData, name: e.target.value})}
+                              placeholder="مثال: ختم الإدارة"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs">اسم المسؤول</Label>
+                            <Input
+                              value={newStampData.owner_name}
+                              onChange={(e) => setNewStampData({...newStampData, owner_name: e.target.value})}
+                              placeholder="مثال: محمد أحمد"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs">المسمى الوظيفي</Label>
+                            <Input
+                              value={newStampData.owner_title}
+                              onChange={(e) => setNewStampData({...newStampData, owner_title: e.target.value})}
+                              placeholder="مثال: مدير الإدارة"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs">صورة الختم</Label>
+                            <Input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => handleUploadStamp(e.target.files[0])}
+                              disabled={isUploadingStamp}
+                            />
+                          </div>
+                          {isUploadingStamp && (
+                            <div className="flex items-center gap-2 text-sm text-blue-600">
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              جاري الرفع...
+                            </div>
+                          )}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
                   </div>
+                  
+                  {systemStamps.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto">
+                      {systemStamps.map(stamp => (
+                        <button
+                          key={stamp.id}
+                          onClick={() => setStampSettings({...stampSettings, selectedStamp: stamp})}
+                          className={`p-2 rounded-lg text-xs flex flex-col items-center gap-1 transition-all ${
+                            stampSettings.selectedStamp?.id === stamp.id
+                              ? 'ring-2 ring-blue-500 bg-blue-50'
+                              : 'border hover:bg-gray-50'
+                          }`}
+                        >
+                          <img src={stamp.image_url} alt={stamp.name} className="w-10 h-10 object-contain" />
+                          <span className="truncate w-full text-center">{stamp.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center p-4 bg-gray-50 rounded-lg border border-dashed">
+                      <Stamp className="w-8 h-8 mx-auto text-gray-400 mb-2" />
+                      <p className="text-xs text-gray-500">لا توجد أختام محفوظة</p>
+                      <p className="text-xs text-gray-400">أضف ختم جديد من الزر أعلاه</p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="space-y-2">
@@ -410,8 +475,104 @@ export default function EmployeeIntroductionLetter() {
                     step={5}
                   />
                 </div>
+              </CardContent>
+            </Card>
 
-                <div className="border-t pt-3 space-y-2">
+            {/* إعدادات التوقيع */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <PenTool className="w-4 h-4" />
+                  التوقيع
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <Label className="text-xs">اختر التوقيع من النظام</Label>
+                    <Dialog open={showAddSignatureDialog} onOpenChange={setShowAddSignatureDialog}>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm" className="h-7 text-xs">
+                          <Plus className="w-3 h-3 ml-1" />
+                          إضافة توقيع
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>إضافة توقيع جديد</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-3">
+                          <div>
+                            <Label className="text-xs">اسم التوقيع</Label>
+                            <Input
+                              value={newSignatureData.name}
+                              onChange={(e) => setNewSignatureData({...newSignatureData, name: e.target.value})}
+                              placeholder="مثال: توقيع المدير"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs">اسم المسؤول</Label>
+                            <Input
+                              value={newSignatureData.owner_name}
+                              onChange={(e) => setNewSignatureData({...newSignatureData, owner_name: e.target.value})}
+                              placeholder="مثال: محمد أحمد"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs">المسمى الوظيفي</Label>
+                            <Input
+                              value={newSignatureData.owner_title}
+                              onChange={(e) => setNewSignatureData({...newSignatureData, owner_title: e.target.value})}
+                              placeholder="مثال: مدير الإدارة"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-xs">صورة التوقيع</Label>
+                            <Input
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => handleUploadSignature(e.target.files[0])}
+                              disabled={isUploadingSignature}
+                            />
+                          </div>
+                          {isUploadingSignature && (
+                            <div className="flex items-center gap-2 text-sm text-blue-600">
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              جاري الرفع...
+                            </div>
+                          )}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                  
+                  {systemSignatures.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto">
+                      {systemSignatures.map(sig => (
+                        <button
+                          key={sig.id}
+                          onClick={() => setSignatureSettings({...signatureSettings, selectedSignature: sig})}
+                          className={`p-2 rounded-lg text-xs flex flex-col items-center gap-1 transition-all ${
+                            signatureSettings.selectedSignature?.id === sig.id
+                              ? 'ring-2 ring-green-500 bg-green-50'
+                              : 'border hover:bg-gray-50'
+                          }`}
+                        >
+                          <img src={sig.image_url} alt={sig.name} className="w-12 h-8 object-contain" />
+                          <span className="truncate w-full text-center">{sig.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center p-4 bg-gray-50 rounded-lg border border-dashed">
+                      <PenTool className="w-8 h-8 mx-auto text-gray-400 mb-2" />
+                      <p className="text-xs text-gray-500">لا توجد توقيعات محفوظة</p>
+                      <p className="text-xs text-gray-400">أضف توقيع جديد من الزر أعلاه</p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-2">
                   <Label className="text-xs">موضع التوقيع الأفقي: {signatureSettings.signaturePosition.x}</Label>
                   <Slider
                     value={[signatureSettings.signaturePosition.x]}
@@ -430,6 +591,17 @@ export default function EmployeeIntroductionLetter() {
                     min={400}
                     max={750}
                     step={10}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-xs">حجم التوقيع: {signatureSettings.signatureSize}</Label>
+                  <Slider
+                    value={[signatureSettings.signatureSize]}
+                    onValueChange={(v) => setSignatureSettings({...signatureSettings, signatureSize: v[0]})}
+                    min={60}
+                    max={200}
+                    step={5}
                   />
                 </div>
               </CardContent>
