@@ -91,7 +91,8 @@ const getNavigationItems = (t) => [
   { name: "نواقص المراكز", href: createPageUrl("NoteSorter"), icon: FileText },
     { name: "تقارير الأجهزة الطبية", href: createPageUrl("MedicalEquipmentReport"), icon: Activity },
     { name: "الزائر السري", href: createPageUrl("SecretVisitorReports"), icon: Eye },
-  ];
+              { name: "تختيم سريع", href: createPageUrl("QuickSignArchive"), icon: FileCheck },
+            ];
 
 function LayoutContent({ children, currentPageName }) {
   const { t } = useLanguage();
