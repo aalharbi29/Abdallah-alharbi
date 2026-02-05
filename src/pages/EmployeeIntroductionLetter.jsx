@@ -1026,9 +1026,9 @@ export default function EmployeeIntroductionLetter() {
                   )}
 
                   {/* نص الخطاب */}
-                  <div className="mb-8 leading-8 text-justify">
+                  <div className="mb-8 leading-8 text-center">
                     <p className="whitespace-pre-line">
-                      {letterSettings.customText || getDefaultLetterText()}
+                      {getDefaultLetterText()}
                     </p>
                   </div>
 
