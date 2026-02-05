@@ -983,14 +983,20 @@ export default function EmployeeIntroductionLetter() {
                   </div>
 
                   {/* قسم التوقيع والختم */}
-                  <div className="relative" style={{ height: '200px' }}>
-                    {/* اسم المدير */}
+                  <div 
+                    ref={signatureAreaRef}
+                    className="relative" 
+                    style={{ height: '200px', cursor: dragging ? 'grabbing' : 'default' }}
+                  >
+                    {/* اسم المدير - قابل للسحب */}
                     <div 
-                      className="absolute text-center"
+                      className={`absolute text-center cursor-grab select-none ${dragging === 'director' ? 'ring-2 ring-blue-500 bg-blue-50/50 rounded' : 'hover:ring-2 hover:ring-gray-300 hover:bg-gray-50/50 rounded'}`}
                       style={{ 
-                        left: `${signatureSettings.signaturePosition.x - 50}px`,
-                        top: '20px'
+                        left: `${directorPosition.x}px`,
+                        top: `${directorPosition.y}px`,
+                        padding: '4px 8px'
                       }}
+                      onMouseDown={(e) => handleMouseDown(e, 'director')}
                     >
                       <p className="font-bold text-lg">
                         {signatureSettings.selectedSignature?.owner_name || letterSettings.directorName}
@@ -998,36 +1004,53 @@ export default function EmployeeIntroductionLetter() {
                       <p className="text-gray-600">
                         {signatureSettings.selectedSignature?.owner_title || letterSettings.directorTitle}
                       </p>
+                      <Move className="w-3 h-3 text-gray-400 mx-auto mt-1 no-print" />
                     </div>
 
-                    {/* التوقيع من النظام */}
+                    {/* التوقيع من النظام - قابل للسحب */}
                     {signatureSettings.showSignature && signatureSettings.selectedSignature && (
-                      <img
-                        src={signatureSettings.selectedSignature.image_url}
-                        alt="التوقيع"
-                        className="absolute"
+                      <div
+                        className={`absolute cursor-grab select-none ${dragging === 'signature' ? 'ring-2 ring-green-500 rounded' : 'hover:ring-2 hover:ring-green-300 rounded'}`}
                         style={{
                           left: `${signatureSettings.signaturePosition.x - 60}px`,
                           top: `${signatureSettings.signaturePosition.y - 530}px`,
-                          width: `${signatureSettings.signatureSize}px`,
-                          opacity: 0.9
                         }}
-                      />
+                        onMouseDown={(e) => handleMouseDown(e, 'signature')}
+                      >
+                        <img
+                          src={signatureSettings.selectedSignature.image_url}
+                          alt="التوقيع"
+                          style={{
+                            width: `${signatureSettings.signatureSize}px`,
+                            opacity: 0.9
+                          }}
+                          draggable={false}
+                        />
+                        <Move className="w-3 h-3 text-green-400 mx-auto mt-1 no-print" />
+                      </div>
                     )}
 
-                    {/* الختم من النظام */}
+                    {/* الختم من النظام - قابل للسحب */}
                     {stampSettings.showStamp && stampSettings.selectedStamp && (
-                      <img
-                        src={stampSettings.selectedStamp.image_url}
-                        alt="الختم"
-                        className="absolute"
+                      <div
+                        className={`absolute cursor-grab select-none ${dragging === 'stamp' ? 'ring-2 ring-blue-500 rounded-full' : 'hover:ring-2 hover:ring-blue-300 rounded-full'}`}
                         style={{
                           left: `${stampSettings.stampPosition.x - 50}px`,
                           top: `${stampSettings.stampPosition.y - 600}px`,
-                          width: `${stampSettings.stampSize}px`,
-                          opacity: 0.85
                         }}
-                      />
+                        onMouseDown={(e) => handleMouseDown(e, 'stamp')}
+                      >
+                        <img
+                          src={stampSettings.selectedStamp.image_url}
+                          alt="الختم"
+                          style={{
+                            width: `${stampSettings.stampSize}px`,
+                            opacity: 0.85
+                          }}
+                          draggable={false}
+                        />
+                        <Move className="w-3 h-3 text-blue-400 mx-auto mt-1 no-print" />
+                      </div>
                     )}
                   </div>
 
