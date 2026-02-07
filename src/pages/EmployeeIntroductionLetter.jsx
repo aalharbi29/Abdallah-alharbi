@@ -362,32 +362,15 @@ export default function EmployeeIntroductionLetter() {
     try {
       const canvas = await html2canvas(letterRef.current, {
         scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        scrollX: 0,
-        scrollY: 0,
-        windowWidth: letterRef.current.scrollWidth,
-        windowHeight: letterRef.current.scrollHeight
+        useCORS: true
       });
       
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
       
-      // حساب النسبة للحفاظ على التناسب
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-      
-      const scaledWidth = imgWidth * ratio;
-      const scaledHeight = imgHeight * ratio;
-      
-      // توسيط الصورة في الصفحة
-      const xOffset = (pdfWidth - scaledWidth) / 2;
-      const yOffset = 0;
-      
-      pdf.addImage(imgData, 'PNG', xOffset, yOffset, scaledWidth, scaledHeight);
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(`خطاب_تعريف_${selectedEmployee?.full_name_arabic || 'موظف'}.pdf`);
     } catch (error) {
       console.error('Export error:', error);
