@@ -80,7 +80,8 @@ export default function EmployeeIntroductionLetter() {
     letterType: 'خطاب تعريف بالراتب',
     customText: '',
     directorName: 'مدير إدارة المراكز الصحية بالحناكية',
-    directorTitle: 'المشرف على المراكز الصحية'
+    directorTitle: 'المشرف على المراكز الصحية',
+    workStartDate: ''
   });
 
   // حقول إضافية
