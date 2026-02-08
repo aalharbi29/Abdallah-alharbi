@@ -615,6 +615,41 @@ export default function EmployeeIntroductionLetter() {
                     />
                   </div>
                 )}
+
+                {/* حقول إضافية */}
+                <div className="border-t pt-3 mt-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <Label className="text-xs font-bold">بيانات إضافية للجدول</Label>
+                    <Button variant="outline" size="sm" className="h-7 text-xs" onClick={addAdditionalField}>
+                      <Plus className="w-3 h-3 ml-1" />
+                      إضافة حقل
+                    </Button>
+                  </div>
+                  {additionalFields.map((field, index) => (
+                    <div key={index} className="flex gap-2 mb-2">
+                      <Input
+                        placeholder="اسم الحقل"
+                        value={field.label}
+                        onChange={(e) => updateAdditionalField(index, 'label', e.target.value)}
+                        className="flex-1 text-xs h-8"
+                      />
+                      <Input
+                        placeholder="القيمة"
+                        value={field.value}
+                        onChange={(e) => updateAdditionalField(index, 'value', e.target.value)}
+                        className="flex-1 text-xs h-8"
+                      />
+                      <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-8 w-8"
+                        onClick={() => removeAdditionalField(index)}
+                      >
+                        <Trash2 className="w-3 h-3 text-red-500" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
               </CardContent>
             </Card>
 
