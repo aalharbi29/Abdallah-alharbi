@@ -82,6 +82,10 @@ export default function EmployeeIntroductionLetter() {
     directorName: 'مدير إدارة المراكز الصحية بالحناكية',
     directorTitle: 'المشرف على المراكز الصحية'
   });
+
+  // حقول إضافية
+  const [additionalFields, setAdditionalFields] = useState([]);
+  const [isSendingForApproval, setIsSendingForApproval] = useState(false);
   
   // الأختام والتوقيعات من النظام
   const [systemStamps, setSystemStamps] = useState([]);
