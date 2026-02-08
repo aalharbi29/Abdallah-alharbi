@@ -26,7 +26,9 @@ import {
   Upload,
   Loader2,
   Pencil,
-  Trash2
+  Trash2,
+  Send,
+  Clock
 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import html2canvas from 'html2canvas';
