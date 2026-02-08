@@ -1030,15 +1030,33 @@ export default function EmployeeIntroductionLetter() {
             </Dialog>
 
             {/* أزرار التصدير */}
-            <div className="flex gap-2">
-              <Button onClick={handlePrint} variant="outline" className="flex-1">
-                <Printer className="w-4 h-4 ml-2" />
-                طباعة
+            <div className="space-y-2">
+              <Button 
+                onClick={handleSendForApproval} 
+                className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+                disabled={!selectedEmployee || isSendingForApproval}
+              >
+                {isSendingForApproval ? (
+                  <Loader2 className="w-4 h-4 ml-2 animate-spin" />
+                ) : (
+                  <Send className="w-4 h-4 ml-2" />
+                )}
+                إرسال للاعتماد
               </Button>
-              <Button onClick={handleExportPDF} className="flex-1 bg-blue-600 hover:bg-blue-700">
-                <Download className="w-4 h-4 ml-2" />
-                تصدير PDF
-              </Button>
+              <div className="flex gap-2">
+                <Button onClick={handlePrint} variant="outline" className="flex-1">
+                  <Printer className="w-4 h-4 ml-2" />
+                  طباعة
+                </Button>
+                <Button onClick={handleExportPDF} className="flex-1 bg-blue-600 hover:bg-blue-700">
+                  <Download className="w-4 h-4 ml-2" />
+                  تصدير PDF
+                </Button>
+              </div>
+              <p className="text-xs text-center text-gray-500">
+                <Clock className="w-3 h-3 inline ml-1" />
+                الرقم المؤقت: {generateTempLetterNumber()}
+              </p>
             </div>
           </div>
 
