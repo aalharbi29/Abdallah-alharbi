@@ -93,7 +93,8 @@ const getNavigationItems = (t) => [
     { name: "الزائر السري", href: createPageUrl("SecretVisitorReports"), icon: Eye },
               { name: "تختيم سريع", href: createPageUrl("QuickSignArchive"), icon: FileCheck },
                         { name: "خطاب تعريف", href: createPageUrl("EmployeeIntroductionLetter"), icon: FileText },
-                      ];
+                        { name: "اعتماد الطلبات", href: createPageUrl("ApprovalRequests"), icon: FileCheck },
+                                              ];
 
 function LayoutContent({ children, currentPageName }) {
   const { t } = useLanguage();
