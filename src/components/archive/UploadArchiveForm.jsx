@@ -106,7 +106,43 @@ export default function UploadArchiveForm({ category, subCategory = '', onUpload
     return null;
   };
 
-  const handleFileSelect = useCallback((selectedFiles) => {
+  // دالة استخراج البيانات من الملف باستخدام الذكاء الاصطناعي
+  const extractFileData = async (file, fileUrl) => {
+    try {
+      setIsExtracting(true);
+      setCurrentFile('جاري تحليل الملف واستخراج البيانات...');
+      
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: `قم بتحليل هذا الملف واستخرج منه البيانات التالية باللغة العربية:
+1. عنوان مناسب للملف (قصير ومختصر)
+2. وصف مبسط ومختصر للمحتوى (جملة أو جملتين فقط)
+3. كلمات مفتاحية للبحث (5-8 كلمات مفصولة بفاصلة)
+4. التواريخ المذكورة في الملف إن وجدت
+
+اسم الملف الأصلي: ${file.name}`,
+        file_urls: [fileUrl],
+        response_json_schema: {
+          type: "object",
+          properties: {
+            title: { type: "string", description: "عنوان الملف" },
+            description: { type: "string", description: "وصف مختصر" },
+            tags: { type: "string", description: "كلمات مفتاحية مفصولة بفاصلة" },
+            dates: { type: "string", description: "التواريخ المذكورة" }
+          }
+        }
+      });
+      
+      return result;
+    } catch (error) {
+      console.error('خطأ في استخراج البيانات:', error);
+      return null;
+    } finally {
+      setIsExtracting(false);
+      setCurrentFile('');
+    }
+  };
+
+  const handleFileSelect = useCallback(async (selectedFiles) => {
     const fileArray = Array.from(selectedFiles);
     
     for (const file of fileArray) {
@@ -119,17 +155,44 @@ export default function UploadArchiveForm({ category, subCategory = '', onUpload
 
     setFiles(fileArray);
     if (fileArray.length > 0) {
-      // استخراج عنوان من اسم الملف (تنظيف الأحرف العربية)
-      const cleanTitle = fileArray[0].name
-        .replace(/\.[^/.]+$/, '')
-        .replace(/[\u0600-\u06FF]/g, '')
-        .replace(/[^\w\s-]/g, ' ')
-        .trim();
-      
-      setTitle(cleanTitle || 'مستند جديد');
       setIsOpen(true);
+      setError('');
+      
+      // رفع الملف الأول مؤقتاً لاستخراج البيانات
+      try {
+        setIsExtracting(true);
+        setCurrentFile('جاري رفع الملف لتحليله...');
+        
+        const firstFile = fileArray[0];
+        const safeFileName = sanitizeFilename(firstFile.name);
+        const fileToUpload = new File([firstFile], safeFileName, { 
+          type: firstFile.type,
+          lastModified: firstFile.lastModified 
+        });
+        
+        const uploadResult = await UploadFile({ file: fileToUpload });
+        
+        if (uploadResult?.file_url) {
+          const extractedData = await extractFileData(firstFile, uploadResult.file_url);
+          
+          if (extractedData) {
+            setTitle(extractedData.title || 'مستند جديد');
+            setDescription(extractedData.description || '');
+            setTags(extractedData.tags || '');
+          } else {
+            // إذا فشل الاستخراج، استخدم اسم الملف
+            setTitle(firstFile.name.replace(/\.[^/.]+$/, '') || 'مستند جديد');
+          }
+        }
+      } catch (error) {
+        console.error('خطأ في تحليل الملف:', error);
+        // استخدام اسم الملف كعنوان افتراضي
+        setTitle(fileArray[0].name.replace(/\.[^/.]+$/, '') || 'مستند جديد');
+      } finally {
+        setIsExtracting(false);
+        setCurrentFile('');
+      }
     }
-    setError('');
   }, []);
 
   const handleDrop = useCallback((e) => {
