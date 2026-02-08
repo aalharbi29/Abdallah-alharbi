@@ -604,6 +604,15 @@ export default function EmployeeIntroductionLetter() {
                     </SelectContent>
                   </Select>
                 </div>
+
+                <div>
+                  <Label className="text-xs">تاريخ بداية العمل (اعتباراً من)</Label>
+                  <Input
+                    type="date"
+                    value={letterSettings.workStartDate}
+                    onChange={(e) => setLetterSettings({...letterSettings, workStartDate: e.target.value})}
+                  />
+                </div>
                 
                 {letterSettings.letterType === 'خطاب مخصص' && (
                   <div>
