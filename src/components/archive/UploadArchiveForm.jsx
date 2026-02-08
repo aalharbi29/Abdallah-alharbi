@@ -518,17 +518,19 @@ export default function UploadArchiveForm({ category, subCategory = '', onUpload
                 type="button" 
                 variant="secondary" 
                 onClick={() => setIsOpen(false)}
-                disabled={isUploading}
+                disabled={isUploading || isExtracting}
               >
                 إلغاء
               </Button>
-              <Button type="submit" disabled={isUploading || !title.trim() || files.length === 0}>
+              <Button type="submit" disabled={isUploading || isExtracting || !title.trim() || files.length === 0}>
                 {isUploading ? (
                   <Loader2 className="animate-spin w-4 h-4 ml-2" />
+                ) : isExtracting ? (
+                  <Sparkles className="animate-pulse w-4 h-4 ml-2" />
                 ) : (
                   <Upload className="w-4 h-4 ml-2" />
                 )}
-                {isUploading ? 'جاري الرفع...' : `رفع ${files.length} ملف`}
+                {isUploading ? 'جاري الرفع...' : isExtracting ? 'جاري التحليل...' : `رفع ${files.length} ملف`}
               </Button>
             </DialogFooter>
           </form>
