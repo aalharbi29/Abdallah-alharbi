@@ -1135,14 +1135,19 @@ export default function EmployeeIntroductionLetter() {
                           </tr>
                           <tr className="border-b">
                             <td className="py-1.5 font-bold text-center">الوظيفة:</td>
-                            <td className="py-1.5 text-center">{selectedEmployee.position || 'غير محدد'}</td>
-                            <td className="py-1.5 font-bold text-center">نوع العقد:</td>
-                            <td className="py-1.5 text-center">{selectedEmployee.contract_type || 'غير محدد'}</td>
+                            <td className="py-1.5 text-center" colSpan={3}>{selectedEmployee.position || 'غير محدد'}</td>
                           </tr>
-                          <tr>
+                          <tr className={additionalFields.length > 0 ? "border-b" : ""}>
                             <td className="py-1.5 font-bold text-center">جهة العمل:</td>
                             <td className="py-1.5 text-center" colSpan={3}>{selectedEmployee.المركز_الصحي || 'إدارة المراكز الصحية'}</td>
                           </tr>
+                          {/* حقول إضافية */}
+                          {additionalFields.filter(f => f.label && f.value).map((field, index) => (
+                            <tr key={index} className={index < additionalFields.filter(f => f.label && f.value).length - 1 ? "border-b" : ""}>
+                              <td className="py-1.5 font-bold text-center">{field.label}:</td>
+                              <td className="py-1.5 text-center" colSpan={3}>{field.value}</td>
+                            </tr>
+                          ))}
                         </tbody>
                       </table>
                     </div>
