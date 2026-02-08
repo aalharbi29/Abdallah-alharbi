@@ -393,6 +393,74 @@ export default function EmployeeIntroductionLetter() {
     return letterSettings.customText;
   };
 
+  // توليد رقم مؤقت للخطاب
+  const generateTempLetterNumber = () => {
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = String(now.getFullYear()).slice(-2);
+    return `47-${month}${year}-XXX`;
+  };
+
+  // إضافة حقل جديد
+  const addAdditionalField = () => {
+    setAdditionalFields([...additionalFields, { label: '', value: '' }]);
+  };
+
+  // تحديث حقل إضافي
+  const updateAdditionalField = (index, key, value) => {
+    const updated = [...additionalFields];
+    updated[index][key] = value;
+    setAdditionalFields(updated);
+  };
+
+  // حذف حقل إضافي
+  const removeAdditionalField = (index) => {
+    setAdditionalFields(additionalFields.filter((_, i) => i !== index));
+  };
+
+  // إرسال للاعتماد
+  const handleSendForApproval = async () => {
+    if (!selectedEmployee) {
+      alert('يرجى اختيار موظف أولاً');
+      return;
+    }
+    
+    setIsSendingForApproval(true);
+    try {
+      const tempNumber = generateTempLetterNumber();
+      
+      await base44.entities.ApprovalRequest.create({
+        request_type: 'introduction_letter',
+        request_number: tempNumber,
+        title: `${letterTemplates[letterSettings.letterType]?.title || 'خطاب تعريف'} - ${selectedEmployee.full_name_arabic}`,
+        description: `خطاب تعريف للموظف ${selectedEmployee.full_name_arabic} - ${selectedEmployee.position || 'غير محدد'}`,
+        employee_id: selectedEmployee.id,
+        employee_name: selectedEmployee.full_name_arabic,
+        request_data: JSON.stringify({
+          letterSettings,
+          additionalFields,
+          selectedEmployee: {
+            id: selectedEmployee.id,
+            full_name_arabic: selectedEmployee.full_name_arabic,
+            رقم_الهوية: selectedEmployee.رقم_الهوية,
+            رقم_الموظف: selectedEmployee.رقم_الموظف,
+            position: selectedEmployee.position,
+            المركز_الصحي: selectedEmployee.المركز_الصحي
+          }
+        }),
+        status: 'pending',
+        priority: 'medium'
+      });
+      
+      alert(`تم إرسال الطلب للاعتماد بنجاح\nالرقم المؤقت: ${tempNumber}\n\nسيتم توليد الرقم النهائي بعد الاعتماد`);
+    } catch (error) {
+      console.error('Error sending for approval:', error);
+      alert('حدث خطأ أثناء إرسال الطلب');
+    } finally {
+      setIsSendingForApproval(false);
+    }
+  };
+
   return (
     <div className="p-4 md:p-6 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen">
       <style>{`
