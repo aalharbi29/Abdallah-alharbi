@@ -34,6 +34,7 @@ export default function UploadArchiveForm({ category, subCategory = '', onUpload
   const [isDragging, setIsDragging] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [currentFile, setCurrentFile] = useState('');
+  const [isExtracting, setIsExtracting] = useState(false);
 
   const resetForm = () => {
     setFiles([]);
