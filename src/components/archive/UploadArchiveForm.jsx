@@ -1,16 +1,16 @@
-
 import React, { useState, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { Upload, Loader2, Tag, FileUp, AlertCircle, X } from 'lucide-react';
-import { UploadFile } from '@/integrations/Core';
+import { Upload, Loader2, Tag, FileUp, AlertCircle, X, Sparkles } from 'lucide-react';
+import { UploadFile, ExtractDataFromUploadedFile } from '@/integrations/Core';
 import { ArchivedFile } from '@/entities/ArchivedFile';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
+import { base44 } from '@/api/base44Client';
 
 const documentTypes = {
   personal: 'مستندات شخصية',
