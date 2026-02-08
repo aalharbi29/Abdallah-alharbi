@@ -1126,19 +1126,19 @@ export default function EmployeeIntroductionLetter() {
                         <tbody>
                           <tr className="border-b">
                             <td className="py-1.5 font-bold text-center" style={{width: '15%'}}>الاسم:</td>
-                            <td className="py-1.5 text-center" colSpan={3}>{selectedEmployee.full_name_arabic}</td>
-                          </tr>
-                          <tr className="border-b">
+                            <td className="py-1.5 text-center" style={{width: '35%'}}>{selectedEmployee.full_name_arabic}</td>
                             <td className="py-1.5 font-bold text-center" style={{width: '15%'}}>رقم الهوية:</td>
                             <td className="py-1.5 text-center" style={{width: '35%'}}>{selectedEmployee.رقم_الهوية || 'غير محدد'}</td>
-                            <td className="py-1.5 font-bold text-center" style={{width: '15%'}}>الرقم الوظيفي:</td>
-                            <td className="py-1.5 text-center" style={{width: '35%'}}>{selectedEmployee.رقم_الموظف || 'غير محدد'}</td>
                           </tr>
-                          <tr className={additionalFields.length > 0 ? "border-b" : ""}>
+                          <tr className="border-b">
+                            <td className="py-1.5 font-bold text-center">الرقم الوظيفي:</td>
+                            <td className="py-1.5 text-center">{selectedEmployee.رقم_الموظف || 'غير محدد'}</td>
                             <td className="py-1.5 font-bold text-center">الوظيفة:</td>
                             <td className="py-1.5 text-center">{selectedEmployee.position || 'غير محدد'}</td>
+                          </tr>
+                          <tr className={additionalFields.length > 0 ? "border-b" : ""}>
                             <td className="py-1.5 font-bold text-center">جهة العمل:</td>
-                            <td className="py-1.5 text-center">{selectedEmployee.المركز_الصحي || 'إدارة المراكز الصحية'}</td>
+                            <td className="py-1.5 text-center" colSpan={3}>{selectedEmployee.المركز_الصحي || 'إدارة المراكز الصحية'}</td>
                           </tr>
                           {/* حقول إضافية */}
                           {additionalFields.filter(f => f.label && f.value).map((field, index) => (
@@ -1156,15 +1156,21 @@ export default function EmployeeIntroductionLetter() {
                     </Alert>
                   )}
 
-                  {/* نص الخطاب */}
-                  <div className="mb-8 leading-8 text-center">
-                    <p className="whitespace-pre-line">
-                      {getDefaultLetterText()}
+                  {/* نص الخطاب الجديد */}
+                  <div className="mb-4 leading-8 text-justify">
+                    <p>
+                      نفيدكم بأن الموضحة بياناته أعلاه أحد منسوبي إدارة المراكز الصحية بالحناكية، ويعمل بوظيفة ({selectedEmployee?.position || '............'}) وذلك اعتباراً من ({letterSettings.workStartDate ? new Date(letterSettings.workStartDate).toLocaleDateString('ar-SA') : '............'}) ولا يزال على رأس العمل حتى تاريخه.
+                    </p>
+                  </div>
+
+                  <div className="mb-4 leading-8 text-justify">
+                    <p>
+                      وقد أُعطي هذا الخطاب بناءً على طلبه دون أدنى مسؤولية على الجهة المصدرة.
                     </p>
                   </div>
 
                   {/* التحية */}
-                  <div className="mb-12">
+                  <div className="mb-12 text-center">
                     <p>وتقبلوا وافر التحية والتقدير،،،</p>
                   </div>
 
