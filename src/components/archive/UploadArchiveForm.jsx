@@ -409,6 +409,16 @@ export default function UploadArchiveForm({ category, subCategory = '', onUpload
               </p>
             </div>
 
+            {isExtracting && (
+              <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-purple-600 animate-pulse" />
+                <div>
+                  <p className="text-sm text-purple-800 font-medium">جاري تحليل الملف بالذكاء الاصطناعي...</p>
+                  <p className="text-xs text-purple-600">{currentFile}</p>
+                </div>
+              </div>
+            )}
+
             {/* Files Preview */}
             <div className="space-y-2">
               <Label>الملفات المختارة ({files.length})</Label>
