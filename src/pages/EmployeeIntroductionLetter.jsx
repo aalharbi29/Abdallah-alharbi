@@ -1129,10 +1129,10 @@ export default function EmployeeIntroductionLetter() {
                             <td className="py-1.5 text-center" colSpan={3}>{selectedEmployee.full_name_arabic}</td>
                           </tr>
                           <tr className="border-b">
-                            <td className="py-1.5 font-bold text-center">رقم الهوية:</td>
+                            <td className="py-1.5 font-bold text-center" style={{width: '15%'}}>رقم الهوية:</td>
                             <td className="py-1.5 text-center" style={{width: '35%'}}>{selectedEmployee.رقم_الهوية || 'غير محدد'}</td>
                             <td className="py-1.5 font-bold text-center" style={{width: '15%'}}>الرقم الوظيفي:</td>
-                            <td className="py-1.5 text-center">{selectedEmployee.رقم_الموظف || 'غير محدد'}</td>
+                            <td className="py-1.5 text-center" style={{width: '35%'}}>{selectedEmployee.رقم_الموظف || 'غير محدد'}</td>
                           </tr>
                           <tr className={additionalFields.length > 0 ? "border-b" : ""}>
                             <td className="py-1.5 font-bold text-center">الوظيفة:</td>
