@@ -257,6 +257,8 @@ export default function CustomExportManager({
           value = item[field] || '';
         } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date' || field === 'start_work_date') {
           value = formatDate(item[field]);
+        } else if ((field === 'المدير' || field === 'نائب_المدير' || field === 'المشرف_الفني') && type === 'healthcenters') {
+          value = getEmployeeName(item[field]);
         } else {
           value = item[field] || '';
         }
