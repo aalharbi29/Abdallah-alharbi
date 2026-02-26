@@ -32,6 +32,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 export default function CustomExportManager({ 
   data,
   employees, // إضافة دعم لكلا الاسمين
+  allEmployees, // قائمة كل الموظفين لربط المعرفات بالأسماء
   defaultFilename = "تقرير", 
   availableFields,
   type = "employees", // employees, departments, healthcenters
@@ -39,6 +40,13 @@ export default function CustomExportManager({
 }) {
   // استخدام data أو employees أيهما متوفر
   const rawData = data || employees || [];
+
+  // دالة للحصول على اسم الموظف من المعرف
+  const getEmployeeName = (employeeId) => {
+    if (!employeeId || !allEmployees) return '';
+    const emp = allEmployees.find(e => e.id === employeeId);
+    return emp ? emp.full_name_arabic : employeeId;
+  };
   
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFields, setSelectedFields] = useState([]);
