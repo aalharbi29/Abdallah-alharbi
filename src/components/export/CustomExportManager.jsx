@@ -722,6 +722,76 @@ export default function CustomExportManager({
           
           <TabsContent value="fields" className="flex-1 overflow-auto p-4">
             <div className="space-y-4">
+              {/* اختيار المراكز للتصدير - يظهر فقط للمراكز الصحية */}
+              {type === 'healthcenters' && (
+                <Card className="border-green-200 bg-green-50/30">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-lg text-green-700">
+                      <Building2 className="w-5 h-5" /> 
+                      تحديد المراكز للتصدير
+                      {selectedCenterIds.length > 0 && (
+                        <Badge className="bg-green-600">{selectedCenterIds.length} مركز محدد</Badge>
+                      )}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="relative">
+                      <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                      <Input
+                        placeholder="بحث في المراكز..."
+                        value={centerSearchQuery}
+                        onChange={(e) => setCenterSearchQuery(e.target.value)}
+                        className="pr-9"
+                      />
+                    </div>
+                    <div className="flex gap-2 mb-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => setSelectedCenterIds(availableCenters.map(c => c.id))}
+                      >
+                        <CheckSquare className="w-4 h-4 ml-1" />
+                        تحديد الكل ({availableCenters.length})
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => setSelectedCenterIds([])}
+                      >
+                        <Square className="w-4 h-4 ml-1" />
+                        إلغاء الكل
+                      </Button>
+                    </div>
+                    <div className="max-h-48 overflow-y-auto border rounded-lg p-2 bg-white space-y-1">
+                      {filteredCenters.map(center => (
+                        <div key={center.id} className="flex items-center gap-2 p-1.5 hover:bg-gray-50 rounded">
+                          <Checkbox
+                            id={`center-${center.id}`}
+                            checked={selectedCenterIds.includes(center.id)}
+                            onCheckedChange={(checked) => {
+                              if (checked) {
+                                setSelectedCenterIds(prev => [...prev, center.id]);
+                              } else {
+                                setSelectedCenterIds(prev => prev.filter(id => id !== center.id));
+                              }
+                            }}
+                          />
+                          <Label htmlFor={`center-${center.id}`} className="cursor-pointer flex-1 text-sm">
+                            {center.name}
+                          </Label>
+                        </div>
+                      ))}
+                      {filteredCenters.length === 0 && (
+                        <p className="text-center text-gray-500 py-3 text-sm">لا توجد نتائج</p>
+                      )}
+                    </div>
+                    {selectedCenterIds.length === 0 && (
+                      <p className="text-xs text-amber-600">💡 إذا لم تحدد أي مركز، سيتم تصدير جميع المراكز</p>
+                    )}
+                  </CardContent>
+                </Card>
+              )}
+
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg"><PenLine className="w-5 h-5" /> محتوى التقرير</CardTitle>
