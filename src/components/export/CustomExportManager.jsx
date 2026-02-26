@@ -36,7 +36,7 @@ export default function CustomExportManager({
   selectedCount = 0 // عدد المحددين
 }) {
   // استخدام data أو employees أيهما متوفر
-  const exportData = data || employees || [];
+  const rawData = data || employees || [];
   
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFields, setSelectedFields] = useState([]);
@@ -49,6 +49,30 @@ export default function CustomExportManager({
   const [footerText, setFooterText] = useState("");
   const [includeSignature, setIncludeSignature] = useState(true);
   const [dateFormat, setDateFormat] = useState("hijri"); // hijri or gregorian
+
+  // State for selected centers (healthcenters type)
+  const [selectedCenterIds, setSelectedCenterIds] = useState([]);
+  const [centerSearchQuery, setCenterSearchQuery] = useState("");
+
+  // Get unique centers list for healthcenters type
+  const availableCenters = useMemo(() => {
+    if (type !== 'healthcenters' || !Array.isArray(rawData)) return [];
+    return rawData.map(c => ({ id: c.id, name: c.اسم_المركز || 'غير محدد' }));
+  }, [rawData, type]);
+
+  // Filter centers by search
+  const filteredCenters = useMemo(() => {
+    if (!centerSearchQuery) return availableCenters;
+    return availableCenters.filter(c => 
+      c.name.toLowerCase().includes(centerSearchQuery.toLowerCase())
+    );
+  }, [availableCenters, centerSearchQuery]);
+
+  // Filtered export data based on selected centers
+  const exportData = useMemo(() => {
+    if (type !== 'healthcenters' || selectedCenterIds.length === 0) return rawData;
+    return rawData.filter(item => selectedCenterIds.includes(item.id));
+  }, [rawData, selectedCenterIds, type]);
 
   // تعريف الحقول المتاحة حسب النوع
   const fieldDefinitions = useMemo(() => {
