@@ -8,7 +8,9 @@ import {
   Eye,
   CheckSquare,
   Square,
-  PenLine
+  PenLine,
+  Building2,
+  Search
 } from "lucide-react";
 import {
   Dialog,
