@@ -294,6 +294,9 @@ export default function CustomExportManager({
         return item[field] || '';
       } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date' || field === 'start_work_date') {
         return formatDate(item[field]);
+      } else if ((field === 'المدير' || field === 'نائب_المدير' || field === 'المشرف_الفني') && type === 'healthcenters') {
+        // تحويل معرف الموظف إلى اسمه
+        return getEmployeeName(item[field]);
       } else {
         return item[field] || '';
       }
