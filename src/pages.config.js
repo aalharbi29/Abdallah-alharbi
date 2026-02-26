@@ -50,6 +50,7 @@
 import AIAnnouncementDesigner from './pages/AIAnnouncementDesigner';
 import AdvancedFormEditor from './pages/AdvancedFormEditor';
 import Agenda from './pages/Agenda';
+import ApprovalRequests from './pages/ApprovalRequests';
 import Archive from './pages/Archive';
 import AssignmentTemplates from './pages/AssignmentTemplates';
 import Assignments from './pages/Assignments';
@@ -106,7 +107,6 @@ import StatisticsHijri from './pages/StatisticsHijri';
 import ViewAssignment from './pages/ViewAssignment';
 import ViewEquipmentRequest from './pages/ViewEquipmentRequest';
 import ViewExcellentEmployeeCertificate from './pages/ViewExcellentEmployeeCertificate';
-import ApprovalRequests from './pages/ApprovalRequests';
 import __Layout from './Layout.jsx';
 
 
@@ -114,6 +114,7 @@ export const PAGES = {
     "AIAnnouncementDesigner": AIAnnouncementDesigner,
     "AdvancedFormEditor": AdvancedFormEditor,
     "Agenda": Agenda,
+    "ApprovalRequests": ApprovalRequests,
     "Archive": Archive,
     "AssignmentTemplates": AssignmentTemplates,
     "Assignments": Assignments,
@@ -170,7 +171,6 @@ export const PAGES = {
     "ViewAssignment": ViewAssignment,
     "ViewEquipmentRequest": ViewEquipmentRequest,
     "ViewExcellentEmployeeCertificate": ViewExcellentEmployeeCertificate,
-    "ApprovalRequests": ApprovalRequests,
 }
 
 export const pagesConfig = {

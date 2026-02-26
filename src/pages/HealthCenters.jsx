@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { HealthCenter } from "@/entities/HealthCenter";
 import { Employee } from "@/entities/Employee";
@@ -234,7 +233,7 @@ export default function HealthCenters() {
             <Button onClick={loadData} variant="outline" disabled={isLoading} title="تحديث البيانات">
               {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
             </Button>
-            <CustomExportManager data={filteredCenters} filename="دليل_المراكز_الصحية" type="healthcenters"/>
+            <CustomExportManager data={filteredCenters} allEmployees={employees} filename="دليل_المراكز_الصحية" type="healthcenters"/>
             <ExportManager data={filteredCenters} filename="دليل_المراكز_الصحية"/>
             <Button onClick={() => window.print()} variant="outline">
               <Printer className="w-4 h-4 ml-2" />طباعة
