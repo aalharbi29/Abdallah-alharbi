@@ -447,73 +447,103 @@ export default function FillReleaseForm() {
           </table>
 
           {/* Body Text */}
-          <div style={{ fontSize: '13px', lineHeight: '2.2', fontFamily: 'Cairo,Arial' }} className="mt-3 mb-4">
+          <div style={{ fontSize: '13px', lineHeight: '2.2', fontFamily: 'Cairo,Arial', position: 'relative' }}>
 
-            {/* Recipient line */}
-            <p className="mt-1 mr-8 mb-1 ml-6 px-2 font-bold-title" style={{ marginBottom: '4px' }}>
-              المكرم{' '}
-              <span className="mt-1 mr-8 mb-2 ml-20 ef" contentEditable suppressContentEditableWarning
-              onBlur={(e) => handleInputChange('recipientTitle', e.currentTarget.textContent)}
-              style={{ borderBottom: '1px solid #555', padding: '0 4px', minWidth: '120px', display: 'inline-block' }}>
-                {formData.recipientTitle}
-              </span>
-              {'  '}المحترم
-            </p>
-
-            {/* Greeting */}
-            <p className="mr-16 ml-24 font-bold-title" style={{ marginBottom: '12px' }}>
-              السلام عليكم ورحمة الله وبركاته ،،،
-            </p>
-
-            {/* Main Paragraph */}
-            <p className="mt-4 mr-6 mb-8 ml-12 pt-2 pb-3 font-bold-title" style={{ textAlign: 'justify', marginBottom: '0' }}>
-              نفيدكم بأنه تم إخلاء طرف {employeeWord} الموضحة بياناتـ{pronoun} أعلاه يوم{' '}
-              <span className="ef" contentEditable suppressContentEditableWarning
-              onBlur={(e) => handleInputChange('releaseDate', e.currentTarget.textContent)}
-              style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '100px', display: 'inline-block' }}>
-                {formData.releaseDate || '...............'}
-              </span>
-              {' '}وذلك بناءً على القرار رقم{' '}
-              <span className="ef" contentEditable suppressContentEditableWarning
-              onBlur={(e) => handleInputChange('decisionNumber', e.currentTarget.textContent)}
-              style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '80px', display: 'inline-block' }}>
-                {formData.decisionNumber || '..........'}
-              </span>
-              {' '}وتاريخ{' '}
-              <span className="ef" contentEditable suppressContentEditableWarning
-              onBlur={(e) => handleInputChange('decisionDate', e.currentTarget.textContent)}
-              style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '100px', display: 'inline-block' }}>
-                {formData.decisionDate || '...............'}
-              </span>
-              {' '}والقاضي بتكليف{pronoun}{' '}
-              <span className="ef" contentEditable suppressContentEditableWarning
-              onBlur={(e) => handleInputChange('assignedTo', e.currentTarget.textContent)}
-              style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '120px', display: 'inline-block' }}>
-                {formData.assignedTo || '...........................'}
-              </span>
-              {' '}.
-            </p>
-
-            {/* Closing */}
-            <p className="mr-12 mb-2 ml-20 font-bold-title" style={{ marginTop: '20px', marginBottom: '30px' }}>
-              نرجو التكرم بالاطلاع وإكمال اللازم .
-            </p>
-
-            {/* Sender */}
-            <div style={{ textAlign: 'center', marginTop: '10px' }}>
-              <p className="font-bold-title ef" contentEditable suppressContentEditableWarning
-              onBlur={(e) => handleInputChange('departmentName', e.currentTarget.textContent)}
-              style={{ fontSize: '13px', marginBottom: '30px', color: '#222' }}>
-                {formData.departmentName}
+            {/* Recipient line - draggable */}
+            <div
+              style={{ transform: `translateY(${lineOffsets.recipient}px)`, cursor: draggingLine === 'recipient' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '4px' }}
+              onMouseDown={(e) => handleLineMouseDown(e, 'recipient')}
+            >
+              <p className="font-bold-title no-print-drag" style={{ margin: 0, padding: '2px 0' }}>
+                <span className="no-print" style={{ fontSize: '10px', color: '#aaa', marginLeft: '4px' }}>↕</span>
+                المكرم{' '}
+                <span className="ef" contentEditable suppressContentEditableWarning
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onBlur={(e) => handleInputChange('recipientTitle', e.currentTarget.textContent)}
+                  style={{ padding: '0 4px', minWidth: '120px', display: 'inline-block' }}>
+                  {formData.recipientTitle}
+                </span>
+                {'  '}المحترم
               </p>
-              <p className="text-2xl font-bold text-center ef" contentEditable suppressContentEditableWarning
-              onBlur={(e) => handleInputChange('senderName', e.currentTarget.textContent)}
-              style={{ fontSize: '15px', marginBottom: '6px' }}>
+            </div>
+
+            {/* Greeting - draggable */}
+            <div
+              style={{ transform: `translateY(${lineOffsets.greeting}px)`, cursor: draggingLine === 'greeting' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '12px' }}
+              onMouseDown={(e) => handleLineMouseDown(e, 'greeting')}
+            >
+              <p className="font-bold-title" style={{ margin: 0, padding: '2px 0' }}>
+                <span className="no-print" style={{ fontSize: '10px', color: '#aaa', marginLeft: '4px' }}>↕</span>
+                السلام عليكم ورحمة الله وبركاته ،،،
+              </p>
+            </div>
+
+            {/* Main Paragraph - draggable */}
+            <div
+              style={{ transform: `translateY(${lineOffsets.mainPara}px)`, cursor: draggingLine === 'mainPara' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '8px' }}
+              onMouseDown={(e) => handleLineMouseDown(e, 'mainPara')}
+            >
+              <p className="font-bold-title" style={{ textAlign: 'justify', margin: 0, padding: '4px 0' }}>
+                <span className="no-print" style={{ fontSize: '10px', color: '#aaa', marginLeft: '4px' }}>↕</span>
+                نفيدكم بأنه تم إخلاء طرف {employeeWord} الموضحة بياناتـ{pronoun} أعلاه يوم{' '}
+                <span className="ef" contentEditable suppressContentEditableWarning
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onBlur={(e) => handleInputChange('releaseDate', e.currentTarget.textContent)}
+                  style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '100px', display: 'inline-block' }}>
+                  {formData.releaseDate || '...............'}
+                </span>
+                {' '}وذلك بناءً على القرار رقم{' '}
+                <span className="ef" contentEditable suppressContentEditableWarning
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onBlur={(e) => handleInputChange('decisionNumber', e.currentTarget.textContent)}
+                  style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '80px', display: 'inline-block' }}>
+                  {formData.decisionNumber || '..........'}
+                </span>
+                {' '}وتاريخ{' '}
+                <span className="ef" contentEditable suppressContentEditableWarning
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onBlur={(e) => handleInputChange('decisionDate', e.currentTarget.textContent)}
+                  style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '100px', display: 'inline-block' }}>
+                  {formData.decisionDate || '...............'}
+                </span>
+                {' '}والقاضي بتكليف{pronoun}{' '}
+                <span className="ef" contentEditable suppressContentEditableWarning
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onBlur={(e) => handleInputChange('assignedTo', e.currentTarget.textContent)}
+                  style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '120px', display: 'inline-block' }}>
+                  {formData.assignedTo || '...........................'}
+                </span>
+                {' '}.
+              </p>
+            </div>
+
+            {/* Closing - draggable */}
+            <div
+              style={{ transform: `translateY(${lineOffsets.closing}px)`, cursor: draggingLine === 'closing' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '20px' }}
+              onMouseDown={(e) => handleLineMouseDown(e, 'closing')}
+            >
+              <p className="font-bold-title" style={{ margin: 0, padding: '2px 0' }}>
+                <span className="no-print" style={{ fontSize: '10px', color: '#aaa', marginLeft: '4px' }}>↕</span>
+                نرجو التكرم بالاطلاع وإكمال اللازم .
+              </p>
+            </div>
+
+            {/* Sender - draggable */}
+            <div
+              style={{ transform: `translateY(${lineOffsets.sender}px)`, cursor: draggingLine === 'sender' ? 'grabbing' : 'grab', userSelect: 'none', textAlign: 'center', marginTop: '10px' }}
+              onMouseDown={(e) => handleLineMouseDown(e, 'sender')}
+            >
+              <span className="no-print" style={{ fontSize: '10px', color: '#aaa' }}>↕</span>
+              <p className="font-bold-title ef" contentEditable suppressContentEditableWarning
+                onMouseDown={(e) => e.stopPropagation()}
+                onBlur={(e) => handleInputChange('senderName', e.currentTarget.textContent)}
+                style={{ fontSize: '15px', margin: '0 0 6px 0' }}>
                 {formData.senderName}
               </p>
               <p className="font-bold-title ef" contentEditable suppressContentEditableWarning
-              onBlur={(e) => handleInputChange('senderTitle', e.currentTarget.textContent)}
-              style={{ fontSize: '12px', color: '#444' }}>
+                onMouseDown={(e) => e.stopPropagation()}
+                onBlur={(e) => handleInputChange('senderTitle', e.currentTarget.textContent)}
+                style={{ fontSize: '12px', color: '#444', margin: 0 }}>
                 {formData.senderTitle}
               </p>
             </div>
