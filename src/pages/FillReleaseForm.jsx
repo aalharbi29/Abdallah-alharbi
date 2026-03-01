@@ -473,7 +473,7 @@ export default function FillReleaseForm() {
               style={{ transform: `translate(${lineOffsets.greeting.x}px, ${lineOffsets.greeting.y}px)`, cursor: draggingLine === 'greeting' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '12px' }}
               onMouseDown={(e) => handleLineMouseDown(e, 'greeting')}>
 
-              <p className="font-bold-title" style={{ margin: 0, padding: '2px 0' }}>
+              <p className="font-bold-title" style={{ margin: 0, padding: '2px 0', fontSize: '16px' }}>
                 <span className="no-print" style={{ fontSize: '10px', color: '#aaa', marginLeft: '4px' }}>↕</span>
                 السلام عليكم ورحمة الله وبركاته ،،،
               </p>
