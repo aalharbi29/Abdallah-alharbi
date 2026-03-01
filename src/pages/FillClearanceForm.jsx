@@ -92,17 +92,59 @@ export default function FillClearanceForm() {
   const loadData = async () => {
     try {
       setIsLoading(true);
-      const [employeesData, centersData] = await Promise.all([
+      const [employeesData, centersData, templatesData] = await Promise.all([
         base44.entities.Employee.list(),
-        base44.entities.HealthCenter.list()
+        base44.entities.HealthCenter.list(),
+        base44.entities.ClearanceFormTemplate.list()
       ]);
       setEmployees(employeesData || []);
       setHealthCenters(centersData || []);
+      setTemplates(templatesData || []);
     } catch (error) {
       console.error("Error loading data:", error);
       toast.error("فشل في تحميل البيانات");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSaveTemplate = async () => {
+    if (!templateName.trim()) {
+      toast.error("الرجاء إدخال اسم النموذج");
+      return;
+    }
+    try {
+      const newTemplate = await base44.entities.ClearanceFormTemplate.create({
+        name: templateName,
+        form_data: JSON.stringify(formData),
+        visible_sections: JSON.stringify(visibleSections)
+      });
+      setTemplates(prev => [...prev, newTemplate]);
+      setTemplateName("");
+      toast.success("تم حفظ النموذج بنجاح");
+    } catch (error) {
+      console.error("Error saving template:", error);
+      toast.error("حدث خطأ أثناء الحفظ");
+    }
+  };
+
+  const handleDeleteTemplate = async (templateId) => {
+    try {
+      await base44.entities.ClearanceFormTemplate.delete(templateId);
+      setTemplates(prev => prev.filter(t => t.id !== templateId));
+      toast.success("تم حذف النموذج");
+    } catch (error) {
+      console.error("Error deleting template:", error);
+      toast.error("حدث خطأ أثناء الحذف");
+    }
+  };
+
+  const applyTemplate = (templateId) => {
+    const template = templates.find(t => t.id === templateId);
+    if (template) {
+      if (template.form_data) setFormData(JSON.parse(template.form_data));
+      if (template.visible_sections) setVisibleSections(JSON.parse(template.visible_sections));
+      toast.success("تم تطبيق النموذج بنجاح");
     }
   };
 
