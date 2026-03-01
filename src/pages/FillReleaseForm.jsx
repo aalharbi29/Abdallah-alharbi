@@ -36,6 +36,17 @@ export default function FillReleaseForm() {
     senderTitle: "مدير إدارة الموارد البشرية بالرعاية الأولية"
   });
 
+  // موضع كل سطر نصي بشكل مستقل (offset عمودي بالبكسل)
+  const [lineOffsets, setLineOffsets] = useState({
+    recipient: 0,
+    greeting: 0,
+    mainPara: 0,
+    closing: 0,
+    sender: 0,
+  });
+  const [draggingLine, setDraggingLine] = useState(null);
+  const [lineDragStart, setLineDragStart] = useState({ y: 0, origOffset: 0 });
+
   const [systemStamps, setSystemStamps] = useState([]);
   const [systemSignatures, setSystemSignatures] = useState([]);
   const [stampSettings, setStampSettings] = useState({ showStamp: false, selectedStamp: null, position: { x: 400, y: 650 }, size: 100 });
