@@ -384,10 +384,14 @@ export default function FillClearanceForm() {
             marginBottom: '20px'
           }}>
             <p style={{ marginBottom: '10px' }}>
-              تشهد الموارد البشرية بالرعاية الاولية بتجمع المدينة المنورة بأن الموضح اسمه وبياناته
+              <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('certificateText1', e.currentTarget.textContent)}>
+                {formData.certificateText1}
+              </span>
             </p>
             <p style={{ marginBottom: '10px' }}>
-              أعلاه بريء الذمة من الناحية الإدارية والمالية وقد سلم جميع ما بعهدته وذلك نظراً .
+              <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('certificateText2', e.currentTarget.textContent)}>
+                {formData.certificateText2}
+              </span>
             </p>
             <p style={{ marginBottom: '0' }}>
               لقرار{' '}
