@@ -961,12 +961,11 @@ export default function FillClearanceForm() {
             onMouseDown={(e) => handleMouseDown(e, 'stamp')}
           >
             <img
-              src={stampSettings.selectedStamp.image_url}
+              src={processedImages[stampSettings.selectedStamp.id] || stampSettings.selectedStamp.image_url}
               alt="الختم"
               style={{
                 width: stampSettings.size,
-                mixBlendMode: 'multiply',
-                opacity: 0.85,
+                opacity: 0.9,
                 pointerEvents: 'none'
               }}
               draggable={false}
