@@ -484,10 +484,10 @@ export default function FillReleaseForm() {
               style={{ transform: `translate(${lineOffsets.mainPara.x}px, ${lineOffsets.mainPara.y}px)`, cursor: draggingLine === 'mainPara' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '8px' }}
               onMouseDown={(e) => handleLineMouseDown(e, 'mainPara')}>
 
-              <div className="font-bold-title" style={{ margin: 0, padding: '4px 0', lineHeight: '2.0' }}>
+              <div className="font-bold-title" style={{ margin: 0, padding: '4px 0', lineHeight: '2.0', textAlign: 'center' }}>
                 <span className="no-print" style={{ fontSize: '10px', color: '#aaa', marginLeft: '4px' }}>↕</span>
                 {/* السطر الأول */}
-                <div style={{ textAlign: 'justify' }}>
+                <div style={{ textAlign: 'center' }}>
                   نفيدكم بأنه تم إخلاء طرف {employeeWord} الموضحة بياناتـ{pronoun} أعلاه يوم{' '}
                   <span className="ef" contentEditable suppressContentEditableWarning
                   onMouseDown={(e) => e.stopPropagation()}
