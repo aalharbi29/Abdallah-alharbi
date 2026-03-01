@@ -464,8 +464,8 @@ export default function FillReleaseForm() {
                 style={{ padding: '0 4px', minWidth: '120px', display: 'inline-block' }}>
                   {formData.recipientTitle}
                 </span>
-                {'  '}المحترم
               </p>
+              <p className="font-bold-title" style={{ margin: 0, padding: '2px 0' }}>المحترم</p>
             </div>
 
             {/* Greeting - draggable */}
