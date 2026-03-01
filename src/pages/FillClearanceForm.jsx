@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Printer, Download, Loader2 } from "lucide-react";
+import { Printer, Download, Loader2, X, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 
 export default function FillClearanceForm() {
