@@ -531,7 +531,7 @@ export default function FillReleaseForm() {
 
             {/* Sender - draggable */}
             <div
-              style={{ transform: `translateY(${lineOffsets.sender}px)`, cursor: draggingLine === 'sender' ? 'grabbing' : 'grab', userSelect: 'none', textAlign: 'center', marginTop: '10px' }}
+              style={{ transform: `translate(${lineOffsets.sender.x}px, ${lineOffsets.sender.y}px)`, cursor: draggingLine === 'sender' ? 'grabbing' : 'grab', userSelect: 'none', textAlign: 'center', marginTop: '10px' }}
               onMouseDown={(e) => handleLineMouseDown(e, 'sender')}
             >
               <span className="no-print" style={{ fontSize: '10px', color: '#aaa' }}>↕</span>
