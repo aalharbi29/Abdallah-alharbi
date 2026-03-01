@@ -487,7 +487,7 @@ export default function FillReleaseForm() {
               <div className="font-bold-title" style={{ margin: 0, padding: '4px 0', lineHeight: '2.0', textAlign: 'center' }}>
                 <span className="no-print" style={{ fontSize: '10px', color: '#aaa', marginLeft: '4px' }}>↕</span>
                 {/* السطر الأول */}
-                <div style={{ textAlign: 'center' }}>
+                <div style={{ textAlign: 'center' }} className="mb-2">
                   نفيدكم بأنه تم إخلاء طرف {employeeWord} الموضحة بياناتـ{pronoun} أعلاه يوم{' '}
                   <span className="ef" contentEditable suppressContentEditableWarning
                   onMouseDown={(e) => e.stopPropagation()}
@@ -497,7 +497,7 @@ export default function FillReleaseForm() {
                   </span>
                 </div>
                 {/* السطر الثاني */}
-                <div style={{ textAlign: 'center' }}>
+                <div style={{ textAlign: 'center' }} className="mt-2 mb-1">
                   وذلك بناءً على القرار رقم{' '}
                   <span className="ef" contentEditable suppressContentEditableWarning
                   onMouseDown={(e) => e.stopPropagation()}
@@ -513,7 +513,7 @@ export default function FillReleaseForm() {
                     {formData.decisionDate || '...............'}
                   </span>
                   {' '}والقاضي بتكليف{pronoun}{' '}
-                  <span className="ef" contentEditable suppressContentEditableWarning
+                  <span className="mt-4 ef" contentEditable suppressContentEditableWarning
                   onMouseDown={(e) => e.stopPropagation()}
                   onBlur={(e) => handleInputChange('assignedTo', e.currentTarget.textContent)}
                   style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '120px', display: 'inline-block' }}>
