@@ -514,7 +514,7 @@ export default function FillReleaseForm() {
                   </span>
                 </div>
                 {/* السطر الثالث */}
-                <div style={{ textAlign: 'justify' }}>
+                <div style={{ textAlign: 'center' }}>
                   والقاضي بتكليف{pronoun}{' '}
                   <span className="ef" contentEditable suppressContentEditableWarning
                   onMouseDown={(e) => e.stopPropagation()}
