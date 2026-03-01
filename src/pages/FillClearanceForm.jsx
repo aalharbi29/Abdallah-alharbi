@@ -486,11 +486,18 @@ export default function FillClearanceForm() {
           )}
 
           {/* Signature Section Title */}
+          {visibleSections.signatureSection && (
+          <div className="deletable-section">
+            <button className="delete-btn no-print bg-red-500 hover:bg-red-600 text-white rounded-full p-1" onClick={() => toggleSection('signatureSection')}>
+              <X className="w-4 h-4" />
+            </button>
           <div className="font-bold-title" style={{ textAlign: 'right', marginBottom: '8mm', marginTop: '25px', paddingRight: '5mm' }}>
-            <p style={{ fontSize: '14px', margin: 0 }}>
+            <p className="editable-field" contentEditable suppressContentEditableWarning style={{ fontSize: '14px', margin: 0 }}>
               وعلى ذلك جرى التوقيع :
             </p>
           </div>
+          </div>
+          )}
 
           {/* Signatures Table - Column widths: م=8%, الوظيفة=42%, الاسم=30%, التوقيع=20% */}
           <table style={{ 
