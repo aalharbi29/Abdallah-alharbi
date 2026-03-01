@@ -28,7 +28,11 @@ export default function FillClearanceForm() {
     directSupervisorName: "",
     custodianName: "",
     accountantName: "",
-    hrManagerName: "أ.تركي بن عبدالرحمن الغامدي"
+    hrManagerName: "أ.تركي بن عبدالرحمن الغامدي",
+    headerDepartmentName: "إدارة الموارد البشرية بالرعاية الأولية بتجمع المدينة المنورة",
+    hrManagerTitle: "مدير إدارة الموارد البشرية بالرعاية الأولية",
+    certificateText1: "تشهد الموارد البشرية بالرعاية الاولية بتجمع المدينة المنورة بأن الموضح اسمه وبياناته",
+    certificateText2: "أعلاه بريء الذمة من الناحية الإدارية والمالية وقد سلم جميع ما بعهدته وذلك نظراً ."
   });
 
   useEffect(() => {
