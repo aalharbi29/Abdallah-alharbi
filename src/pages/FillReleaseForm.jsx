@@ -41,8 +41,8 @@ export default function FillReleaseForm() {
     recipient: { x: 0, y: 0 },
     greeting: { x: 0, y: 0 },
     mainPara: { x: 0, y: 0 },
-    closing: { x: 0, y: 0 },
-    sender: { x: 0, y: 0 }
+    closing: { x: 0, y: 60 },
+    sender: { x: 0, y: 60 }
   });
   const [draggingLine, setDraggingLine] = useState(null);
   const [lineDragStart, setLineDragStart] = useState({ x: 0, y: 0, origX: 0, origY: 0 });
