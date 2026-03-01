@@ -500,6 +500,11 @@ export default function FillClearanceForm() {
           )}
 
           {/* Signatures Table - Column widths: م=8%, الوظيفة=42%, الاسم=30%, التوقيع=20% */}
+          {visibleSections.signaturesTable && (
+          <div className="deletable-section">
+            <button className="delete-btn no-print bg-red-500 hover:bg-red-600 text-white rounded-full p-1" onClick={() => toggleSection('signaturesTable')}>
+              <X className="w-4 h-4" />
+            </button>
           <table style={{ 
             width: '100%', 
             borderCollapse: 'collapse', 
@@ -517,7 +522,7 @@ export default function FillClearanceForm() {
             <tbody>
               <tr>
                                     <td className="font-regular" style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}>1</td>
-                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'right', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>الرئيس المباشر</td>
+                                    <td className="editable-field" contentEditable suppressContentEditableWarning style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'right', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>الرئيس المباشر</td>
                                     <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
                                       <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('directSupervisorName', e.currentTarget.textContent)}>
                                         {formData.directSupervisorName || '\u00A0'}
@@ -527,7 +532,7 @@ export default function FillClearanceForm() {
                                   </tr>
                                   <tr>
                                     <td className="font-regular" style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}>2</td>
-                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'right', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>امين العهده في المركز / ادارة</td>
+                                    <td className="editable-field" contentEditable suppressContentEditableWarning style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'right', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>امين العهده في المركز / ادارة</td>
                                     <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
                                       <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('custodianName', e.currentTarget.textContent)}>
                                         {formData.custodianName || '\u00A0'}
@@ -537,7 +542,7 @@ export default function FillClearanceForm() {
                                   </tr>
                                   <tr>
                                     <td className="font-regular" style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}>3</td>
-                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'right', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>محاسب الرواتب بالموارد البشرية بالرعاية الاولية</td>
+                                    <td className="editable-field" contentEditable suppressContentEditableWarning style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'right', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>محاسب الرواتب بالموارد البشرية بالرعاية الاولية</td>
                                     <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
                                       <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('accountantName', e.currentTarget.textContent)}>
                                         {formData.accountantName || '\u00A0'}
@@ -547,6 +552,8 @@ export default function FillClearanceForm() {
                                   </tr>
             </tbody>
           </table>
+          </div>
+          )}
 
           {/* HR Manager Signature */}
           <div style={{ textAlign: 'center' }}>
