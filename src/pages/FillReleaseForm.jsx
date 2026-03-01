@@ -455,7 +455,7 @@ export default function FillReleaseForm() {
               style={{ transform: `translate(${lineOffsets.recipient.x}px, ${lineOffsets.recipient.y}px)`, cursor: draggingLine === 'recipient' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '4px' }}
               onMouseDown={(e) => handleLineMouseDown(e, 'recipient')}>
 
-              <p className="font-bold-title no-print-drag" style={{ margin: 0, padding: '2px 0' }}>
+              <p className="font-bold-title no-print-drag" style={{ margin: 0, padding: '2px 0', fontSize: '16px' }}>
                 <span className="no-print" style={{ fontSize: '10px', color: '#aaa', marginLeft: '4px' }}>↕</span>
                 المكرم{' '}
                 <span className="ef" contentEditable suppressContentEditableWarning
