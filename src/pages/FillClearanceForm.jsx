@@ -481,8 +481,12 @@ export default function FillClearanceForm() {
                 {formData.hrManagerName}
               </span>
             </p>
-            <p className="font-bold-title" style={{ fontSize: '13px', color: '#333', marginTop: '0' }}>
-              مدير إدارة الموارد البشرية بالرعاية الأولية
+            <p className="font-bold-title editable-field" 
+               contentEditable 
+               suppressContentEditableWarning 
+               onBlur={(e) => handleInputChange('hrManagerTitle', e.currentTarget.textContent)}
+               style={{ fontSize: '13px', color: '#333', marginTop: '0' }}>
+              {formData.hrManagerTitle}
             </p>
           </div>
         </div>
