@@ -159,6 +159,36 @@ export default function FillClearanceForm() {
     }
   };
 
+  // إزالة الخلفية البيضاء من الصورة باستخدام Canvas
+  const removeWhiteBackground = (imageUrl) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = 'anonymous';
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i], g = data[i + 1], b = data[i + 2];
+          // إذا كان البيكسل أبيض أو قريب منه، اجعله شفافاً
+          if (r > 220 && g > 220 && b > 220) {
+            data[i + 3] = 0;
+          }
+        }
+        ctx.putImageData(imageData, 0, 0);
+        resolve(canvas.toDataURL('image/png'));
+      };
+      img.onerror = () => resolve(imageUrl);
+      img.src = imageUrl;
+    });
+  };
+
+  const [processedImages, setProcessedImages] = useState({});
+
   // دوال السحب والإفلات
   const handleMouseDown = (e, type) => {
     e.preventDefault();
