@@ -346,6 +346,116 @@ export default function FillClearanceForm() {
               <RotateCcw className="w-4 h-4" />
               استعادة الكل
             </Button>
+            
+            {/* زر الختم */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <Stamp className="w-4 h-4" />
+                  الختم
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>إعدادات الختم</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={stampSettings.showStamp}
+                      onChange={(e) => setStampSettings(prev => ({ ...prev, showStamp: e.target.checked }))}
+                      className="w-4 h-4"
+                    />
+                    <Label>إظهار الختم</Label>
+                  </div>
+                  
+                  {systemStamps.length > 0 ? (
+                    <div className="grid grid-cols-3 gap-2 max-h-40 overflow-y-auto">
+                      {systemStamps.map(stamp => (
+                        <button
+                          key={stamp.id}
+                          onClick={() => setStampSettings(prev => ({ ...prev, selectedStamp: stamp, showStamp: true }))}
+                          className={`p-2 rounded border text-center ${stampSettings.selectedStamp?.id === stamp.id ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-gray-50'}`}
+                        >
+                          <img src={stamp.image_url} alt={stamp.name} className="w-10 h-10 object-contain mx-auto" />
+                          <span className="text-xs truncate block">{stamp.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-500 text-center p-4">لا توجد أختام محفوظة</p>
+                  )}
+                  
+                  <div>
+                    <Label className="text-xs">حجم الختم: {stampSettings.size}</Label>
+                    <Slider
+                      value={[stampSettings.size]}
+                      onValueChange={(v) => setStampSettings(prev => ({ ...prev, size: v[0] }))}
+                      min={40}
+                      max={150}
+                      step={5}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500">💡 اسحب الختم في المعاينة لتحريكه</p>
+                </div>
+              </DialogContent>
+            </Dialog>
+            
+            {/* زر التوقيع */}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <PenTool className="w-4 h-4" />
+                  التوقيع
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-md">
+                <DialogHeader>
+                  <DialogTitle>إعدادات التوقيع</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={signatureSettings.showSignature}
+                      onChange={(e) => setSignatureSettings(prev => ({ ...prev, showSignature: e.target.checked }))}
+                      className="w-4 h-4"
+                    />
+                    <Label>إظهار التوقيع</Label>
+                  </div>
+                  
+                  {systemSignatures.length > 0 ? (
+                    <div className="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto">
+                      {systemSignatures.map(sig => (
+                        <button
+                          key={sig.id}
+                          onClick={() => setSignatureSettings(prev => ({ ...prev, selectedSignature: sig, showSignature: true }))}
+                          className={`p-2 rounded border text-center ${signatureSettings.selectedSignature?.id === sig.id ? 'ring-2 ring-green-500 bg-green-50' : 'hover:bg-gray-50'}`}
+                        >
+                          <img src={sig.image_url} alt={sig.name} className="w-14 h-8 object-contain mx-auto" />
+                          <span className="text-xs truncate block">{sig.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-gray-500 text-center p-4">لا توجد توقيعات محفوظة</p>
+                  )}
+                  
+                  <div>
+                    <Label className="text-xs">حجم التوقيع: {signatureSettings.size}</Label>
+                    <Slider
+                      value={[signatureSettings.size]}
+                      onValueChange={(v) => setSignatureSettings(prev => ({ ...prev, size: v[0] }))}
+                      min={50}
+                      max={200}
+                      step={5}
+                    />
+                  </div>
+                  <p className="text-xs text-gray-500">💡 اسحب التوقيع في المعاينة لتحريكه</p>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
         
