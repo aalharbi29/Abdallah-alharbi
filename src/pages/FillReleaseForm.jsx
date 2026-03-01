@@ -464,7 +464,7 @@ export default function FillReleaseForm() {
                 style={{ padding: '0 4px', minWidth: '120px', display: 'inline-block' }}>
                   {formData.recipientTitle}
                 </span>
-                {'\u00A0'.repeat(70)}المحترم
+                {'\u00A0'.repeat(60)}المحترم
               </p>
             </div>
 
