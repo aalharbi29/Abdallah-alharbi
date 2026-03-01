@@ -378,6 +378,50 @@ export default function FillClearanceForm() {
                 ))}
               </SelectContent>
             </Select>
+
+            <Select onValueChange={applyTemplate}>
+              <SelectTrigger className="w-64">
+                <SelectValue placeholder="النماذج الافتراضية..." />
+              </SelectTrigger>
+              <SelectContent>
+                {templates.map(tmpl => (
+                  <div key={tmpl.id} className="flex justify-between items-center px-2 py-1 hover:bg-gray-100 cursor-pointer rounded">
+                    <span onClick={() => applyTemplate(tmpl.id)} className="flex-1">{tmpl.name}</span>
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); handleDeleteTemplate(tmpl.id); }}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" className="gap-2">
+                  <Plus className="w-4 h-4" />
+                  حفظ كنموذج
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="max-w-sm">
+                <DialogHeader>
+                  <DialogTitle>حفظ النموذج الافتراضي</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 pt-4">
+                  <div>
+                    <Label>اسم النموذج</Label>
+                    <Input 
+                      value={templateName} 
+                      onChange={(e) => setTemplateName(e.target.value)} 
+                      placeholder="أدخل اسم للنموذج..." 
+                    />
+                  </div>
+                  <Button onClick={handleSaveTemplate} className="w-full">حفظ</Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
           
           <div className="flex gap-2">
