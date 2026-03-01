@@ -12,6 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 export default function FillClearanceForm() {
   const [employees, setEmployees] = useState([]);
   const [healthCenters, setHealthCenters] = useState([]);
+  const [templates, setTemplates] = useState([]);
+  const [templateName, setTemplateName] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const printRef = useRef(null);
