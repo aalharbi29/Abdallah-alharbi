@@ -412,35 +412,35 @@ export default function FillReleaseForm() {
           </div>
 
           {/* Employee Table */}
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px', fontSize: '12px' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px', fontSize: '14px' }}>
             <thead>
               <tr>
-                <th className="font-bold-title" style={{ border: '1px solid #888', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الاسم</th>
-                <th className="font-bold-title" style={{ border: '1px solid #888', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الوظيفة</th>
-                <th className="font-bold-title" style={{ border: '1px solid #888', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>رقم الوظيفة</th>
-                <th className="font-bold-title" style={{ border: '1px solid #888', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>الجنسية</th>
-                <th className="font-bold-title" style={{ border: '1px solid #888', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>رقم الهوية</th>
-                <th className="font-bold-title" style={{ border: '1px solid #888', padding: '6px 8px', textAlign: 'center', backgroundColor: '#f5f5f5' }}>جهة العمل</th>
+                <th className="font-bold-title" style={{ border: '1px solid #888', padding: '7px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', fontSize: '14px' }}>الاسم</th>
+                <th className="font-bold-title" style={{ border: '1px solid #888', padding: '7px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', fontSize: '14px' }}>الوظيفة</th>
+                <th className="font-bold-title" style={{ border: '1px solid #888', padding: '7px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', fontSize: '14px' }}>رقم الوظيفة</th>
+                <th className="font-bold-title" style={{ border: '1px solid #888', padding: '7px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', fontSize: '14px' }}>الجنسية</th>
+                <th className="font-bold-title" style={{ border: '1px solid #888', padding: '7px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', fontSize: '14px' }}>رقم الهوية</th>
+                <th className="font-bold-title" style={{ border: '1px solid #888', padding: '7px 8px', textAlign: 'center', backgroundColor: '#f5f5f5', fontSize: '14px' }}>جهة العمل</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td style={{ border: '1px solid #888', padding: '10px 6px', textAlign: 'center', fontFamily: 'Cairo,Arial', fontWeight: 500 }}>
+                <td style={{ border: '1px solid #888', padding: '10px 6px', textAlign: 'center', fontFamily: 'Cairo,Arial', fontWeight: 700, fontSize: '14px' }}>
                   <span className="ef" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('employeeName', e.currentTarget.textContent)}>{formData.employeeName || '\u00A0'}</span>
                 </td>
-                <td style={{ border: '1px solid #888', padding: '10px 6px', textAlign: 'center', fontFamily: 'Cairo,Arial', fontWeight: 500 }}>
+                <td style={{ border: '1px solid #888', padding: '10px 6px', textAlign: 'center', fontFamily: 'Cairo,Arial', fontWeight: 700, fontSize: '14px' }}>
                   <span className="ef" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('position', e.currentTarget.textContent)}>{formData.position || '\u00A0'}</span>
                 </td>
-                <td style={{ border: '1px solid #888', padding: '10px 6px', textAlign: 'center', fontFamily: 'Cairo,Arial', fontWeight: 500 }}>
+                <td style={{ border: '1px solid #888', padding: '10px 6px', textAlign: 'center', fontFamily: 'Cairo,Arial', fontWeight: 700, fontSize: '14px' }}>
                   <span className="ef" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('positionNumber', e.currentTarget.textContent)}>{formData.positionNumber || '\u00A0'}</span>
                 </td>
-                <td style={{ border: '1px solid #888', padding: '10px 6px', textAlign: 'center', fontFamily: 'Cairo,Arial', fontWeight: 500 }}>
+                <td style={{ border: '1px solid #888', padding: '10px 6px', textAlign: 'center', fontFamily: 'Cairo,Arial', fontWeight: 700, fontSize: '14px' }}>
                   <span className="ef" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('nationality', e.currentTarget.textContent)}>{formData.nationality || '\u00A0'}</span>
                 </td>
-                <td style={{ border: '1px solid #888', padding: '10px 6px', textAlign: 'center', fontFamily: 'Cairo,Arial', fontWeight: 500 }}>
+                <td style={{ border: '1px solid #888', padding: '10px 6px', textAlign: 'center', fontFamily: 'Cairo,Arial', fontWeight: 700, fontSize: '14px' }}>
                   <span className="ef" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('idNumber', e.currentTarget.textContent)}>{formData.idNumber || '\u00A0'}</span>
                 </td>
-                <td style={{ border: '1px solid #888', padding: '10px 6px', textAlign: 'center', fontFamily: 'Cairo,Arial', fontWeight: 500 }}>
+                <td style={{ border: '1px solid #888', padding: '10px 6px', textAlign: 'center', fontFamily: 'Cairo,Arial', fontWeight: 700, fontSize: '14px' }}>
                   <span className="ef" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('workPlace', e.currentTarget.textContent)}>{formData.workPlace || '\u00A0'}</span>
                 </td>
               </tr>
