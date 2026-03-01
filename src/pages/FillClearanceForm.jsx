@@ -435,6 +435,11 @@ export default function FillClearanceForm() {
           )}
 
           {/* Certificate Text - Centered */}
+          {visibleSections.certificateText && (
+          <div className="deletable-section">
+            <button className="delete-btn no-print bg-red-500 hover:bg-red-600 text-white rounded-full p-1" onClick={() => toggleSection('certificateText')}>
+              <X className="w-4 h-4" />
+            </button>
           <div className="font-bold-title" style={{ 
             textAlign: 'center', 
             lineHeight: '2.0',
@@ -452,7 +457,9 @@ export default function FillClearanceForm() {
               </span>
             </p>
             <p style={{ marginBottom: '0' }}>
-              لقرار{' '}
+              <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('decisionText', e.currentTarget.textContent)}>
+                {formData.decisionText}
+              </span>{' '}
               <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('decisionType', e.currentTarget.textContent)} style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '100px', display: 'inline-block' }}>
                 {formData.decisionType || '.........................'}
               </span>
@@ -475,6 +482,8 @@ export default function FillClearanceForm() {
               هـ
             </p>
           </div>
+          </div>
+          )}
 
           {/* Signature Section Title */}
           <div className="font-bold-title" style={{ textAlign: 'right', marginBottom: '8mm', marginTop: '25px', paddingRight: '5mm' }}>
