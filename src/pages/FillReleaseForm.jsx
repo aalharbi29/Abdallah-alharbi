@@ -58,7 +58,7 @@ export default function FillReleaseForm() {
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [processedImages, setProcessedImages] = useState({});
 
-  useEffect(() => {loadData();loadStampsAndSignatures();}, []);
+  useEffect(() => {loadData();loadStampsAndSignatures();loadTemplates();}, []);
 
   const loadData = async () => {
     try {
