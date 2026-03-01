@@ -497,7 +497,7 @@ export default function FillReleaseForm() {
                   </span>
                 </div>
                 {/* السطر الثاني */}
-                <div style={{ textAlign: 'justify' }}>
+                <div style={{ textAlign: 'center' }}>
                   وذلك بناءً على القرار رقم{' '}
                   <span className="ef" contentEditable suppressContentEditableWarning
                   onMouseDown={(e) => e.stopPropagation()}
