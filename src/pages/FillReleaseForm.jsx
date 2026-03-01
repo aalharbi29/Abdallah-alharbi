@@ -42,7 +42,7 @@ export default function FillReleaseForm() {
     greeting: { x: 0, y: 0 },
     mainPara: { x: 0, y: 0 },
     closing: { x: 0, y: 0 },
-    sender: { x: 0, y: 0 },
+    sender: { x: 0, y: 0 }
   });
   const [draggingLine, setDraggingLine] = useState(null);
   const [lineDragStart, setLineDragStart] = useState({ x: 0, y: 0, origX: 0, origY: 0 });
@@ -162,7 +162,7 @@ export default function FillReleaseForm() {
     if (draggingLine) {
       window.addEventListener('mousemove', handleLineMoveGlobal);
       window.addEventListener('mouseup', handleLineUpGlobal);
-      return () => { window.removeEventListener('mousemove', handleLineMoveGlobal); window.removeEventListener('mouseup', handleLineUpGlobal); };
+      return () => {window.removeEventListener('mousemove', handleLineMoveGlobal);window.removeEventListener('mouseup', handleLineUpGlobal);};
     }
   }, [draggingLine, handleLineMoveGlobal, handleLineUpGlobal]);
 
@@ -453,15 +453,15 @@ export default function FillReleaseForm() {
             {/* Recipient line - draggable */}
             <div
               style={{ transform: `translate(${lineOffsets.recipient.x}px, ${lineOffsets.recipient.y}px)`, cursor: draggingLine === 'recipient' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '4px' }}
-              onMouseDown={(e) => handleLineMouseDown(e, 'recipient')}
-            >
+              onMouseDown={(e) => handleLineMouseDown(e, 'recipient')}>
+
               <p className="font-bold-title no-print-drag" style={{ margin: 0, padding: '2px 0' }}>
                 <span className="no-print" style={{ fontSize: '10px', color: '#aaa', marginLeft: '4px' }}>↕</span>
                 المكرم{' '}
                 <span className="ef" contentEditable suppressContentEditableWarning
-                  onMouseDown={(e) => e.stopPropagation()}
-                  onBlur={(e) => handleInputChange('recipientTitle', e.currentTarget.textContent)}
-                  style={{ padding: '0 4px', minWidth: '120px', display: 'inline-block' }}>
+                onMouseDown={(e) => e.stopPropagation()}
+                onBlur={(e) => handleInputChange('recipientTitle', e.currentTarget.textContent)}
+                style={{ padding: '0 4px', minWidth: '120px', display: 'inline-block' }}>
                   {formData.recipientTitle}
                 </span>
                 {'  '}المحترم
@@ -471,8 +471,8 @@ export default function FillReleaseForm() {
             {/* Greeting - draggable */}
             <div
               style={{ transform: `translate(${lineOffsets.greeting.x}px, ${lineOffsets.greeting.y}px)`, cursor: draggingLine === 'greeting' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '12px' }}
-              onMouseDown={(e) => handleLineMouseDown(e, 'greeting')}
-            >
+              onMouseDown={(e) => handleLineMouseDown(e, 'greeting')}>
+
               <p className="font-bold-title" style={{ margin: 0, padding: '2px 0' }}>
                 <span className="no-print" style={{ fontSize: '10px', color: '#aaa', marginLeft: '4px' }}>↕</span>
                 السلام عليكم ورحمة الله وبركاته ،،،
@@ -482,36 +482,36 @@ export default function FillReleaseForm() {
             {/* Main Paragraph - draggable */}
             <div
               style={{ transform: `translate(${lineOffsets.mainPara.x}px, ${lineOffsets.mainPara.y}px)`, cursor: draggingLine === 'mainPara' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '8px' }}
-              onMouseDown={(e) => handleLineMouseDown(e, 'mainPara')}
-            >
-              <p className="font-bold-title" style={{ textAlign: 'justify', margin: 0, padding: '4px 0' }}>
+              onMouseDown={(e) => handleLineMouseDown(e, 'mainPara')}>
+
+              <p className="bg-slate-50 font-bold-title opacity-100" style={{ textAlign: 'justify', margin: 0, padding: '4px 0' }}>
                 <span className="no-print" style={{ fontSize: '10px', color: '#aaa', marginLeft: '4px' }}>↕</span>
                 نفيدكم بأنه تم إخلاء طرف {employeeWord} الموضحة بياناتـ{pronoun} أعلاه يوم{' '}
                 <span className="ef" contentEditable suppressContentEditableWarning
-                  onMouseDown={(e) => e.stopPropagation()}
-                  onBlur={(e) => handleInputChange('releaseDate', e.currentTarget.textContent)}
-                  style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '100px', display: 'inline-block' }}>
+                onMouseDown={(e) => e.stopPropagation()}
+                onBlur={(e) => handleInputChange('releaseDate', e.currentTarget.textContent)}
+                style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '100px', display: 'inline-block' }}>
                   {formData.releaseDate || '...............'}
                 </span>
                 {' '}وذلك بناءً على القرار رقم{' '}
                 <span className="ef" contentEditable suppressContentEditableWarning
-                  onMouseDown={(e) => e.stopPropagation()}
-                  onBlur={(e) => handleInputChange('decisionNumber', e.currentTarget.textContent)}
-                  style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '80px', display: 'inline-block' }}>
+                onMouseDown={(e) => e.stopPropagation()}
+                onBlur={(e) => handleInputChange('decisionNumber', e.currentTarget.textContent)}
+                style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '80px', display: 'inline-block' }}>
                   {formData.decisionNumber || '..........'}
                 </span>
                 {' '}وتاريخ{' '}
                 <span className="ef" contentEditable suppressContentEditableWarning
-                  onMouseDown={(e) => e.stopPropagation()}
-                  onBlur={(e) => handleInputChange('decisionDate', e.currentTarget.textContent)}
-                  style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '100px', display: 'inline-block' }}>
+                onMouseDown={(e) => e.stopPropagation()}
+                onBlur={(e) => handleInputChange('decisionDate', e.currentTarget.textContent)}
+                style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '100px', display: 'inline-block' }}>
                   {formData.decisionDate || '...............'}
                 </span>
                 {' '}والقاضي بتكليف{pronoun}{' '}
                 <span className="ef" contentEditable suppressContentEditableWarning
-                  onMouseDown={(e) => e.stopPropagation()}
-                  onBlur={(e) => handleInputChange('assignedTo', e.currentTarget.textContent)}
-                  style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '120px', display: 'inline-block' }}>
+                onMouseDown={(e) => e.stopPropagation()}
+                onBlur={(e) => handleInputChange('assignedTo', e.currentTarget.textContent)}
+                style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '120px', display: 'inline-block' }}>
                   {formData.assignedTo || '...........................'}
                 </span>
                 {' '}.
@@ -521,8 +521,8 @@ export default function FillReleaseForm() {
             {/* Closing - draggable */}
             <div
               style={{ transform: `translate(${lineOffsets.closing.x}px, ${lineOffsets.closing.y}px)`, cursor: draggingLine === 'closing' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '20px' }}
-              onMouseDown={(e) => handleLineMouseDown(e, 'closing')}
-            >
+              onMouseDown={(e) => handleLineMouseDown(e, 'closing')}>
+
               <p className="font-bold-title" style={{ margin: 0, padding: '2px 0' }}>
                 <span className="no-print" style={{ fontSize: '10px', color: '#aaa', marginLeft: '4px' }}>↕</span>
                 نرجو التكرم بالاطلاع وإكمال اللازم .
@@ -532,20 +532,20 @@ export default function FillReleaseForm() {
             {/* Sender - draggable */}
             <div
               style={{ transform: `translate(${lineOffsets.sender.x}px, ${lineOffsets.sender.y}px)`, cursor: draggingLine === 'sender' ? 'grabbing' : 'grab', userSelect: 'none', textAlign: 'center', marginTop: '10px' }}
-              onMouseDown={(e) => handleLineMouseDown(e, 'sender')}
-            >
+              onMouseDown={(e) => handleLineMouseDown(e, 'sender')}>
+
               <div>
                 <span className="no-print" style={{ fontSize: '10px', color: '#aaa', display: 'block' }}>↕↔</span>
                 <p className="font-bold-title ef" contentEditable suppressContentEditableWarning
-                  onMouseDown={(e) => e.stopPropagation()}
-                  onBlur={(e) => handleInputChange('senderName', e.currentTarget.textContent)}
-                  style={{ fontSize: '15px', margin: '0 0 4px 0', display: 'block', textAlign: 'center' }}>
+                onMouseDown={(e) => e.stopPropagation()}
+                onBlur={(e) => handleInputChange('senderName', e.currentTarget.textContent)}
+                style={{ fontSize: '15px', margin: '0 0 4px 0', display: 'block', textAlign: 'center' }}>
                   {formData.senderName}
                 </p>
                 <p className="font-bold-title ef" contentEditable suppressContentEditableWarning
-                  onMouseDown={(e) => e.stopPropagation()}
-                  onBlur={(e) => handleInputChange('senderTitle', e.currentTarget.textContent)}
-                  style={{ fontSize: '12px', color: '#444', margin: 0, display: 'block', textAlign: 'center' }}>
+                onMouseDown={(e) => e.stopPropagation()}
+                onBlur={(e) => handleInputChange('senderTitle', e.currentTarget.textContent)}
+                style={{ fontSize: '12px', color: '#444', margin: 0, display: 'block', textAlign: 'center' }}>
                   {formData.senderTitle}
                 </p>
               </div>
