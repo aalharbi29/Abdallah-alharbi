@@ -481,7 +481,7 @@ export default function FillReleaseForm() {
 
             {/* Main Paragraph - draggable */}
             <div
-              style={{ transform: `translateY(${lineOffsets.mainPara}px)`, cursor: draggingLine === 'mainPara' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '8px' }}
+              style={{ transform: `translate(${lineOffsets.mainPara.x}px, ${lineOffsets.mainPara.y}px)`, cursor: draggingLine === 'mainPara' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '8px' }}
               onMouseDown={(e) => handleLineMouseDown(e, 'mainPara')}
             >
               <p className="font-bold-title" style={{ textAlign: 'justify', margin: 0, padding: '4px 0' }}>
