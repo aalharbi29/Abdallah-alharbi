@@ -935,7 +935,9 @@ export default function FillClearanceForm() {
             style={{
               left: signatureSettings.position.x,
               top: signatureSettings.position.y,
-              zIndex: 50
+              zIndex: 50,
+              background: 'transparent',
+              mixBlendMode: 'multiply'
             }}
             onMouseDown={(e) => handleMouseDown(e, 'signature')}
           >
@@ -946,7 +948,8 @@ export default function FillClearanceForm() {
                 width: signatureSettings.size,
                 mixBlendMode: 'multiply',
                 opacity: 0.9,
-                pointerEvents: 'none'
+                pointerEvents: 'none',
+                display: 'block'
               }}
               draggable={false}
             />
