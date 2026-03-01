@@ -411,7 +411,14 @@ export default function FillClearanceForm() {
                     <input
                       type="checkbox"
                       checked={stampSettings.showStamp}
-                      onChange={(e) => setStampSettings(prev => ({ ...prev, showStamp: e.target.checked }))}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setStampSettings(prev => ({ 
+                          ...prev, 
+                          showStamp: checked,
+                          selectedStamp: checked && !prev.selectedStamp && systemStamps.length > 0 ? systemStamps[0] : prev.selectedStamp
+                        }));
+                      }}
                       className="w-4 h-4"
                     />
                     <Label>إظهار الختم</Label>
