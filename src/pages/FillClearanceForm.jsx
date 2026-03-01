@@ -916,6 +916,7 @@ export default function FillClearanceForm() {
               alt="الختم"
               style={{
                 width: stampSettings.size,
+                mixBlendMode: 'multiply',
                 opacity: 0.85,
                 pointerEvents: 'none'
               }}
