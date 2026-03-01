@@ -61,6 +61,7 @@ const getNavigationItems = (t) => [
       { name: "Additional Forms", href: createPageUrl("Forms?type=additional"), icon: FilePlus },
             { name: "تكليف مهمة رسمية", href: createPageUrl("FillOfficialAssignmentForm"), icon: FileText },
                         { name: "طلب استعادة بريد", href: createPageUrl("FillEmailRecoveryForm"), icon: Mail },
+                        { name: "إخلاء طرف", href: createPageUrl("FillReleaseForm"), icon: FileText },
                       ]
                     },
             { name: t('nav.assignmentTemplates') || "إدارة قوالب التكليف", href: createPageUrl("AssignmentTemplates"), icon: FileText },
