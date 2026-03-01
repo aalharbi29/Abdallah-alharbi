@@ -38,11 +38,11 @@ export default function FillReleaseForm() {
 
   // موضع كل سطر نصي بشكل مستقل (offset عمودي بالبكسل)
   const [lineOffsets, setLineOffsets] = useState({
-    recipient: 0,
-    greeting: 0,
-    mainPara: 0,
-    closing: 0,
-    sender: 0,
+    recipient: { x: 0, y: 0 },
+    greeting: { x: 0, y: 0 },
+    mainPara: { x: 0, y: 0 },
+    closing: { x: 0, y: 0 },
+    sender: { x: 0, y: 0 },
   });
   const [draggingLine, setDraggingLine] = useState(null);
   const [lineDragStart, setLineDragStart] = useState({ y: 0, origOffset: 0 });
