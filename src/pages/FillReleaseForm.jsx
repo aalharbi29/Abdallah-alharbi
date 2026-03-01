@@ -512,8 +512,11 @@ export default function FillReleaseForm() {
                   style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '100px', display: 'inline-block' }}>
                     {formData.decisionDate || '...............'}
                   </span>
-                  {' '}والقاضي بتكليف{pronoun}{' '}
-                  <span className="mt-4 ef" contentEditable suppressContentEditableWarning
+                </div>
+                {/* السطر الثالث */}
+                <div style={{ textAlign: 'center' }} className="mt-2">
+                  والقاضي بتكليف{pronoun}{' '}
+                  <span className="ef" contentEditable suppressContentEditableWarning
                   onMouseDown={(e) => e.stopPropagation()}
                   onBlur={(e) => handleInputChange('assignedTo', e.currentTarget.textContent)}
                   style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '120px', display: 'inline-block' }}>
