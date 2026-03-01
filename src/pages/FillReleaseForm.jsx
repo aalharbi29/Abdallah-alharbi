@@ -448,7 +448,7 @@ export default function FillReleaseForm() {
           </table>
 
           {/* Body Text */}
-          <div style={{ fontSize: '13px', lineHeight: '2.2', fontFamily: 'Cairo,Arial', position: 'relative' }}>
+          <div style={{ fontSize: '15px', lineHeight: '2.2', fontFamily: 'Cairo,Arial', position: 'relative' }}>
 
             {/* Recipient line - draggable */}
             <div
