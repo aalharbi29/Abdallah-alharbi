@@ -142,6 +142,29 @@ export default function FillReleaseForm() {
     }
   }, [dragging, dragOffset]);
 
+  // سحب الصفوف النصية
+  const handleLineMouseDown = (e, lineKey) => {
+    e.preventDefault();
+    setDraggingLine(lineKey);
+    setLineDragStart({ y: e.clientY, origOffset: lineOffsets[lineKey] });
+  };
+
+  const handleLineMoveGlobal = useCallback((e) => {
+    if (!draggingLine) return;
+    const delta = e.clientY - lineDragStart.y;
+    setLineOffsets((prev) => ({ ...prev, [draggingLine]: lineDragStart.origOffset + delta }));
+  }, [draggingLine, lineDragStart]);
+
+  const handleLineUpGlobal = useCallback(() => setDraggingLine(null), []);
+
+  useEffect(() => {
+    if (draggingLine) {
+      window.addEventListener('mousemove', handleLineMoveGlobal);
+      window.addEventListener('mouseup', handleLineUpGlobal);
+      return () => { window.removeEventListener('mousemove', handleLineMoveGlobal); window.removeEventListener('mouseup', handleLineUpGlobal); };
+    }
+  }, [draggingLine, handleLineMoveGlobal, handleLineUpGlobal]);
+
   const handleEmployeeSelect = (employeeId) => {
     const emp = employees.find((e) => e.id === employeeId);
     setSelectedEmployee(emp);
