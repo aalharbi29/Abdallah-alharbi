@@ -534,19 +534,21 @@ export default function FillReleaseForm() {
               style={{ transform: `translate(${lineOffsets.sender.x}px, ${lineOffsets.sender.y}px)`, cursor: draggingLine === 'sender' ? 'grabbing' : 'grab', userSelect: 'none', textAlign: 'center', marginTop: '10px' }}
               onMouseDown={(e) => handleLineMouseDown(e, 'sender')}
             >
-              <span className="no-print" style={{ fontSize: '10px', color: '#aaa' }}>↕</span>
-              <p className="font-bold-title ef" contentEditable suppressContentEditableWarning
-                onMouseDown={(e) => e.stopPropagation()}
-                onBlur={(e) => handleInputChange('senderName', e.currentTarget.textContent)}
-                style={{ fontSize: '15px', margin: '0 0 6px 0' }}>
-                {formData.senderName}
-              </p>
-              <p className="font-bold-title ef" contentEditable suppressContentEditableWarning
-                onMouseDown={(e) => e.stopPropagation()}
-                onBlur={(e) => handleInputChange('senderTitle', e.currentTarget.textContent)}
-                style={{ fontSize: '12px', color: '#444', margin: 0 }}>
-                {formData.senderTitle}
-              </p>
+              <div>
+                <span className="no-print" style={{ fontSize: '10px', color: '#aaa', display: 'block' }}>↕↔</span>
+                <p className="font-bold-title ef" contentEditable suppressContentEditableWarning
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onBlur={(e) => handleInputChange('senderName', e.currentTarget.textContent)}
+                  style={{ fontSize: '15px', margin: '0 0 4px 0', display: 'block', textAlign: 'center' }}>
+                  {formData.senderName}
+                </p>
+                <p className="font-bold-title ef" contentEditable suppressContentEditableWarning
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onBlur={(e) => handleInputChange('senderTitle', e.currentTarget.textContent)}
+                  style={{ fontSize: '12px', color: '#444', margin: 0, display: 'block', textAlign: 'center' }}>
+                  {formData.senderTitle}
+                </p>
+              </div>
             </div>
           </div>
         </div>
