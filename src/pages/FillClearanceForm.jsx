@@ -84,6 +84,7 @@ export default function FillClearanceForm() {
 
   useEffect(() => {
     loadData();
+    loadStampsAndSignatures();
   }, []);
 
   const loadData = async () => {
@@ -102,6 +103,60 @@ export default function FillClearanceForm() {
       setIsLoading(false);
     }
   };
+
+  const loadStampsAndSignatures = async () => {
+    try {
+      const data = await base44.entities.StampSignature.list('-created_date', 50);
+      const items = Array.isArray(data) ? data : [];
+      setSystemStamps(items.filter(item => item.type === 'stamp' && item.is_active !== false));
+      setSystemSignatures(items.filter(item => item.type === 'signature' && item.is_active !== false));
+    } catch (error) {
+      console.error('Error loading stamps:', error);
+    }
+  };
+
+  // دوال السحب والإفلات
+  const handleMouseDown = (e, type) => {
+    e.preventDefault();
+    const rect = printRef.current?.getBoundingClientRect();
+    if (!rect) return;
+
+    const currentPos = type === 'stamp' ? stampSettings.position : signatureSettings.position;
+    setDragOffset({
+      x: e.clientX - rect.left - currentPos.x,
+      y: e.clientY - rect.top - currentPos.y
+    });
+    setDragging(type);
+  };
+
+  const handleMouseMove = (e) => {
+    if (!dragging || !printRef.current) return;
+
+    const rect = printRef.current.getBoundingClientRect();
+    const x = Math.max(0, Math.min(e.clientX - rect.left - dragOffset.x, rect.width - 80));
+    const y = Math.max(0, Math.min(e.clientY - rect.top - dragOffset.y, rect.height - 80));
+
+    if (dragging === 'stamp') {
+      setStampSettings(prev => ({ ...prev, position: { x, y } }));
+    } else if (dragging === 'signature') {
+      setSignatureSettings(prev => ({ ...prev, position: { x, y } }));
+    }
+  };
+
+  const handleMouseUp = () => {
+    setDragging(null);
+  };
+
+  useEffect(() => {
+    if (dragging) {
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [dragging, dragOffset]);
 
   const handleEmployeeSelect = async (employeeId) => {
     const employee = employees.find(e => e.id === employeeId);
