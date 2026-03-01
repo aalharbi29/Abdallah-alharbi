@@ -491,7 +491,7 @@ export default function FillClearanceForm() {
                       value={[stampSettings.size]}
                       onValueChange={(v) => setStampSettings(prev => ({ ...prev, size: v[0] }))}
                       min={40}
-                      max={150}
+                      max={200}
                       step={5}
                     />
                   </div>
