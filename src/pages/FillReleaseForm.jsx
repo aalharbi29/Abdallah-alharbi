@@ -614,7 +614,7 @@ export default function FillReleaseForm() {
                   <span className="ef" contentEditable suppressContentEditableWarning
                   onMouseDown={(e) => e.stopPropagation()}
                   onBlur={(e) => handleInputChange('releaseDate', e.currentTarget.textContent)}
-                  style={{ textDecoration: 'underline', textDecorationStyle: 'dotted', textUnderlineOffset: '3px', padding: '0 5px', minWidth: '180px', display: 'inline-block' }}>
+                  style={{ borderBottom: '1px solid transparent', padding: '0 5px', minWidth: '180px', display: 'inline-block' }}>
                     {formData.releaseDate || 'يوم الاحد الموافق ...-...-...'}
                   </span>
                 </p>
@@ -624,14 +624,14 @@ export default function FillReleaseForm() {
                   <span className="ef" contentEditable suppressContentEditableWarning
                   onMouseDown={(e) => e.stopPropagation()}
                   onBlur={(e) => handleInputChange('decisionNumber', e.currentTarget.textContent)}
-                  style={{ textDecoration: 'underline', textDecorationStyle: 'dotted', textUnderlineOffset: '3px', padding: '0 5px', minWidth: '80px', display: 'inline-block' }}>
+                  style={{ borderBottom: '1px solid transparent', padding: '0 5px', minWidth: '80px', display: 'inline-block' }}>
                     {formData.decisionNumber || '..........'}
                   </span>
                   {' '}وتاريخ{' '}
                   <span className="ef" contentEditable suppressContentEditableWarning
                   onMouseDown={(e) => e.stopPropagation()}
                   onBlur={(e) => handleInputChange('decisionDate', e.currentTarget.textContent)}
-                  style={{ textDecoration: 'underline', textDecorationStyle: 'dotted', textUnderlineOffset: '3px', padding: '0 5px', minWidth: '100px', display: 'inline-block' }}>
+                  style={{ borderBottom: '1px solid transparent', padding: '0 5px', minWidth: '100px', display: 'inline-block' }}>
                     {formData.decisionDate || '...............'}
                   </span>
                 </p>
@@ -641,7 +641,7 @@ export default function FillReleaseForm() {
                   <span className="ef" contentEditable suppressContentEditableWarning
                   onMouseDown={(e) => e.stopPropagation()}
                   onBlur={(e) => handleInputChange('assignedTo', e.currentTarget.textContent)}
-                  style={{ textDecoration: 'underline', textDecorationStyle: 'dotted', textUnderlineOffset: '3px', padding: '0 5px', minWidth: '120px', display: 'inline-block' }}>
+                  style={{ borderBottom: '1px solid transparent', padding: '0 5px', minWidth: '120px', display: 'inline-block' }}>
                     {formData.assignedTo || '...........................'}
                   </span>
                   {' '}.
