@@ -266,6 +266,10 @@ export default function FillClearanceForm() {
               <Download className="w-4 h-4" />
               PDF
             </Button>
+            <Button onClick={resetAllSections} variant="outline" className="gap-2">
+              <RotateCcw className="w-4 h-4" />
+              استعادة الكل
+            </Button>
           </div>
         </div>
         
