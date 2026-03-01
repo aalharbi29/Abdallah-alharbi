@@ -349,6 +349,25 @@ export default function FillReleaseForm() {
             </DialogContent>
           </Dialog>
 
+          {/* حفظ نموذج */}
+          <div className="flex gap-1 items-end">
+            <div>
+              <Label className="text-xs">اسم النموذج</Label>
+              <input
+                className="border rounded px-2 py-1 text-sm w-36"
+                placeholder="مثال: نموذج مستشفى الحسو"
+                value={templateName}
+                onChange={(e) => setTemplateName(e.target.value)}
+              />
+            </div>
+            <Button onClick={handleSaveTemplate} size="sm" className="gap-1 bg-green-600 hover:bg-green-700 text-white">
+              <Save className="w-4 h-4" /> حفظ
+            </Button>
+            <Button onClick={() => setShowTemplates(!showTemplates)} variant="outline" size="sm" className="gap-1">
+              <FolderOpen className="w-4 h-4" /> النماذج ({templates.length})
+            </Button>
+          </div>
+
           {/* زر التوقيع */}
           <Dialog>
             <DialogTrigger asChild>
