@@ -545,13 +545,13 @@ export default function FillReleaseForm() {
 
               <div>
                 <span className="no-print" style={{ fontSize: '10px', color: '#aaa', display: 'block' }}>↕↔</span>
-                <p className="font-bold-title ef" contentEditable suppressContentEditableWarning
+                <p className="mb-8 font-bold-title ef" contentEditable suppressContentEditableWarning
                 onMouseDown={(e) => e.stopPropagation()}
                 onBlur={(e) => handleInputChange('senderName', e.currentTarget.textContent)}
                 style={{ fontSize: '15px', margin: '0 0 4px 0', display: 'block', textAlign: 'center' }}>
                   {formData.senderName}
                 </p>
-                <p className="font-bold-title ef" contentEditable suppressContentEditableWarning
+                <p className="pt-2 font-bold-title ef" contentEditable suppressContentEditableWarning
                 onMouseDown={(e) => e.stopPropagation()}
                 onBlur={(e) => handleInputChange('senderTitle', e.currentTarget.textContent)}
                 style={{ fontSize: '12px', color: '#444', margin: 0, display: 'block', textAlign: 'center' }}>
