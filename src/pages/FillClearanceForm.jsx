@@ -375,6 +375,11 @@ export default function FillClearanceForm() {
           </div>
 
           {/* Employee Info Table */}
+          {visibleSections.employeeTable && (
+          <div className="deletable-section">
+            <button className="delete-btn no-print bg-red-500 hover:bg-red-600 text-white rounded-full p-1" onClick={() => toggleSection('employeeTable')}>
+              <X className="w-4 h-4" />
+            </button>
           <table style={{ 
             width: '100%', 
             borderCollapse: 'collapse', 
@@ -426,6 +431,8 @@ export default function FillClearanceForm() {
               </tr>
             </tbody>
           </table>
+          </div>
+          )}
 
           {/* Certificate Text - Centered */}
           <div className="font-bold-title" style={{ 
