@@ -60,6 +60,44 @@ export default function FillReleaseForm() {
 
   useEffect(() => {loadData();loadStampsAndSignatures();loadTemplates();}, []);
 
+  const loadTemplates = async () => {
+    try {
+      const data = await base44.entities.ReleaseFormTemplate.list('-created_date', 50);
+      setTemplates(Array.isArray(data) ? data : []);
+    } catch {}
+  };
+
+  const handleSaveTemplate = async () => {
+    if (!templateName.trim()) { toast.error("أدخل اسماً للنموذج"); return; }
+    try {
+      await base44.entities.ReleaseFormTemplate.create({
+        template_name: templateName.trim(),
+        form_data: JSON.stringify(formData),
+        line_offsets: JSON.stringify(lineOffsets)
+      });
+      toast.success("تم حفظ النموذج بنجاح");
+      setTemplateName("");
+      loadTemplates();
+    } catch { toast.error("فشل في حفظ النموذج"); }
+  };
+
+  const handleLoadTemplate = (tpl) => {
+    try {
+      setFormData(JSON.parse(tpl.form_data));
+      if (tpl.line_offsets) setLineOffsets(JSON.parse(tpl.line_offsets));
+      setShowTemplates(false);
+      toast.success(`تم تحميل النموذج: ${tpl.template_name}`);
+    } catch { toast.error("فشل في تحميل النموذج"); }
+  };
+
+  const handleDeleteTemplate = async (id) => {
+    try {
+      await base44.entities.ReleaseFormTemplate.delete(id);
+      toast.success("تم حذف النموذج");
+      loadTemplates();
+    } catch { toast.error("فشل في الحذف"); }
+  };
+
   const loadData = async () => {
     try {
       setIsLoading(true);
