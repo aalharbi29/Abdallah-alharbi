@@ -944,6 +944,7 @@ export default function FillClearanceForm() {
               alt="التوقيع"
               style={{
                 width: signatureSettings.size,
+                mixBlendMode: 'multiply',
                 opacity: 0.9,
                 pointerEvents: 'none'
               }}
