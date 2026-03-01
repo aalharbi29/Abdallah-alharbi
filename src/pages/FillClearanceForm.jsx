@@ -473,7 +473,14 @@ export default function FillClearanceForm() {
                     <input
                       type="checkbox"
                       checked={signatureSettings.showSignature}
-                      onChange={(e) => setSignatureSettings(prev => ({ ...prev, showSignature: e.target.checked }))}
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setSignatureSettings(prev => ({ 
+                          ...prev, 
+                          showSignature: checked,
+                          selectedSignature: checked && !prev.selectedSignature && systemSignatures.length > 0 ? systemSignatures[0] : prev.selectedSignature
+                        }));
+                      }}
                       className="w-4 h-4"
                     />
                     <Label>إظهار التوقيع</Label>
