@@ -606,46 +606,46 @@ export default function FillReleaseForm() {
               style={{ transform: `translate(${lineOffsets.mainPara.x}px, ${lineOffsets.mainPara.y}px)`, cursor: draggingLine === 'mainPara' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '8px' }}
               onMouseDown={(e) => handleLineMouseDown(e, 'mainPara')}>
 
-              <div className="font-bold-title" style={{ margin: 0, padding: '4px 0', lineHeight: '2.0', textAlign: 'center' }}>
+              <div className="font-bold-title" style={{ margin: 0, padding: '4px 0', lineHeight: '2.4', textAlign: 'center' }}>
                 <span className="no-print" style={{ fontSize: '10px', color: '#aaa', marginLeft: '4px' }}>↕</span>
                 {/* السطر الأول */}
-                <div style={{ textAlign: 'center' }} className="mb-2">
+                <p style={{ margin: '0 0 6px 0', textAlign: 'center' }}>
                   نفيدكم بأنه تم إخلاء طرف {employeeWord} الموضحة بياناتـ{pronoun} أعلاه يوم{' '}
                   <span className="ef" contentEditable suppressContentEditableWarning
                   onMouseDown={(e) => e.stopPropagation()}
                   onBlur={(e) => handleInputChange('releaseDate', e.currentTarget.textContent)}
-                  style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '180px', display: 'inline-block' }}>
+                  style={{ textDecoration: 'underline', textDecorationStyle: 'dotted', textUnderlineOffset: '3px', padding: '0 5px', minWidth: '180px', display: 'inline-block' }}>
                     {formData.releaseDate || 'يوم الاحد الموافق ...-...-...'}
                   </span>
-                </div>
+                </p>
                 {/* السطر الثاني */}
-                <div style={{ textAlign: 'center' }} className="mt-2 mb-1">
+                <p style={{ margin: '0 0 6px 0', textAlign: 'center' }}>
                   وذلك بناءً على القرار رقم{' '}
                   <span className="ef" contentEditable suppressContentEditableWarning
                   onMouseDown={(e) => e.stopPropagation()}
                   onBlur={(e) => handleInputChange('decisionNumber', e.currentTarget.textContent)}
-                  style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '80px', display: 'inline-block' }}>
+                  style={{ textDecoration: 'underline', textDecorationStyle: 'dotted', textUnderlineOffset: '3px', padding: '0 5px', minWidth: '80px', display: 'inline-block' }}>
                     {formData.decisionNumber || '..........'}
                   </span>
                   {' '}وتاريخ{' '}
                   <span className="ef" contentEditable suppressContentEditableWarning
                   onMouseDown={(e) => e.stopPropagation()}
                   onBlur={(e) => handleInputChange('decisionDate', e.currentTarget.textContent)}
-                  style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '100px', display: 'inline-block' }}>
+                  style={{ textDecoration: 'underline', textDecorationStyle: 'dotted', textUnderlineOffset: '3px', padding: '0 5px', minWidth: '100px', display: 'inline-block' }}>
                     {formData.decisionDate || '...............'}
                   </span>
-                </div>
+                </p>
                 {/* السطر الثالث */}
-                <div style={{ textAlign: 'center' }} className="mt-2">
-                  والقاضي بتكليف{pronoun}{' '}
+                <p style={{ margin: '0', textAlign: 'center' }}>
+                  والقاضي بتكليف{pronoun} للعمل في{' '}
                   <span className="ef" contentEditable suppressContentEditableWarning
                   onMouseDown={(e) => e.stopPropagation()}
                   onBlur={(e) => handleInputChange('assignedTo', e.currentTarget.textContent)}
-                  style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '120px', display: 'inline-block' }}>
+                  style={{ textDecoration: 'underline', textDecorationStyle: 'dotted', textUnderlineOffset: '3px', padding: '0 5px', minWidth: '120px', display: 'inline-block' }}>
                     {formData.assignedTo || '...........................'}
                   </span>
                   {' '}.
-                </div>
+                </p>
               </div>
             </div>
 
