@@ -32,8 +32,34 @@ export default function FillClearanceForm() {
     headerDepartmentName: "إدارة الموارد البشرية بالرعاية الأولية بتجمع المدينة المنورة",
     hrManagerTitle: "مدير إدارة الموارد البشرية بالرعاية الأولية",
     certificateText1: "تشهد الموارد البشرية بالرعاية الاولية بتجمع المدينة المنورة بأن الموضح اسمه وبياناته",
-    certificateText2: "أعلاه بريء الذمة من الناحية الإدارية والمالية وقد سلم جميع ما بعهدته وذلك نظراً ."
+    certificateText2: "أعلاه بريء الذمة من الناحية الإدارية والمالية وقد سلم جميع ما بعهدته وذلك نظراً .",
+    decisionText: "لقرار"
   });
+
+  // حالة إظهار/إخفاء العناصر
+  const [visibleSections, setVisibleSections] = useState({
+    employeeTable: true,
+    certificateText: true,
+    decisionLine: true,
+    signatureSection: true,
+    signaturesTable: true,
+    hrManagerSection: true
+  });
+
+  const toggleSection = (section) => {
+    setVisibleSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
+
+  const resetAllSections = () => {
+    setVisibleSections({
+      employeeTable: true,
+      certificateText: true,
+      decisionLine: true,
+      signatureSection: true,
+      signaturesTable: true,
+      hrManagerSection: true
+    });
+  };
 
   useEffect(() => {
     loadData();
