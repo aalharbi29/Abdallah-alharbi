@@ -204,6 +204,27 @@ export default function FillClearanceForm() {
         background-color: #f0f9ff;
       }
     }
+    .deletable-section {
+      position: relative;
+    }
+    @media screen {
+      .deletable-section:hover .delete-btn {
+        opacity: 1;
+      }
+    }
+    .delete-btn {
+      opacity: 0;
+      transition: opacity 0.2s;
+      position: absolute;
+      top: -8px;
+      left: -8px;
+      z-index: 10;
+    }
+    @media print {
+      .delete-btn {
+        display: none !important;
+      }
+    }
     .font-bold-title {
       font-family: 'Cairo', 'GE SS Two Bold', Arial, sans-serif;
       font-weight: 700;
