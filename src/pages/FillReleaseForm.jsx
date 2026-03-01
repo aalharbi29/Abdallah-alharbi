@@ -402,7 +402,7 @@ export default function FillReleaseForm() {
         </div>
 
         {/* Main Content */}
-        <div style={{ padding: '0 12mm', marginTop: '32mm' }}>
+        <div style={{ padding: '0 12mm', marginTop: '22mm' }}>
 
           {/* Title */}
           <div style={{ textAlign: 'center', marginBottom: '20px' }}>
