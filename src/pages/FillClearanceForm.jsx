@@ -556,6 +556,11 @@ export default function FillClearanceForm() {
           )}
 
           {/* HR Manager Signature */}
+          {visibleSections.hrManagerSection && (
+          <div className="deletable-section">
+            <button className="delete-btn no-print bg-red-500 hover:bg-red-600 text-white rounded-full p-1" onClick={() => toggleSection('hrManagerSection')}>
+              <X className="w-4 h-4" />
+            </button>
           <div style={{ textAlign: 'center' }}>
             <p className="font-bold-title" style={{ fontSize: '16px', marginBottom: '35px' }}>
               <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('hrManagerName', e.currentTarget.textContent)}>
@@ -570,6 +575,8 @@ export default function FillClearanceForm() {
               {formData.hrManagerTitle}
             </p>
           </div>
+          </div>
+          )}
         </div>
 
         {/* Footer */}
