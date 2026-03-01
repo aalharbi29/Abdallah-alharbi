@@ -554,7 +554,7 @@ export default function FillReleaseForm() {
                 <p className="pt-2 font-bold-title ef" contentEditable suppressContentEditableWarning
                 onMouseDown={(e) => e.stopPropagation()}
                 onBlur={(e) => handleInputChange('senderTitle', e.currentTarget.textContent)}
-                style={{ fontSize: '12px', color: '#444', margin: 0, display: 'block', textAlign: 'center' }}>
+                style={{ fontSize: '15px', color: '#444', margin: 0, display: 'block', textAlign: 'center' }}>
                   {formData.senderTitle}
                 </p>
               </div>
