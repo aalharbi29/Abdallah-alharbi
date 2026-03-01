@@ -484,38 +484,47 @@ export default function FillReleaseForm() {
               style={{ transform: `translate(${lineOffsets.mainPara.x}px, ${lineOffsets.mainPara.y}px)`, cursor: draggingLine === 'mainPara' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '8px' }}
               onMouseDown={(e) => handleLineMouseDown(e, 'mainPara')}>
 
-              <p className="bg-slate-50 font-bold-title opacity-100" style={{ textAlign: 'justify', margin: 0, padding: '4px 0' }}>
+              <div className="font-bold-title" style={{ margin: 0, padding: '4px 0', lineHeight: '2.0' }}>
                 <span className="no-print" style={{ fontSize: '10px', color: '#aaa', marginLeft: '4px' }}>↕</span>
-                نفيدكم بأنه تم إخلاء طرف {employeeWord} الموضحة بياناتـ{pronoun} أعلاه يوم{' '}
-                <span className="ef" contentEditable suppressContentEditableWarning
-                onMouseDown={(e) => e.stopPropagation()}
-                onBlur={(e) => handleInputChange('releaseDate', e.currentTarget.textContent)}
-                style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '100px', display: 'inline-block' }}>
-                  {formData.releaseDate || '...............'}
-                </span>
-                {' '}وذلك بناءً على القرار رقم{' '}
-                <span className="ef" contentEditable suppressContentEditableWarning
-                onMouseDown={(e) => e.stopPropagation()}
-                onBlur={(e) => handleInputChange('decisionNumber', e.currentTarget.textContent)}
-                style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '80px', display: 'inline-block' }}>
-                  {formData.decisionNumber || '..........'}
-                </span>
-                {' '}وتاريخ{' '}
-                <span className="ef" contentEditable suppressContentEditableWarning
-                onMouseDown={(e) => e.stopPropagation()}
-                onBlur={(e) => handleInputChange('decisionDate', e.currentTarget.textContent)}
-                style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '100px', display: 'inline-block' }}>
-                  {formData.decisionDate || '...............'}
-                </span>
-                {' '}والقاضي بتكليف{pronoun}{' '}
-                <span className="ef" contentEditable suppressContentEditableWarning
-                onMouseDown={(e) => e.stopPropagation()}
-                onBlur={(e) => handleInputChange('assignedTo', e.currentTarget.textContent)}
-                style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '120px', display: 'inline-block' }}>
-                  {formData.assignedTo || '...........................'}
-                </span>
-                {' '}.
-              </p>
+                {/* السطر الأول */}
+                <div style={{ textAlign: 'justify' }}>
+                  نفيدكم بأنه تم إخلاء طرف {employeeWord} الموضحة بياناتـ{pronoun} أعلاه يوم{' '}
+                  <span className="ef" contentEditable suppressContentEditableWarning
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onBlur={(e) => handleInputChange('releaseDate', e.currentTarget.textContent)}
+                  style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '180px', display: 'inline-block' }}>
+                    {formData.releaseDate || 'يوم الاحد الموافق ...-...-...'}
+                  </span>
+                </div>
+                {/* السطر الثاني */}
+                <div style={{ textAlign: 'justify' }}>
+                  وذلك بناءً على القرار رقم{' '}
+                  <span className="ef" contentEditable suppressContentEditableWarning
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onBlur={(e) => handleInputChange('decisionNumber', e.currentTarget.textContent)}
+                  style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '80px', display: 'inline-block' }}>
+                    {formData.decisionNumber || '..........'}
+                  </span>
+                  {' '}وتاريخ{' '}
+                  <span className="ef" contentEditable suppressContentEditableWarning
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onBlur={(e) => handleInputChange('decisionDate', e.currentTarget.textContent)}
+                  style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '100px', display: 'inline-block' }}>
+                    {formData.decisionDate || '...............'}
+                  </span>
+                </div>
+                {/* السطر الثالث */}
+                <div style={{ textAlign: 'justify' }}>
+                  والقاضي بتكليف{pronoun}{' '}
+                  <span className="ef" contentEditable suppressContentEditableWarning
+                  onMouseDown={(e) => e.stopPropagation()}
+                  onBlur={(e) => handleInputChange('assignedTo', e.currentTarget.textContent)}
+                  style={{ borderBottom: '1px dotted #333', padding: '0 5px', minWidth: '120px', display: 'inline-block' }}>
+                    {formData.assignedTo || '...........................'}
+                  </span>
+                  {' '}.
+                </div>
+              </div>
             </div>
 
             {/* Closing - draggable */}
