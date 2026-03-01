@@ -339,12 +339,15 @@ export default function FillReleaseForm() {
             </Select>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             <Button onClick={handlePrint} variant="outline" size="sm" className="gap-1">
               <Printer className="w-4 h-4" /> طباعة
             </Button>
             <Button onClick={handleExportPDF} size="sm" className="gap-1 bg-red-600 hover:bg-red-700 text-white">
               <Download className="w-4 h-4" /> PDF
+            </Button>
+            <Button onClick={handleSaveToEmployee} size="sm" className="gap-1 bg-blue-600 hover:bg-blue-700 text-white" disabled={!selectedEmployee}>
+              <Save className="w-4 h-4" /> حفظ في ملف الموظف
             </Button>
           </div>
 
