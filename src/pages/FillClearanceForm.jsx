@@ -189,6 +189,25 @@ export default function FillClearanceForm() {
 
   const [processedImages, setProcessedImages] = useState({});
 
+  // معالجة الصورة عند اختيار توقيع أو ختم
+  useEffect(() => {
+    const selected = signatureSettings.selectedSignature;
+    if (selected && !processedImages[selected.id]) {
+      removeWhiteBackground(selected.image_url).then(dataUrl => {
+        setProcessedImages(prev => ({ ...prev, [selected.id]: dataUrl }));
+      });
+    }
+  }, [signatureSettings.selectedSignature]);
+
+  useEffect(() => {
+    const selected = stampSettings.selectedStamp;
+    if (selected && !processedImages[selected.id]) {
+      removeWhiteBackground(selected.image_url).then(dataUrl => {
+        setProcessedImages(prev => ({ ...prev, [selected.id]: dataUrl }));
+      });
+    }
+  }, [stampSettings.selectedStamp]);
+
   // دوال السحب والإفلات
   const handleMouseDown = (e, type) => {
     e.preventDefault();
