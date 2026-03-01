@@ -146,13 +146,14 @@ export default function FillReleaseForm() {
   const handleLineMouseDown = (e, lineKey) => {
     e.preventDefault();
     setDraggingLine(lineKey);
-    setLineDragStart({ y: e.clientY, origOffset: lineOffsets[lineKey] });
+    setLineDragStart({ x: e.clientX, y: e.clientY, origX: lineOffsets[lineKey].x, origY: lineOffsets[lineKey].y });
   };
 
   const handleLineMoveGlobal = useCallback((e) => {
     if (!draggingLine) return;
-    const delta = e.clientY - lineDragStart.y;
-    setLineOffsets((prev) => ({ ...prev, [draggingLine]: lineDragStart.origOffset + delta }));
+    const dx = e.clientX - lineDragStart.x;
+    const dy = e.clientY - lineDragStart.y;
+    setLineOffsets((prev) => ({ ...prev, [draggingLine]: { x: lineDragStart.origX + dx, y: lineDragStart.origY + dy } }));
   }, [draggingLine, lineDragStart]);
 
   const handleLineUpGlobal = useCallback(() => setDraggingLine(null), []);
