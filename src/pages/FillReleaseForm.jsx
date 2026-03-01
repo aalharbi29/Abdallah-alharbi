@@ -38,8 +38,8 @@ export default function FillReleaseForm() {
 
   // موضع كل سطر نصي بشكل مستقل (offset عمودي بالبكسل)
   const [lineOffsets, setLineOffsets] = useState({
-    recipient: { x: 0, y: 0 },
-    greeting: { x: 0, y: 0 },
+    recipient: { x: 0, y: 20 },
+    greeting: { x: 0, y: 20 },
     mainPara: { x: 0, y: 0 },
     closing: { x: 0, y: 60 },
     sender: { x: 0, y: 60 }
