@@ -228,14 +228,47 @@ export default function FillReleaseForm() {
 
   const handlePrint = () => window.print();
 
-  const handleExportPDF = async () => {
+  const generatePDFBlob = async () => {
     const html2canvas = (await import('html2canvas')).default;
     const { jsPDF } = await import('jspdf');
-    const canvas = await html2canvas(printRef.current, { scale: 2, useCORS: true, allowTaint: true, backgroundColor: '#ffffff' });
+    // إخفاء عناصر no-print مؤقتاً
+    const noPrintEls = printRef.current.querySelectorAll('.no-print');
+    noPrintEls.forEach(el => { el.dataset.prevDisplay = el.style.display; el.style.display = 'none'; });
+    const canvas = await html2canvas(printRef.current, { scale: 2, useCORS: true, allowTaint: true, backgroundColor: '#ffffff', logging: false });
+    noPrintEls.forEach(el => { el.style.display = el.dataset.prevDisplay || ''; });
     const pdf = new jsPDF('p', 'mm', 'a4');
     pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+    return { pdf, canvas };
+  };
+
+  const handleExportPDF = async () => {
+    const { pdf } = await generatePDFBlob();
     pdf.save(`إخلاء_طرف_${formData.employeeName || 'موظف'}.pdf`);
     toast.success("تم تصدير الملف بنجاح");
+  };
+
+  const handleSaveToEmployee = async () => {
+    if (!selectedEmployee) { toast.error("يرجى اختيار موظف أولاً"); return; }
+    try {
+      toast.loading("جاري حفظ الملف في ملف الموظف...");
+      const { pdf } = await generatePDFBlob();
+      const pdfBlob = pdf.output('blob');
+      const file = new File([pdfBlob], `إخلاء_طرف_${formData.employeeName}.pdf`, { type: 'application/pdf' });
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      await base44.entities.EmployeeDocument.create({
+        employee_id: selectedEmployee.id,
+        employee_name: formData.employeeName,
+        title: `إخلاء طرف - ${formData.employeeName}`,
+        file_url,
+        file_name: `إخلاء_طرف_${formData.employeeName}.pdf`,
+        document_type: 'other'
+      });
+      toast.dismiss();
+      toast.success("تم حفظ الملف في ملف الموظف بنجاح");
+    } catch (e) {
+      toast.dismiss();
+      toast.error("فشل في حفظ الملف: " + e.message);
+    }
   };
 
   // تحديد الضمير بناءً على الجنس
