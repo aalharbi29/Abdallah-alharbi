@@ -532,7 +532,7 @@ export default function FillReleaseForm() {
               style={{ transform: `translate(${lineOffsets.closing.x}px, ${lineOffsets.closing.y}px)`, cursor: draggingLine === 'closing' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '20px' }}
               onMouseDown={(e) => handleLineMouseDown(e, 'closing')}>
 
-              <p className="font-bold-title" style={{ margin: 0, padding: '2px 0' }}>
+              <p className="font-bold-title" style={{ margin: 0, padding: '2px 0', textAlign: 'center' }}>
                 <span className="no-print" style={{ fontSize: '10px', color: '#aaa', marginLeft: '4px' }}>↕</span>
                 نرجو التكرم بالاطلاع وإكمال اللازم .
               </p>
