@@ -520,7 +520,7 @@ export default function FillReleaseForm() {
 
             {/* Closing - draggable */}
             <div
-              style={{ transform: `translateY(${lineOffsets.closing}px)`, cursor: draggingLine === 'closing' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '20px' }}
+              style={{ transform: `translate(${lineOffsets.closing.x}px, ${lineOffsets.closing.y}px)`, cursor: draggingLine === 'closing' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '20px' }}
               onMouseDown={(e) => handleLineMouseDown(e, 'closing')}
             >
               <p className="font-bold-title" style={{ margin: 0, padding: '2px 0' }}>
