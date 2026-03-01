@@ -470,7 +470,7 @@ export default function FillReleaseForm() {
 
             {/* Greeting - draggable */}
             <div
-              style={{ transform: `translateY(${lineOffsets.greeting}px)`, cursor: draggingLine === 'greeting' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '12px' }}
+              style={{ transform: `translate(${lineOffsets.greeting.x}px, ${lineOffsets.greeting.y}px)`, cursor: draggingLine === 'greeting' ? 'grabbing' : 'grab', userSelect: 'none', marginBottom: '12px' }}
               onMouseDown={(e) => handleLineMouseDown(e, 'greeting')}
             >
               <p className="font-bold-title" style={{ margin: 0, padding: '2px 0' }}>
