@@ -403,6 +403,32 @@ export default function FillReleaseForm() {
           </Dialog>
         </div>
 
+        {/* قائمة النماذج المحفوظة */}
+        {showTemplates && (
+          <div className="border rounded-lg p-3 bg-gray-50">
+            <h3 className="text-sm font-bold text-gray-700 mb-2">النماذج المحفوظة</h3>
+            {templates.length === 0 ? (
+              <p className="text-xs text-gray-400">لا توجد نماذج محفوظة بعد</p>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                {templates.map((tpl) => (
+                  <div key={tpl.id} className="flex items-center justify-between bg-white border rounded px-3 py-2 gap-2">
+                    <button
+                      className="text-sm text-blue-700 font-medium hover:underline text-right flex-1"
+                      onClick={() => handleLoadTemplate(tpl)}
+                    >
+                      {tpl.template_name}
+                    </button>
+                    <button onClick={() => handleDeleteTemplate(tpl.id)} className="text-red-400 hover:text-red-600">
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Row 2 - بيانات القرار */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <div>
