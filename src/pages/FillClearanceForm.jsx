@@ -289,7 +289,11 @@ export default function FillClearanceForm() {
             justifyContent: 'flex-start',
             alignItems: 'center'
           }}>
-            <div className="font-bold-title" style={{ 
+            <div className="font-bold-title editable-field" 
+                 contentEditable 
+                 suppressContentEditableWarning 
+                 onBlur={(e) => handleInputChange('headerDepartmentName', e.currentTarget.textContent)}
+                 style={{ 
                               color: '#3498db', 
                               fontSize: '14px', 
                               textAlign: 'left',
@@ -298,7 +302,7 @@ export default function FillClearanceForm() {
                               paddingTop: '2mm',
                               paddingBottom: '2mm'
                             }}>
-                              إدارة الموارد البشرية بالرعاية الأولية بتجمع المدينة المنورة
+                              {formData.headerDepartmentName}
                             </div>
 
           </div>
