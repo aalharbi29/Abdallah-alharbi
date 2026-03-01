@@ -990,11 +990,10 @@ export default function FillClearanceForm() {
             onMouseDown={(e) => handleMouseDown(e, 'signature')}
           >
             <img
-              src={signatureSettings.selectedSignature.image_url}
+              src={processedImages[signatureSettings.selectedSignature.id] || signatureSettings.selectedSignature.image_url}
               alt="التوقيع"
               style={{
                 width: signatureSettings.size,
-                mixBlendMode: 'multiply',
                 opacity: 0.9,
                 pointerEvents: 'none',
                 display: 'block'
