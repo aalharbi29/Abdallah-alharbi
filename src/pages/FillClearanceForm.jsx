@@ -812,35 +812,41 @@ export default function FillClearanceForm() {
             </thead>
             <tbody>
               <tr>
-                                    <td className="font-regular" style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}>1</td>
-                                    <td className="editable-field" contentEditable suppressContentEditableWarning style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'right', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>الرئيس المباشر</td>
-                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
-                                      <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('directSupervisorName', e.currentTarget.textContent)}>
-                                        {formData.directSupervisorName || '\u00A0'}
-                                      </span>
-                                    </td>
-                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}></td>
-                                  </tr>
-                                  <tr>
-                                    <td className="font-regular" style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}>2</td>
-                                    <td className="editable-field" contentEditable suppressContentEditableWarning style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'right', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>امين العهده في المركز / ادارة</td>
-                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
-                                      <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('custodianName', e.currentTarget.textContent)}>
-                                        {formData.custodianName || '\u00A0'}
-                                      </span>
-                                    </td>
-                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}></td>
-                                  </tr>
-                                  <tr>
-                                    <td className="font-regular" style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}>3</td>
-                                    <td className="editable-field" contentEditable suppressContentEditableWarning style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'right', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>محاسب الرواتب بالموارد البشرية بالرعاية الاولية</td>
-                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
-                                      <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('accountantName', e.currentTarget.textContent)}>
-                                        {formData.accountantName || '\u00A0'}
-                                      </span>
-                                    </td>
-                                    <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}></td>
-                                  </tr>
+                <td className="font-regular" style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}>1</td>
+                <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'right', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
+                  <span className="editable-field" contentEditable suppressContentEditableWarning>الرئيس المباشر</span>
+                </td>
+                <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
+                  <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('directSupervisorName', e.currentTarget.textContent)}>
+                    {formData.directSupervisorName || '\u00A0'}
+                  </span>
+                </td>
+                <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}></td>
+              </tr>
+              <tr>
+                <td className="font-regular" style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}>2</td>
+                <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'right', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
+                  <span className="editable-field" contentEditable suppressContentEditableWarning>امين العهده في المركز / ادارة</span>
+                </td>
+                <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
+                  <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('custodianName', e.currentTarget.textContent)}>
+                    {formData.custodianName || '\u00A0'}
+                  </span>
+                </td>
+                <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}></td>
+              </tr>
+              <tr>
+                <td className="font-regular" style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}>3</td>
+                <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'right', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
+                  <span className="editable-field" contentEditable suppressContentEditableWarning>محاسب الرواتب بالموارد البشرية بالرعاية الاولية</span>
+                </td>
+                <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center', fontFamily: "'Cairo', 'GE SS Two', Arial, sans-serif", fontWeight: 500 }}>
+                  <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('accountantName', e.currentTarget.textContent)}>
+                    {formData.accountantName || '\u00A0'}
+                  </span>
+                </td>
+                <td style={{ border: '1px solid #888', padding: '5px 8px', textAlign: 'center' }}></td>
+              </tr>
             </tbody>
           </table>
           </div>
