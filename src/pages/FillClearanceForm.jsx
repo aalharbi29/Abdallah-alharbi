@@ -300,6 +300,9 @@ export default function FillClearanceForm() {
       .delete-btn {
         display: none !important;
       }
+      .no-print-drag > div {
+        display: none !important;
+      }
     }
     .font-bold-title {
       font-family: 'Cairo', 'GE SS Two Bold', Arial, sans-serif;
