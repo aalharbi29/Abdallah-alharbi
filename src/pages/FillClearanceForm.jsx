@@ -39,6 +39,24 @@ export default function FillClearanceForm() {
     decisionText: "لقرار"
   });
 
+  // الأختام والتوقيعات
+  const [systemStamps, setSystemStamps] = useState([]);
+  const [systemSignatures, setSystemSignatures] = useState([]);
+  const [stampSettings, setStampSettings] = useState({
+    showStamp: false,
+    selectedStamp: null,
+    position: { x: 400, y: 650 },
+    size: 80
+  });
+  const [signatureSettings, setSignatureSettings] = useState({
+    showSignature: false,
+    selectedSignature: null,
+    position: { x: 350, y: 580 },
+    size: 100
+  });
+  const [dragging, setDragging] = useState(null);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+
   // حالة إظهار/إخفاء العناصر
   const [visibleSections, setVisibleSections] = useState({
     employeeTable: true,
