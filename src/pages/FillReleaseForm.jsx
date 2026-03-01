@@ -45,7 +45,7 @@ export default function FillReleaseForm() {
     sender: { x: 0, y: 0 },
   });
   const [draggingLine, setDraggingLine] = useState(null);
-  const [lineDragStart, setLineDragStart] = useState({ y: 0, origOffset: 0 });
+  const [lineDragStart, setLineDragStart] = useState({ x: 0, y: 0, origX: 0, origY: 0 });
 
   const [systemStamps, setSystemStamps] = useState([]);
   const [systemSignatures, setSystemSignatures] = useState([]);
