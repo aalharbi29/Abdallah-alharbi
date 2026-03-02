@@ -8,6 +8,8 @@ import { Slider } from "@/components/ui/slider";
 import { Printer, Download, Loader2, X, RotateCcw, Stamp, PenTool, Move, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import EmployeeSearchCombobox from "@/components/employees/EmployeeSearchCombobox";
+import EmployeeSearchCombobox from "@/components/employees/EmployeeSearchCombobox";
 
 export default function FillClearanceForm() {
   const [employees, setEmployees] = useState([]);
@@ -415,18 +417,10 @@ export default function FillClearanceForm() {
       <div className="no-print max-w-4xl mx-auto mb-4 bg-white rounded-lg shadow p-4 space-y-3">
         <div className="flex flex-wrap gap-2 justify-between items-center">
           <div className="flex flex-wrap gap-2">
-            <Select onValueChange={handleEmployeeSelect}>
-              <SelectTrigger className="w-64">
-                <SelectValue placeholder="اختر الموظف..." />
-              </SelectTrigger>
-              <SelectContent>
-                {employees.map(emp => (
-                  <SelectItem key={emp.id} value={emp.id}>
-                    {emp.full_name_arabic}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <EmployeeSearchCombobox
+              employees={employees}
+              onSelect={(emp) => handleEmployeeSelect(emp.id)}
+            />
 
             <Select onValueChange={applyTemplate}>
               <SelectTrigger className="w-64">
