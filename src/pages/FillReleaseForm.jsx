@@ -555,7 +555,7 @@ export default function FillReleaseForm() {
           <div className="font-bold-title ef"
           contentEditable suppressContentEditableWarning
           onBlur={(e) => handleInputChange('departmentName', e.currentTarget.textContent)}
-          style={{ color: '#3498db', fontSize: '14px', borderRight: '3px solid #3498db', paddingRight: '10px', paddingTop: '2mm', paddingBottom: '2mm' }}>
+          style={{ color: '#3498db', fontSize: '18px', fontWeight: 800, borderRight: '3px solid #3498db', paddingRight: '10px', paddingTop: '2mm', paddingBottom: '2mm' }}>
             {formData.departmentName}
           </div>
         </div>
@@ -707,7 +707,7 @@ export default function FillReleaseForm() {
                 <p className="font-bold-title ef" contentEditable suppressContentEditableWarning
                 onMouseDown={(e) => e.stopPropagation()}
                 onBlur={(e) => handleInputChange('senderName', e.currentTarget.textContent)}
-                style={{ fontSize: '17px', margin: '0 0 32px 0', display: 'block', textAlign: 'center' }}>
+                style={{ fontSize: '22px', fontWeight: 900, margin: '0 0 32px 0', display: 'block', textAlign: 'center' }}>
                   {formData.senderName}
                 </p>
                 <p className="pt-2 font-bold-title ef" contentEditable suppressContentEditableWarning

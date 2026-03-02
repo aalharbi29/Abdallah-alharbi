@@ -92,6 +92,7 @@ import HolidayAssignments from './pages/HolidayAssignments';
 import Home from './pages/Home';
 import HumanResources from './pages/HumanResources';
 import InteractiveForms from './pages/InteractiveForms';
+import InventoryHandoverForm from './pages/InventoryHandoverForm';
 import Leaves from './pages/Leaves';
 import MedicalEquipmentReport from './pages/MedicalEquipmentReport';
 import NoteSorter from './pages/NoteSorter';
@@ -108,7 +109,6 @@ import StatisticsHijri from './pages/StatisticsHijri';
 import ViewAssignment from './pages/ViewAssignment';
 import ViewEquipmentRequest from './pages/ViewEquipmentRequest';
 import ViewExcellentEmployeeCertificate from './pages/ViewExcellentEmployeeCertificate';
-import InventoryHandoverForm from './pages/InventoryHandoverForm';
 import __Layout from './Layout.jsx';
 
 
@@ -158,6 +158,7 @@ export const PAGES = {
     "Home": Home,
     "HumanResources": HumanResources,
     "InteractiveForms": InteractiveForms,
+    "InventoryHandoverForm": InventoryHandoverForm,
     "Leaves": Leaves,
     "MedicalEquipmentReport": MedicalEquipmentReport,
     "NoteSorter": NoteSorter,
@@ -174,7 +175,6 @@ export const PAGES = {
     "ViewAssignment": ViewAssignment,
     "ViewEquipmentRequest": ViewEquipmentRequest,
     "ViewExcellentEmployeeCertificate": ViewExcellentEmployeeCertificate,
-    "InventoryHandoverForm": InventoryHandoverForm,
 }
 
 export const pagesConfig = {
