@@ -47,6 +47,16 @@ export default function FillReleaseForm() {
   const [draggingLine, setDraggingLine] = useState(null);
   const [lineDragStart, setLineDragStart] = useState({ x: 0, y: 0, origX: 0, origY: 0 });
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const searchRef = useRef(null);
+
+  const filteredEmployees = searchQuery.trim()
+    ? employees.filter((emp) =>
+        (emp.full_name_arabic || "").includes(searchQuery.trim())
+      )
+    : employees;
+
   const [templates, setTemplates] = useState([]);
   const [templateName, setTemplateName] = useState("");
   const [showTemplates, setShowTemplates] = useState(false);
