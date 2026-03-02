@@ -733,10 +733,10 @@ export default function FillReleaseForm() {
         {/* الختم */}
         {stampSettings.showStamp && stampSettings.selectedStamp &&
         <div className={`absolute cursor-grab select-none no-print-drag ${dragging === 'stamp' ? 'ring-2 ring-blue-500 rounded' : ''}`}
-        style={{ left: stampSettings.position.x, top: stampSettings.position.y, zIndex: 50 }}
+        style={{ left: `${stampSettings.position.x}%`, top: `${stampSettings.position.y}%`, zIndex: 50 }}
         onMouseDown={(e) => handleMouseDown(e, 'stamp')}>
             <img src={processedImages[stampSettings.selectedStamp.id] || stampSettings.selectedStamp.image_url} alt="الختم"
-          style={{ width: stampSettings.size, opacity: 0.9, pointerEvents: 'none' }} draggable={false} />
+          style={{ width: `${stampSettings.size}px`, opacity: 0.9, pointerEvents: 'none' }} draggable={false} />
             <div className="no-print absolute -bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-1 text-xs text-blue-500">
               <Move className="w-3 h-3" />
             </div>
@@ -746,10 +746,10 @@ export default function FillReleaseForm() {
         {/* التوقيع */}
         {signatureSettings.showSignature && signatureSettings.selectedSignature &&
         <div className={`absolute cursor-grab select-none no-print-drag ${dragging === 'signature' ? 'ring-2 ring-green-500 rounded' : ''}`}
-        style={{ left: signatureSettings.position.x, top: signatureSettings.position.y, zIndex: 50, mixBlendMode: 'multiply' }}
+        style={{ left: `${signatureSettings.position.x}%`, top: `${signatureSettings.position.y}%`, zIndex: 50, mixBlendMode: 'multiply' }}
         onMouseDown={(e) => handleMouseDown(e, 'signature')}>
             <img src={processedImages[signatureSettings.selectedSignature.id] || signatureSettings.selectedSignature.image_url} alt="التوقيع"
-          style={{ width: signatureSettings.size, opacity: 0.9, pointerEvents: 'none', display: 'block' }} draggable={false} />
+          style={{ width: `${signatureSettings.size}px`, opacity: 0.9, pointerEvents: 'none', display: 'block' }} draggable={false} />
             <div className="no-print absolute -bottom-5 left-1/2 -translate-x-1/2 flex items-center gap-1 text-xs text-green-500">
               <Move className="w-3 h-3" />
             </div>
