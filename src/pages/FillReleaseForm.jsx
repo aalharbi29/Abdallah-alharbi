@@ -322,18 +322,38 @@ export default function FillReleaseForm() {
 
         {/* Row 1 */}
         <div className="flex flex-wrap gap-2 items-end">
-          <div>
-            <Label className="text-xs">اختر الموظف</Label>
-            <Select onValueChange={handleEmployeeSelect}>
-              <SelectTrigger className="w-56">
-                <SelectValue placeholder="اختر الموظف..." />
-              </SelectTrigger>
-              <SelectContent>
-                {employees.map((emp) =>
-                <SelectItem key={emp.id} value={emp.id}>{emp.full_name_arabic}</SelectItem>
+          <div className="relative" ref={searchRef}>
+            <Label className="text-xs">ابحث عن الموظف</Label>
+            <input
+              className="border rounded px-3 py-2 text-sm w-64 block"
+              placeholder="اكتب اسم الموظف..."
+              value={searchQuery}
+              onChange={(e) => { setSearchQuery(e.target.value); setShowDropdown(true); }}
+              onFocus={() => setShowDropdown(true)}
+              onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+              autoComplete="off"
+            />
+            {showDropdown && searchQuery.trim() && (
+              <div className="absolute z-50 bg-white border rounded shadow-lg w-64 max-h-52 overflow-y-auto mt-1">
+                {filteredEmployees.length === 0 ? (
+                  <div className="px-3 py-2 text-sm text-gray-400">لا توجد نتائج</div>
+                ) : (
+                  filteredEmployees.map((emp) => (
+                    <button
+                      key={emp.id}
+                      className="w-full text-right px-3 py-2 text-sm hover:bg-blue-50 block"
+                      onMouseDown={() => {
+                        handleEmployeeSelect(emp.id);
+                        setSearchQuery(emp.full_name_arabic);
+                        setShowDropdown(false);
+                      }}
+                    >
+                      {emp.full_name_arabic}
+                    </button>
+                  ))
                 )}
-              </SelectContent>
-            </Select>
+              </div>
+            )}
           </div>
 
           <div>
