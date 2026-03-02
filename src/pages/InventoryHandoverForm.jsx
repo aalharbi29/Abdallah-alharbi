@@ -546,7 +546,7 @@ export default function InventoryHandoverForm() {
           </div>
         )
 
-        {/* ===== PAGE 2 ===== */}
+        }{/* ===== PAGE 2 ===== */}
         {currentPage === 2 && (
           <div className="p-12">
             {/* Header */}
