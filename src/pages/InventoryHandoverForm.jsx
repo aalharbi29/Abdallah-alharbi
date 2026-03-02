@@ -622,17 +622,6 @@ export default function InventoryHandoverForm() {
               </button>
             </div>
 
-            {/* Summary counts */}
-            <div className="flex justify-between items-center bg-slate-100 p-4 rounded-lg font-bold text-slate-800 mb-10 border border-slate-200">
-              <span className="flex items-center gap-2">
-                <span className="text-slate-500">إجمالي الأصناف:</span> 
-                <span className="text-xl">{equipmentItems.filter(e => e.type).length}</span>
-              </span>
-              <span className="flex items-center gap-2">
-                <span className="text-slate-500">إجمالي الأجهزة والقطع:</span>
-                <span className="text-xl text-blue-700">{equipmentItems.reduce((sum, e) => sum + (parseInt(e.quantity) || 0), 0)}</span>
-              </span>
-            </div>
 
             {/* Page signatures repeated */}
             <div className="mt-12 pt-8 border-t-2 border-slate-200">
@@ -642,6 +631,7 @@ export default function InventoryHandoverForm() {
                   <div key={i} className="border border-slate-300 rounded-xl p-4 text-center bg-white shadow-sm">
                     <p className="font-extrabold text-slate-800 text-sm mb-1">{member.title || 'عضو لجنة'}</p>
                     <p className="text-base font-bold text-blue-800 mb-1">{member.name || '................................'}</p>
+                    {member.jobRole && <p className="text-xs font-semibold text-slate-600">{member.jobRole}</p>}
                     {member.responsibility && <p className="text-xs font-semibold text-slate-500">{member.responsibility}</p>}
                     <div className="border-t border-slate-200 mt-4 pt-3">
                       <p className="text-xs font-semibold text-slate-400 mb-2">التوقيع</p>
