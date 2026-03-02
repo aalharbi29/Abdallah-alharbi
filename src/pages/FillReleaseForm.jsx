@@ -62,8 +62,8 @@ export default function FillReleaseForm() {
   const [showTemplates, setShowTemplates] = useState(false);
   const [systemStamps, setSystemStamps] = useState([]);
   const [systemSignatures, setSystemSignatures] = useState([]);
-  const [stampSettings, setStampSettings] = useState({ showStamp: false, selectedStamp: null, position: { x: 400, y: 650 }, size: 100 });
-  const [signatureSettings, setSignatureSettings] = useState({ showSignature: false, selectedSignature: null, position: { x: 350, y: 580 }, size: 120 });
+  const [stampSettings, setStampSettings] = useState({ showStamp: false, selectedStamp: null, position: { x: 50, y: 70 }, size: 100 });
+  const [signatureSettings, setSignatureSettings] = useState({ showSignature: false, selectedSignature: null, position: { x: 40, y: 65 }, size: 120 });
   const [dragging, setDragging] = useState(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [processedImages, setProcessedImages] = useState({});
