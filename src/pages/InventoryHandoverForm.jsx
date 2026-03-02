@@ -178,14 +178,15 @@ export default function InventoryHandoverForm() {
 
   // Page 1
   const [meetingDay, setMeetingDay] = useState("");
-  const [meetingDate, setMeetingDate] = useState("");
   const [meetingHijriDate, setMeetingHijriDate] = useState("");
   const [department, setDepartment] = useState("");
   const [fromPerson, setFromPerson] = useState("");
   const [toPerson, setToPerson] = useState("");
+  const [fromEmpNumber, setFromEmpNumber] = useState("");
+  const [toEmpNumber, setToEmpNumber] = useState("");
 
   const [attendees, setAttendees] = useState([
-    { name: "", employeeId: "", civilId: "", workplace: "", jobNature: "", role: "عضو لجنة" }
+    { name: "", employeeId: "", workplace: "", jobRole: "", role: "عضو لجنة" }
   ]);
 
   const [committeeMembers, setCommitteeMembers] = useState([
@@ -199,7 +200,7 @@ export default function InventoryHandoverForm() {
   ]);
 
   const addAttendee = () =>
-    setAttendees([...attendees, { name: "", employeeId: "", civilId: "", workplace: "", jobNature: "", role: "عضو لجنة" }]);
+    setAttendees([...attendees, { name: "", employeeId: "", workplace: "", jobRole: "", role: "عضو لجنة" }]);
 
   const removeAttendee = (i) => setAttendees(attendees.filter((_, idx) => idx !== i));
 
@@ -215,9 +216,8 @@ export default function InventoryHandoverForm() {
       ...updated[i],
       name: emp.full_name_arabic || "",
       employeeId: emp["رقم_الموظف"] || "",
-      civilId: emp["رقم_الهوية"] || "",
       workplace: emp["المركز_الصحي"] || "",
-      jobNature: emp.position || "",
+      jobRole: emp.position || "",
     };
     setAttendees(updated);
   };
@@ -380,8 +380,6 @@ export default function InventoryHandoverForm() {
                   {DAYS.map(d => <option key={d} value={d}>{d}</option>)}
                 </select>
                 {' '}الموافق{' '}
-                <input className={`${inputCls} w-36 text-lg`} placeholder="التاريخ الميلادي" value={meetingDate} onChange={e => setMeetingDate(e.target.value)} />
-                {' '}م / {' '}
                 <input className={`${inputCls} w-36 text-lg`} placeholder="التاريخ الهجري" value={meetingHijriDate} onChange={e => setMeetingHijriDate(e.target.value)} />
                 {' '}هـ ،
               </p>
@@ -426,9 +424,8 @@ export default function InventoryHandoverForm() {
                     <th className="border border-slate-300 px-3 py-3 text-center w-12 font-bold">#</th>
                     <th className="border border-slate-300 px-3 py-3 text-center font-bold">الاسم الكامل</th>
                     <th className="border border-slate-300 px-3 py-3 text-center font-bold">الرقم الوظيفي</th>
-                    <th className="border border-slate-300 px-3 py-3 text-center font-bold">السجل المدني</th>
                     <th className="border border-slate-300 px-3 py-3 text-center font-bold">جهة العمل</th>
-                    <th className="border border-slate-300 px-3 py-3 text-center font-bold">طبيعة العمل</th>
+                    <th className="border border-slate-300 px-3 py-3 text-center font-bold">الدور الوظيفي</th>
                     <th className="border border-slate-300 px-3 py-3 text-center font-bold">الدور في اللجنة</th>
                     <th className="border border-slate-300 px-2 py-3 text-center no-print w-10"></th>
                   </tr>
@@ -446,11 +443,11 @@ export default function InventoryHandoverForm() {
                           onSelect={(emp) => handleSelectAttendee(i, emp)}
                         />
                       </td>
-                      {['employeeId','civilId','workplace','jobNature'].map(field => (
+                      {['employeeId','workplace','jobRole'].map(field => (
                         <td key={field} className="border border-slate-300 px-2 py-2">
                           <input
                             className="w-full focus:outline-none bg-transparent text-center font-medium text-slate-700"
-                            placeholder={field === 'employeeId' ? 'الرقم' : field === 'civilId' ? 'السجل' : field === 'workplace' ? 'جهة العمل' : 'طبيعة العمل'}
+                            placeholder={field === 'employeeId' ? 'الرقم' : field === 'workplace' ? 'جهة العمل' : 'الدور الوظيفي'}
                             value={att[field]}
                             onChange={e => updateAttendee(i, field, e.target.value)}
                           />
@@ -521,8 +518,33 @@ export default function InventoryHandoverForm() {
                 <Plus className="w-4 h-4" /> إضافة عضو لجنة
               </button>
             </div>
+
+            {/* المُسلّم والمُستلم */}
+            <div className="mt-12">
+              <h3 className="text-lg font-bold mb-6 text-slate-800 border-b-2 border-slate-200 pb-2">المُسلّم والمُستلم</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="border-2 border-dashed border-slate-200 rounded-xl p-5 bg-slate-50">
+                  <p className="text-sm font-extrabold text-slate-700 mb-3">المُسلّم</p>
+                  <input className="w-full text-center border-b border-slate-300 focus:outline-none focus:border-blue-500 font-bold text-base mb-3 bg-transparent text-slate-800" placeholder="الاسم" value={fromPerson} onChange={e => setFromPerson(e.target.value)} />
+                  <input className="w-full text-center border-b border-slate-300 focus:outline-none focus:border-blue-500 text-sm text-slate-600 bg-transparent mb-4" placeholder="الرقم الوظيفي" value={fromEmpNumber} onChange={e => setFromEmpNumber(e.target.value)} />
+                  <div className="border-t border-slate-300 mt-6 pt-4">
+                    <p className="text-sm font-semibold text-slate-400 mb-2">التوقيع</p>
+                    <div className="h-12"></div>
+                  </div>
+                </div>
+                <div className="border-2 border-dashed border-slate-200 rounded-xl p-5 bg-slate-50">
+                  <p className="text-sm font-extrabold text-slate-700 mb-3">المُستلم</p>
+                  <input className="w-full text-center border-b border-slate-300 focus:outline-none focus:border-blue-500 font-bold text-base mb-3 bg-transparent text-slate-800" placeholder="الاسم" value={toPerson} onChange={e => setToPerson(e.target.value)} />
+                  <input className="w-full text-center border-b border-slate-300 focus:outline-none focus:border-blue-500 text-sm text-slate-600 bg-transparent mb-4" placeholder="الرقم الوظيفي" value={toEmpNumber} onChange={e => setToEmpNumber(e.target.value)} />
+                  <div className="border-t border-slate-300 mt-6 pt-4">
+                    <p className="text-sm font-semibold text-slate-400 mb-2">التوقيع</p>
+                    <div className="h-12"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        )}
+        )
 
         {/* ===== PAGE 2 ===== */}
         {currentPage === 2 && (
