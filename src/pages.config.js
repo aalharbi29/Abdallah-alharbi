@@ -47,11 +47,14 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
+import InventoryHandoverForm from './pages/InventoryHandoverForm';
 
 
 export const PAGES = {
+    "InventoryHandoverForm": InventoryHandoverForm,
 }
 
 export const pagesConfig = {
+    mainPage: "InventoryHandoverForm",
     Pages: PAGES,
 };
