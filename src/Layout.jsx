@@ -64,7 +64,7 @@ const getNavigationItems = (t) => [
                         { name: "إخلاء طرف", href: createPageUrl("FillReleaseForm"), icon: FileText },
                       ]
                     },
-            { name: t('nav.assignmentTemplates') || "إدارة قوالب التكليف", href: createPageUrl("AssignmentTemplates"), icon: FileText },
+            { name: "نموذج جرد عهدة", href: createPageUrl("InventoryHandoverForm"), icon: FileText },
   { name: t('nav.reports'), href: createPageUrl("Reports"), icon: BarChart3 },
   {
     name: t('nav.assignments'),
