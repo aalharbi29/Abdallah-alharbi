@@ -686,7 +686,8 @@ export default function FillClearanceForm() {
                  onBlur={(e) => handleInputChange('headerDepartmentName', e.currentTarget.textContent)}
                  style={{ 
                               color: '#3498db', 
-                              fontSize: '14px', 
+                              fontSize: '18px', 
+                              fontWeight: 800,
                               textAlign: 'left',
                               borderRight: '3px solid #3498db',
                               paddingRight: '10px',
@@ -908,7 +909,7 @@ export default function FillClearanceForm() {
               <X className="w-4 h-4" />
             </button>
           <div style={{ textAlign: 'center' }}>
-            <p className="font-bold-title" style={{ fontSize: '16px', marginBottom: '35px' }}>
+            <p className="font-bold-title" style={{ fontSize: '22px', fontWeight: 900, marginBottom: '35px' }}>
               <span className="editable-field" contentEditable suppressContentEditableWarning onBlur={(e) => handleInputChange('hrManagerName', e.currentTarget.textContent)}>
                 {formData.hrManagerName}
               </span>
