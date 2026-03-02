@@ -238,6 +238,7 @@ export default function InventoryHandoverForm() {
     updated[i] = {
       ...updated[i],
       name: emp.full_name_arabic || "",
+      jobRole: emp.position || "",
     };
     setCommitteeMembers(updated);
   };
@@ -627,7 +628,7 @@ export default function InventoryHandoverForm() {
             <div className="mt-12 pt-8 border-t-2 border-slate-200">
               <h3 className="text-lg font-bold mb-6 text-slate-800">توقيعات أعضاء اللجنة</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {committeeMembers.map((member, i) => (
+                {committeeMembers.slice(0,3).map((member, i) => (
                   <div key={i} className="border border-slate-300 rounded-xl p-4 text-center bg-white shadow-sm">
                     <p className="font-extrabold text-slate-800 text-sm mb-1">{member.title || 'عضو لجنة'}</p>
                     <p className="text-base font-bold text-blue-800 mb-1">{member.name || '................................'}</p>
