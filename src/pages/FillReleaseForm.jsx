@@ -170,17 +170,24 @@ export default function FillReleaseForm() {
     const rect = printRef.current?.getBoundingClientRect();
     if (!rect) return;
     const pos = type === 'stamp' ? stampSettings.position : signatureSettings.position;
-    setDragOffset({ x: e.clientX - rect.left - pos.x, y: e.clientY - rect.top - pos.y });
+    // تخزين offset كنسبة مئوية
+    setDragOffset({
+      x: e.clientX - rect.left - (pos.x / 100) * rect.width,
+      y: e.clientY - rect.top - (pos.y / 100) * rect.height
+    });
     setDragging(type);
   };
 
   const handleMouseMove = (e) => {
     if (!dragging || !printRef.current) return;
     const rect = printRef.current.getBoundingClientRect();
-    const x = Math.max(0, Math.min(e.clientX - rect.left - dragOffset.x, rect.width - 80));
-    const y = Math.max(0, Math.min(e.clientY - rect.top - dragOffset.y, rect.height - 80));
-    if (dragging === 'stamp') setStampSettings((p) => ({ ...p, position: { x, y } }));else
-    setSignatureSettings((p) => ({ ...p, position: { x, y } }));
+    const xPx = Math.max(0, Math.min(e.clientX - rect.left - dragOffset.x, rect.width - 80));
+    const yPx = Math.max(0, Math.min(e.clientY - rect.top - dragOffset.y, rect.height - 80));
+    // تحويل إلى نسبة مئوية
+    const x = (xPx / rect.width) * 100;
+    const y = (yPx / rect.height) * 100;
+    if (dragging === 'stamp') setStampSettings((p) => ({ ...p, position: { x, y } }));
+    else setSignatureSettings((p) => ({ ...p, position: { x, y } }));
   };
 
   const handleMouseUp = () => setDragging(null);
