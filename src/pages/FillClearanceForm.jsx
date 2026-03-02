@@ -9,7 +9,6 @@ import { Printer, Download, Loader2, X, RotateCcw, Stamp, PenTool, Move, Plus } 
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import EmployeeSearchCombobox from "@/components/employees/EmployeeSearchCombobox";
-import EmployeeSearchCombobox from "@/components/employees/EmployeeSearchCombobox";
 
 export default function FillClearanceForm() {
   const [employees, setEmployees] = useState([]);
