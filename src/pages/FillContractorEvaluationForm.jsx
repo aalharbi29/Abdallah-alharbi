@@ -265,12 +265,12 @@ export default function FillContractorEvaluationForm() {
           {/* Table */}
           <table className="w-full border-collapse text-sm mb-6">
             <thead>
-              <tr className="bg-slate-700 text-white">
-                <th className="border border-slate-500 px-2 py-2 text-center w-10">م</th>
-                <th className="border border-slate-500 px-2 py-2 text-center w-16">البند</th>
-                <th className="border border-slate-500 px-3 py-2 text-right">المحتوى</th>
-                <th className="border border-slate-500 px-2 py-2 text-center w-16">الدرجة</th>
-                <th className="border border-slate-500 px-2 py-2 text-center w-20">التقييم</th>
+              <tr className="bg-slate-200 text-black">
+                <th className="border border-slate-400 px-1 py-2 text-center" style={{width:'35px'}}>م</th>
+                <th className="border border-slate-400 px-1 py-2 text-center" style={{width:'50px'}}>البند</th>
+                <th className="border border-slate-400 px-3 py-2 text-right">المحتوى</th>
+                <th className="border border-slate-400 px-1 py-2 text-center" style={{width:'55px'}}>الدرجة</th>
+                <th className="border border-slate-400 px-1 py-2 text-center" style={{width:'76px'}}>التقييم</th>
               </tr>
             </thead>
             <tbody>
