@@ -77,6 +77,14 @@ const interactiveForms = [
     color: "from-emerald-500 to-teal-600",
     link: createPageUrl("FillClearanceForm"),
     category: "الموارد البشرية"
+  },
+  {
+    title: "تقييم أداء المتعهد",
+    description: "4 نماذج: عقد جمع وتخزين، توريد المستهلكات، النقل، المعالجة - للنفايات الطبية",
+    icon: Trash2,
+    color: "from-red-500 to-rose-600",
+    link: createPageUrl("FillContractorEvaluationForm"),
+    category: "النفايات الطبية"
   }
 ];
 
