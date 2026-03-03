@@ -288,9 +288,9 @@ export default function FillContractorEvaluationForm() {
                         <span className="section-cell-text">{rowInfo.section}</span>
                       </td>
                     }
-                    <td className="border border-slate-300 px-3 py-2 text-right leading-relaxed">{item.content}</td>
-                    <td className="border border-slate-300 px-2 py-2 text-center font-bold text-slate-800">{item.score}</td>
-                    <td className="border border-slate-300 px-1 py-1 text-center">
+                    <td className="border border-slate-300 px-3 py-1 text-right leading-relaxed">{item.content}</td>
+                    <td className="border border-slate-300 px-2 py-1 text-center font-bold text-slate-800">{item.score}</td>
+                    <td className="border border-slate-300 px-1 py-0 text-center">
                       <input
                         type="number"
                         min="0"
