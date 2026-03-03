@@ -273,7 +273,7 @@ export default function FillContractorEvaluationForm() {
               )}
               {/* المجموع */}
               <tr className="bg-green-700 text-white font-extrabold">
-                <td colSpan={3} className="border border-green-600 px-3 py-3 text-center text-lg">المجموع</td>
+                <td colSpan={3} className="pt-3 pr-3 pb-3 pl-3 text-lg text-center border border-green-600">المجموع</td>
                 <td className="border border-green-600 px-2 py-3 text-center text-lg">{selectedFormType.totalScore}</td>
                 <td className="border border-green-600 px-2 py-3 text-center text-lg text-yellow-200">
                   {totalEval}
@@ -283,8 +283,8 @@ export default function FillContractorEvaluationForm() {
           </table>
 
           {/* Footer Info */}
-          <div className="border border-slate-300 rounded-lg p-3 mb-5 text-sm">
-            <div className="font-bold text-slate-700 mb-2 text-center">أسم المنشأة الصحية: {selectedCenter || "......................................"}</div>
+          <div className="mb-4 pr-3 pl-3 text-sm rounded-lg border border-slate-300">
+            <div className="text-slate-700 font-bold text-center">أسم المنشأة الصحية: {selectedCenter || "......................................"}</div>
           </div>
 
           <div className="grid grid-cols-2 gap-6">
