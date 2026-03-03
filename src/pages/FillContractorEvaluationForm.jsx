@@ -6,72 +6,72 @@ import { toast } from "sonner";
 
 // ============= تعريف الأنماط الأربعة =============
 const FORM_TYPES = [
-  {
-    id: "collection",
-    title: "عقد جمع وتخزين",
-    fullTitle: "نموذج تقييم أداء المتعهد ( عقد جمع وتخزين )",
-    totalScore: 100,
-    items: [
-      { id: 1, section: "النقل خارج النشأة", content: "يتم متابعة نقل النفايات الطبية إلى خارج النشأة بشكل يومي (كل 24 ساعة) وفق سجلات", score: 10 },
-      { id: 2, section: "", content: "يتم تسليم النفايات لسيارات مجهزة ومطابقة للمواصفات وعليها ملصق الخطر الحيوي من جانبين على الأقل وتدوين الملاحظات", score: 10 },
-      { id: 3, section: "", content: "يتم طلب شهادة استلام النفايات الطبية يومياً موضحاً بها الكميات والأنواع من الناقل", score: 10 },
-      { id: 4, section: "", content: "يتم طلب شهادة إتمام المعالجة بصورة يومية موضحاً بها الكميات والأنواع وطرق المعالجة من الناقل", score: 10 },
-      { id: 5, section: "", content: "يتوفر سجل احصائي لكميات النفايات الطبية وأنواعها ومصدرها", score: 10 },
-      { id: 6, section: "", content: "غرفة التخزين المؤقت نظيفة وتعقم بشكل دوري", score: 10 },
-      { id: 7, section: "", content: "لا يوجد تكدس او بعثرة للنفايات الطبية داخل غرفة التخزين المؤقت", score: 10 },
-      { id: 8, section: "", content: "يتم تعقيم وتطهير السلال والعربات بشكل دوري", score: 10 },
-      { id: 9, section: "", content: "جميع الأكياس عليها ملصق يوضح نوع النفايات ومصدرها", score: 10 },
-      { id: 10, section: "", content: "يوجد سجل حضور وانصراف للمشرفين وعمال نقل النفايات الطبية", score: 10 },
-    ]
-  },
-  {
-    id: "supply",
-    title: "عقد توريد المستهلكات والمستلزمات",
-    fullTitle: "نموذج تقييم أداء المتعهد ( عقد توريد المستهلكات والمستلزمات )",
-    totalScore: 250,
-    items: [
-      { id: 1, section: "المستهلكات", content: "توفير أكياس جمع النفايات الصفراء والحمراء مطابقة لسماكة 150 ميكرون", score: 40 },
-      { id: 2, section: "", content: "توفير أشرطة بلاستيكية قوية التحمل لربط الأكياس", score: 40 },
-      { id: 3, section: "", content: "توفير حاويات النفايات الحادة الصفراء اللون وذات غطاء يغلق مرة واحدة فقط وعليها شعار الخطر الحيوي", score: 40 },
-      { id: 4, section: "", content: "توفير بطاقات لاصقة تعريفية حسب المواصفات جدول مواصفات المواد", score: 40 },
-      { id: 6, section: "المستلزمات", content: "توفير حاويات لأكياس النفايات الطبية ستانلس ستيل أو من مادة بلاستيكية لها غطاء يفتح بالقدم وعليها شعار الخطر الحيوي من جانبين على الأقل (استبدال التالف بصورة فورية)", score: 40 },
-      { id: 7, section: "", content: "توفير عربة نقل النفايات في المركز الصحي من البلاستيك المقوى وعليها شعار خطر حيوي ولها غطاء محكم الغلق (عمل الصيانة اللازمة للمعطل)", score: 25 },
-      { id: 8, section: "", content: "يتم النقل بواسطة سيارة مجهزة ومطابقة للمواصفات وعليها ملصق الخطر الحيوي من جانبين على الأقل", score: 25 },
-    ]
-  },
-  {
-    id: "transport",
-    title: "عقد النقل",
-    fullTitle: "نموذج تقييم أداء المتعهد ( عقد النقل )",
-    totalScore: 100,
-    items: [
-      { id: 1, section: "النقل خارج المنشأة / مستندات التعامل مع النفايات الطبية", content: "يتم نقل النفايات الطبية إلى خارج المنشأة بشكل يومي (كل 24 ساعة) وكل 3 أيام للمراكز الصحية التي بها وحدة تجميد.", score: 15 },
-      { id: 2, section: "", content: "يتم النقل بواسطة سيارة مجهزة ومطابقة للمواصفات وعليها ملصق الخطر الحيوي من جانبين على الأقل", score: 10 },
-      { id: 3, section: "", content: "يوجد ميزان في سيارة النقل ويتم استخدامه لوزن النفايات الطبية", score: 10 },
-      { id: 4, section: "", content: "توضع النفايات في حاويات داخل سيارة النقل", score: 10 },
-      { id: 5, section: "", content: "سيارة النقل نظيفة ومعقمة ولا يوجد تسربات أو روائح", score: 10 },
-      { id: 6, section: "", content: "يتم تزويد المنشأة الصحية بشهادة استلام النفايات الطبية يومياً موضحاً بها الكميات والأنواع", score: 10 },
-      { id: 7, section: "", content: "يتم تزويد المنشأة الصحية بشهادات إتمام المعالجة بصورة يومية موضحاً بها الكميات والأنواع وطرق المعالجة", score: 15 },
-      { id: 8, section: "", content: "يتوفر سجل احصائي لكميات النفايات الطبية وأنواعها ومصدرها", score: 10 },
-      { id: 9, section: "", content: "استلام حاوية النفايات الطبية من محطة معالجة النفايات الطبية بعد غسلها وتطهيرها واعادتها إلى المنشأة الصحية", score: 10 },
-    ]
-  },
-  {
-    id: "treatment",
-    title: "عقد المعالجة",
-    fullTitle: "نموذج تقييم أداء المتعهد ( عقد المعالجة )",
-    totalScore: 100,
-    items: [
-      { id: 1, section: "المعالجة والتخلص النهائي / نماذج الاستلام والتسليم", content: "وزن وتسجيل كمية النفايات المستلمة وفقاً لنماذج الاستلام والتسليم", score: 10 },
-      { id: 2, section: "", content: "يقوم مركز المعالجة بتقطيع النفايات إلى أجزاء صغيرة بعد المعالجة", score: 10 },
-      { id: 3, section: "", content: "معالجة كافة أنواع نفايات الرعاية الصحية الخطرة الناتجة عن المنشآت الصحية", score: 10 },
-      { id: 4, section: "", content: "إجراء فحوصات واختبارات جودة إتمام المعالجة", score: 10 },
-      { id: 5, section: "", content: "تزويد المنشأة الصحية بشهادات إتمام المعالجة بصورة يومية موضحاً بها الكميات والأنواع وطرق المعالجة", score: 10 },
-      { id: 6, section: "", content: "تزويد المنشأة الصحية بشهادات الردم والتخلص النهائي. استلام نفايات الرعاية الصحية الخطرة (النفايات الطبية المجمعة داخل تروليات مغلقة) من متعهد نقل النفايات الطبية الخطرة الصادرة من المنشآت الصحية التابعة لوزارة الصحة بالمنطقة/المحافظة محل العقد.", score: 10 },
-      { id: 7, section: "", content: "يتم تسليم متعهد النقل تروليات النفايات الطبية الخطرة بعد غسلها وتطهيرها.", score: 20 },
-    ]
-  }
-];
+{
+  id: "collection",
+  title: "عقد جمع وتخزين",
+  fullTitle: "نموذج تقييم أداء المتعهد ( عقد جمع وتخزين )",
+  totalScore: 100,
+  items: [
+  { id: 1, section: "النقل خارج النشأة", content: "يتم متابعة نقل النفايات الطبية إلى خارج النشأة بشكل يومي (كل 24 ساعة) وفق سجلات", score: 10 },
+  { id: 2, section: "", content: "يتم تسليم النفايات لسيارات مجهزة ومطابقة للمواصفات وعليها ملصق الخطر الحيوي من جانبين على الأقل وتدوين الملاحظات", score: 10 },
+  { id: 3, section: "", content: "يتم طلب شهادة استلام النفايات الطبية يومياً موضحاً بها الكميات والأنواع من الناقل", score: 10 },
+  { id: 4, section: "", content: "يتم طلب شهادة إتمام المعالجة بصورة يومية موضحاً بها الكميات والأنواع وطرق المعالجة من الناقل", score: 10 },
+  { id: 5, section: "", content: "يتوفر سجل احصائي لكميات النفايات الطبية وأنواعها ومصدرها", score: 10 },
+  { id: 6, section: "", content: "غرفة التخزين المؤقت نظيفة وتعقم بشكل دوري", score: 10 },
+  { id: 7, section: "", content: "لا يوجد تكدس او بعثرة للنفايات الطبية داخل غرفة التخزين المؤقت", score: 10 },
+  { id: 8, section: "", content: "يتم تعقيم وتطهير السلال والعربات بشكل دوري", score: 10 },
+  { id: 9, section: "", content: "جميع الأكياس عليها ملصق يوضح نوع النفايات ومصدرها", score: 10 },
+  { id: 10, section: "", content: "يوجد سجل حضور وانصراف للمشرفين وعمال نقل النفايات الطبية", score: 10 }]
+
+},
+{
+  id: "supply",
+  title: "عقد توريد المستهلكات والمستلزمات",
+  fullTitle: "نموذج تقييم أداء المتعهد ( عقد توريد المستهلكات والمستلزمات )",
+  totalScore: 250,
+  items: [
+  { id: 1, section: "المستهلكات", content: "توفير أكياس جمع النفايات الصفراء والحمراء مطابقة لسماكة 150 ميكرون", score: 40 },
+  { id: 2, section: "", content: "توفير أشرطة بلاستيكية قوية التحمل لربط الأكياس", score: 40 },
+  { id: 3, section: "", content: "توفير حاويات النفايات الحادة الصفراء اللون وذات غطاء يغلق مرة واحدة فقط وعليها شعار الخطر الحيوي", score: 40 },
+  { id: 4, section: "", content: "توفير بطاقات لاصقة تعريفية حسب المواصفات جدول مواصفات المواد", score: 40 },
+  { id: 6, section: "المستلزمات", content: "توفير حاويات لأكياس النفايات الطبية ستانلس ستيل أو من مادة بلاستيكية لها غطاء يفتح بالقدم وعليها شعار الخطر الحيوي من جانبين على الأقل (استبدال التالف بصورة فورية)", score: 40 },
+  { id: 7, section: "", content: "توفير عربة نقل النفايات في المركز الصحي من البلاستيك المقوى وعليها شعار خطر حيوي ولها غطاء محكم الغلق (عمل الصيانة اللازمة للمعطل)", score: 25 },
+  { id: 8, section: "", content: "يتم النقل بواسطة سيارة مجهزة ومطابقة للمواصفات وعليها ملصق الخطر الحيوي من جانبين على الأقل", score: 25 }]
+
+},
+{
+  id: "transport",
+  title: "عقد النقل",
+  fullTitle: "نموذج تقييم أداء المتعهد ( عقد النقل )",
+  totalScore: 100,
+  items: [
+  { id: 1, section: "النقل خارج المنشأة / مستندات التعامل مع النفايات الطبية", content: "يتم نقل النفايات الطبية إلى خارج المنشأة بشكل يومي (كل 24 ساعة) وكل 3 أيام للمراكز الصحية التي بها وحدة تجميد.", score: 15 },
+  { id: 2, section: "", content: "يتم النقل بواسطة سيارة مجهزة ومطابقة للمواصفات وعليها ملصق الخطر الحيوي من جانبين على الأقل", score: 10 },
+  { id: 3, section: "", content: "يوجد ميزان في سيارة النقل ويتم استخدامه لوزن النفايات الطبية", score: 10 },
+  { id: 4, section: "", content: "توضع النفايات في حاويات داخل سيارة النقل", score: 10 },
+  { id: 5, section: "", content: "سيارة النقل نظيفة ومعقمة ولا يوجد تسربات أو روائح", score: 10 },
+  { id: 6, section: "", content: "يتم تزويد المنشأة الصحية بشهادة استلام النفايات الطبية يومياً موضحاً بها الكميات والأنواع", score: 10 },
+  { id: 7, section: "", content: "يتم تزويد المنشأة الصحية بشهادات إتمام المعالجة بصورة يومية موضحاً بها الكميات والأنواع وطرق المعالجة", score: 15 },
+  { id: 8, section: "", content: "يتوفر سجل احصائي لكميات النفايات الطبية وأنواعها ومصدرها", score: 10 },
+  { id: 9, section: "", content: "استلام حاوية النفايات الطبية من محطة معالجة النفايات الطبية بعد غسلها وتطهيرها واعادتها إلى المنشأة الصحية", score: 10 }]
+
+},
+{
+  id: "treatment",
+  title: "عقد المعالجة",
+  fullTitle: "نموذج تقييم أداء المتعهد ( عقد المعالجة )",
+  totalScore: 100,
+  items: [
+  { id: 1, section: "المعالجة والتخلص النهائي / نماذج الاستلام والتسليم", content: "وزن وتسجيل كمية النفايات المستلمة وفقاً لنماذج الاستلام والتسليم", score: 10 },
+  { id: 2, section: "", content: "يقوم مركز المعالجة بتقطيع النفايات إلى أجزاء صغيرة بعد المعالجة", score: 10 },
+  { id: 3, section: "", content: "معالجة كافة أنواع نفايات الرعاية الصحية الخطرة الناتجة عن المنشآت الصحية", score: 10 },
+  { id: 4, section: "", content: "إجراء فحوصات واختبارات جودة إتمام المعالجة", score: 10 },
+  { id: 5, section: "", content: "تزويد المنشأة الصحية بشهادات إتمام المعالجة بصورة يومية موضحاً بها الكميات والأنواع وطرق المعالجة", score: 10 },
+  { id: 6, section: "", content: "تزويد المنشأة الصحية بشهادات الردم والتخلص النهائي. استلام نفايات الرعاية الصحية الخطرة (النفايات الطبية المجمعة داخل تروليات مغلقة) من متعهد نقل النفايات الطبية الخطرة الصادرة من المنشآت الصحية التابعة لوزارة الصحة بالمنطقة/المحافظة محل العقد.", score: 10 },
+  { id: 7, section: "", content: "يتم تسليم متعهد النقل تروليات النفايات الطبية الخطرة بعد غسلها وتطهيرها.", score: 20 }]
+
+}];
+
 
 export default function FillContractorEvaluationForm() {
   const [healthCenters, setHealthCenters] = useState([]);
@@ -85,7 +85,7 @@ export default function FillContractorEvaluationForm() {
   const printRef = useRef(null);
 
   useEffect(() => {
-    base44.entities.HealthCenter.list().then(data => {
+    base44.entities.HealthCenter.list().then((data) => {
       if (Array.isArray(data)) setHealthCenters(data);
     }).catch(() => {});
   }, []);
@@ -96,9 +96,9 @@ export default function FillContractorEvaluationForm() {
   }, [selectedFormType.id]);
 
   const handleEvalChange = (itemId, value) => {
-    const maxScore = selectedFormType.items.find(i => i.id === itemId)?.score || 0;
+    const maxScore = selectedFormType.items.find((i) => i.id === itemId)?.score || 0;
     const numVal = Math.min(Math.max(0, Number(value) || 0), maxScore);
-    setEvaluations(prev => ({ ...prev, [itemId]: numVal }));
+    setEvaluations((prev) => ({ ...prev, [itemId]: numVal }));
   };
 
   const totalEval = selectedFormType.items.reduce((sum, item) => {
@@ -107,7 +107,7 @@ export default function FillContractorEvaluationForm() {
 
   const handlePrint = () => window.print();
 
-  const months = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+  const months = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 font-sans" dir="rtl">
@@ -134,19 +134,19 @@ export default function FillContractorEvaluationForm() {
         <div className="mb-4">
           <label className="block text-sm font-bold text-slate-700 mb-2">نوع النموذج:</label>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {FORM_TYPES.map(ft => (
-              <button
-                key={ft.id}
-                onClick={() => setSelectedFormType(ft)}
-                className={`px-3 py-2 rounded-lg text-sm font-semibold border transition-all ${
-                  selectedFormType.id === ft.id
-                    ? 'bg-green-600 text-white border-green-600 shadow-md'
-                    : 'bg-white text-slate-700 border-slate-300 hover:bg-green-50'
-                }`}
-              >
+            {FORM_TYPES.map((ft) =>
+            <button
+              key={ft.id}
+              onClick={() => setSelectedFormType(ft)}
+              className={`px-3 py-2 rounded-lg text-sm font-semibold border transition-all ${
+              selectedFormType.id === ft.id ?
+              'bg-green-600 text-white border-green-600 shadow-md' :
+              'bg-white text-slate-700 border-slate-300 hover:bg-green-50'}`
+              }>
+
                 {ft.title}
               </button>
-            ))}
+            )}
           </div>
         </div>
 
@@ -157,12 +157,12 @@ export default function FillContractorEvaluationForm() {
             <select
               className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-500"
               value={selectedCenter}
-              onChange={e => setSelectedCenter(e.target.value)}
-            >
+              onChange={(e) => setSelectedCenter(e.target.value)}>
+
               <option value="">-- اختر المنشأة --</option>
-              {healthCenters.map(c => (
-                <option key={c.id} value={c["اسم_المركز"]}>{c["اسم_المركز"]}</option>
-              ))}
+              {healthCenters.map((c) =>
+              <option key={c.id} value={c["اسم_المركز"]}>{c["اسم_المركز"]}</option>
+              )}
             </select>
           </div>
           {/* الشهر */}
@@ -171,8 +171,8 @@ export default function FillContractorEvaluationForm() {
             <select
               className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-500"
               value={month}
-              onChange={e => setMonth(e.target.value)}
-            >
+              onChange={(e) => setMonth(e.target.value)}>
+
               <option value="">-- الشهر --</option>
               {months.map((m, i) => <option key={i} value={m}>{m}</option>)}
             </select>
@@ -184,9 +184,9 @@ export default function FillContractorEvaluationForm() {
               type="number"
               className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-green-500"
               value={year}
-              onChange={e => setYear(e.target.value)}
-              min="2020" max="2099"
-            />
+              onChange={(e) => setYear(e.target.value)}
+              min="2020" max="2099" />
+
           </div>
         </div>
 
@@ -196,8 +196,8 @@ export default function FillContractorEvaluationForm() {
           </div>
           <button
             onClick={handlePrint}
-            className="flex items-center gap-2 px-5 py-2 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700 transition-colors shadow"
-          >
+            className="flex items-center gap-2 px-5 py-2 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700 transition-colors shadow">
+
             <Printer className="w-4 h-4" /> طباعة
           </button>
         </div>
@@ -212,10 +212,10 @@ export default function FillContractorEvaluationForm() {
               <div className="text-sm font-bold text-slate-600">إدارة الخدمات العامة</div>
             </div>
             <div className="flex flex-col items-center gap-1">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-600 to-green-800 rounded-full flex items-center justify-center shadow-lg">
-                <span className="text-white font-black text-xl">ب</span>
-              </div>
-              <span className="text-xs text-green-800 font-bold">BAIN</span>
+              
+
+
+              
             </div>
           </div>
 
@@ -243,8 +243,8 @@ export default function FillContractorEvaluationForm() {
               </tr>
             </thead>
             <tbody>
-              {selectedFormType.items.map((item, idx) => (
-                <tr key={item.id} className={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}>
+              {selectedFormType.items.map((item, idx) =>
+              <tr key={item.id} className={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}>
                   <td className="border border-slate-300 px-2 py-2 text-center font-bold text-slate-600">{item.id}</td>
                   <td className="border border-slate-300 px-2 py-2 text-center text-xs font-semibold text-slate-700 leading-tight">
                     {item.section}
@@ -253,18 +253,18 @@ export default function FillContractorEvaluationForm() {
                   <td className="border border-slate-300 px-2 py-2 text-center font-bold text-slate-800">{item.score}</td>
                   <td className="border border-slate-300 px-1 py-1 text-center">
                     <input
-                      type="number"
-                      min="0"
-                      max={item.score}
-                      className="w-16 text-center border border-slate-300 rounded focus:outline-none focus:border-green-500 font-bold text-green-800 bg-green-50 no-print"
-                      value={evaluations[item.id] !== undefined ? evaluations[item.id] : ""}
-                      onChange={e => handleEvalChange(item.id, e.target.value)}
-                      placeholder="0"
-                    />
+                    type="number"
+                    min="0"
+                    max={item.score}
+                    className="w-16 text-center border border-slate-300 rounded focus:outline-none focus:border-green-500 font-bold text-green-800 bg-green-50 no-print"
+                    value={evaluations[item.id] !== undefined ? evaluations[item.id] : ""}
+                    onChange={(e) => handleEvalChange(item.id, e.target.value)}
+                    placeholder="0" />
+
                     <span className="print-score hidden">{evaluations[item.id] ?? ""}</span>
                   </td>
                 </tr>
-              ))}
+              )}
               {/* المجموع */}
               <tr className="bg-green-700 text-white font-extrabold">
                 <td colSpan={3} className="border border-green-600 px-3 py-3 text-center text-lg">المجموع</td>
@@ -291,9 +291,9 @@ export default function FillContractorEvaluationForm() {
                   <input
                     className="flex-1 border-b border-slate-400 focus:outline-none focus:border-green-500 text-sm bg-transparent text-center"
                     value={wasteManagerName}
-                    onChange={e => setWasteManagerName(e.target.value)}
-                    placeholder="الاسم"
-                  />
+                    onChange={(e) => setWasteManagerName(e.target.value)}
+                    placeholder="الاسم" />
+
                 </div>
                 <div className="flex items-end gap-2">
                   <span className="text-sm font-semibold text-slate-600 whitespace-nowrap">التوقيع:</span>
@@ -315,9 +315,9 @@ export default function FillContractorEvaluationForm() {
                   <input
                     className="flex-1 border-b border-slate-400 focus:outline-none focus:border-green-500 text-sm bg-transparent text-center"
                     value={directorName}
-                    onChange={e => setDirectorName(e.target.value)}
-                    placeholder="الاسم"
-                  />
+                    onChange={(e) => setDirectorName(e.target.value)}
+                    placeholder="الاسم" />
+
                 </div>
                 <div className="flex items-end gap-2">
                   <span className="text-sm font-semibold text-slate-600 whitespace-nowrap">التوقيع:</span>
@@ -353,6 +353,6 @@ export default function FillContractorEvaluationForm() {
         }
         .no-print .print-score { display: none; }
       `}</style>
-    </div>
-  );
+    </div>);
+
 }
