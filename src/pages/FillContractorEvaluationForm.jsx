@@ -315,11 +315,11 @@ export default function FillContractorEvaluationForm() {
           </table>
 
           {/* Footer Info */}
-          <div className="mb-6 px-3 text-sm rounded-lg border border-slate-300">
-            <div className="text-slate-700 font-bold text-center">أسم المنشأة الصحية: {selectedCenter || "......................................"}</div>
+          <div className="mb-1 pr-3 pb-2 pl-3 text-sm rounded-lg border border-slate-300">
+            <div className="text-slate-700 mt-1 font-bold text-center">أسم المنشأة الصحية: {selectedCenter || "......................................"}</div>
           </div>
 
-          <div className="grid grid-cols-2 gap-6">
+          <div className="pb-1 grid grid-cols-2 gap-6">
             {/* مسؤول النفايات */}
             <div className="border border-slate-300 rounded-lg p-4">
               <div className="text-center font-bold text-slate-700 mb-3 border-b border-slate-200 pb-2">مسؤول النفايات الطبية</div>
