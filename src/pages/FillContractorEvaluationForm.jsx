@@ -204,7 +204,13 @@ export default function FillContractorEvaluationForm() {
       </div>
 
       {/* ===== Print Area ===== */}
-      <div ref={printRef} className="print-area max-w-5xl mx-auto bg-white shadow-xl">
+      <div ref={printRef} className="print-area max-w-5xl mx-auto bg-white shadow-xl"
+        style={{
+          backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/b6c7b20f8_ChatGPTImage1202605_58_03.png)',
+          backgroundSize: '100% 100%',
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'center'
+        }}>
         <div className="p-8">
           {/* Header */}
           <div className="flex justify-between items-start mb-4">
