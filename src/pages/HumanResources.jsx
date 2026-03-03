@@ -546,7 +546,7 @@ export default function HumanResources() {
 
                 <ExportManager employees={exportEmployees} />
                 <CustomExportManager 
-                  employees={selectedEmployees.size > 0 ? filteredEmployees.filter(e => selectedEmployees.has(e.id)) : filteredEmployees}
+                  employees={exportEmployees}
                   selectedCount={selectedEmployees.size}
                 />
 
