@@ -312,6 +312,55 @@ export default function HumanResources() {
     return result;
   }, [employees, searchQuery, filters, assignments, pinnedEmployees]);
 
+  // ترتيب خاص للتصدير: المدير ثم نائب المدير ثم المشرف الفني ثم التمريض ثم البقية (لكل مركز)
+  const orderEmployeesByCenterRoles = (list) => {
+    if (!Array.isArray(list) || list.length === 0) return list;
+    const centersByName = new Map();
+    (healthCenters || []).forEach(c => { if (c?.اسم_المركز) centersByName.set(c.اسم_المركز, c); });
+
+    const grouped = list.reduce((acc, emp) => {
+      const name = emp?.["المركز_الصحي"] || "__NO_CENTER__";
+      (acc[name] ||= []).push(emp);
+      return acc;
+    }, {});
+
+    const ordered = [];
+    Object.entries(grouped).forEach(([centerName, emps]) => {
+      const center = centersByName.get(centerName);
+      const used = new Set();
+      const pushById = (id) => {
+        if (!id) return;
+        const emp = emps.find(e => e.id === id);
+        if (emp && !used.has(emp.id)) { ordered.push(emp); used.add(emp.id); }
+      };
+
+      if (center) {
+        pushById(center.المدير);
+        pushById(center.نائب_المدير);
+        pushById(center.المشرف_الفني);
+      }
+
+      // التمريض بعد القيادات مباشرة
+      emps
+        .filter(e => !used.has(e.id) && String(e.position || '').includes('تمريض'))
+        .forEach(e => { ordered.push(e); used.add(e.id); });
+
+      // البقية
+      emps
+        .filter(e => !used.has(e.id))
+        .forEach(e => ordered.push(e));
+    });
+
+    return ordered;
+  };
+
+  const exportEmployees = useMemo(() => {
+    const base = selectedEmployees.size > 0
+      ? filteredEmployees.filter(e => selectedEmployees.has(e.id))
+      : filteredEmployees;
+    return orderEmployeesByCenterRoles(base);
+  }, [filteredEmployees, selectedEmployees, healthCenters]);
+
   // تحميل أولي مع Skeleton
   if (isLoading && employees.length === 0) {
     return (
