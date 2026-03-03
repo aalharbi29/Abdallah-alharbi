@@ -93,9 +93,27 @@ export default function HealthCentersReport() {
 
       return {
         ...center,
-        المدير: manager?.full_name_arabic || 'غير محدد',
-        نائب_المدير: deputyManager?.full_name_arabic || 'غير محدد',
-        المشرف_الفني: technicalSupervisor?.full_name_arabic || 'غير محدد',
+        المدير: manager
+          ? [
+              manager.full_name_arabic || '',
+              manager.phone ? `جوال: ${manager.phone}` : null,
+              manager.email ? `إيميل: ${manager.email}` : null,
+            ].filter(Boolean).join(' | ')
+          : 'غير محدد',
+        نائب_المدير: deputyManager
+          ? [
+              deputyManager.full_name_arabic || '',
+              deputyManager.phone ? `جوال: ${deputyManager.phone}` : null,
+              deputyManager.email ? `إيميل: ${deputyManager.email}` : null,
+            ].filter(Boolean).join(' | ')
+          : 'غير محدد',
+        المشرف_الفني: technicalSupervisor
+          ? [
+              technicalSupervisor.full_name_arabic || '',
+              technicalSupervisor.phone ? `جوال: ${technicalSupervisor.phone}` : null,
+              technicalSupervisor.email ? `إيميل: ${technicalSupervisor.email}` : null,
+            ].filter(Boolean).join(' | ')
+          : 'غير محدد',
         عدد_الموظفين: employeesCount,
         سيارة_خدمات: center.سيارة_خدمات?.متوفرة ? 'متوفرة' : 'غير متوفرة',
         سيارة_اسعاف: center.سيارة_اسعاف?.متوفرة ? 'متوفرة' : 'غير متوفرة',
