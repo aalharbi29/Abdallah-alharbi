@@ -274,7 +274,7 @@ export default function HealthCentersReport() {
                       عرض الخريطة
                     </a>
                   ) : (
-                    center[key] || '-'
+                    typeof center[key] === 'string' ? center[key] : (center[key] || '-')
                   )}
                 </td>
               ))}
