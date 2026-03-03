@@ -205,17 +205,17 @@ export default function FillContractorEvaluationForm() {
 
       {/* ===== Print Area ===== */}
       <div ref={printRef} className="print-area max-w-5xl mx-auto bg-white shadow-xl"
-        style={{
-          backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/b6c7b20f8_ChatGPTImage1202605_58_03.png)',
-          backgroundSize: '100% 100%',
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center'
-        }}>
+      style={{
+        backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/b6c7b20f8_ChatGPTImage1202605_58_03.png)',
+        backgroundSize: '100% 100%',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center'
+      }}>
         <div className="p-8">
           {/* Header */}
-          <div className="flex justify-between items-start mb-4">
+          <div className="mb-20 flex justify-between items-start">
             <div className="text-right">
-              <div className="text-sm font-bold text-slate-600">إدارة الخدمات العامة</div>
+              <div className="text-slate-600 mb-6 ml-10 text-sm font-bold opacity-100">إدارة الخدمات العامة</div>
             </div>
             <div className="flex flex-col items-center gap-1">
               
@@ -226,7 +226,7 @@ export default function FillContractorEvaluationForm() {
           </div>
 
           <div className="text-center mb-5">
-            <h1 className="text-2xl font-extrabold text-slate-900 mb-1">{selectedFormType.fullTitle}</h1>
+            <h1 className="text-slate-900 text-2xl font-extrabold">{selectedFormType.fullTitle}</h1>
             <div className="text-base text-slate-700 mt-2">
               للتخلص من النفايات الطبية بالمنشآت الصحية بمستشفى / مركز (
               <span className="font-bold text-green-800 mx-2">{selectedCenter || "........................"}</span>
