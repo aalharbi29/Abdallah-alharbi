@@ -278,7 +278,7 @@ export default function FillContractorEvaluationForm() {
                 const rowInfo = sectionRows[idx];
                 return (
                   <tr key={item.id} className={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}>
-                    <td className="border border-slate-300 px-2 py-2 text-center font-bold text-slate-600">{item.id}</td>
+                    <td className="border border-slate-300 px-2 py-1 text-center font-bold text-slate-600">{item.id}</td>
                     {rowInfo.showSection &&
                     <td
                       className="border border-slate-300 px-1 text-center text-slate-700 bg-slate-100"
