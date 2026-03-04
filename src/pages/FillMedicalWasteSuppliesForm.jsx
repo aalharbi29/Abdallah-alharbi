@@ -659,9 +659,9 @@ export default function FillMedicalWasteSuppliesForm() {
         </div>
 
         {/* Signatures */}
-        <div className="pr-6 pl-6 grid grid-cols-2 gap-8">
+        <div className="pt-3 pr-32 pb-1 pl-32 grid grid-cols-2 gap-8">
           <div className="sig-card overflow-hidden">
-            <div className="sig-card-header form-title" style={{ fontSize: '13px' }}>
+            <div className="ml-1 sig-card-header form-title" style={{ fontSize: '13px' }}>
               {combinedSignatures.supervisorTitle}
               <div className="text-xs font-normal opacity-80 mt-0.5">بمستشفى الحسو العام</div>
             </div>
@@ -679,7 +679,7 @@ export default function FillMedicalWasteSuppliesForm() {
             </div>
           </div>
 
-          <div className="sig-card overflow-hidden">
+          <div className="ml-1 pr-12 pl-1 px-1 sig-card overflow-hidden">
             <div className="sig-card-header form-title" style={{ fontSize: '13px' }}>
               {combinedSignatures.assistantTitle}
               <div className="mt-0.5 text-xs font-normal opacity-80">بمستشفى الحسو العام</div>
