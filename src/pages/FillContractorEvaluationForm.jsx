@@ -203,7 +203,7 @@ export default function FillContractorEvaluationForm() {
               key={ft.id}
               onClick={() => setSelectedFormTypeId(ft.id)}
               className={`px-3 py-2 rounded-lg text-sm font-semibold border transition-all ${
-              selectedFormType.id === ft.id ?
+              selectedFormTypeId === ft.id ?
               'bg-green-600 text-white border-green-600 shadow-md' :
               'bg-white text-slate-700 border-slate-300 hover:bg-green-50'}`
               }>
