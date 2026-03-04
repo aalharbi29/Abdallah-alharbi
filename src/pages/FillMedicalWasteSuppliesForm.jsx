@@ -679,7 +679,7 @@ export default function FillMedicalWasteSuppliesForm() {
             </div>
           </div>
 
-          <div className="ml-1 pr-12 pl-1 px-1 sig-card overflow-hidden">
+          <div className="sig-card overflow-hidden">
             <div className="sig-card-header form-title" style={{ fontSize: '13px' }}>
               {combinedSignatures.assistantTitle}
               <div className="mt-0.5 text-xs font-normal opacity-80">بمستشفى الحسو العام</div>
