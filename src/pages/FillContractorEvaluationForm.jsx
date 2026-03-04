@@ -344,6 +344,7 @@ export default function FillContractorEvaluationForm() {
 
       {/* ===== Print Area ===== */}
       <div
+        key={selectedFormTypeId}
         ref={printRef}
         className="print-area max-w-5xl mx-auto bg-white shadow-xl"
         style={{
