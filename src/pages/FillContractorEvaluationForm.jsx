@@ -365,7 +365,7 @@ export default function FillContractorEvaluationForm() {
 
           <div className="mb-3 pt-10 text-center">
             <h1
-              key={`title-${selectedFormTypeId}`} className="text-slate-900 pt-24 text-2xl font-extrabold outline-none"
+              key={`title-${selectedFormTypeId}`} className="text-slate-900 pt-16 text-2xl font-extrabold outline-none"
 
               contentEditable
               suppressContentEditableWarning
@@ -442,7 +442,7 @@ export default function FillContractorEvaluationForm() {
           </table>
 
           {/* Footer Info */}
-          <div className="mb-4 pr-3 pb-2 pl-3 text-sm rounded-lg border border-slate-300">
+          <div className="mb-2 pr-3 pb-2 pl-3 text-sm rounded-lg border border-slate-300">
             <div className="text-slate-700 mt-1 font-bold text-center">أسم المنشأة الصحية: {selectedCenter || "......................................"}</div>
           </div>
 
@@ -497,13 +497,13 @@ export default function FillContractorEvaluationForm() {
           </div>
 
           {/* الختم */}
-          <div className="text-slate-600 mt-1 pt-4 pb-1 text-sm font-bold text-center">الختم</div>
+          <div className="text-slate-600 mt-1 pb-1 text-sm font-bold text-center">الختم</div>
 
           {/* Footer Logo */}
-          <div className="text-cyan-600 mt-1 pt-2 pr-10 pl-6 border-t border-slate-200 flex justify-between items-center">
+          <div className="text-cyan-600 pr-10 pl-6 border-t border-slate-200 flex justify-between items-center">
             
             <div className="text-center">
-              <div className="text-sky-700 mt-12 font-extrabold">{currentFormData.footerOrgName}</div>
+              <div className="text-sky-700 mt-5 font-extrabold">{currentFormData.footerOrgName}</div>
               <div className="text-sky-600 text-xs">{currentFormData.footerOrgNameEn}</div>
               <div className="text-sky-700 text-xs">{currentFormData.footerTagline}</div>
             </div>
