@@ -313,7 +313,7 @@ export default function FillContractorEvaluationForm() {
               </tr>
             </thead>
             <tbody>
-              {selectedFormType.items.map((item, idx) => {
+              {currentFormData.items.map((item, idx) => {
                 const rowInfo = sectionRows[idx];
                 return (
                   <tr key={item.id} className={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}>
@@ -327,7 +327,12 @@ export default function FillContractorEvaluationForm() {
                         <span className="section-cell-text">{rowInfo.section}</span>
                       </td>
                     }
-                    <td className="border border-slate-300 px-3 py-1 text-right leading-relaxed">{item.content}</td>
+                    <td
+                      className="border border-slate-300 px-3 py-1 text-right leading-relaxed outline-none"
+                      contentEditable
+                      suppressContentEditableWarning
+                      onBlur={(e) => handleContentChange(item.id, e.target.innerText)}
+                    >{item.content}</td>
                     <td className="border border-slate-300 px-2 py-1 text-center font-bold text-slate-800">{item.score}</td>
                     <td className="border border-slate-300 px-1 py-0 text-center">
                       <input
