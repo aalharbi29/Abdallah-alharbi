@@ -218,26 +218,26 @@ function SingleForm({ healthCenters, employees, onBack }) {
 
         {/* Header */}
         <div className="pt-20 px-8 text-center">
-          <h1 className="text-emerald-900 mt-20 font-black form-title leading-tight"
-            style={{ fontSize: '28px', letterSpacing: '0.03em', textShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+          <h1 className="text-emerald-900 mt-20 text-sm font-extrabold leading-tight form-title"
+          style={{ fontSize: '28px', letterSpacing: '0.03em', textShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
             {reportTitle}
           </h1>
           {(selectedCenter || periodLabel) &&
           <div className="flex items-center mt-4 px-4">
               <div className="flex-1"></div>
               <div className="text-center flex-1">
-                {selectedCenter && (
-                  <span className="inline-block bg-emerald-50 border border-emerald-200 rounded-full px-5 py-1.5 text-emerald-800 text-sm font-bold form-title" style={{ letterSpacing: '0.02em' }}>
+                {selectedCenter &&
+              <span className="inline-block bg-emerald-50 border border-emerald-200 rounded-full px-5 py-1.5 text-emerald-800 text-sm font-bold form-title" style={{ letterSpacing: '0.02em' }}>
                     المركز الصحي: {selectedCenter}
                   </span>
-                )}
+              }
               </div>
               <div className="flex-1 text-left">
-                {periodLabel && (
-                  <span className="inline-block bg-sky-50 border border-sky-200 rounded-full px-5 py-1.5 text-sky-800 text-sm font-bold form-title" style={{ letterSpacing: '0.02em' }}>
+                {periodLabel &&
+              <span className="inline-block bg-sky-50 border border-sky-200 rounded-full px-5 py-1.5 text-sky-800 text-sm font-bold form-title" style={{ letterSpacing: '0.02em' }}>
                     {periodLabel}
                   </span>
-                )}
+              }
               </div>
             </div>
           }
