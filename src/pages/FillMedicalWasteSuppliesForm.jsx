@@ -486,7 +486,7 @@ export default function FillMedicalWasteSuppliesForm() {
 
         {/* Header */}
         <div className="pt-16 px-4 text-center">
-          <h1 className="text-lg font-extrabold text-sky-800">{reportTitle}</h1>
+          <h1 className="text-sky-800 mt-6 text-lg font-extrabold">{reportTitle}</h1>
           {combinedSignatures.periodLabel &&
           <p className="text-sky-600 text-xs mt-0.5 font-semibold">{combinedSignatures.periodLabel}</p>
           }
