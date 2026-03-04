@@ -356,10 +356,14 @@ export default function FillMedicalWasteSuppliesForm() {
 
   const [quantities, setQuantities] = useState({});
   const [combinedSignatures, setCombinedSignatures] = useState({
-    supervisorName: "مشرف النفايات الطبية بشؤون المراكز بمستشفى الحسو العام",
-    assistantName: "المساعد لشؤون المراكز بمستشفى الحسو العام",
+    supervisorName: "",
+    supervisorTitle: "مشرف النفايات الطبية بشؤون المراكز",
+    assistantName: "عبدالمجيد سعود الربيقي",
+    assistantTitle: "المساعد لشؤون المراكز",
     periodLabel: ""
   });
+  const [combinedQuarter, setCombinedQuarter] = useState("");
+  const [combinedYear, setCombinedYear] = useState("");
   const [reportTitle, setReportTitle] = useState("احتياج مراكز الحسو من مستلزمات النفايات الطبية");
 
   useEffect(() => {
