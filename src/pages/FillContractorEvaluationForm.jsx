@@ -370,7 +370,7 @@ export default function FillContractorEvaluationForm() {
         <div className="p-8 flex flex-col flex-1">
           {/* Header */}
           <div className="flex justify-end items-center gap-3">
-            <div className="text-sm font-bold text-slate-600">{currentFormData.headerText}</div>
+            <div className="text-sky-500 text-sm font-bold">{currentFormData.headerText}</div>
             
 
 
