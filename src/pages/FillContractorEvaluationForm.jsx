@@ -399,8 +399,8 @@ export default function FillContractorEvaluationForm() {
           {(() => {
             const itemCount = currentFormData.items.length;
             const isFewItems = itemCount <= 7;
-            const contentFontSize = isFewItems ? '15px' : '13px';
-            const cellPadding = isFewItems ? '10px 12px' : '4px 12px';
+            const contentFontSize = isFewItems ? '13.5px' : '13px';
+            const cellPadding = isFewItems ? '7px 12px' : '4px 12px';
             return (
           <table className="w-full border-collapse mb-6" style={{ fontSize: contentFontSize }}>
             <thead>
