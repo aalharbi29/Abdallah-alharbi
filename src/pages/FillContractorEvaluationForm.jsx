@@ -495,10 +495,10 @@ export default function FillContractorEvaluationForm() {
           <div className="text-slate-600 mt-1 pt-6 pb-1 text-sm font-bold text-center">الختم</div>
 
           {/* Footer Logo */}
-          <div className="text-cyan-600 mt-1 pt-1 pr-10 pb-6 pl-6 border-t border-slate-200 flex justify-between items-center">
+          <div className="text-cyan-600 mt-1 pt-1 pr-10 pl-6 border-t border-slate-200 flex justify-between items-center">
             
             <div className="text-center">
-              <div className="text-sky-700 mt-12 font-extrabold">{currentFormData.footerOrgName}</div>
+              <div className="text-sky-700 mt-10 font-extrabold">{currentFormData.footerOrgName}</div>
               <div className="text-sky-600 text-xs">{currentFormData.footerOrgNameEn}</div>
               <div className="text-sky-700 text-xs">{currentFormData.footerTagline}</div>
             </div>
