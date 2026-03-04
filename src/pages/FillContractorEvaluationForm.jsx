@@ -103,10 +103,10 @@ export default function FillContractorEvaluationForm() {
   // بيانات النماذج منفصلة لكل نموذج (للسماح بالتعديل المنفصل)
   const [formData, setFormData] = useState(() => {
     const data = {};
-    FORM_TYPES.forEach(ft => {
+    FORM_TYPES.forEach((ft) => {
       data[ft.id] = {
         fullTitle: ft.fullTitle,
-        items: ft.items.map(item => ({ ...item }))
+        items: ft.items.map((item) => ({ ...item }))
       };
     });
     return data;
@@ -115,7 +115,7 @@ export default function FillContractorEvaluationForm() {
   const [directorName, setDirectorName] = useState("");
   const printRef = useRef(null);
 
-  const selectedFormType = FORM_TYPES.find(ft => ft.id === selectedFormTypeId);
+  const selectedFormType = FORM_TYPES.find((ft) => ft.id === selectedFormTypeId);
   const currentFormData = formData[selectedFormTypeId];
   const evaluations = allEvaluations[selectedFormTypeId] || {};
 
@@ -135,19 +135,19 @@ export default function FillContractorEvaluationForm() {
   };
 
   const handleContentChange = (itemId, newContent) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [selectedFormTypeId]: {
         ...prev[selectedFormTypeId],
-        items: prev[selectedFormTypeId].items.map(item =>
-          item.id === itemId ? { ...item, content: newContent } : item
+        items: prev[selectedFormTypeId].items.map((item) =>
+        item.id === itemId ? { ...item, content: newContent } : item
         )
       }
     }));
   };
 
   const handleTitleChange = (newTitle) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [selectedFormTypeId]: { ...prev[selectedFormTypeId], fullTitle: newTitle }
     }));
@@ -285,12 +285,12 @@ export default function FillContractorEvaluationForm() {
           </div>
 
           <div className="mb-3 pt-16 text-center">
-            <h1
-              className="text-slate-900 pt-4 text-2xl font-extrabold outline-none"
-              contentEditable
-              suppressContentEditableWarning
-              onBlur={(e) => handleTitleChange(e.target.innerText)}
-            >{currentFormData.fullTitle}</h1>
+            <h1 className="text-slate-900 pt-8 text-2xl font-extrabold outline-none"
+
+            contentEditable
+            suppressContentEditableWarning
+            onBlur={(e) => handleTitleChange(e.target.innerText)}>
+              {currentFormData.fullTitle}</h1>
             <div className="text-base text-slate-700 mt-2">
               للتخلص من النفايات الطبية بالمنشآت الصحية بمستشفى / مركز (
               <span className="font-bold text-green-800 mx-2">{selectedCenter || "........................"}</span>
@@ -331,8 +331,8 @@ export default function FillContractorEvaluationForm() {
                       className="border border-slate-300 px-3 py-1 text-right leading-relaxed outline-none"
                       contentEditable
                       suppressContentEditableWarning
-                      onBlur={(e) => handleContentChange(item.id, e.target.innerText)}
-                    >{item.content}</td>
+                      onBlur={(e) => handleContentChange(item.id, e.target.innerText)}>
+                      {item.content}</td>
                     <td className="border border-slate-300 px-2 py-1 text-center font-bold text-slate-800">{item.score}</td>
                     <td className="border border-slate-300 px-1 py-0 text-center">
                       <input
@@ -359,7 +359,7 @@ export default function FillContractorEvaluationForm() {
           </table>
 
           {/* Footer Info */}
-          <div className="mb-1 pr-3 pb-2 pl-3 text-sm rounded-lg border border-slate-300">
+          <div className="mb-4 pr-3 pb-2 pl-3 text-sm rounded-lg border border-slate-300">
             <div className="text-slate-700 mt-1 font-bold text-center">أسم المنشأة الصحية: {selectedCenter || "......................................"}</div>
           </div>
 
@@ -414,13 +414,13 @@ export default function FillContractorEvaluationForm() {
           </div>
 
           {/* الختم */}
-          <div className="text-slate-600 mt-1 pt-4 pb-1 text-sm font-bold text-center">الختم</div>
+          <div className="text-slate-600 mt-1 pt-6 pb-1 text-sm font-bold text-center">الختم</div>
 
           {/* Footer Logo */}
           <div className="text-cyan-600 mt-1 pt-1 pr-10 pb-6 pl-6 border-t border-slate-200 flex justify-between items-center">
             
             <div className="text-center">
-              <div className="text-sky-700 mt-8 font-extrabold">تجمع المدينة المنورة الصحي</div>
+              <div className="text-sky-700 mt-12 font-extrabold">تجمع المدينة المنورة الصحي</div>
               <div className="text-sky-600 text-xs">Madinah Health Cluster</div>
               <div className="text-sky-700 text-xs">Empowered by Health Holding co.</div>
             </div>
