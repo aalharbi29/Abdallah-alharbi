@@ -489,39 +489,44 @@ export default function FillMedicalWasteSuppliesForm() {
         .form-title { font-family: 'Tajawal', 'Cairo', sans-serif; }
         .form-body { font-family: 'Cairo', 'Tajawal', sans-serif; }
         .pro-table th { 
-          background: linear-gradient(135deg, #065f46 0%, #047857 50%, #059669 100%) !important;
+          background: linear-gradient(135deg, #1a472a 0%, #2d6a3f 50%, #3a7d4e 100%) !important;
           color: white !important;
           font-weight: 700;
           letter-spacing: 0.03em;
           text-shadow: 0 1px 2px rgba(0,0,0,0.15);
         }
         .pro-table td { transition: background 0.2s; }
-        .pro-table tbody tr:hover td { background: #ecfdf5 !important; }
+        .pro-table tbody tr:hover td { background: #f0f9f4 !important; }
         .pro-table .cat-cell {
           background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%) !important;
           font-weight: 800;
-          color: #065f46;
+          color: #1a472a;
           letter-spacing: 0.02em;
         }
         .pro-table .total-cell {
           background: linear-gradient(180deg, #dcfce7 0%, #bbf7d0 100%) !important;
           font-weight: 800;
-          color: #065f46;
+          color: #1a472a;
         }
         .sig-card {
-          background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
-          border: 2px solid #d1fae5;
+          background: linear-gradient(135deg, #ffffff 0%, #faf7f0 100%);
+          border: 2px solid #d4c5a0;
           border-radius: 16px;
-          box-shadow: 0 4px 15px rgba(5, 150, 105, 0.08);
+          box-shadow: 0 4px 15px rgba(140, 120, 70, 0.1);
         }
         .sig-card-header {
-          background: linear-gradient(135deg, #065f46, #047857);
+          background: linear-gradient(135deg, #1a472a 0%, #2d6a3f 100%);
           color: white;
           border-radius: 12px 12px 0 0;
           padding: 10px 16px;
           font-weight: 700;
           text-align: center;
           letter-spacing: 0.02em;
+        }
+        .stamp-box {
+          border: 2px dashed #d4c5a0;
+          border-radius: 16px;
+          background: linear-gradient(135deg, #faf7f0 0%, #f5f0e0 100%);
         }
       `}</style>
 
