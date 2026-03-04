@@ -193,11 +193,11 @@ function SingleForm({ healthCenters, employees, onBack }) {
           </h1>
           {(selectedCenter || periodLabel) && (
             <div className="flex justify-between items-center mt-2 px-2">
-              <div className="text-sky-700 text-sm font-bold" style={{ fontFamily: "'Cairo', sans-serif" }}>
-                {periodLabel || ""}
-              </div>
               <div className="text-sky-600 text-sm font-semibold" style={{ fontFamily: "'Cairo', sans-serif" }}>
                 {selectedCenter ? `المركز الصحي: ${selectedCenter}` : ""}
+              </div>
+              <div className="text-sky-700 text-sm font-bold" style={{ fontFamily: "'Cairo', sans-serif" }}>
+                {periodLabel || ""}
               </div>
             </div>
           )}
