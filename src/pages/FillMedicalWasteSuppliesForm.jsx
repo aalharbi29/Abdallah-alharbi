@@ -191,6 +191,51 @@ export default function FillMedicalWasteSuppliesForm() {
     healthCenters.map((c) => c.اسم_المركز).filter(Boolean) :
     CENTERS;
 
+    // إيجاد بيانات المركز المختار
+    const selectedCenterData = healthCenters.find((c) => c.اسم_المركز === selectedCenter);
+    
+    // إيجاد مدير المركز
+    const directorEmpId = selectedCenterData?.المدير;
+    const directorEmp = directorEmpId ? employees.find((e) => e.id === directorEmpId || e.رقم_الموظف === directorEmpId) : null;
+    const directorAutoName = directorEmp ? (directorEmp.full_name_arabic || directorEmp.رقم_الموظف) : "";
+
+    // إيجاد مسؤول النفايات: الموظفون الذين لديهم دور "مسؤول النفايات" في special_roles
+    const wasteOfficerEmp = selectedCenter
+      ? employees.find((e) =>
+          (e.المركز_الصحي === selectedCenter || e.اسم_المركز === selectedCenter) &&
+          Array.isArray(e.special_roles) &&
+          e.special_roles.some((r) => r.includes("نفاي"))
+        )
+      : null;
+    
+    // موظفو المركز المختار (للاختيار إذا لم يوجد مسؤول نفايات)
+    const centerEmployees = selectedCenter
+      ? employees.filter((e) => e.المركز_الصحي === selectedCenter || e.اسم_المركز === selectedCenter)
+      : [];
+
+    const quarters = ["الربع الأول", "الربع الثاني", "الربع الثالث", "الربع الرابع"];
+    const currentYear = new Date().getFullYear();
+    const [selectedQuarter, setSelectedQuarter] = React.useState("");
+    const [selectedYear, setSelectedYear] = React.useState(String(currentYear));
+
+    // تحديث اسم المدير تلقائياً عند اختيار المركز
+    React.useEffect(() => {
+      if (directorAutoName) {
+        setSingleSignatures((p) => ({ ...p, directorName: directorAutoName }));
+      }
+    }, [selectedCenter, directorAutoName]);
+
+    // تحديث اسم مسؤول النفايات تلقائياً أو مسح عند تغيير المركز
+    React.useEffect(() => {
+      if (wasteOfficerEmp) {
+        setSingleSignatures((p) => ({ ...p, wasteOfficerName: wasteOfficerEmp.full_name_arabic || "" }));
+      } else {
+        setSingleSignatures((p) => ({ ...p, wasteOfficerName: "" }));
+      }
+    }, [selectedCenter]);
+
+    const periodLabel = selectedQuarter && selectedYear ? `${selectedQuarter} ${selectedYear}هـ` : "";
+
     return (
       <div className="min-h-screen bg-gray-100 p-4" dir="rtl">
         <style>{`
@@ -225,21 +270,40 @@ export default function FillMedicalWasteSuppliesForm() {
               <Printer className="w-4 h-4" /> طباعة
             </Button>
           </div>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap gap-3 items-end">
             <div>
               <label className="text-xs text-gray-500 block mb-1">اسم المركز</label>
               <select
                 className="border rounded px-3 py-1.5 text-sm"
                 value={selectedCenter || ""}
                 onChange={(e) => setSelectedCenter(e.target.value)}>
-
                 <option value="">-- اختر المركز --</option>
                 {centerOptions.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div>
+              <label className="text-xs text-gray-500 block mb-1">الربع السنوي</label>
+              <select
+                className="border rounded px-3 py-1.5 text-sm"
+                value={selectedQuarter}
+                onChange={(e) => setSelectedQuarter(e.target.value)}>
+                <option value="">-- اختر الربع --</option>
+                {quarters.map((q) => <option key={q} value={q}>{q}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-xs text-gray-500 block mb-1">السنة (هجري)</label>
+              <input
+                type="number"
+                className="border rounded px-3 py-1.5 text-sm w-24"
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(e.target.value)}
+                placeholder="1446"
+              />
+            </div>
+            <div className="flex-1 min-w-48">
               <label className="text-xs text-gray-500 block mb-1">عنوان التقرير</label>
-              <Input value={reportTitle} onChange={(e) => setReportTitle(e.target.value)} className="w-80 text-sm" />
+              <Input value={reportTitle} onChange={(e) => setReportTitle(e.target.value)} className="text-sm" />
             </div>
           </div>
         </div>
@@ -258,8 +322,9 @@ export default function FillMedicalWasteSuppliesForm() {
 
           {/* Header */}
           <div className="pt-20 px-6 text-center">
-            <h1 className="text-sky-800 mt-20 text-xl font-extrabold">{reportTitle}</h1>
-            {selectedCenter && <p className="text-sky-600 mt-1 text-sm font-semibold">المركز الصحي: {selectedCenter}</p>}
+            <h1 className="text-sky-800 mt-20 text-2xl font-extrabold" style={{ fontFamily: "'Cairo', sans-serif", letterSpacing: '0.01em' }}>{reportTitle}</h1>
+            {periodLabel && <p className="text-sky-700 mt-1 text-base font-bold" style={{ fontFamily: "'Cairo', sans-serif" }}>{periodLabel}</p>}
+            {selectedCenter && <p className="text-sky-600 mt-1 text-sm font-semibold" style={{ fontFamily: "'Cairo', sans-serif" }}>المركز الصحي: {selectedCenter}</p>}
           </div>
 
           {/* Table */}
