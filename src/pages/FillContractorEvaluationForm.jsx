@@ -361,10 +361,13 @@ export default function FillContractorEvaluationForm() {
           backgroundImage: `url(${currentFormData.bgImage})`,
           backgroundSize: '100% 100%',
           backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'center'
+          backgroundPosition: 'center',
+          minHeight: '297mm',
+          display: 'flex',
+          flexDirection: 'column'
         }}>
 
-        <div className="p-8">
+        <div className="p-8 flex flex-col flex-1">
           {/* Header */}
           <div className="flex justify-end items-center gap-3">
             <div className="text-sm font-bold text-slate-600">{currentFormData.headerText}</div>
