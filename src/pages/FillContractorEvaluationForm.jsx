@@ -113,7 +113,7 @@ export default function FillContractorEvaluationForm() {
         headerText: "إدارة الخدمات العامة",
         footerOrgName: "تجمع المدينة المنورة الصحي",
         footerOrgNameEn: "Madinah Health Cluster",
-        footerTagline: "Empowered by Health Holding co.",
+        footerTagline: "Empowered by Health Holding co."
       };
     });
     return data;
@@ -281,16 +281,16 @@ export default function FillContractorEvaluationForm() {
               <input
                 className="w-full border border-slate-300 rounded px-2 py-1 text-sm"
                 value={currentFormData.headerText}
-                onChange={(e) => handleFormFieldChange('headerText', e.target.value)}
-              />
+                onChange={(e) => handleFormFieldChange('headerText', e.target.value)} />
+
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-600 mb-1">اسم الجهة (تذييل):</label>
               <input
                 className="w-full border border-slate-300 rounded px-2 py-1 text-sm"
                 value={currentFormData.footerOrgName}
-                onChange={(e) => handleFormFieldChange('footerOrgName', e.target.value)}
-              />
+                onChange={(e) => handleFormFieldChange('footerOrgName', e.target.value)} />
+
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-600 mb-1">خلفية النموذج:</label>
@@ -299,13 +299,13 @@ export default function FillContractorEvaluationForm() {
                   <Upload className="w-3 h-3" /> رفع صورة
                   <input type="file" accept="image/*" className="hidden" onChange={handleBgUpload} />
                 </label>
-                {currentFormData.bgImage !== DEFAULT_BG && (
-                  <button
-                    onClick={() => handleFormFieldChange('bgImage', DEFAULT_BG)}
-                    className="flex items-center gap-1 px-2 py-1 bg-red-50 border border-red-200 rounded text-xs text-red-600 hover:bg-red-100">
+                {currentFormData.bgImage !== DEFAULT_BG &&
+                <button
+                  onClick={() => handleFormFieldChange('bgImage', DEFAULT_BG)}
+                  className="flex items-center gap-1 px-2 py-1 bg-red-50 border border-red-200 rounded text-xs text-red-600 hover:bg-red-100">
                     <X className="w-3 h-3" /> إعادة
                   </button>
-                )}
+                }
               </div>
             </div>
           </div>
@@ -315,16 +315,16 @@ export default function FillContractorEvaluationForm() {
               <input
                 className="w-full border border-slate-300 rounded px-2 py-1 text-sm"
                 value={currentFormData.footerOrgNameEn}
-                onChange={(e) => handleFormFieldChange('footerOrgNameEn', e.target.value)}
-              />
+                onChange={(e) => handleFormFieldChange('footerOrgNameEn', e.target.value)} />
+
             </div>
             <div>
               <label className="block text-xs font-bold text-slate-600 mb-1">شعار التذييل:</label>
               <input
                 className="w-full border border-slate-300 rounded px-2 py-1 text-sm"
                 value={currentFormData.footerTagline}
-                onChange={(e) => handleFormFieldChange('footerTagline', e.target.value)}
-              />
+                onChange={(e) => handleFormFieldChange('footerTagline', e.target.value)} />
+
             </div>
           </div>
         </div>
@@ -355,7 +355,7 @@ export default function FillContractorEvaluationForm() {
 
         <div className="p-8">
           {/* Header */}
-          <div className="mb-6 flex justify-end items-center gap-3">
+          <div className="flex justify-end items-center gap-3">
             <div className="text-sm font-bold text-slate-600">{currentFormData.headerText}</div>
             
 
