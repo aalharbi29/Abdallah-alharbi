@@ -389,9 +389,18 @@ export default function FillMedicalWasteSuppliesForm() {
         @media print {
           body * { visibility: hidden; }
           .print-area, .print-area * { visibility: visible !important; }
-          .print-area { position: absolute; left: 0; top: 0; width: 297mm; padding: 8mm; box-sizing: border-box; }
+          .print-area {
+            position: fixed; left: 0; top: 0;
+            width: 100%; height: 100%;
+            padding: 0; margin: 0;
+            background-size: 100% 100% !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
           .no-print { display: none !important; }
-          @page { size: A4 landscape; margin: 8mm; }
+          @page { size: A4 landscape; margin: 0; }
           table { font-size: 9pt !important; }
           th, td { padding: 3px 4px !important; }
         }
