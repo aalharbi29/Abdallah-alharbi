@@ -186,7 +186,7 @@ function SingleForm({ healthCenters, employees, onBack }) {
 
         {/* Header */}
         <div className="pt-20 px-6 text-center">
-          <h1 className="text-sky-800 mt-20 text-4xl font-extrabold"
+          <h1 className="text-sky-800 mt-32 text-4xl font-extrabold"
 
           style={{ fontFamily: "'Cairo', 'Segoe UI', sans-serif", letterSpacing: '0.02em' }}>
             {reportTitle}
