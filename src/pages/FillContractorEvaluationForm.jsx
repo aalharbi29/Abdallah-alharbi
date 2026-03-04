@@ -396,14 +396,22 @@ export default function FillContractorEvaluationForm() {
           </div>
 
           {/* Table */}
-          <table className="w-full border-collapse text-sm mb-6">
+          {(() => {
+            const itemCount = currentFormData.items.length;
+            // النماذج ذات البنود القليلة (7 أو أقل) تحتاج نصوص أكبر وخلايا أوسع
+            const isFewItems = itemCount <= 7;
+            const contentFontSize = isFewItems ? '15px' : '13px';
+            const cellPadding = isFewItems ? '10px 12px' : '4px 12px';
+            const headerFontSize = isFewItems ? '15px' : '13px';
+            return (
+          <table className="w-full border-collapse mb-6" style={{ fontSize: contentFontSize }}>
             <thead>
               <tr className="bg-slate-200 text-black">
-                <th className="border border-slate-400 px-1 py-2 text-center" style={{ width: '35px' }}>م</th>
-                <th className="border border-slate-400 px-1 py-2 text-center" style={{ width: '50px' }}>البند</th>
-                <th className="border border-slate-400 px-3 py-2 text-right">المحتوى</th>
-                <th className="border border-slate-400 px-1 py-2 text-center" style={{ width: '55px' }}>الدرجة</th>
-                <th className="border border-slate-400 px-1 py-2 text-center" style={{ width: '76px' }}>التقييم</th>
+                <th className="border border-slate-400 px-1 text-center" style={{ width: '35px', fontSize: headerFontSize, padding: '8px 4px' }}>م</th>
+                <th className="border border-slate-400 px-1 text-center" style={{ width: '50px', fontSize: headerFontSize, padding: '8px 4px' }}>البند</th>
+                <th className="border border-slate-400 px-3 text-right" style={{ fontSize: headerFontSize, padding: '8px 12px' }}>المحتوى</th>
+                <th className="border border-slate-400 px-1 text-center" style={{ width: '55px', fontSize: headerFontSize, padding: '8px 4px' }}>الدرجة</th>
+                <th className="border border-slate-400 px-1 text-center" style={{ width: '76px', fontSize: headerFontSize, padding: '8px 4px' }}>التقييم</th>
               </tr>
             </thead>
             <tbody>
@@ -411,25 +419,25 @@ export default function FillContractorEvaluationForm() {
                 const rowInfo = sectionRows[idx];
                 return (
                   <tr key={item.id} className={idx % 2 === 0 ? "bg-white" : "bg-slate-50"}>
-                    <td className="border border-slate-300 px-2 py-1 text-center font-bold text-slate-600">{item.id}</td>
+                    <td className="border border-slate-300 text-center font-bold text-slate-600" style={{ padding: cellPadding }}>{item.id}</td>
                     {rowInfo.showSection &&
                     <td
                       className="border border-slate-300 px-1 text-center text-slate-700 bg-slate-100"
                       rowSpan={rowInfo.sectionSpan}
                       style={{ verticalAlign: 'middle' }}>
-
                         <span className="section-cell-text">{rowInfo.section}</span>
                       </td>
                     }
                     <td
                       key={`content-${selectedFormTypeId}-${item.id}`}
-                      className="border border-slate-300 px-3 py-1 text-right leading-relaxed outline-none"
+                      className="border border-slate-300 text-right leading-relaxed outline-none"
+                      style={{ padding: cellPadding, fontSize: contentFontSize, lineHeight: '1.7' }}
                       contentEditable
                       suppressContentEditableWarning
                       dangerouslySetInnerHTML={{ __html: item.content }}
                       onBlur={(e) => handleContentChange(item.id, e.target.innerText)} />
 
-                    <td className="border border-slate-300 px-2 py-1 text-center font-bold text-slate-800">{item.score}</td>
+                    <td className="border border-slate-300 text-center font-bold text-slate-800" style={{ padding: cellPadding }}>{item.score}</td>
                     <td className="border border-slate-300 px-1 py-0 text-center">
                       <input
                         type="number"
