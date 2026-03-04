@@ -272,6 +272,63 @@ export default function FillContractorEvaluationForm() {
           </div>
         </div>
 
+        {/* إعدادات الخلفية والرأس والتذييل - مخصصة لكل نموذج */}
+        <div className="border border-slate-200 rounded-lg p-3 mb-4 bg-slate-50">
+          <div className="text-xs font-bold text-slate-500 mb-2">إعدادات النموذج الحالي ({selectedFormType.title})</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+              <label className="block text-xs font-bold text-slate-600 mb-1">نص الرأس:</label>
+              <input
+                className="w-full border border-slate-300 rounded px-2 py-1 text-sm"
+                value={currentFormData.headerText}
+                onChange={(e) => handleFormFieldChange('headerText', e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-600 mb-1">اسم الجهة (تذييل):</label>
+              <input
+                className="w-full border border-slate-300 rounded px-2 py-1 text-sm"
+                value={currentFormData.footerOrgName}
+                onChange={(e) => handleFormFieldChange('footerOrgName', e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-600 mb-1">خلفية النموذج:</label>
+              <div className="flex items-center gap-2">
+                <label className="flex items-center gap-1 cursor-pointer px-2 py-1 bg-white border border-slate-300 rounded text-xs hover:bg-slate-50">
+                  <Upload className="w-3 h-3" /> رفع صورة
+                  <input type="file" accept="image/*" className="hidden" onChange={handleBgUpload} />
+                </label>
+                {currentFormData.bgImage !== DEFAULT_BG && (
+                  <button
+                    onClick={() => handleFormFieldChange('bgImage', DEFAULT_BG)}
+                    className="flex items-center gap-1 px-2 py-1 bg-red-50 border border-red-200 rounded text-xs text-red-600 hover:bg-red-100">
+                    <X className="w-3 h-3" /> إعادة
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
+            <div>
+              <label className="block text-xs font-bold text-slate-600 mb-1">اسم الجهة (إنجليزي):</label>
+              <input
+                className="w-full border border-slate-300 rounded px-2 py-1 text-sm"
+                value={currentFormData.footerOrgNameEn}
+                onChange={(e) => handleFormFieldChange('footerOrgNameEn', e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-slate-600 mb-1">شعار التذييل:</label>
+              <input
+                className="w-full border border-slate-300 rounded px-2 py-1 text-sm"
+                value={currentFormData.footerTagline}
+                onChange={(e) => handleFormFieldChange('footerTagline', e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
         <div className="flex justify-between items-center">
           <div className="text-sm text-slate-500">
             الدرجة الكلية: <span className="font-bold text-green-700 text-lg">{totalEval}</span> / {selectedFormType.totalScore} &nbsp;|&nbsp; <span className="text-slate-400">{selectedFormType.title}</span>
