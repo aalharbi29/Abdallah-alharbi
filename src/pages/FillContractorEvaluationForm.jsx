@@ -398,11 +398,9 @@ export default function FillContractorEvaluationForm() {
           {/* Table */}
           {(() => {
             const itemCount = currentFormData.items.length;
-            // النماذج ذات البنود القليلة (7 أو أقل) تحتاج نصوص أكبر وخلايا أوسع
             const isFewItems = itemCount <= 7;
             const contentFontSize = isFewItems ? '15px' : '13px';
             const cellPadding = isFewItems ? '10px 12px' : '4px 12px';
-            const headerFontSize = isFewItems ? '15px' : '13px';
             return (
           <table className="w-full border-collapse mb-6" style={{ fontSize: contentFontSize }}>
             <thead>
