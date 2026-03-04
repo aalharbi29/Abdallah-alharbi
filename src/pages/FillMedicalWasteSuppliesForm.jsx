@@ -254,7 +254,7 @@ export default function FillMedicalWasteSuppliesForm() {
           </div>
 
           {/* Table */}
-          <div className="p-4 overflow-x-auto">
+          <div className="px-6 py-3 overflow-x-auto">
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr className="bg-green-100">
