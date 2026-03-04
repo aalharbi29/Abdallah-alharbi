@@ -498,9 +498,9 @@ export default function FillContractorEvaluationForm() {
           <div className="text-cyan-600 mt-1 pt-1 pr-10 pb-6 pl-6 border-t border-slate-200 flex justify-between items-center">
             
             <div className="text-center">
-              <div className="text-sky-700 mt-12 font-extrabold">تجمع المدينة المنورة الصحي</div>
-              <div className="text-sky-600 text-xs">Madinah Health Cluster</div>
-              <div className="text-sky-700 text-xs">Empowered by Health Holding co.</div>
+              <div className="text-sky-700 mt-12 font-extrabold">{currentFormData.footerOrgName}</div>
+              <div className="text-sky-600 text-xs">{currentFormData.footerOrgNameEn}</div>
+              <div className="text-sky-700 text-xs">{currentFormData.footerTagline}</div>
             </div>
             
           </div>
