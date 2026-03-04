@@ -104,6 +104,7 @@ function SingleForm({ healthCenters, employees, onBack }) {
   return (
     <div className="min-h-screen bg-gray-100 p-4" dir="rtl">
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap');
         @media print {
           body * { visibility: hidden; }
           .print-area, .print-area * { visibility: visible !important; }
@@ -120,26 +121,58 @@ function SingleForm({ healthCenters, employees, onBack }) {
           .no-print { display: none !important; }
           @page { size: A4 portrait; margin: 0; }
         }
+        .form-title { font-family: 'Tajawal', 'Cairo', sans-serif; }
+        .form-body { font-family: 'Cairo', 'Tajawal', sans-serif; }
+        .pro-table th { 
+          background: linear-gradient(135deg, #065f46 0%, #047857 50%, #059669 100%) !important;
+          color: white !important;
+          font-weight: 700;
+          letter-spacing: 0.03em;
+          text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+        }
+        .pro-table td { transition: background 0.2s; }
+        .pro-table tbody tr:hover td { background: #ecfdf5 !important; }
+        .pro-table .cat-cell {
+          background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%) !important;
+          font-weight: 800;
+          color: #065f46;
+          letter-spacing: 0.02em;
+        }
+        .sig-card {
+          background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+          border: 2px solid #d1fae5;
+          border-radius: 16px;
+          box-shadow: 0 4px 15px rgba(5, 150, 105, 0.08);
+        }
+        .sig-card-header {
+          background: linear-gradient(135deg, #065f46, #047857);
+          color: white;
+          border-radius: 12px 12px 0 0;
+          padding: 10px 16px;
+          font-weight: 700;
+          text-align: center;
+          letter-spacing: 0.02em;
+        }
       `}</style>
 
       {/* Controls */}
-      <div className="no-print max-w-4xl mx-auto mb-4 bg-white rounded-xl shadow p-4 space-y-3">
+      <div className="no-print max-w-4xl mx-auto mb-4 bg-white rounded-2xl shadow-lg border border-gray-100 p-5 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" onClick={onBack} className="gap-1">
+            <Button variant="outline" size="sm" onClick={onBack} className="gap-1 rounded-lg">
               <ArrowRight className="w-4 h-4" /> رجوع
             </Button>
-            <h2 className="font-bold text-gray-800">طلب مفرد - مستلزمات النفايات الطبية</h2>
+            <h2 className="font-bold text-gray-800 text-lg form-title">طلب مفرد - مستلزمات النفايات الطبية</h2>
           </div>
-          <Button onClick={() => window.print()} className="gap-2 bg-green-600 hover:bg-green-700">
+          <Button onClick={() => window.print()} className="gap-2 bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 rounded-lg shadow-md">
             <Printer className="w-4 h-4" /> طباعة
           </Button>
         </div>
         <div className="flex flex-wrap gap-3 items-end">
           <div>
-            <label className="text-xs text-gray-500 block mb-1">اسم المركز</label>
+            <label className="text-xs font-medium text-gray-500 block mb-1">اسم المركز</label>
             <select
-              className="border rounded px-3 py-1.5 text-sm"
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 focus:ring-2 focus:ring-green-300 focus:border-green-400 transition-all"
               value={selectedCenter}
               onChange={(e) => setSelectedCenter(e.target.value)}>
               <option value="">-- اختر المركز --</option>
@@ -147,9 +180,9 @@ function SingleForm({ healthCenters, employees, onBack }) {
             </select>
           </div>
           <div>
-            <label className="text-xs text-gray-500 block mb-1">الربع السنوي</label>
+            <label className="text-xs font-medium text-gray-500 block mb-1">الربع السنوي</label>
             <select
-              className="border rounded px-3 py-1.5 text-sm"
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 focus:ring-2 focus:ring-green-300 focus:border-green-400 transition-all"
               value={selectedQuarter}
               onChange={(e) => setSelectedQuarter(e.target.value)}>
               <option value="">-- اختر الربع --</option>
@@ -157,25 +190,24 @@ function SingleForm({ healthCenters, employees, onBack }) {
             </select>
           </div>
           <div>
-            <label className="text-xs text-gray-500 block mb-1">السنة (ميلادي)</label>
+            <label className="text-xs font-medium text-gray-500 block mb-1">السنة (ميلادي)</label>
             <input
               type="number"
-              className="border rounded px-3 py-1.5 text-sm w-24"
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-24 bg-gray-50 focus:ring-2 focus:ring-green-300 focus:border-green-400 transition-all"
               value={selectedYear}
               onChange={(e) => setSelectedYear(e.target.value)}
               placeholder={String(new Date().getFullYear())} />
-
           </div>
           <div className="flex-1 min-w-48">
-            <label className="text-xs text-gray-500 block mb-1">عنوان التقرير</label>
-            <Input value={reportTitle} onChange={(e) => setReportTitle(e.target.value)} className="text-sm" />
+            <label className="text-xs font-medium text-gray-500 block mb-1">عنوان التقرير</label>
+            <Input value={reportTitle} onChange={(e) => setReportTitle(e.target.value)} className="text-sm rounded-lg" />
           </div>
         </div>
       </div>
 
       {/* Form */}
       <div
-        className="print-area max-w-4xl mx-auto shadow rounded-xl overflow-hidden"
+        className="print-area max-w-4xl mx-auto shadow-2xl rounded-2xl overflow-hidden form-body"
         style={{
           backgroundImage: `url(${BG_IMAGE})`,
           backgroundSize: '100% 100%',
@@ -185,64 +217,72 @@ function SingleForm({ healthCenters, employees, onBack }) {
         }}>
 
         {/* Header */}
-        <div className="pt-20 px-6 text-center">
-          <h1 className="text-sky-800 mt-20 text-4xl font-extrabold"
-
-          style={{ fontFamily: "'Cairo', 'Segoe UI', sans-serif", letterSpacing: '0.02em' }}>
+        <div className="pt-20 px-8 text-center">
+          <h1 className="text-emerald-900 mt-20 font-black form-title leading-tight"
+            style={{ fontSize: '28px', letterSpacing: '0.03em', textShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
             {reportTitle}
           </h1>
           {(selectedCenter || periodLabel) &&
-          <div className="flex items-center mt-2 px-2">
+          <div className="flex items-center mt-4 px-4">
               <div className="flex-1"></div>
-              <div className="text-sky-600 text-sm font-semibold text-center flex-1" style={{ fontFamily: "'Cairo', sans-serif" }}>
-                {selectedCenter ? `المركز الصحي: ${selectedCenter}` : ""}
+              <div className="text-center flex-1">
+                {selectedCenter && (
+                  <span className="inline-block bg-emerald-50 border border-emerald-200 rounded-full px-5 py-1.5 text-emerald-800 text-sm font-bold form-title" style={{ letterSpacing: '0.02em' }}>
+                    المركز الصحي: {selectedCenter}
+                  </span>
+                )}
               </div>
-              <div className="flex-1 text-left text-sky-700 text-sm font-bold" style={{ fontFamily: "'Cairo', sans-serif" }}>
-                {periodLabel || ""}
+              <div className="flex-1 text-left">
+                {periodLabel && (
+                  <span className="inline-block bg-sky-50 border border-sky-200 rounded-full px-5 py-1.5 text-sky-800 text-sm font-bold form-title" style={{ letterSpacing: '0.02em' }}>
+                    {periodLabel}
+                  </span>
+                )}
               </div>
             </div>
           }
         </div>
 
         {/* Table */}
-        <div className="px-6 py-3 overflow-x-auto">
-          <table className="w-full border-collapse text-sm">
+        <div className="px-8 py-4 overflow-x-auto">
+          <table className="pro-table w-full border-collapse" style={{ fontSize: '14px' }}>
             <thead>
-              <tr className="bg-green-100">
-                <th className="border border-gray-400 px-3 py-2 text-center" style={{ width: '20%' }}>البند</th>
-                <th className="border border-gray-400 px-3 py-2 text-center" style={{ width: '35%' }}>التصنيف</th>
-                <th className="border border-gray-400 px-3 py-2 text-center" style={{ width: '20%' }}>الكمية المطلوبة</th>
-                <th className="border border-gray-400 px-3 py-2 text-center" style={{ width: '25%' }}>ملاحظات</th>
+              <tr>
+                <th className="border border-emerald-700 px-4 py-3 text-center rounded-tr-xl" style={{ width: '20%' }}>البند</th>
+                <th className="border border-emerald-700 px-4 py-3 text-center" style={{ width: '35%' }}>التصنيف</th>
+                <th className="border border-emerald-700 px-4 py-3 text-center" style={{ width: '20%' }}>الكمية المطلوبة</th>
+                <th className="border border-emerald-700 px-4 py-3 text-center rounded-tl-xl" style={{ width: '25%' }}>ملاحظات</th>
               </tr>
             </thead>
             <tbody>
               {SUPPLY_ITEMS.map((cat) =>
               <React.Fragment key={cat.category}>
                   {cat.items.map((item, idx) =>
-                <tr key={item.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                <tr key={item.id} className={idx % 2 === 0 ? "bg-white/80" : "bg-emerald-50/40"}>
                       {idx === 0 &&
                   <td
                     rowSpan={cat.items.length}
-                    className="border border-gray-400 px-3 py-2 text-center font-bold text-gray-700 bg-green-50">
+                    className="cat-cell border border-gray-300 px-3 py-2 text-center" style={{ fontSize: '15px' }}>
                           {cat.category}
                         </td>
                   }
-                      <td className="border border-gray-400 px-3 py-2 text-center">
-                        {item.color === 'red' && <span className="text-red-600 font-bold">{item.colorLabel} </span>}
-                        {item.color === 'yellow' && <span className="text-yellow-600 font-bold">{item.colorLabel} </span>}
+                      <td className="border border-gray-300 px-4 py-2.5 text-center font-medium" style={{ fontSize: '13px' }}>
+                        {item.color === 'red' && <span className="inline-block bg-red-100 text-red-700 rounded-md px-2 py-0.5 font-bold text-xs ml-1">{item.colorLabel}</span>}
+                        {item.color === 'yellow' && <span className="inline-block bg-yellow-100 text-yellow-700 rounded-md px-2 py-0.5 font-bold text-xs ml-1">{item.colorLabel}</span>}
                         {item.label}
                       </td>
-                      <td className="border border-gray-400 px-2 py-1 text-center">
+                      <td className="border border-gray-300 px-2 py-1.5 text-center">
                         <input
                       type="number"
                       min="0"
-                      className="w-full text-center border-none outline-none bg-transparent no-print-hide"
+                      className="w-full text-center border-none outline-none bg-transparent font-bold text-emerald-800 no-print-hide"
+                      style={{ fontSize: '15px' }}
                       value={getQty(item.id)}
                       onChange={(e) => setQty(item.id, e.target.value)}
-                      placeholder="0" />
-                        <span className="hidden print:inline">{getQty(item.id)}</span>
+                      placeholder="—" />
+                        <span className="hidden print:inline font-bold" style={{ fontSize: '15px' }}>{getQty(item.id)}</span>
                       </td>
-                      <td className="border border-gray-400 px-3 py-2"></td>
+                      <td className="border border-gray-300 px-3 py-2"></td>
                     </tr>
                 )}
                 </React.Fragment>
@@ -252,17 +292,16 @@ function SingleForm({ healthCenters, employees, onBack }) {
         </div>
 
         {/* Signatures */}
-        <div className="p-4 grid grid-cols-2 gap-6">
-          <div className="border border-gray-300 rounded-lg p-4">
-            <div className="text-center font-bold text-gray-700 mb-3 border-b pb-2 text-sm">مسؤول النفايات الطبية بالمركز</div>
-            <div className="space-y-3">
-              <div className="flex items-end gap-2">
-                <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">الاسم:</span>
+        <div className="px-8 py-5 grid grid-cols-2 gap-8">
+          <div className="sig-card overflow-hidden">
+            <div className="sig-card-header form-title" style={{ fontSize: '14px' }}>مسؤول النفايات الطبية بالمركز</div>
+            <div className="p-5 space-y-4">
+              <div className="flex items-end gap-3">
+                <span className="text-sm font-bold text-emerald-800 whitespace-nowrap form-title">الاسم:</span>
                 {wasteOfficerEmp ?
-                <span className="flex-1 border-b border-gray-400 text-sm text-center pb-0.5">{wasteOfficerName}</span> :
-
+                <span className="flex-1 border-b-2 border-emerald-300 text-sm text-center pb-1 font-semibold text-gray-800">{wasteOfficerName}</span> :
                 <select
-                  className="flex-1 border-b border-gray-400 focus:outline-none text-sm bg-transparent text-center no-print-hide"
+                  className="flex-1 border-b-2 border-emerald-300 focus:outline-none text-sm bg-transparent text-center font-semibold no-print-hide"
                   value={wasteOfficerName}
                   onChange={(e) => setWasteOfficerName(e.target.value)}>
                     <option value="">-- اختر الموظف --</option>
@@ -274,36 +313,36 @@ function SingleForm({ healthCenters, employees, onBack }) {
                   </select>
                 }
               </div>
-              <div className="flex items-end gap-2">
-                <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">التوقيع:</span>
-                <div className="flex-1 border-b border-gray-400 h-6"></div>
+              <div className="flex items-end gap-3">
+                <span className="text-sm font-bold text-emerald-800 whitespace-nowrap form-title">التوقيع:</span>
+                <div className="flex-1 border-b-2 border-emerald-300 h-8"></div>
               </div>
             </div>
           </div>
 
-          <div className="border border-gray-300 rounded-lg p-4">
-            <div className="text-center font-bold text-gray-700 mb-3 border-b pb-2 text-sm">مدير المركز الصحي</div>
-            <div className="space-y-3">
-              <div className="flex items-end gap-2">
-                <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">الاسم:</span>
-                <span className="flex-1 border-b border-gray-400 text-sm text-center pb-0.5">
-                  {directorName || <span className="text-gray-400 text-xs">اسم مدير المركز</span>}
+          <div className="sig-card overflow-hidden">
+            <div className="sig-card-header form-title" style={{ fontSize: '14px' }}>مدير المركز الصحي</div>
+            <div className="p-5 space-y-4">
+              <div className="flex items-end gap-3">
+                <span className="text-sm font-bold text-emerald-800 whitespace-nowrap form-title">الاسم:</span>
+                <span className="flex-1 border-b-2 border-emerald-300 text-sm text-center pb-1 font-semibold text-gray-800">
+                  {directorName || <span className="text-gray-400 text-xs font-normal">اسم مدير المركز</span>}
                 </span>
               </div>
-              <div className="flex items-end gap-2">
-                <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">التوقيع:</span>
-                <div className="flex-1 border-b border-gray-400 h-6"></div>
+              <div className="flex items-end gap-3">
+                <span className="text-sm font-bold text-emerald-800 whitespace-nowrap form-title">التوقيع:</span>
+                <div className="flex-1 border-b-2 border-emerald-300 h-8"></div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Stamp */}
-        <div className="px-6 pb-4">
-          <div className="border border-dashed border-gray-300 rounded-lg p-3 text-center text-gray-400 text-sm bg-white/60">الختم</div>
+        <div className="px-8 pb-5">
+          <div className="border-2 border-dashed border-emerald-200 rounded-2xl p-4 text-center text-emerald-400 text-sm bg-white/40 font-semibold form-title" style={{ letterSpacing: '0.05em' }}>الختم</div>
         </div>
 
-        <div style={{ minHeight: '60mm' }}></div>
+        <div style={{ minHeight: '50mm' }}></div>
       </div>
     </div>);
 
