@@ -598,14 +598,14 @@ export default function FillMedicalWasteSuppliesForm() {
         <div className="pt-16 px-6 text-center">
           <h1 className="text-emerald-900 mt-6 text-2xl font-black form-title" style={{ fontSize: '20px', letterSpacing: '0.03em', textShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>{reportTitle}</h1>
           {(combinedQuarter || combinedYear) &&
-          <span className="inline-block mt-2 bg-sky-50 border border-sky-200 rounded-full px-5 py-1 text-sky-800 text-xs font-bold form-title">
+          <span className="bg-sky-50 text-sky-800 pr-5 pl-5 text-base font-black rounded-full form-title inline-block border border-sky-200">
             {combinedQuarter}{combinedQuarter && combinedYear ? " " : ""}{combinedYear}
           </span>
           }
         </div>
 
         {/* Table */}
-        <div className="px-4 py-3 overflow-x-auto">
+        <div className="pt-3 pr-4 pl-4 overflow-x-auto">
           <table className="pro-table w-full border-collapse" style={{ fontSize: '12px' }}>
             <thead>
               <tr>
@@ -659,7 +659,7 @@ export default function FillMedicalWasteSuppliesForm() {
         </div>
 
         {/* Signatures */}
-        <div className="px-6 py-4 grid grid-cols-2 gap-8">
+        <div className="pr-6 pl-6 grid grid-cols-2 gap-8">
           <div className="sig-card overflow-hidden">
             <div className="sig-card-header form-title" style={{ fontSize: '13px' }}>
               {combinedSignatures.supervisorTitle}
@@ -682,7 +682,7 @@ export default function FillMedicalWasteSuppliesForm() {
           <div className="sig-card overflow-hidden">
             <div className="sig-card-header form-title" style={{ fontSize: '13px' }}>
               {combinedSignatures.assistantTitle}
-              <div className="text-xs font-normal opacity-80 mt-0.5">بمستشفى الحسو العام</div>
+              <div className="mt-0.5 text-xs font-normal opacity-80">بمستشفى الحسو العام</div>
             </div>
             <div className="p-4 space-y-3">
               <div className="flex items-end gap-3">
