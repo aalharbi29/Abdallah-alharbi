@@ -160,6 +160,20 @@ export default function FillContractorEvaluationForm() {
     }));
   };
 
+  const handleFormFieldChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [selectedFormTypeId]: { ...prev[selectedFormTypeId], [field]: value }
+    }));
+  };
+
+  const handleBgUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    handleFormFieldChange('bgImage', url);
+  };
+
   const totalEval = currentFormData.items.reduce((sum, item) => {
     return sum + (evaluations[item.id] !== undefined ? evaluations[item.id] : 0);
   }, 0);
