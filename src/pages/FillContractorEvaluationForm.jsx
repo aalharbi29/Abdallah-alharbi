@@ -363,7 +363,7 @@ export default function FillContractorEvaluationForm() {
 
           </div>
 
-          <div className="mb-3 pt-16 text-center">
+          <div className="mb-3 pt-5 text-center">
             <h1 className="text-slate-900 pt-20 text-2xl font-extrabold outline-none"
 
             contentEditable
@@ -493,7 +493,7 @@ export default function FillContractorEvaluationForm() {
           </div>
 
           {/* الختم */}
-          <div className="text-slate-600 mt-1 pt-6 pb-1 text-sm font-bold text-center">الختم</div>
+          <div className="text-slate-600 mt-1 pt-3 pb-1 text-sm font-bold text-center">الختم</div>
 
           {/* Footer Logo */}
           <div className="text-cyan-600 mt-1 pt-1 pr-10 pl-6 border-t border-slate-200 flex justify-between items-center">
