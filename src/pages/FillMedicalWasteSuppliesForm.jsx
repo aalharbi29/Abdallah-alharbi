@@ -538,18 +538,47 @@ export default function FillMedicalWasteSuppliesForm() {
             <Printer className="w-4 h-4" /> طباعة
           </Button>
         </div>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3 items-end">
           <div className="flex-1 min-w-48">
             <label className="text-xs font-medium text-gray-500 block mb-1">عنوان التقرير</label>
             <Input value={reportTitle} onChange={(e) => setReportTitle(e.target.value)} className="text-sm rounded-lg" />
           </div>
           <div>
-            <label className="text-xs font-medium text-gray-500 block mb-1">الفترة (مثال: الربع الأول 1446)</label>
-            <Input
-              value={combinedSignatures.periodLabel}
-              onChange={(e) => setCombinedSignatures((p) => ({ ...p, periodLabel: e.target.value }))}
-              placeholder="الربع الأول 1446هـ"
-              className="text-sm w-52 rounded-lg" />
+            <label className="text-xs font-medium text-gray-500 block mb-1">الربع السنوي</label>
+            <select
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 focus:ring-2 focus:ring-green-300 focus:border-green-400 transition-all"
+              value={combinedQuarter}
+              onChange={(e) => setCombinedQuarter(e.target.value)}>
+              <option value="">-- اختر الربع --</option>
+              {QUARTERS.map((q) => <option key={q} value={q}>{q}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="text-xs font-medium text-gray-500 block mb-1">السنة</label>
+            <input
+              type="text"
+              className="border border-gray-200 rounded-lg px-3 py-2 text-sm w-28 bg-gray-50 focus:ring-2 focus:ring-green-300 focus:border-green-400 transition-all"
+              value={combinedYear}
+              onChange={(e) => setCombinedYear(e.target.value)}
+              placeholder="1446هـ" />
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3 items-end">
+          <div className="flex-1 min-w-44">
+            <label className="text-xs font-medium text-gray-500 block mb-1">اسم مشرف النفايات</label>
+            <Input value={combinedSignatures.supervisorName} onChange={(e) => setCombinedSignatures((p) => ({ ...p, supervisorName: e.target.value }))} placeholder="اسم المشرف" className="text-sm rounded-lg" />
+          </div>
+          <div className="flex-1 min-w-44">
+            <label className="text-xs font-medium text-gray-500 block mb-1">المسمى الوظيفي للمشرف</label>
+            <Input value={combinedSignatures.supervisorTitle} onChange={(e) => setCombinedSignatures((p) => ({ ...p, supervisorTitle: e.target.value }))} className="text-sm rounded-lg" />
+          </div>
+          <div className="flex-1 min-w-44">
+            <label className="text-xs font-medium text-gray-500 block mb-1">اسم المساعد</label>
+            <Input value={combinedSignatures.assistantName} onChange={(e) => setCombinedSignatures((p) => ({ ...p, assistantName: e.target.value }))} className="text-sm rounded-lg" />
+          </div>
+          <div className="flex-1 min-w-44">
+            <label className="text-xs font-medium text-gray-500 block mb-1">المسمى الوظيفي للمساعد</label>
+            <Input value={combinedSignatures.assistantTitle} onChange={(e) => setCombinedSignatures((p) => ({ ...p, assistantTitle: e.target.value }))} className="text-sm rounded-lg" />
           </div>
         </div>
       </div>
