@@ -53,7 +53,7 @@ function SingleForm({ healthCenters, employees, onBack }) {
   const [selectedCenter, setSelectedCenter] = useState("");
   const [quantities, setQuantities] = useState({});
   const [selectedQuarter, setSelectedQuarter] = useState("");
-  const [selectedYear, setSelectedYear] = useState("1446");
+  const [selectedYear, setSelectedYear] = useState(String(new Date().getFullYear()));
   const [reportTitle, setReportTitle] = useState("احتياج مراكز الحسو الربع سنوي من مستلزمات النفايات الطبية");
   const [wasteOfficerName, setWasteOfficerName] = useState("");
   const [directorName, setDirectorName] = useState("");
