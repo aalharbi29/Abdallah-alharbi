@@ -236,11 +236,21 @@ export default function FillMedicalWasteSuppliesForm() {
         </div>
 
         {/* Form */}
-        <div ref={printRef} className="print-area max-w-4xl mx-auto bg-white shadow rounded-xl overflow-hidden">
+        <div
+          ref={printRef}
+          className="print-area max-w-4xl mx-auto shadow rounded-xl overflow-hidden"
+          style={{
+            backgroundImage: `url(${BG_IMAGE})`,
+            backgroundSize: '100% 100%',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            minHeight: '297mm',
+          }}
+        >
           {/* Header */}
-          <div className="bg-gradient-to-r from-green-600 to-teal-600 text-white p-4 text-center">
-            <h1 className="text-xl font-extrabold">{reportTitle}</h1>
-            {selectedCenter && <p className="text-green-100 mt-1 text-sm">المركز الصحي: {selectedCenter}</p>}
+          <div className="pt-20 px-6 text-center">
+            <h1 className="text-xl font-extrabold text-sky-800">{reportTitle}</h1>
+            {selectedCenter && <p className="text-sky-600 mt-1 text-sm font-semibold">المركز الصحي: {selectedCenter}</p>}
           </div>
 
           {/* Table */}
