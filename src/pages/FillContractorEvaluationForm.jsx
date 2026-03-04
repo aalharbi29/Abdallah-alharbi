@@ -95,13 +95,29 @@ function buildSectionRows(items) {
 export default function FillContractorEvaluationForm() {
   const [healthCenters, setHealthCenters] = useState([]);
   const [selectedCenter, setSelectedCenter] = useState("");
-  const [selectedFormType, setSelectedFormType] = useState(FORM_TYPES[0]);
+  const [selectedFormTypeId, setSelectedFormTypeId] = useState(FORM_TYPES[0].id);
   const [month, setMonth] = useState("");
   const [year, setYear] = useState(new Date().getFullYear().toString());
-  const [evaluations, setEvaluations] = useState({});
+  // evaluations منفصلة لكل نموذج: { formTypeId: { itemId: value } }
+  const [allEvaluations, setAllEvaluations] = useState({});
+  // بيانات النماذج منفصلة لكل نموذج (للسماح بالتعديل المنفصل)
+  const [formData, setFormData] = useState(() => {
+    const data = {};
+    FORM_TYPES.forEach(ft => {
+      data[ft.id] = {
+        fullTitle: ft.fullTitle,
+        items: ft.items.map(item => ({ ...item }))
+      };
+    });
+    return data;
+  });
   const [wasteManagerName, setWasteManagerName] = useState("");
   const [directorName, setDirectorName] = useState("");
   const printRef = useRef(null);
+
+  const selectedFormType = FORM_TYPES.find(ft => ft.id === selectedFormTypeId);
+  const currentFormData = formData[selectedFormTypeId];
+  const evaluations = allEvaluations[selectedFormTypeId] || {};
 
   useEffect(() => {
     base44.entities.HealthCenter.list().then((data) => {
@@ -109,17 +125,35 @@ export default function FillContractorEvaluationForm() {
     }).catch(() => {});
   }, []);
 
-  useEffect(() => {
-    setEvaluations({});
-  }, [selectedFormType.id]);
-
   const handleEvalChange = (itemId, value) => {
-    const maxScore = selectedFormType.items.find((i) => i.id === itemId)?.score || 0;
+    const maxScore = currentFormData.items.find((i) => i.id === itemId)?.score || 0;
     const numVal = Math.min(Math.max(0, Number(value) || 0), maxScore);
-    setEvaluations((prev) => ({ ...prev, [itemId]: numVal }));
+    setAllEvaluations((prev) => ({
+      ...prev,
+      [selectedFormTypeId]: { ...(prev[selectedFormTypeId] || {}), [itemId]: numVal }
+    }));
   };
 
-  const totalEval = selectedFormType.items.reduce((sum, item) => {
+  const handleContentChange = (itemId, newContent) => {
+    setFormData(prev => ({
+      ...prev,
+      [selectedFormTypeId]: {
+        ...prev[selectedFormTypeId],
+        items: prev[selectedFormTypeId].items.map(item =>
+          item.id === itemId ? { ...item, content: newContent } : item
+        )
+      }
+    }));
+  };
+
+  const handleTitleChange = (newTitle) => {
+    setFormData(prev => ({
+      ...prev,
+      [selectedFormTypeId]: { ...prev[selectedFormTypeId], fullTitle: newTitle }
+    }));
+  };
+
+  const totalEval = currentFormData.items.reduce((sum, item) => {
     return sum + (evaluations[item.id] !== undefined ? evaluations[item.id] : 0);
   }, 0);
 
@@ -127,7 +161,7 @@ export default function FillContractorEvaluationForm() {
 
   const months = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
 
-  const sectionRows = buildSectionRows(selectedFormType.items);
+  const sectionRows = buildSectionRows(currentFormData.items);
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 font-sans" dir="rtl">
