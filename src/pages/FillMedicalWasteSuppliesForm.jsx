@@ -244,7 +244,7 @@ function SingleForm({ healthCenters, employees, onBack }) {
         </div>
 
         {/* Table */}
-        <div className="px-8 py-4 overflow-x-auto">
+        <div className="px-8 py-4 rounded overflow-x-auto">
           <table className="pro-table w-full border-collapse" style={{ fontSize: '14px' }}>
             <thead>
               <tr>
@@ -563,7 +563,7 @@ export default function FillMedicalWasteSuppliesForm() {
 
         {/* Header */}
         <div className="pt-16 px-6 text-center">
-          <h1 className="text-emerald-900 mt-6 font-black form-title" style={{ fontSize: '20px', letterSpacing: '0.03em', textShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>{reportTitle}</h1>
+          <h1 className="text-emerald-900 mt-6 text-2xl font-black form-title" style={{ fontSize: '20px', letterSpacing: '0.03em', textShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>{reportTitle}</h1>
           {combinedSignatures.periodLabel &&
           <span className="inline-block mt-2 bg-sky-50 border border-sky-200 rounded-full px-5 py-1 text-sky-800 text-xs font-bold form-title">{combinedSignatures.periodLabel}</span>
           }
@@ -595,10 +595,10 @@ export default function FillMedicalWasteSuppliesForm() {
                         </td>
                   }
                       <td className="border border-gray-300 px-2 py-0 text-center font-bold" style={{ minWidth: '200px', whiteSpace: 'nowrap', fontSize: '12px' }}>
-                        {item.color === 'red' && <span className="inline-block bg-red-100 text-red-700 rounded px-1.5 py-0 font-extrabold text-xs ml-1">{item.colorLabel}</span>}
-                        {item.color === 'yellow' && <span className="inline-block bg-yellow-100 text-yellow-700 rounded px-1.5 py-0 font-extrabold text-xs ml-1">{item.colorLabel}</span>}
-                        {!item.color && <span className="font-bold">{item.label}</span>}
-                        {item.color && <span className="font-semibold">{item.label}</span>}
+                        {item.color === 'red' && <span className="bg-transparent text-black ml-1 px-1.5 py-0.5 text-xs font-black rounded inline-block">{item.colorLabel}</span>}
+                        {item.color === 'yellow' && <span className="bg-transparent text-black ml-1 px-1.5 py-0.5 text-xs font-black rounded inline-block">{item.colorLabel}</span>}
+                        {!item.color && <span className="font-black">{item.label}</span>}
+                        {item.color && <span className="font-black">{item.label}</span>}
                       </td>
                       {CENTERS.map((center) =>
                   <td key={center} className="border border-gray-300 px-1 py-0 text-center">
@@ -632,14 +632,14 @@ export default function FillMedicalWasteSuppliesForm() {
             </div>
             <div className="p-4 space-y-3">
               <div className="flex items-end gap-3">
-                <span className="text-sm font-bold text-emerald-800 whitespace-nowrap form-title">الاسم:</span>
-                <input
-                  className="flex-1 border-b-2 border-emerald-300 focus:outline-none text-sm bg-transparent text-center font-semibold no-print-hide"
-                  value={combinedSignatures.supervisorName}
-                  onChange={(e) => setCombinedSignatures((p) => ({ ...p, supervisorName: e.target.value }))} />
+                <span className="text-emerald-800 text-sm font-black form-title whitespace-nowrap">الاسم:</span>
+                <input className="bg-transparent text-sm font-black text-center flex-1 border-b-2 border-emerald-300 focus:outline-none no-print-hide"
+
+                value={combinedSignatures.supervisorName}
+                onChange={(e) => setCombinedSignatures((p) => ({ ...p, supervisorName: e.target.value }))} />
               </div>
               <div className="flex items-end gap-3">
-                <span className="text-sm font-bold text-emerald-800 whitespace-nowrap form-title">التوقيع:</span>
+                <span className="text-emerald-800 text-sm font-black whitespace-nowrap form-title">التوقيع:</span>
                 <div className="flex-1 border-b-2 border-emerald-300 h-7"></div>
               </div>
             </div>
@@ -652,14 +652,14 @@ export default function FillMedicalWasteSuppliesForm() {
             </div>
             <div className="p-4 space-y-3">
               <div className="flex items-end gap-3">
-                <span className="text-sm font-bold text-emerald-800 whitespace-nowrap form-title">الاسم:</span>
-                <input
-                  className="flex-1 border-b-2 border-emerald-300 focus:outline-none text-sm bg-transparent text-center font-semibold no-print-hide"
-                  value={combinedSignatures.assistantName}
-                  onChange={(e) => setCombinedSignatures((p) => ({ ...p, assistantName: e.target.value }))} />
+                <span className="text-emerald-800 text-sm font-black whitespace-nowrap form-title">الاسم:</span>
+                <input className="bg-transparent text-sm font-black text-center flex-1 border-b-2 border-emerald-300 focus:outline-none no-print-hide"
+
+                value={combinedSignatures.assistantName}
+                onChange={(e) => setCombinedSignatures((p) => ({ ...p, assistantName: e.target.value }))} />
               </div>
               <div className="flex items-end gap-3">
-                <span className="text-sm font-bold text-emerald-800 whitespace-nowrap form-title">التوقيع:</span>
+                <span className="text-emerald-800 text-sm font-black whitespace-nowrap form-title">التوقيع:</span>
                 <div className="flex-1 border-b-2 border-emerald-300 h-7"></div>
               </div>
             </div>
