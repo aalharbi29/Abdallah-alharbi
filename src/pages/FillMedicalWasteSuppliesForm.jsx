@@ -557,10 +557,8 @@ export default function FillMedicalWasteSuppliesForm() {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="bg-gray-50 border-t px-4 py-2 text-center">
-          <p className="text-xs text-teal-700 font-bold">تجمع المدينة المنورة الصحي • Madinah Health Cluster</p>
-        </div>
+        {/* spacer */}
+        <div style={{ minHeight: '30mm' }}></div>
       </div>
     </div>
   );
