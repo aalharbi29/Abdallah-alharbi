@@ -262,27 +262,27 @@ function SingleForm({ healthCenters, employees, onBack }) {
                       {idx === 0 &&
                   <td
                     rowSpan={cat.items.length}
-                    className="cat-cell border border-gray-300 px-3 py-2 text-center" style={{ fontSize: '15px' }}>
+                    className="cat-cell border border-gray-300 px-3 py-0.5 text-center" style={{ fontSize: '15px' }}>
                           {cat.category}
                         </td>
                   }
-                      <td className="border border-gray-300 px-4 py-2.5 text-center font-medium" style={{ fontSize: '13px' }}>
-                        {item.color === 'red' && <span className="inline-block bg-red-100 text-red-700 rounded-md px-2 py-0.5 font-bold text-xs ml-1">{item.colorLabel}</span>}
-                        {item.color === 'yellow' && <span className="inline-block bg-yellow-100 text-yellow-700 rounded-md px-2 py-0.5 font-bold text-xs ml-1">{item.colorLabel}</span>}
+                      <td className="border border-gray-300 px-4 py-0.5 text-center font-bold" style={{ fontSize: '14px' }}>
+                        {item.color === 'red' && <span className="inline-block bg-red-100 text-red-700 rounded-md px-2 py-0.5 font-extrabold text-xs ml-1">{item.colorLabel}</span>}
+                        {item.color === 'yellow' && <span className="inline-block bg-yellow-100 text-yellow-700 rounded-md px-2 py-0.5 font-extrabold text-xs ml-1">{item.colorLabel}</span>}
                         {item.label}
                       </td>
-                      <td className="border border-gray-300 px-2 py-1.5 text-center">
+                      <td className="border border-gray-300 px-2 py-0.5 text-center">
                         <input
                       type="number"
                       min="0"
-                      className="w-full text-center border-none outline-none bg-transparent font-bold text-emerald-800 no-print-hide"
+                      className="w-full text-center border-none outline-none bg-transparent font-extrabold text-emerald-800 no-print-hide"
                       style={{ fontSize: '15px' }}
                       value={getQty(item.id)}
                       onChange={(e) => setQty(item.id, e.target.value)}
                       placeholder="—" />
-                        <span className="hidden print:inline font-bold" style={{ fontSize: '15px' }}>{getQty(item.id)}</span>
+                        <span className="hidden print:inline font-extrabold" style={{ fontSize: '15px' }}>{getQty(item.id)}</span>
                       </td>
-                      <td className="border border-gray-300 px-3 py-2"></td>
+                      <td className="border border-gray-300 px-3 py-0.5"></td>
                     </tr>
                 )}
                 </React.Fragment>
