@@ -463,6 +463,7 @@ export default function FillMedicalWasteSuppliesForm() {
   return (
     <div className="min-h-screen bg-gray-100 p-4" dir="rtl">
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Tajawal:wght@300;400;500;700;800;900&display=swap');
         @media print {
           body * { visibility: hidden; }
           .print-area, .print-area * { visibility: visible !important; }
@@ -481,40 +482,77 @@ export default function FillMedicalWasteSuppliesForm() {
           table { font-size: 9pt !important; }
           th, td { padding: 3px 4px !important; }
         }
+        .form-title { font-family: 'Tajawal', 'Cairo', sans-serif; }
+        .form-body { font-family: 'Cairo', 'Tajawal', sans-serif; }
+        .pro-table th { 
+          background: linear-gradient(135deg, #065f46 0%, #047857 50%, #059669 100%) !important;
+          color: white !important;
+          font-weight: 700;
+          letter-spacing: 0.03em;
+          text-shadow: 0 1px 2px rgba(0,0,0,0.15);
+        }
+        .pro-table td { transition: background 0.2s; }
+        .pro-table tbody tr:hover td { background: #ecfdf5 !important; }
+        .pro-table .cat-cell {
+          background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%) !important;
+          font-weight: 800;
+          color: #065f46;
+          letter-spacing: 0.02em;
+        }
+        .pro-table .total-cell {
+          background: linear-gradient(180deg, #dcfce7 0%, #bbf7d0 100%) !important;
+          font-weight: 800;
+          color: #065f46;
+        }
+        .sig-card {
+          background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+          border: 2px solid #d1fae5;
+          border-radius: 16px;
+          box-shadow: 0 4px 15px rgba(5, 150, 105, 0.08);
+        }
+        .sig-card-header {
+          background: linear-gradient(135deg, #065f46, #047857);
+          color: white;
+          border-radius: 12px 12px 0 0;
+          padding: 10px 16px;
+          font-weight: 700;
+          text-align: center;
+          letter-spacing: 0.02em;
+        }
       `}</style>
 
       {/* Controls */}
-      <div className="no-print max-w-6xl mx-auto mb-4 bg-white rounded-xl shadow p-4 space-y-3">
+      <div className="no-print max-w-6xl mx-auto mb-4 bg-white rounded-2xl shadow-lg border border-gray-100 p-5 space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" onClick={() => {setMode(null);setQuantities({});}} className="gap-1">
+            <Button variant="outline" size="sm" onClick={() => {setMode(null);setQuantities({});}} className="gap-1 rounded-lg">
               <ArrowRight className="w-4 h-4" /> رجوع
             </Button>
-            <h2 className="font-bold text-gray-800">طلب مجمع - مستلزمات النفايات الطبية</h2>
+            <h2 className="font-bold text-gray-800 text-lg form-title">طلب مجمع - مستلزمات النفايات الطبية</h2>
           </div>
-          <Button onClick={() => window.print()} className="gap-2 bg-teal-600 hover:bg-teal-700">
+          <Button onClick={() => window.print()} className="gap-2 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 rounded-lg shadow-md">
             <Printer className="w-4 h-4" /> طباعة
           </Button>
         </div>
         <div className="flex flex-wrap gap-3">
           <div className="flex-1 min-w-48">
-            <label className="text-xs text-gray-500 block mb-1">عنوان التقرير</label>
-            <Input value={reportTitle} onChange={(e) => setReportTitle(e.target.value)} className="text-sm" />
+            <label className="text-xs font-medium text-gray-500 block mb-1">عنوان التقرير</label>
+            <Input value={reportTitle} onChange={(e) => setReportTitle(e.target.value)} className="text-sm rounded-lg" />
           </div>
           <div>
-            <label className="text-xs text-gray-500 block mb-1">الفترة (مثال: الربع الأول 1446)</label>
+            <label className="text-xs font-medium text-gray-500 block mb-1">الفترة (مثال: الربع الأول 1446)</label>
             <Input
               value={combinedSignatures.periodLabel}
               onChange={(e) => setCombinedSignatures((p) => ({ ...p, periodLabel: e.target.value }))}
               placeholder="الربع الأول 1446هـ"
-              className="text-sm w-52" />
+              className="text-sm w-52 rounded-lg" />
           </div>
         </div>
       </div>
 
       {/* Form */}
       <div
-        className="print-area max-w-6xl mx-auto shadow rounded-xl overflow-hidden"
+        className="print-area max-w-6xl mx-auto shadow-2xl rounded-2xl overflow-hidden form-body"
         style={{
           backgroundImage: `url(${BG_IMAGE})`,
           backgroundSize: '100% 100%',
@@ -524,57 +562,57 @@ export default function FillMedicalWasteSuppliesForm() {
         }}>
 
         {/* Header */}
-        <div className="pt-16 px-4 text-center">
-          <h1 className="text-sky-800 mt-6 text-lg font-extrabold">{reportTitle}</h1>
+        <div className="pt-16 px-6 text-center">
+          <h1 className="text-emerald-900 mt-6 font-black form-title" style={{ fontSize: '20px', letterSpacing: '0.03em', textShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>{reportTitle}</h1>
           {combinedSignatures.periodLabel &&
-          <p className="text-sky-600 text-xs mt-0.5 font-semibold">{combinedSignatures.periodLabel}</p>
+          <span className="inline-block mt-2 bg-sky-50 border border-sky-200 rounded-full px-5 py-1 text-sky-800 text-xs font-bold form-title">{combinedSignatures.periodLabel}</span>
           }
         </div>
 
         {/* Table */}
-        <div className="px-4 py-2 overflow-x-auto">
-          <table className="w-full border-collapse" style={{ fontSize: '12px' }}>
+        <div className="px-4 py-3 overflow-x-auto">
+          <table className="pro-table w-full border-collapse" style={{ fontSize: '12px' }}>
             <thead>
-              <tr className="bg-green-100">
-                <th colSpan={2} className="border border-gray-400 px-2 py-2 text-center font-bold">البند</th>
+              <tr>
+                <th colSpan={2} className="border border-emerald-700 px-2 py-2.5 text-center">البند</th>
                 {CENTERS.map((c) =>
-                <th key={c} className="border border-gray-400 px-1 py-2 text-center font-bold" style={{ minWidth: '60px' }}>{c}</th>
+                <th key={c} className="border border-emerald-700 px-1 py-2.5 text-center" style={{ minWidth: '60px' }}>{c}</th>
                 )}
-                <th className="border border-gray-400 px-2 py-2 text-center font-bold bg-green-200">المجموع</th>
+                <th className="border border-emerald-700 px-2 py-2.5 text-center" style={{ background: 'linear-gradient(135deg, #047857, #065f46) !important' }}>المجموع</th>
               </tr>
             </thead>
             <tbody>
               {SUPPLY_ITEMS.map((cat) =>
               <React.Fragment key={cat.category}>
                   {cat.items.map((item, idx) =>
-                <tr key={item.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                <tr key={item.id} className={idx % 2 === 0 ? "bg-white/80" : "bg-emerald-50/40"}>
                       {idx === 0 &&
                   <td
                     rowSpan={cat.items.length}
-                    className="border border-gray-400 px-2 py-1 text-center font-bold text-gray-700 bg-green-50 text-xs"
-                    style={{ writingMode: cat.items.length > 2 ? 'vertical-rl' : 'horizontal-tb', whiteSpace: 'nowrap' }}>
+                    className="cat-cell border border-gray-300 px-2 py-1 text-center text-xs"
+                    style={{ writingMode: cat.items.length > 2 ? 'vertical-rl' : 'horizontal-tb', whiteSpace: 'nowrap', fontSize: '13px' }}>
                           {cat.category}
                         </td>
                   }
-                      <td className="border border-gray-400 px-2 py-1 text-center text-xs" style={{ minWidth: '200px', whiteSpace: 'nowrap' }}>
-                        {item.color === 'red' && <span className="text-red-600 font-bold">{item.colorLabel} </span>}
-                        {item.color === 'yellow' && <span className="text-yellow-600 font-bold">{item.colorLabel} </span>}
-                        {!item.color && <span className="font-medium">{item.label}</span>}
+                      <td className="border border-gray-300 px-2 py-1.5 text-center font-medium" style={{ minWidth: '200px', whiteSpace: 'nowrap', fontSize: '12px' }}>
+                        {item.color === 'red' && <span className="inline-block bg-red-100 text-red-700 rounded px-1.5 py-0.5 font-bold text-xs ml-1">{item.colorLabel}</span>}
+                        {item.color === 'yellow' && <span className="inline-block bg-yellow-100 text-yellow-700 rounded px-1.5 py-0.5 font-bold text-xs ml-1">{item.colorLabel}</span>}
+                        {!item.color && <span className="font-semibold">{item.label}</span>}
                         {item.color && <span>{item.label}</span>}
                       </td>
                       {CENTERS.map((center) =>
-                  <td key={center} className="border border-gray-400 px-1 py-0.5 text-center">
+                  <td key={center} className="border border-gray-300 px-1 py-0.5 text-center">
                           <input
                       type="number"
                       min="0"
-                      className="w-full text-center border-none outline-none bg-transparent text-xs no-print-hide"
-                      style={{ minWidth: '40px' }}
+                      className="w-full text-center border-none outline-none bg-transparent font-bold text-emerald-800 no-print-hide"
+                      style={{ minWidth: '40px', fontSize: '13px' }}
                       value={getQty(item.id, center)}
                       onChange={(e) => setQty(item.id, center, e.target.value)}
                       placeholder="" />
                         </td>
                   )}
-                      <td className="border border-gray-400 px-2 py-1 text-center font-bold bg-green-50 text-xs">
+                      <td className="total-cell border border-gray-300 px-2 py-1 text-center" style={{ fontSize: '13px' }}>
                         {calcRowTotal(item.id) || ""}
                       </td>
                     </tr>
@@ -586,49 +624,49 @@ export default function FillMedicalWasteSuppliesForm() {
         </div>
 
         {/* Signatures */}
-        <div className="p-4 grid grid-cols-2 gap-6 border-t">
-          <div className="border border-gray-300 rounded-lg p-4">
-            <div className="text-center font-bold text-gray-700 mb-3 border-b pb-2 text-sm">
+        <div className="px-6 py-4 grid grid-cols-2 gap-8">
+          <div className="sig-card overflow-hidden">
+            <div className="sig-card-header form-title" style={{ fontSize: '13px' }}>
               مشرف النفايات الطبية بشؤون المراكز
-              <div className="text-xs text-gray-500 font-normal">بمستشفى الحسو العام</div>
+              <div className="text-xs font-normal opacity-80 mt-0.5">بمستشفى الحسو العام</div>
             </div>
-            <div className="space-y-3">
-              <div className="flex items-end gap-2">
-                <span className="text-xs font-semibold whitespace-nowrap">الاسم:</span>
+            <div className="p-4 space-y-3">
+              <div className="flex items-end gap-3">
+                <span className="text-sm font-bold text-emerald-800 whitespace-nowrap form-title">الاسم:</span>
                 <input
-                  className="flex-1 border-b border-gray-400 focus:outline-none text-sm bg-transparent text-center no-print-hide"
+                  className="flex-1 border-b-2 border-emerald-300 focus:outline-none text-sm bg-transparent text-center font-semibold no-print-hide"
                   value={combinedSignatures.supervisorName}
                   onChange={(e) => setCombinedSignatures((p) => ({ ...p, supervisorName: e.target.value }))} />
               </div>
-              <div className="flex items-end gap-2">
-                <span className="text-xs font-semibold whitespace-nowrap">التوقيع:</span>
-                <div className="flex-1 border-b border-gray-400 h-6"></div>
+              <div className="flex items-end gap-3">
+                <span className="text-sm font-bold text-emerald-800 whitespace-nowrap form-title">التوقيع:</span>
+                <div className="flex-1 border-b-2 border-emerald-300 h-7"></div>
               </div>
             </div>
           </div>
 
-          <div className="border border-gray-300 rounded-lg p-4">
-            <div className="text-center font-bold text-gray-700 mb-3 border-b pb-2 text-sm">
+          <div className="sig-card overflow-hidden">
+            <div className="sig-card-header form-title" style={{ fontSize: '13px' }}>
               المساعد لشؤون المراكز
-              <div className="text-xs text-gray-500 font-normal">بمستشفى الحسو العام</div>
+              <div className="text-xs font-normal opacity-80 mt-0.5">بمستشفى الحسو العام</div>
             </div>
-            <div className="space-y-3">
-              <div className="flex items-end gap-2">
-                <span className="text-xs font-semibold whitespace-nowrap">الاسم:</span>
+            <div className="p-4 space-y-3">
+              <div className="flex items-end gap-3">
+                <span className="text-sm font-bold text-emerald-800 whitespace-nowrap form-title">الاسم:</span>
                 <input
-                  className="flex-1 border-b border-gray-400 focus:outline-none text-sm bg-transparent text-center no-print-hide"
+                  className="flex-1 border-b-2 border-emerald-300 focus:outline-none text-sm bg-transparent text-center font-semibold no-print-hide"
                   value={combinedSignatures.assistantName}
                   onChange={(e) => setCombinedSignatures((p) => ({ ...p, assistantName: e.target.value }))} />
               </div>
-              <div className="flex items-end gap-2">
-                <span className="text-xs font-semibold whitespace-nowrap">التوقيع:</span>
-                <div className="flex-1 border-b border-gray-400 h-6"></div>
+              <div className="flex items-end gap-3">
+                <span className="text-sm font-bold text-emerald-800 whitespace-nowrap form-title">التوقيع:</span>
+                <div className="flex-1 border-b-2 border-emerald-300 h-7"></div>
               </div>
             </div>
           </div>
         </div>
 
-        <div style={{ minHeight: '30mm' }}></div>
+        <div style={{ minHeight: '20mm' }}></div>
       </div>
     </div>);
 
