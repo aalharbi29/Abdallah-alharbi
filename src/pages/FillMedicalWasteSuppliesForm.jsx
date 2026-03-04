@@ -7,7 +7,8 @@ import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
-const BG_IMAGE = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/b6c7b20f8_ChatGPTImage1202605_58_03.png';
+// خلفية النموذج (نمط ورق رسمي مستشفى الحسو)
+const BG_IMAGE = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/9273ea99b_.pdf';
 
 // أسماء المراكز الثابتة كما في النموذج
 const CENTERS = ["الهميج", "الماوية", "الحسو", "صخيرة", "بطحى", "طلال", "هدبان", "بلغة"];
