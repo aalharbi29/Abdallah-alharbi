@@ -267,10 +267,10 @@ export default function FillMedicalWasteSuppliesForm() {
             <table className="w-full border-collapse text-sm">
               <thead>
                 <tr className="bg-green-100">
-                  <th className="border border-gray-400 px-3 py-2 text-center" style={{ width: '25%' }}>البند</th>
+                  <th className="border border-gray-400 px-3 py-2 text-center" style={{ width: '20%' }}>البند</th>
                   <th className="border border-gray-400 px-3 py-2 text-center" style={{ width: '35%' }}>التصنيف</th>
-                  <th className="border border-gray-400 px-3 py-2 text-center" style={{ width: '25%' }}>الكمية المطلوبة</th>
-                  <th className="border border-gray-400 px-3 py-2 text-center" style={{ width: '15%' }}>ملاحظات</th>
+                  <th className="border border-gray-400 px-3 py-2 text-center" style={{ width: '20%' }}>الكمية المطلوبة</th>
+                  <th className="border border-gray-400 px-3 py-2 text-center" style={{ width: '25%' }}>ملاحظات</th>
                 </tr>
               </thead>
               <tbody>
