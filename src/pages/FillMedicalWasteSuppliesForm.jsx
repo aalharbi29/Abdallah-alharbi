@@ -11,44 +11,44 @@ const BG_IMAGE = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/pub
 const CENTERS = ["الهميج", "الماوية", "الحسو", "صخيرة", "بطحى", "طلال", "هدبان", "بلغة"];
 
 const SUPPLY_ITEMS = [
-  {
-    category: "الأكياس",
-    items: [
-      { id: "bag_10_red", label: "لتر (١٠)", color: "red", colorLabel: "أحمر" },
-      { id: "bag_10_yellow", label: "لتر (١٠)", color: "yellow", colorLabel: "أصفر" },
-      { id: "bag_30_red", label: "لتر (٣٠)", color: "red", colorLabel: "أحمر" },
-      { id: "bag_30_yellow", label: "لتر (٣٠)", color: "yellow", colorLabel: "أصفر" },
-      { id: "bag_50_red", label: "لتر (٥٠)", color: "red", colorLabel: "أحمر" },
-      { id: "bag_50_yellow", label: "لتر (٥٠)", color: "yellow", colorLabel: "أصفر" }
-    ]
-  },
-  {
-    category: "حاويات المواد الحادة",
-    items: [
-      { id: "sharp_3", label: "سعة (٣) لتر" },
-      { id: "sharp_65", label: "سعة (٦٫٥) لتر" },
-      { id: "sharp_13", label: "سعة (١٣) لتر" },
-      { id: "sharp_21", label: "سعة (٢١) لتر" }
-    ]
-  },
-  {
-    category: "أخرى",
-    items: [
-      { id: "amalgam", label: "حاويات حشوات الأملغم" },
-      { id: "endoscope", label: "حاوية المناظير" },
-      { id: "liquid", label: "حاويات النفايات السائلة" },
-      { id: "sticker", label: "بطاقة لاصقة" },
-      { id: "ties", label: "المرابط" }
-    ]
-  }
-];
+{
+  category: "الأكياس",
+  items: [
+  { id: "bag_10_red", label: "لتر (١٠)", color: "red", colorLabel: "أحمر" },
+  { id: "bag_10_yellow", label: "لتر (١٠)", color: "yellow", colorLabel: "أصفر" },
+  { id: "bag_30_red", label: "لتر (٣٠)", color: "red", colorLabel: "أحمر" },
+  { id: "bag_30_yellow", label: "لتر (٣٠)", color: "yellow", colorLabel: "أصفر" },
+  { id: "bag_50_red", label: "لتر (٥٠)", color: "red", colorLabel: "أحمر" },
+  { id: "bag_50_yellow", label: "لتر (٥٠)", color: "yellow", colorLabel: "أصفر" }]
+
+},
+{
+  category: "حاويات المواد الحادة",
+  items: [
+  { id: "sharp_3", label: "سعة (٣) لتر" },
+  { id: "sharp_65", label: "سعة (٦٫٥) لتر" },
+  { id: "sharp_13", label: "سعة (١٣) لتر" },
+  { id: "sharp_21", label: "سعة (٢١) لتر" }]
+
+},
+{
+  category: "أخرى",
+  items: [
+  { id: "amalgam", label: "حاويات حشوات الأملغم" },
+  { id: "endoscope", label: "حاوية المناظير" },
+  { id: "liquid", label: "حاويات النفايات السائلة" },
+  { id: "sticker", label: "بطاقة لاصقة" },
+  { id: "ties", label: "المرابط" }]
+
+}];
+
 
 const QUARTERS = ["الربع الأول", "الربع الثاني", "الربع الثالث", "الربع الرابع"];
 
 function SingleForm({ healthCenters, employees, onBack }) {
-  const centerOptions = healthCenters.length > 0
-    ? healthCenters.map((c) => c.اسم_المركز).filter(Boolean)
-    : CENTERS;
+  const centerOptions = healthCenters.length > 0 ?
+  healthCenters.map((c) => c.اسم_المركز).filter(Boolean) :
+  CENTERS;
 
   const [selectedCenter, setSelectedCenter] = useState("");
   const [quantities, setQuantities] = useState({});
@@ -63,27 +63,27 @@ function SingleForm({ healthCenters, employees, onBack }) {
 
   // إيجاد مدير المركز
   const directorEmpId = selectedCenterData?.المدير;
-  const directorEmp = directorEmpId
-    ? employees.find((e) => e.id === directorEmpId || e.رقم_الموظف === directorEmpId)
-    : null;
+  const directorEmp = directorEmpId ?
+  employees.find((e) => e.id === directorEmpId || e.رقم_الموظف === directorEmpId) :
+  null;
 
   // إيجاد مسؤول النفايات من الموظفين
-  const wasteOfficerEmp = selectedCenter
-    ? employees.find((e) =>
-        (e.المركز_الصحي === selectedCenter || e.اسم_المركز === selectedCenter) &&
-        Array.isArray(e.special_roles) &&
-        e.special_roles.some((r) => r.includes("نفاي"))
-      )
-    : null;
+  const wasteOfficerEmp = selectedCenter ?
+  employees.find((e) =>
+  (e.المركز_الصحي === selectedCenter || e.اسم_المركز === selectedCenter) &&
+  Array.isArray(e.special_roles) &&
+  e.special_roles.some((r) => r.includes("نفاي"))
+  ) :
+  null;
 
   // موظفو المركز المختار
-  const centerEmployees = selectedCenter
-    ? employees.filter((e) => e.المركز_الصحي === selectedCenter || e.اسم_المركز === selectedCenter)
-    : [];
+  const centerEmployees = selectedCenter ?
+  employees.filter((e) => e.المركز_الصحي === selectedCenter || e.اسم_المركز === selectedCenter) :
+  [];
 
   // تحديث اسم المدير تلقائياً
   useEffect(() => {
-    const name = directorEmp ? (directorEmp.full_name_arabic || directorEmp.رقم_الموظف || "") : "";
+    const name = directorEmp ? directorEmp.full_name_arabic || directorEmp.رقم_الموظف || "" : "";
     setDirectorName(name);
   }, [selectedCenter]);
 
@@ -163,8 +163,8 @@ function SingleForm({ healthCenters, employees, onBack }) {
               className="border rounded px-3 py-1.5 text-sm w-24"
               value={selectedYear}
               onChange={(e) => setSelectedYear(e.target.value)}
-              placeholder={String(new Date().getFullYear())}
-            />
+              placeholder={String(new Date().getFullYear())} />
+
           </div>
           <div className="flex-1 min-w-48">
             <label className="text-xs text-gray-500 block mb-1">عنوان التقرير</label>
@@ -186,22 +186,22 @@ function SingleForm({ healthCenters, employees, onBack }) {
 
         {/* Header */}
         <div className="pt-20 px-6 text-center">
-          <h1
-            className="text-sky-800 mt-20 text-2xl font-extrabold"
-            style={{ fontFamily: "'Cairo', 'Segoe UI', sans-serif", letterSpacing: '0.02em' }}>
+          <h1 className="text-sky-800 mt-20 text-4xl font-extrabold"
+
+          style={{ fontFamily: "'Cairo', 'Segoe UI', sans-serif", letterSpacing: '0.02em' }}>
             {reportTitle}
           </h1>
-          {(selectedCenter || periodLabel) && (
-            <div className="flex items-center mt-2 px-2">
+          {(selectedCenter || periodLabel) &&
+          <div className="flex items-center mt-2 px-2">
               <div className="flex-1"></div>
-              <div className="flex-1 text-center text-sky-600 text-sm font-semibold" style={{ fontFamily: "'Cairo', sans-serif" }}>
+              <div className="text-sky-600 text-sm font-semibold text-center flex-1" style={{ fontFamily: "'Cairo', sans-serif" }}>
                 {selectedCenter ? `المركز الصحي: ${selectedCenter}` : ""}
               </div>
               <div className="flex-1 text-left text-sky-700 text-sm font-bold" style={{ fontFamily: "'Cairo', sans-serif" }}>
                 {periodLabel || ""}
               </div>
             </div>
-          )}
+          }
         </div>
 
         {/* Table */}
@@ -217,16 +217,16 @@ function SingleForm({ healthCenters, employees, onBack }) {
             </thead>
             <tbody>
               {SUPPLY_ITEMS.map((cat) =>
-                <React.Fragment key={cat.category}>
+              <React.Fragment key={cat.category}>
                   {cat.items.map((item, idx) =>
-                    <tr key={item.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                <tr key={item.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
                       {idx === 0 &&
-                        <td
-                          rowSpan={cat.items.length}
-                          className="border border-gray-400 px-3 py-2 text-center font-bold text-gray-700 bg-green-50">
+                  <td
+                    rowSpan={cat.items.length}
+                    className="border border-gray-400 px-3 py-2 text-center font-bold text-gray-700 bg-green-50">
                           {cat.category}
                         </td>
-                      }
+                  }
                       <td className="border border-gray-400 px-3 py-2 text-center">
                         {item.color === 'red' && <span className="text-red-600 font-bold">{item.colorLabel} </span>}
                         {item.color === 'yellow' && <span className="text-yellow-600 font-bold">{item.colorLabel} </span>}
@@ -234,17 +234,17 @@ function SingleForm({ healthCenters, employees, onBack }) {
                       </td>
                       <td className="border border-gray-400 px-2 py-1 text-center">
                         <input
-                          type="number"
-                          min="0"
-                          className="w-full text-center border-none outline-none bg-transparent no-print-hide"
-                          value={getQty(item.id)}
-                          onChange={(e) => setQty(item.id, e.target.value)}
-                          placeholder="0" />
+                      type="number"
+                      min="0"
+                      className="w-full text-center border-none outline-none bg-transparent no-print-hide"
+                      value={getQty(item.id)}
+                      onChange={(e) => setQty(item.id, e.target.value)}
+                      placeholder="0" />
                         <span className="hidden print:inline">{getQty(item.id)}</span>
                       </td>
                       <td className="border border-gray-400 px-3 py-2"></td>
                     </tr>
-                  )}
+                )}
                 </React.Fragment>
               )}
             </tbody>
@@ -258,21 +258,21 @@ function SingleForm({ healthCenters, employees, onBack }) {
             <div className="space-y-3">
               <div className="flex items-end gap-2">
                 <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">الاسم:</span>
-                {wasteOfficerEmp ? (
-                  <span className="flex-1 border-b border-gray-400 text-sm text-center pb-0.5">{wasteOfficerName}</span>
-                ) : (
-                  <select
-                    className="flex-1 border-b border-gray-400 focus:outline-none text-sm bg-transparent text-center no-print-hide"
-                    value={wasteOfficerName}
-                    onChange={(e) => setWasteOfficerName(e.target.value)}>
+                {wasteOfficerEmp ?
+                <span className="flex-1 border-b border-gray-400 text-sm text-center pb-0.5">{wasteOfficerName}</span> :
+
+                <select
+                  className="flex-1 border-b border-gray-400 focus:outline-none text-sm bg-transparent text-center no-print-hide"
+                  value={wasteOfficerName}
+                  onChange={(e) => setWasteOfficerName(e.target.value)}>
                     <option value="">-- اختر الموظف --</option>
-                    {centerEmployees.map((emp) => (
-                      <option key={emp.id} value={emp.full_name_arabic || emp.رقم_الموظف}>
+                    {centerEmployees.map((emp) =>
+                  <option key={emp.id} value={emp.full_name_arabic || emp.رقم_الموظف}>
                         {emp.full_name_arabic || emp.رقم_الموظف}
                       </option>
-                    ))}
+                  )}
                   </select>
-                )}
+                }
               </div>
               <div className="flex items-end gap-2">
                 <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">التوقيع:</span>
@@ -305,8 +305,8 @@ function SingleForm({ healthCenters, employees, onBack }) {
 
         <div style={{ minHeight: '60mm' }}></div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
 
 export default function FillMedicalWasteSuppliesForm() {
@@ -330,9 +330,9 @@ export default function FillMedicalWasteSuppliesForm() {
   const loadData = async () => {
     try {
       const [centers, emps] = await Promise.all([
-        base44.entities.HealthCenter.list(),
-        base44.entities.Employee.list()
-      ]);
+      base44.entities.HealthCenter.list(),
+      base44.entities.Employee.list()]
+      );
       setHealthCenters(centers || []);
       setEmployees(emps || []);
     } catch (e) {
@@ -359,8 +359,8 @@ export default function FillMedicalWasteSuppliesForm() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="w-8 h-8 animate-spin text-green-600" />
-      </div>
-    );
+      </div>);
+
   }
 
   if (!mode) {
@@ -406,8 +406,8 @@ export default function FillMedicalWasteSuppliesForm() {
             </Link>
           </div>
         </div>
-      </div>
-    );
+      </div>);
+
   }
 
   if (mode === 'single') {
@@ -415,9 +415,9 @@ export default function FillMedicalWasteSuppliesForm() {
       <SingleForm
         healthCenters={healthCenters}
         employees={employees}
-        onBack={() => setMode(null)}
-      />
-    );
+        onBack={() => setMode(null)} />);
+
+
   }
 
   // ---- النموذج المجمع ----
@@ -448,7 +448,7 @@ export default function FillMedicalWasteSuppliesForm() {
       <div className="no-print max-w-6xl mx-auto mb-4 bg-white rounded-xl shadow p-4 space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" onClick={() => { setMode(null); setQuantities({}); }} className="gap-1">
+            <Button variant="outline" size="sm" onClick={() => {setMode(null);setQuantities({});}} className="gap-1">
               <ArrowRight className="w-4 h-4" /> رجوع
             </Button>
             <h2 className="font-bold text-gray-800">طلب مجمع - مستلزمات النفايات الطبية</h2>
@@ -488,7 +488,7 @@ export default function FillMedicalWasteSuppliesForm() {
         <div className="pt-16 px-4 text-center">
           <h1 className="text-lg font-extrabold text-sky-800">{reportTitle}</h1>
           {combinedSignatures.periodLabel &&
-            <p className="text-sky-600 text-xs mt-0.5 font-semibold">{combinedSignatures.periodLabel}</p>
+          <p className="text-sky-600 text-xs mt-0.5 font-semibold">{combinedSignatures.periodLabel}</p>
           }
         </div>
 
@@ -499,24 +499,24 @@ export default function FillMedicalWasteSuppliesForm() {
               <tr className="bg-green-100">
                 <th colSpan={2} className="border border-gray-400 px-2 py-2 text-center font-bold">البند</th>
                 {CENTERS.map((c) =>
-                  <th key={c} className="border border-gray-400 px-1 py-2 text-center font-bold" style={{ minWidth: '60px' }}>{c}</th>
+                <th key={c} className="border border-gray-400 px-1 py-2 text-center font-bold" style={{ minWidth: '60px' }}>{c}</th>
                 )}
                 <th className="border border-gray-400 px-2 py-2 text-center font-bold bg-green-200">المجموع</th>
               </tr>
             </thead>
             <tbody>
               {SUPPLY_ITEMS.map((cat) =>
-                <React.Fragment key={cat.category}>
+              <React.Fragment key={cat.category}>
                   {cat.items.map((item, idx) =>
-                    <tr key={item.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                <tr key={item.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
                       {idx === 0 &&
-                        <td
-                          rowSpan={cat.items.length}
-                          className="border border-gray-400 px-2 py-1 text-center font-bold text-gray-700 bg-green-50 text-xs"
-                          style={{ writingMode: cat.items.length > 2 ? 'vertical-rl' : 'horizontal-tb', whiteSpace: 'nowrap' }}>
+                  <td
+                    rowSpan={cat.items.length}
+                    className="border border-gray-400 px-2 py-1 text-center font-bold text-gray-700 bg-green-50 text-xs"
+                    style={{ writingMode: cat.items.length > 2 ? 'vertical-rl' : 'horizontal-tb', whiteSpace: 'nowrap' }}>
                           {cat.category}
                         </td>
-                      }
+                  }
                       <td className="border border-gray-400 px-2 py-1 text-center text-xs" style={{ minWidth: '200px', whiteSpace: 'nowrap' }}>
                         {item.color === 'red' && <span className="text-red-600 font-bold">{item.colorLabel} </span>}
                         {item.color === 'yellow' && <span className="text-yellow-600 font-bold">{item.colorLabel} </span>}
@@ -524,22 +524,22 @@ export default function FillMedicalWasteSuppliesForm() {
                         {item.color && <span>{item.label}</span>}
                       </td>
                       {CENTERS.map((center) =>
-                        <td key={center} className="border border-gray-400 px-1 py-0.5 text-center">
+                  <td key={center} className="border border-gray-400 px-1 py-0.5 text-center">
                           <input
-                            type="number"
-                            min="0"
-                            className="w-full text-center border-none outline-none bg-transparent text-xs no-print-hide"
-                            style={{ minWidth: '40px' }}
-                            value={getQty(item.id, center)}
-                            onChange={(e) => setQty(item.id, center, e.target.value)}
-                            placeholder="" />
+                      type="number"
+                      min="0"
+                      className="w-full text-center border-none outline-none bg-transparent text-xs no-print-hide"
+                      style={{ minWidth: '40px' }}
+                      value={getQty(item.id, center)}
+                      onChange={(e) => setQty(item.id, center, e.target.value)}
+                      placeholder="" />
                         </td>
-                      )}
+                  )}
                       <td className="border border-gray-400 px-2 py-1 text-center font-bold bg-green-50 text-xs">
                         {calcRowTotal(item.id) || ""}
                       </td>
                     </tr>
-                  )}
+                )}
                 </React.Fragment>
               )}
             </tbody>
@@ -591,6 +591,6 @@ export default function FillMedicalWasteSuppliesForm() {
 
         <div style={{ minHeight: '30mm' }}></div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
