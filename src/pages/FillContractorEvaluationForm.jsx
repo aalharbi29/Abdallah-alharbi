@@ -194,8 +194,18 @@ export default function FillContractorEvaluationForm() {
           .no-print { display: none !important; }
           body * { visibility: hidden; }
           .print-area, .print-area * { visibility: visible !important; }
-          .print-area { position: absolute; left: 0; top: 0; width: 100%; padding: 0; }
-          @page { size: A4; margin: 12mm; }
+          .print-area {
+            position: fixed;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            padding: 0; margin: 0;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          @page { size: A4; margin: 0; }
           input, select { border: none !important; background: transparent !important; color: black !important; }
           select { -webkit-appearance: none; appearance: none; }
           .print-score { display: inline !important; }
