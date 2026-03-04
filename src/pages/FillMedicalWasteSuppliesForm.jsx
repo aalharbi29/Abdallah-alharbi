@@ -330,12 +330,12 @@ export default function FillMedicalWasteSuppliesForm() {
                   <div className="flex-1 border-b border-gray-400 h-6"></div>
                 </div>
                 <div className="flex items-end gap-2">
-                  <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">التاريخ:</span>
-                  <input
-                    type="date"
-                    className="flex-1 border-b border-gray-400 focus:outline-none text-sm bg-transparent no-print-hide"
-                    value={singleSignatures.wasteOfficerDate}
-                    onChange={(e) => setSingleSignatures((p) => ({ ...p, wasteOfficerDate: e.target.value }))} />
+                  
+                  
+
+
+
+
 
                 </div>
               </div>
@@ -358,12 +358,12 @@ export default function FillMedicalWasteSuppliesForm() {
                   <div className="flex-1 border-b border-gray-400 h-6"></div>
                 </div>
                 <div className="flex items-end gap-2">
-                  <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">التاريخ:</span>
-                  <input
-                    type="date"
-                    className="flex-1 border-b border-gray-400 focus:outline-none text-sm bg-transparent no-print-hide"
-                    value={singleSignatures.directorDate}
-                    onChange={(e) => setSingleSignatures((p) => ({ ...p, directorDate: e.target.value }))} />
+                  
+                  
+
+
+
+
 
                 </div>
               </div>
