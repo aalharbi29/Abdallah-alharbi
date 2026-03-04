@@ -589,30 +589,30 @@ export default function FillMedicalWasteSuppliesForm() {
                       {idx === 0 &&
                   <td
                     rowSpan={cat.items.length}
-                    className="cat-cell border border-gray-300 px-2 py-1 text-center text-xs"
+                    className="cat-cell border border-gray-300 px-2 py-0 text-center"
                     style={{ writingMode: cat.items.length > 2 ? 'vertical-rl' : 'horizontal-tb', whiteSpace: 'nowrap', fontSize: '13px' }}>
                           {cat.category}
                         </td>
                   }
-                      <td className="border border-gray-300 px-2 py-1.5 text-center font-medium" style={{ minWidth: '200px', whiteSpace: 'nowrap', fontSize: '12px' }}>
-                        {item.color === 'red' && <span className="inline-block bg-red-100 text-red-700 rounded px-1.5 py-0.5 font-bold text-xs ml-1">{item.colorLabel}</span>}
-                        {item.color === 'yellow' && <span className="inline-block bg-yellow-100 text-yellow-700 rounded px-1.5 py-0.5 font-bold text-xs ml-1">{item.colorLabel}</span>}
-                        {!item.color && <span className="font-semibold">{item.label}</span>}
-                        {item.color && <span>{item.label}</span>}
+                      <td className="border border-gray-300 px-2 py-0 text-center font-bold" style={{ minWidth: '200px', whiteSpace: 'nowrap', fontSize: '12px' }}>
+                        {item.color === 'red' && <span className="inline-block bg-red-100 text-red-700 rounded px-1.5 py-0 font-extrabold text-xs ml-1">{item.colorLabel}</span>}
+                        {item.color === 'yellow' && <span className="inline-block bg-yellow-100 text-yellow-700 rounded px-1.5 py-0 font-extrabold text-xs ml-1">{item.colorLabel}</span>}
+                        {!item.color && <span className="font-bold">{item.label}</span>}
+                        {item.color && <span className="font-semibold">{item.label}</span>}
                       </td>
                       {CENTERS.map((center) =>
-                  <td key={center} className="border border-gray-300 px-1 py-0.5 text-center">
+                  <td key={center} className="border border-gray-300 px-1 py-0 text-center">
                           <input
                       type="number"
                       min="0"
-                      className="w-full text-center border-none outline-none bg-transparent font-bold text-emerald-800 no-print-hide"
+                      className="w-full text-center border-none outline-none bg-transparent font-extrabold text-emerald-800 no-print-hide"
                       style={{ minWidth: '40px', fontSize: '13px' }}
                       value={getQty(item.id, center)}
                       onChange={(e) => setQty(item.id, center, e.target.value)}
                       placeholder="" />
                         </td>
                   )}
-                      <td className="total-cell border border-gray-300 px-2 py-1 text-center" style={{ fontSize: '13px' }}>
+                      <td className="total-cell border border-gray-300 px-2 py-0 text-center" style={{ fontSize: '13px' }}>
                         {calcRowTotal(item.id) || ""}
                       </td>
                     </tr>
