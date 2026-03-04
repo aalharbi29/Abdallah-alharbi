@@ -258,7 +258,7 @@ export default function FillMedicalWasteSuppliesForm() {
 
           {/* Header */}
           <div className="pt-20 px-6 text-center">
-            <h1 className="text-xl font-extrabold text-sky-800">{reportTitle}</h1>
+            <h1 className="text-sky-800 mt-20 text-xl font-extrabold">{reportTitle}</h1>
             {selectedCenter && <p className="text-sky-600 mt-1 text-sm font-semibold">المركز الصحي: {selectedCenter}</p>}
           </div>
 
