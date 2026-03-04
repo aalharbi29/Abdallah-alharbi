@@ -157,13 +157,13 @@ function SingleForm({ healthCenters, employees, onBack }) {
             </select>
           </div>
           <div>
-            <label className="text-xs text-gray-500 block mb-1">السنة (هجري)</label>
+            <label className="text-xs text-gray-500 block mb-1">السنة (ميلادي)</label>
             <input
               type="number"
               className="border rounded px-3 py-1.5 text-sm w-24"
               value={selectedYear}
               onChange={(e) => setSelectedYear(e.target.value)}
-              placeholder="1446"
+              placeholder={String(new Date().getFullYear())}
             />
           </div>
           <div className="flex-1 min-w-48">
