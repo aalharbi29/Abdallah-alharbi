@@ -409,11 +409,13 @@ export default function FillContractorEvaluationForm() {
                       </td>
                     }
                     <td
+                      key={`content-${selectedFormTypeId}-${item.id}`}
                       className="border border-slate-300 px-3 py-1 text-right leading-relaxed outline-none"
                       contentEditable
                       suppressContentEditableWarning
-                      onBlur={(e) => handleContentChange(item.id, e.target.innerText)}>
-                      {item.content}</td>
+                      dangerouslySetInnerHTML={{ __html: item.content }}
+                      onBlur={(e) => handleContentChange(item.id, e.target.innerText)}
+                    />
                     <td className="border border-slate-300 px-2 py-1 text-center font-bold text-slate-800">{item.score}</td>
                     <td className="border border-slate-300 px-1 py-0 text-center">
                       <input
