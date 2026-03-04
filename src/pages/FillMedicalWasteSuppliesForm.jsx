@@ -664,24 +664,29 @@ export default function FillMedicalWasteSuppliesForm() {
         </div>
 
         {/* Signatures */}
-        <div className="pt-3 pr-32 pb-1 pl-32 grid grid-cols-2 gap-8">
+        <div className="pt-3 pr-16 pb-1 pl-16 grid grid-cols-[1fr_auto_1fr] gap-4 items-start">
           <div className="sig-card overflow-hidden">
-            <div className="ml-1 sig-card-header form-title" style={{ fontSize: '13px' }}>
+            <div className="sig-card-header form-title" style={{ fontSize: '13px' }}>
               {combinedSignatures.supervisorTitle}
               <div className="text-xs font-normal opacity-80 mt-0.5">بمستشفى الحسو العام</div>
             </div>
             <div className="p-4 space-y-3">
               <div className="flex items-end gap-3">
-                <span className="text-emerald-800 text-sm font-black form-title whitespace-nowrap">الاسم:</span>
-                <span className="flex-1 border-b-2 border-emerald-300 text-sm text-center pb-1 font-black text-gray-800">
+                <span className="text-[#1a472a] text-sm font-black form-title whitespace-nowrap">الاسم:</span>
+                <span className="flex-1 border-b-2 border-[#d4c5a0] text-sm text-center pb-1 font-black text-gray-800">
                   {combinedSignatures.supervisorName || <span className="text-gray-400 text-xs font-normal">اسم المشرف</span>}
                 </span>
               </div>
               <div className="flex items-end gap-3">
-                <span className="text-emerald-800 text-sm font-black whitespace-nowrap form-title">التوقيع:</span>
-                <div className="flex-1 border-b-2 border-emerald-300 h-7"></div>
+                <span className="text-[#1a472a] text-sm font-black whitespace-nowrap form-title">التوقيع:</span>
+                <div className="flex-1 border-b-2 border-[#d4c5a0] h-7"></div>
               </div>
             </div>
+          </div>
+
+          {/* Stamp */}
+          <div className="stamp-box p-4 flex items-center justify-center self-center" style={{ minWidth: '100px', minHeight: '100px' }}>
+            <span className="text-[#8c7846] text-sm font-semibold form-title" style={{ letterSpacing: '0.05em' }}>الختم</span>
           </div>
 
           <div className="sig-card overflow-hidden">
@@ -691,20 +696,20 @@ export default function FillMedicalWasteSuppliesForm() {
             </div>
             <div className="p-4 space-y-3">
               <div className="flex items-end gap-3">
-                <span className="text-emerald-800 text-sm font-black whitespace-nowrap form-title">الاسم:</span>
-                <span className="flex-1 border-b-2 border-emerald-300 text-sm text-center pb-1 font-black text-gray-800">
+                <span className="text-[#1a472a] text-sm font-black whitespace-nowrap form-title">الاسم:</span>
+                <span className="flex-1 border-b-2 border-[#d4c5a0] text-sm text-center pb-1 font-black text-gray-800">
                   {combinedSignatures.assistantName || <span className="text-gray-400 text-xs font-normal">اسم المساعد</span>}
                 </span>
               </div>
               <div className="flex items-end gap-3">
-                <span className="text-emerald-800 text-sm font-black whitespace-nowrap form-title">التوقيع:</span>
-                <div className="flex-1 border-b-2 border-emerald-300 h-7"></div>
+                <span className="text-[#1a472a] text-sm font-black whitespace-nowrap form-title">التوقيع:</span>
+                <div className="flex-1 border-b-2 border-[#d4c5a0] h-7"></div>
               </div>
             </div>
           </div>
         </div>
 
-        <div style={{ minHeight: '20mm' }}></div>
+        <div style={{ minHeight: '15mm' }}></div>
       </div>
     </div>);
 
