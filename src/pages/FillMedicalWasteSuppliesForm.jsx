@@ -96,7 +96,7 @@ function SingleForm({ healthCenters, employees, onBack }) {
     }
   }, [selectedCenter]);
 
-  const periodLabel = selectedQuarter && selectedYear ? `${selectedQuarter} ${selectedYear}هـ` : "";
+  const periodLabel = selectedQuarter && selectedYear ? `${selectedQuarter} ${selectedYear}م` : "";
 
   const getQty = (itemId) => quantities[itemId] || "";
   const setQty = (itemId, value) => setQuantities((prev) => ({ ...prev, [itemId]: value }));
