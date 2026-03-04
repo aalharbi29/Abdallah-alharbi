@@ -405,11 +405,11 @@ export default function FillContractorEvaluationForm() {
           <table className="w-full border-collapse mb-6" style={{ fontSize: contentFontSize }}>
             <thead>
               <tr className="bg-slate-200 text-black">
-                <th className="border border-slate-400 px-1 text-center" style={{ width: '35px', fontSize: headerFontSize, padding: '8px 4px' }}>م</th>
-                <th className="border border-slate-400 px-1 text-center" style={{ width: '50px', fontSize: headerFontSize, padding: '8px 4px' }}>البند</th>
-                <th className="border border-slate-400 px-3 text-right" style={{ fontSize: headerFontSize, padding: '8px 12px' }}>المحتوى</th>
-                <th className="border border-slate-400 px-1 text-center" style={{ width: '55px', fontSize: headerFontSize, padding: '8px 4px' }}>الدرجة</th>
-                <th className="border border-slate-400 px-1 text-center" style={{ width: '76px', fontSize: headerFontSize, padding: '8px 4px' }}>التقييم</th>
+                <th className="border border-slate-400 px-1 text-center" style={{ width: '35px', fontSize: contentFontSize, padding: '8px 4px' }}>م</th>
+                <th className="border border-slate-400 px-1 text-center" style={{ width: '50px', fontSize: contentFontSize, padding: '8px 4px' }}>البند</th>
+                <th className="border border-slate-400 px-3 text-right" style={{ fontSize: contentFontSize, padding: '8px 12px' }}>المحتوى</th>
+                <th className="border border-slate-400 px-1 text-center" style={{ width: '55px', fontSize: contentFontSize, padding: '8px 4px' }}>الدرجة</th>
+                <th className="border border-slate-400 px-1 text-center" style={{ width: '76px', fontSize: contentFontSize, padding: '8px 4px' }}>التقييم</th>
               </tr>
             </thead>
             <tbody>
