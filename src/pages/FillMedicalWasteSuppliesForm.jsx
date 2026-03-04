@@ -597,8 +597,10 @@ export default function FillMedicalWasteSuppliesForm() {
         {/* Header */}
         <div className="pt-16 px-6 text-center">
           <h1 className="text-emerald-900 mt-6 text-2xl font-black form-title" style={{ fontSize: '20px', letterSpacing: '0.03em', textShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>{reportTitle}</h1>
-          {combinedSignatures.periodLabel &&
-          <span className="inline-block mt-2 bg-sky-50 border border-sky-200 rounded-full px-5 py-1 text-sky-800 text-xs font-bold form-title">{combinedSignatures.periodLabel}</span>
+          {(combinedQuarter || combinedYear) &&
+          <span className="inline-block mt-2 bg-sky-50 border border-sky-200 rounded-full px-5 py-1 text-sky-800 text-xs font-bold form-title">
+            {combinedQuarter}{combinedQuarter && combinedYear ? " " : ""}{combinedYear}
+          </span>
           }
         </div>
 
