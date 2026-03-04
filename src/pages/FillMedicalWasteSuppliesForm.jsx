@@ -360,7 +360,7 @@ export default function FillMedicalWasteSuppliesForm() {
     assistantName: "المساعد لشؤون المراكز بمستشفى الحسو العام",
     periodLabel: ""
   });
-  const [reportTitle, setReportTitle] = useState("احتياج مراكز الحسو الربع سنوي من مستلزمات النفايات الطبية");
+  const [reportTitle, setReportTitle] = useState("احتياج مراكز الحسو من مستلزمات النفايات الطبية");
 
   useEffect(() => {
     loadData();
