@@ -108,7 +108,12 @@ export default function FillContractorEvaluationForm() {
     FORM_TYPES.forEach((ft) => {
       data[ft.id] = {
         fullTitle: ft.fullTitle,
-        items: ft.items.map((item) => ({ ...item }))
+        items: ft.items.map((item) => ({ ...item })),
+        bgImage: DEFAULT_BG,
+        headerText: "إدارة الخدمات العامة",
+        footerOrgName: "تجمع المدينة المنورة الصحي",
+        footerOrgNameEn: "Madinah Health Cluster",
+        footerTagline: "Empowered by Health Holding co.",
       };
     });
     return data;
