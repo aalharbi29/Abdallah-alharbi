@@ -662,16 +662,15 @@ export default function FillMedicalWasteSuppliesForm() {
         <div className="px-6 py-4 grid grid-cols-2 gap-8">
           <div className="sig-card overflow-hidden">
             <div className="sig-card-header form-title" style={{ fontSize: '13px' }}>
-              مشرف النفايات الطبية بشؤون المراكز
+              {combinedSignatures.supervisorTitle}
               <div className="text-xs font-normal opacity-80 mt-0.5">بمستشفى الحسو العام</div>
             </div>
             <div className="p-4 space-y-3">
               <div className="flex items-end gap-3">
                 <span className="text-emerald-800 text-sm font-black form-title whitespace-nowrap">الاسم:</span>
-                <input className="bg-transparent text-sm font-black text-center flex-1 border-b-2 border-emerald-300 focus:outline-none no-print-hide"
-
-                value={combinedSignatures.supervisorName}
-                onChange={(e) => setCombinedSignatures((p) => ({ ...p, supervisorName: e.target.value }))} />
+                <span className="flex-1 border-b-2 border-emerald-300 text-sm text-center pb-1 font-black text-gray-800">
+                  {combinedSignatures.supervisorName || <span className="text-gray-400 text-xs font-normal">اسم المشرف</span>}
+                </span>
               </div>
               <div className="flex items-end gap-3">
                 <span className="text-emerald-800 text-sm font-black whitespace-nowrap form-title">التوقيع:</span>
@@ -682,16 +681,15 @@ export default function FillMedicalWasteSuppliesForm() {
 
           <div className="sig-card overflow-hidden">
             <div className="sig-card-header form-title" style={{ fontSize: '13px' }}>
-              المساعد لشؤون المراكز
+              {combinedSignatures.assistantTitle}
               <div className="text-xs font-normal opacity-80 mt-0.5">بمستشفى الحسو العام</div>
             </div>
             <div className="p-4 space-y-3">
               <div className="flex items-end gap-3">
                 <span className="text-emerald-800 text-sm font-black whitespace-nowrap form-title">الاسم:</span>
-                <input className="bg-transparent text-sm font-black text-center flex-1 border-b-2 border-emerald-300 focus:outline-none no-print-hide"
-
-                value={combinedSignatures.assistantName}
-                onChange={(e) => setCombinedSignatures((p) => ({ ...p, assistantName: e.target.value }))} />
+                <span className="flex-1 border-b-2 border-emerald-300 text-sm text-center pb-1 font-black text-gray-800">
+                  {combinedSignatures.assistantName || <span className="text-gray-400 text-xs font-normal">اسم المساعد</span>}
+                </span>
               </div>
               <div className="flex items-end gap-3">
                 <span className="text-emerald-800 text-sm font-black whitespace-nowrap form-title">التوقيع:</span>
