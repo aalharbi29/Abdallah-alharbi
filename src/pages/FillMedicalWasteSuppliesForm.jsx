@@ -191,15 +191,15 @@ function SingleForm({ healthCenters, employees, onBack }) {
             style={{ fontFamily: "'Cairo', 'Segoe UI', sans-serif", letterSpacing: '0.02em' }}>
             {reportTitle}
           </h1>
-          {periodLabel && (
-            <p className="text-sky-700 mt-1 text-base font-bold" style={{ fontFamily: "'Cairo', sans-serif" }}>
-              {periodLabel}
-            </p>
-          )}
-          {selectedCenter && (
-            <p className="text-sky-600 mt-1 text-sm font-semibold" style={{ fontFamily: "'Cairo', sans-serif" }}>
-              المركز الصحي: {selectedCenter}
-            </p>
+          {(selectedCenter || periodLabel) && (
+            <div className="flex justify-between items-center mt-2 px-2">
+              <div className="text-sky-700 text-sm font-bold" style={{ fontFamily: "'Cairo', sans-serif" }}>
+                {periodLabel || ""}
+              </div>
+              <div className="text-sky-600 text-sm font-semibold" style={{ fontFamily: "'Cairo', sans-serif" }}>
+                {selectedCenter ? `المركز الصحي: ${selectedCenter}` : ""}
+              </div>
+            </div>
           )}
         </div>
 
