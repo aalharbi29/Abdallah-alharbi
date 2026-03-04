@@ -14,41 +14,41 @@ const CENTERS = ["الهميج", "الماوية", "الحسو", "صخيرة", "
 
 // بنود المستلزمات
 const SUPPLY_ITEMS = [
-  {
-    category: "الأكياس",
-    items: [
-      { id: "bag_10_red",    label: "لتر (١٠)", color: "red",    colorLabel: "أحمر" },
-      { id: "bag_10_yellow", label: "لتر (١٠)", color: "yellow", colorLabel: "أصفر" },
-      { id: "bag_30_red",    label: "لتر (٣٠)", color: "red",    colorLabel: "أحمر" },
-      { id: "bag_30_yellow", label: "لتر (٣٠)", color: "yellow", colorLabel: "أصفر" },
-      { id: "bag_50_red",    label: "لتر (٥٠)", color: "red",    colorLabel: "أحمر" },
-      { id: "bag_50_yellow", label: "لتر (٥٠)", color: "yellow", colorLabel: "أصفر" },
-    ]
-  },
-  {
-    category: "حاويات المواد الحادة",
-    items: [
-      { id: "sharp_3",  label: "سعة (٣) لتر" },
-      { id: "sharp_65", label: "سعة (٦٫٥) لتر" },
-      { id: "sharp_13", label: "سعة (١٣) لتر" },
-      { id: "sharp_21", label: "سعة (٢١) لتر" },
-    ]
-  },
-  {
-    category: "أخرى",
-    items: [
-      { id: "amalgam",   label: "حاويات حشوات الأملغم" },
-      { id: "endoscope", label: "حاوية المناظير" },
-      { id: "liquid",    label: "حاويات النفايات السائلة" },
-      { id: "sticker",   label: "بطاقة لاصقة" },
-      { id: "ties",      label: "المرابط" },
-    ]
-  }
-];
+{
+  category: "الأكياس",
+  items: [
+  { id: "bag_10_red", label: "لتر (١٠)", color: "red", colorLabel: "أحمر" },
+  { id: "bag_10_yellow", label: "لتر (١٠)", color: "yellow", colorLabel: "أصفر" },
+  { id: "bag_30_red", label: "لتر (٣٠)", color: "red", colorLabel: "أحمر" },
+  { id: "bag_30_yellow", label: "لتر (٣٠)", color: "yellow", colorLabel: "أصفر" },
+  { id: "bag_50_red", label: "لتر (٥٠)", color: "red", colorLabel: "أحمر" },
+  { id: "bag_50_yellow", label: "لتر (٥٠)", color: "yellow", colorLabel: "أصفر" }]
+
+},
+{
+  category: "حاويات المواد الحادة",
+  items: [
+  { id: "sharp_3", label: "سعة (٣) لتر" },
+  { id: "sharp_65", label: "سعة (٦٫٥) لتر" },
+  { id: "sharp_13", label: "سعة (١٣) لتر" },
+  { id: "sharp_21", label: "سعة (٢١) لتر" }]
+
+},
+{
+  category: "أخرى",
+  items: [
+  { id: "amalgam", label: "حاويات حشوات الأملغم" },
+  { id: "endoscope", label: "حاوية المناظير" },
+  { id: "liquid", label: "حاويات النفايات السائلة" },
+  { id: "sticker", label: "بطاقة لاصقة" },
+  { id: "ties", label: "المرابط" }]
+
+}];
+
 
 // تسطيح كل البنود في مصفوفة واحدة للعرض
-const ALL_ITEMS = CENTERS.reduce(() => {}, []) || 
-  SUPPLY_ITEMS.flatMap(cat => cat.items);
+const ALL_ITEMS = CENTERS.reduce(() => {}, []) ||
+SUPPLY_ITEMS.flatMap((cat) => cat.items);
 
 export default function FillMedicalWasteSuppliesForm() {
   const [mode, setMode] = useState(null); // 'single' | 'combined'
@@ -66,7 +66,7 @@ export default function FillMedicalWasteSuppliesForm() {
     wasteOfficerName: "",
     wasteOfficerDate: "",
     directorName: "",
-    directorDate: "",
+    directorDate: ""
   });
 
   // توقيعات النموذج المجمع
@@ -76,7 +76,7 @@ export default function FillMedicalWasteSuppliesForm() {
     supervisorDate: "",
     assistantDate: "",
     title: "احتياج مراكز الحسو الربع سنوي من مستلزمات النفايات الطبية",
-    periodLabel: "",
+    periodLabel: ""
   });
 
   const [reportTitle, setReportTitle] = useState("احتياج مراكز الحسو الربع سنوي من مستلزمات النفايات الطبية");
@@ -88,9 +88,9 @@ export default function FillMedicalWasteSuppliesForm() {
   const loadData = async () => {
     try {
       const [centers, emps] = await Promise.all([
-        base44.entities.HealthCenter.list(),
-        base44.entities.Employee.list()
-      ]);
+      base44.entities.HealthCenter.list(),
+      base44.entities.Employee.list()]
+      );
       setHealthCenters(centers || []);
       setEmployees(emps || []);
     } catch (e) {
@@ -100,7 +100,7 @@ export default function FillMedicalWasteSuppliesForm() {
     }
   };
 
-  const allItems = SUPPLY_ITEMS.flatMap(cat => cat.items);
+  const allItems = SUPPLY_ITEMS.flatMap((cat) => cat.items);
 
   const getQty = (itemId, centerId) => {
     if (mode === 'single') return quantities[itemId] || "";
@@ -109,9 +109,9 @@ export default function FillMedicalWasteSuppliesForm() {
 
   const setQty = (itemId, centerId, value) => {
     if (mode === 'single') {
-      setQuantities(prev => ({ ...prev, [itemId]: value }));
+      setQuantities((prev) => ({ ...prev, [itemId]: value }));
     } else {
-      setQuantities(prev => ({
+      setQuantities((prev) => ({
         ...prev,
         [itemId]: { ...(prev[itemId] || {}), [centerId]: value }
       }));
@@ -131,8 +131,8 @@ export default function FillMedicalWasteSuppliesForm() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="w-8 h-8 animate-spin text-green-600" />
-      </div>
-    );
+      </div>);
+
   }
 
   // ---- شاشة اختيار النوع ----
@@ -151,8 +151,8 @@ export default function FillMedicalWasteSuppliesForm() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <button
               onClick={() => setMode('single')}
-              className="bg-white rounded-2xl shadow-lg p-8 border-2 border-transparent hover:border-green-400 hover:shadow-xl transition-all text-center group"
-            >
+              className="bg-white rounded-2xl shadow-lg p-8 border-2 border-transparent hover:border-green-400 hover:shadow-xl transition-all text-center group">
+
               <div className="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-green-200 transition-colors">
                 <span className="text-3xl">🏥</span>
               </div>
@@ -162,8 +162,8 @@ export default function FillMedicalWasteSuppliesForm() {
 
             <button
               onClick={() => setMode('combined')}
-              className="bg-white rounded-2xl shadow-lg p-8 border-2 border-transparent hover:border-teal-400 hover:shadow-xl transition-all text-center group"
-            >
+              className="bg-white rounded-2xl shadow-lg p-8 border-2 border-transparent hover:border-teal-400 hover:shadow-xl transition-all text-center group">
+
               <div className="w-16 h-16 bg-teal-100 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-teal-200 transition-colors">
                 <span className="text-3xl">📋</span>
               </div>
@@ -181,15 +181,15 @@ export default function FillMedicalWasteSuppliesForm() {
             </Link>
           </div>
         </div>
-      </div>
-    );
+      </div>);
+
   }
 
   // ---- النموذج المفرد ----
   if (mode === 'single') {
-    const centerOptions = healthCenters.length > 0
-      ? healthCenters.map(c => c.اسم_المركز).filter(Boolean)
-      : CENTERS;
+    const centerOptions = healthCenters.length > 0 ?
+    healthCenters.map((c) => c.اسم_المركز).filter(Boolean) :
+    CENTERS;
 
     return (
       <div className="min-h-screen bg-gray-100 p-4" dir="rtl">
@@ -216,7 +216,7 @@ export default function FillMedicalWasteSuppliesForm() {
         <div className="no-print max-w-4xl mx-auto mb-4 bg-white rounded-xl shadow p-4 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" onClick={() => { setMode(null); setQuantities({}); }} className="gap-1">
+              <Button variant="outline" size="sm" onClick={() => {setMode(null);setQuantities({});}} className="gap-1">
                 <ArrowRight className="w-4 h-4" /> رجوع
               </Button>
               <h2 className="font-bold text-gray-800">طلب مفرد - مستلزمات النفايات الطبية</h2>
@@ -231,15 +231,15 @@ export default function FillMedicalWasteSuppliesForm() {
               <select
                 className="border rounded px-3 py-1.5 text-sm"
                 value={selectedCenter || ""}
-                onChange={e => setSelectedCenter(e.target.value)}
-              >
+                onChange={(e) => setSelectedCenter(e.target.value)}>
+
                 <option value="">-- اختر المركز --</option>
-                {centerOptions.map(c => <option key={c} value={c}>{c}</option>)}
+                {centerOptions.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div>
               <label className="text-xs text-gray-500 block mb-1">عنوان التقرير</label>
-              <Input value={reportTitle} onChange={e => setReportTitle(e.target.value)} className="w-80 text-sm" />
+              <Input value={reportTitle} onChange={(e) => setReportTitle(e.target.value)} className="w-80 text-sm" />
             </div>
           </div>
         </div>
@@ -253,9 +253,9 @@ export default function FillMedicalWasteSuppliesForm() {
             backgroundSize: '100% 100%',
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
-            minHeight: '297mm',
-          }}
-        >
+            minHeight: '297mm'
+          }}>
+
           {/* Header */}
           <div className="pt-20 px-6 text-center">
             <h1 className="text-xl font-extrabold text-sky-800">{reportTitle}</h1>
@@ -274,18 +274,18 @@ export default function FillMedicalWasteSuppliesForm() {
                 </tr>
               </thead>
               <tbody>
-                {SUPPLY_ITEMS.map((cat) => (
-                  <React.Fragment key={cat.category}>
-                    {cat.items.map((item, idx) => (
-                      <tr key={item.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                        {idx === 0 && (
-                          <td
-                            rowSpan={cat.items.length}
-                            className="border border-gray-400 px-3 py-2 text-center font-bold text-gray-700 bg-green-50"
-                          >
+                {SUPPLY_ITEMS.map((cat) =>
+                <React.Fragment key={cat.category}>
+                    {cat.items.map((item, idx) =>
+                  <tr key={item.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                        {idx === 0 &&
+                    <td
+                      rowSpan={cat.items.length}
+                      className="border border-gray-400 px-3 py-2 text-center font-bold text-gray-700 bg-green-50">
+
                             {cat.category}
                           </td>
-                        )}
+                    }
                         <td className="border border-gray-400 px-3 py-2 text-center">
                           {item.color === 'red' && <span className="text-red-600 font-bold">{item.colorLabel} </span>}
                           {item.color === 'yellow' && <span className="text-yellow-600 font-bold">{item.colorLabel} </span>}
@@ -293,20 +293,20 @@ export default function FillMedicalWasteSuppliesForm() {
                         </td>
                         <td className="border border-gray-400 px-2 py-1 text-center">
                           <input
-                            type="number"
-                            min="0"
-                            className="w-full text-center border-none outline-none bg-transparent no-print-hide"
-                            value={getQty(item.id)}
-                            onChange={e => setQty(item.id, null, e.target.value)}
-                            placeholder="0"
-                          />
+                        type="number"
+                        min="0"
+                        className="w-full text-center border-none outline-none bg-transparent no-print-hide"
+                        value={getQty(item.id)}
+                        onChange={(e) => setQty(item.id, null, e.target.value)}
+                        placeholder="0" />
+
                           <span className="hidden print:inline">{getQty(item.id)}</span>
                         </td>
                         <td className="border border-gray-400 px-3 py-2"></td>
                       </tr>
-                    ))}
+                  )}
                   </React.Fragment>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
@@ -321,9 +321,9 @@ export default function FillMedicalWasteSuppliesForm() {
                   <input
                     className="flex-1 border-b border-gray-400 focus:outline-none text-sm bg-transparent text-center no-print-hide"
                     value={singleSignatures.wasteOfficerName}
-                    onChange={e => setSingleSignatures(p => ({ ...p, wasteOfficerName: e.target.value }))}
-                    placeholder="اسم مسؤول النفايات"
-                  />
+                    onChange={(e) => setSingleSignatures((p) => ({ ...p, wasteOfficerName: e.target.value }))}
+                    placeholder="اسم مسؤول النفايات" />
+
                 </div>
                 <div className="flex items-end gap-2">
                   <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">التوقيع:</span>
@@ -335,8 +335,8 @@ export default function FillMedicalWasteSuppliesForm() {
                     type="date"
                     className="flex-1 border-b border-gray-400 focus:outline-none text-sm bg-transparent no-print-hide"
                     value={singleSignatures.wasteOfficerDate}
-                    onChange={e => setSingleSignatures(p => ({ ...p, wasteOfficerDate: e.target.value }))}
-                  />
+                    onChange={(e) => setSingleSignatures((p) => ({ ...p, wasteOfficerDate: e.target.value }))} />
+
                 </div>
               </div>
             </div>
@@ -349,9 +349,9 @@ export default function FillMedicalWasteSuppliesForm() {
                   <input
                     className="flex-1 border-b border-gray-400 focus:outline-none text-sm bg-transparent text-center no-print-hide"
                     value={singleSignatures.directorName}
-                    onChange={e => setSingleSignatures(p => ({ ...p, directorName: e.target.value }))}
-                    placeholder="اسم مدير المركز"
-                  />
+                    onChange={(e) => setSingleSignatures((p) => ({ ...p, directorName: e.target.value }))}
+                    placeholder="اسم مدير المركز" />
+
                 </div>
                 <div className="flex items-end gap-2">
                   <span className="text-xs font-semibold text-gray-600 whitespace-nowrap">التوقيع:</span>
@@ -363,8 +363,8 @@ export default function FillMedicalWasteSuppliesForm() {
                     type="date"
                     className="flex-1 border-b border-gray-400 focus:outline-none text-sm bg-transparent no-print-hide"
                     value={singleSignatures.directorDate}
-                    onChange={e => setSingleSignatures(p => ({ ...p, directorDate: e.target.value }))}
-                  />
+                    onChange={(e) => setSingleSignatures((p) => ({ ...p, directorDate: e.target.value }))} />
+
                 </div>
               </div>
             </div>
@@ -378,8 +378,8 @@ export default function FillMedicalWasteSuppliesForm() {
           {/* spacer to push footer down */}
           <div style={{ minHeight: '60mm' }}></div>
         </div>
-      </div>
-    );
+      </div>);
+
   }
 
   // ---- النموذج المجمع ----
@@ -410,7 +410,7 @@ export default function FillMedicalWasteSuppliesForm() {
       <div className="no-print max-w-6xl mx-auto mb-4 bg-white rounded-xl shadow p-4 space-y-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" onClick={() => { setMode(null); setQuantities({}); }} className="gap-1">
+            <Button variant="outline" size="sm" onClick={() => {setMode(null);setQuantities({});}} className="gap-1">
               <ArrowRight className="w-4 h-4" /> رجوع
             </Button>
             <h2 className="font-bold text-gray-800">طلب مجمع - مستلزمات النفايات الطبية</h2>
@@ -422,16 +422,16 @@ export default function FillMedicalWasteSuppliesForm() {
         <div className="flex flex-wrap gap-3">
           <div className="flex-1 min-w-48">
             <label className="text-xs text-gray-500 block mb-1">عنوان التقرير</label>
-            <Input value={reportTitle} onChange={e => setReportTitle(e.target.value)} className="text-sm" />
+            <Input value={reportTitle} onChange={(e) => setReportTitle(e.target.value)} className="text-sm" />
           </div>
           <div>
             <label className="text-xs text-gray-500 block mb-1">الفترة (مثال: الربع الأول 1446)</label>
             <Input
               value={combinedSignatures.periodLabel}
-              onChange={e => setCombinedSignatures(p => ({ ...p, periodLabel: e.target.value }))}
+              onChange={(e) => setCombinedSignatures((p) => ({ ...p, periodLabel: e.target.value }))}
               placeholder="الربع الأول 1446هـ"
-              className="text-sm w-52"
-            />
+              className="text-sm w-52" />
+
           </div>
         </div>
       </div>
@@ -445,15 +445,15 @@ export default function FillMedicalWasteSuppliesForm() {
           backgroundSize: '100% 100%',
           backgroundRepeat: 'no-repeat',
           backgroundPosition: 'center',
-          minHeight: '210mm',
-        }}
-      >
+          minHeight: '210mm'
+        }}>
+
         {/* Header */}
         <div className="pt-16 px-4 text-center">
           <h1 className="text-lg font-extrabold text-sky-800">{reportTitle}</h1>
-          {combinedSignatures.periodLabel && (
-            <p className="text-sky-600 text-xs mt-0.5 font-semibold">{combinedSignatures.periodLabel}</p>
-          )}
+          {combinedSignatures.periodLabel &&
+          <p className="text-sky-600 text-xs mt-0.5 font-semibold">{combinedSignatures.periodLabel}</p>
+          }
         </div>
 
         {/* Table */}
@@ -462,52 +462,52 @@ export default function FillMedicalWasteSuppliesForm() {
             <thead>
               <tr className="bg-green-100">
                 <th colSpan={2} className="border border-gray-400 px-2 py-2 text-center font-bold">البند</th>
-                {CENTERS.map(c => (
-                  <th key={c} className="border border-gray-400 px-1 py-2 text-center font-bold" style={{ minWidth: '60px' }}>{c}</th>
-                ))}
+                {CENTERS.map((c) =>
+                <th key={c} className="border border-gray-400 px-1 py-2 text-center font-bold" style={{ minWidth: '60px' }}>{c}</th>
+                )}
                 <th className="border border-gray-400 px-2 py-2 text-center font-bold bg-green-200">المجموع</th>
               </tr>
             </thead>
             <tbody>
-              {SUPPLY_ITEMS.map((cat) => (
-                <React.Fragment key={cat.category}>
-                  {cat.items.map((item, idx) => (
-                    <tr key={item.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
-                      {idx === 0 && (
-                        <td
-                          rowSpan={cat.items.length}
-                          className="border border-gray-400 px-2 py-1 text-center font-bold text-gray-700 bg-green-50 text-xs"
-                          style={{ writingMode: cat.items.length > 2 ? 'vertical-rl' : 'horizontal-tb', whiteSpace: 'nowrap' }}
-                        >
+              {SUPPLY_ITEMS.map((cat) =>
+              <React.Fragment key={cat.category}>
+                  {cat.items.map((item, idx) =>
+                <tr key={item.id} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                      {idx === 0 &&
+                  <td
+                    rowSpan={cat.items.length}
+                    className="border border-gray-400 px-2 py-1 text-center font-bold text-gray-700 bg-green-50 text-xs"
+                    style={{ writingMode: cat.items.length > 2 ? 'vertical-rl' : 'horizontal-tb', whiteSpace: 'nowrap' }}>
+
                           {cat.category}
                         </td>
-                      )}
+                  }
                       <td className="border border-gray-400 px-2 py-1 text-center text-xs" style={{ minWidth: '200px', whiteSpace: 'nowrap' }}>
                         {item.color === 'red' && <span className="text-red-600 font-bold">{item.colorLabel} </span>}
                         {item.color === 'yellow' && <span className="text-yellow-600 font-bold">{item.colorLabel} </span>}
                         {!item.color && <span className="font-medium">{item.label}</span>}
                         {item.color && <span>{item.label}</span>}
                       </td>
-                      {CENTERS.map(center => (
-                        <td key={center} className="border border-gray-400 px-1 py-0.5 text-center">
+                      {CENTERS.map((center) =>
+                  <td key={center} className="border border-gray-400 px-1 py-0.5 text-center">
                           <input
-                            type="number"
-                            min="0"
-                            className="w-full text-center border-none outline-none bg-transparent text-xs no-print-hide"
-                            style={{ minWidth: '40px' }}
-                            value={getQty(item.id, center)}
-                            onChange={e => setQty(item.id, center, e.target.value)}
-                            placeholder=""
-                          />
+                      type="number"
+                      min="0"
+                      className="w-full text-center border-none outline-none bg-transparent text-xs no-print-hide"
+                      style={{ minWidth: '40px' }}
+                      value={getQty(item.id, center)}
+                      onChange={(e) => setQty(item.id, center, e.target.value)}
+                      placeholder="" />
+
                         </td>
-                      ))}
+                  )}
                       <td className="border border-gray-400 px-2 py-1 text-center font-bold bg-green-50 text-xs">
                         {calcRowTotal(item.id) || ""}
                       </td>
                     </tr>
-                  ))}
+                )}
                 </React.Fragment>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
@@ -525,21 +525,21 @@ export default function FillMedicalWasteSuppliesForm() {
                 <input
                   className="flex-1 border-b border-gray-400 focus:outline-none text-sm bg-transparent text-center no-print-hide"
                   value={combinedSignatures.supervisorName}
-                  onChange={e => setCombinedSignatures(p => ({ ...p, supervisorName: e.target.value }))}
-                />
+                  onChange={(e) => setCombinedSignatures((p) => ({ ...p, supervisorName: e.target.value }))} />
+
               </div>
               <div className="flex items-end gap-2">
                 <span className="text-xs font-semibold whitespace-nowrap">التوقيع:</span>
                 <div className="flex-1 border-b border-gray-400 h-6"></div>
               </div>
               <div className="flex items-end gap-2">
-                <span className="text-xs font-semibold whitespace-nowrap">التاريخ:</span>
-                <input
-                  type="date"
-                  className="flex-1 border-b border-gray-400 focus:outline-none text-sm bg-transparent no-print-hide"
-                  value={combinedSignatures.supervisorDate}
-                  onChange={e => setCombinedSignatures(p => ({ ...p, supervisorDate: e.target.value }))}
-                />
+                
+                
+
+
+
+
+
               </div>
             </div>
           </div>
@@ -555,21 +555,21 @@ export default function FillMedicalWasteSuppliesForm() {
                 <input
                   className="flex-1 border-b border-gray-400 focus:outline-none text-sm bg-transparent text-center no-print-hide"
                   value={combinedSignatures.assistantName}
-                  onChange={e => setCombinedSignatures(p => ({ ...p, assistantName: e.target.value }))}
-                />
+                  onChange={(e) => setCombinedSignatures((p) => ({ ...p, assistantName: e.target.value }))} />
+
               </div>
               <div className="flex items-end gap-2">
                 <span className="text-xs font-semibold whitespace-nowrap">التوقيع:</span>
                 <div className="flex-1 border-b border-gray-400 h-6"></div>
               </div>
               <div className="flex items-end gap-2">
-                <span className="text-xs font-semibold whitespace-nowrap">التاريخ:</span>
-                <input
-                  type="date"
-                  className="flex-1 border-b border-gray-400 focus:outline-none text-sm bg-transparent no-print-hide"
-                  value={combinedSignatures.assistantDate}
-                  onChange={e => setCombinedSignatures(p => ({ ...p, assistantDate: e.target.value }))}
-                />
+                
+                
+
+
+
+
+
               </div>
             </div>
           </div>
@@ -578,6 +578,6 @@ export default function FillMedicalWasteSuppliesForm() {
         {/* spacer */}
         <div style={{ minHeight: '30mm' }}></div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
