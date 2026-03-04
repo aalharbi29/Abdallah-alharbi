@@ -364,12 +364,14 @@ export default function FillContractorEvaluationForm() {
           </div>
 
           <div className="mb-3 pt-16 text-center">
-            <h1 className="text-slate-900 pt-20 text-2xl font-extrabold outline-none"
-
-            contentEditable
-            suppressContentEditableWarning
-            onBlur={(e) => handleTitleChange(e.target.innerText)}>
-              {currentFormData.fullTitle}</h1>
+            <h1
+              key={`title-${selectedFormTypeId}`}
+              className="text-slate-900 pt-20 text-2xl font-extrabold outline-none"
+              contentEditable
+              suppressContentEditableWarning
+              dangerouslySetInnerHTML={{ __html: currentFormData.fullTitle }}
+              onBlur={(e) => handleTitleChange(e.target.innerText)}
+            />
             <div className="text-base text-slate-700 mt-2">
               للتخلص من النفايات الطبية بالمنشآت الصحية بمستشفى / مركز (
               <span className="font-bold text-green-800 mx-2">{selectedCenter || "........................"}</span>
