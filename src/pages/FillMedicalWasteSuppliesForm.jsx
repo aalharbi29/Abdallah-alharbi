@@ -610,7 +610,7 @@ export default function FillMedicalWasteSuppliesForm() {
         </div>
 
         {/* Table */}
-        <div className="pt-3 pr-4 pl-4 overflow-x-auto">
+        <div className="bg-blue-500 pt-3 pr-4 pl-4 overflow-x-auto">
           <table className="pro-table w-full border-collapse" style={{ fontSize: '12px' }}>
             <thead>
               <tr>
@@ -685,7 +685,7 @@ export default function FillMedicalWasteSuppliesForm() {
           </div>
 
           {/* Stamp */}
-          <div className="stamp-box p-4 flex items-center justify-center self-center" style={{ minWidth: '100px', minHeight: '100px' }}>
+          <div className="bg-transparent p-4 stamp-box flex items-center justify-center self-center" style={{ minWidth: '100px', minHeight: '100px' }}>
             <span className="text-[#8c7846] text-sm font-semibold form-title" style={{ letterSpacing: '0.05em' }}>الختم</span>
           </div>
 
