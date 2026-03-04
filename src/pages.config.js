@@ -110,6 +110,7 @@ import StatisticsHijri from './pages/StatisticsHijri';
 import ViewAssignment from './pages/ViewAssignment';
 import ViewEquipmentRequest from './pages/ViewEquipmentRequest';
 import ViewExcellentEmployeeCertificate from './pages/ViewExcellentEmployeeCertificate';
+import FillMedicalWasteSuppliesForm from './pages/FillMedicalWasteSuppliesForm';
 import __Layout from './Layout.jsx';
 
 
@@ -177,6 +178,7 @@ export const PAGES = {
     "ViewAssignment": ViewAssignment,
     "ViewEquipmentRequest": ViewEquipmentRequest,
     "ViewExcellentEmployeeCertificate": ViewExcellentEmployeeCertificate,
+    "FillMedicalWasteSuppliesForm": FillMedicalWasteSuppliesForm,
 }
 
 export const pagesConfig = {
