@@ -201,7 +201,7 @@ export default function FillContractorEvaluationForm() {
             {FORM_TYPES.map((ft) =>
             <button
               key={ft.id}
-              onClick={() => setSelectedFormType(ft)}
+              onClick={() => setSelectedFormTypeId(ft.id)}
               className={`px-3 py-2 rounded-lg text-sm font-semibold border transition-all ${
               selectedFormType.id === ft.id ?
               'bg-green-600 text-white border-green-600 shadow-md' :
