@@ -489,7 +489,7 @@ export default function FillMedicalWasteSuppliesForm() {
         .form-title { font-family: 'Tajawal', 'Cairo', sans-serif; }
         .form-body { font-family: 'Cairo', 'Tajawal', sans-serif; }
         .pro-table th { 
-          background: linear-gradient(135deg, #1a472a 0%, #2d6a3f 50%, #3a7d4e 100%) !important;
+          background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 50%, #3b82f6 100%) !important;
           color: white !important;
           font-weight: 700;
           letter-spacing: 0.03em;
@@ -515,7 +515,7 @@ export default function FillMedicalWasteSuppliesForm() {
           box-shadow: 0 4px 15px rgba(140, 120, 70, 0.1);
         }
         .sig-card-header {
-          background: linear-gradient(135deg, #1a472a 0%, #2d6a3f 100%);
+          background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
           color: white;
           border-radius: 12px 12px 0 0;
           padding: 10px 16px;
