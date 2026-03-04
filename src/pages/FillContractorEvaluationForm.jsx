@@ -250,8 +250,8 @@ export default function FillContractorEvaluationForm() {
 
           </div>
 
-          <div className="mb-5 pt-4 text-center">
-            <h1 className="text-slate-900 text-2xl font-extrabold">{selectedFormType.fullTitle}</h1>
+          <div className="mb-3 pt-16 text-center">
+            <h1 className="text-slate-900 pt-4 text-2xl font-extrabold">{selectedFormType.fullTitle}</h1>
             <div className="text-base text-slate-700 mt-2">
               للتخلص من النفايات الطبية بالمنشآت الصحية بمستشفى / مركز (
               <span className="font-bold text-green-800 mx-2">{selectedCenter || "........................"}</span>
@@ -373,10 +373,10 @@ export default function FillContractorEvaluationForm() {
           <div className="text-slate-600 mt-1 pt-4 pb-1 text-sm font-bold text-center">الختم</div>
 
           {/* Footer Logo */}
-          <div className="text-cyan-600 mt-1 pt-1 pr-10 pl-6 border-t border-slate-200 flex justify-between items-center">
+          <div className="text-cyan-600 mt-1 pt-1 pr-10 pb-6 pl-6 border-t border-slate-200 flex justify-between items-center">
             
             <div className="text-center">
-              <div className="text-sky-700 font-extrabold">تجمع المدينة المنورة الصحي</div>
+              <div className="text-sky-700 mt-8 font-extrabold">تجمع المدينة المنورة الصحي</div>
               <div className="text-sky-600 text-xs">Madinah Health Cluster</div>
               <div className="text-sky-700 text-xs">Empowered by Health Holding co.</div>
             </div>
