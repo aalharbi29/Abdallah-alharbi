@@ -124,28 +124,28 @@ function SingleForm({ healthCenters, employees, onBack }) {
         .form-title { font-family: 'Tajawal', 'Cairo', sans-serif; }
         .form-body { font-family: 'Cairo', 'Tajawal', sans-serif; }
         .pro-table th { 
-          background: linear-gradient(135deg, #065f46 0%, #047857 50%, #059669 100%) !important;
+          background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 50%, #3b82f6 100%) !important;
           color: white !important;
           font-weight: 700;
           letter-spacing: 0.03em;
           text-shadow: 0 1px 2px rgba(0,0,0,0.15);
         }
         .pro-table td { transition: background 0.2s; }
-        .pro-table tbody tr:hover td { background: #ecfdf5 !important; }
+        .pro-table tbody tr:hover td { background: #eff6ff !important; }
         .pro-table .cat-cell {
-          background: linear-gradient(180deg, #f0fdf4 0%, #dcfce7 100%) !important;
+          background: linear-gradient(180deg, #eff6ff 0%, #dbeafe 100%) !important;
           font-weight: 800;
-          color: #065f46;
+          color: #1e3a5f;
           letter-spacing: 0.02em;
         }
         .sig-card {
-          background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
-          border: 2px solid #d1fae5;
+          background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+          border: 2px solid #bfdbfe;
           border-radius: 16px;
-          box-shadow: 0 4px 15px rgba(5, 150, 105, 0.08);
+          box-shadow: 0 4px 15px rgba(37, 99, 235, 0.08);
         }
         .sig-card-header {
-          background: linear-gradient(135deg, #065f46, #047857);
+          background: linear-gradient(135deg, #1e3a5f, #2563eb);
           color: white;
           border-radius: 12px 12px 0 0;
           padding: 10px 16px;
