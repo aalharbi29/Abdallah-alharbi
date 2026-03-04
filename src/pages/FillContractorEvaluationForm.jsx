@@ -253,7 +253,7 @@ export default function FillContractorEvaluationForm() {
 
         <div className="flex justify-between items-center">
           <div className="text-sm text-slate-500">
-            الدرجة الكلية: <span className="font-bold text-green-700 text-lg">{totalEval}</span> / {selectedFormType.totalScore}
+            الدرجة الكلية: <span className="font-bold text-green-700 text-lg">{totalEval}</span> / {selectedFormType.totalScore} &nbsp;|&nbsp; <span className="text-slate-400">{selectedFormType.title}</span>
           </div>
           <button
             onClick={handlePrint}
