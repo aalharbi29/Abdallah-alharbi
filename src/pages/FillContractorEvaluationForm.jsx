@@ -363,15 +363,15 @@ export default function FillContractorEvaluationForm() {
 
           </div>
 
-          <div className="mb-3 pt-16 text-center">
+          <div className="mb-3 pt-10 text-center">
             <h1
-              key={`title-${selectedFormTypeId}`}
-              className="text-slate-900 pt-20 text-2xl font-extrabold outline-none"
+              key={`title-${selectedFormTypeId}`} className="text-slate-900 pt-8 text-2xl font-extrabold outline-none"
+
               contentEditable
               suppressContentEditableWarning
               dangerouslySetInnerHTML={{ __html: currentFormData.fullTitle }}
-              onBlur={(e) => handleTitleChange(e.target.innerText)}
-            />
+              onBlur={(e) => handleTitleChange(e.target.innerText)} />
+
             <div className="text-base text-slate-700 mt-2">
               للتخلص من النفايات الطبية بالمنشآت الصحية بمستشفى / مركز (
               <span className="font-bold text-green-800 mx-2">{selectedCenter || "........................"}</span>
@@ -414,8 +414,8 @@ export default function FillContractorEvaluationForm() {
                       contentEditable
                       suppressContentEditableWarning
                       dangerouslySetInnerHTML={{ __html: item.content }}
-                      onBlur={(e) => handleContentChange(item.id, e.target.innerText)}
-                    />
+                      onBlur={(e) => handleContentChange(item.id, e.target.innerText)} />
+
                     <td className="border border-slate-300 px-2 py-1 text-center font-bold text-slate-800">{item.score}</td>
                     <td className="border border-slate-300 px-1 py-0 text-center">
                       <input
