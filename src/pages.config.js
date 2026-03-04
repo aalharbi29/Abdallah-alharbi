@@ -79,6 +79,7 @@ import FillEmailRecoveryForm from './pages/FillEmailRecoveryForm';
 import FillEquipmentRequestForm from './pages/FillEquipmentRequestForm';
 import FillExcellentEmployeeCertificate from './pages/FillExcellentEmployeeCertificate';
 import FillForm from './pages/FillForm';
+import FillMedicalWasteSuppliesForm from './pages/FillMedicalWasteSuppliesForm';
 import FillNonMedicalEquipmentForm from './pages/FillNonMedicalEquipmentForm';
 import FillOfficialAssignmentForm from './pages/FillOfficialAssignmentForm';
 import FillReleaseForm from './pages/FillReleaseForm';
@@ -110,7 +111,6 @@ import StatisticsHijri from './pages/StatisticsHijri';
 import ViewAssignment from './pages/ViewAssignment';
 import ViewEquipmentRequest from './pages/ViewEquipmentRequest';
 import ViewExcellentEmployeeCertificate from './pages/ViewExcellentEmployeeCertificate';
-import FillMedicalWasteSuppliesForm from './pages/FillMedicalWasteSuppliesForm';
 import __Layout from './Layout.jsx';
 
 
@@ -147,6 +147,7 @@ export const PAGES = {
     "FillEquipmentRequestForm": FillEquipmentRequestForm,
     "FillExcellentEmployeeCertificate": FillExcellentEmployeeCertificate,
     "FillForm": FillForm,
+    "FillMedicalWasteSuppliesForm": FillMedicalWasteSuppliesForm,
     "FillNonMedicalEquipmentForm": FillNonMedicalEquipmentForm,
     "FillOfficialAssignmentForm": FillOfficialAssignmentForm,
     "FillReleaseForm": FillReleaseForm,
@@ -178,7 +179,6 @@ export const PAGES = {
     "ViewAssignment": ViewAssignment,
     "ViewEquipmentRequest": ViewEquipmentRequest,
     "ViewExcellentEmployeeCertificate": ViewExcellentEmployeeCertificate,
-    "FillMedicalWasteSuppliesForm": FillMedicalWasteSuppliesForm,
 }
 
 export const pagesConfig = {
