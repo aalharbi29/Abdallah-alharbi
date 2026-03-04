@@ -482,7 +482,7 @@ export default function FillMedicalWasteSuppliesForm() {
                           {cat.category}
                         </td>
                       )}
-                      <td className="border border-gray-400 px-2 py-1 text-center text-xs" style={{ minWidth: '120px', maxWidth: '160px' }}>
+                      <td className="border border-gray-400 px-2 py-1 text-center text-xs" style={{ minWidth: '200px', whiteSpace: 'nowrap' }}>
                         {item.color === 'red' && <span className="text-red-600 font-bold">{item.colorLabel} </span>}
                         {item.color === 'yellow' && <span className="text-yellow-600 font-bold">{item.colorLabel} </span>}
                         {!item.color && <span className="font-medium">{item.label}</span>}
