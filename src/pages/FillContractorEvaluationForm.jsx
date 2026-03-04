@@ -461,6 +461,8 @@ export default function FillContractorEvaluationForm() {
               </tr>
             </tbody>
           </table>
+          );
+          })()}
 
           {/* Footer Info */}
           <div className="mb-2 pr-3 pb-2 pl-3 text-sm rounded-lg border border-slate-300">
