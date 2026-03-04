@@ -509,6 +509,9 @@ export default function FillContractorEvaluationForm() {
             </div>
           </div>
 
+          {/* spacer يدفع التذييل للأسفل */}
+          <div className="flex-1"></div>
+
           {/* الختم */}
           <div className="text-slate-600 mt-1 pb-1 text-sm font-bold text-center">الختم</div>
 
