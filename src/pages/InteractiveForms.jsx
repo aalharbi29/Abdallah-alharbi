@@ -85,6 +85,14 @@ const interactiveForms = [
     color: "from-red-500 to-rose-600",
     link: createPageUrl("FillContractorEvaluationForm"),
     category: "النفايات الطبية"
+  },
+  {
+    title: "احتياج مستلزمات النفايات الطبية",
+    description: "طلب مفرد لكل مركز أو طلب مجمع لجميع المراكز - أكياس، حاويات، وأدوات",
+    icon: Recycle,
+    color: "from-teal-500 to-green-600",
+    link: createPageUrl("FillMedicalWasteSuppliesForm"),
+    category: "النفايات الطبية"
   }
 ];
 
