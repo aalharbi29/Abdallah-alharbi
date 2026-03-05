@@ -1291,7 +1291,7 @@ export default function CenterDeficiencyTool() {
     
     <div class="footer">
       <p>تم إنشاء هذا التقرير بواسطة نظام إدارة المراكز الصحية</p>
-      <p style="margin-top: 5px;">وزارة الصحة - قطاع الحناكية الصحي</p>
+      <p style="margin-top: 5px;">وزارة الصحة - مستشفى الحسو العام</p>
     </div>
   </div>
 </body>
@@ -1411,7 +1411,7 @@ export default function CenterDeficiencyTool() {
 <body>
   <div class="container">
     <div class="header">
-      <h1>المراكز الصحية بالحناكية</h1>
+      <h1>المراكز الصحية بالحسو</h1>
       <h2>النواقص في ${equipmentType}</h2>
     </div>
     
@@ -1445,7 +1445,7 @@ export default function CenterDeficiencyTool() {
     </table>
     
     <div class="footer">
-      <p>وزارة الصحة - قطاع الحناكية الصحي</p>
+      <p>وزارة الصحة - مستشفى الحسو العام</p>
     </div>
   </div>
 </body>
@@ -1539,7 +1539,7 @@ export default function CenterDeficiencyTool() {
   ` : ''}
   
   <div class="footer">
-    <p>وزارة الصحة - قطاع الحناكية الصحي</p>
+    <p>وزارة الصحة - مستشفى الحسو العام</p>
   </div>
 </body>
 </html>`;
