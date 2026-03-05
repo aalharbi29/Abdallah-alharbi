@@ -24,7 +24,7 @@ const translations = {
       statisticsHijri: "الاحصائيات الهجرية", settings: "الإعدادات",
       clinicManagement: "إدارة العيادات", aiAnnouncementDesigner: "مصمم الإعلانات AI"
     },
-    header: { healthCenters: "المراكز الصحية", alHanakiyah: "الحناكية" },
+    header: { healthCenters: "المراكز الصحية", alHanakiyah: "الحسو" },
     footer: {
       systemName: "نظام إدارة المراكز الصحية",
       version: "الإصدار 3.0 | وزارة الصحة"
@@ -65,7 +65,7 @@ const translations = {
       statisticsHijri: "Hijri Statistics", settings: "Settings",
       clinicManagement: "Clinic Management", aiAnnouncementDesigner: "AI Announcement Designer"
     },
-    header: { healthCenters: "Health Centers", alHanakiyah: "Al-Hanakiyah" },
+    header: { healthCenters: "Health Centers", alHanakiyah: "Al-Hasu" },
     footer: {
       systemName: "Health Centers Management System",
       version: "Version 3.0 | Ministry of Health"

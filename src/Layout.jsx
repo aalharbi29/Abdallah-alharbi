@@ -499,7 +499,7 @@ function LayoutContent({ children, currentPageName }) {
 
             <footer className="border-t border-gray-200/50 p-5 bg-gradient-to-br from-gray-50 to-green-50">
               <div className="text-center">
-                <p className="font-bold text-sm text-gray-700">{t('footer.systemName')}</p>
+                <p className="font-bold text-sm text-gray-700">نظام إدارة المراكز الصحية - الحسو</p>
                 <p className="text-xs mt-1.5 text-gray-500 font-medium">{t('footer.version')}</p>
               </div>
             </footer>
@@ -543,7 +543,7 @@ function LayoutContent({ children, currentPageName }) {
                     </div>
                     <div>
                       <h2 className="text-sm font-bold text-gray-900">المراكز الصحية الحسو</h2>
-                      <p className="text-xs text-gray-500">{t('header.alHanakiyah')}</p>
+                      <p className="text-xs text-gray-500">الحسو</p>
                     </div>
                     </div>
                     <Button variant="ghost" size="sm" onClick={closeMobileMenu} className="p-2">
