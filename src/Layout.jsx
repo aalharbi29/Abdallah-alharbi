@@ -487,7 +487,7 @@ function LayoutContent({ children, currentPageName }) {
                   <Hospital className="w-7 h-7 text-white drop-shadow-lg" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-white drop-shadow-md">{t('header.healthCenters')}</h2>
+                  <h2 className="text-xl font-bold text-white drop-shadow-md">المراكز الصحية الحسو</h2>
                   <p className="text-sm text-green-50 font-medium">{t('header.alHanakiyah')}</p>
                 </div>
               </div>
@@ -521,7 +521,7 @@ function LayoutContent({ children, currentPageName }) {
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-green-600 to-green-700 rounded-xl flex items-center justify-center shadow-md">
                   <Hospital className="w-4 h-4 md:w-5 md:h-5 text-white" />
                 </div>
-                <h1 className="text-base md:text-xl font-bold text-gray-900 mobile-title">{t('header.healthCenters')}</h1>
+                <h1 className="text-base md:text-xl font-bold text-gray-900 mobile-title">المراكز الصحية الحسو</h1>
                 </div>
                 </div>
 
@@ -542,7 +542,7 @@ function LayoutContent({ children, currentPageName }) {
                       <Hospital className="w-4 h-4 text-white" />
                     </div>
                     <div>
-                      <h2 className="text-sm font-bold text-gray-900">{t('header.healthCenters')}</h2>
+                      <h2 className="text-sm font-bold text-gray-900">المراكز الصحية الحسو</h2>
                       <p className="text-xs text-gray-500">{t('header.alHanakiyah')}</p>
                     </div>
                     </div>
