@@ -44,7 +44,7 @@ function buildExportHTML(narrativeText, selectedCenter, selectedItems, reportTit
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Cairo',sans-serif;background:#fff;color:#1e293b;line-height:2;padding:40px 60px;}
+body{font-family:'Cairo',sans-serif;background:#fff;color:#1e293b;line-height:1.8;padding:30px 50px;}
 .page{max-width:800px;margin:0 auto;}
 .letterhead{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #0f766e;padding-bottom:20px;margin-bottom:30px;}
 .letterhead-right{text-align:right;}
@@ -55,10 +55,10 @@ body{font-family:'Cairo',sans-serif;background:#fff;color:#1e293b;line-height:2;
 .title-section h1{font-size:1.3rem;font-weight:800;color:#0f766e;border:2px solid #0f766e;display:inline-block;padding:8px 40px;border-radius:8px;}
 .meta-info{display:flex;justify-content:space-between;margin-bottom:25px;font-size:0.9rem;color:#475569;}
 .content{font-size:1rem;line-height:2.2;text-align:justify;}
-.content p{margin-bottom:16px;text-indent:20px;}
-.content ul{margin:16px 30px;padding:0;list-style:none;}
-.content li{position:relative;padding-right:20px;margin-bottom:8px;line-height:1.8;}
-.content li::before{content:"●";position:absolute;right:0;color:#0f766e;font-size:0.7rem;top:4px;}
+.content p{margin-bottom:10px;text-indent:20px;}
+.content ul{margin:10px 25px;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:4px 20px;}
+.content li{position:relative;padding-right:16px;margin-bottom:2px;line-height:1.6;width:calc(50% - 20px);}
+.content li::before{content:"●";position:absolute;right:0;color:#0f766e;font-size:0.6rem;top:3px;}
 .signature-section{margin-top:50px;display:flex;justify-content:space-between;gap:40px;}
 .sig-box{flex:1;text-align:center;}
 .sig-label{font-weight:700;color:#475569;font-size:0.9rem;margin-bottom:8px;}
@@ -90,11 +90,6 @@ body{font-family:'Cairo',sans-serif;background:#fff;color:#1e293b;line-height:2;
 
   <div class="title-section">
     <h1>${reportTitle || 'تقرير نواقص المركز الصحي'}</h1>
-  </div>
-
-  <div class="meta-info">
-    <span>المركز الصحي: <strong>${selectedCenter}</strong></span>
-    <span>عدد النواقص: <strong>${selectedItems.length}</strong></span>
   </div>
 
   <div class="content">
