@@ -34,6 +34,7 @@ import {
 } from 'lucide-react';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
+import NarrativeGenerator from '../components/deficiency/NarrativeGenerator';
 
 // قوائم الأدوات الطبية
 const medicalEquipmentList = [
@@ -2378,34 +2379,11 @@ export default function CenterDeficiencyTool() {
                     </Button>
                   )}
                   
+                  <NarrativeGenerator selectedCenter={selectedCenter} selectedItems={selectedItems} />
                   <div className="grid grid-cols-3 gap-2">
-                    <Button
-                      variant="outline"
-                      onClick={exportToExcel}
-                      disabled={selectedItems.length === 0}
-                      className="h-11 border-2 border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300"
-                      title="تصدير Excel"
-                    >
-                      <FileSpreadsheet className="w-5 h-5" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={exportToHTML}
-                      disabled={selectedItems.length === 0}
-                      className="h-11 border-2 border-purple-200 text-purple-600 hover:bg-purple-50 hover:border-purple-300"
-                      title="تصدير HTML"
-                    >
-                      <FileCode className="w-5 h-5" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={printReport}
-                      disabled={selectedItems.length === 0}
-                      className="h-11 border-2 border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300"
-                      title="طباعة"
-                    >
-                      <Printer className="w-5 h-5" />
-                    </Button>
+                    <Button variant="outline" onClick={exportToExcel} disabled={selectedItems.length === 0} className="h-11 border-2 border-green-200 text-green-600 hover:bg-green-50 hover:border-green-300" title="تصدير Excel"><FileSpreadsheet className="w-5 h-5" /></Button>
+                    <Button variant="outline" onClick={exportToHTML} disabled={selectedItems.length === 0} className="h-11 border-2 border-purple-200 text-purple-600 hover:bg-purple-50 hover:border-purple-300" title="تصدير HTML"><FileCode className="w-5 h-5" /></Button>
+                    <Button variant="outline" onClick={printReport} disabled={selectedItems.length === 0} className="h-11 border-2 border-blue-200 text-blue-600 hover:bg-blue-50 hover:border-blue-300" title="طباعة"><Printer className="w-5 h-5" /></Button>
                   </div>
 
                   {selectedItems.length > 0 && (
