@@ -1784,21 +1784,21 @@ export default function CenterDeficiencyTool() {
                   {/* اختيار المركز */}
                   <div className="flex-1">
                     <Label className="text-xs text-gray-500 mb-1 block">المركز الصحي</Label>
-                    <Select value={selectedCenter} onValueChange={setSelectedCenter}>
-                      <SelectTrigger className="h-12 bg-white border-2 border-gray-200 focus:border-teal-500 transition-colors">
-                        <SelectValue placeholder="اختر المركز الصحي..." />
-                      </SelectTrigger>
-                      <SelectContent>
+                    <div className="relative">
+                      <Building2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-teal-600 z-10" />
+                      <Input
+                        list="center-options"
+                        placeholder="اختر أو اكتب اسم المركز..."
+                        value={selectedCenter}
+                        onChange={(e) => setSelectedCenter(e.target.value)}
+                        className="h-12 pr-10 bg-white border-2 border-gray-200 focus:border-teal-500 transition-colors text-base"
+                      />
+                      <datalist id="center-options">
                         {healthCenters.map(center => (
-                          <SelectItem key={center.id} value={center.اسم_المركز}>
-                            <div className="flex items-center gap-2">
-                              <Building2 className="w-4 h-4 text-teal-600" />
-                              {center.اسم_المركز}
-                            </div>
-                          </SelectItem>
+                          <option key={center.id} value={center.اسم_المركز} />
                         ))}
-                      </SelectContent>
-                    </Select>
+                      </datalist>
+                    </div>
                   </div>
                   
                   {/* أزرار الإجراءات */}
