@@ -395,13 +395,37 @@ export default function HealthCentersReport() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 p-4 md:p-6">
       <style>{`
+        .report-header-banner {
+          display: none;
+        }
+        .report-footer-banner {
+          display: none;
+        }
         @media print {
           .no-print { display: none !important; }
           .print-area {
-            position: absolute;
-            left: 0;
-            top: 0;
+            position: relative;
             width: 100%;
+          }
+          .report-header-banner {
+            display: block;
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #0d9488;
+            padding-bottom: 15px;
+          }
+          .report-header-banner img {
+            max-height: 100px;
+            margin: 0 auto;
+          }
+          .report-footer-banner {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 2px solid #0d9488;
+            font-size: 10px;
+            color: #6b7280;
           }
           .print-page-break {
             page-break-after: always;
@@ -612,6 +636,9 @@ export default function HealthCentersReport() {
 
         {/* Report Content */}
         <div className="print-area">
+          <div className="report-header-banner">
+            <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/b661cf0b6_ChatGPTImage8202612_49_49.png" alt="شعار تجمع المدينة المنورة الصحي" />
+          </div>
           <div className="text-center mb-6 print-show">
             <h1 className={`text-3xl font-bold ${currentScheme.text}`}>{reportTitle}</h1>
             <p className="text-gray-600 mt-2">تاريخ الإعداد: {new Date().toLocaleDateString('ar-SA')}</p>
@@ -632,6 +659,10 @@ export default function HealthCentersReport() {
               {viewMode === 'stats' && <StatsView />}
             </>
           )}
+          <div className="report-footer-banner">
+            <p style={{margin: 0, fontWeight: 'bold', color: '#0d9488'}}>شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</p>
+            <p style={{margin: '4px 0 0 0'}}>تجمع المدينة المنورة الصحي - وزارة الصحة</p>
+          </div>
         </div>
       </div>
     </div>
