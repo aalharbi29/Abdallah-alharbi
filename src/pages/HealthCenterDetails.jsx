@@ -186,26 +186,34 @@ export default function HealthCenterDetails() {
             margin: 10mm;
           }
 
+          .logo-header {
+            text-align: center;
+            padding: 20px;
+            border-bottom: 2px solid #0d9488;
+            margin-bottom: 20px;
+          }
+
+          .logo-header img {
+            max-height: 75px;
+            margin: 0 auto;
+            display: block;
+          }
+
           .header {
             text-align: center;
-            border-bottom: 4px solid #1e40af;
-            padding-bottom: 25px;
-            margin-bottom: 35px;
-            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
-            padding: 25px;
-            border-radius: 10px;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
           }
 
           .header h1 {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: bold;
-            color: #1e40af;
-            margin: 0 0 10px 0;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            color: #0f766e;
+            margin: 0 0 8px 0;
           }
 
           .header h2 {
-            font-size: 18px;
+            font-size: 16px;
             color: #374151;
             margin: 5px 0;
             font-weight: normal;
@@ -214,7 +222,7 @@ export default function HealthCenterDetails() {
           .header .meta {
             font-size: 12px;
             color: #6b7280;
-            margin-top: 15px;
+            margin-top: 12px;
           }
 
           .section {
@@ -446,6 +454,9 @@ export default function HealthCenterDetails() {
       </head>
       <body>
 
+        <div class="logo-header">
+          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/ebae7336b_1407.png" alt="تجمع المدينة المنورة الصحي" />
+        </div>
         <div class="header">
           <h1>${center.اسم_المركز}</h1>
           <h2>الملف التفصيلي الشامل للمركز الصحي</h2>
@@ -456,7 +467,7 @@ export default function HealthCenterDetails() {
       month: 'long',
       day: 'numeric'
     })}</div>
-            <div>شؤون المراكز الصحية بالحسو - تجمع المدينة المنورة الصحي</div>
+            <div>شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</div>
           </div>
         </div>
     `;

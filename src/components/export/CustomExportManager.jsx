@@ -393,28 +393,41 @@ export default function CustomExportManager({
               overflow: hidden;
             }
             
+            .report-logo-header {
+              text-align: center;
+              padding: 25px 40px 20px;
+              border-bottom: 2px solid #0d9488;
+            }
+            
+            .report-logo-header img {
+              max-height: 80px;
+              margin: 0 auto;
+              display: block;
+            }
+            
             .report-header {
-              background: linear-gradient(135deg, #059669 0%, #047857 100%);
-              color: white;
-              padding: 30px 40px;
+              background: #fff;
+              color: #1e293b;
+              padding: 20px 40px;
               text-align: center;
             }
             
             .report-header h1 {
-              margin: 0 0 10px 0;
-              font-size: 28pt;
+              margin: 0 0 8px 0;
+              font-size: 22pt;
               font-weight: 800;
+              color: #0f766e;
             }
             
             .report-header .subtitle {
-              font-size: 12pt;
-              opacity: 0.9;
+              font-size: 11pt;
+              color: #475569;
             }
             
             .report-header .export-date {
               font-size: 10pt;
-              opacity: 0.8;
-              margin-top: 10px;
+              color: #6b7280;
+              margin-top: 8px;
             }
             
             .stats-bar {
@@ -614,9 +627,12 @@ export default function CustomExportManager({
         <body>
           <div class="report-container">
 
+            <div class="report-logo-header">
+              <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/ebae7336b_1407.png" alt="تجمع المدينة المنورة الصحي" />
+            </div>
             <div class="report-header">
               <h1>${exportTitle}</h1>
-              <div class="subtitle">شؤون المراكز الصحية بالحسو - التجمع الصحي بالمدينة المنورة</div>
+              <div class="subtitle">شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</div>
               <div class="export-date">📅 تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
             </div>
             

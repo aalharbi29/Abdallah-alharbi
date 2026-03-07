@@ -46,7 +46,9 @@ function buildExportHTML(narrativeText, selectedCenter, selectedItems, reportTit
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Cairo',sans-serif;background:#fff;color:#1e293b;line-height:1.8;padding:30px 50px;}
 .page{max-width:800px;margin:0 auto;}
-.letterhead{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #0f766e;padding-bottom:20px;margin-bottom:30px;}
+.logo-header{text-align:center;padding:20px 0 15px;border-bottom:2px solid #0f766e;margin-bottom:25px;}
+.logo-header img{max-height:70px;margin:0 auto;display:block;}
+.letterhead{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:15px;margin-bottom:25px;}
 .letterhead-right{text-align:right;}
 .letterhead-left{text-align:left;color:#64748b;font-size:0.85rem;}
 .org-name{font-size:1.1rem;font-weight:800;color:#0f766e;margin-bottom:4px;}
@@ -76,6 +78,9 @@ body{font-family:'Cairo',sans-serif;background:#fff;color:#1e293b;line-height:1.
 </head>
 <body>
 <div class="page">
+  <div class="logo-header">
+    <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/ebae7336b_1407.png" alt="تجمع المدينة المنورة الصحي" />
+  </div>
   <div class="letterhead">
     <div class="letterhead-right">
       <div class="org-name">وزارة الصحة</div>
