@@ -395,7 +395,7 @@ export default function HealthCentersReport() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 p-4 md:p-6">
       <style>{`
-        .report-header-banner {
+        .report-logo-banner {
           display: none;
         }
         .report-footer-banner {
@@ -407,15 +407,15 @@ export default function HealthCentersReport() {
             position: relative;
             width: 100%;
           }
-          .report-header-banner {
+          .report-logo-banner {
             display: block;
             text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 3px solid #0d9488;
-            padding-bottom: 15px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #0d9488;
+            padding-bottom: 12px;
           }
-          .report-header-banner img {
-            max-height: 100px;
+          .report-logo-banner img {
+            max-height: 75px;
             margin: 0 auto;
           }
           .report-footer-banner {
@@ -636,7 +636,9 @@ export default function HealthCentersReport() {
 
         {/* Report Content */}
         <div className="print-area">
-
+          <div className="report-logo-banner">
+            <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/ebae7336b_1407.png" alt="تجمع المدينة المنورة الصحي" />
+          </div>
           <div className="text-center mb-6 print-show">
             <h1 className={`text-3xl font-bold ${currentScheme.text}`}>{reportTitle}</h1>
             <p className="text-gray-600 mt-2">تاريخ الإعداد: {new Date().toLocaleDateString('ar-SA')}</p>
