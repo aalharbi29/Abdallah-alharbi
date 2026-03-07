@@ -445,9 +445,7 @@ export default function HealthCenterDetails() {
         </style>
       </head>
       <body>
-        <div style="text-align: center; padding: 20px; border-bottom: 3px solid #0d9488; margin-bottom: 15px;">
-          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/b661cf0b6_ChatGPTImage8202612_49_49.png" alt="شعار تجمع المدينة المنورة الصحي" style="max-height: 90px; margin: 0 auto;" />
-        </div>
+
         <div class="header">
           <h1>${center.اسم_المركز}</h1>
           <h2>الملف التفصيلي الشامل للمركز الصحي</h2>

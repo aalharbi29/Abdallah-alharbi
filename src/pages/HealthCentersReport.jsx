@@ -636,9 +636,7 @@ export default function HealthCentersReport() {
 
         {/* Report Content */}
         <div className="print-area">
-          <div className="report-header-banner">
-            <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/b661cf0b6_ChatGPTImage8202612_49_49.png" alt="شعار تجمع المدينة المنورة الصحي" />
-          </div>
+
           <div className="text-center mb-6 print-show">
             <h1 className={`text-3xl font-bold ${currentScheme.text}`}>{reportTitle}</h1>
             <p className="text-gray-600 mt-2">تاريخ الإعداد: {new Date().toLocaleDateString('ar-SA')}</p>
