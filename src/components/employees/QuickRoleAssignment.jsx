@@ -24,6 +24,7 @@ const specialRolesOptions = [
   { key: "منسق الجودة", label: "منسق الجودة" },
   { key: "مراقب صحي", label: "مراقب صحي" },
   { key: "مدرب صحي", label: "مدرب صحي" },
+  { key: "ممثل المنشأة", label: "ممثل المنشأة" },
 ];
 
 const assignedTasksOptions = [
