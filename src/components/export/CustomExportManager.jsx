@@ -395,12 +395,12 @@ export default function CustomExportManager({
             
             .report-logo-header {
               text-align: center;
-              padding: 30px 40px 20px;
+              padding: 15px 40px 15px;
               border-bottom: 2px solid #0d9488;
             }
             
             .report-logo-header img {
-              max-height: 130px;
+              max-height: 160px;
               margin: 0 auto;
               display: block;
             }
@@ -425,10 +425,7 @@ export default function CustomExportManager({
             }
             
             .report-header .export-date {
-              font-size: 9pt;
-              color: #6b7280;
-              text-align: left;
-              margin-top: 5px;
+              display: none;
             }
             
             .stats-bar {
@@ -661,9 +658,14 @@ export default function CustomExportManager({
               ${includeSignature ? signatureBlock : ''}
             </div>
             
-            <div class="report-footer" style="border-top: 2px solid #0d9488;">
-              <p style="margin: 0 0 5px 0; font-weight: bold; color: #0d9488;">شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</p>
-              <p style="margin: 0;">تجمع المدينة المنورة الصحي - وزارة الصحة | جميع الحقوق محفوظة © ${new Date().getFullYear()}</p>
+            <div class="report-footer" style="border-top: 2px solid #0d9488; display: flex; justify-content: space-between; align-items: center; padding: 15px 40px;">
+              <div style="text-align: right;">
+                <p style="margin: 0 0 3px 0; font-weight: bold; color: #0d9488;">شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</p>
+                <p style="margin: 0;">تجمع المدينة المنورة الصحي - وزارة الصحة</p>
+              </div>
+              <div style="text-align: left; font-size: 8pt; color: #94a3b8;">
+                ${new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+              </div>
             </div>
           </div>
         </body>

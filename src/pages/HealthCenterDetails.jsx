@@ -188,13 +188,13 @@ export default function HealthCenterDetails() {
 
           .logo-header {
             text-align: center;
-            padding: 25px;
+            padding: 15px;
             border-bottom: 2px solid #0d9488;
             margin-bottom: 20px;
           }
 
           .logo-header img {
-            max-height: 130px;
+            max-height: 160px;
             margin: 0 auto;
             display: block;
           }
@@ -221,10 +221,7 @@ export default function HealthCenterDetails() {
           }
 
           .header .meta {
-            font-size: 10px;
-            color: #6b7280;
-            margin-top: 10px;
-            text-align: left;
+            display: none;
           }
 
           .section {
@@ -948,9 +945,14 @@ export default function HealthCenterDetails() {
         </div>
 
         <!-- التذييل -->
-        <div style="text-align: center; margin-top: 40px; padding-top: 15px; border-top: 2px solid #0d9488; font-size: 10px; color: #6b7280;">
-          <p style="margin: 0; font-weight: bold; color: #0d9488;">شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</p>
-          <p style="margin: 4px 0 0 0;">تجمع المدينة المنورة الصحي - وزارة الصحة</p>
+        <div style="margin-top: 40px; padding-top: 15px; border-top: 2px solid #0d9488; font-size: 10px; color: #6b7280; display: flex; justify-content: space-between; align-items: center;">
+          <div style="text-align: right;">
+            <p style="margin: 0; font-weight: bold; color: #0d9488;">شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</p>
+            <p style="margin: 3px 0 0 0;">تجمع المدينة المنورة الصحي - وزارة الصحة</p>
+          </div>
+          <div style="text-align: left; font-size: 9px; color: #94a3b8;">
+            ${new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+          </div>
         </div>
       </body>
     </html>
