@@ -1,11 +1,19 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle } from 'lucide-react';
+import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 
 const interactiveForms = [
+  {
+    title: "ميثاق الأداء الوظيفي",
+    description: "ميثاق وتقييم الأداء للموظف على الوظيفة غير الإشرافية 2025",
+    icon: Target,
+    color: "from-emerald-500 to-green-600",
+    link: createPageUrl("FillPerformanceCharter"),
+    category: "تقييم الأداء"
+  },
   {
     title: "نموذج 205 - جزء أول",
     description: "تعبئة نموذج 205 لتقييم الوظائف (الجزء الأول)",
