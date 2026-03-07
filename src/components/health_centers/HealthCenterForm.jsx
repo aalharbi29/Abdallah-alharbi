@@ -267,7 +267,7 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
             </CardHeader>
             <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div><Label htmlFor="center_email">إيميل المركز</Label><Input id="center_email" type="email" value={formData.ايميل_المركز} onChange={(e) => handleChange("ايميل_المركز", e.target.value)} placeholder="center@health.gov.sa"/></div>
-              <div><Label htmlFor="center_phone">هاتف المركز الرئيسي</Label><Input id="center_phone" value={formData.هاتف_المركز} onChange={(e) => handleChange("هاتف_المركز", e.target.value)} placeholder="011-1234567"/></div>
+              <div><Label htmlFor="center_phone">الهاتف الأرضي</Label><Input id="center_phone" value={formData.هاتف_المركز} onChange={(e) => handleChange("هاتف_المركز", e.target.value)} placeholder="011-1234567"/></div>
               <div><Label htmlFor="center_fax">الفاكس</Label><Input id="center_fax" value={formData.فاكس_المركز} onChange={(e) => handleChange("فاكس_المركز", e.target.value)} placeholder="011-7654321"/></div>
 
               {/* الحقول الجديدة */}

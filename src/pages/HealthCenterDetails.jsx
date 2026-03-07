@@ -533,7 +533,7 @@ export default function HealthCenterDetails() {
           <div class="section-content">
             <div class="info-grid">
               <div class="info-item">
-                <span class="info-label">الهاتف الرئيسي:</span>
+                <span class="info-label">الهاتف الأرضي:</span>
                 <span class="info-value">${center.هاتف_المركز || 'غير محدد'}</span>
               </div>
               ${center.رقم_الشريحة ? `
@@ -925,7 +925,7 @@ export default function HealthCenterDetails() {
     content += `
         <!-- التوقيع والختم -->
         <div class="signature-section">
-          <div class="signature-title">إدارة شؤون المراكز الصحية</div>
+          <div class="signature-title">شؤون المراكز الصحية بالحسو</div>
           <div style="margin-top: 40px;">
             <div style="display: inline-block; text-align: center; margin: 0 50px;">
               <div style="border-top: 1px solid #000; width: 200px; margin-bottom: 10px;"></div>
@@ -1133,7 +1133,7 @@ export default function HealthCenterDetails() {
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                     <Phone className="w-5 h-5 text-gray-500" />
                     <div>
-                      <p className="text-sm text-gray-500">الهاتف الرئيسي</p>
+                      <p className="text-sm text-gray-500">الهاتف الأرضي</p>
                       <p className="font-semibold">{center.هاتف_المركز}</p>
                     </div>
                   </div>

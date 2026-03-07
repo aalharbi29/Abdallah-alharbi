@@ -136,7 +136,7 @@ export default function CustomExportManager({
           'حالة_التشغيل': 'حالة التشغيل',
           'حالة_المركز': 'نوع الملكية',
           'مركز_نائي': 'مركز نائي',
-          'هاتف_المركز': 'الهاتف الرئيسي',
+          'هاتف_المركز': 'الهاتف الأرضي',
           'رقم_الشريحة': 'رقم الشريحة',
           'رقم_الجوال': 'رقم الجوال',
           'رقم_الهاتف_الثابت': 'الهاتف الثابت الإضافي',
@@ -316,7 +316,7 @@ export default function CustomExportManager({
 
     const signatureBlock = `
       <div class="signature-block">
-        <p class="signature-title">مدير ادارة المراكز الصحية بالحناكية</p>
+        <p class="signature-title">المساعد لشؤون المراكز الصحية بالحسو</p>
         <p class="signature-name">أ/ عبدالمجيد سعود الربيقي</p>
         <div class="signature-images">
           <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/7cc0a0a53_.png" alt="Signature" class="signature-img">
@@ -615,7 +615,7 @@ export default function CustomExportManager({
           <div class="report-container">
             <div class="report-header">
               <h1>${exportTitle}</h1>
-              <div class="subtitle">إدارة المراكز الصحية بالحناكية - التجمع الصحي بالمدينة المنورة</div>
+              <div class="subtitle">شؤون المراكز الصحية بالحسو - التجمع الصحي بالمدينة المنورة</div>
               <div class="export-date">📅 تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</div>
             </div>
             
