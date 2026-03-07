@@ -188,21 +188,22 @@ export default function HealthCenterDetails() {
 
           .logo-header {
             text-align: center;
-            padding: 20px;
+            padding: 25px;
             border-bottom: 2px solid #0d9488;
             margin-bottom: 20px;
           }
 
           .logo-header img {
-            max-height: 75px;
+            max-height: 130px;
             margin: 0 auto;
             display: block;
           }
 
           .header {
             text-align: center;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            position: relative;
           }
 
           .header h1 {
@@ -220,9 +221,10 @@ export default function HealthCenterDetails() {
           }
 
           .header .meta {
-            font-size: 12px;
+            font-size: 10px;
             color: #6b7280;
-            margin-top: 12px;
+            margin-top: 10px;
+            text-align: left;
           }
 
           .section {
@@ -467,7 +469,6 @@ export default function HealthCenterDetails() {
       month: 'long',
       day: 'numeric'
     })}</div>
-            <div>شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</div>
           </div>
         </div>
     `;

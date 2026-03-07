@@ -395,12 +395,12 @@ export default function CustomExportManager({
             
             .report-logo-header {
               text-align: center;
-              padding: 25px 40px 20px;
+              padding: 30px 40px 20px;
               border-bottom: 2px solid #0d9488;
             }
             
             .report-logo-header img {
-              max-height: 80px;
+              max-height: 130px;
               margin: 0 auto;
               display: block;
             }
@@ -408,8 +408,9 @@ export default function CustomExportManager({
             .report-header {
               background: #fff;
               color: #1e293b;
-              padding: 20px 40px;
+              padding: 20px 40px 10px;
               text-align: center;
+              position: relative;
             }
             
             .report-header h1 {
@@ -420,14 +421,14 @@ export default function CustomExportManager({
             }
             
             .report-header .subtitle {
-              font-size: 11pt;
-              color: #475569;
+              display: none;
             }
             
             .report-header .export-date {
-              font-size: 10pt;
+              font-size: 9pt;
               color: #6b7280;
-              margin-top: 8px;
+              text-align: left;
+              margin-top: 5px;
             }
             
             .stats-bar {
