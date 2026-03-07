@@ -46,8 +46,8 @@ function buildExportHTML(narrativeText, selectedCenter, selectedItems, reportTit
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Cairo',sans-serif;background:#fff;color:#1e293b;line-height:1.8;padding:30px 50px;}
 .page{max-width:800px;margin:0 auto;}
-.logo-header{text-align:center;padding:10px 0 12px;border-bottom:2px solid #0f766e;margin-bottom:25px;}
-.logo-header img{max-height:160px;margin:0 auto;display:block;}
+.logo-header{text-align:center;padding:0 0 10px;border-bottom:2px solid #0f766e;margin-bottom:25px;}
+.logo-header img{max-height:200px;margin:0 auto;display:block;}
 .letterhead{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:15px;margin-bottom:25px;}
 .letterhead-right{text-align:right;}
 .letterhead-left{text-align:left;color:#64748b;font-size:0.85rem;}
@@ -117,9 +117,9 @@ body{font-family:'Cairo',sans-serif;background:#fff;color:#1e293b;line-height:1.
     </div>
   </div>
 
-  <div class="footer-line" style="display:flex;justify-content:space-between;align-items:center;">
-    <div style="text-align:right;">تم إنشاء هذا التقرير بواسطة نظام إدارة المراكز الصحية - الحسو</div>
-    <div style="text-align:left;font-size:0.75rem;color:#94a3b8;">${today} | ${hijriDate}</div>
+  <div class="footer-line" style="text-align:center;">
+    <div>تم إنشاء هذا التقرير بواسطة نظام إدارة المراكز الصحية - الحسو</div>
+    <div style="font-size:0.7rem;color:#94a3b8;margin-top:5px;">${today} | ${hijriDate}</div>
   </div>
 </div>
 </body>

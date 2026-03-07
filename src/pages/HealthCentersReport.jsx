@@ -414,8 +414,11 @@ export default function HealthCentersReport() {
             border-bottom: 2px solid #0d9488;
             padding-bottom: 12px;
           }
+          .report-logo-banner {
+            padding: 5px 0 12px;
+          }
           .report-logo-banner img {
-            max-height: 160px;
+            max-height: 200px;
             margin: 0 auto;
           }
           .report-footer-banner {
@@ -659,14 +662,10 @@ export default function HealthCentersReport() {
               {viewMode === 'stats' && <StatsView />}
             </>
           )}
-          <div className="report-footer-banner" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-            <div style={{textAlign: 'right'}}>
-              <p style={{margin: 0, fontWeight: 'bold', color: '#0d9488'}}>شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</p>
-              <p style={{margin: '3px 0 0 0'}}>تجمع المدينة المنورة الصحي - وزارة الصحة</p>
-            </div>
-            <div style={{textAlign: 'left', fontSize: '9px', color: '#94a3b8'}}>
-              {new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-            </div>
+          <div className="report-footer-banner" style={{textAlign: 'center'}}>
+            <p style={{margin: 0, fontWeight: 'bold', color: '#0d9488'}}>شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</p>
+            <p style={{margin: '3px 0 0 0'}}>تجمع المدينة المنورة الصحي - وزارة الصحة</p>
+            <p style={{margin: '8px 0 0 0', fontSize: '9px', color: '#94a3b8'}}>{new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
           </div>
         </div>
       </div>
