@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Save, FileDown, Printer, ArrowRight, Loader2, Sparkles } from 'lucide-react';
+import { Save, FileDown, Printer, ArrowRight, Loader2, Sparkles, FileSpreadsheet } from 'lucide-react';
 import { toast } from 'sonner';
 import CharterHeader from '../components/performance_charter/CharterHeader';
 import GoalsSection from '../components/performance_charter/GoalsSection';
@@ -113,16 +113,51 @@ export default function FillPerformanceCharter() {
     setShowPrint(true);
     setTimeout(() => {
       window.print();
-      setShowPrint(false);
+      setTimeout(() => setShowPrint(false), 300);
     }, 500);
   };
 
-  const handleExportPDF = () => {
-    setShowPrint(true);
-    setTimeout(() => {
-      window.print();
-      setShowPrint(false);
-    }, 500);
+  const handleExportExcel = () => {
+    const goals = data.goals || [];
+    const competencies = data.competencies || [];
+    
+    let csv = '\uFEFF'; // BOM for Arabic
+    csv += 'ميثاق الأداء للموظف على الوظيفة غير الإشرافية 2025\n\n';
+    csv += `اسم الموظف:,${data.employee_name || ''},الوكالة / الإدارة العامة:,${data.agency_department || ''}\n`;
+    csv += `المسمى الوظيفي:,${data.job_title || ''},الإدارة / القسم:,${data.department || ''}\n`;
+    csv += `السجل المدني / رقم الموظف:,${data.employee_id_number || ''},المدير (المقيّم):,${data.manager_name || ''}\n\n`;
+    
+    csv += 'أولاً: الأهداف\n';
+    csv += '#,الهدف,معيار القياس,الوزن النسبي,الناتج المستهدف,الناتج الفعلي,الفرق,التقدير الموزون\n';
+    goals.forEach((g, i) => {
+      csv += `${i + 1},"${g.goal || ''}","${g.measurement_criterion || ''}",${((parseFloat(g.relative_weight) || 0) * 100).toFixed(0)}%,"${g.target_output || ''}",${g.actual_output || 0},${g.difference || 0},${g.weighted_rating || 0}\n`;
+    });
+    csv += `مجموع الوزن النسبي,,,${(goals.reduce((s, g) => s + (parseFloat(g.relative_weight) || 0), 0) * 100).toFixed(0)}%,,,,${goals.reduce((s, g) => s + (parseFloat(g.weighted_rating) || 0), 0).toFixed(2)}\n\n`;
+    
+    csv += 'ثانياً: الجدارات\n';
+    csv += '#,الجدارة,الوزن النسبي,المستوى المطلوب,المستوى المتحقق,التقدير\n';
+    competencies.forEach((c, i) => {
+      csv += `${i + 1},"${c.name || ''}",${((parseFloat(c.relative_weight) || 0) * 100).toFixed(0)}%,${c.required_level || ''},${c.achieved_level || ''},${c.rating || ''}\n`;
+    });
+    csv += '\n';
+    
+    csv += 'التقدير العام\n';
+    csv += `التقدير:,${data.overall_rating_text || ''}\n`;
+    csv += `دورة التقييم:,${data.evaluation_cycle || ''}\n`;
+    csv += `الجاهزية للترقية:,${data.promotion_readiness || ''}\n`;
+    csv += `نقاط القوة:,"${data.strength_points || ''}"\n`;
+    csv += `نقاط التطوير:,"${data.improvement_points || ''}"\n`;
+    csv += `الملاحظات:,"${data.remarks || ''}"\n`;
+    csv += `المبررات:,"${data.justifications || ''}"\n`;
+    
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ميثاق_الأداء_${data.employee_name || 'موظف'}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success('تم تصدير الملف بنجاح');
   };
 
   const suggestGoals = async () => {
@@ -203,8 +238,8 @@ export default function FillPerformanceCharter() {
             <Button onClick={handlePrint} variant="outline" className="gap-2">
               <Printer className="w-4 h-4" /> طباعة
             </Button>
-            <Button onClick={handleExportPDF} variant="outline" className="gap-2">
-              <FileDown className="w-4 h-4" /> تصدير PDF
+            <Button onClick={handleExportExcel} variant="outline" className="gap-2">
+              <FileSpreadsheet className="w-4 h-4" /> تصدير Excel
             </Button>
           </div>
         </div>

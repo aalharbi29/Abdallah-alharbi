@@ -137,8 +137,7 @@ export default function CharterPrintView({ data }) {
       </div>
 
       {/* === الصفحة الثانية: التقييم === */}
-      {data.status !== 'ميثاق' && (
-        <div style={{ pageBreakAfter: 'always' }}>
+      <div style={{ pageBreakAfter: 'always' }}>
           <div style={titleBar}>
             <h2 style={{ margin: 0, fontSize: '16px' }}>تقييم الأداء الوظيفي على الوظيفة غير الإشرافية 2025</h2>
           </div>
@@ -229,11 +228,9 @@ export default function CharterPrintView({ data }) {
             </tbody>
           </table>
         </div>
-      )}
 
       {/* === الصفحة الثالثة: التقدير العام === */}
-      {data.status === 'مكتمل' && (
-        <div>
+      <div>
           <div style={titleBar}>
             <h2 style={{ margin: 0, fontSize: '16px' }}>التقدير العام لأداء الموظف على الوظيفة غير الإشرافية 2025</h2>
           </div>
@@ -290,7 +287,6 @@ export default function CharterPrintView({ data }) {
             </tbody>
           </table>
         </div>
-      )}
     </div>
   );
 }
