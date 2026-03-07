@@ -188,13 +188,13 @@ export default function HealthCenterDetails() {
 
           .logo-header {
             text-align: center;
-            padding: 5px;
+            padding: 0 0 8px;
             border-bottom: 2px solid #0d9488;
             margin-bottom: 20px;
           }
 
           .logo-header img {
-            max-height: 200px;
+            max-height: 300px;
             margin: 0 auto;
             display: block;
           }

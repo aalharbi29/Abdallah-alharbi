@@ -395,12 +395,12 @@ export default function CustomExportManager({
             
             .report-logo-header {
               text-align: center;
-              padding: 5px 40px 10px;
+              padding: 0 40px 8px;
               border-bottom: 2px solid #0d9488;
             }
             
             .report-logo-header img {
-              max-height: 200px;
+              max-height: 300px;
               margin: 0 auto;
               display: block;
             }
