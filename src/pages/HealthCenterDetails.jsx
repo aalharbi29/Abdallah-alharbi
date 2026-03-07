@@ -445,6 +445,9 @@ export default function HealthCenterDetails() {
         </style>
       </head>
       <body>
+        <div style="text-align: center; padding: 20px; border-bottom: 3px solid #0d9488; margin-bottom: 15px;">
+          <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/b661cf0b6_ChatGPTImage8202612_49_49.png" alt="شعار تجمع المدينة المنورة الصحي" style="max-height: 90px; margin: 0 auto;" />
+        </div>
         <div class="header">
           <h1>${center.اسم_المركز}</h1>
           <h2>الملف التفصيلي الشامل للمركز الصحي</h2>
@@ -455,7 +458,7 @@ export default function HealthCenterDetails() {
       month: 'long',
       day: 'numeric'
     })}</div>
-            <div>وزارة الصحة - قطاع الحناكية الصحي</div>
+            <div>شؤون المراكز الصحية بالحسو - تجمع المدينة المنورة الصحي</div>
           </div>
         </div>
     `;
@@ -932,6 +935,12 @@ export default function HealthCenterDetails() {
               <div style="font-size: 12px; font-weight: bold;">التوقيع والختم</div>
             </div>
           </div>
+        </div>
+
+        <!-- التذييل -->
+        <div style="text-align: center; margin-top: 40px; padding-top: 15px; border-top: 2px solid #0d9488; font-size: 10px; color: #6b7280;">
+          <p style="margin: 0; font-weight: bold; color: #0d9488;">شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</p>
+          <p style="margin: 4px 0 0 0;">تجمع المدينة المنورة الصحي - وزارة الصحة</p>
         </div>
       </body>
     </html>

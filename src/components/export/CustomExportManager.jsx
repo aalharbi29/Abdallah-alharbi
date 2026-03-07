@@ -613,6 +613,9 @@ export default function CustomExportManager({
         </head>
         <body>
           <div class="report-container">
+            <div style="text-align: center; padding: 20px 40px; border-bottom: 3px solid #0d9488;">
+              <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/b661cf0b6_ChatGPTImage8202612_49_49.png" alt="شعار تجمع المدينة المنورة الصحي" style="max-height: 90px; margin: 0 auto;" />
+            </div>
             <div class="report-header">
               <h1>${exportTitle}</h1>
               <div class="subtitle">شؤون المراكز الصحية بالحسو - التجمع الصحي بالمدينة المنورة</div>
@@ -643,8 +646,9 @@ export default function CustomExportManager({
               ${includeSignature ? signatureBlock : ''}
             </div>
             
-            <div class="report-footer">
-              تم إنشاء هذا التقرير آلياً من نظام إدارة المراكز الصحية | جميع الحقوق محفوظة © ${new Date().getFullYear()}
+            <div class="report-footer" style="border-top: 2px solid #0d9488;">
+              <p style="margin: 0 0 5px 0; font-weight: bold; color: #0d9488;">شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</p>
+              <p style="margin: 0;">تجمع المدينة المنورة الصحي - وزارة الصحة | جميع الحقوق محفوظة © ${new Date().getFullYear()}</p>
             </div>
           </div>
         </body>
