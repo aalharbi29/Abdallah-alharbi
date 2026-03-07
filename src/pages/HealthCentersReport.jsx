@@ -24,7 +24,7 @@ const availableFields = [
   { key: 'حالة_التشغيل', label: 'حالة التشغيل', category: 'basic', default: true },
   { key: 'حالة_المركز', label: 'نوع الملكية', category: 'basic', default: true },
   { key: 'مركز_نائي', label: 'مركز نائي', category: 'basic', default: false },
-  { key: 'هاتف_المركز', label: 'الهاتف الرئيسي', category: 'contact', default: true },
+  { key: 'هاتف_المركز', label: 'الهاتف الأرضي', category: 'contact', default: true },
   { key: 'رقم_الشريحة', label: 'رقم الشريحة', category: 'contact', default: true },
   { key: 'رقم_الجوال', label: 'رقم الجوال', category: 'contact', default: true },
   { key: 'رقم_الهاتف_الثابت', label: 'الهاتف الثابت الإضافي', category: 'contact', default: false },
