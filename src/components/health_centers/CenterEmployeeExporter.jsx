@@ -136,21 +136,143 @@ export default function CenterEmployeeExporter({
     setOrderedEmployees(newOrder);
   };
 
+  const generateCenterInfoHTML = () => {
+    if (!center || !includeCenterInfo) return '';
+    let html = '';
+
+    if (selectedCenterSections.has("basic")) {
+      html += `
+      <div class="center-section">
+        <div class="center-section-title">المعلومات الأساسية</div>
+        <div class="center-grid">
+          <div class="center-item"><span class="ci-label">اسم المركز:</span> <span class="ci-value">${center.اسم_المركز || ''}</span></div>
+          ${center.seha_id ? `<div class="center-item"><span class="ci-label">SEHA ID:</span> <span class="ci-value" style="color:#16a34a;font-weight:bold;">${center.seha_id}</span></div>` : ''}
+          <div class="center-item"><span class="ci-label">كود المركز:</span> <span class="ci-value">${center.center_code || 'غير محدد'}</span></div>
+          <div class="center-item"><span class="ci-label">الرقم الوزاري:</span> <span class="ci-value">${center.organization_code || 'غير محدد'}</span></div>
+          <div class="center-item"><span class="ci-label">حالة التشغيل:</span> <span class="ci-value">${center.حالة_التشغيل || 'نشط'}</span></div>
+          <div class="center-item"><span class="ci-label">الموقع:</span> <span class="ci-value">${center.الموقع || 'غير محدد'}</span></div>
+          <div class="center-item"><span class="ci-label">نوع الملكية:</span> <span class="ci-value">${center.حالة_المركز || 'حكومي'}</span></div>
+          ${center.ساعات_الدوام ? `<div class="center-item"><span class="ci-label">ساعات الدوام:</span> <span class="ci-value">${center.ساعات_الدوام}</span></div>` : ''}
+          ${center.مركز_نائي ? `<div class="center-item"><span class="ci-label">تصنيف:</span> <span class="ci-value">مركز نائي ${center.بدل_نأي ? `(بدل: ${center.بدل_نأي} ر.س)` : ''}</span></div>` : ''}
+          ${center.معتمد_سباهي ? `<div class="center-item"><span class="ci-label">اعتماد سباهي:</span> <span class="ci-value" style="color:#16a34a;">✓ حاصل على الاعتماد</span></div>` : ''}
+        </div>
+      </div>`;
+    }
+
+    if (selectedCenterSections.has("contact")) {
+      html += `
+      <div class="center-section">
+        <div class="center-section-title">بيانات التواصل</div>
+        <div class="center-grid">
+          ${center.هاتف_المركز ? `<div class="center-item"><span class="ci-label">الهاتف:</span> <span class="ci-value">${center.هاتف_المركز}</span></div>` : ''}
+          ${center.رقم_الشريحة ? `<div class="center-item"><span class="ci-label">رقم الشريحة:</span> <span class="ci-value">${center.رقم_الشريحة}</span></div>` : ''}
+          ${center.رقم_الجوال ? `<div class="center-item"><span class="ci-label">الجوال:</span> <span class="ci-value">${center.رقم_الجوال}</span></div>` : ''}
+          ${center.رقم_الهاتف_الثابت ? `<div class="center-item"><span class="ci-label">هاتف إضافي:</span> <span class="ci-value">${center.رقم_الهاتف_الثابت}</span></div>` : ''}
+          ${center.فاكس_المركز ? `<div class="center-item"><span class="ci-label">الفاكس:</span> <span class="ci-value">${center.فاكس_المركز}</span></div>` : ''}
+          ${center.ايميل_المركز ? `<div class="center-item" style="grid-column:1/-1;"><span class="ci-label">البريد:</span> <span class="ci-value">${center.ايميل_المركز}</span></div>` : ''}
+        </div>
+      </div>`;
+    }
+
+    if (selectedCenterSections.has("leadership")) {
+      html += `
+      <div class="center-section">
+        <div class="center-section-title">القيادة والإدارة</div>
+        <div class="center-grid">
+          <div class="center-item"><span class="ci-label">مدير المركز:</span> <span class="ci-value">${manager?.full_name_arabic || 'غير محدد'}</span></div>
+          ${manager?.phone ? `<div class="center-item"><span class="ci-label">هاتف المدير:</span> <span class="ci-value">${manager.phone}</span></div>` : ''}
+          ${deputyManager ? `<div class="center-item"><span class="ci-label">نائب المدير:</span> <span class="ci-value">${deputyManager.full_name_arabic}</span></div>` : ''}
+          ${technicalSupervisor ? `<div class="center-item"><span class="ci-label">المشرف الفني:</span> <span class="ci-value">${technicalSupervisor.full_name_arabic}</span></div>` : ''}
+        </div>
+      </div>`;
+    }
+
+    if (selectedCenterSections.has("ownership") && (center.حالة_المركز === 'مستأجر' || center.قيمة_عقد_الايجار)) {
+      html += `
+      <div class="center-section">
+        <div class="center-section-title" style="background:linear-gradient(135deg,#f97316,#fb923c);">بيانات الملكية والعقود</div>
+        <div class="center-grid">
+          <div class="center-item"><span class="ci-label">حالة الملكية:</span> <span class="ci-value">${center.حالة_المركز || 'غير محدد'}</span></div>
+          ${center.قيمة_عقد_الايجار ? `<div class="center-item"><span class="ci-label">الإيجار السنوي:</span> <span class="ci-value">${center.قيمة_عقد_الايجار.toLocaleString('ar-SA')} ر.س</span></div>` : ''}
+          ${center.رقم_العقد ? `<div class="center-item"><span class="ci-label">رقم العقد:</span> <span class="ci-value">${center.رقم_العقد}</span></div>` : ''}
+          ${center.تاريخ_بداية_العقد ? `<div class="center-item"><span class="ci-label">بداية العقد:</span> <span class="ci-value">${new Date(center.تاريخ_بداية_العقد).toLocaleDateString('ar-SA')}</span></div>` : ''}
+          ${center.تاريخ_انتهاء_العقد ? `<div class="center-item"><span class="ci-label">انتهاء العقد:</span> <span class="ci-value" style="color:#dc2626;">${new Date(center.تاريخ_انتهاء_العقد).toLocaleDateString('ar-SA')}</span></div>` : ''}
+          ${center.اسم_المؤجر ? `<div class="center-item"><span class="ci-label">المؤجر:</span> <span class="ci-value">${center.اسم_المؤجر}</span></div>` : ''}
+        </div>
+      </div>`;
+    }
+
+    if (selectedCenterSections.has("clinics") && center.العيادات_المتوفرة?.length > 0) {
+      html += `
+      <div class="center-section">
+        <div class="center-section-title" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">العيادات والخدمات</div>
+        <div class="center-grid">
+          ${center.العيادات_المتوفرة.map(c => `
+            <div class="center-item"><span class="ci-label">${c.اسم_العيادة || 'عيادة'}:</span> <span class="ci-value">${c.نوع_العيادة || ''} ${c.الطبيب_المسؤول ? '- ' + c.الطبيب_المسؤول : ''}</span></div>
+          `).join('')}
+        </div>
+      </div>`;
+    }
+
+    if (selectedCenterSections.has("vehicles")) {
+      html += `
+      <div class="center-section">
+        <div class="center-section-title" style="background:linear-gradient(135deg,#0891b2,#22d3ee);">المركبات</div>
+        <div class="center-grid">
+          <div class="center-item"><span class="ci-label">سيارة خدمات:</span> <span class="ci-value">${center.سيارة_خدمات?.متوفرة ? '✓ متوفرة' : '✗ غير متوفرة'} ${center.سيارة_خدمات?.نوع_السيارة ? '- ' + center.سيارة_خدمات.نوع_السيارة : ''}</span></div>
+          <div class="center-item"><span class="ci-label">سيارة إسعاف:</span> <span class="ci-value">${center.سيارة_اسعاف?.متوفرة ? '✓ متوفرة' : '✗ غير متوفرة'} ${center.سيارة_اسعاف?.نوع_السيارة ? '- ' + center.سيارة_اسعاف.نوع_السيارة : ''}</span></div>
+        </div>
+      </div>`;
+    }
+
+    if (selectedCenterSections.has("stats")) {
+      const jobCategoryCounts = employees.reduce((acc, emp) => {
+        const cat = emp.job_category || 'غير محدد';
+        acc[cat] = (acc[cat] || 0) + 1;
+        return acc;
+      }, {});
+      const contractCounts = employees.reduce((acc, emp) => {
+        const ct = emp.contract_type || 'غير محدد';
+        acc[ct] = (acc[ct] || 0) + 1;
+        return acc;
+      }, {});
+      html += `
+      <div class="center-section">
+        <div class="center-section-title" style="background:linear-gradient(135deg,#059669,#34d399);">إحصائيات الموظفين</div>
+        <div style="text-align:center;padding:10px;font-size:18px;font-weight:bold;color:#0369a1;">إجمالي الموظفين: ${employees.length}</div>
+        <div class="center-grid">
+          ${Object.entries(jobCategoryCounts).map(([k,v]) => `<div class="center-item"><span class="ci-label">${k}:</span> <span class="ci-value" style="font-weight:bold;">${v}</span></div>`).join('')}
+        </div>
+        ${Object.keys(contractCounts).length > 0 ? `
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #e5e7eb;">
+          <div style="font-weight:bold;font-size:11px;margin-bottom:5px;color:#374151;">حسب نوع العقد:</div>
+          <div class="center-grid">
+            ${Object.entries(contractCounts).map(([k,v]) => `<div class="center-item"><span class="ci-label">${k}:</span> <span class="ci-value" style="font-weight:bold;">${v}</span></div>`).join('')}
+          </div>
+        </div>` : ''}
+      </div>`;
+    }
+
+    return html;
+  };
+
   const generateTableHTML = () => {
     const selectedEmps = getSelectedEmployees();
-    if (selectedEmps.length === 0) return "";
+    if (selectedEmps.length === 0 && !includeCenterInfo) return "";
 
     const fieldsArray = Array.from(selectedFields);
     const headers = fieldsArray.map(key => 
       fieldDefinitions.find(f => f.key === key)?.label || key
     );
 
+    const centerInfoHTML = generateCenterInfoHTML();
+
     let html = `
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
   <meta charset="utf-8">
-  <title>بيان موظفي ${centerName}</title>
+  <title>${includeCenterInfo ? 'تقرير المركز والموظفين' : 'بيان موظفي'} - ${centerName}</title>
   <style>
     * { font-family: 'Arial', 'Times New Roman', serif; }
     body { direction: rtl; margin: 20mm; font-size: 12px; }
@@ -165,14 +287,27 @@ export default function CenterEmployeeExporter({
     .footer { margin-top: 40px; text-align: center; border-top: 2px solid #e5e7eb; padding-top: 20px; }
     .signature { display: inline-block; text-align: center; margin: 0 30px; }
     .signature-line { border-top: 1px solid #000; width: 200px; margin: 40px auto 10px; }
+    .center-section { margin-bottom: 20px; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; page-break-inside: avoid; }
+    .center-section-title { background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; padding: 10px 15px; font-weight: bold; font-size: 13px; text-align: center; }
+    .center-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px; }
+    .center-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 4px; padding: 8px 10px; font-size: 11px; }
+    .ci-label { font-weight: bold; color: #374151; margin-left: 5px; }
+    .ci-value { color: #1f2937; }
+    .section-divider { border-top: 3px solid #1e40af; margin: 30px 0; padding-top: 15px; }
+    .section-divider h2 { font-size: 20px; color: #1e40af; text-align: center; margin: 0; }
     @page { size: A4; margin: 15mm; }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>بيان موظفي ${centerName}</h1>
+    <h1>${includeCenterInfo ? `تقرير شامل - ${centerName}` : `بيان موظفي ${centerName}`}</h1>
     <h2 style="font-size: 26px; font-weight: bold; color: #1e40af;">${administrationName}</h2>
   </div>
+
+  ${centerInfoHTML}
+
+  ${selectedEmps.length > 0 ? `
+  ${includeCenterInfo ? '<div class="section-divider"><h2>قائمة الموظفين</h2></div>' : ''}
   
   <div class="meta">
     <div>عدد الموظفين: ${selectedEmps.length}</div>
@@ -205,6 +340,7 @@ export default function CenterEmployeeExporter({
       `).join('')}
     </tbody>
   </table>
+  ` : ''}
 
   <div class="footer">
     <div class="signature">
