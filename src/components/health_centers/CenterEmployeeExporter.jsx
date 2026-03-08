@@ -485,10 +485,14 @@ export default function CenterEmployeeExporter({
         </DialogHeader>
 
         <Tabs defaultValue="employees" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="employees">اختيار الموظفين ({selectedEmployeeIds.size})</TabsTrigger>
-            <TabsTrigger value="fields">البيانات الظاهرة ({selectedFields.size})</TabsTrigger>
-            <TabsTrigger value="header">معلومات الترويسة</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="employees">الموظفين ({selectedEmployeeIds.size})</TabsTrigger>
+            <TabsTrigger value="centerInfo" className="gap-1">
+              <Building2 className="w-3 h-3" />
+              بيانات المركز
+            </TabsTrigger>
+            <TabsTrigger value="fields">الحقول ({selectedFields.size})</TabsTrigger>
+            <TabsTrigger value="header">الترويسة</TabsTrigger>
           </TabsList>
 
           {/* اختيار الموظفين */}
