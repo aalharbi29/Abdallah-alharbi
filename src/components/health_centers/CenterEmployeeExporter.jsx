@@ -14,7 +14,10 @@ export default function CenterEmployeeExporter({
   onOpenChange, 
   employees = [],
   centerName = "",
-  manager = null
+  manager = null,
+  center = null,
+  deputyManager = null,
+  technicalSupervisor = null
 }) {
   const [orderedEmployees, setOrderedEmployees] = useState([]);
   const [selectedEmployeeIds, setSelectedEmployeeIds] = useState(new Set());
@@ -25,6 +28,27 @@ export default function CenterEmployeeExporter({
   const [managerName, setManagerName] = useState(manager?.full_name_arabic || "");
   const [managerTitle, setManagerTitle] = useState("مدير إدارة شؤون المراكز الصحية بالحناكية");
   const [isExporting, setIsExporting] = useState(false);
+  const [includeCenterInfo, setIncludeCenterInfo] = useState(false);
+  const [selectedCenterSections, setSelectedCenterSections] = useState(new Set([
+    "basic", "contact", "leadership", "stats"
+  ]));
+
+  const centerSectionOptions = [
+    { key: "basic", label: "المعلومات الأساسية" },
+    { key: "contact", label: "بيانات التواصل" },
+    { key: "leadership", label: "القيادة والإدارة" },
+    { key: "ownership", label: "بيانات الملكية والعقود" },
+    { key: "clinics", label: "العيادات والخدمات" },
+    { key: "vehicles", label: "المركبات" },
+    { key: "stats", label: "إحصائيات الموظفين" },
+  ];
+
+  const toggleCenterSection = (key) => {
+    const newSet = new Set(selectedCenterSections);
+    if (newSet.has(key)) newSet.delete(key);
+    else newSet.add(key);
+    setSelectedCenterSections(newSet);
+  };
 
   useEffect(() => {
     if (employees.length > 0) {
