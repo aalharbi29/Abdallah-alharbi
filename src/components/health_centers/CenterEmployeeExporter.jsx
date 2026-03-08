@@ -390,7 +390,7 @@ export default function CenterEmployeeExporter({
 
   const handleCopyTable = async () => {
     const selectedEmps = getSelectedEmployees();
-    if (selectedEmps.length === 0) {
+    if (selectedEmps.length === 0 && !includeCenterInfo) {
       toast.error("لم يتم اختيار أي موظفين");
       return;
     }
