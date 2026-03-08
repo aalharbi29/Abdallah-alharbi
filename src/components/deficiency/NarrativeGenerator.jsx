@@ -47,7 +47,7 @@ function buildExportHTML(narrativeText, selectedCenter, selectedItems, reportTit
 body{font-family:'Cairo',sans-serif;background:#fff;color:#1e293b;line-height:1.8;padding:10px 50px 30px 50px;}
 .page{max-width:800px;margin:0 auto;}
 .logo-header{text-align:center;padding:0 0 8px;border-bottom:2px solid #0f766e;margin-bottom:25px;overflow:hidden;}
-.logo-header img{max-height:300px;margin:-40px auto -20px auto;display:block;}
+.logo-header img{max-height:300px;margin:-80px auto -30px auto;display:block;}
 .letterhead{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:15px;margin-bottom:25px;}
 .letterhead-right{text-align:right;}
 .letterhead-left{text-align:left;color:#64748b;font-size:0.85rem;}

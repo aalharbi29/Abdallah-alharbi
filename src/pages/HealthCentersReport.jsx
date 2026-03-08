@@ -417,7 +417,7 @@ export default function HealthCentersReport() {
           }
           .report-logo-banner img {
             max-height: 300px;
-            margin: -40px auto -20px auto;
+            margin: -80px auto -30px auto;
           }
           .report-footer-banner {
             display: block;

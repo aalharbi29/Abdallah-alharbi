@@ -196,7 +196,7 @@ export default function HealthCenterDetails() {
 
           .logo-header img {
             max-height: 300px;
-            margin: -40px auto -20px auto;
+            margin: -80px auto -30px auto;
             display: block;
           }
 
