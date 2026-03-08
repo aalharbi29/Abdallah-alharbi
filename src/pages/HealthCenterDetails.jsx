@@ -191,11 +191,12 @@ export default function HealthCenterDetails() {
             padding: 0 0 8px;
             border-bottom: 2px solid #0d9488;
             margin-bottom: 20px;
+            overflow: hidden;
           }
 
           .logo-header img {
             max-height: 300px;
-            margin: 0 auto;
+            margin: -40px auto -20px auto;
             display: block;
           }
 

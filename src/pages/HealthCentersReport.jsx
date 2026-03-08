@@ -412,14 +412,12 @@ export default function HealthCentersReport() {
             text-align: center;
             margin-bottom: 15px;
             border-bottom: 2px solid #0d9488;
-            padding-bottom: 12px;
-          }
-          .report-logo-banner {
             padding: 0 0 8px;
+            overflow: hidden;
           }
           .report-logo-banner img {
             max-height: 300px;
-            margin: 0 auto;
+            margin: -40px auto -20px auto;
           }
           .report-footer-banner {
             display: block;
