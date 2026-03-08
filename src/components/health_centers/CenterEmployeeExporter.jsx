@@ -427,8 +427,8 @@ export default function CenterEmployeeExporter({
 
   const handleExport = (format) => {
     const selectedEmps = getSelectedEmployees();
-    if (selectedEmps.length === 0) {
-      toast.error("لم يتم اختيار أي موظفين");
+    if (selectedEmps.length === 0 && !includeCenterInfo) {
+      toast.error("لم يتم اختيار أي موظفين أو بيانات مركز");
       return;
     }
 
