@@ -584,6 +584,51 @@ export default function CenterEmployeeExporter({
             </DragDropContext>
           </TabsContent>
 
+          {/* بيانات المركز */}
+          <TabsContent value="centerInfo" className="space-y-4">
+            <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="flex items-center gap-3">
+                <Building2 className="w-5 h-5 text-blue-600" />
+                <div>
+                  <p className="font-bold text-blue-900">تضمين بيانات المركز الصحي</p>
+                  <p className="text-sm text-blue-700">إضافة معلومات المركز مع بيانات الموظفين في تقرير واحد</p>
+                </div>
+              </div>
+              <Checkbox
+                checked={includeCenterInfo}
+                onCheckedChange={(checked) => setIncludeCenterInfo(checked)}
+              />
+            </div>
+
+            {includeCenterInfo && (
+              <div className="grid grid-cols-2 gap-3">
+                {centerSectionOptions.map(section => (
+                  <div
+                    key={section.key}
+                    className={`flex items-center space-x-2 space-x-reverse p-3 rounded-lg border transition-all cursor-pointer ${
+                      selectedCenterSections.has(section.key)
+                        ? 'bg-green-50 border-green-300'
+                        : 'bg-white hover:bg-gray-50'
+                    }`}
+                    onClick={() => toggleCenterSection(section.key)}
+                  >
+                    <Checkbox
+                      checked={selectedCenterSections.has(section.key)}
+                      onCheckedChange={() => toggleCenterSection(section.key)}
+                    />
+                    <Label className="cursor-pointer flex-1">{section.label}</Label>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {!center && (
+              <div className="text-center py-8 text-gray-400">
+                بيانات المركز غير متاحة
+              </div>
+            )}
+          </TabsContent>
+
           {/* اختيار الحقول */}
           <TabsContent value="fields" className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
