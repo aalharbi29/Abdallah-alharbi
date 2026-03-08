@@ -174,7 +174,7 @@ export default function HealthCenterDetails() {
             font-family: 'Arial', 'Times New Roman', serif;
             direction: rtl;
             margin: 0;
-            padding: 15mm;
+            padding: 5mm 15mm 15mm 15mm;
             font-size: 11px;
             line-height: 1.4;
             color: #000;
@@ -183,7 +183,7 @@ export default function HealthCenterDetails() {
 
           @page {
             size: A4;
-            margin: 10mm;
+            margin: 5mm 10mm 10mm 10mm;
           }
 
           .logo-header {

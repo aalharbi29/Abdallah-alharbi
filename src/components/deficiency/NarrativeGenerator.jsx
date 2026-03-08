@@ -44,7 +44,7 @@ function buildExportHTML(narrativeText, selectedCenter, selectedItems, reportTit
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Cairo',sans-serif;background:#fff;color:#1e293b;line-height:1.8;padding:30px 50px;}
+body{font-family:'Cairo',sans-serif;background:#fff;color:#1e293b;line-height:1.8;padding:10px 50px 30px 50px;}
 .page{max-width:800px;margin:0 auto;}
 .logo-header{text-align:center;padding:0 0 8px;border-bottom:2px solid #0f766e;margin-bottom:25px;}
 .logo-header img{max-height:300px;margin:0 auto;display:block;}
@@ -70,8 +70,8 @@ body{font-family:'Cairo',sans-serif;background:#fff;color:#1e293b;line-height:1.
 .stamp-area{margin-top:30px;text-align:center;}
 .stamp-box{display:inline-block;width:120px;height:120px;border:2px dashed #cbd5e1;border-radius:12px;line-height:120px;color:#94a3b8;font-size:0.8rem;}
 @media print{
-  body{padding:20px 40px;font-size:11pt;}
-  @page{size:A4;margin:15mm 20mm;}
+  body{padding:10px 40px 20px 40px;font-size:11pt;}
+  @page{size:A4;margin:5mm 20mm 15mm 20mm;}
   .no-print{display:none!important;}
 }
 </style>

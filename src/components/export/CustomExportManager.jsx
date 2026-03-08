@@ -378,7 +378,7 @@ export default function CustomExportManager({
               font-family: 'Cairo', 'Times New Roman', Arial, sans-serif; 
               direction: rtl; 
               margin: 0;
-              padding: 30px 40px;
+              padding: 10px 40px 30px 40px;
               font-size: 12pt; 
               background: #f8fafc;
               color: #1e293b;
@@ -604,7 +604,7 @@ export default function CustomExportManager({
             
             @page { 
               size: A4 landscape; 
-              margin: 15mm; 
+              margin: 5mm 15mm 15mm 15mm; 
             }
             
             @media print { 

@@ -435,7 +435,7 @@ export default function HealthCentersReport() {
           }
           @page {
             size: A4 ${pageOrientation};
-            margin: 15mm;
+            margin: 5mm 15mm 15mm 15mm;
           }
         }
       `}</style>
