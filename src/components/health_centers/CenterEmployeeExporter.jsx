@@ -5,7 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FileDown, Copy, FileText, FileSpreadsheet, CheckCircle2, Users, ChevronUp, ChevronDown, GripVertical } from "lucide-react";
+import { FileDown, Copy, FileText, FileSpreadsheet, CheckCircle2, Users, ChevronUp, ChevronDown, GripVertical, Building2 } from "lucide-react";
 import { toast } from "sonner";
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
