@@ -724,7 +724,7 @@ export default function CenterEmployeeExporter({
           <Button
             variant="outline"
             onClick={handleCopyTable}
-            disabled={isExporting || selectedEmployeeIds.size === 0}
+            disabled={isExporting || (selectedEmployeeIds.size === 0 && !includeCenterInfo)}
             className="gap-2"
           >
             <Copy className="w-4 h-4" />
@@ -734,7 +734,7 @@ export default function CenterEmployeeExporter({
           <Button
             variant="outline"
             onClick={handlePrint}
-            disabled={isExporting || selectedEmployeeIds.size === 0}
+            disabled={isExporting || (selectedEmployeeIds.size === 0 && !includeCenterInfo)}
             className="gap-2"
           >
             <FileText className="w-4 h-4" />
@@ -753,7 +753,7 @@ export default function CenterEmployeeExporter({
 
           <Button
             onClick={() => handleExport('word')}
-            disabled={isExporting || selectedEmployeeIds.size === 0}
+            disabled={isExporting || (selectedEmployeeIds.size === 0 && !includeCenterInfo)}
             className="gap-2 bg-blue-600 hover:bg-blue-700"
           >
             <FileDown className="w-4 h-4" />
