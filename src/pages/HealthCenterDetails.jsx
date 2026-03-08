@@ -1760,6 +1760,9 @@ export default function HealthCenterDetails() {
         employees={centerEmployees}
         centerName={center.اسم_المركز}
         manager={manager}
+        center={center}
+        deputyManager={deputyManager}
+        technicalSupervisor={technicalSupervisor}
       />
 
       {/* Dialog تخصيص الطباعة */}
