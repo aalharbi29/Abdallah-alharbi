@@ -1085,16 +1085,6 @@ export default function EmployeeDataRequest() {
               {selectedFields.includes('جهة_التكليف') && (
                 <div className="space-y-3">
                   <Label>تحديد جهة التكليف لكل موظف</Label>
-                  <div className="flex flex-wrap gap-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
-                    <div className="flex items-center gap-2">
-                      <Label className="text-sm font-bold text-gray-700">فترة التكليف من:</Label>
-                      <Input type="date" value={assignmentFromDate} onChange={e => setAssignmentFromDate(e.target.value)} className="w-44" />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Label className="text-sm font-bold text-gray-700">إلى:</Label>
-                      <Input type="date" value={assignmentToDate} onChange={e => setAssignmentToDate(e.target.value)} className="w-44" />
-                    </div>
-                  </div>
                   <div className="space-y-2">
                     {selectedEmployees.map(emp => (
                       <div key={emp.id} className="flex items-center gap-2 p-2 bg-gray-50 rounded-md">
@@ -1115,6 +1105,101 @@ export default function EmployeeDataRequest() {
                       </div>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {/* مجموعات فترة التكليف */}
+              {selectedFields.includes('فترة_التكليف') && (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label>مجموعات فترة التكليف</Label>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setAssignmentGroups(prev => [...prev, { id: Date.now(), fromDate: '', toDate: '', dateType: 'hijri', employeeIds: [] }])}
+                    >
+                      + إضافة مجموعة
+                    </Button>
+                  </div>
+                  {assignmentGroups.map((group, gIdx) => (
+                    <div key={group.id} className="p-3 bg-amber-50 rounded-lg border border-amber-200 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-bold text-gray-700">المجموعة {gIdx + 1}</span>
+                        {assignmentGroups.length > 1 && (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="ghost"
+                            className="text-red-500 h-6 px-2"
+                            onClick={() => setAssignmentGroups(prev => prev.filter(g => g.id !== group.id))}
+                          >
+                            <X className="w-3 h-3" />
+                          </Button>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap gap-3 items-center">
+                        <Select
+                          value={group.dateType}
+                          onValueChange={(val) => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, dateType: val } : g))}
+                        >
+                          <SelectTrigger className="w-28">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="hijri">هجري</SelectItem>
+                            <SelectItem value="gregorian">ميلادي</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <div className="flex items-center gap-2">
+                          <Label className="text-xs font-bold">من:</Label>
+                          {group.dateType === 'gregorian' ? (
+                            <Input type="date" value={group.fromDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, fromDate: e.target.value } : g))} className="w-40" />
+                          ) : (
+                            <Input type="text" placeholder="مثال: 1446/10/01" value={group.fromDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, fromDate: e.target.value } : g))} className="w-40" />
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Label className="text-xs font-bold">إلى:</Label>
+                          {group.dateType === 'gregorian' ? (
+                            <Input type="date" value={group.toDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, toDate: e.target.value } : g))} className="w-40" />
+                          ) : (
+                            <Input type="text" placeholder="مثال: 1446/10/15" value={group.toDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, toDate: e.target.value } : g))} className="w-40" />
+                          )}
+                        </div>
+                      </div>
+                      <div>
+                        <Label className="text-xs text-gray-600 mb-1 block">اختر الموظفين لهذه المجموعة:</Label>
+                        <div className="flex flex-wrap gap-2">
+                          {selectedEmployees.map(emp => {
+                            const isInGroup = group.employeeIds.includes(emp.id);
+                            const isInOtherGroup = assignmentGroups.some(g => g.id !== group.id && g.employeeIds.includes(emp.id));
+                            return (
+                              <Badge
+                                key={emp.id}
+                                variant={isInGroup ? "default" : "outline"}
+                                className={`cursor-pointer text-xs ${isInGroup ? 'bg-blue-600' : isInOtherGroup ? 'opacity-40' : 'hover:bg-blue-50'}`}
+                                onClick={() => {
+                                  if (isInOtherGroup) return;
+                                  setAssignmentGroups(prev => prev.map(g => {
+                                    if (g.id !== group.id) return g;
+                                    return {
+                                      ...g,
+                                      employeeIds: isInGroup
+                                        ? g.employeeIds.filter(id => id !== emp.id)
+                                        : [...g.employeeIds, emp.id]
+                                    };
+                                  }));
+                                }}
+                              >
+                                {emp.full_name_arabic}
+                              </Badge>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               )}
 
