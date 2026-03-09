@@ -620,7 +620,6 @@ export default function EmployeeDataRequest() {
 
     <div class="report-title">
       <h1>${reportTitle}</h1>
-      <p>تاريخ الإعداد: ${dateStr}</p>
     </div>
 
     ${reportNarrative ? `<div class="narrative-box">${reportNarrative}</div>` : ''}
