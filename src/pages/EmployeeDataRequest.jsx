@@ -654,6 +654,7 @@ export default function EmployeeDataRequest() {
   <title>${reportTitle}</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=PT+Sans+Caption:wght@400;700&display=swap');
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Cairo', sans-serif; background: #fff; color: #000; }
     @page { size: A4; margin: 5mm 15mm 15mm 15mm; }
