@@ -24,7 +24,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getAllEmployeeRoles } from '@/components/utils/employeeRoles';
-import { getLogoSettings } from '@/components/settings/LogoSettings';
+import useLogoSettings from '@/components/settings/useLogoSettings';
 
 const availableFields = [
   { key: 'full_name_arabic', label: 'الاسم الكامل', default: true },
@@ -68,6 +68,7 @@ export default function EmployeeDataRequest() {
   const [finalRequest, setFinalRequest] = useState('');
   const [reportNarrative, setReportNarrative] = useState('');
   const [reportTitle, setReportTitle] = useState('تقرير بيانات الموظفين');
+  const { logoSettings } = useLogoSettings();
 
   useEffect(() => {
     loadEmployees();
