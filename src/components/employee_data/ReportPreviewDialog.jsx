@@ -25,6 +25,8 @@ export default function ReportPreviewDialog({
   signerName,
   signerTitle,
   signaturePosition,
+  assignmentFromDate,
+  assignmentToDate,
 }) {
   const dateStr = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   
@@ -119,6 +121,15 @@ export default function ReportPreviewDialog({
           <div className="text-center mb-5">
             <h1 className="text-lg font-bold text-teal-700">{reportTitle}</h1>
           </div>
+
+          {/* فترة التكليف */}
+          {(assignmentFromDate || assignmentToDate) && (
+            <div className="mb-4 p-3 bg-amber-50 border border-amber-300 rounded-lg text-sm">
+              <span className="font-bold text-gray-700">فترة التكليف: </span>
+              <span className="font-extrabold text-blue-800 mx-2">من {assignmentFromDate || '............'}</span>
+              <span className="font-extrabold text-blue-800">إلى {assignmentToDate || '............'}</span>
+            </div>
+          )}
 
           {/* نص تعبيري قبل الجدول */}
           {narrativePosition === 'before' && reportNarrative && (
