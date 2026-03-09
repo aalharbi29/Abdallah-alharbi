@@ -1533,8 +1533,7 @@ export default function EmployeeDataRequest() {
           signerName={signerName}
           signerTitle={signerTitle}
           signaturePosition={signaturePosition}
-          assignmentFromDate={assignmentFromDate}
-          assignmentToDate={assignmentToDate}
+          assignmentGroups={assignmentGroups}
         />
       </div>
     </div>
