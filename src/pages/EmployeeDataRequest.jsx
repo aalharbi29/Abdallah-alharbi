@@ -629,7 +629,20 @@ export default function EmployeeDataRequest() {
     const dateStr = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     const selectedSig = showSignature && selectedSignatureId ? signatures.find(s => s.id === selectedSignatureId) : null;
 
-    const narrativeHtml = reportNarrative ? `<div class="narrative-box">${reportNarrative}</div>` : '';
+    const processNarrativeHtml = (text) => {
+      if (!text) return '';
+      const lines = text.split('\n');
+      const processedLines = lines.map(line => {
+        const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
+        const hasKeyword = keywords.some(kw => line.includes(kw));
+        if (hasKeyword) {
+          return `<span style="font-family:'PT Sans Caption','Cairo',sans-serif;font-weight:700;font-size:15px;">${line}</span>`;
+        }
+        return line;
+      });
+      return processedLines.join('\n');
+    };
+    const narrativeHtml = reportNarrative ? `<div class="narrative-box">${processNarrativeHtml(reportNarrative)}</div>` : '';
 
     const logoJustify = logoPosition === 'right' ? 'flex-end' : logoPosition === 'left' ? 'flex-start' : 'center';
     const sigAlign = signaturePosition === 'right' ? 'right' : signaturePosition === 'left' ? 'left' : 'center';
@@ -680,12 +693,6 @@ export default function EmployeeDataRequest() {
       <div class="report-title">
         <h1>${reportTitle}</h1>
       </div>
-
-      ${assignmentFromDate || assignmentToDate ? `<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 16px;margin:0 0 15px 0;font-size:14px;line-height:1.8;">
-        <span style="font-weight:700;color:#475569;">فترة التكليف:</span>
-        <span style="font-weight:800;color:#1e40af;margin:0 8px;">من ${assignmentFromDate || '............'}</span>
-        <span style="font-weight:800;color:#1e40af;">إلى ${assignmentToDate || '............'}</span>
-      </div>` : ''}
 
       ${narrativePosition === 'before' ? narrativeHtml : ''}
 
