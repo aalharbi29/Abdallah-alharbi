@@ -80,6 +80,8 @@ export default function EmployeeDataRequest() {
   const [signatures, setSignatures] = useState([]);
   const [selectedSignatureId, setSelectedSignatureId] = useState('');
   const [assignmentCenters, setAssignmentCenters] = useState({});
+  const [assignmentFromDate, setAssignmentFromDate] = useState('');
+  const [assignmentToDate, setAssignmentToDate] = useState('');
   const [logoPosition, setLogoPosition] = useState('center');
   const [signaturePosition, setSignaturePosition] = useState('center');
   const [signerName, setSignerName] = useState('عبدالمجيد سعود الربيقي');
@@ -565,7 +567,12 @@ export default function EmployeeDataRequest() {
 
   const getFieldValue = (emp, key) => {
     if (key === 'جهة_التكليف') {
-      return assignmentCenters[emp.id] || '-';
+      const center = assignmentCenters[emp.id];
+      return center ? `مركز ${center}` : '-';
+    }
+    if (key === 'المركز_الصحي') {
+      const val = emp[key] || '-';
+      return val !== '-' ? val.replace(/\s*صحي\s*/g, ' ').trim() : '-';
     }
     return emp[key] || '-';
   };
@@ -1061,9 +1068,19 @@ export default function EmployeeDataRequest() {
 
               {/* جهة التكليف لكل موظف */}
               {selectedFields.includes('جهة_التكليف') && (
-                <div>
+                <div className="space-y-3">
                   <Label>تحديد جهة التكليف لكل موظف</Label>
-                  <div className="space-y-2 mt-2">
+                  <div className="flex flex-wrap gap-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
+                    <div className="flex items-center gap-2">
+                      <Label className="text-sm font-bold text-gray-700">فترة التكليف من:</Label>
+                      <Input type="date" value={assignmentFromDate} onChange={e => setAssignmentFromDate(e.target.value)} className="w-44" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Label className="text-sm font-bold text-gray-700">إلى:</Label>
+                      <Input type="date" value={assignmentToDate} onChange={e => setAssignmentToDate(e.target.value)} className="w-44" />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
                     {selectedEmployees.map(emp => (
                       <div key={emp.id} className="flex items-center gap-2 p-2 bg-gray-50 rounded-md">
                         <span className="text-sm flex-1">{emp.full_name_arabic}</span>
@@ -1076,7 +1093,7 @@ export default function EmployeeDataRequest() {
                           </SelectTrigger>
                           <SelectContent>
                             {HEALTH_CENTERS_OPTIONS.map(center => (
-                              <SelectItem key={center} value={center}>{center}</SelectItem>
+                              <SelectItem key={center} value={`${center}`}>مركز {center}</SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
