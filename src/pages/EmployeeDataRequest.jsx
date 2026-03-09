@@ -1006,7 +1006,7 @@ export default function EmployeeDataRequest() {
                   className="bg-teal-600 hover:bg-teal-700"
                 >
                   <FileOutput className="w-4 h-4 ml-2" />
-                  تصدير كتقرير رسمي
+                  تصدير PDF
                 </Button>
                 <Button
                   onClick={copyTableToClipboard}
