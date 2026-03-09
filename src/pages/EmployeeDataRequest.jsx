@@ -978,8 +978,28 @@ export default function EmployeeDataRequest() {
                 </div>
               </div>
 
+              {/* نص تعبيري للتقرير */}
+              <div>
+                <Label>نص تعبيري للتقرير (اختياري)</Label>
+                <Textarea
+                  value={reportNarrative}
+                  onChange={(e) => setReportNarrative(e.target.value)}
+                  placeholder="مثال: بيان بأسماء الموظفين المكلفين خلال إجازة عيد الفطر المبارك لعام 1446هـ..."
+                  rows={3}
+                  className="mt-2 bg-green-50 border-green-200"
+                />
+              </div>
+
               {/* Actions */}
               <div className="flex flex-wrap gap-2">
+                <Button
+                  onClick={exportAsReport}
+                  disabled={selectedEmployees.length === 0 || selectedFields.length === 0}
+                  className="bg-teal-600 hover:bg-teal-700"
+                >
+                  <FileOutput className="w-4 h-4 ml-2" />
+                  تصدير كتقرير رسمي
+                </Button>
                 <Button
                   onClick={copyTableToClipboard}
                   disabled={selectedEmployees.length === 0 || selectedFields.length === 0}
