@@ -1385,6 +1385,31 @@ export default function EmployeeDataRequest() {
             </CardContent>
           </Card>
         )}
+
+        {/* شاشة المعاينة */}
+        <ReportPreviewDialog
+          open={showPreview}
+          onClose={() => setShowPreview(false)}
+          onExport={() => { setShowPreview(false); exportAsReport(); }}
+          logoSettings={logoSettings}
+          logoPosition={logoPosition}
+          reportTitle={reportTitle}
+          reportNarrative={reportNarrative}
+          narrativePosition={narrativePosition}
+          headers={selectedFields.map(key => availableFields.find(f => f.key === key)?.label || key)}
+          selectedFields={selectedFields}
+          selectedEmployees={selectedEmployees}
+          displayMode={displayMode}
+          getFieldValue={getFieldValue}
+          groupedByManager={groupedByManager}
+          getManagerWithCenters={getManagerWithCenters}
+          finalRequest={finalRequest}
+          showSignature={showSignature}
+          selectedSig={showSignature && selectedSignatureId ? signatures.find(s => s.id === selectedSignatureId) : null}
+          signerName={signerName}
+          signerTitle={signerTitle}
+          signaturePosition={signaturePosition}
+        />
       </div>
     </div>
   );
