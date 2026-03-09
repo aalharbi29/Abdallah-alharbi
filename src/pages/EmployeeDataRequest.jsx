@@ -1214,7 +1214,7 @@ export default function EmployeeDataRequest() {
                                   color: '#000'
                                 }}
                               >
-                                {emp[key] || '-'}
+                                {key === 'جهة_التكليف' ? (assignmentCenters[emp.id] || '-') : (emp[key] || '-')}
                               </td>
                             ))}
                           </tr>
@@ -1236,7 +1236,7 @@ export default function EmployeeDataRequest() {
                                       color: '#000'
                                     }}
                                   >
-                                    {emp[key] || '-'}
+                                    {key === 'جهة_التكليف' ? (assignmentCenters[emp.id] || '-') : (emp[key] || '-')}
                                   </td>
                                 ))}
                               </tr>
