@@ -672,6 +672,12 @@ export default function EmployeeDataRequest() {
         <h1>${reportTitle}</h1>
       </div>
 
+      ${assignmentFromDate || assignmentToDate ? `<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 16px;margin:0 0 15px 0;font-size:14px;line-height:1.8;">
+        <span style="font-weight:700;color:#475569;">فترة التكليف:</span>
+        <span style="font-weight:800;color:#1e40af;margin:0 8px;">من ${assignmentFromDate || '............'}</span>
+        <span style="font-weight:800;color:#1e40af;">إلى ${assignmentToDate || '............'}</span>
+      </div>` : ''}
+
       ${narrativePosition === 'before' ? narrativeHtml : ''}
 
       <table>
