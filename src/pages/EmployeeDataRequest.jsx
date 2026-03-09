@@ -79,6 +79,11 @@ export default function EmployeeDataRequest() {
   const [signatures, setSignatures] = useState([]);
   const [selectedSignatureId, setSelectedSignatureId] = useState('');
   const [assignmentCenters, setAssignmentCenters] = useState({});
+  const [logoPosition, setLogoPosition] = useState('center');
+  const [signaturePosition, setSignaturePosition] = useState('center');
+  const [signerName, setSignerName] = useState('عبدالمجيد سعود الربيقي');
+  const [signerTitle, setSignerTitle] = useState('المساعد لشؤون المراكز الصحية بالحسو');
+  const [showPreview, setShowPreview] = useState(false);
   const { logoSettings } = useLogoSettings();
 
   useEffect(() => {
