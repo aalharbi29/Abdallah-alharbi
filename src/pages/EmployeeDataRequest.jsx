@@ -371,7 +371,7 @@ export default function EmployeeDataRequest() {
 
     // تنسيق الطلب النهائي
     const requestText = finalRequest ? `\n\n${finalRequest}` : '';
-    const fullPlainText = `بعد التحية\n\n${plainText}${requestText}\n\nنأمل التكرم بالاطلاع وإكمال اللازم.\n\nأطيب التحايا.`;
+    const fullPlainText = `بعد التحية\n\n${plainText}${requestText}`;
     const fullHtml = `<div dir="rtl" style="font-family: Arial, sans-serif;"><p style="font-weight: bold;">بعد التحية</p><br/>${htmlTable}<br/>${finalRequest ? `<p>${finalRequest}</p><br/>` : ''}<p>نأمل التكرم بالاطلاع وإكمال اللازم.</p><br/><p style="font-weight: bold;">أطيب التحايا.</p></div>`;
 
     try {
