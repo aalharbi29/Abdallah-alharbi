@@ -25,8 +25,7 @@ export default function ReportPreviewDialog({
   signerName,
   signerTitle,
   signaturePosition,
-  assignmentFromDate,
-  assignmentToDate,
+  assignmentGroups,
 }) {
   const dateStr = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   
@@ -122,18 +121,19 @@ export default function ReportPreviewDialog({
             <h1 className="text-lg font-bold text-teal-700">{reportTitle}</h1>
           </div>
 
-          {/* فترة التكليف */}
-          {(assignmentFromDate || assignmentToDate) && (
-            <div className="mb-4 p-3 bg-amber-50 border border-amber-300 rounded-lg text-sm">
-              <span className="font-bold text-gray-700">فترة التكليف: </span>
-              <span className="font-extrabold text-blue-800 mx-2">من {assignmentFromDate || '............'}</span>
-              <span className="font-extrabold text-blue-800">إلى {assignmentToDate || '............'}</span>
-            </div>
-          )}
-
           {/* نص تعبيري قبل الجدول */}
           {narrativePosition === 'before' && reportNarrative && (
-            <div className="mb-4 text-sm font-semibold leading-relaxed whitespace-pre-wrap">{reportNarrative}</div>
+            <div className="mb-4 text-sm leading-relaxed whitespace-pre-wrap">
+              {reportNarrative.split('\n').map((line, i) => {
+                const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
+                const hasKeyword = keywords.some(kw => line.includes(kw));
+                return (
+                  <span key={i} className={hasKeyword ? 'block font-bold' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, fontSize: '14px' } : {}}>
+                    {line}
+                  </span>
+                );
+              })}
+            </div>
           )}
 
           {/* الجدول */}
@@ -154,7 +154,17 @@ export default function ReportPreviewDialog({
 
           {/* نص تعبيري بعد الجدول */}
           {narrativePosition === 'after' && reportNarrative && (
-            <div className="mt-4 text-sm font-semibold leading-relaxed whitespace-pre-wrap">{reportNarrative}</div>
+            <div className="mt-4 text-sm leading-relaxed whitespace-pre-wrap">
+              {reportNarrative.split('\n').map((line, i) => {
+                const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
+                const hasKeyword = keywords.some(kw => line.includes(kw));
+                return (
+                  <span key={i} className={hasKeyword ? 'block font-bold' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, fontSize: '14px' } : {}}>
+                    {line}
+                  </span>
+                );
+              })}
+            </div>
           )}
 
           {/* نص الطلب */}
