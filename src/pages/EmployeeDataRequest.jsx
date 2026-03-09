@@ -1298,7 +1298,7 @@ export default function EmployeeDataRequest() {
                                   color: '#000'
                                 }}
                               >
-                                {key === 'جهة_التكليف' ? (assignmentCenters[emp.id] || '-') : (emp[key] || '-')}
+                                {getFieldValue(emp, key)}
                               </td>
                             ))}
                           </tr>
@@ -1320,7 +1320,7 @@ export default function EmployeeDataRequest() {
                                       color: '#000'
                                     }}
                                   >
-                                    {key === 'جهة_التكليف' ? (assignmentCenters[emp.id] || '-') : (emp[key] || '-')}
+                                    {getFieldValue(emp, key)}
                                   </td>
                                 ))}
                               </tr>
