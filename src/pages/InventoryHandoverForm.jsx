@@ -264,26 +264,181 @@ export default function InventoryHandoverForm() {
 
   const handlePrint = () => window.print();
 
-  const handleExportPDF = async () => {
-    try {
-      toast.loading("جاري تصدير PDF...");
-      const html2canvas = (await import('html2canvas')).default;
-      const { jsPDF } = await import('jspdf');
-      const noPrintEls = printRef.current.querySelectorAll('.no-print');
-      noPrintEls.forEach(el => { el.dataset.prev = el.style.display; el.style.display = 'none'; });
-      const canvas = await html2canvas(printRef.current, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-      noPrintEls.forEach(el => { el.style.display = el.dataset.prev || ''; });
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, imgHeight);
-      pdf.save(`جرد_عهدة_${department || 'نموذج'}.pdf`);
-      toast.dismiss();
-      toast.success("تم تصدير PDF بنجاح");
-    } catch (e) {
-      toast.dismiss();
-      toast.error("فشل التصدير");
+  const handleExportPDF = () => {
+    const dateStr = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+    // Build attendees rows
+    let attendeesRows = '';
+    attendees.forEach((att, i) => {
+      attendeesRows += `<tr>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:600;color:#64748b;">${i+1}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:700;">${att.name || '-'}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${att.employeeId || '-'}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${att.workplace || '-'}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${att.jobRole || '-'}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:700;">${att.role || '-'}</td>
+      </tr>`;
+    });
+
+    // Build equipment rows
+    let equipmentRows = '';
+    equipmentItems.forEach((item, i) => {
+      equipmentRows += `<tr>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:600;color:#64748b;">${i+1}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:700;">${item.category || '-'}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${item.type || '-'}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${item.brand || '-'}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:700;">${item.quantity || 1}</td>
+      </tr>`;
+    });
+
+    // Build committee signatures
+    let committeeSigs = committeeMembers.map(m => `
+      <div style="border:2px dashed #e2e8f0;border-radius:12px;padding:20px;text-align:center;background:#f8fafc;flex:1;min-width:180px;">
+        <p style="font-weight:800;font-size:14px;margin-bottom:6px;">${m.title || 'عضو لجنة'}</p>
+        <p style="font-weight:700;font-size:15px;color:#1e40af;margin-bottom:4px;">${m.name || '................................'}</p>
+        ${m.responsibility ? `<p style="font-size:12px;color:#64748b;">${m.responsibility}</p>` : ''}
+        <div style="border-top:1px solid #cbd5e1;margin-top:20px;padding-top:12px;">
+          <p style="font-size:11px;color:#94a3b8;margin-bottom:6px;">التوقيع</p>
+          <div style="height:40px;"></div>
+        </div>
+      </div>
+    `).join('');
+
+    const html = `<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>${formTitle}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', Arial, sans-serif; }
+    body { background: #fff; color: #1e293b; }
+    @page { size: A4; margin: 5mm 15mm 15mm 15mm; }
+    .page { max-width: 210mm; margin: 0 auto; padding: 0 10px; }
+    .header-banner { text-align: center; border-bottom: 2px solid #0d9488; padding: 0 0 8px; margin-bottom: 15px; overflow: hidden; }
+    .header-banner img { max-height: 300px; margin: -80px auto -30px auto; display: block; }
+    .title-section { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #1e293b; padding-bottom: 15px; }
+    .title-section p.sub { font-size: 12px; color: #64748b; font-weight: 600; letter-spacing: 1px; margin-bottom: 8px; }
+    .title-section h1 { font-size: 24px; font-weight: 800; color: #1e293b; }
+    .custom-text { background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 12px 18px; margin-bottom: 18px; font-size: 14px; line-height: 1.9; white-space: pre-wrap; }
+    .preamble { font-size: 15px; line-height: 2.4; margin-bottom: 20px; }
+    .preamble .highlight { font-weight: 700; color: #1e40af; border-bottom: 1px solid #93c5fd; padding-bottom: 1px; }
+    .from-to { display: flex; gap: 30px; background: #f8fafc; padding: 12px 16px; border-radius: 8px; border: 1px solid #e2e8f0; margin: 12px 0; }
+    .from-to span { font-weight: 700; color: #475569; }
+    .from-to .name { font-weight: 800; color: #1e293b; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+    th { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 10px 8px; text-align: center; font-weight: 700; font-size: 13px; }
+    td { font-size: 13px; }
+    .section-title { font-size: 16px; font-weight: 800; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin: 25px 0 15px; }
+    .sigs-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .handover-row { display: flex; gap: 20px; margin-top: 25px; }
+    .handover-box { flex: 1; border: 2px dashed #e2e8f0; border-radius: 12px; padding: 20px; text-align: center; background: #f8fafc; }
+    .handover-box .label { font-size: 13px; font-weight: 800; color: #475569; margin-bottom: 8px; }
+    .handover-box .name { font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
+    .handover-box .emp-num { font-size: 12px; color: #64748b; }
+    .footer-banner { text-align: center; margin-top: 40px; padding-top: 15px; border-top: 2px solid #0d9488; }
+    .footer-banner p { margin: 3px 0; font-size: 11px; color: #6b7280; }
+    .footer-banner .main-text { font-weight: bold; color: #0d9488; font-size: 12px; }
+    .footer-banner .date-text { font-size: 9px; color: #94a3b8; margin-top: 8px; }
+    .page-break { page-break-before: always; }
+    @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+  </style>
+</head>
+<body>
+  <!-- PAGE 1 -->
+  <div class="page">
+    <div class="header-banner">
+      <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/ebae7336b_1407.png" alt="تجمع المدينة المنورة الصحي" />
+    </div>
+    <div class="title-section">
+      <p class="sub">المملكة العربية السعودية | وزارة الصحة | تجمع المدينة المنورة الصحي</p>
+      <h1>${formTitle}</h1>
+    </div>
+
+    ${customText ? `<div class="custom-text">${customText}</div>` : ''}
+
+    <div class="preamble">
+      <p>في يوم <span class="highlight">${meetingDay || '............'}</span> الموافق <span class="highlight">${meetingHijriDate || '............'}</span> هـ ،</p>
+      <p>اجتمعت لجنة الجرد للقيام بجرد ونقل عهدة إدارة <span class="highlight">${department || '............'}</span> من الأجهزة والمستلزمات.</p>
+    </div>
+
+    <div class="from-to">
+      <div><span>تسليم من : </span><span class="name">${fromPerson || '............'}</span></div>
+      <div><span>تسلُّم إلى : </span><span class="name">${toPerson || '............'}</span></div>
+    </div>
+
+    <p class="section-title">وذلك بحضور كل من :</p>
+    <table>
+      <thead><tr>
+        <th>#</th><th>الاسم الكامل</th><th>الرقم الوظيفي</th><th>جهة العمل</th><th>الدور الوظيفي</th><th>الدور في اللجنة</th>
+      </tr></thead>
+      <tbody>${attendeesRows}</tbody>
+    </table>
+
+    <p class="section-title">توقيعات أعضاء لجنة الجرد</p>
+    <div class="sigs-row">${committeeSigs}</div>
+
+    <p class="section-title">المُسلّم والمُستلم</p>
+    <div class="handover-row">
+      <div class="handover-box">
+        <p class="label">المُسلّم</p>
+        <p class="name">${fromPerson || '................................'}</p>
+        <p class="emp-num">${fromEmpNumber || ''}</p>
+        <div style="border-top:1px solid #cbd5e1;margin-top:20px;padding-top:12px;"><p style="font-size:11px;color:#94a3b8;">التوقيع</p><div style="height:40px;"></div></div>
+      </div>
+      <div class="handover-box">
+        <p class="label">المُستلم</p>
+        <p class="name">${toPerson || '................................'}</p>
+        <p class="emp-num">${toEmpNumber || ''}</p>
+        <div style="border-top:1px solid #cbd5e1;margin-top:20px;padding-top:12px;"><p style="font-size:11px;color:#94a3b8;">التوقيع</p><div style="height:40px;"></div></div>
+      </div>
+    </div>
+
+    <div class="footer-banner">
+      <p class="main-text">شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</p>
+      <p>تجمع المدينة المنورة الصحي - وزارة الصحة</p>
+      <p class="date-text">${dateStr}</p>
+    </div>
+  </div>
+
+  <!-- PAGE 2 -->
+  <div class="page page-break">
+    <div class="header-banner">
+      <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/ebae7336b_1407.png" alt="تجمع المدينة المنورة الصحي" />
+    </div>
+    <div class="title-section">
+      <p class="sub">المملكة العربية السعودية | وزارة الصحة | تجمع المدينة المنورة الصحي</p>
+      <h1>قائمة الأجهزة المجرودة</h1>
+      ${department ? `<p style="font-size:16px;color:#475569;font-weight:700;margin-top:6px;">إدارة / مركز: <span style="color:#1e40af;">${department}</span></p>` : ''}
+    </div>
+
+    <table>
+      <thead><tr>
+        <th>#</th><th>الفئة</th><th>نوع الجهاز</th><th>الشركة المصنعة</th><th>الكمية</th>
+      </tr></thead>
+      <tbody>${equipmentRows}</tbody>
+    </table>
+
+    <p class="section-title">توقيعات أعضاء اللجنة</p>
+    <div class="sigs-row">${committeeSigs}</div>
+
+    <div class="footer-banner">
+      <p class="main-text">شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</p>
+      <p>تجمع المدينة المنورة الصحي - وزارة الصحة</p>
+      <p class="date-text">${dateStr}</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const printWindow = window.open(url, '_blank');
+    if (printWindow) {
+      printWindow.onload = () => setTimeout(() => printWindow.print(), 500);
     }
+    setTimeout(() => window.URL.revokeObjectURL(url), 5000);
   };
 
   const inputCls = "border-b border-gray-400 bg-transparent focus:outline-none focus:border-blue-600 text-center px-1 font-semibold text-gray-800 transition-colors";
