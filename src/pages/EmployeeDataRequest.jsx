@@ -638,7 +638,7 @@ export default function EmployeeDataRequest() {
 
     <div class="footer-banner">
       <p class="main-text">شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</p>
-      <p>تجمع المدينة المنورة الصحي - وزارة الصحة</p>
+      <p>تجمع المدينة المنورة الصحي</p>
       <p class="date-text">${dateStr}</p>
     </div>
   </div>
