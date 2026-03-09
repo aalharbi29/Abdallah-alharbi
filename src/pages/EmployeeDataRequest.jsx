@@ -979,6 +979,17 @@ export default function EmployeeDataRequest() {
                 </div>
               </div>
 
+              {/* عنوان التقرير */}
+              <div>
+                <Label>عنوان التقرير الرسمي</Label>
+                <Input
+                  value={reportTitle}
+                  onChange={(e) => setReportTitle(e.target.value)}
+                  placeholder="تقرير بيانات الموظفين"
+                  className="mt-2 font-bold"
+                />
+              </div>
+
               {/* نص تعبيري للتقرير */}
               <div>
                 <Label>نص تعبيري للتقرير (اختياري)</Label>
@@ -987,7 +998,7 @@ export default function EmployeeDataRequest() {
                   onChange={(e) => setReportNarrative(e.target.value)}
                   placeholder="مثال: بيان بأسماء الموظفين المكلفين خلال إجازة عيد الفطر المبارك لعام 1446هـ..."
                   rows={3}
-                  className="mt-2 bg-green-50 border-green-200"
+                  className="mt-2"
                 />
               </div>
 
