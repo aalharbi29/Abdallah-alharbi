@@ -1173,6 +1173,14 @@ export default function EmployeeDataRequest() {
               {/* Actions */}
               <div className="flex flex-wrap gap-2">
                 <Button
+                  onClick={() => setShowPreview(true)}
+                  disabled={selectedEmployees.length === 0 || selectedFields.length === 0}
+                  className="bg-orange-600 hover:bg-orange-700"
+                >
+                  <Eye className="w-4 h-4 ml-2" />
+                  معاينة التقرير
+                </Button>
+                <Button
                   onClick={exportAsReport}
                   disabled={selectedEmployees.length === 0 || selectedFields.length === 0}
                   className="bg-teal-600 hover:bg-teal-700"
