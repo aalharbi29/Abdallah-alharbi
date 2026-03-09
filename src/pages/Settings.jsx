@@ -15,12 +15,14 @@ import {
   Sun,
   Smartphone,
   Layout,
-  Eye
+  Eye,
+  Image
 } from 'lucide-react';
 import ThemeSwitcher from '../components/theme/ThemeSwitcher';
 import { useTheme } from '../components/theme/ThemeProvider';
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
+import LogoSettings from '../components/settings/LogoSettings';
 
 export default function SettingsPage() {
   const { theme, setTheme, currentTheme } = useTheme();
