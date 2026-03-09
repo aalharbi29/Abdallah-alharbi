@@ -550,8 +550,15 @@ export default function InventoryHandoverForm() {
             {/* Header */}
             <div className="text-center mb-10 pb-6 border-b-2 border-slate-800">
               <p className="text-sm text-slate-600 font-semibold tracking-wide mb-1">المملكة العربية السعودية | وزارة الصحة | تجمع المدينة المنورة الصحي</p>
-              <h1 className="text-3xl font-extrabold text-slate-900 mt-6 mb-2">محضر جرد ونقل عهدة</h1>
+              <h1 className="text-3xl font-extrabold text-slate-900 mt-6 mb-2">{formTitle}</h1>
             </div>
+
+            {/* نص إضافي */}
+            {customText && (
+              <div className="mb-6 bg-green-50 border border-green-200 rounded-lg p-4 text-sm leading-relaxed text-slate-800 whitespace-pre-wrap">
+                {customText}
+              </div>
+            )}
 
             {/* Preamble */}
             <div className="mb-10 text-[16px] leading-[2.5] text-slate-800">
