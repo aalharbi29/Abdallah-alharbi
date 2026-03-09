@@ -186,6 +186,8 @@ export default function InventoryHandoverForm() {
   const [toPerson, setToPerson] = useState("");
   const [fromEmpNumber, setFromEmpNumber] = useState("");
   const [toEmpNumber, setToEmpNumber] = useState("");
+  const [assignmentFromDate, setAssignmentFromDate] = useState("");
+  const [assignmentToDate, setAssignmentToDate] = useState("");
 
   const [attendees, setAttendees] = useState([
     { name: "", employeeId: "", workplace: "", jobRole: "", role: "عضو لجنة" }
@@ -218,7 +220,7 @@ export default function InventoryHandoverForm() {
       ...updated[i],
       name: emp.full_name_arabic || "",
       employeeId: emp["رقم_الموظف"] || "",
-      workplace: emp["المركز_الصحي"] || "",
+      workplace: (emp["المركز_الصحي"] || "").replace(/\s*صحي\s*/g, " ").trim(),
       jobRole: emp.position || "",
     };
     setAttendees(updated);
