@@ -1184,11 +1184,7 @@ export default function EmployeeDataRequest() {
                   </div>
                 )}
 
-                {/* الخاتمة */}
-                <div className="text-right space-y-4">
-                  <p style={{ color: '#000', fontSize: '18px' }}>نأمل التكرم بالاطلاع وإكمال اللازم.</p>
-                  <p style={{ color: '#000', fontSize: '18px', fontWeight: '600' }} className="mt-6">أطيب التحايا.</p>
-                </div>
+
               </div>
             </CardContent>
           </Card>
