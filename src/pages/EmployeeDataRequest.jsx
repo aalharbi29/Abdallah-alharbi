@@ -623,22 +623,24 @@ export default function EmployeeDataRequest() {
       <img src="${logoSettings.logo_url}" alt="شعار المؤسسة" />
     </div>` : ''}
 
-    <div class="report-title">
-      <h1>${reportTitle}</h1>
-    </div>
+    <div class="page-content">
+      <div class="report-title">
+        <h1>${reportTitle}</h1>
+      </div>
 
-    ${reportNarrative ? `<div class="narrative-box">${reportNarrative}</div>` : ''}
+      ${reportNarrative ? `<div class="narrative-box">${reportNarrative}</div>` : ''}
 
-    <table>
-      <thead>
-        <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
-      </thead>
-      <tbody>${tableRows}</tbody>
-    </table>
+      <table>
+        <thead>
+          <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
+        </thead>
+        <tbody>${tableRows}</tbody>
+      </table>
 
-    ${finalRequest ? `<div class="request-box">${finalRequest}</div>` : ''}
+      ${finalRequest ? `<div class="request-box">${finalRequest}</div>` : ''}
 
-    <div class="closing">
+      <div class="closing">
+      </div>
     </div>
 
     ${logoSettings.show_footer ? `<div class="footer-banner">
