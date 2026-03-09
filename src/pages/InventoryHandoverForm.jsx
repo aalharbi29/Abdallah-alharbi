@@ -186,8 +186,6 @@ export default function InventoryHandoverForm() {
   const [toPerson, setToPerson] = useState("");
   const [fromEmpNumber, setFromEmpNumber] = useState("");
   const [toEmpNumber, setToEmpNumber] = useState("");
-  const [assignmentFromDate, setAssignmentFromDate] = useState("");
-  const [assignmentToDate, setAssignmentToDate] = useState("");
 
   const [attendees, setAttendees] = useState([
     { name: "", employeeId: "", workplace: "", jobRole: "", role: "عضو لجنة" }
@@ -220,7 +218,7 @@ export default function InventoryHandoverForm() {
       ...updated[i],
       name: emp.full_name_arabic || "",
       employeeId: emp["رقم_الموظف"] || "",
-      workplace: (emp["المركز_الصحي"] || "").replace(/\s*صحي\s*/g, " ").trim(),
+      workplace: emp["المركز_الصحي"] || "",
       jobRole: emp.position || "",
     };
     setAttendees(updated);
@@ -276,7 +274,7 @@ export default function InventoryHandoverForm() {
         <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:600;color:#64748b;">${i+1}</td>
         <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:700;">${att.name || '-'}</td>
         <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${att.employeeId || '-'}</td>
-        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${att.workplace ? 'مركز ' + att.workplace : '-'}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${att.workplace || '-'}</td>
         <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${att.jobRole || '-'}</td>
         <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:700;">${att.role || '-'}</td>
       </tr>`;
@@ -369,12 +367,6 @@ export default function InventoryHandoverForm() {
       <div><span>تسليم من : </span><span class="name">${fromPerson || '............'}</span></div>
       <div><span>تسلُّم إلى : </span><span class="name">${toPerson || '............'}</span></div>
     </div>
-
-    ${assignmentFromDate || assignmentToDate ? `<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 16px;margin:12px 0;font-size:15px;">
-      <span style="font-weight:700;color:#475569;">فترة التكليف :</span>
-      <span style="font-weight:800;color:#1e40af;margin:0 8px;">من ${assignmentFromDate || '............'}</span>
-      <span style="font-weight:800;color:#1e40af;">إلى ${assignmentToDate || '............'}</span>
-    </div>` : ''}
 
     <p class="section-title">وذلك بحضور كل من :</p>
     <table>
@@ -607,17 +599,6 @@ export default function InventoryHandoverForm() {
                     onChange={setToPerson}
                     onSelect={(emp) => setToPerson(emp.full_name_arabic || "")}
                   />
-                </span>
-              </div>
-
-              <div className="flex flex-wrap gap-8 mb-4 bg-amber-50 p-4 rounded-lg border border-amber-200">
-                <span className="flex items-center gap-2">
-                  <span className="font-bold text-slate-700">فترة التكليف من :</span>
-                  <input className={`${inputCls} w-40 text-lg`} type="date" value={assignmentFromDate} onChange={e => setAssignmentFromDate(e.target.value)} />
-                </span>
-                <span className="flex items-center gap-2">
-                  <span className="font-bold text-slate-700">إلى :</span>
-                  <input className={`${inputCls} w-40 text-lg`} type="date" value={assignmentToDate} onChange={e => setAssignmentToDate(e.target.value)} />
                 </span>
               </div>
 
