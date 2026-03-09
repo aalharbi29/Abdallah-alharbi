@@ -45,6 +45,7 @@ const availableFields = [
   { key: 'job_category', label: 'ملاك الوظيفة', default: false },
   { key: 'الأدوار', label: 'الأدوار', default: false },
   { key: 'جهة_التكليف', label: 'جهة التكليف', default: false },
+  { key: 'فترة_التكليف', label: 'فترة التكليف', default: false },
 ];
 
 const HEALTH_CENTERS_OPTIONS = [
@@ -80,8 +81,10 @@ export default function EmployeeDataRequest() {
   const [signatures, setSignatures] = useState([]);
   const [selectedSignatureId, setSelectedSignatureId] = useState('');
   const [assignmentCenters, setAssignmentCenters] = useState({});
-  const [assignmentFromDate, setAssignmentFromDate] = useState('');
-  const [assignmentToDate, setAssignmentToDate] = useState('');
+  // مجموعات التكليف - كل مجموعة لها فترة وموظفين
+  const [assignmentGroups, setAssignmentGroups] = useState([
+    { id: 1, fromDate: '', toDate: '', dateType: 'hijri', employeeIds: [] }
+  ]);
   const [logoPosition, setLogoPosition] = useState('center');
   const [signaturePosition, setSignaturePosition] = useState('center');
   const [signerName, setSignerName] = useState('عبدالمجيد سعود الربيقي');
@@ -569,6 +572,12 @@ export default function EmployeeDataRequest() {
     if (key === 'جهة_التكليف') {
       const center = assignmentCenters[emp.id];
       return center ? `مركز ${center}` : '-';
+    }
+    if (key === 'فترة_التكليف') {
+      const group = assignmentGroups.find(g => g.employeeIds.includes(emp.id));
+      if (!group || (!group.fromDate && !group.toDate)) return '-';
+      const suffix = group.dateType === 'hijri' ? 'هـ' : 'م';
+      return `من ${group.fromDate || '...'} إلى ${group.toDate || '...'} ${suffix}`;
     }
     if (key === 'المركز_الصحي') {
       const val = emp[key] || '-';
