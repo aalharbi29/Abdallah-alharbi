@@ -557,6 +557,13 @@ export default function EmployeeDataRequest() {
     window.print();
   };
 
+  const getFieldValue = (emp, key) => {
+    if (key === 'جهة_التكليف') {
+      return assignmentCenters[emp.id] || '-';
+    }
+    return emp[key] || '-';
+  };
+
   const exportAsReport = () => {
     const headers = selectedFields.map(key =>
       availableFields.find(f => f.key === key)?.label || key
@@ -568,7 +575,7 @@ export default function EmployeeDataRequest() {
         const bgColor = idx % 2 === 0 ? '#fff' : '#f9fafb';
         tableRows += `<tr style="background-color: ${bgColor};">`;
         selectedFields.forEach(key => {
-          tableRows += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${emp[key] || '-'}</td>`;
+          tableRows += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(emp, key)}</td>`;
         });
         tableRows += '</tr>';
       });
@@ -576,7 +583,7 @@ export default function EmployeeDataRequest() {
       selectedEmployees.forEach(emp => {
         tableRows += '<tr style="background-color: #dbeafe;">';
         selectedFields.forEach(key => {
-          tableRows += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${emp[key] || '-'}</td>`;
+          tableRows += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(emp, key)}</td>`;
         });
         tableRows += '</tr>';
       });
@@ -588,7 +595,7 @@ export default function EmployeeDataRequest() {
             tableRows += `<tr style="background-color: #d1fae5;"><td colspan="${selectedFields.length}" style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-weight: bold;">بيانات المدير المباشر</td></tr>`;
             tableRows += '<tr style="background-color: #ecfdf5;">';
             selectedFields.forEach(key => {
-              tableRows += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${manager[key] || '-'}</td>`;
+              tableRows += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(manager, key)}</td>`;
             });
             tableRows += '</tr>';
             processedManagers.add(managerId);
@@ -598,6 +605,9 @@ export default function EmployeeDataRequest() {
     }
 
     const dateStr = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const selectedSig = showSignature && selectedSignatureId ? signatures.find(s => s.id === selectedSignatureId) : null;
+
+    const narrativeHtml = reportNarrative ? `<div class="narrative-box">${reportNarrative}</div>` : '';
 
     const html = `<!DOCTYPE html>
 <html dir="rtl" lang="ar">
@@ -611,8 +621,8 @@ export default function EmployeeDataRequest() {
     @page { size: A4; margin: 5mm 15mm 15mm 15mm; }
     .page-container { max-width: 210mm; margin: 0 auto; padding: 0 10px; min-height: 100vh; display: flex; flex-direction: column; }
     .page-content { flex: 1; padding-top: 15px; }
-    .header-banner { text-align: center; border-bottom: 2px solid #0d9488; padding: 0 0 8px; margin-bottom: 15px; overflow: hidden; }
-    .header-banner img { max-height: ${logoSettings.max_height}px; margin: ${logoSettings.margin_top}px auto ${logoSettings.margin_bottom}px auto; display: block; }
+    .header-banner { text-align: center; border-bottom: 2px solid #1e40af; padding: 0 0 8px; margin-bottom: 15px; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+    .header-banner img { max-height: ${logoSettings.max_height}px; margin: ${logoSettings.margin_top}px 0 ${logoSettings.margin_bottom}px 0; display: block; }
     .report-title { text-align: center; margin-bottom: 20px; margin-top: 10px; }
     .report-title h1 { font-size: 22px; color: #0d9488; font-weight: 700; margin-bottom: 6px; }
     .report-title p { font-size: 13px; color: #6b7280; }
@@ -623,10 +633,14 @@ export default function EmployeeDataRequest() {
     .request-box { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; }
     .closing { margin-top: 25px; font-size: 15px; }
     .closing p { margin: 8px 0; }
-    .footer-banner { text-align: center; padding-top: 15px; border-top: 2px solid #0d9488; margin-top: auto; }
-    .footer-banner p { margin: 3px 0; font-size: 11px; color: #6b7280; }
-    .footer-banner .main-text { font-weight: bold; color: #0d9488; font-size: 12px; }
-    .footer-banner .date-text { font-size: 9px; color: #94a3b8; margin-top: 8px; }
+    .signature-section { text-align: center; margin-top: 30px; padding: 15px 0; }
+    .signature-section img { max-height: 120px; margin: 0 auto; display: block; }
+    .signature-section .sig-name { font-weight: 700; font-size: 14px; margin-top: 8px; color: #1e40af; }
+    .signature-section .sig-title { font-size: 12px; color: #4b5563; }
+    .footer-banner { text-align: center; padding-top: 15px; border-top: 2px solid #1e40af; margin-top: auto; }
+    .footer-banner p { margin: 4px 0; font-size: 14px; color: #1e40af; }
+    .footer-banner .main-text { font-weight: bold; color: #1e40af; font-size: 15px; }
+    .footer-banner .date-text { font-size: 11px; color: #1e40af; margin-top: 8px; }
     @media print {
       body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       .page-container { min-height: 100vh; }
@@ -645,7 +659,7 @@ export default function EmployeeDataRequest() {
         <h1>${reportTitle}</h1>
       </div>
 
-      ${reportNarrative ? `<div class="narrative-box">${reportNarrative}</div>` : ''}
+      ${narrativePosition === 'before' ? narrativeHtml : ''}
 
       <table>
         <thead>
@@ -654,7 +668,15 @@ export default function EmployeeDataRequest() {
         <tbody>${tableRows}</tbody>
       </table>
 
+      ${narrativePosition === 'after' ? narrativeHtml : ''}
+
       ${finalRequest ? `<div class="request-box">${finalRequest}</div>` : ''}
+
+      ${selectedSig ? `<div class="signature-section">
+        <img src="${selectedSig.image_url}" alt="${selectedSig.name}" />
+        ${selectedSig.owner_name ? `<p class="sig-name">${selectedSig.owner_name}</p>` : ''}
+        ${selectedSig.owner_title ? `<p class="sig-title">${selectedSig.owner_title}</p>` : ''}
+      </div>` : ''}
 
       <div class="closing">
       </div>
