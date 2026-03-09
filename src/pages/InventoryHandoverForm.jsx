@@ -370,6 +370,12 @@ export default function InventoryHandoverForm() {
       <div><span>تسلُّم إلى : </span><span class="name">${toPerson || '............'}</span></div>
     </div>
 
+    ${assignmentFromDate || assignmentToDate ? `<div style="background:#fffbeb;border:1px solid #fcd34d;border-radius:8px;padding:10px 16px;margin:12px 0;font-size:15px;">
+      <span style="font-weight:700;color:#475569;">فترة التكليف :</span>
+      <span style="font-weight:800;color:#1e40af;margin:0 8px;">من ${assignmentFromDate || '............'}</span>
+      <span style="font-weight:800;color:#1e40af;">إلى ${assignmentToDate || '............'}</span>
+    </div>` : ''}
+
     <p class="section-title">وذلك بحضور كل من :</p>
     <table>
       <thead><tr>
