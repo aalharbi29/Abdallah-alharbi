@@ -496,11 +496,35 @@ export default function InventoryHandoverForm() {
             <button onClick={handlePrint} className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-sm font-semibold hover:bg-slate-50 transition-colors shadow-sm">
               <Printer className="w-4 h-4" /> طباعة النموذج
             </button>
-            <button onClick={handleExportPDF} className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold transition-colors shadow-sm">
-              <Download className="w-4 h-4" /> تصدير PDF
+            <button onClick={handleExportPDF} className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-semibold transition-colors shadow-sm">
+              <Download className="w-4 h-4" /> تصدير PDF رسمي
             </button>
           </div>
         </div>
+
+        {/* عنوان النموذج ونص إضافي */}
+        <div className="space-y-3 mb-4 border-t border-slate-100 pt-4">
+          <div>
+            <label className="block text-sm font-bold text-slate-700 mb-1">عنوان النموذج</label>
+            <input
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-base font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500"
+              value={formTitle}
+              onChange={e => setFormTitle(e.target.value)}
+              placeholder="محضر جرد ونقل عهدة"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-slate-700 mb-1">نص إضافي (اختياري)</label>
+            <textarea
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-500 resize-none"
+              rows={3}
+              value={customText}
+              onChange={e => setCustomText(e.target.value)}
+              placeholder="مثال: نظراً لانتهاء خدمات الموظف فقد تم تشكيل لجنة لجرد العهدة..."
+            />
+          </div>
+        </div>
+
         <div className="flex gap-2 border-t border-slate-100 pt-4">
           <button
             onClick={() => setCurrentPage(1)}
