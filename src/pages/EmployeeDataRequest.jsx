@@ -586,7 +586,7 @@ export default function EmployeeDataRequest() {
 <html dir="rtl" lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>تقرير بيانات الموظفين</title>
+  <title>${reportTitle}</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
     * { box-sizing: border-box; margin: 0; padding: 0; }
