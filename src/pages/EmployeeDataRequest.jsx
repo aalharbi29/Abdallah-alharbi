@@ -1019,6 +1019,78 @@ export default function EmployeeDataRequest() {
                   rows={3}
                   className="mt-2"
                 />
+                <div className="flex items-center gap-4 mt-2">
+                  <Label className="text-xs text-gray-500">موقع النص:</Label>
+                  <RadioGroup value={narrativePosition} onValueChange={setNarrativePosition} className="flex gap-4">
+                    <div className="flex items-center gap-1">
+                      <RadioGroupItem value="before" id="narr-before" />
+                      <Label htmlFor="narr-before" className="cursor-pointer text-xs">قبل الجدول</Label>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <RadioGroupItem value="after" id="narr-after" />
+                      <Label htmlFor="narr-after" className="cursor-pointer text-xs">بعد الجدول</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+              </div>
+
+              {/* جهة التكليف لكل موظف */}
+              {selectedFields.includes('جهة_التكليف') && (
+                <div>
+                  <Label>تحديد جهة التكليف لكل موظف</Label>
+                  <div className="space-y-2 mt-2">
+                    {selectedEmployees.map(emp => (
+                      <div key={emp.id} className="flex items-center gap-2 p-2 bg-gray-50 rounded-md">
+                        <span className="text-sm flex-1">{emp.full_name_arabic}</span>
+                        <Select
+                          value={assignmentCenters[emp.id] || ''}
+                          onValueChange={(val) => setAssignmentCenters(prev => ({ ...prev, [emp.id]: val }))}
+                        >
+                          <SelectTrigger className="w-[200px]">
+                            <SelectValue placeholder="اختر المركز" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {HEALTH_CENTERS_OPTIONS.map(center => (
+                              <SelectItem key={center} value={center}>{center}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* التوقيع الرسمي */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="showSignature"
+                    checked={showSignature}
+                    onCheckedChange={setShowSignature}
+                  />
+                  <Label htmlFor="showSignature" className="cursor-pointer flex items-center gap-1">
+                    <Stamp className="w-4 h-4" />
+                    إضافة التوقيع الرسمي
+                  </Label>
+                </div>
+                {showSignature && signatures.length > 0 && (
+                  <Select value={selectedSignatureId} onValueChange={setSelectedSignatureId}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="اختر التوقيع / الختم" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {signatures.map(sig => (
+                        <SelectItem key={sig.id} value={sig.id}>
+                          {sig.name} - {sig.owner_name || ''} ({sig.type === 'stamp' ? 'ختم' : 'توقيع'})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+                {showSignature && signatures.length === 0 && (
+                  <p className="text-xs text-gray-500">لا توجد أختام/توقيعات مسجلة. أضفها من "تختيم سريع".</p>
+                )}
               </div>
 
               {/* Actions */}
