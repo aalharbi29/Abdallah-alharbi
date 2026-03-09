@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, Copy, Printer, X, UserPlus, Download, User, Sparkles, Loader2, FileText, Send, FileCode } from 'lucide-react';
+import { Search, Copy, Printer, X, UserPlus, Download, User, Sparkles, Loader2, FileText, Send, FileCode, FileOutput } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
