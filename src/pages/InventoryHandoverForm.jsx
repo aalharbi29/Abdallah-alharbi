@@ -276,7 +276,7 @@ export default function InventoryHandoverForm() {
         <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:600;color:#64748b;">${i+1}</td>
         <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:700;">${att.name || '-'}</td>
         <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${att.employeeId || '-'}</td>
-        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${att.workplace || '-'}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${att.workplace ? 'مركز ' + att.workplace : '-'}</td>
         <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${att.jobRole || '-'}</td>
         <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:700;">${att.role || '-'}</td>
       </tr>`;
@@ -601,6 +601,17 @@ export default function InventoryHandoverForm() {
                     onChange={setToPerson}
                     onSelect={(emp) => setToPerson(emp.full_name_arabic || "")}
                   />
+                </span>
+              </div>
+
+              <div className="flex flex-wrap gap-8 mb-4 bg-amber-50 p-4 rounded-lg border border-amber-200">
+                <span className="flex items-center gap-2">
+                  <span className="font-bold text-slate-700">فترة التكليف من :</span>
+                  <input className={`${inputCls} w-40 text-lg`} type="date" value={assignmentFromDate} onChange={e => setAssignmentFromDate(e.target.value)} />
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="font-bold text-slate-700">إلى :</span>
+                  <input className={`${inputCls} w-40 text-lg`} type="date" value={assignmentToDate} onChange={e => setAssignmentToDate(e.target.value)} />
                 </span>
               </div>
 
