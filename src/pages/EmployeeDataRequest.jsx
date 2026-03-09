@@ -65,6 +65,7 @@ export default function EmployeeDataRequest() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [extractedData, setExtractedData] = useState(null);
   const [finalRequest, setFinalRequest] = useState('');
+  const [reportNarrative, setReportNarrative] = useState('');
 
   useEffect(() => {
     loadEmployees();
