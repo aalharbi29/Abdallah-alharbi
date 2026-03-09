@@ -24,7 +24,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getAllEmployeeRoles } from '@/components/utils/employeeRoles';
-import { getLogoSettings } from '@/components/settings/LogoSettings';
+import useLogoSettings from '@/components/settings/useLogoSettings';
 
 const availableFields = [
   { key: 'full_name_arabic', label: 'الاسم الكامل', default: true },
@@ -68,6 +68,7 @@ export default function EmployeeDataRequest() {
   const [finalRequest, setFinalRequest] = useState('');
   const [reportNarrative, setReportNarrative] = useState('');
   const [reportTitle, setReportTitle] = useState('تقرير بيانات الموظفين');
+  const { logoSettings } = useLogoSettings();
 
   useEffect(() => {
     loadEmployees();
@@ -580,13 +581,6 @@ export default function EmployeeDataRequest() {
     }
 
     const dateStr = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    const logoSettings = getLogoSettings();
-
-    const logoHtml = logoSettings.showLogo && logoSettings.logoUrl
-      ? `<div class="header-banner">
-          <img src="${logoSettings.logoUrl}" alt="شعار" style="max-height: ${logoSettings.maxHeight}px; margin: ${logoSettings.marginTop}px auto ${logoSettings.marginBottom}px auto; display: block;" />
-        </div>`
-      : '';
 
     const html = `<!DOCTYPE html>
 <html dir="rtl" lang="ar">
@@ -600,6 +594,7 @@ export default function EmployeeDataRequest() {
     @page { size: A4; margin: 5mm 15mm 15mm 15mm; }
     .page-container { max-width: 210mm; margin: 0 auto; padding: 0 10px; }
     .header-banner { text-align: center; border-bottom: 2px solid #0d9488; padding: 0 0 8px; margin-bottom: 15px; overflow: hidden; }
+    .header-banner img { max-height: ${logoSettings.max_height}px; margin: ${logoSettings.margin_top}px auto ${logoSettings.margin_bottom}px auto; display: block; }
     .report-title { text-align: center; margin-bottom: 20px; }
     .report-title h1 { font-size: 22px; color: #0d9488; font-weight: 700; margin-bottom: 6px; }
     .report-title p { font-size: 13px; color: #6b7280; }
@@ -621,7 +616,9 @@ export default function EmployeeDataRequest() {
 </head>
 <body>
   <div class="page-container">
-    ${logoHtml}
+    ${logoSettings.show_logo && logoSettings.logo_url ? `<div class="header-banner">
+      <img src="${logoSettings.logo_url}" alt="شعار المؤسسة" />
+    </div>` : ''}
 
     <div class="report-title">
       <h1>${reportTitle}</h1>
@@ -641,11 +638,11 @@ export default function EmployeeDataRequest() {
     <div class="closing">
     </div>
 
-    <div class="footer-banner">
-      <p class="main-text">شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</p>
-      <p>تجمع المدينة المنورة الصحي</p>
+    ${logoSettings.show_footer ? `<div class="footer-banner">
+      ${logoSettings.footer_text_1 ? `<p class="main-text">${logoSettings.footer_text_1}</p>` : ''}
+      ${logoSettings.footer_text_2 ? `<p>${logoSettings.footer_text_2}</p>` : ''}
       <p class="date-text">${dateStr}</p>
-    </div>
+    </div>` : ''}
   </div>
 </body>
 </html>`;
