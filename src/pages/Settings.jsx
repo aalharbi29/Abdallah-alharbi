@@ -18,11 +18,11 @@ import {
   Eye,
   Image
 } from 'lucide-react';
+import LogoSettingsManager from '../components/settings/LogoSettingsManager';
 import ThemeSwitcher from '../components/theme/ThemeSwitcher';
 import { useTheme } from '../components/theme/ThemeProvider';
 import { Slider } from "@/components/ui/slider";
 import { toast } from "sonner";
-import LogoSettings from '../components/settings/LogoSettings';
 
 export default function SettingsPage() {
   const { theme, setTheme, currentTheme } = useTheme();
@@ -88,7 +88,7 @@ export default function SettingsPage() {
             </TabsTrigger>
             <TabsTrigger value="logo" className="flex items-center gap-2">
               <Image className="w-4 h-4" />
-              الشعار
+              الشعار والتذييل
             </TabsTrigger>
           </TabsList>
 
@@ -263,9 +263,8 @@ export default function SettingsPage() {
               </CardContent>
             </Card>
           </TabsContent>
-
           <TabsContent value="logo">
-            <LogoSettings />
+            <LogoSettingsManager />
           </TabsContent>
         </Tabs>
 
