@@ -1088,35 +1088,85 @@ export default function EmployeeDataRequest() {
                 </div>
               )}
 
+              {/* إعدادات الشعار */}
+              <div>
+                <Label className="text-xs text-gray-500">موقع الشعار:</Label>
+                <RadioGroup value={logoPosition} onValueChange={setLogoPosition} className="flex gap-4 mt-1">
+                  <div className="flex items-center gap-1">
+                    <RadioGroupItem value="right" id="logo-right" />
+                    <Label htmlFor="logo-right" className="cursor-pointer text-xs">يمين</Label>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <RadioGroupItem value="center" id="logo-center" />
+                    <Label htmlFor="logo-center" className="cursor-pointer text-xs">وسط</Label>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <RadioGroupItem value="left" id="logo-left" />
+                    <Label htmlFor="logo-left" className="cursor-pointer text-xs">يسار</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
               {/* التوقيع الرسمي */}
-              <div className="space-y-2">
+              <div className="space-y-3 p-3 bg-gray-50 rounded-lg border">
                 <div className="flex items-center gap-2">
                   <Checkbox
                     id="showSignature"
                     checked={showSignature}
                     onCheckedChange={setShowSignature}
                   />
-                  <Label htmlFor="showSignature" className="cursor-pointer flex items-center gap-1">
+                  <Label htmlFor="showSignature" className="cursor-pointer flex items-center gap-1 font-bold">
                     <Stamp className="w-4 h-4" />
                     إضافة التوقيع الرسمي
                   </Label>
                 </div>
-                {showSignature && signatures.length > 0 && (
-                  <Select value={selectedSignatureId} onValueChange={setSelectedSignatureId}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="اختر التوقيع / الختم" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {signatures.map(sig => (
-                        <SelectItem key={sig.id} value={sig.id}>
-                          {sig.name} - {sig.owner_name || ''} ({sig.type === 'stamp' ? 'ختم' : 'توقيع'})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-                {showSignature && signatures.length === 0 && (
-                  <p className="text-xs text-gray-500">لا توجد أختام/توقيعات مسجلة. أضفها من "تختيم سريع".</p>
+                {showSignature && (
+                  <>
+                    {signatures.length > 0 && (
+                      <Select value={selectedSignatureId} onValueChange={setSelectedSignatureId}>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="اختر التوقيع / الختم" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {signatures.map(sig => (
+                            <SelectItem key={sig.id} value={sig.id}>
+                              {sig.name} - {sig.owner_name || ''} ({sig.type === 'stamp' ? 'ختم' : 'توقيع'})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                    {signatures.length === 0 && (
+                      <p className="text-xs text-gray-500">لا توجد أختام مسجلة. سيظهر الاسم فقط.</p>
+                    )}
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <Label className="text-xs">اسم الموقع</Label>
+                        <Input value={signerName} onChange={e => setSignerName(e.target.value)} className="mt-1" />
+                      </div>
+                      <div>
+                        <Label className="text-xs">المسمى الوظيفي</Label>
+                        <Input value={signerTitle} onChange={e => setSignerTitle(e.target.value)} className="mt-1" />
+                      </div>
+                    </div>
+                    <div>
+                      <Label className="text-xs text-gray-500">موقع التوقيع:</Label>
+                      <RadioGroup value={signaturePosition} onValueChange={setSignaturePosition} className="flex gap-4 mt-1">
+                        <div className="flex items-center gap-1">
+                          <RadioGroupItem value="right" id="sig-right" />
+                          <Label htmlFor="sig-right" className="cursor-pointer text-xs">يمين</Label>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <RadioGroupItem value="center" id="sig-center" />
+                          <Label htmlFor="sig-center" className="cursor-pointer text-xs">وسط</Label>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <RadioGroupItem value="left" id="sig-left" />
+                          <Label htmlFor="sig-left" className="cursor-pointer text-xs">يسار</Label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+                  </>
                 )}
               </div>
 
