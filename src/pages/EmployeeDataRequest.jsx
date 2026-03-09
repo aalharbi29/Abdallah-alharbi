@@ -592,10 +592,11 @@ export default function EmployeeDataRequest() {
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Cairo', sans-serif; background: #fff; color: #000; }
     @page { size: A4; margin: 5mm 15mm 15mm 15mm; }
-    .page-container { max-width: 210mm; margin: 0 auto; padding: 0 10px; }
+    .page-container { max-width: 210mm; margin: 0 auto; padding: 0 10px; min-height: 100vh; display: flex; flex-direction: column; }
+    .page-content { flex: 1; padding-top: 15px; }
     .header-banner { text-align: center; border-bottom: 2px solid #0d9488; padding: 0 0 8px; margin-bottom: 15px; overflow: hidden; }
     .header-banner img { max-height: ${logoSettings.max_height}px; margin: ${logoSettings.margin_top}px auto ${logoSettings.margin_bottom}px auto; display: block; }
-    .report-title { text-align: center; margin-bottom: 20px; }
+    .report-title { text-align: center; margin-bottom: 20px; margin-top: 10px; }
     .report-title h1 { font-size: 22px; color: #0d9488; font-weight: 700; margin-bottom: 6px; }
     .report-title p { font-size: 13px; color: #6b7280; }
     .narrative-box { background: #fff; border: none; border-radius: 0; padding: 10px 0; margin-bottom: 20px; font-size: 15px; line-height: 1.9; white-space: pre-wrap; font-weight: 600; }
@@ -605,12 +606,14 @@ export default function EmployeeDataRequest() {
     .request-box { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; }
     .closing { margin-top: 25px; font-size: 15px; }
     .closing p { margin: 8px 0; }
-    .footer-banner { text-align: center; margin-top: 40px; padding-top: 15px; border-top: 2px solid #0d9488; }
+    .footer-banner { text-align: center; padding-top: 15px; border-top: 2px solid #0d9488; margin-top: auto; }
     .footer-banner p { margin: 3px 0; font-size: 11px; color: #6b7280; }
     .footer-banner .main-text { font-weight: bold; color: #0d9488; font-size: 12px; }
     .footer-banner .date-text { font-size: 9px; color: #94a3b8; margin-top: 8px; }
     @media print {
       body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .page-container { min-height: 100vh; }
+      .footer-banner { margin-top: auto; }
     }
   </style>
 </head>
