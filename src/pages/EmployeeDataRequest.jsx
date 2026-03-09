@@ -539,6 +539,130 @@ export default function EmployeeDataRequest() {
     window.print();
   };
 
+  const exportAsReport = () => {
+    const headers = selectedFields.map(key =>
+      availableFields.find(f => f.key === key)?.label || key
+    );
+
+    let tableRows = '';
+    if (displayMode === 'normal') {
+      selectedEmployees.forEach((emp, idx) => {
+        const bgColor = idx % 2 === 0 ? '#fff' : '#f9fafb';
+        tableRows += `<tr style="background-color: ${bgColor};">`;
+        selectedFields.forEach(key => {
+          tableRows += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${emp[key] || '-'}</td>`;
+        });
+        tableRows += '</tr>';
+      });
+    } else {
+      selectedEmployees.forEach(emp => {
+        tableRows += '<tr style="background-color: #dbeafe;">';
+        selectedFields.forEach(key => {
+          tableRows += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${emp[key] || '-'}</td>`;
+        });
+        tableRows += '</tr>';
+      });
+      const processedManagers = new Set();
+      Object.entries(groupedByManager).forEach(([managerId, employeeIds]) => {
+        if (!processedManagers.has(managerId)) {
+          const manager = getManagerWithCenters(managerId, employeeIds);
+          if (manager) {
+            tableRows += `<tr style="background-color: #d1fae5;"><td colspan="${selectedFields.length}" style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-weight: bold;">بيانات المدير المباشر</td></tr>`;
+            tableRows += '<tr style="background-color: #ecfdf5;">';
+            selectedFields.forEach(key => {
+              tableRows += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${manager[key] || '-'}</td>`;
+            });
+            tableRows += '</tr>';
+            processedManagers.add(managerId);
+          }
+        }
+      });
+    }
+
+    const dateStr = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+    const html = `<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>تقرير بيانات الموظفين</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Cairo', sans-serif; background: #fff; color: #000; }
+    @page { size: A4; margin: 5mm 15mm 15mm 15mm; }
+    .page-container { max-width: 210mm; margin: 0 auto; padding: 0 10px; }
+    .header-banner { text-align: center; border-bottom: 2px solid #0d9488; padding: 0 0 8px; margin-bottom: 15px; overflow: hidden; }
+    .header-banner img { max-height: 300px; margin: -80px auto -30px auto; display: block; }
+    .report-title { text-align: center; margin-bottom: 20px; }
+    .report-title h1 { font-size: 22px; color: #0d9488; font-weight: 700; margin-bottom: 6px; }
+    .report-title p { font-size: 13px; color: #6b7280; }
+    .narrative-box { background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 15px 20px; margin-bottom: 20px; font-size: 14px; line-height: 1.8; white-space: pre-wrap; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th { background: linear-gradient(135deg, #0d9488, #0f766e); color: #fff; border: 1px solid #d1d5db; padding: 10px 12px; text-align: center; font-weight: 700; font-size: 13px; }
+    td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px; }
+    .request-box { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; }
+    .closing { margin-top: 25px; font-size: 15px; }
+    .closing p { margin: 8px 0; }
+    .footer-banner { text-align: center; margin-top: 40px; padding-top: 15px; border-top: 2px solid #0d9488; }
+    .footer-banner p { margin: 3px 0; font-size: 11px; color: #6b7280; }
+    .footer-banner .main-text { font-weight: bold; color: #0d9488; font-size: 12px; }
+    .footer-banner .date-text { font-size: 9px; color: #94a3b8; margin-top: 8px; }
+    @media print {
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <div class="header-banner">
+      <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/ebae7336b_1407.png" alt="تجمع المدينة المنورة الصحي" />
+    </div>
+
+    <div class="report-title">
+      <h1>تقرير بيانات الموظفين</h1>
+      <p>تاريخ الإعداد: ${dateStr}</p>
+    </div>
+
+    ${reportNarrative ? `<div class="narrative-box">${reportNarrative}</div>` : ''}
+
+    <table>
+      <thead>
+        <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
+      </thead>
+      <tbody>${tableRows}</tbody>
+    </table>
+
+    ${finalRequest ? `<div class="request-box">${finalRequest}</div>` : ''}
+
+    <div class="closing">
+      <p>نأمل التكرم بالاطلاع وإكمال اللازم.</p>
+      <p style="font-weight: 600; margin-top: 15px;">أطيب التحايا.</p>
+    </div>
+
+    <div class="footer-banner">
+      <p class="main-text">شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</p>
+      <p>تجمع المدينة المنورة الصحي - وزارة الصحة</p>
+      <p class="date-text">${dateStr}</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    
+    // فتح في نافذة جديدة للطباعة/حفظ PDF
+    const printWindow = window.open(url, '_blank');
+    if (printWindow) {
+      printWindow.onload = () => {
+        setTimeout(() => printWindow.print(), 500);
+      };
+    }
+    
+    setTimeout(() => window.URL.revokeObjectURL(url), 5000);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 p-4 md:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
