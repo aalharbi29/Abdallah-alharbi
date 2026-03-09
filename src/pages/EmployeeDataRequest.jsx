@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, Copy, Printer, X, UserPlus, Download, User, Sparkles, Loader2, FileText, Send, FileCode, FileOutput } from 'lucide-react';
+import { Search, Copy, Printer, X, UserPlus, Download, User, Sparkles, Loader2, FileText, Send, FileCode, FileOutput, Stamp } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import {
@@ -42,6 +43,11 @@ const availableFields = [
   { key: 'qualification', label: 'المؤهل', default: false },
   { key: 'job_category', label: 'ملاك الوظيفة', default: false },
   { key: 'الأدوار', label: 'الأدوار', default: false },
+  { key: 'جهة_التكليف', label: 'جهة التكليف', default: false },
+];
+
+const HEALTH_CENTERS_OPTIONS = [
+  'الحسو', 'هدبان', 'صخيبرة', 'طلال', 'الماوية', 'بلغة', 'الهميج', 'بطحي'
 ];
 
 export default function EmployeeDataRequest() {
@@ -68,12 +74,23 @@ export default function EmployeeDataRequest() {
   const [finalRequest, setFinalRequest] = useState('');
   const [reportNarrative, setReportNarrative] = useState('');
   const [reportTitle, setReportTitle] = useState('تقرير بيانات الموظفين');
+  const [narrativePosition, setNarrativePosition] = useState('before'); // before or after
+  const [showSignature, setShowSignature] = useState(false);
+  const [signatures, setSignatures] = useState([]);
+  const [selectedSignatureId, setSelectedSignatureId] = useState('');
+  const [assignmentCenters, setAssignmentCenters] = useState({});
   const { logoSettings } = useLogoSettings();
 
   useEffect(() => {
     loadEmployees();
     loadHealthCenters();
+    loadSignatures();
   }, []);
+
+  const loadSignatures = async () => {
+    const sigs = await base44.entities.StampSignature.filter({ is_active: true });
+    setSignatures(Array.isArray(sigs) ? sigs : []);
+  };
 
   const loadEmployees = async () => {
     setIsLoading(true);
