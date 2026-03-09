@@ -637,8 +637,6 @@ export default function EmployeeDataRequest() {
     ${finalRequest ? `<div class="request-box">${finalRequest}</div>` : ''}
 
     <div class="closing">
-      <p>نأمل التكرم بالاطلاع وإكمال اللازم.</p>
-      <p style="font-weight: 600; margin-top: 15px;">أطيب التحايا.</p>
     </div>
 
     <div class="footer-banner">
