@@ -24,7 +24,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getAllEmployeeRoles } from '@/components/utils/employeeRoles';
-import useLogoSettings from '@/components/settings/useLogoSettings';
+import { getLogoSettings } from '@/components/settings/LogoSettings';
 
 const availableFields = [
   { key: 'full_name_arabic', label: 'الاسم الكامل', default: true },
@@ -68,7 +68,6 @@ export default function EmployeeDataRequest() {
   const [finalRequest, setFinalRequest] = useState('');
   const [reportNarrative, setReportNarrative] = useState('');
   const [reportTitle, setReportTitle] = useState('تقرير بيانات الموظفين');
-  const { logoSettings } = useLogoSettings();
 
   useEffect(() => {
     loadEmployees();
@@ -581,6 +580,13 @@ export default function EmployeeDataRequest() {
     }
 
     const dateStr = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const logoSettings = getLogoSettings();
+
+    const logoHtml = logoSettings.showLogo && logoSettings.logoUrl
+      ? `<div class="header-banner">
+          <img src="${logoSettings.logoUrl}" alt="شعار" style="max-height: ${logoSettings.maxHeight}px; margin: ${logoSettings.marginTop}px auto ${logoSettings.marginBottom}px auto; display: block;" />
+        </div>`
+      : '';
 
     const html = `<!DOCTYPE html>
 <html dir="rtl" lang="ar">
@@ -594,7 +600,6 @@ export default function EmployeeDataRequest() {
     @page { size: A4; margin: 5mm 15mm 15mm 15mm; }
     .page-container { max-width: 210mm; margin: 0 auto; padding: 0 10px; }
     .header-banner { text-align: center; border-bottom: 2px solid #0d9488; padding: 0 0 8px; margin-bottom: 15px; overflow: hidden; }
-    .header-banner img { max-height: 300px; margin: -80px auto -30px auto; display: block; }
     .report-title { text-align: center; margin-bottom: 20px; }
     .report-title h1 { font-size: 22px; color: #0d9488; font-weight: 700; margin-bottom: 6px; }
     .report-title p { font-size: 13px; color: #6b7280; }
@@ -616,9 +621,7 @@ export default function EmployeeDataRequest() {
 </head>
 <body>
   <div class="page-container">
-    <div class="header-banner">
-      <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/ebae7336b_1407.png" alt="تجمع المدينة المنورة الصحي" />
-    </div>
+    ${logoHtml}
 
     <div class="report-title">
       <h1>${reportTitle}</h1>
