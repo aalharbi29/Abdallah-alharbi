@@ -177,6 +177,8 @@ export default function InventoryHandoverForm() {
   const [currentPage, setCurrentPage] = useState(1);
 
   // Page 1
+  const [formTitle, setFormTitle] = useState("محضر جرد ونقل عهدة");
+  const [customText, setCustomText] = useState("");
   const [meetingDay, setMeetingDay] = useState("");
   const [meetingHijriDate, setMeetingHijriDate] = useState("");
   const [department, setDepartment] = useState("");
