@@ -621,7 +621,7 @@ export default function EmployeeDataRequest() {
     </div>
 
     <div class="report-title">
-      <h1>تقرير بيانات الموظفين</h1>
+      <h1>${reportTitle}</h1>
       <p>تاريخ الإعداد: ${dateStr}</p>
     </div>
 
