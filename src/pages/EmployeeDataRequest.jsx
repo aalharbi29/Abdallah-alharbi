@@ -1334,6 +1334,18 @@ export default function EmployeeDataRequest() {
                 </div>
               )}
 
+              {/* تجزئة الصفحات */}
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="splitPages"
+                  checked={splitPages}
+                  onCheckedChange={setSplitPages}
+                />
+                <Label htmlFor="splitPages" className="cursor-pointer text-sm">
+                  تجزئة التقرير (النص في صفحة والجدول في صفحة مع التوقيع في كلتيهما)
+                </Label>
+              </div>
+
               {/* إعدادات الشعار */}
               <div>
                 <Label className="text-xs text-gray-500">موقع الشعار:</Label>
@@ -1414,6 +1426,16 @@ export default function EmployeeDataRequest() {
                     </div>
                   </>
                 )}
+              </div>
+
+              {/* حفظ / تحميل النموذج */}
+              <div className="flex flex-wrap gap-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <Button size="sm" variant="outline" onClick={saveDefaultTemplate} className="gap-1">
+                  <Save className="w-4 h-4" /> حفظ كنموذج افتراضي
+                </Button>
+                <Button size="sm" variant="outline" onClick={loadDefaultTemplate} className="gap-1">
+                  <FolderOpen className="w-4 h-4" /> تحميل النموذج المحفوظ
+                </Button>
               </div>
 
               {/* Actions */}
