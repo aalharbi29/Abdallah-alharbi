@@ -117,16 +117,16 @@ export default function ReportPreviewDialog({
           const manager = getManagerWithCenters(managerId, employeeIds);
           if (manager) {
             managerRows.push(
-              <tr key={`mh-${managerId}`} style={{ backgroundColor: '#d1fae5' }}>
-                <td colSpan={selectedFields.length} className="border border-gray-300 px-3 py-2 text-center font-bold text-xs">
+              <tr key={`mh-${managerId}`} style={{ backgroundColor: '#E0F7FA' }}>
+                <td colSpan={selectedFields.length} className="border px-3 py-2 text-center font-bold text-xs" style={{ borderColor: '#87CEEB', color: '#0277BD' }}>
                   بيانات المدير المباشر
                 </td>
               </tr>
             );
             managerRows.push(
-              <tr key={`md-${managerId}`} style={{ backgroundColor: '#ecfdf5' }}>
+              <tr key={`md-${managerId}`} style={{ backgroundColor: '#E0F7FA' }}>
                 {selectedFields.map(key => (
-                  <td key={key} className="border border-gray-300 px-3 py-2 text-center text-xs">
+                  <td key={key} className="border px-3 py-2 text-center text-xs font-bold" style={{ borderColor: '#87CEEB', color: '#0277BD' }}>
                     {getFieldValue(manager, key)}
                   </td>
                 ))}
@@ -181,7 +181,7 @@ export default function ReportPreviewDialog({
                 const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
                 const hasKeyword = keywords.some(kw => line.includes(kw));
                 return (
-                  <span key={i} className={hasKeyword ? 'block font-bold' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, fontSize: '14px' } : {}}>
+                  <span key={i} className={hasKeyword ? 'block' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 900, fontSize: '16px' } : {}}>
                     {line}
                   </span>
                 );
@@ -212,7 +212,7 @@ export default function ReportPreviewDialog({
                 const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
                 const hasKeyword = keywords.some(kw => line.includes(kw));
                 return (
-                  <span key={i} className={hasKeyword ? 'block font-bold' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, fontSize: '14px' } : {}}>
+                  <span key={i} className={hasKeyword ? 'block' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 900, fontSize: '16px' } : {}}>
                     {line}
                   </span>
                 );
@@ -230,21 +230,21 @@ export default function ReportPreviewDialog({
           {/* التوقيع */}
           {showSignature && (
             <div className={`mt-8 ${sigAlignClass}`}>
+              {signerName && <p className="font-bold text-blue-800 text-sm">{signerName}</p>}
+              {signerTitle && <p className="text-gray-600 text-xs mt-0.5">{signerTitle}</p>}
               {selectedSig && (
                 <img 
                   src={selectedSig.image_url} 
                   alt={selectedSig.name}
-                  className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`}
+                  className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block mt-1`}
                 />
               )}
-              {signerName && <p className="font-bold text-blue-800 text-sm mt-2">{signerName}</p>}
-              {signerTitle && <p className="text-gray-600 text-xs mt-0.5">{signerTitle}</p>}
             </div>
           )}
 
           {/* تذييل */}
           {logoSettings.show_footer && (
-            <div className="mt-8 pt-3 border-t-2 border-blue-800 text-center">
+            <div className="mt-8 pt-3 border-t-2 text-center" style={{ borderColor: '#87CEEB' }}>
               {logoSettings.footer_text_1 && <p className="font-bold text-blue-800 text-sm">{logoSettings.footer_text_1}</p>}
               {logoSettings.footer_text_2 && <p className="text-blue-800 text-sm">{logoSettings.footer_text_2}</p>}
               <p className="text-blue-800 text-xs mt-2">{dateStr}</p>
