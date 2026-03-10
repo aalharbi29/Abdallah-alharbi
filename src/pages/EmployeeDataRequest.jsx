@@ -868,7 +868,7 @@ export default function EmployeeDataRequest() {
     th { background: #e0f2fe; color: #000; border: 1px solid #d1d5db; padding: 10px 12px; text-align: center; font-family: '${fontSettings.tableHeader.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.tableHeader.weight}; font-size: ${fontSettings.tableHeader.size}px; }
     td { border: 1px solid #d1d5db; padding: 4px 8px; text-align: center; font-family: '${fontSettings.tableBody.font}', 'Cairo', sans-serif; font-size: ${fontSettings.tableBody.size}px; font-weight: ${fontSettings.tableBody.weight}; }
     .request-box { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; }
-    .signature-section { text-align: ${sigAlign}; margin-top: 30px; padding: 15px 0; }
+    .signature-section { text-align: ${sigAlign}; margin-top: 50px; padding: 15px 0; }
     .signature-section .sig-name { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 700; font-size: 18px; margin-top: 8px; color: #000; }
     .signature-section .sig-title { font-weight: 700; font-size: 15px; color: #000; margin-top: 0; }
     .signature-section img { max-height: 120px; ${sigAlign === 'center' ? 'margin: 0 auto;' : ''} display: block; margin-top: -2px; mix-blend-mode: multiply; }

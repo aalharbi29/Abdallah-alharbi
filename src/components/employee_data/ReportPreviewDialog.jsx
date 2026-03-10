@@ -211,7 +211,7 @@ export default function ReportPreviewDialog({
 
               {/* توقيع صفحة 1 */}
               {showSignature && (
-                <div className={`mt-8 ${sigAlignClass}`}>
+                <div className={`mt-12 ${sigAlignClass}`}>
                   {signerName && <p className="text-lg" style={{ fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, color: '#000', fontSize: '18px' }}>{signerName}</p>}
                   {signerTitle && <p className="text-sm" style={{ fontWeight: 700, color: '#000', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
                   {selectedSig && <img src={selectedSig.image_url} alt={selectedSig.name} className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`} style={{ marginTop: '-2px', mixBlendMode: 'multiply' }} />}
