@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Printer, Download, Plus, Trash2, Package, Search } from "lucide-react";
+import HijriDatePicker from "@/components/ui/HijriDatePicker";
 import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 
@@ -569,7 +570,12 @@ export default function InventoryHandoverForm() {
                   {DAYS.map(d => <option key={d} value={d}>{d}</option>)}
                 </select>
                 {' '}الموافق{' '}
-                <input className={`${inputCls} w-36 text-lg`} placeholder="التاريخ الهجري" value={meetingHijriDate} onChange={e => setMeetingHijriDate(e.target.value)} />
+                <HijriDatePicker
+                  value={meetingHijriDate}
+                  onChange={setMeetingHijriDate}
+                  placeholder="التاريخ الهجري"
+                  className={`${inputCls} w-44 text-lg`}
+                />
                 {' '}هـ ،
               </p>
 
