@@ -41,7 +41,7 @@ export default function ReportPreviewDialog({
       return empList.map((emp, idx) => (
         <tr key={emp.id} style={{ backgroundColor: bgFn ? bgFn(idx) : (idx % 2 === 0 ? '#fff' : '#f9fafb') }}>
           {selectedFields.map(key => (
-            <td key={key} className="border border-gray-300 px-3 py-2 text-center text-xs">
+            <td key={key} className="border border-gray-300 px-3 py-2 text-center text-xs font-bold">
                 {getFieldValue(emp, key)}
               </td>
             ))}
@@ -74,7 +74,7 @@ export default function ReportPreviewDialog({
         rows.push(
           <tr key={emp.id} style={{ backgroundColor: bg }}>
             {otherFields.map(key => (
-              <td key={key} className="border border-gray-300 px-3 py-2 text-center text-xs">
+              <td key={key} className="border border-gray-300 px-3 py-2 text-center text-xs font-bold">
                 {getFieldValue(emp, key)}
               </td>
             ))}
@@ -127,7 +127,7 @@ export default function ReportPreviewDialog({
             managerRows.push(
               <tr key={`md-${managerId}`} style={{ backgroundColor: '#ecfdf5' }}>
                 {selectedFields.map(key => (
-                  <td key={key} className="border border-gray-300 px-3 py-2 text-center text-xs">
+                  <td key={key} className="border border-gray-300 px-3 py-2 text-center text-xs font-bold">
                     {getFieldValue(manager, key)}
                   </td>
                 ))}
@@ -172,7 +172,7 @@ export default function ReportPreviewDialog({
 
           {/* عنوان */}
           <div className="text-center mb-5">
-            <h1 className="text-lg font-bold text-teal-700">{reportTitle}</h1>
+            <h1 className="text-lg font-bold" style={{ color: '#0284c7' }}>{reportTitle}</h1>
           </div>
 
           {/* نص تعبيري قبل الجدول */}
