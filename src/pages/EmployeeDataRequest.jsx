@@ -861,12 +861,12 @@ export default function EmployeeDataRequest() {
     .report-title h1 { font-size: 22px; color: #0284c7; font-weight: 700; margin-bottom: 6px; }
     .narrative-box { background: #fff; border: none; border-radius: 0; padding: 10px 0; margin-bottom: 20px; line-height: ${fontSettings.lineHeight || '2.0'}; white-space: pre-wrap; }
     .narrative-box .paragraph { margin-bottom: ${fontSettings.paragraphSpacing || 10}px; }
-    .narrative-bold { font-family: '${fontSettings.narrativeBold.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeBold.weight}; font-size: ${fontSettings.narrativeBold.size}px; display: block; }
-    .narrative-greeting { font-family: '${fontSettings.narrativeGreeting.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeGreeting.weight}; font-size: ${fontSettings.narrativeGreeting.size}px; display: block; }
-    .narrative-body { font-family: '${fontSettings.narrativeBody.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeBody.weight}; font-size: ${fontSettings.narrativeBody.size}px; display: inline; }
+    .narrative-bold { font-family: '${fontSettings.narrativeBold.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeBold.weight}; font-size: ${fontSettings.narrativeBold.size}px; display: block; line-height: 1.0; }
+    .narrative-greeting { font-family: '${fontSettings.narrativeGreeting.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeGreeting.weight}; font-size: ${fontSettings.narrativeGreeting.size}px; display: block; line-height: 1.0; }
+    .narrative-body { font-family: '${fontSettings.narrativeBody.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeBody.weight}; font-size: ${fontSettings.narrativeBody.size}px; display: inline; line-height: ${fontSettings.lineHeight || '2.0'}; }
     table { width: 100%; border-collapse: collapse; margin: 15px 0; }
     th { background: #e0f2fe; color: #000; border: 1px solid #d1d5db; padding: 10px 12px; text-align: center; font-family: '${fontSettings.tableHeader.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.tableHeader.weight}; font-size: ${fontSettings.tableHeader.size}px; }
-    td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-family: '${fontSettings.tableBody.font}', 'Cairo', sans-serif; font-size: ${fontSettings.tableBody.size}px; font-weight: ${fontSettings.tableBody.weight}; }
+    td { border: 1px solid #d1d5db; padding: 4px 8px; text-align: center; font-family: '${fontSettings.tableBody.font}', 'Cairo', sans-serif; font-size: ${fontSettings.tableBody.size}px; font-weight: ${fontSettings.tableBody.weight}; }
     .request-box { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; }
     .signature-section { text-align: ${sigAlign}; margin-top: 30px; padding: 15px 0; }
     .signature-section .sig-name { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 700; font-size: 18px; margin-top: 8px; color: #000; }
