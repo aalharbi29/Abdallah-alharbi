@@ -669,55 +669,7 @@ export default function EmployeeDataRequest() {
     const hasAssignmentCol = selectedFields.includes('فترة_التكليف');
     const otherFieldsExport = selectedFields.filter(k => k !== 'فترة_التكليف');
 
-    const buildMergedRows = (empList, bgFn) => {
-      let html = '';
-      if (!hasAssignmentCol || !assignmentGroups || assignmentGroups.length === 0) {
-        empList.forEach((emp, idx) => {
-          const bg = bgFn ? bgFn(idx) : (idx % 2 === 0 ? '#fff' : '#f9fafb');
-          html += `<tr style="background-color: ${bg};">`;
-          selectedFields.forEach(key => {
-            html += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(emp, key)}</td>`;
-          });
-          html += '</tr>';
-        });
-        return html;
-      }
-
-      const grouped = [];
-      const usedIds = new Set();
-      assignmentGroups.forEach(group => {
-        const ids = group.employeeIds.length > 0 ? group.employeeIds : (assignmentGroups.length === 1 ? empList.map(e => e.id) : []);
-        const grpEmps = empList.filter(e => ids.includes(e.id));
-        if (grpEmps.length > 0) {
-          grouped.push({ group, employees: grpEmps });
-          grpEmps.forEach(e => usedIds.add(e.id));
-        }
-      });
-      const ungrouped = empList.filter(e => !usedIds.has(e.id));
-      if (ungrouped.length > 0) grouped.push({ group: null, employees: ungrouped });
-
-      let globalIdx = 0;
-      grouped.forEach(({ group, employees: grpEmps }) => {
-        grpEmps.forEach((emp, localIdx) => {
-          const bg = bgFn ? bgFn(globalIdx) : (globalIdx % 2 === 0 ? '#fff' : '#f9fafb');
-          html += `<tr style="background-color: ${bg};">`;
-          otherFieldsExport.forEach(key => {
-            html += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(emp, key)}</td>`;
-          });
-          if (localIdx === 0) {
-            const periodLine1 = group && group.fromDate ? `من ${group.fromDate}` : '';
-            const periodLine2 = group && group.toDate ? `إلى ${group.toDate} ${group.dateType === 'hijri' ? 'هـ' : 'م'}` : '';
-            const periodText = (periodLine1 || periodLine2) ? `<div>${periodLine1}</div><div>${periodLine2}</div>` : '-';
-            html += `<td rowspan="${grpEmps.length}" style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: #fff; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
-          }
-          html += '</tr>';
-          globalIdx++;
-        });
-      });
-      return html;
-    };
-
-    // tableRows لم يعد مستخدمًا - تم استبداله بنظام تقسيم الصفحات
+    // تم استبدال buildMergedRows بنظام buildFlatRows + تقسيم الصفحات
 
     const dateStr = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     const selectedSig = showSignature && selectedSignatureId ? signatures.find(s => s.id === selectedSignatureId) : null;
