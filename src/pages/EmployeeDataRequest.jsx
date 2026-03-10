@@ -29,6 +29,7 @@ import useLogoSettings from '@/components/settings/useLogoSettings';
 import ReportPreviewDialog from '@/components/employee_data/ReportPreviewDialog';
 import AITextEnhancer from '@/components/employee_data/AITextEnhancer';
 import EmployeeMultiSelect from '@/components/employee_data/EmployeeMultiSelect';
+import FontSettings from '@/components/employee_data/FontSettings';
 
 const availableFields = [
   { key: 'full_name_arabic', label: 'الاسم الكامل', default: true },
@@ -93,6 +94,13 @@ export default function EmployeeDataRequest() {
   const [signerTitle, setSignerTitle] = useState('المساعد لشؤون المراكز الصحية بالحسو');
   const [showPreview, setShowPreview] = useState(false);
   const [splitPages, setSplitPages] = useState(false);
+  const [fontSettings, setFontSettings] = useState({
+    narrativeBold: { font: 'PT Sans Caption', size: '17', weight: '900' },
+    narrativeGreeting: { font: 'Cairo', size: '16', weight: '700' },
+    narrativeBody: { font: 'Cairo', size: '16', weight: '600' },
+    tableHeader: { font: 'Cairo', size: '13', weight: '700' },
+    tableBody: { font: 'Cairo', size: '13', weight: '700' },
+  });
   const { logoSettings } = useLogoSettings();
 
   // حفظ وتحميل النموذج الافتراضي
@@ -100,7 +108,7 @@ export default function EmployeeDataRequest() {
     const template = {
       reportTitle, reportNarrative, narrativePosition, selectedFields,
       displayMode, logoPosition, signaturePosition, signerName, signerTitle,
-      showSignature, selectedSignatureId, splitPages,
+      showSignature, selectedSignatureId, splitPages, fontSettings,
     };
     localStorage.setItem('employeeDataRequestTemplate', JSON.stringify(template));
     alert('تم حفظ النموذج الافتراضي بنجاح');
@@ -122,6 +130,7 @@ export default function EmployeeDataRequest() {
     if (t.showSignature !== undefined) setShowSignature(t.showSignature);
     if (t.selectedSignatureId) setSelectedSignatureId(t.selectedSignatureId);
     if (t.splitPages !== undefined) setSplitPages(t.splitPages);
+    if (t.fontSettings) setFontSettings(t.fontSettings);
     alert('تم تحميل النموذج الافتراضي');
   };
 
@@ -142,6 +151,7 @@ export default function EmployeeDataRequest() {
       if (t.showSignature !== undefined) setShowSignature(t.showSignature);
       if (t.selectedSignatureId) setSelectedSignatureId(t.selectedSignatureId);
       if (t.splitPages !== undefined) setSplitPages(t.splitPages);
+      if (t.fontSettings) setFontSettings(t.fontSettings);
     }
   }, []);
 
