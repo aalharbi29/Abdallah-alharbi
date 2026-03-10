@@ -27,6 +27,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { getAllEmployeeRoles } from '@/components/utils/employeeRoles';
 import useLogoSettings from '@/components/settings/useLogoSettings';
 import ReportPreviewDialog from '@/components/employee_data/ReportPreviewDialog';
+import AITextEnhancer from '@/components/employee_data/AITextEnhancer';
 
 const availableFields = [
   { key: 'full_name_arabic', label: 'الاسم الكامل', default: true },
@@ -1178,7 +1179,15 @@ export default function EmployeeDataRequest() {
 
               {/* عنوان التقرير */}
               <div>
-                <Label>عنوان التقرير الرسمي</Label>
+                <div className="flex items-center justify-between">
+                  <Label>عنوان التقرير الرسمي</Label>
+                  <AITextEnhancer
+                    text={reportTitle}
+                    onApply={(newText) => setReportTitle(newText)}
+                    type="title"
+                    disabled={!reportTitle?.trim()}
+                  />
+                </div>
                 <Input
                   value={reportTitle}
                   onChange={(e) => setReportTitle(e.target.value)}
@@ -1189,7 +1198,15 @@ export default function EmployeeDataRequest() {
 
               {/* نص تعبيري للتقرير */}
               <div>
-                <Label>نص تعبيري للتقرير (اختياري)</Label>
+                <div className="flex items-center justify-between">
+                  <Label>نص تعبيري للتقرير (اختياري)</Label>
+                  <AITextEnhancer
+                    text={reportNarrative}
+                    onApply={(newText) => setReportNarrative(newText)}
+                    type="narrative"
+                    disabled={!reportNarrative?.trim()}
+                  />
+                </div>
                 <Textarea
                   value={reportNarrative}
                   onChange={(e) => setReportNarrative(e.target.value)}
