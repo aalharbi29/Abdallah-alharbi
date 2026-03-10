@@ -637,7 +637,8 @@ export default function EmployeeDataRequest() {
   const getFieldValue = (emp, key) => {
     if (key === 'جهة_التكليف') {
       const center = assignmentCenters[emp.id];
-      return center ? `مركز ${center}` : '-';
+      if (!center) return '-';
+      return center.includes('شؤون') ? center : `مركز ${center}`;
     }
     if (key === 'فترة_التكليف') {
       // إذا مجموعة واحدة بدون تحديد موظفين → تشمل الجميع
