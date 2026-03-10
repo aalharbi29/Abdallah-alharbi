@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
-import { Search, Copy, Printer, X, UserPlus, Download, User, Sparkles, Loader2, FileText, Send, FileCode, FileOutput, Stamp, Eye } from 'lucide-react';
+import { Search, Copy, Printer, X, UserPlus, Download, User, Sparkles, Loader2, FileText, Send, FileCode, FileOutput, Stamp, Eye, Save, FolderOpen } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from '@/components/ui/badge';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -90,7 +90,58 @@ export default function EmployeeDataRequest() {
   const [signerName, setSignerName] = useState('عبدالمجيد سعود الربيقي');
   const [signerTitle, setSignerTitle] = useState('المساعد لشؤون المراكز الصحية بالحسو');
   const [showPreview, setShowPreview] = useState(false);
+  const [splitPages, setSplitPages] = useState(false);
   const { logoSettings } = useLogoSettings();
+
+  // حفظ وتحميل النموذج الافتراضي
+  const saveDefaultTemplate = () => {
+    const template = {
+      reportTitle, reportNarrative, narrativePosition, selectedFields,
+      displayMode, logoPosition, signaturePosition, signerName, signerTitle,
+      showSignature, selectedSignatureId, splitPages,
+    };
+    localStorage.setItem('employeeDataRequestTemplate', JSON.stringify(template));
+    alert('تم حفظ النموذج الافتراضي بنجاح');
+  };
+
+  const loadDefaultTemplate = () => {
+    const saved = localStorage.getItem('employeeDataRequestTemplate');
+    if (!saved) { alert('لا يوجد نموذج محفوظ'); return; }
+    const t = JSON.parse(saved);
+    if (t.reportTitle) setReportTitle(t.reportTitle);
+    if (t.reportNarrative) setReportNarrative(t.reportNarrative);
+    if (t.narrativePosition) setNarrativePosition(t.narrativePosition);
+    if (t.selectedFields) setSelectedFields(t.selectedFields);
+    if (t.displayMode) setDisplayMode(t.displayMode);
+    if (t.logoPosition) setLogoPosition(t.logoPosition);
+    if (t.signaturePosition) setSignaturePosition(t.signaturePosition);
+    if (t.signerName) setSignerName(t.signerName);
+    if (t.signerTitle) setSignerTitle(t.signerTitle);
+    if (t.showSignature !== undefined) setShowSignature(t.showSignature);
+    if (t.selectedSignatureId) setSelectedSignatureId(t.selectedSignatureId);
+    if (t.splitPages !== undefined) setSplitPages(t.splitPages);
+    alert('تم تحميل النموذج الافتراضي');
+  };
+
+  // تحميل تلقائي عند أول فتح
+  useEffect(() => {
+    const saved = localStorage.getItem('employeeDataRequestTemplate');
+    if (saved) {
+      const t = JSON.parse(saved);
+      if (t.reportTitle) setReportTitle(t.reportTitle);
+      if (t.reportNarrative) setReportNarrative(t.reportNarrative);
+      if (t.narrativePosition) setNarrativePosition(t.narrativePosition);
+      if (t.selectedFields) setSelectedFields(t.selectedFields);
+      if (t.displayMode) setDisplayMode(t.displayMode);
+      if (t.logoPosition) setLogoPosition(t.logoPosition);
+      if (t.signaturePosition) setSignaturePosition(t.signaturePosition);
+      if (t.signerName) setSignerName(t.signerName);
+      if (t.signerTitle) setSignerTitle(t.signerTitle);
+      if (t.showSignature !== undefined) setShowSignature(t.showSignature);
+      if (t.selectedSignatureId) setSelectedSignatureId(t.selectedSignatureId);
+      if (t.splitPages !== undefined) setSplitPages(t.splitPages);
+    }
+  }, []);
 
   useEffect(() => {
     loadEmployees();
