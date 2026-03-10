@@ -34,7 +34,10 @@ export default function EmployeeMultiSelect({ employees, selectedEmployees, onSe
     let list = employees;
     
     if (centerFilter && centerFilter !== 'all') {
-      list = list.filter(emp => emp.المركز_الصحي === centerFilter);
+      list = list.filter(emp => {
+        const center = emp.المركز_الصحي || '';
+        return center === centerFilter || center.includes(centerFilter) || centerFilter.includes(center);
+      });
     }
     
     if (searchQuery) {
@@ -85,8 +88,12 @@ export default function EmployeeMultiSelect({ employees, selectedEmployees, onSe
   const centerCounts = useMemo(() => {
     const counts = {};
     employees.forEach(emp => {
-      const center = emp.المركز_الصحي || 'غير محدد';
-      counts[center] = (counts[center] || 0) + 1;
+      const center = emp.المركز_الصحي || '';
+      HEALTH_CENTERS.forEach(hc => {
+        if (center === hc || center.includes(hc) || hc.includes(center)) {
+          counts[hc] = (counts[hc] || 0) + 1;
+        }
+      });
     });
     return counts;
   }, [employees]);

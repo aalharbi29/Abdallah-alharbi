@@ -823,8 +823,8 @@ export default function EmployeeDataRequest() {
     .header-banner img { max-height: ${logoSettings.max_height}px; margin: ${logoSettings.margin_top}px 0 ${logoSettings.margin_bottom}px 0; display: block; }
     .report-title { text-align: center; margin-bottom: 20px; margin-top: 10px; }
     .report-title h1 { font-size: 22px; color: #0284c7; font-weight: 700; margin-bottom: 6px; }
-    .narrative-box { background: #fff; border: none; border-radius: 0; padding: 10px 0; margin-bottom: 20px; font-size: 15px; line-height: 1.9; white-space: pre-wrap; font-weight: 600; }
-    .narrative-bold { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 900; font-size: 16px; display: block; }
+    .narrative-box { background: #fff; border: none; border-radius: 0; padding: 10px 0; margin-bottom: 20px; font-size: 16px; line-height: 2; white-space: pre-wrap; font-weight: 600; }
+    .narrative-bold { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 900; font-size: 17px; display: block; }
     table { width: 100%; border-collapse: collapse; margin: 15px 0; }
     th { background: #e0f2fe; color: #000; border: 1px solid #d1d5db; padding: 10px 12px; text-align: center; font-weight: bold; font-size: 13px; }
     td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px; font-weight: bold; }
