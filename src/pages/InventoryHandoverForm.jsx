@@ -271,12 +271,12 @@ export default function InventoryHandoverForm() {
     let attendeesRows = '';
     attendees.forEach((att, i) => {
       attendeesRows += `<tr>
-        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:600;color:#64748b;">${i+1}</td>
-        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:700;">${att.name || '-'}</td>
-        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${att.employeeId || '-'}</td>
-        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${att.workplace || '-'}</td>
-        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${att.jobRole || '-'}</td>
-        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:700;">${att.role || '-'}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:500;color:#64748b;">${i+1}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:500;">${att.name || '-'}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:400;">${att.employeeId || '-'}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:400;">${att.workplace || '-'}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:400;">${att.jobRole || '-'}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:500;">${att.role || '-'}</td>
       </tr>`;
     });
 
@@ -284,11 +284,11 @@ export default function InventoryHandoverForm() {
     let equipmentRows = '';
     equipmentItems.forEach((item, i) => {
       equipmentRows += `<tr>
-        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:600;color:#64748b;">${i+1}</td>
-        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:700;">${item.category || '-'}</td>
-        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${item.type || '-'}</td>
-        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;">${item.brand || '-'}</td>
-        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:700;">${item.quantity || 1}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:500;color:#64748b;">${i+1}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:500;">${item.category || '-'}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:400;">${item.type || '-'}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:400;">${item.brand || '-'}</td>
+        <td style="border:1px solid #cbd5e1;padding:8px;text-align:center;font-weight:500;">${item.quantity || 1}</td>
       </tr>`;
     });
 
@@ -328,7 +328,7 @@ export default function InventoryHandoverForm() {
     .from-to span { font-weight: 700; color: #475569; }
     .from-to .name { font-weight: 800; color: #1e293b; }
     table { width: 100%; border-collapse: collapse; margin: 12px 0; }
-    th { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 10px 8px; text-align: center; font-weight: 700; font-size: 13px; }
+    th { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 10px 8px; text-align: center; font-weight: 600; font-size: 13px; }
     td { font-size: 13px; }
     .section-title { font-size: 16px; font-weight: 800; color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin: 25px 0 15px; }
     .sigs-row { display: flex; gap: 16px; flex-wrap: wrap; }
