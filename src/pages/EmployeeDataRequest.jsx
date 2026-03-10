@@ -739,21 +739,26 @@ export default function EmployeeDataRequest() {
 
     const processNarrativeHtml = (text) => {
       if (!text) return '';
-      const lines = text.split('\n');
+      // تقسيم الفقرات بناءً على سطرين فارغين أو سطر فارغ واحد
+      const paragraphs = text.split(/\n\s*\n/);
       const greetingKeywords = ['السلام', 'التحية', 'وبعد', 'تحية'];
       const boldKeywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
-      const processedLines = lines.map(line => {
-        const isGreeting = greetingKeywords.some(kw => line.includes(kw));
-        const isBold = boldKeywords.some(kw => line.includes(kw));
-        if (isGreeting) {
-          return `<span class="narrative-greeting">${line}</span>`;
-        }
-        if (isBold) {
-          return `<span class="narrative-bold">${line}</span>`;
-        }
-        return `<span class="narrative-body">${line}</span>`;
-      });
-      return processedLines.join('\n');
+      
+      return paragraphs.map(paragraph => {
+        const lines = paragraph.split('\n');
+        const processedLines = lines.map(line => {
+          const isGreeting = greetingKeywords.some(kw => line.includes(kw));
+          const isBold = boldKeywords.some(kw => line.includes(kw));
+          if (isGreeting) {
+            return `<span class="narrative-greeting">${line}</span>`;
+          }
+          if (isBold) {
+            return `<span class="narrative-bold">${line}</span>`;
+          }
+          return `<span class="narrative-body">${line}</span>`;
+        });
+        return `<div class="paragraph">${processedLines.join('\n')}</div>`;
+      }).join('');
     };
     const narrativeHtml = reportNarrative ? `<div class="narrative-box">${processNarrativeHtml(reportNarrative)}</div>` : '';
 
@@ -853,7 +858,8 @@ export default function EmployeeDataRequest() {
     .header-banner img { max-height: ${logoSettings.max_height}px; margin: ${logoSettings.margin_top}px 0 ${logoSettings.margin_bottom}px 0; display: block; }
     .report-title { text-align: center; margin-bottom: 20px; margin-top: 10px; }
     .report-title h1 { font-size: 22px; color: #0284c7; font-weight: 700; margin-bottom: 6px; }
-    .narrative-box { background: #fff; border: none; border-radius: 0; padding: 10px 0; margin-bottom: 20px; line-height: 2; white-space: pre-wrap; }
+    .narrative-box { background: #fff; border: none; border-radius: 0; padding: 10px 0; margin-bottom: 20px; line-height: ${fontSettings.lineHeight || '2.0'}; white-space: pre-wrap; }
+    .narrative-box .paragraph { margin-bottom: ${fontSettings.paragraphSpacing || 10}px; }
     .narrative-bold { font-family: '${fontSettings.narrativeBold.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeBold.weight}; font-size: ${fontSettings.narrativeBold.size}px; display: block; }
     .narrative-greeting { font-family: '${fontSettings.narrativeGreeting.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeGreeting.weight}; font-size: ${fontSettings.narrativeGreeting.size}px; display: block; }
     .narrative-body { font-family: '${fontSettings.narrativeBody.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeBody.weight}; font-size: ${fontSettings.narrativeBody.size}px; display: inline; }
@@ -1705,6 +1711,7 @@ export default function EmployeeDataRequest() {
           signaturePosition={signaturePosition}
           assignmentGroups={assignmentGroups}
           splitPages={splitPages}
+          fontSettings={fontSettings}
         />
       </div>
     </div>
