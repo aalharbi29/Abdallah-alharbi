@@ -720,18 +720,13 @@ export default function EmployeeDataRequest() {
 
     const titleBlock = `<div class="report-title"><h1>${reportTitle}</h1></div>`;
 
-    // بناء صفوف مسطحة لتقسيم الصفحات
-    const buildFlatRows = (empList, bgFn) => {
+    // بناء بيانات الصفوف مع معلومات المجموعة
+    const buildRowsData = (empList, bgFn) => {
       const rows = [];
       if (!hasAssignmentCol || !assignmentGroups || assignmentGroups.length === 0) {
         empList.forEach((emp, idx) => {
           const bg = bgFn ? bgFn(idx) : (idx % 2 === 0 ? '#fff' : '#f9fafb');
-          let row = `<tr style="background-color: ${bg};">`;
-          selectedFields.forEach(key => {
-            row += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(emp, key)}</td>`;
-          });
-          row += '</tr>';
-          rows.push({ html: row, empIdx: idx, group: null });
+          rows.push({ emp, bg, empIdx: idx, group: null, groupId: null });
         });
         return rows;
       }
@@ -753,26 +748,17 @@ export default function EmployeeDataRequest() {
       grouped.forEach(({ group, employees: grpEmps }) => {
         grpEmps.forEach((emp) => {
           const bg = bgFn ? bgFn(globalIdx) : (globalIdx % 2 === 0 ? '#fff' : '#f9fafb');
-          let row = `<tr style="background-color: ${bg};">`;
-          otherFieldsExport.forEach(key => {
-            row += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(emp, key)}</td>`;
-          });
-          // إضافة عمود فترة التكليف لكل صف بدون rowspan
-          const periodLine1 = group && group.fromDate ? `من ${group.fromDate}` : '';
-          const periodLine2 = group && group.toDate ? `إلى ${group.toDate} ${group.dateType === 'hijri' ? 'هـ' : 'م'}` : '';
-          const periodText = (periodLine1 || periodLine2) ? `<div>${periodLine1}</div><div>${periodLine2}</div>` : '-';
-          row += `<td style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: #fff; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
-          row += '</tr>';
-          rows.push({ html: row, empIdx: globalIdx, group });
+          rows.push({ emp, bg, empIdx: globalIdx, group, groupId: group ? group.id : null });
           globalIdx++;
         });
       });
       return rows;
     };
 
-    let allFlatRows = buildFlatRows(selectedEmployees, displayMode === 'with-manager' ? () => '#dbeafe' : undefined);
+    let allRowsData = buildRowsData(selectedEmployees, displayMode === 'with-manager' ? () => '#dbeafe' : undefined);
 
     // إضافة صفوف المدراء
+    const managerRowsHtml = [];
     if (displayMode === 'with-manager') {
       const processedManagers = new Set();
       Object.entries(groupedByManager).forEach(([managerId, employeeIds]) => {
@@ -785,7 +771,7 @@ export default function EmployeeDataRequest() {
               mdRow += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(manager, key)}</td>`;
             });
             mdRow += '</tr>';
-            allFlatRows.push({ html: mhRow + mdRow, empIdx: -1, group: null });
+            managerRowsHtml.push(mhRow + mdRow);
             processedManagers.add(managerId);
           }
         }
@@ -793,6 +779,50 @@ export default function EmployeeDataRequest() {
     }
 
     const theadHtml = `<thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>`;
+
+    // دالة تحويل مجموعة صفوف إلى HTML مع rowspan حسب المجموعة
+    const renderPageRowsHtml = (pageRows) => {
+      if (!hasAssignmentCol || !assignmentGroups || assignmentGroups.length === 0) {
+        return pageRows.map(r => {
+          let html = `<tr style="background-color: ${r.bg};">`;
+          selectedFields.forEach(key => {
+            html += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(r.emp, key)}</td>`;
+          });
+          html += '</tr>';
+          return html;
+        }).join('');
+      }
+
+      // تجميع الصفوف حسب المجموعة داخل هذه الصفحة
+      const segments = [];
+      let currentSegment = null;
+      pageRows.forEach(r => {
+        if (!currentSegment || currentSegment.groupId !== r.groupId) {
+          currentSegment = { groupId: r.groupId, group: r.group, rows: [] };
+          segments.push(currentSegment);
+        }
+        currentSegment.rows.push(r);
+      });
+
+      let html = '';
+      segments.forEach(seg => {
+        const periodLine1 = seg.group && seg.group.fromDate ? `من ${seg.group.fromDate}` : '';
+        const periodLine2 = seg.group && seg.group.toDate ? `إلى ${seg.group.toDate} ${seg.group.dateType === 'hijri' ? 'هـ' : 'م'}` : '';
+        const periodText = (periodLine1 || periodLine2) ? `<div>${periodLine1}</div><div>${periodLine2}</div>` : '-';
+
+        seg.rows.forEach((r, li) => {
+          html += `<tr style="background-color: ${r.bg};">`;
+          otherFieldsExport.forEach(key => {
+            html += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(r.emp, key)}</td>`;
+          });
+          if (li === 0) {
+            html += `<td rowspan="${seg.rows.length}" style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: #fff; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
+          }
+          html += '</tr>';
+        });
+      });
+      return html;
+    };
 
     // تقسيم الصفوف على صفحات
     const splitRowsIntoPages = (rows) => {
@@ -807,7 +837,6 @@ export default function EmployeeDataRequest() {
 
         for (let i = 0; i < limit && currentIdx < rows.length; i++) {
           pageRows.push(rows[currentIdx]);
-          // التحقق من فاصل صفحة مفروض
           if (pageBreakAfterRows.includes(rows[currentIdx].empIdx)) {
             currentIdx++;
             break;
@@ -822,11 +851,10 @@ export default function EmployeeDataRequest() {
       return pages;
     };
 
-    const tablePages = splitRowsIntoPages(allFlatRows);
+    const tablePages = splitRowsIntoPages(allRowsData);
 
     let bodyContent = '';
     if (splitPages) {
-      // صفحة 1: النص التعبيري + التوقيع + التذييل
       bodyContent += `<div class="page-container">
         ${headerBlock}
         <div class="page-content">
@@ -837,16 +865,16 @@ export default function EmployeeDataRequest() {
         </div>
         ${footerBlock}
       </div>`;
-      // صفحات الجدول
       tablePages.forEach((pageRows, pageIdx) => {
         const isLastTablePage = pageIdx === tablePages.length - 1;
+        const tbodyHtml = renderPageRowsHtml(pageRows) + (isLastTablePage ? managerRowsHtml.join('') : '');
         bodyContent += `<div class="page-container" style="page-break-before: always;">
           ${headerBlock}
           <div class="page-content">
             ${titleBlock}
             <table>
               ${theadHtml}
-              <tbody>${pageRows.map(r => r.html).join('')}</tbody>
+              <tbody>${tbodyHtml}</tbody>
             </table>
             ${isLastTablePage ? signatureBlock : ''}
           </div>
@@ -854,10 +882,10 @@ export default function EmployeeDataRequest() {
         </div>`;
       });
     } else {
-      // تقسيم على صفحات مع هيدر
       tablePages.forEach((pageRows, pageIdx) => {
         const isFirst = pageIdx === 0;
         const isLast = pageIdx === tablePages.length - 1;
+        const tbodyHtml = renderPageRowsHtml(pageRows) + (isLast ? managerRowsHtml.join('') : '');
         bodyContent += `<div class="page-container"${!isFirst ? ' style="page-break-before: always;"' : ''}>
           ${headerBlock}
           <div class="page-content">
@@ -865,7 +893,7 @@ export default function EmployeeDataRequest() {
             ${isFirst && narrativePosition === 'before' ? narrativeHtml : ''}
             <table>
               ${theadHtml}
-              <tbody>${pageRows.map(r => r.html).join('')}</tbody>
+              <tbody>${tbodyHtml}</tbody>
             </table>
             ${isLast && narrativePosition === 'after' ? narrativeHtml : ''}
             ${isLast && finalRequest ? `<div class="request-box">${finalRequest}</div>` : ''}
