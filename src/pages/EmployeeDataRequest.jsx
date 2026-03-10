@@ -53,7 +53,7 @@ const availableFields = [
 ];
 
 const HEALTH_CENTERS_OPTIONS = [
-  'الحسو', 'هدبان', 'صخيبرة', 'طلال', 'الماوية', 'بلغة', 'الهميج', 'بطحي', 'شؤون المراكز الحسو'
+  'الحسو', 'هدبان', 'صخيبرة', 'طلال', 'الماوية', 'بلغة', 'الهميج', 'بطحي', 'شؤون المراكز بالحسو'
 ];
 
 export default function EmployeeDataRequest() {
