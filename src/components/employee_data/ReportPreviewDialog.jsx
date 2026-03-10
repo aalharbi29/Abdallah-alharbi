@@ -27,6 +27,7 @@ export default function ReportPreviewDialog({
   signaturePosition,
   assignmentGroups,
   splitPages,
+  fontSettings,
 }) {
   const dateStr = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   
@@ -179,16 +180,20 @@ export default function ReportPreviewDialog({
             <>
               {/* صفحة 1: النص التعبيري */}
               {reportNarrative && (
-                <div className="mb-4 text-sm leading-relaxed whitespace-pre-wrap">
-                  {reportNarrative.split('\n').map((line, i) => {
-                    const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
-                    const hasKeyword = keywords.some(kw => line.includes(kw));
-                    return (
-                      <span key={i} className={hasKeyword ? 'block' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 900, fontSize: '16px' } : {}}>
-                        {line}
-                      </span>
-                    );
-                  })}
+                <div className="mb-4 text-sm" style={{ lineHeight: fontSettings?.lineHeight || '2.0' }}>
+                  {reportNarrative.split(/\n\s*\n/).map((paragraph, pi) => (
+                    <div key={pi} style={{ marginBottom: `${fontSettings?.paragraphSpacing || 10}px` }}>
+                      {paragraph.split('\n').map((line, i) => {
+                        const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
+                        const hasKeyword = keywords.some(kw => line.includes(kw));
+                        return (
+                          <span key={i} className={hasKeyword ? 'block' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 900, fontSize: '16px' } : {}}>
+                            {line}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
               )}
 
@@ -266,16 +271,20 @@ export default function ReportPreviewDialog({
             <>
               {/* نص تعبيري قبل الجدول */}
               {narrativePosition === 'before' && reportNarrative && (
-                <div className="mb-4 text-sm leading-relaxed whitespace-pre-wrap">
-                  {reportNarrative.split('\n').map((line, i) => {
-                    const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
-                    const hasKeyword = keywords.some(kw => line.includes(kw));
-                    return (
-                      <span key={i} className={hasKeyword ? 'block' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 900, fontSize: '16px' } : {}}>
-                        {line}
-                      </span>
-                    );
-                  })}
+                <div className="mb-4 text-sm" style={{ lineHeight: fontSettings?.lineHeight || '2.0' }}>
+                  {reportNarrative.split(/\n\s*\n/).map((paragraph, pi) => (
+                    <div key={pi} style={{ marginBottom: `${fontSettings?.paragraphSpacing || 10}px` }}>
+                      {paragraph.split('\n').map((line, i) => {
+                        const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
+                        const hasKeyword = keywords.some(kw => line.includes(kw));
+                        return (
+                          <span key={i} className={hasKeyword ? 'block' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 900, fontSize: '16px' } : {}}>
+                            {line}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
               )}
 
@@ -295,16 +304,20 @@ export default function ReportPreviewDialog({
 
               {/* نص تعبيري بعد الجدول */}
               {narrativePosition === 'after' && reportNarrative && (
-                <div className="mt-4 text-sm leading-relaxed whitespace-pre-wrap">
-                  {reportNarrative.split('\n').map((line, i) => {
-                    const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
-                    const hasKeyword = keywords.some(kw => line.includes(kw));
-                    return (
-                      <span key={i} className={hasKeyword ? 'block' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 900, fontSize: '16px' } : {}}>
-                        {line}
-                      </span>
-                    );
-                  })}
+                <div className="mt-4 text-sm" style={{ lineHeight: fontSettings?.lineHeight || '2.0' }}>
+                  {reportNarrative.split(/\n\s*\n/).map((paragraph, pi) => (
+                    <div key={pi} style={{ marginBottom: `${fontSettings?.paragraphSpacing || 10}px` }}>
+                      {paragraph.split('\n').map((line, i) => {
+                        const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
+                        const hasKeyword = keywords.some(kw => line.includes(kw));
+                        return (
+                          <span key={i} className={hasKeyword ? 'block' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 900, fontSize: '16px' } : {}}>
+                            {line}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  ))}
                 </div>
               )}
 
