@@ -1424,81 +1424,87 @@ export default function EmployeeDataRequest() {
                       </tr>
                     </thead>
                     <tbody>
-                      {displayMode === 'normal' ? (
-                        selectedEmployees.map((emp, idx) => (
-                          <tr key={emp.id} style={{ backgroundColor: idx % 2 === 0 ? '#fff' : '#f9fafb' }}>
-                            {selectedFields.map(key => (
-                              <td
-                                key={key}
-                                style={{ 
-                                  border: '1px solid #000',
-                                  padding: '8px 16px',
-                                  textAlign: 'center',
-                                  color: '#000'
-                                }}
-                              >
-                                {getFieldValue(emp, key)}
-                              </td>
-                            ))}
-                          </tr>
-                        ))
-                      ) : (
-                        (() => {
-                          const rows = [];
-                          selectedEmployees.forEach((emp) => {
-                            rows.push(
-                              <tr key={`emp-${emp.id}`} style={{ backgroundColor: '#dbeafe' }}>
+                      {(() => {
+                        const hasAssignCol = selectedFields.includes('فترة_التكليف');
+                        const otherCols = selectedFields.filter(k => k !== 'فترة_التكليف');
+
+                        const renderMergedRows = (empList, bgFn) => {
+                          if (!hasAssignCol || !assignmentGroups || assignmentGroups.length === 0) {
+                            return empList.map((emp, idx) => (
+                              <tr key={emp.id} style={{ backgroundColor: bgFn ? bgFn(idx) : (idx % 2 === 0 ? '#fff' : '#f9fafb') }}>
                                 {selectedFields.map(key => (
-                                  <td
-                                    key={key}
-                                    style={{ 
-                                      border: '1px solid #000',
-                                      padding: '8px 16px',
-                                      textAlign: 'center',
-                                      fontWeight: '500',
-                                      color: '#000'
-                                    }}
-                                  >
+                                  <td key={key} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000' }}>
                                     {getFieldValue(emp, key)}
                                   </td>
                                 ))}
                               </tr>
-                            );
+                            ));
+                          }
+                          const grouped = [];
+                          const usedIds = new Set();
+                          assignmentGroups.forEach(group => {
+                            const grpEmps = empList.filter(e => group.employeeIds.includes(e.id));
+                            if (grpEmps.length > 0) { grouped.push({ group, employees: grpEmps }); grpEmps.forEach(e => usedIds.add(e.id)); }
                           });
+                          const ungrouped = empList.filter(e => !usedIds.has(e.id));
+                          if (ungrouped.length > 0) grouped.push({ group: null, employees: ungrouped });
 
+                          const rows = [];
+                          let gi = 0;
+                          grouped.forEach(({ group, employees: grpEmps }) => {
+                            grpEmps.forEach((emp, li) => {
+                              const bg = bgFn ? bgFn(gi) : (gi % 2 === 0 ? '#fff' : '#f9fafb');
+                              rows.push(
+                                <tr key={emp.id} style={{ backgroundColor: bg }}>
+                                  {otherCols.map(key => (
+                                    <td key={key} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000' }}>
+                                      {getFieldValue(emp, key)}
+                                    </td>
+                                  ))}
+                                  {li === 0 && (
+                                    <td
+                                      key="فترة_التكليف"
+                                      rowSpan={grpEmps.length}
+                                      style={{
+                                        border: '1px solid #000', padding: '4px', textAlign: 'center', fontWeight: 'bold', fontSize: '12px',
+                                        writingMode: 'vertical-rl', textOrientation: 'mixed', whiteSpace: 'nowrap',
+                                        backgroundColor: group ? '#fef3c7' : '#f9fafb', minWidth: '32px', letterSpacing: '1px', color: '#000'
+                                      }}
+                                    >
+                                      {group && (group.fromDate || group.toDate)
+                                        ? `من ${group.fromDate || '...'} إلى ${group.toDate || '...'} ${group.dateType === 'hijri' ? 'هـ' : 'م'}`
+                                        : '-'}
+                                    </td>
+                                  )}
+                                </tr>
+                              );
+                              gi++;
+                            });
+                          });
+                          return rows;
+                        };
+
+                        if (displayMode === 'normal') {
+                          return renderMergedRows(selectedEmployees);
+                        } else {
+                          const empRows = renderMergedRows(selectedEmployees, () => '#dbeafe');
+                          const managerRows = [];
                           const processedManagers = new Set();
                           Object.entries(groupedByManager).forEach(([managerId, employeeIds]) => {
                             if (!processedManagers.has(managerId)) {
                               const manager = getManagerWithCenters(managerId, employeeIds);
                               if (manager) {
-                                rows.push(
-                                  <tr key={`manager-header-${managerId}`} style={{ backgroundColor: '#d1fae5' }}>
-                                    <td
-                                      colSpan={selectedFields.length}
-                                      style={{ 
-                                        border: '1px solid #000',
-                                        padding: '8px 16px',
-                                        textAlign: 'center',
-                                        fontWeight: 'bold',
-                                        color: '#000'
-                                      }}
-                                    >
+                                managerRows.push(
+                                  <tr key={`mh-${managerId}`} style={{ backgroundColor: '#d1fae5' }}>
+                                    <td colSpan={selectedFields.length} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', fontWeight: 'bold', color: '#000' }}>
                                       بيانات المدير المباشر
                                     </td>
                                   </tr>
                                 );
-                                rows.push(
-                                  <tr key={`manager-data-${managerId}`} style={{ backgroundColor: '#ecfdf5' }}>
+                                managerRows.push(
+                                  <tr key={`md-${managerId}`} style={{ backgroundColor: '#ecfdf5' }}>
                                     {selectedFields.map(key => (
-                                      <td
-                                        key={key}
-                                        style={{ 
-                                          border: '1px solid #000',
-                                          padding: '8px 16px',
-                                          textAlign: 'center',
-                                          color: '#000'
-                                        }}
-                                      >
+                                      <td key={key} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000' }}>
                                         {manager[key] || '-'}
                                       </td>
                                     ))}
@@ -1508,9 +1514,9 @@ export default function EmployeeDataRequest() {
                               }
                             }
                           });
-                          return rows;
-                        })()
-                      )}
+                          return [...empRows, ...managerRows];
+                        }
+                      })()}
                     </tbody>
                   </table>
                 </div>
