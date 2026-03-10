@@ -738,13 +738,18 @@ export default function EmployeeDataRequest() {
     const processNarrativeHtml = (text) => {
       if (!text) return '';
       const lines = text.split('\n');
+      const greetingKeywords = ['السلام', 'التحية', 'وبعد', 'تحية'];
+      const boldKeywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
       const processedLines = lines.map(line => {
-        const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
-        const hasKeyword = keywords.some(kw => line.includes(kw));
-        if (hasKeyword) {
+        const isGreeting = greetingKeywords.some(kw => line.includes(kw));
+        const isBold = boldKeywords.some(kw => line.includes(kw));
+        if (isGreeting) {
+          return `<span class="narrative-greeting">${line}</span>`;
+        }
+        if (isBold) {
           return `<span class="narrative-bold">${line}</span>`;
         }
-        return line;
+        return `<span class="narrative-body">${line}</span>`;
       });
       return processedLines.join('\n');
     };
