@@ -3,6 +3,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
 import { ChevronDown, ChevronUp, Type } from 'lucide-react';
 
 const FONT_OPTIONS = [
@@ -109,6 +110,35 @@ export default function FontSettings({ fontSettings, onFontSettingsChange }) {
               settings={fontSettings.narrativeBody}
               onChange={(v) => update('narrativeBody', v)}
             />
+          </div>
+
+          {/* المسافة بين الفقرات */}
+          <div className="space-y-2">
+            <Label className="text-xs font-bold text-indigo-700 border-b pb-1 block">تباعد الفقرات</Label>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-medium text-gray-600 w-24 shrink-0">المسافة بين الفقرات</span>
+              <Slider
+                value={[fontSettings.paragraphSpacing || 10]}
+                onValueChange={(v) => update('paragraphSpacing', v[0])}
+                min={0}
+                max={40}
+                step={2}
+                className="flex-1"
+              />
+              <span className="text-xs font-bold text-gray-700 w-12 text-center">{fontSettings.paragraphSpacing || 10}px</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-medium text-gray-600 w-24 shrink-0">ارتفاع السطر</span>
+              <Slider
+                value={[parseFloat(fontSettings.lineHeight || 2)  * 10]}
+                onValueChange={(v) => update('lineHeight', (v[0] / 10).toFixed(1))}
+                min={10}
+                max={40}
+                step={1}
+                className="flex-1"
+              />
+              <span className="text-xs font-bold text-gray-700 w-12 text-center">{fontSettings.lineHeight || '2.0'}</span>
+            </div>
           </div>
 
           {/* الجدول */}
