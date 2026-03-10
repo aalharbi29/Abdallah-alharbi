@@ -78,7 +78,16 @@ export default function EmployeeMultiSelect({ employees, selectedEmployees, onSe
   };
 
   const confirmSelection = () => {
-    const selected = employees.filter(e => tempSelected.includes(e.id));
+    // الحفاظ على ترتيب الاختيار: الموظفون المختارون سابقاً بترتيبهم أولاً، ثم الجدد بترتيب إضافتهم
+    const prevIds = selectedEmployees.map(e => e.id);
+    const empMap = {};
+    employees.forEach(e => { empMap[e.id] = e; });
+    // أولاً: الموظفون الذين كانوا مختارين سابقاً (بترتيبهم القديم)
+    const kept = selectedEmployees.filter(e => tempSelected.includes(e.id));
+    const keptIds = new Set(kept.map(e => e.id));
+    // ثانياً: الموظفون الجدد بترتيب إضافتهم في tempSelected
+    const newlyAdded = tempSelected.filter(id => !keptIds.has(id)).map(id => empMap[id]).filter(Boolean);
+    const selected = [...kept, ...newlyAdded];
     onSelectionChange(selected);
     if (onAssignmentCenterChange) {
       onAssignmentCenterChange(tempAssignCenters);
