@@ -30,6 +30,7 @@ import ReportPreviewDialog from '@/components/employee_data/ReportPreviewDialog'
 import AITextEnhancer from '@/components/employee_data/AITextEnhancer';
 import EmployeeMultiSelect from '@/components/employee_data/EmployeeMultiSelect';
 import FontSettings from '@/components/employee_data/FontSettings';
+import HijriDatePicker from '@/components/ui/HijriDatePicker';
 
 const availableFields = [
   { key: 'full_name_arabic', label: 'الاسم الكامل', default: true },
@@ -1305,7 +1306,12 @@ export default function EmployeeDataRequest() {
                           {group.dateType === 'gregorian' ? (
                             <Input type="date" value={group.fromDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, fromDate: e.target.value } : g))} className="w-40" />
                           ) : (
-                            <Input type="text" placeholder="مثال: 1446/10/01" value={group.fromDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, fromDate: e.target.value } : g))} className="w-40" />
+                            <HijriDatePicker
+                              value={group.fromDate}
+                              onChange={(val) => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, fromDate: val } : g))}
+                              placeholder="مثال: 1446/10/01"
+                              className="flex h-9 w-44 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm text-center"
+                            />
                           )}
                         </div>
                         <div className="flex items-center gap-2">
@@ -1313,7 +1319,12 @@ export default function EmployeeDataRequest() {
                           {group.dateType === 'gregorian' ? (
                             <Input type="date" value={group.toDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, toDate: e.target.value } : g))} className="w-40" />
                           ) : (
-                            <Input type="text" placeholder="مثال: 1446/10/15" value={group.toDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, toDate: e.target.value } : g))} className="w-40" />
+                            <HijriDatePicker
+                              value={group.toDate}
+                              onChange={(val) => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, toDate: val } : g))}
+                              placeholder="مثال: 1446/10/15"
+                              className="flex h-9 w-44 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm text-center"
+                            />
                           )}
                         </div>
                       </div>
