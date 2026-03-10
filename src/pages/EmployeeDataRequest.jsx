@@ -591,24 +591,61 @@ export default function EmployeeDataRequest() {
       availableFields.find(f => f.key === key)?.label || key
     );
 
+    const hasAssignmentCol = selectedFields.includes('فترة_التكليف');
+    const otherFieldsExport = selectedFields.filter(k => k !== 'فترة_التكليف');
+
+    const buildMergedRows = (empList, bgFn) => {
+      let html = '';
+      if (!hasAssignmentCol || !assignmentGroups || assignmentGroups.length === 0) {
+        empList.forEach((emp, idx) => {
+          const bg = bgFn ? bgFn(idx) : (idx % 2 === 0 ? '#fff' : '#f9fafb');
+          html += `<tr style="background-color: ${bg};">`;
+          selectedFields.forEach(key => {
+            html += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(emp, key)}</td>`;
+          });
+          html += '</tr>';
+        });
+        return html;
+      }
+
+      const grouped = [];
+      const usedIds = new Set();
+      assignmentGroups.forEach(group => {
+        const grpEmps = empList.filter(e => group.employeeIds.includes(e.id));
+        if (grpEmps.length > 0) {
+          grouped.push({ group, employees: grpEmps });
+          grpEmps.forEach(e => usedIds.add(e.id));
+        }
+      });
+      const ungrouped = empList.filter(e => !usedIds.has(e.id));
+      if (ungrouped.length > 0) grouped.push({ group: null, employees: ungrouped });
+
+      let globalIdx = 0;
+      grouped.forEach(({ group, employees: grpEmps }) => {
+        grpEmps.forEach((emp, localIdx) => {
+          const bg = bgFn ? bgFn(globalIdx) : (globalIdx % 2 === 0 ? '#fff' : '#f9fafb');
+          html += `<tr style="background-color: ${bg};">`;
+          otherFieldsExport.forEach(key => {
+            html += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(emp, key)}</td>`;
+          });
+          if (localIdx === 0) {
+            const periodText = group && (group.fromDate || group.toDate)
+              ? `من ${group.fromDate || '...'} إلى ${group.toDate || '...'} ${group.dateType === 'hijri' ? 'هـ' : 'م'}`
+              : '-';
+            html += `<td rowspan="${grpEmps.length}" style="border: 1px solid #d1d5db; padding: 4px; text-align: center; font-size: 12px; font-weight: bold; writing-mode: vertical-rl; text-orientation: mixed; white-space: nowrap; background-color: ${group ? '#fef3c7' : '#f9fafb'}; min-width: 30px; letter-spacing: 1px;">${periodText}</td>`;
+          }
+          html += '</tr>';
+          globalIdx++;
+        });
+      });
+      return html;
+    };
+
     let tableRows = '';
     if (displayMode === 'normal') {
-      selectedEmployees.forEach((emp, idx) => {
-        const bgColor = idx % 2 === 0 ? '#fff' : '#f9fafb';
-        tableRows += `<tr style="background-color: ${bgColor};">`;
-        selectedFields.forEach(key => {
-          tableRows += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(emp, key)}</td>`;
-        });
-        tableRows += '</tr>';
-      });
+      tableRows = buildMergedRows(selectedEmployees);
     } else {
-      selectedEmployees.forEach(emp => {
-        tableRows += '<tr style="background-color: #dbeafe;">';
-        selectedFields.forEach(key => {
-          tableRows += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(emp, key)}</td>`;
-        });
-        tableRows += '</tr>';
-      });
+      tableRows = buildMergedRows(selectedEmployees, () => '#dbeafe');
       const processedManagers = new Set();
       Object.entries(groupedByManager).forEach(([managerId, employeeIds]) => {
         if (!processedManagers.has(managerId)) {
