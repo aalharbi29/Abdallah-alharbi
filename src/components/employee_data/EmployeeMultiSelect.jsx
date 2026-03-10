@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 
 const HEALTH_CENTERS = [
-  'الحسو', 'هدبان', 'صخيبرة', 'طلال', 'الماوية', 'بلغة', 'الهميج', 'بطحي'
+  'ادارة شؤون المراكز بالحسو', 'الحسو', 'هدبان', 'صخيبرة', 'طلال', 'الماوية', 'بلغة', 'الهميج', 'بطحي'
 ];
 
 export default function EmployeeMultiSelect({ employees, selectedEmployees, onSelectionChange, assignmentCenters, onAssignmentCenterChange }) {
