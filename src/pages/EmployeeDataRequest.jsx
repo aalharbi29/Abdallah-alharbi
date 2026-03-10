@@ -1687,6 +1687,7 @@ export default function EmployeeDataRequest() {
           signerTitle={signerTitle}
           signaturePosition={signaturePosition}
           assignmentGroups={assignmentGroups}
+          splitPages={splitPages}
         />
       </div>
     </div>
