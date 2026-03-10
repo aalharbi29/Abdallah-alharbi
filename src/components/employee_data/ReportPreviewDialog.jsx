@@ -41,19 +41,20 @@ export default function ReportPreviewDialog({
       return empList.map((emp, idx) => (
         <tr key={emp.id} style={{ backgroundColor: bgFn ? bgFn(idx) : (idx % 2 === 0 ? '#fff' : '#f9fafb') }}>
           {selectedFields.map(key => (
-            <td key={key} className="border border-gray-300 px-3 py-2 text-center text-xs">
+            <td key={key} className="border px-3 py-2 text-center text-xs" style={{ borderColor: '#87CEEB' }}>
               {getFieldValue(emp, key)}
             </td>
-          ))}
-        </tr>
-      ));
-    }
+            ))}
+            </tr>
+            ));
+            }
 
-    // ترتيب الموظفين حسب المجموعات
+            // ترتيب الموظفين حسب المجموعات
     const grouped = [];
     const usedIds = new Set();
     assignmentGroups.forEach(group => {
-      const groupEmps = empList.filter(e => group.employeeIds.includes(e.id));
+      const ids = group.employeeIds.length > 0 ? group.employeeIds : (assignmentGroups.length === 1 ? empList.map(e => e.id) : []);
+      const groupEmps = empList.filter(e => ids.includes(e.id));
       if (groupEmps.length > 0) {
         grouped.push({ group, employees: groupEmps });
         groupEmps.forEach(e => usedIds.add(e.id));
@@ -73,7 +74,7 @@ export default function ReportPreviewDialog({
         rows.push(
           <tr key={emp.id} style={{ backgroundColor: bg }}>
             {otherFields.map(key => (
-              <td key={key} className="border border-gray-300 px-3 py-2 text-center text-xs">
+              <td key={key} className="border px-3 py-2 text-center text-xs" style={{ borderColor: '#87CEEB' }}>
                 {getFieldValue(emp, key)}
               </td>
             ))}
@@ -81,7 +82,7 @@ export default function ReportPreviewDialog({
               <td
                 key="فترة_التكليف"
                 rowSpan={grpEmps.length}
-                className="border border-gray-300 px-1 py-2 text-center text-xs font-bold"
+                className="border px-1 py-2 text-center text-xs font-bold"
                 style={{
                   writingMode: 'vertical-rl',
                   textOrientation: 'mixed',
@@ -155,7 +156,7 @@ export default function ReportPreviewDialog({
         <div className="p-6 bg-white" style={{ fontFamily: "'Cairo', sans-serif" }}>
           {/* شعار */}
           {logoSettings.show_logo && logoSettings.logo_url && (
-            <div className={`flex ${logoJustifyClass} items-center border-b-2 border-blue-800 pb-2 mb-4`}>
+            <div className={`flex ${logoJustifyClass} items-center border-b-2 pb-2 mb-4`} style={{ borderColor: '#87CEEB' }}>
               <img 
                 src={logoSettings.logo_url} 
                 alt="شعار"
@@ -194,9 +195,9 @@ export default function ReportPreviewDialog({
               <thead>
                 <tr>
                   {headers.map((h, i) => (
-                    <th key={i} className="bg-teal-700 text-white border border-gray-300 px-3 py-2 text-center font-bold text-xs">
-                      {h}
-                    </th>
+                   <th key={i} className="border px-3 py-2 text-center font-bold text-xs" style={{ backgroundColor: '#87CEEB', color: '#000', borderColor: '#87CEEB' }}>
+                     {h}
+                   </th>
                   ))}
                 </tr>
               </thead>
