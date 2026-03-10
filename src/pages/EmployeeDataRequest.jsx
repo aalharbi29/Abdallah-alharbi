@@ -679,7 +679,7 @@ export default function EmployeeDataRequest() {
         const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
         const hasKeyword = keywords.some(kw => line.includes(kw));
         if (hasKeyword) {
-          return `<span style="font-family:'PT Sans Caption','Cairo',sans-serif;font-weight:700;font-size:15px;">${line}</span>`;
+          return `<span class="narrative-bold">${line}</span>`;
         }
         return line;
       });
@@ -753,9 +753,9 @@ export default function EmployeeDataRequest() {
       ${finalRequest ? `<div class="request-box">${finalRequest}</div>` : ''}
 
       ${showSignature ? `<div class="signature-section">
-        ${selectedSig ? `<img src="${selectedSig.image_url}" alt="${selectedSig.name}" />` : ''}
         ${signerName ? `<p class="sig-name">${signerName}</p>` : ''}
         ${signerTitle ? `<p class="sig-title">${signerTitle}</p>` : ''}
+        ${selectedSig ? `<img src="${selectedSig.image_url}" alt="${selectedSig.name}" />` : ''}
       </div>` : ''}
     </div>
 
