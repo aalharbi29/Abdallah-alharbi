@@ -100,6 +100,8 @@ export default function EmployeeDataRequest() {
     narrativeBody: { font: 'Cairo', size: '16', weight: '600' },
     tableHeader: { font: 'Cairo', size: '13', weight: '700' },
     tableBody: { font: 'Cairo', size: '13', weight: '700' },
+    paragraphSpacing: 10,
+    lineHeight: '2.0',
   });
   const { logoSettings } = useLogoSettings();
 
