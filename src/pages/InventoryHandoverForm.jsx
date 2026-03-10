@@ -610,22 +610,22 @@ export default function InventoryHandoverForm() {
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="bg-slate-100 text-slate-700">
-                    <th className="border border-slate-300 px-3 py-3 text-center w-12 font-bold">#</th>
-                    <th className="border border-slate-300 px-3 py-3 text-center font-bold">الاسم الكامل</th>
-                    <th className="border border-slate-300 px-3 py-3 text-center font-bold">الرقم الوظيفي</th>
-                    <th className="border border-slate-300 px-3 py-3 text-center font-bold">جهة العمل</th>
-                    <th className="border border-slate-300 px-3 py-3 text-center font-bold">الدور الوظيفي</th>
-                    <th className="border border-slate-300 px-3 py-3 text-center font-bold">الدور في اللجنة</th>
+                    <th className="border border-slate-300 px-3 py-3 text-center w-12 font-semibold">#</th>
+                    <th className="border border-slate-300 px-3 py-3 text-center font-semibold">الاسم الكامل</th>
+                    <th className="border border-slate-300 px-3 py-3 text-center font-semibold">الرقم الوظيفي</th>
+                    <th className="border border-slate-300 px-3 py-3 text-center font-semibold">جهة العمل</th>
+                    <th className="border border-slate-300 px-3 py-3 text-center font-semibold">الدور الوظيفي</th>
+                    <th className="border border-slate-300 px-3 py-3 text-center font-semibold">الدور في اللجنة</th>
                     <th className="border border-slate-300 px-2 py-3 text-center no-print w-10"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {attendees.map((att, i) => (
                     <tr key={i} className="hover:bg-slate-50 transition-colors">
-                      <td className="border border-slate-300 px-2 py-2 text-center text-slate-500 font-semibold">{i + 1}</td>
+                      <td className="border border-slate-300 px-2 py-2 text-center text-slate-500 font-medium">{i + 1}</td>
                       <td className="border border-slate-300 px-2 py-2">
                         <EmployeeSelect
-                          className="w-full focus:outline-none bg-transparent text-center font-semibold text-slate-800"
+                          className="w-full focus:outline-none bg-transparent text-center font-medium text-slate-800"
                           placeholder="الاسم"
                           value={att.name}
                           onChange={(val) => updateAttendee(i, 'name', val)}
@@ -635,7 +635,7 @@ export default function InventoryHandoverForm() {
                       {['employeeId','workplace','jobRole'].map(field => (
                         <td key={field} className="border border-slate-300 px-2 py-2">
                           <input
-                            className="w-full focus:outline-none bg-transparent text-center font-medium text-slate-700"
+                            className="w-full focus:outline-none bg-transparent text-center font-normal text-slate-700"
                             placeholder={field === 'employeeId' ? 'الرقم' : field === 'workplace' ? 'جهة العمل' : 'الدور الوظيفي'}
                             value={att[field]}
                             onChange={e => updateAttendee(i, field, e.target.value)}
@@ -644,7 +644,7 @@ export default function InventoryHandoverForm() {
                       ))}
                       <td className="border border-slate-300 px-2 py-2">
                         <input
-                          className="w-full focus:outline-none bg-transparent text-center font-bold text-slate-800"
+                          className="w-full focus:outline-none bg-transparent text-center font-medium text-slate-800"
                           placeholder="عضو لجنة"
                           value={att.role}
                           onChange={e => updateAttendee(i, 'role', e.target.value)}
@@ -750,21 +750,21 @@ export default function InventoryHandoverForm() {
               <table className="w-full border-collapse">
                 <thead>
                   <tr className="bg-slate-100 text-slate-700">
-                    <th className="border border-slate-300 px-2 py-3 text-center w-12 font-bold">#</th>
-                    <th className="border border-slate-300 px-3 py-3 text-center font-bold w-1/4">الفئة</th>
-                    <th className="border border-slate-300 px-3 py-3 text-center font-bold w-1/3">نوع الجهاز</th>
-                    <th className="border border-slate-300 px-3 py-3 text-center font-bold">الشركة المصنعة</th>
-                    <th className="border border-slate-300 px-3 py-3 text-center font-bold w-24">الكمية</th>
+                    <th className="border border-slate-300 px-2 py-3 text-center w-12 font-semibold">#</th>
+                    <th className="border border-slate-300 px-3 py-3 text-center font-semibold w-1/4">الفئة</th>
+                    <th className="border border-slate-300 px-3 py-3 text-center font-semibold w-1/3">نوع الجهاز</th>
+                    <th className="border border-slate-300 px-3 py-3 text-center font-semibold">الشركة المصنعة</th>
+                    <th className="border border-slate-300 px-3 py-3 text-center font-semibold w-24">الكمية</th>
                     <th className="border border-slate-300 px-2 py-3 text-center no-print w-10"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {equipmentItems.map((item, i) => (
                     <tr key={i} className="hover:bg-slate-50 transition-colors">
-                      <td className="border border-slate-300 px-2 py-3 text-center text-slate-500 font-bold">{i + 1}</td>
+                      <td className="border border-slate-300 px-2 py-3 text-center text-slate-500 font-medium">{i + 1}</td>
                       <td className="border border-slate-300 px-2 py-3">
                         <select
-                          className="w-full focus:outline-none bg-transparent text-center font-bold text-slate-800 appearance-none print:appearance-none cursor-pointer"
+                          className="w-full focus:outline-none bg-transparent text-center font-medium text-slate-800 appearance-none print:appearance-none cursor-pointer"
                           value={item.category}
                           onChange={e => updateEquipmentItem(i, 'category', e.target.value)}
                         >
@@ -777,7 +777,7 @@ export default function InventoryHandoverForm() {
                       <td className="border border-slate-300 px-2 py-3">
                         {item.category ? (
                           <select
-                            className="w-full focus:outline-none bg-transparent text-center font-semibold text-slate-700 appearance-none print:appearance-none cursor-pointer"
+                            className="w-full focus:outline-none bg-transparent text-center font-normal text-slate-700 appearance-none print:appearance-none cursor-pointer"
                             value={item.type}
                             onChange={e => updateEquipmentItem(i, 'type', e.target.value)}
                           >
@@ -788,14 +788,14 @@ export default function InventoryHandoverForm() {
                             <option value="أخرى - حدد">أخرى</option>
                           </select>
                         ) : (
-                          <input className="w-full focus:outline-none bg-transparent text-center font-semibold text-slate-700" placeholder="نوع الجهاز" value={item.type} onChange={e => updateEquipmentItem(i, 'type', e.target.value)} />
+                          <input className="w-full focus:outline-none bg-transparent text-center font-normal text-slate-700" placeholder="نوع الجهاز" value={item.type} onChange={e => updateEquipmentItem(i, 'type', e.target.value)} />
                         )}
                       </td>
                       <td className="border border-slate-300 px-2 py-3">
-                        <input className="w-full focus:outline-none bg-transparent text-center font-semibold text-slate-700" placeholder="الشركة" value={item.brand} onChange={e => updateEquipmentItem(i, 'brand', e.target.value)} />
+                        <input className="w-full focus:outline-none bg-transparent text-center font-normal text-slate-700" placeholder="الشركة" value={item.brand} onChange={e => updateEquipmentItem(i, 'brand', e.target.value)} />
                       </td>
                       <td className="border border-slate-300 px-2 py-3">
-                        <input type="number" className="w-full focus:outline-none bg-transparent text-center font-bold text-slate-900" min="1" value={item.quantity} onChange={e => updateEquipmentItem(i, 'quantity', e.target.value)} />
+                        <input type="number" className="w-full focus:outline-none bg-transparent text-center font-medium text-slate-900" min="1" value={item.quantity} onChange={e => updateEquipmentItem(i, 'quantity', e.target.value)} />
                       </td>
                       <td className="border border-slate-300 px-2 py-3 text-center no-print">
                         <button onClick={() => removeEquipmentItem(i)} className="text-red-400 hover:text-red-600 transition-colors p-1">
