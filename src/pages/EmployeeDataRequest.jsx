@@ -95,6 +95,9 @@ export default function EmployeeDataRequest() {
   const [signerTitle, setSignerTitle] = useState('المساعد لشؤون المراكز الصحية بالحسو');
   const [showPreview, setShowPreview] = useState(false);
   const [splitPages, setSplitPages] = useState(false);
+  const [rowsPerFirstPage, setRowsPerFirstPage] = useState(15);
+  const [rowsPerNextPage, setRowsPerNextPage] = useState(25);
+  const [pageBreakAfterRows, setPageBreakAfterRows] = useState([]);
   const [fontSettings, setFontSettings] = useState({
     narrativeBold: { font: 'PT Sans Caption', size: '17', weight: '900' },
     narrativeGreeting: { font: 'Cairo', size: '16', weight: '700' },
