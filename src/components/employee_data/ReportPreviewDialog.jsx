@@ -32,45 +32,97 @@ export default function ReportPreviewDialog({
   const logoJustifyClass = logoPosition === 'right' ? 'justify-end' : logoPosition === 'left' ? 'justify-start' : 'justify-center';
   const sigAlignClass = signaturePosition === 'right' ? 'text-right' : signaturePosition === 'left' ? 'text-left' : 'text-center';
 
-  const tableRows = useMemo(() => {
+  // بناء خريطة المجموعات لعمود فترة التكليف المدمج
+  const hasAssignmentField = selectedFields.includes('فترة_التكليف');
+  const otherFields = selectedFields.filter(k => k !== 'فترة_التكليف');
+
+  const buildGroupedRows = (empList, bgFn) => {
+    if (!hasAssignmentField || !assignmentGroups || assignmentGroups.length === 0) {
+      return empList.map((emp, idx) => (
+        <tr key={emp.id} style={{ backgroundColor: bgFn ? bgFn(idx) : (idx % 2 === 0 ? '#fff' : '#f9fafb') }}>
+          {selectedFields.map(key => (
+            <td key={key} className="border border-gray-300 px-3 py-2 text-center text-xs">
+              {getFieldValue(emp, key)}
+            </td>
+          ))}
+        </tr>
+      ));
+    }
+
+    // ترتيب الموظفين حسب المجموعات
+    const grouped = [];
+    const usedIds = new Set();
+    assignmentGroups.forEach(group => {
+      const groupEmps = empList.filter(e => group.employeeIds.includes(e.id));
+      if (groupEmps.length > 0) {
+        grouped.push({ group, employees: groupEmps });
+        groupEmps.forEach(e => usedIds.add(e.id));
+      }
+    });
+    // موظفون بدون مجموعة
+    const ungrouped = empList.filter(e => !usedIds.has(e.id));
+    if (ungrouped.length > 0) {
+      grouped.push({ group: null, employees: ungrouped });
+    }
+
     const rows = [];
-    if (displayMode === 'normal') {
-      selectedEmployees.forEach((emp, idx) => {
+    let globalIdx = 0;
+    grouped.forEach(({ group, employees: grpEmps }) => {
+      grpEmps.forEach((emp, localIdx) => {
+        const bg = bgFn ? bgFn(globalIdx) : (globalIdx % 2 === 0 ? '#fff' : '#f9fafb');
         rows.push(
-          <tr key={emp.id} style={{ backgroundColor: idx % 2 === 0 ? '#fff' : '#f9fafb' }}>
-            {selectedFields.map(key => (
+          <tr key={emp.id} style={{ backgroundColor: bg }}>
+            {otherFields.map(key => (
               <td key={key} className="border border-gray-300 px-3 py-2 text-center text-xs">
                 {getFieldValue(emp, key)}
               </td>
             ))}
-          </tr>
-        );
-      });
-    } else {
-      selectedEmployees.forEach(emp => {
-        rows.push(
-          <tr key={`emp-${emp.id}`} style={{ backgroundColor: '#dbeafe' }}>
-            {selectedFields.map(key => (
-              <td key={key} className="border border-gray-300 px-3 py-2 text-center text-xs font-medium">
-                {getFieldValue(emp, key)}
+            {localIdx === 0 && (
+              <td
+                key="فترة_التكليف"
+                rowSpan={grpEmps.length}
+                className="border border-gray-300 px-1 py-2 text-center text-xs font-bold"
+                style={{
+                  writingMode: 'vertical-rl',
+                  textOrientation: 'mixed',
+                  whiteSpace: 'nowrap',
+                  backgroundColor: group ? '#fef3c7' : '#f9fafb',
+                  minWidth: '32px',
+                  letterSpacing: '1px',
+                }}
+              >
+                {group && (group.fromDate || group.toDate)
+                  ? `من ${group.fromDate || '...'} إلى ${group.toDate || '...'} ${group.dateType === 'hijri' ? 'هـ' : 'م'}`
+                  : '-'}
               </td>
-            ))}
+            )}
           </tr>
         );
+        globalIdx++;
       });
+    });
+    return rows;
+  };
+
+  const tableRows = useMemo(() => {
+    if (displayMode === 'normal') {
+      return buildGroupedRows(selectedEmployees);
+    } else {
+      const empRows = buildGroupedRows(selectedEmployees, () => '#dbeafe');
+      const managerRows = [];
       const processedManagers = new Set();
       Object.entries(groupedByManager).forEach(([managerId, employeeIds]) => {
         if (!processedManagers.has(managerId)) {
           const manager = getManagerWithCenters(managerId, employeeIds);
           if (manager) {
-            rows.push(
+            managerRows.push(
               <tr key={`mh-${managerId}`} style={{ backgroundColor: '#d1fae5' }}>
                 <td colSpan={selectedFields.length} className="border border-gray-300 px-3 py-2 text-center font-bold text-xs">
                   بيانات المدير المباشر
                 </td>
               </tr>
             );
-            rows.push(
+            managerRows.push(
               <tr key={`md-${managerId}`} style={{ backgroundColor: '#ecfdf5' }}>
                 {selectedFields.map(key => (
                   <td key={key} className="border border-gray-300 px-3 py-2 text-center text-xs">
@@ -83,9 +135,9 @@ export default function ReportPreviewDialog({
           }
         }
       });
+      return [...empRows, ...managerRows];
     }
-    return rows;
-  }, [selectedEmployees, selectedFields, displayMode, groupedByManager, getFieldValue, getManagerWithCenters]);
+  }, [selectedEmployees, selectedFields, displayMode, groupedByManager, getFieldValue, getManagerWithCenters, assignmentGroups]);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
