@@ -175,82 +175,164 @@ export default function ReportPreviewDialog({
             <h1 className="text-lg font-bold" style={{ color: '#0284c7' }}>{reportTitle}</h1>
           </div>
 
-          {/* نص تعبيري قبل الجدول */}
-          {narrativePosition === 'before' && reportNarrative && (
-            <div className="mb-4 text-sm leading-relaxed whitespace-pre-wrap">
-              {reportNarrative.split('\n').map((line, i) => {
-                const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
-                const hasKeyword = keywords.some(kw => line.includes(kw));
-                return (
-                  <span key={i} className={hasKeyword ? 'block' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 900, fontSize: '16px' } : {}}>
-                    {line}
-                  </span>
-                );
-              })}
-            </div>
-          )}
-
-          {/* الجدول */}
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-xs">
-              <thead>
-                <tr>
-                  {headers.map((h, i) => (
-                   <th key={i} className="border border-gray-300 px-3 py-2 text-center font-bold text-xs text-black" style={{ backgroundColor: '#e0f2fe' }}>
-                     {h}
-                   </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>{tableRows}</tbody>
-            </table>
-          </div>
-
-          {/* نص تعبيري بعد الجدول */}
-          {narrativePosition === 'after' && reportNarrative && (
-            <div className="mt-4 text-sm leading-relaxed whitespace-pre-wrap">
-              {reportNarrative.split('\n').map((line, i) => {
-                const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
-                const hasKeyword = keywords.some(kw => line.includes(kw));
-                return (
-                  <span key={i} className={hasKeyword ? 'block' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 900, fontSize: '16px' } : {}}>
-                    {line}
-                  </span>
-                );
-              })}
-            </div>
-          )}
-
-          {/* نص الطلب */}
-          {finalRequest && (
-            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-300 rounded-lg text-sm whitespace-pre-wrap">
-              {finalRequest}
-            </div>
-          )}
-
-          {/* التوقيع */}
-          {showSignature && (
-            <div className={`mt-8 ${sigAlignClass}`}>
-              {signerName && <p className="text-lg" style={{ fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, color: '#000', fontSize: '18px' }}>{signerName}</p>}
-              {signerTitle && <p className="text-sm" style={{ fontWeight: 700, color: '#000', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
-              {selectedSig && (
-                <img 
-                  src={selectedSig.image_url} 
-                  alt={selectedSig.name}
-                  className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`}
-                  style={{ marginTop: '-2px', mixBlendMode: 'multiply' }}
-                />
+          {splitPages ? (
+            <>
+              {/* صفحة 1: النص التعبيري */}
+              {reportNarrative && (
+                <div className="mb-4 text-sm leading-relaxed whitespace-pre-wrap">
+                  {reportNarrative.split('\n').map((line, i) => {
+                    const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
+                    const hasKeyword = keywords.some(kw => line.includes(kw));
+                    return (
+                      <span key={i} className={hasKeyword ? 'block' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 900, fontSize: '16px' } : {}}>
+                        {line}
+                      </span>
+                    );
+                  })}
+                </div>
               )}
-            </div>
-          )}
 
-          {/* تذييل */}
-          {logoSettings.show_footer && (
-            <div className="mt-8 pt-3 border-t-2 text-center" style={{ borderColor: '#0284c7' }}>
-              {logoSettings.footer_text_1 && <p className="font-bold text-sm" style={{ color: '#0284c7' }}>{logoSettings.footer_text_1}</p>}
-              {logoSettings.footer_text_2 && <p className="text-sm" style={{ color: '#0284c7' }}>{logoSettings.footer_text_2}</p>}
-              <p className="text-xs mt-2" style={{ color: '#0284c7' }}>{dateStr}</p>
-            </div>
+              {finalRequest && (
+                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-300 rounded-lg text-sm whitespace-pre-wrap">
+                  {finalRequest}
+                </div>
+              )}
+
+              {/* توقيع صفحة 1 */}
+              {showSignature && (
+                <div className={`mt-8 ${sigAlignClass}`}>
+                  {signerName && <p className="text-lg" style={{ fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, color: '#000', fontSize: '18px' }}>{signerName}</p>}
+                  {signerTitle && <p className="text-sm" style={{ fontWeight: 700, color: '#000', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
+                  {selectedSig && <img src={selectedSig.image_url} alt={selectedSig.name} className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`} style={{ marginTop: '-2px', mixBlendMode: 'multiply' }} />}
+                </div>
+              )}
+
+              {/* تذييل صفحة 1 */}
+              {logoSettings.show_footer && (
+                <div className="mt-8 pt-3 border-t-2 text-center" style={{ borderColor: '#0284c7' }}>
+                  {logoSettings.footer_text_1 && <p className="font-bold text-sm" style={{ color: '#0284c7' }}>{logoSettings.footer_text_1}</p>}
+                  {logoSettings.footer_text_2 && <p className="text-sm" style={{ color: '#0284c7' }}>{logoSettings.footer_text_2}</p>}
+                  <p className="text-xs mt-2" style={{ color: '#0284c7' }}>{dateStr}</p>
+                </div>
+              )}
+
+              {/* فاصل صفحات */}
+              <div className="my-6 border-t-4 border-dashed border-sky-300 py-2 text-center text-xs text-sky-500 font-bold">— صفحة 2: الجدول —</div>
+
+              {/* شعار صفحة 2 */}
+              {logoSettings.show_logo && logoSettings.logo_url && (
+                <div className={`flex ${logoJustifyClass} items-center border-b-2 pb-2 mb-4`} style={{ borderColor: '#0284c7' }}>
+                  <img src={logoSettings.logo_url} alt="شعار" style={{ maxHeight: `${Math.min(logoSettings.max_height, 200)}px`, marginTop: `${logoSettings.margin_top}px`, marginBottom: `${logoSettings.margin_bottom}px` }} />
+                </div>
+              )}
+
+              <div className="text-center mb-5">
+                <h1 className="text-lg font-bold" style={{ color: '#0284c7' }}>{reportTitle}</h1>
+              </div>
+
+              {/* الجدول */}
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse text-xs">
+                  <thead>
+                    <tr>
+                      {headers.map((h, i) => (
+                        <th key={i} className="border border-gray-300 px-3 py-2 text-center font-bold text-xs text-black" style={{ backgroundColor: '#e0f2fe' }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>{tableRows}</tbody>
+                </table>
+              </div>
+
+              {/* توقيع صفحة 2 */}
+              {showSignature && (
+                <div className={`mt-8 ${sigAlignClass}`}>
+                  {signerName && <p className="text-lg" style={{ fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, color: '#000', fontSize: '18px' }}>{signerName}</p>}
+                  {signerTitle && <p className="text-sm" style={{ fontWeight: 700, color: '#000', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
+                  {selectedSig && <img src={selectedSig.image_url} alt={selectedSig.name} className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`} style={{ marginTop: '-2px', mixBlendMode: 'multiply' }} />}
+                </div>
+              )}
+
+              {/* تذييل صفحة 2 */}
+              {logoSettings.show_footer && (
+                <div className="mt-8 pt-3 border-t-2 text-center" style={{ borderColor: '#0284c7' }}>
+                  {logoSettings.footer_text_1 && <p className="font-bold text-sm" style={{ color: '#0284c7' }}>{logoSettings.footer_text_1}</p>}
+                  {logoSettings.footer_text_2 && <p className="text-sm" style={{ color: '#0284c7' }}>{logoSettings.footer_text_2}</p>}
+                  <p className="text-xs mt-2" style={{ color: '#0284c7' }}>{dateStr}</p>
+                </div>
+              )}
+            </>
+          ) : (
+            <>
+              {/* نص تعبيري قبل الجدول */}
+              {narrativePosition === 'before' && reportNarrative && (
+                <div className="mb-4 text-sm leading-relaxed whitespace-pre-wrap">
+                  {reportNarrative.split('\n').map((line, i) => {
+                    const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
+                    const hasKeyword = keywords.some(kw => line.includes(kw));
+                    return (
+                      <span key={i} className={hasKeyword ? 'block' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 900, fontSize: '16px' } : {}}>
+                        {line}
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* الجدول */}
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse text-xs">
+                  <thead>
+                    <tr>
+                      {headers.map((h, i) => (
+                        <th key={i} className="border border-gray-300 px-3 py-2 text-center font-bold text-xs text-black" style={{ backgroundColor: '#e0f2fe' }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>{tableRows}</tbody>
+                </table>
+              </div>
+
+              {/* نص تعبيري بعد الجدول */}
+              {narrativePosition === 'after' && reportNarrative && (
+                <div className="mt-4 text-sm leading-relaxed whitespace-pre-wrap">
+                  {reportNarrative.split('\n').map((line, i) => {
+                    const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
+                    const hasKeyword = keywords.some(kw => line.includes(kw));
+                    return (
+                      <span key={i} className={hasKeyword ? 'block' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 900, fontSize: '16px' } : {}}>
+                        {line}
+                      </span>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* نص الطلب */}
+              {finalRequest && (
+                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-300 rounded-lg text-sm whitespace-pre-wrap">
+                  {finalRequest}
+                </div>
+              )}
+
+              {/* التوقيع */}
+              {showSignature && (
+                <div className={`mt-8 ${sigAlignClass}`}>
+                  {signerName && <p className="text-lg" style={{ fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, color: '#000', fontSize: '18px' }}>{signerName}</p>}
+                  {signerTitle && <p className="text-sm" style={{ fontWeight: 700, color: '#000', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
+                  {selectedSig && <img src={selectedSig.image_url} alt={selectedSig.name} className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`} style={{ marginTop: '-2px', mixBlendMode: 'multiply' }} />}
+                </div>
+              )}
+
+              {/* تذييل */}
+              {logoSettings.show_footer && (
+                <div className="mt-8 pt-3 border-t-2 text-center" style={{ borderColor: '#0284c7' }}>
+                  {logoSettings.footer_text_1 && <p className="font-bold text-sm" style={{ color: '#0284c7' }}>{logoSettings.footer_text_1}</p>}
+                  {logoSettings.footer_text_2 && <p className="text-sm" style={{ color: '#0284c7' }}>{logoSettings.footer_text_2}</p>}
+                  <p className="text-xs mt-2" style={{ color: '#0284c7' }}>{dateStr}</p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </DialogContent>
