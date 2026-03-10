@@ -1324,6 +1324,9 @@ export default function EmployeeDataRequest() {
                 </div>
               )}
 
+              {/* إعدادات الخطوط */}
+              <FontSettings fontSettings={fontSettings} onFontSettingsChange={setFontSettings} />
+
               {/* تجزئة الصفحات */}
               <div className="flex items-center gap-2">
                 <Checkbox
