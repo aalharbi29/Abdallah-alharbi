@@ -84,7 +84,7 @@ export default function ReportPreviewDialog({
                 rowSpan={grpEmps.length}
                 className="border border-gray-300 px-1 py-2 text-center text-xs font-bold"
                 style={{
-                  writingMode: 'vertical-rl',
+                  writingMode: 'vertical-lr',
                   textOrientation: 'mixed',
                   whiteSpace: 'nowrap',
                   backgroundColor: '#fff',
@@ -230,14 +230,14 @@ export default function ReportPreviewDialog({
           {/* التوقيع */}
           {showSignature && (
             <div className={`mt-8 ${sigAlignClass}`}>
-              {signerName && <p className="text-lg" style={{ fontWeight: 900, color: '#0d9488', fontSize: '18px' }}>{signerName}</p>}
-              {signerTitle && <p className="text-sm" style={{ fontWeight: 700, color: '#0d9488', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
+              {signerName && <p className="text-lg" style={{ fontWeight: 900, color: '#000', fontSize: '18px' }}>{signerName}</p>}
+              {signerTitle && <p className="text-sm" style={{ fontWeight: 700, color: '#000', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
               {selectedSig && (
                 <img 
                   src={selectedSig.image_url} 
                   alt={selectedSig.name}
                   className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`}
-                  style={{ marginTop: '-2px' }}
+                  style={{ marginTop: '-2px', mixBlendMode: 'multiply' }}
                 />
               )}
             </div>
