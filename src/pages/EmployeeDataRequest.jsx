@@ -788,6 +788,110 @@ export default function EmployeeDataRequest() {
 
     const titleBlock = `<div class="report-title"><h1>${reportTitle}</h1></div>`;
 
+    // بناء صفوف مسطحة لتقسيم الصفحات
+    const buildFlatRows = (empList, bgFn) => {
+      const rows = [];
+      if (!hasAssignmentCol || !assignmentGroups || assignmentGroups.length === 0) {
+        empList.forEach((emp, idx) => {
+          const bg = bgFn ? bgFn(idx) : (idx % 2 === 0 ? '#fff' : '#f9fafb');
+          let row = `<tr style="background-color: ${bg};">`;
+          selectedFields.forEach(key => {
+            row += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(emp, key)}</td>`;
+          });
+          row += '</tr>';
+          rows.push({ html: row, empIdx: idx, group: null });
+        });
+        return rows;
+      }
+
+      const grouped = [];
+      const usedIds = new Set();
+      assignmentGroups.forEach(group => {
+        const ids = group.employeeIds.length > 0 ? group.employeeIds : (assignmentGroups.length === 1 ? empList.map(e => e.id) : []);
+        const grpEmps = empList.filter(e => ids.includes(e.id));
+        if (grpEmps.length > 0) {
+          grouped.push({ group, employees: grpEmps });
+          grpEmps.forEach(e => usedIds.add(e.id));
+        }
+      });
+      const ungrouped = empList.filter(e => !usedIds.has(e.id));
+      if (ungrouped.length > 0) grouped.push({ group: null, employees: ungrouped });
+
+      let globalIdx = 0;
+      grouped.forEach(({ group, employees: grpEmps }) => {
+        grpEmps.forEach((emp) => {
+          const bg = bgFn ? bgFn(globalIdx) : (globalIdx % 2 === 0 ? '#fff' : '#f9fafb');
+          let row = `<tr style="background-color: ${bg};">`;
+          otherFieldsExport.forEach(key => {
+            row += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(emp, key)}</td>`;
+          });
+          // إضافة عمود فترة التكليف لكل صف بدون rowspan
+          const periodLine1 = group && group.fromDate ? `من ${group.fromDate}` : '';
+          const periodLine2 = group && group.toDate ? `إلى ${group.toDate} ${group.dateType === 'hijri' ? 'هـ' : 'م'}` : '';
+          const periodText = (periodLine1 || periodLine2) ? `<div>${periodLine1}</div><div>${periodLine2}</div>` : '-';
+          row += `<td style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: #fff; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
+          row += '</tr>';
+          rows.push({ html: row, empIdx: globalIdx, group });
+          globalIdx++;
+        });
+      });
+      return rows;
+    };
+
+    let allFlatRows = buildFlatRows(selectedEmployees, displayMode === 'with-manager' ? () => '#dbeafe' : undefined);
+
+    // إضافة صفوف المدراء
+    if (displayMode === 'with-manager') {
+      const processedManagers = new Set();
+      Object.entries(groupedByManager).forEach(([managerId, employeeIds]) => {
+        if (!processedManagers.has(managerId)) {
+          const manager = getManagerWithCenters(managerId, employeeIds);
+          if (manager) {
+            let mhRow = `<tr style="background-color: #d1fae5;"><td colspan="${selectedFields.length}" style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-weight: bold;">بيانات المدير المباشر</td></tr>`;
+            let mdRow = '<tr style="background-color: #ecfdf5;">';
+            selectedFields.forEach(key => {
+              mdRow += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(manager, key)}</td>`;
+            });
+            mdRow += '</tr>';
+            allFlatRows.push({ html: mhRow + mdRow, empIdx: -1, group: null });
+            processedManagers.add(managerId);
+          }
+        }
+      });
+    }
+
+    const theadHtml = `<thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>`;
+
+    // تقسيم الصفوف على صفحات
+    const splitRowsIntoPages = (rows) => {
+      const pages = [];
+      let currentIdx = 0;
+      let pageNum = 0;
+
+      while (currentIdx < rows.length) {
+        const isFirst = pageNum === 0;
+        const limit = isFirst ? rowsPerFirstPage : rowsPerNextPage;
+        const pageRows = [];
+
+        for (let i = 0; i < limit && currentIdx < rows.length; i++) {
+          pageRows.push(rows[currentIdx]);
+          // التحقق من فاصل صفحة مفروض
+          if (pageBreakAfterRows.includes(rows[currentIdx].empIdx)) {
+            currentIdx++;
+            break;
+          }
+          currentIdx++;
+        }
+
+        pages.push(pageRows);
+        pageNum++;
+      }
+
+      return pages;
+    };
+
+    const tablePages = splitRowsIntoPages(allFlatRows);
+
     let bodyContent = '';
     if (splitPages) {
       // صفحة 1: النص التعبيري + التوقيع + التذييل
@@ -801,36 +905,43 @@ export default function EmployeeDataRequest() {
         </div>
         ${footerBlock}
       </div>`;
-      // صفحة 2: الجدول + التوقيع + التذييل
-      bodyContent += `<div class="page-container" style="page-break-before: always;">
-        ${headerBlock}
-        <div class="page-content">
-          ${titleBlock}
-          <table>
-            <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
-            <tbody>${tableRows}</tbody>
-          </table>
-          ${signatureBlock}
-        </div>
-        ${footerBlock}
-      </div>`;
+      // صفحات الجدول
+      tablePages.forEach((pageRows, pageIdx) => {
+        const isLastTablePage = pageIdx === tablePages.length - 1;
+        bodyContent += `<div class="page-container" style="page-break-before: always;">
+          ${headerBlock}
+          <div class="page-content">
+            ${titleBlock}
+            <table>
+              ${theadHtml}
+              <tbody>${pageRows.map(r => r.html).join('')}</tbody>
+            </table>
+            ${isLastTablePage ? signatureBlock : ''}
+          </div>
+          ${footerBlock}
+        </div>`;
+      });
     } else {
-      // صفحة واحدة كالمعتاد
-      bodyContent = `<div class="page-container">
-        ${headerBlock}
-        <div class="page-content">
-          ${titleBlock}
-          ${narrativePosition === 'before' ? narrativeHtml : ''}
-          <table>
-            <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
-            <tbody>${tableRows}</tbody>
-          </table>
-          ${narrativePosition === 'after' ? narrativeHtml : ''}
-          ${finalRequest ? `<div class="request-box">${finalRequest}</div>` : ''}
-          ${signatureBlock}
-        </div>
-        ${footerBlock}
-      </div>`;
+      // تقسيم على صفحات مع هيدر
+      tablePages.forEach((pageRows, pageIdx) => {
+        const isFirst = pageIdx === 0;
+        const isLast = pageIdx === tablePages.length - 1;
+        bodyContent += `<div class="page-container"${!isFirst ? ' style="page-break-before: always;"' : ''}>
+          ${headerBlock}
+          <div class="page-content">
+            ${isFirst ? titleBlock : `<div class="report-title"><h1>${reportTitle} (تابع ${pageIdx + 1})</h1></div>`}
+            ${isFirst && narrativePosition === 'before' ? narrativeHtml : ''}
+            <table>
+              ${theadHtml}
+              <tbody>${pageRows.map(r => r.html).join('')}</tbody>
+            </table>
+            ${isLast && narrativePosition === 'after' ? narrativeHtml : ''}
+            ${isLast && finalRequest ? `<div class="request-box">${finalRequest}</div>` : ''}
+            ${isLast ? signatureBlock : ''}
+          </div>
+          ${footerBlock}
+        </div>`;
+      });
     }
 
     const html = `<!DOCTYPE html>
