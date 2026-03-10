@@ -827,8 +827,21 @@ export default function EmployeeDataRequest() {
   <meta charset="UTF-8">
   <title>${reportTitle}</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=PT+Sans+Caption:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Changa:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=El+Messiri:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Lateef:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Harmattan:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Mada:wght@400;500;600;700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap');
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Cairo', sans-serif; background: #fff; color: #000; }
     @page { size: A4; margin: 5mm 15mm 15mm 15mm; }
@@ -838,11 +851,13 @@ export default function EmployeeDataRequest() {
     .header-banner img { max-height: ${logoSettings.max_height}px; margin: ${logoSettings.margin_top}px 0 ${logoSettings.margin_bottom}px 0; display: block; }
     .report-title { text-align: center; margin-bottom: 20px; margin-top: 10px; }
     .report-title h1 { font-size: 22px; color: #0284c7; font-weight: 700; margin-bottom: 6px; }
-    .narrative-box { background: #fff; border: none; border-radius: 0; padding: 10px 0; margin-bottom: 20px; font-size: 16px; line-height: 2; white-space: pre-wrap; font-weight: 600; }
-    .narrative-bold { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 900; font-size: 17px; display: block; }
+    .narrative-box { background: #fff; border: none; border-radius: 0; padding: 10px 0; margin-bottom: 20px; line-height: 2; white-space: pre-wrap; }
+    .narrative-bold { font-family: '${fontSettings.narrativeBold.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeBold.weight}; font-size: ${fontSettings.narrativeBold.size}px; display: block; }
+    .narrative-greeting { font-family: '${fontSettings.narrativeGreeting.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeGreeting.weight}; font-size: ${fontSettings.narrativeGreeting.size}px; display: block; }
+    .narrative-body { font-family: '${fontSettings.narrativeBody.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeBody.weight}; font-size: ${fontSettings.narrativeBody.size}px; display: inline; }
     table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-    th { background: #e0f2fe; color: #000; border: 1px solid #d1d5db; padding: 10px 12px; text-align: center; font-weight: bold; font-size: 13px; }
-    td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px; font-weight: bold; }
+    th { background: #e0f2fe; color: #000; border: 1px solid #d1d5db; padding: 10px 12px; text-align: center; font-family: '${fontSettings.tableHeader.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.tableHeader.weight}; font-size: ${fontSettings.tableHeader.size}px; }
+    td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-family: '${fontSettings.tableBody.font}', 'Cairo', sans-serif; font-size: ${fontSettings.tableBody.size}px; font-weight: ${fontSettings.tableBody.weight}; }
     .request-box { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; }
     .signature-section { text-align: ${sigAlign}; margin-top: 30px; padding: 15px 0; }
     .signature-section .sig-name { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 700; font-size: 18px; margin-top: 8px; color: #000; }
