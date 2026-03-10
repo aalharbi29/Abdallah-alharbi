@@ -90,6 +90,7 @@ export default function ReportPreviewDialog({
                   backgroundColor: group ? '#fef3c7' : '#f9fafb',
                   minWidth: '32px',
                   letterSpacing: '1px',
+                  borderColor: '#87CEEB',
                 }}
               >
                 {group && (group.fromDate || group.toDate)
