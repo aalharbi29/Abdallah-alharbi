@@ -1575,13 +1575,15 @@ export default function EmployeeDataRequest() {
                                       key="فترة_التكليف"
                                       rowSpan={grpEmps.length}
                                       style={{
-                                        border: '1px solid #000', padding: '4px', textAlign: 'center', fontWeight: 'bold', fontSize: '12px',
-                                        writingMode: 'vertical-rl', textOrientation: 'mixed', whiteSpace: 'nowrap', transform: 'rotate(180deg)',
-                                        backgroundColor: '#fff', minWidth: '32px', letterSpacing: '1px', color: '#000'
+                                        border: '1px solid #000', padding: '6px 4px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px',
+                                        backgroundColor: '#fff', minWidth: '80px', lineHeight: '1.6', color: '#000'
                                       }}
                                     >
                                       {group && (group.fromDate || group.toDate)
-                                        ? `من ${group.fromDate || '...'} إلى ${group.toDate || '...'} ${group.dateType === 'hijri' ? 'هـ' : 'م'}`
+                                        ? <>
+                                            <div>من {group.fromDate || '...'}</div>
+                                            <div>إلى {group.toDate || '...'} {group.dateType === 'hijri' ? 'هـ' : 'م'}</div>
+                                          </>
                                         : '-'}
                                     </td>
                                   )}
