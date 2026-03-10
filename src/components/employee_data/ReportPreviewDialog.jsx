@@ -26,6 +26,7 @@ export default function ReportPreviewDialog({
   signerTitle,
   signaturePosition,
   assignmentGroups,
+  splitPages,
 }) {
   const dateStr = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   
@@ -82,19 +83,18 @@ export default function ReportPreviewDialog({
               <td
                 key="فترة_التكليف"
                 rowSpan={grpEmps.length}
-                className="border border-gray-300 px-1 py-2 text-center text-xs font-bold"
+                className="border border-gray-300 px-2 py-2 text-center text-xs font-bold"
                 style={{
-                  writingMode: 'vertical-rl',
-                  textOrientation: 'mixed',
-                  whiteSpace: 'nowrap',
-                  transform: 'rotate(180deg)',
                   backgroundColor: '#fff',
-                  minWidth: '32px',
-                  letterSpacing: '1px',
+                  minWidth: '80px',
+                  lineHeight: '1.6',
                 }}
               >
                 {group && (group.fromDate || group.toDate)
-                  ? `من ${group.fromDate || '...'} إلى ${group.toDate || '...'} ${group.dateType === 'hijri' ? 'هـ' : 'م'}`
+                  ? <>
+                      <div>من {group.fromDate || '...'}</div>
+                      <div>إلى {group.toDate || '...'} {group.dateType === 'hijri' ? 'هـ' : 'م'}</div>
+                    </>
                   : '-'}
               </td>
             )}
