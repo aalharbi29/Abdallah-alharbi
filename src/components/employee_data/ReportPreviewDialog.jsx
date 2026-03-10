@@ -180,14 +180,20 @@ export default function ReportPreviewDialog({
             <>
               {/* صفحة 1: النص التعبيري */}
               {reportNarrative && (
-                <div className="mb-4 text-sm" style={{ lineHeight: fontSettings?.lineHeight || '2.0' }}>
+                <div className="mb-4 text-sm">
                   {reportNarrative.split(/\n\s*\n/).map((paragraph, pi) => (
                     <div key={pi} style={{ marginBottom: `${fontSettings?.paragraphSpacing || 10}px` }}>
                       {paragraph.split('\n').map((line, i) => {
-                        const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
-                        const hasKeyword = keywords.some(kw => line.includes(kw));
+                        const greetingKeywords = ['السلام', 'التحية', 'وبعد', 'تحية'];
+                        const boldKeywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
+                        const isGreeting = greetingKeywords.some(kw => line.includes(kw));
+                        const isBold = boldKeywords.some(kw => line.includes(kw));
                         return (
-                          <span key={i} className={hasKeyword ? 'block' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 900, fontSize: '16px' } : {}}>
+                          <span key={i} className="block" style={
+                            isBold ? { fontFamily: `'${fontSettings?.narrativeBold?.font || 'PT Sans Caption'}', 'Cairo', sans-serif`, fontWeight: fontSettings?.narrativeBold?.weight || 900, fontSize: `${fontSettings?.narrativeBold?.size || 17}px`, lineHeight: '1.0' }
+                            : isGreeting ? { fontFamily: `'${fontSettings?.narrativeGreeting?.font || 'Cairo'}', sans-serif`, fontWeight: fontSettings?.narrativeGreeting?.weight || 700, fontSize: `${fontSettings?.narrativeGreeting?.size || 16}px`, lineHeight: '1.0' }
+                            : { fontFamily: `'${fontSettings?.narrativeBody?.font || 'Cairo'}', sans-serif`, fontWeight: fontSettings?.narrativeBody?.weight || 600, fontSize: `${fontSettings?.narrativeBody?.size || 16}px`, lineHeight: fontSettings?.lineHeight || '2.0' }
+                          }>
                             {line}
                           </span>
                         );
@@ -271,14 +277,21 @@ export default function ReportPreviewDialog({
             <>
               {/* نص تعبيري قبل الجدول */}
               {narrativePosition === 'before' && reportNarrative && (
-                <div className="mb-4 text-sm" style={{ lineHeight: fontSettings?.lineHeight || '2.0' }}>
+                <div className="mb-4 text-sm">
                   {reportNarrative.split(/\n\s*\n/).map((paragraph, pi) => (
                     <div key={pi} style={{ marginBottom: `${fontSettings?.paragraphSpacing || 10}px` }}>
                       {paragraph.split('\n').map((line, i) => {
-                        const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
-                        const hasKeyword = keywords.some(kw => line.includes(kw));
+                        const greetingKeywords = ['السلام', 'التحية', 'وبعد', 'تحية'];
+                        const boldKeywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
+                        const isGreeting = greetingKeywords.some(kw => line.includes(kw));
+                        const isBold = boldKeywords.some(kw => line.includes(kw));
+                        const isStructural = isGreeting || isBold;
                         return (
-                          <span key={i} className={hasKeyword ? 'block' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 900, fontSize: '16px' } : {}}>
+                          <span key={i} className="block" style={
+                            isBold ? { fontFamily: `'${fontSettings?.narrativeBold?.font || 'PT Sans Caption'}', 'Cairo', sans-serif`, fontWeight: fontSettings?.narrativeBold?.weight || 900, fontSize: `${fontSettings?.narrativeBold?.size || 17}px`, lineHeight: '1.0' }
+                            : isGreeting ? { fontFamily: `'${fontSettings?.narrativeGreeting?.font || 'Cairo'}', sans-serif`, fontWeight: fontSettings?.narrativeGreeting?.weight || 700, fontSize: `${fontSettings?.narrativeGreeting?.size || 16}px`, lineHeight: '1.0' }
+                            : { fontFamily: `'${fontSettings?.narrativeBody?.font || 'Cairo'}', sans-serif`, fontWeight: fontSettings?.narrativeBody?.weight || 600, fontSize: `${fontSettings?.narrativeBody?.size || 16}px`, lineHeight: fontSettings?.lineHeight || '2.0' }
+                          }>
                             {line}
                           </span>
                         );
@@ -304,14 +317,20 @@ export default function ReportPreviewDialog({
 
               {/* نص تعبيري بعد الجدول */}
               {narrativePosition === 'after' && reportNarrative && (
-                <div className="mt-4 text-sm" style={{ lineHeight: fontSettings?.lineHeight || '2.0' }}>
+                <div className="mt-4 text-sm">
                   {reportNarrative.split(/\n\s*\n/).map((paragraph, pi) => (
                     <div key={pi} style={{ marginBottom: `${fontSettings?.paragraphSpacing || 10}px` }}>
                       {paragraph.split('\n').map((line, i) => {
-                        const keywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
-                        const hasKeyword = keywords.some(kw => line.includes(kw));
+                        const greetingKeywords = ['السلام', 'التحية', 'وبعد', 'تحية'];
+                        const boldKeywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
+                        const isGreeting = greetingKeywords.some(kw => line.includes(kw));
+                        const isBold = boldKeywords.some(kw => line.includes(kw));
                         return (
-                          <span key={i} className={hasKeyword ? 'block' : 'block font-semibold'} style={hasKeyword ? { fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 900, fontSize: '16px' } : {}}>
+                          <span key={i} className="block" style={
+                            isBold ? { fontFamily: `'${fontSettings?.narrativeBold?.font || 'PT Sans Caption'}', 'Cairo', sans-serif`, fontWeight: fontSettings?.narrativeBold?.weight || 900, fontSize: `${fontSettings?.narrativeBold?.size || 17}px`, lineHeight: '1.0' }
+                            : isGreeting ? { fontFamily: `'${fontSettings?.narrativeGreeting?.font || 'Cairo'}', sans-serif`, fontWeight: fontSettings?.narrativeGreeting?.weight || 700, fontSize: `${fontSettings?.narrativeGreeting?.size || 16}px`, lineHeight: '1.0' }
+                            : { fontFamily: `'${fontSettings?.narrativeBody?.font || 'Cairo'}', sans-serif`, fontWeight: fontSettings?.narrativeBody?.weight || 600, fontSize: `${fontSettings?.narrativeBody?.size || 16}px`, lineHeight: fontSettings?.lineHeight || '2.0' }
+                          }>
                             {line}
                           </span>
                         );
