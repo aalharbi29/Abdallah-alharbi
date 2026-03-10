@@ -1373,15 +1373,49 @@ export default function EmployeeDataRequest() {
               <FontSettings fontSettings={fontSettings} onFontSettingsChange={setFontSettings} />
 
               {/* تجزئة الصفحات */}
-              <div className="flex items-center gap-2">
-                <Checkbox
-                  id="splitPages"
-                  checked={splitPages}
-                  onCheckedChange={setSplitPages}
-                />
-                <Label htmlFor="splitPages" className="cursor-pointer text-sm">
-                  تجزئة التقرير (النص في صفحة والجدول في صفحة مع التوقيع في كلتيهما)
-                </Label>
+              <div className="space-y-3 p-3 bg-indigo-50 rounded-lg border border-indigo-200">
+                <div className="flex items-center gap-2">
+                  <Checkbox
+                    id="splitPages"
+                    checked={splitPages}
+                    onCheckedChange={setSplitPages}
+                  />
+                  <Label htmlFor="splitPages" className="cursor-pointer text-sm font-bold">
+                    تجزئة التقرير (النص في صفحة والجدول في صفحة مع التوقيع في كلتيهما)
+                  </Label>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label className="text-xs text-gray-600">عدد صفوف الصفحة الأولى للجدول</Label>
+                    <Input type="number" min={1} max={50} value={rowsPerFirstPage} onChange={e => setRowsPerFirstPage(parseInt(e.target.value) || 15)} className="mt-1 w-24" />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-gray-600">عدد صفوف الصفحات التالية</Label>
+                    <Input type="number" min={1} max={50} value={rowsPerNextPage} onChange={e => setRowsPerNextPage(parseInt(e.target.value) || 25)} className="mt-1 w-24" />
+                  </div>
+                </div>
+                {selectedEmployees.length > 0 && (
+                  <div>
+                    <Label className="text-xs text-gray-600 mb-1 block">فرض فاصل صفحة بعد موظف معين (اختياري):</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedEmployees.map((emp, idx) => (
+                        <Badge
+                          key={emp.id}
+                          variant={pageBreakAfterRows.includes(idx) ? "default" : "outline"}
+                          className={`cursor-pointer text-xs ${pageBreakAfterRows.includes(idx) ? 'bg-red-600 hover:bg-red-700' : 'hover:bg-red-50'}`}
+                          onClick={() => {
+                            setPageBreakAfterRows(prev =>
+                              prev.includes(idx) ? prev.filter(r => r !== idx) : [...prev, idx]
+                            );
+                          }}
+                        >
+                          {idx + 1}. {emp.full_name_arabic}
+                        </Badge>
+                      ))}
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1">اضغط على اسم الموظف لفرض فاصل صفحة بعده</p>
+                  </div>
+                )}
               </div>
 
               {/* إعدادات الشعار */}
