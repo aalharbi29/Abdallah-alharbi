@@ -1121,48 +1121,20 @@ export default function EmployeeDataRequest() {
               <CardTitle>الموظفون المختارون ({selectedEmployees.length})</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <DragDropContext onDragEnd={(result) => {
-                if (!result.destination) return;
-                const items = Array.from(selectedEmployees);
-                const [reordered] = items.splice(result.source.index, 1);
-                items.splice(result.destination.index, 0, reordered);
-                setSelectedEmployees(items);
-              }}>
-                <Droppable droppableId="employees" direction="horizontal">
-                  {(provided) => (
-                    <div ref={provided.innerRef} {...provided.droppableProps} className="flex flex-wrap gap-2">
-                      {selectedEmployees.map((emp, index) => (
-                        <Draggable key={emp.id} draggableId={emp.id} index={index}>
-                          {(provided, snapshot) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                            >
-                              <Badge
-                                variant="secondary"
-                                className={`gap-1 cursor-grab select-none ${snapshot.isDragging ? 'ring-2 ring-blue-400 shadow-lg' : ''}`}
-                              >
-                                <GripVertical className="w-3 h-3 text-gray-400" />
-                                <span className="text-xs text-gray-400 font-mono ml-0.5">{index + 1}</span>
-                                {emp.full_name_arabic}
-                                <button
-                                  onClick={() => handleRemoveEmployee(emp.id)}
-                                  className="ml-1 hover:bg-gray-300 rounded-full p-0.5"
-                                >
-                                  <X className="w-3 h-3" />
-                                </button>
-                              </Badge>
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </DragDropContext>
-              <p className="text-xs text-gray-400">اسحب الموظف لتغيير ترتيبه في الجدول</p>
+              <div className="flex flex-wrap gap-2">
+                {selectedEmployees.map((emp, index) => (
+                  <Badge key={emp.id} variant="secondary" className="gap-1">
+                    <span className="text-xs text-gray-400 font-mono">{index + 1}</span>
+                    {emp.full_name_arabic}
+                    <button
+                      onClick={() => handleRemoveEmployee(emp.id)}
+                      className="ml-1 hover:bg-gray-300 rounded-full p-0.5"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </Badge>
+                ))}
+              </div>
 
               {/* Display Mode Selection */}
               <div>
