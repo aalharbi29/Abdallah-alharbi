@@ -87,7 +87,7 @@ export default function ReportPreviewDialog({
                   writingMode: 'vertical-rl',
                   textOrientation: 'mixed',
                   whiteSpace: 'nowrap',
-                  backgroundColor: group ? '#fef3c7' : '#f9fafb',
+                  backgroundColor: '#fff',
                   minWidth: '32px',
                   letterSpacing: '1px',
                 }}
@@ -156,7 +156,7 @@ export default function ReportPreviewDialog({
         <div className="p-6 bg-white" style={{ fontFamily: "'Cairo', sans-serif" }}>
           {/* شعار */}
           {logoSettings.show_logo && logoSettings.logo_url && (
-            <div className={`flex ${logoJustifyClass} items-center border-b-2 border-blue-800 pb-2 mb-4`}>
+            <div className={`flex ${logoJustifyClass} items-center border-b-2 pb-2 mb-4`} style={{ borderColor: '#0d9488' }}>
               <img 
                 src={logoSettings.logo_url} 
                 alt="شعار"
@@ -230,13 +230,14 @@ export default function ReportPreviewDialog({
           {/* التوقيع */}
           {showSignature && (
             <div className={`mt-8 ${sigAlignClass}`}>
-              {signerName && <p className="font-bold text-blue-800 text-sm">{signerName}</p>}
-              {signerTitle && <p className="text-gray-600 text-xs mt-0.5">{signerTitle}</p>}
+              {signerName && <p className="text-lg" style={{ fontWeight: 900, color: '#0d9488', fontSize: '18px' }}>{signerName}</p>}
+              {signerTitle && <p className="text-sm" style={{ fontWeight: 700, color: '#0d9488', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
               {selectedSig && (
                 <img 
                   src={selectedSig.image_url} 
                   alt={selectedSig.name}
-                  className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block mt-1`}
+                  className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`}
+                  style={{ marginTop: '-2px' }}
                 />
               )}
             </div>
@@ -244,10 +245,10 @@ export default function ReportPreviewDialog({
 
           {/* تذييل */}
           {logoSettings.show_footer && (
-            <div className="mt-8 pt-3 border-t-2 border-blue-800 text-center">
-              {logoSettings.footer_text_1 && <p className="font-bold text-blue-800 text-sm">{logoSettings.footer_text_1}</p>}
-              {logoSettings.footer_text_2 && <p className="text-blue-800 text-sm">{logoSettings.footer_text_2}</p>}
-              <p className="text-blue-800 text-xs mt-2">{dateStr}</p>
+            <div className="mt-8 pt-3 border-t-2 text-center" style={{ borderColor: '#0d9488' }}>
+              {logoSettings.footer_text_1 && <p className="font-bold text-sm" style={{ color: '#0d9488' }}>{logoSettings.footer_text_1}</p>}
+              {logoSettings.footer_text_2 && <p className="text-sm" style={{ color: '#0d9488' }}>{logoSettings.footer_text_2}</p>}
+              <p className="text-xs mt-2" style={{ color: '#0d9488' }}>{dateStr}</p>
             </div>
           )}
         </div>
