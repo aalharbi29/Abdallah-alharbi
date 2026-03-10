@@ -616,7 +616,8 @@ export default function EmployeeDataRequest() {
       const grouped = [];
       const usedIds = new Set();
       assignmentGroups.forEach(group => {
-        const grpEmps = empList.filter(e => group.employeeIds.includes(e.id));
+        const ids = group.employeeIds.length > 0 ? group.employeeIds : (assignmentGroups.length === 1 ? empList.map(e => e.id) : []);
+        const grpEmps = empList.filter(e => ids.includes(e.id));
         if (grpEmps.length > 0) {
           grouped.push({ group, employees: grpEmps });
           grpEmps.forEach(e => usedIds.add(e.id));
@@ -631,13 +632,13 @@ export default function EmployeeDataRequest() {
           const bg = bgFn ? bgFn(globalIdx) : (globalIdx % 2 === 0 ? '#fff' : '#f9fafb');
           html += `<tr style="background-color: ${bg};">`;
           otherFieldsExport.forEach(key => {
-            html += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(emp, key)}</td>`;
+            html += `<td style="border: 1px solid #87CEEB; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(emp, key)}</td>`;
           });
           if (localIdx === 0) {
             const periodText = group && (group.fromDate || group.toDate)
               ? `من ${group.fromDate || '...'} إلى ${group.toDate || '...'} ${group.dateType === 'hijri' ? 'هـ' : 'م'}`
               : '-';
-            html += `<td rowspan="${grpEmps.length}" style="border: 1px solid #d1d5db; padding: 4px; text-align: center; font-size: 12px; font-weight: bold; writing-mode: vertical-rl; text-orientation: mixed; white-space: nowrap; background-color: ${group ? '#fef3c7' : '#f9fafb'}; min-width: 30px; letter-spacing: 1px;">${periodText}</td>`;
+            html += `<td rowspan="${grpEmps.length}" style="border: 1px solid #87CEEB; padding: 4px; text-align: center; font-size: 12px; font-weight: bold; writing-mode: vertical-rl; text-orientation: mixed; white-space: nowrap; background-color: ${group ? '#fef3c7' : '#f9fafb'}; min-width: 30px; letter-spacing: 1px;">${periodText}</td>`;
           }
           html += '</tr>';
           globalIdx++;
