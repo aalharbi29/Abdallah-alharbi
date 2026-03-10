@@ -17,14 +17,16 @@ const HEALTH_CENTERS = [
   'الحسو', 'هدبان', 'صخيبرة', 'طلال', 'الماوية', 'بلغة', 'الهميج', 'بطحي'
 ];
 
-export default function EmployeeMultiSelect({ employees, selectedEmployees, onSelectionChange }) {
+export default function EmployeeMultiSelect({ employees, selectedEmployees, onSelectionChange, assignmentCenters, onAssignmentCenterChange }) {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [centerFilter, setCenterFilter] = useState('all');
   const [tempSelected, setTempSelected] = useState([]);
+  const [tempAssignCenters, setTempAssignCenters] = useState({});
 
   const openDialog = () => {
     setTempSelected(selectedEmployees.map(e => e.id));
+    setTempAssignCenters(assignmentCenters || {});
     setSearchQuery('');
     setCenterFilter('all');
     setOpen(true);
@@ -78,6 +80,9 @@ export default function EmployeeMultiSelect({ employees, selectedEmployees, onSe
   const confirmSelection = () => {
     const selected = employees.filter(e => tempSelected.includes(e.id));
     onSelectionChange(selected);
+    if (onAssignmentCenterChange) {
+      onAssignmentCenterChange(tempAssignCenters);
+    }
     setOpen(false);
   };
 
@@ -219,6 +224,26 @@ export default function EmployeeMultiSelect({ employees, selectedEmployees, onSe
                     <Badge variant="outline" className="text-xs shrink-0">
                       {emp.المركز_الصحي || '-'}
                     </Badge>
+                    {isSelected && onAssignmentCenterChange && (
+                      <Select
+                        value={tempAssignCenters[emp.id] || ''}
+                        onValueChange={(val) => {
+                          setTempAssignCenters(prev => ({ ...prev, [emp.id]: val }));
+                        }}
+                      >
+                        <SelectTrigger 
+                          className="w-[120px] h-7 text-xs shrink-0" 
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <SelectValue placeholder="المركز المكلف" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {HEALTH_CENTERS.map(c => (
+                            <SelectItem key={c} value={c}>{c}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
                   </div>
                 );
               })}
