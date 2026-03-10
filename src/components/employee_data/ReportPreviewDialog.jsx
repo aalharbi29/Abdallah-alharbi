@@ -84,9 +84,10 @@ export default function ReportPreviewDialog({
                 rowSpan={grpEmps.length}
                 className="border border-gray-300 px-1 py-2 text-center text-xs font-bold"
                 style={{
-                  writingMode: 'vertical-lr',
+                  writingMode: 'vertical-rl',
                   textOrientation: 'mixed',
                   whiteSpace: 'nowrap',
+                  transform: 'rotate(180deg)',
                   backgroundColor: '#fff',
                   minWidth: '32px',
                   letterSpacing: '1px',
@@ -230,7 +231,7 @@ export default function ReportPreviewDialog({
           {/* التوقيع */}
           {showSignature && (
             <div className={`mt-8 ${sigAlignClass}`}>
-              {signerName && <p className="text-lg" style={{ fontWeight: 900, color: '#000', fontSize: '18px' }}>{signerName}</p>}
+              {signerName && <p className="text-lg" style={{ fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, color: '#000', fontSize: '18px' }}>{signerName}</p>}
               {signerTitle && <p className="text-sm" style={{ fontWeight: 700, color: '#000', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
               {selectedSig && (
                 <img 
@@ -246,9 +247,9 @@ export default function ReportPreviewDialog({
           {/* تذييل */}
           {logoSettings.show_footer && (
             <div className="mt-8 pt-3 border-t-2 text-center" style={{ borderColor: '#0284c7' }}>
-              {logoSettings.footer_text_1 && <p className="font-bold text-sm" style={{ color: '#0d9488' }}>{logoSettings.footer_text_1}</p>}
-              {logoSettings.footer_text_2 && <p className="text-sm" style={{ color: '#0d9488' }}>{logoSettings.footer_text_2}</p>}
-              <p className="text-xs mt-2" style={{ color: '#0d9488' }}>{dateStr}</p>
+              {logoSettings.footer_text_1 && <p className="font-bold text-sm" style={{ color: '#0284c7' }}>{logoSettings.footer_text_1}</p>}
+              {logoSettings.footer_text_2 && <p className="text-sm" style={{ color: '#0284c7' }}>{logoSettings.footer_text_2}</p>}
+              <p className="text-xs mt-2" style={{ color: '#0284c7' }}>{dateStr}</p>
             </div>
           )}
         </div>

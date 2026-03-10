@@ -638,7 +638,7 @@ export default function EmployeeDataRequest() {
             const periodText = group && (group.fromDate || group.toDate)
               ? `من ${group.fromDate || '...'} إلى ${group.toDate || '...'} ${group.dateType === 'hijri' ? 'هـ' : 'م'}`
               : '-';
-            html += `<td rowspan="${grpEmps.length}" style="border: 1px solid #d1d5db; padding: 4px; text-align: center; font-size: 12px; font-weight: bold; writing-mode: vertical-lr; text-orientation: mixed; white-space: nowrap; background-color: #fff; min-width: 30px; letter-spacing: 1px;">${periodText}</td>`;
+            html += `<td rowspan="${grpEmps.length}" style="border: 1px solid #d1d5db; padding: 4px; text-align: center; font-size: 12px; font-weight: bold; writing-mode: vertical-rl; text-orientation: mixed; white-space: nowrap; background-color: #fff; min-width: 30px; letter-spacing: 1px; transform: rotate(180deg);">${periodText}</td>`;
           }
           html += '</tr>';
           globalIdx++;
@@ -714,13 +714,13 @@ export default function EmployeeDataRequest() {
     td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px; }
     .request-box { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; }
     .signature-section { text-align: ${sigAlign}; margin-top: 30px; padding: 15px 0; }
-    .signature-section .sig-name { font-weight: 900; font-size: 18px; margin-top: 8px; color: #000; }
+    .signature-section .sig-name { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 700; font-size: 18px; margin-top: 8px; color: #000; }
     .signature-section .sig-title { font-weight: 700; font-size: 15px; color: #000; margin-top: 0; }
     .signature-section img { max-height: 120px; ${sigAlign === 'center' ? 'margin: 0 auto;' : ''} display: block; margin-top: -2px; mix-blend-mode: multiply; }
     .footer-banner { text-align: center; padding-top: 15px; border-top: 2px solid #0284c7; margin-top: auto; }
-    .footer-banner p { margin: 4px 0; font-size: 14px; color: #0d9488; }
-    .footer-banner .main-text { font-weight: bold; color: #0d9488; font-size: 15px; }
-    .footer-banner .date-text { font-size: 11px; color: #0d9488; margin-top: 8px; }
+    .footer-banner p { margin: 4px 0; font-size: 14px; color: #0284c7; }
+    .footer-banner .main-text { font-weight: bold; color: #0284c7; font-size: 15px; }
+    .footer-banner .date-text { font-size: 11px; color: #0284c7; margin-top: 8px; }
     @media print {
       body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       .page-container { min-height: 100vh; }
@@ -1475,7 +1475,7 @@ export default function EmployeeDataRequest() {
                                       rowSpan={grpEmps.length}
                                       style={{
                                         border: '1px solid #000', padding: '4px', textAlign: 'center', fontWeight: 'bold', fontSize: '12px',
-                                        writingMode: 'vertical-lr', textOrientation: 'mixed', whiteSpace: 'nowrap',
+                                        writingMode: 'vertical-rl', textOrientation: 'mixed', whiteSpace: 'nowrap', transform: 'rotate(180deg)',
                                         backgroundColor: '#fff', minWidth: '32px', letterSpacing: '1px', color: '#000'
                                       }}
                                     >
