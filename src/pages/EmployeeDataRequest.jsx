@@ -28,6 +28,7 @@ import { getAllEmployeeRoles } from '@/components/utils/employeeRoles';
 import useLogoSettings from '@/components/settings/useLogoSettings';
 import ReportPreviewDialog from '@/components/employee_data/ReportPreviewDialog';
 import AITextEnhancer from '@/components/employee_data/AITextEnhancer';
+import EmployeeMultiSelect from '@/components/employee_data/EmployeeMultiSelect';
 
 const availableFields = [
   { key: 'full_name_arabic', label: 'الاسم الكامل', default: true },
@@ -986,49 +987,11 @@ export default function EmployeeDataRequest() {
               <CardContent className="space-y-4">
                 <div>
                   <Label>اختر الموظفين</Label>
-                  <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={open}
-                        className="w-full justify-between"
-                      >
-                        <span className="flex items-center gap-2">
-                          <UserPlus className="w-4 h-4" />
-                          {selectedEmployees.length > 0
-                            ? `تم اختيار ${selectedEmployees.length} موظف`
-                            : "ابحث عن موظف..."}
-                        </span>
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[400px] p-0" align="start">
-                      <Command>
-                        <CommandInput
-                          placeholder="ابحث بالاسم أو الرقم الوظيفي..."
-                          value={searchQuery}
-                          onValueChange={setSearchQuery}
-                        />
-                        <CommandEmpty>لا يوجد موظفين.</CommandEmpty>
-                        <CommandGroup className="max-h-[300px] overflow-y-auto">
-                          {filteredEmployees.map((emp) => (
-                            <CommandItem
-                              key={emp.id}
-                              onSelect={() => handleAddEmployee(emp)}
-                              className="flex items-center justify-between cursor-pointer"
-                            >
-                              <div>
-                                <div className="font-medium">{emp.full_name_arabic}</div>
-                                <div className="text-xs text-gray-500">
-                                  {emp.رقم_الموظف} • {emp.position}
-                                </div>
-                              </div>
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
+                  <EmployeeMultiSelect
+                    employees={employees}
+                    selectedEmployees={selectedEmployees}
+                    onSelectionChange={setSelectedEmployees}
+                  />
                 </div>
               </CardContent>
             </Card>
