@@ -1030,6 +1030,8 @@ export default function EmployeeDataRequest() {
                     employees={employees}
                     selectedEmployees={selectedEmployees}
                     onSelectionChange={setSelectedEmployees}
+                    assignmentCenters={assignmentCenters}
+                    onAssignmentCenterChange={setAssignmentCenters}
                   />
                 </div>
               </CardContent>
