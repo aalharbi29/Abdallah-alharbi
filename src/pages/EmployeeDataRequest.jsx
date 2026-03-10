@@ -709,8 +709,8 @@ export default function EmployeeDataRequest() {
     .report-title h1 { font-size: 22px; color: #0d9488; font-weight: 700; margin-bottom: 6px; }
     .narrative-box { background: #fff; border: none; border-radius: 0; padding: 10px 0; margin-bottom: 20px; font-size: 15px; line-height: 1.9; white-space: pre-wrap; font-weight: 600; }
     table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-    th { background: linear-gradient(135deg, #0d9488, #0f766e); color: #fff; border: 1px solid #d1d5db; padding: 10px 12px; text-align: center; font-weight: 700; font-size: 13px; }
-    td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px; }
+    th { background: #87CEEB; color: #000; border: 1px solid #87CEEB; padding: 10px 12px; text-align: center; font-weight: 700; font-size: 13px; }
+    td { border: 1px solid #87CEEB; padding: 8px 12px; text-align: center; font-size: 13px; }
     .request-box { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; }
     .signature-section { text-align: ${sigAlign}; margin-top: 30px; padding: 15px 0; }
     .signature-section img { max-height: 120px; ${sigAlign === 'center' ? 'margin: 0 auto;' : ''} display: block; }
