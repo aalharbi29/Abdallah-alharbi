@@ -657,10 +657,10 @@ export default function EmployeeDataRequest() {
         if (!processedManagers.has(managerId)) {
           const manager = getManagerWithCenters(managerId, employeeIds);
           if (manager) {
-            tableRows += `<tr style="background-color: #d1fae5;"><td colspan="${selectedFields.length}" style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-weight: bold;">بيانات المدير المباشر</td></tr>`;
-            tableRows += '<tr style="background-color: #ecfdf5;">';
+            tableRows += `<tr style="background-color: #E0F7FA;"><td colspan="${selectedFields.length}" style="border: 1px solid #87CEEB; padding: 8px 12px; text-align: center; font-weight: bold; color: #0277BD;">بيانات المدير المباشر</td></tr>`;
+            tableRows += '<tr style="background-color: #E0F7FA;">';
             selectedFields.forEach(key => {
-              tableRows += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(manager, key)}</td>`;
+              tableRows += `<td style="border: 1px solid #87CEEB; padding: 8px 12px; text-align: center; font-size: 13px; color: #0277BD; font-weight: bold;">${getFieldValue(manager, key)}</td>`;
             });
             tableRows += '</tr>';
             processedManagers.add(managerId);
