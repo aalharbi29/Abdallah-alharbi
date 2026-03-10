@@ -316,7 +316,7 @@ export default function InventoryHandoverForm() {
     body { background: #fff; color: #1e293b; }
     @page { size: A4; margin: 5mm 15mm 15mm 15mm; }
     .page { max-width: 210mm; margin: 0 auto; padding: 0 10px; }
-    .header-banner { text-align: center; border-bottom: 2px solid #0d9488; padding: 0 0 8px; margin-bottom: 15px; overflow: hidden; }
+    .header-banner { text-align: center; border-bottom: 2px solid #0284c7; padding: 0 0 8px; margin-bottom: 15px; overflow: hidden; }
     .header-banner img { max-height: 300px; margin: -80px auto -30px auto; display: block; }
     .title-section { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #1e293b; padding-bottom: 15px; }
     .title-section p.sub { font-size: 12px; color: #64748b; font-weight: 600; letter-spacing: 1px; margin-bottom: 8px; }
@@ -337,9 +337,9 @@ export default function InventoryHandoverForm() {
     .handover-box .label { font-size: 13px; font-weight: 800; color: #475569; margin-bottom: 8px; }
     .handover-box .name { font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 4px; }
     .handover-box .emp-num { font-size: 12px; color: #64748b; }
-    .footer-banner { text-align: center; margin-top: 40px; padding-top: 15px; border-top: 2px solid #0d9488; }
-    .footer-banner p { margin: 3px 0; font-size: 11px; color: #6b7280; }
-    .footer-banner .main-text { font-weight: bold; color: #0d9488; font-size: 12px; }
+    .footer-banner { text-align: center; margin-top: 40px; padding-top: 15px; border-top: 2px solid #0284c7; }
+    .footer-banner p { margin: 3px 0; font-size: 11px; color: #0284c7; }
+    .footer-banner .main-text { font-weight: bold; color: #0284c7; font-size: 12px; }
     .footer-banner .date-text { font-size: 9px; color: #94a3b8; margin-top: 8px; }
     .page-break { page-break-before: always; }
     @media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
