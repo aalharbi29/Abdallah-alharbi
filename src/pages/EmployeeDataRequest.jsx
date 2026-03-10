@@ -574,7 +574,12 @@ export default function EmployeeDataRequest() {
       return center ? `مركز ${center}` : '-';
     }
     if (key === 'فترة_التكليف') {
-      const group = assignmentGroups.find(g => g.employeeIds.includes(emp.id));
+      // إذا مجموعة واحدة بدون تحديد موظفين → تشمل الجميع
+      const group = assignmentGroups.find(g => {
+        if (g.employeeIds.length > 0) return g.employeeIds.includes(emp.id);
+        if (assignmentGroups.length === 1) return true;
+        return false;
+      });
       if (!group || (!group.fromDate && !group.toDate)) return '-';
       const suffix = group.dateType === 'hijri' ? 'هـ' : 'م';
       return `من ${group.fromDate || '...'} إلى ${group.toDate || '...'} ${suffix}`;
