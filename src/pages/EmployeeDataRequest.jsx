@@ -686,10 +686,10 @@ export default function EmployeeDataRequest() {
             html += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(emp, key)}</td>`;
           });
           if (localIdx === 0) {
-            const periodText = group && (group.fromDate || group.toDate)
-              ? `من ${group.fromDate || '...'} إلى ${group.toDate || '...'} ${group.dateType === 'hijri' ? 'هـ' : 'م'}`
-              : '-';
-            html += `<td rowspan="${grpEmps.length}" style="border: 1px solid #d1d5db; padding: 4px; text-align: center; font-size: 12px; font-weight: bold; writing-mode: vertical-rl; text-orientation: mixed; white-space: nowrap; background-color: #fff; min-width: 30px; letter-spacing: 1px; transform: rotate(180deg);">${periodText}</td>`;
+            const periodLine1 = group && group.fromDate ? `من ${group.fromDate}` : '';
+            const periodLine2 = group && group.toDate ? `إلى ${group.toDate} ${group.dateType === 'hijri' ? 'هـ' : 'م'}` : '';
+            const periodText = (periodLine1 || periodLine2) ? `<div>${periodLine1}</div><div>${periodLine2}</div>` : '-';
+            html += `<td rowspan="${grpEmps.length}" style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: #fff; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
           }
           html += '</tr>';
           globalIdx++;
@@ -741,6 +741,69 @@ export default function EmployeeDataRequest() {
     const logoJustify = logoPosition === 'right' ? 'flex-end' : logoPosition === 'left' ? 'flex-start' : 'center';
     const sigAlign = signaturePosition === 'right' ? 'right' : signaturePosition === 'left' ? 'left' : 'center';
 
+    const signatureBlock = showSignature ? `<div class="signature-section">
+        ${signerName ? `<p class="sig-name">${signerName}</p>` : ''}
+        ${signerTitle ? `<p class="sig-title">${signerTitle}</p>` : ''}
+        ${selectedSig ? `<img src="${selectedSig.image_url}" alt="${selectedSig.name}" />` : ''}
+      </div>` : '';
+
+    const footerBlock = logoSettings.show_footer ? `<div class="footer-banner">
+      ${logoSettings.footer_text_1 ? `<p class="main-text">${logoSettings.footer_text_1}</p>` : ''}
+      ${logoSettings.footer_text_2 ? `<p>${logoSettings.footer_text_2}</p>` : ''}
+      <p class="date-text">${dateStr}</p>
+    </div>` : '';
+
+    const headerBlock = logoSettings.show_logo && logoSettings.logo_url ? `<div class="header-banner">
+      <img src="${logoSettings.logo_url}" alt="شعار المؤسسة" />
+    </div>` : '';
+
+    const titleBlock = `<div class="report-title"><h1>${reportTitle}</h1></div>`;
+
+    let bodyContent = '';
+    if (splitPages) {
+      // صفحة 1: النص التعبيري + التوقيع + التذييل
+      bodyContent += `<div class="page-container">
+        ${headerBlock}
+        <div class="page-content">
+          ${titleBlock}
+          ${narrativeHtml}
+          ${finalRequest ? `<div class="request-box">${finalRequest}</div>` : ''}
+          ${signatureBlock}
+        </div>
+        ${footerBlock}
+      </div>`;
+      // صفحة 2: الجدول + التوقيع + التذييل
+      bodyContent += `<div class="page-container" style="page-break-before: always;">
+        ${headerBlock}
+        <div class="page-content">
+          ${titleBlock}
+          <table>
+            <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+            <tbody>${tableRows}</tbody>
+          </table>
+          ${signatureBlock}
+        </div>
+        ${footerBlock}
+      </div>`;
+    } else {
+      // صفحة واحدة كالمعتاد
+      bodyContent = `<div class="page-container">
+        ${headerBlock}
+        <div class="page-content">
+          ${titleBlock}
+          ${narrativePosition === 'before' ? narrativeHtml : ''}
+          <table>
+            <thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+            <tbody>${tableRows}</tbody>
+          </table>
+          ${narrativePosition === 'after' ? narrativeHtml : ''}
+          ${finalRequest ? `<div class="request-box">${finalRequest}</div>` : ''}
+          ${signatureBlock}
+        </div>
+        ${footerBlock}
+      </div>`;
+    }
+
     const html = `<!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
@@ -780,42 +843,7 @@ export default function EmployeeDataRequest() {
   </style>
 </head>
 <body>
-  <div class="page-container">
-    ${logoSettings.show_logo && logoSettings.logo_url ? `<div class="header-banner">
-      <img src="${logoSettings.logo_url}" alt="شعار المؤسسة" />
-    </div>` : ''}
-
-    <div class="page-content">
-      <div class="report-title">
-        <h1>${reportTitle}</h1>
-      </div>
-
-      ${narrativePosition === 'before' ? narrativeHtml : ''}
-
-      <table>
-        <thead>
-          <tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>
-        </thead>
-        <tbody>${tableRows}</tbody>
-      </table>
-
-      ${narrativePosition === 'after' ? narrativeHtml : ''}
-
-      ${finalRequest ? `<div class="request-box">${finalRequest}</div>` : ''}
-
-      ${showSignature ? `<div class="signature-section">
-        ${signerName ? `<p class="sig-name">${signerName}</p>` : ''}
-        ${signerTitle ? `<p class="sig-title">${signerTitle}</p>` : ''}
-        ${selectedSig ? `<img src="${selectedSig.image_url}" alt="${selectedSig.name}" />` : ''}
-      </div>` : ''}
-    </div>
-
-    ${logoSettings.show_footer ? `<div class="footer-banner">
-      ${logoSettings.footer_text_1 ? `<p class="main-text">${logoSettings.footer_text_1}</p>` : ''}
-      ${logoSettings.footer_text_2 ? `<p>${logoSettings.footer_text_2}</p>` : ''}
-      <p class="date-text">${dateStr}</p>
-    </div>` : ''}
-  </div>
+  ${bodyContent}
 </body>
 </html>`;
 
