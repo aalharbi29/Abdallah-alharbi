@@ -196,7 +196,7 @@ export default function ReportPreviewDialog({
               <thead>
                 <tr>
                   {headers.map((h, i) => (
-                   <th key={i} className="border border-gray-300 px-3 py-2 text-center font-bold text-xs text-black" style={{ backgroundColor: '#bae6fd' }}>
+                   <th key={i} className="border border-gray-300 px-3 py-2 text-center font-bold text-xs text-black" style={{ backgroundColor: '#e0f2fe' }}>
                      {h}
                    </th>
                   ))}

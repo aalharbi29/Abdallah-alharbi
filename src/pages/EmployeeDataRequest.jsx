@@ -710,7 +710,7 @@ export default function EmployeeDataRequest() {
     .narrative-box { background: #fff; border: none; border-radius: 0; padding: 10px 0; margin-bottom: 20px; font-size: 15px; line-height: 1.9; white-space: pre-wrap; font-weight: 600; }
     .narrative-bold { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 900; font-size: 16px; display: block; }
     table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-    th { background: #bae6fd; color: #000; border: 1px solid #d1d5db; padding: 10px 12px; text-align: center; font-weight: 700; font-size: 13px; }
+    th { background: #e0f2fe; color: #000; border: 1px solid #d1d5db; padding: 10px 12px; text-align: center; font-weight: 700; font-size: 13px; }
     td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px; }
     .request-box { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; }
     .signature-section { text-align: ${sigAlign}; margin-top: 30px; padding: 15px 0; }
