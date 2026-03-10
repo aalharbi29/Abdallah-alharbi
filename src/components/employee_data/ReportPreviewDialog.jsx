@@ -43,7 +43,7 @@ export default function ReportPreviewDialog({
       return empList.map((emp, idx) => (
         <tr key={emp.id} style={{ backgroundColor: bgFn ? bgFn(idx) : (idx % 2 === 0 ? '#fff' : '#f9fafb') }}>
           {selectedFields.map(key => (
-            <td key={key} className="border border-gray-300 px-3 py-2 text-center text-xs font-bold">
+            <td key={key} className="border border-gray-300 px-2 text-center text-xs font-bold" style={{ padding: '4px 8px' }}>
                 {getFieldValue(emp, key)}
               </td>
             ))}
@@ -76,7 +76,7 @@ export default function ReportPreviewDialog({
         rows.push(
           <tr key={emp.id} style={{ backgroundColor: bg }}>
             {otherFields.map(key => (
-              <td key={key} className="border border-gray-300 px-3 py-2 text-center text-xs font-bold">
+              <td key={key} className="border border-gray-300 text-center text-xs font-bold" style={{ padding: '4px 8px' }}>
                 {getFieldValue(emp, key)}
               </td>
             ))}
@@ -84,7 +84,7 @@ export default function ReportPreviewDialog({
               <td
                 key="فترة_التكليف"
                 rowSpan={grpEmps.length}
-                className="border border-gray-300 px-2 py-2 text-center text-xs font-bold"
+                className="border border-gray-300 text-center text-xs font-bold" style={{ padding: '4px 8px' }}
                 style={{
                   backgroundColor: '#fff',
                   minWidth: '80px',
@@ -120,7 +120,7 @@ export default function ReportPreviewDialog({
           if (manager) {
             managerRows.push(
               <tr key={`mh-${managerId}`} style={{ backgroundColor: '#d1fae5' }}>
-                <td colSpan={selectedFields.length} className="border border-gray-300 px-3 py-2 text-center font-bold text-xs">
+                <td colSpan={selectedFields.length} className="border border-gray-300 text-center font-bold text-xs" style={{ padding: '4px 8px' }}>
                   بيانات المدير المباشر
                 </td>
               </tr>
@@ -128,7 +128,7 @@ export default function ReportPreviewDialog({
             managerRows.push(
               <tr key={`md-${managerId}`} style={{ backgroundColor: '#ecfdf5' }}>
                 {selectedFields.map(key => (
-                  <td key={key} className="border border-gray-300 px-3 py-2 text-center text-xs font-bold">
+                  <td key={key} className="border border-gray-300 text-center text-xs font-bold" style={{ padding: '4px 8px' }}>
                     {getFieldValue(manager, key)}
                   </td>
                 ))}
