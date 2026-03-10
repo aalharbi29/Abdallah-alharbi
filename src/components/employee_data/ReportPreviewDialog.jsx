@@ -156,7 +156,7 @@ export default function ReportPreviewDialog({
         <div className="p-6 bg-white" style={{ fontFamily: "'Cairo', sans-serif" }}>
           {/* شعار */}
           {logoSettings.show_logo && logoSettings.logo_url && (
-            <div className={`flex ${logoJustifyClass} items-center border-b-2 pb-2 mb-4`} style={{ borderColor: '#0d9488' }}>
+            <div className={`flex ${logoJustifyClass} items-center border-b-2 pb-2 mb-4`} style={{ borderColor: '#0284c7' }}>
               <img 
                 src={logoSettings.logo_url} 
                 alt="شعار"
@@ -195,7 +195,7 @@ export default function ReportPreviewDialog({
               <thead>
                 <tr>
                   {headers.map((h, i) => (
-                   <th key={i} className="bg-teal-700 text-white border border-gray-300 px-3 py-2 text-center font-bold text-xs">
+                   <th key={i} className="border border-gray-300 px-3 py-2 text-center font-bold text-xs text-black" style={{ backgroundColor: '#bae6fd' }}>
                      {h}
                    </th>
                   ))}
@@ -245,7 +245,7 @@ export default function ReportPreviewDialog({
 
           {/* تذييل */}
           {logoSettings.show_footer && (
-            <div className="mt-8 pt-3 border-t-2 text-center" style={{ borderColor: '#0d9488' }}>
+            <div className="mt-8 pt-3 border-t-2 text-center" style={{ borderColor: '#0284c7' }}>
               {logoSettings.footer_text_1 && <p className="font-bold text-sm" style={{ color: '#0d9488' }}>{logoSettings.footer_text_1}</p>}
               {logoSettings.footer_text_2 && <p className="text-sm" style={{ color: '#0d9488' }}>{logoSettings.footer_text_2}</p>}
               <p className="text-xs mt-2" style={{ color: '#0d9488' }}>{dateStr}</p>

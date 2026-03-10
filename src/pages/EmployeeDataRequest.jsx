@@ -703,21 +703,21 @@ export default function EmployeeDataRequest() {
     @page { size: A4; margin: 5mm 15mm 15mm 15mm; }
     .page-container { max-width: 210mm; margin: 0 auto; padding: 0 10px; min-height: 100vh; display: flex; flex-direction: column; }
     .page-content { flex: 1; padding-top: 15px; }
-    .header-banner { border-bottom: 2px solid #0d9488; padding: 0 0 8px; margin-bottom: 15px; overflow: hidden; display: flex; justify-content: ${logoJustify}; align-items: center; }
+    .header-banner { border-bottom: 2px solid #0284c7; padding: 0 0 8px; margin-bottom: 15px; overflow: hidden; display: flex; justify-content: ${logoJustify}; align-items: center; }
     .header-banner img { max-height: ${logoSettings.max_height}px; margin: ${logoSettings.margin_top}px 0 ${logoSettings.margin_bottom}px 0; display: block; }
     .report-title { text-align: center; margin-bottom: 20px; margin-top: 10px; }
     .report-title h1 { font-size: 22px; color: #0d9488; font-weight: 700; margin-bottom: 6px; }
     .narrative-box { background: #fff; border: none; border-radius: 0; padding: 10px 0; margin-bottom: 20px; font-size: 15px; line-height: 1.9; white-space: pre-wrap; font-weight: 600; }
     .narrative-bold { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 900; font-size: 16px; display: block; }
     table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-    th { background: #0d9488; color: #fff; border: 1px solid #d1d5db; padding: 10px 12px; text-align: center; font-weight: 700; font-size: 13px; }
+    th { background: #bae6fd; color: #000; border: 1px solid #d1d5db; padding: 10px 12px; text-align: center; font-weight: 700; font-size: 13px; }
     td { border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px; }
     .request-box { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; }
     .signature-section { text-align: ${sigAlign}; margin-top: 30px; padding: 15px 0; }
     .signature-section .sig-name { font-weight: 900; font-size: 18px; margin-top: 8px; color: #000; }
     .signature-section .sig-title { font-weight: 700; font-size: 15px; color: #000; margin-top: 0; }
     .signature-section img { max-height: 120px; ${sigAlign === 'center' ? 'margin: 0 auto;' : ''} display: block; margin-top: -2px; mix-blend-mode: multiply; }
-    .footer-banner { text-align: center; padding-top: 15px; border-top: 2px solid #0d9488; margin-top: auto; }
+    .footer-banner { text-align: center; padding-top: 15px; border-top: 2px solid #0284c7; margin-top: auto; }
     .footer-banner p { margin: 4px 0; font-size: 14px; color: #0d9488; }
     .footer-banner .main-text { font-weight: bold; color: #0d9488; font-size: 15px; }
     .footer-banner .date-text { font-size: 11px; color: #0d9488; margin-top: 8px; }
