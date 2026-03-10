@@ -717,27 +717,7 @@ export default function EmployeeDataRequest() {
       return html;
     };
 
-    let tableRows = '';
-    if (displayMode === 'normal') {
-      tableRows = buildMergedRows(selectedEmployees);
-    } else {
-      tableRows = buildMergedRows(selectedEmployees, () => '#dbeafe');
-      const processedManagers = new Set();
-      Object.entries(groupedByManager).forEach(([managerId, employeeIds]) => {
-        if (!processedManagers.has(managerId)) {
-          const manager = getManagerWithCenters(managerId, employeeIds);
-          if (manager) {
-            tableRows += `<tr style="background-color: #d1fae5;"><td colspan="${selectedFields.length}" style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-weight: bold;">بيانات المدير المباشر</td></tr>`;
-            tableRows += '<tr style="background-color: #ecfdf5;">';
-            selectedFields.forEach(key => {
-              tableRows += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(manager, key)}</td>`;
-            });
-            tableRows += '</tr>';
-            processedManagers.add(managerId);
-          }
-        }
-      });
-    }
+    // tableRows لم يعد مستخدمًا - تم استبداله بنظام تقسيم الصفحات
 
     const dateStr = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     const selectedSig = showSignature && selectedSignatureId ? signatures.find(s => s.id === selectedSignatureId) : null;
