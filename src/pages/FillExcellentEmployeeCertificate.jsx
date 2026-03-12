@@ -28,8 +28,37 @@ export default function FillExcellentEmployeeCertificate() {
     supervisor_name: 'عبدالمجيد سعود الربيقي',
     issue_date: format(new Date(), 'yyyy-MM-dd'),
     hijri_date: '',
-    font_weight: 'bold' // Note: This form input will no longer affect preview styles as they are hardcoded.
+    show_stamp: true,
+    show_signature: true,
+    fonts: {
+      title: 'Cairo',
+      table: 'Cairo',
+      greeting: 'Cairo',
+      text: 'Cairo',
+      manager: 'Cairo'
+    },
+    weights: {
+      title: 'bold',
+      tableHeader: 'bold',
+      tableData: 'bold',
+      greeting: '900',
+      manager: 'bold'
+    }
   });
+
+  const fontOptions = [
+    { value: 'Cairo', label: 'Cairo' },
+    { value: 'Tajawal', label: 'Tajawal' },
+    { value: 'Almarai', label: 'Almarai' },
+    { value: 'Arial', label: 'Arial' },
+  ];
+
+  const weightOptions = [
+    { value: 'normal', label: 'عادي' },
+    { value: '500', label: 'متوسط' },
+    { value: 'bold', label: 'عريض' },
+    { value: '900', label: 'عريض جداً' },
+  ];
 
   useEffect(() => {
     loadEmployees();
@@ -226,6 +255,81 @@ export default function FillExcellentEmployeeCertificate() {
                     onChange={(e) => setFormData(prev => ({ ...prev, hijri_date: e.target.value }))}
                     className="h-11 md:h-10 text-base"
                   />
+                </div>
+              </div>
+
+              <div className="border-t pt-4 mt-4">
+                <h3 className="text-lg font-semibold mb-4">إعدادات العرض والتنسيق</h3>
+                
+                <div className="flex gap-6 mb-6">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={formData.show_stamp}
+                      onChange={(e) => setFormData(prev => ({ ...prev, show_stamp: e.target.checked }))}
+                      className="w-4 h-4"
+                    />
+                    <span>إظهار الختم</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input 
+                      type="checkbox" 
+                      checked={formData.show_signature}
+                      onChange={(e) => setFormData(prev => ({ ...prev, show_signature: e.target.checked }))}
+                      className="w-4 h-4"
+                    />
+                    <span>إظهار التوقيع</span>
+                  </label>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-4">
+                    <h4 className="font-medium text-gray-700">أنواع الخطوط</h4>
+                    {[
+                      { key: 'title', label: 'العنوان' },
+                      { key: 'table', label: 'الجدول' },
+                      { key: 'greeting', label: 'السلام' },
+                      { key: 'text', label: 'النص' },
+                      { key: 'manager', label: 'المدير' }
+                    ].map(item => (
+                      <div key={`font-${item.key}`} className="flex items-center gap-2">
+                        <Label className="w-20">{item.label}</Label>
+                        <Select 
+                          value={formData.fonts[item.key]} 
+                          onValueChange={(val) => setFormData(prev => ({...prev, fonts: {...prev.fonts, [item.key]: val}}))}
+                        >
+                          <SelectTrigger className="flex-1"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {fontOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="font-medium text-gray-700">سماكة الخطوط</h4>
+                    {[
+                      { key: 'title', label: 'العنوان' },
+                      { key: 'tableHeader', label: 'رأس الجدول' },
+                      { key: 'tableData', label: 'بيانات الجدول' },
+                      { key: 'greeting', label: 'السلام' },
+                      { key: 'manager', label: 'المدير' }
+                    ].map(item => (
+                      <div key={`weight-${item.key}`} className="flex items-center gap-2">
+                        <Label className="w-24">{item.label}</Label>
+                        <Select 
+                          value={formData.weights[item.key]} 
+                          onValueChange={(val) => setFormData(prev => ({...prev, weights: {...prev.weights, [item.key]: val}}))}
+                        >
+                          <SelectTrigger className="flex-1"><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {weightOptions.map(opt => <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -647,8 +751,9 @@ const CertificatePreview = ({ formData, onClose }) => {
           }}>
             {/* العنوان */}
             <h1 style={{
+              fontFamily: formData.fonts?.title || 'Cairo',
               fontSize: '28px',
-              fontWeight: 'bold',
+              fontWeight: formData.weights?.title || 'bold',
               textAlign: 'center',
               marginBottom: '60px',
               marginTop: '100px',
@@ -658,7 +763,7 @@ const CertificatePreview = ({ formData, onClose }) => {
             </h1>
 
             {/* الجدول */}
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '50px' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '50px', fontFamily: formData.fonts?.table || 'Cairo' }}>
               <table style={{
                 border: '2px solid black',
                 width: '85%',
@@ -669,24 +774,24 @@ const CertificatePreview = ({ formData, onClose }) => {
                     <th style={{
                       borderLeft: '2px solid black',
                       padding: '15px',
-                      fontWeight: 'bold',
+                      fontWeight: formData.weights?.tableHeader || 'bold',
                       textAlign: 'center',
-                      backgroundColor: '#f3f4f6',
+                      backgroundColor: '#7dd3fc',
                       fontSize: '18px'
                     }}>اسم الموظف</th>
                     <th style={{
                       borderLeft: '2px solid black',
                       padding: '15px',
-                      fontWeight: 'bold',
+                      fontWeight: formData.weights?.tableHeader || 'bold',
                       textAlign: 'center',
-                      backgroundColor: '#f3f4f6',
+                      backgroundColor: '#7dd3fc',
                       fontSize: '18px'
                     }}>رقم الموظف</th>
                     <th style={{
                       padding: '15px',
-                      fontWeight: 'bold',
+                      fontWeight: formData.weights?.tableHeader || 'bold',
                       textAlign: 'center',
-                      backgroundColor: '#f3f4f6',
+                      backgroundColor: '#7dd3fc',
                       fontSize: '18px'
                     }}>جهة العمل</th>
                   </tr>
@@ -698,20 +803,20 @@ const CertificatePreview = ({ formData, onClose }) => {
                       padding: '15px',
                       textAlign: 'center',
                       fontSize: '17px',
-                      fontWeight: 'bold'
+                      fontWeight: formData.weights?.tableData || 'bold'
                     }}>{formData.employee_name}</td>
                     <td style={{
                       borderLeft: '2px solid black',
                       padding: '15px',
                       textAlign: 'center',
                       fontSize: '17px',
-                      fontWeight: 'bold'
+                      fontWeight: formData.weights?.tableData || 'bold'
                     }}>{formData.employee_number}</td>
                     <td style={{
                       padding: '15px',
                       textAlign: 'center',
                       fontSize: '17px',
-                      fontWeight: 'bold'
+                      fontWeight: formData.weights?.tableData || 'bold'
                     }}>{formData.work_place}</td>
                   </tr>
                 </tbody>
