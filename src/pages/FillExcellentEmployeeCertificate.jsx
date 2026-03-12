@@ -23,6 +23,7 @@ export default function FillExcellentEmployeeCertificate() {
     employee_name: '',
     employee_number: '',
     work_place: '',
+    administration_name: 'إدارة شؤون المراكز الصحية بالحناكية',
     achievement_description: 'حقق بنجاح كل أهدافة خلال العام وتخطى أكثر من ( ١٠٠٪ ) من المستهدف المحدد وإظهار كافة الكفاءات / القدرات في المستويات أعلى من تلك المطلوبة في ميثاق الأداء الوظيفي .',
     supervisor_name: 'عبدالمجيد سعود الربيقي',
     issue_date: format(new Date(), 'yyyy-MM-dd'),
@@ -180,6 +181,18 @@ export default function FillExcellentEmployeeCertificate() {
                     required
                     className="bg-gray-100 h-11 md:h-10 text-base"
                     readOnly
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4">
+                <div>
+                  <Label htmlFor="administration_name" className="text-sm md:text-base">مسمى الإدارة</Label>
+                  <Input
+                    id="administration_name"
+                    value={formData.administration_name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, administration_name: e.target.value }))}
+                    className="h-11 md:h-10 text-base"
                   />
                 </div>
               </div>
@@ -719,7 +732,7 @@ const CertificatePreview = ({ formData, onClose }) => {
                 textAlign: 'justify',
                 padding: '0 50px'
               }}>
-                تشهد إدارة المراكز الصحية بالحناكية بأن الموضح اسمه وبياناته أعلاه {formData.achievement_description}
+                تشهد {formData.administration_name} بأن الموضح اسمه وبياناته أعلاه {formData.achievement_description}
               </p>
             </div>
           </div>
