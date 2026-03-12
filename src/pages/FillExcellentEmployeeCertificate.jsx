@@ -937,7 +937,7 @@ const CertificatePreview = ({ formData, onClose }) => {
           </div>
 
           {/* التوقيع */}
-          {formData.show_signature && (
+          {String(formData.show_signature) !== 'false' && (
             <>
               <div
                 className="draggable-element no-print"
@@ -1003,7 +1003,7 @@ const CertificatePreview = ({ formData, onClose }) => {
           )}
 
           {/* الختم */}
-          {formData.show_stamp && (
+          {String(formData.show_stamp) !== 'false' && (
             <>
               <div
                 className="draggable-element no-print"

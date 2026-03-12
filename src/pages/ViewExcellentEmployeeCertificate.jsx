@@ -247,7 +247,7 @@ export default function ViewExcellentEmployeeCertificate() {
             </div>
 
             {/* التوقيع */}
-            {certificate.show_signature !== false && (
+            {String(certificate.show_signature) !== 'false' && (
               <div style={{
                 position: 'absolute',
                 left: '420px',
@@ -274,7 +274,7 @@ export default function ViewExcellentEmployeeCertificate() {
             )}
 
             {/* الختم */}
-            {certificate.show_stamp !== false && (
+            {String(certificate.show_stamp) !== 'false' && (
               <div style={{
                 position: 'absolute',
                 left: '350px',
