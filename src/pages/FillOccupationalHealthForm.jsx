@@ -77,7 +77,43 @@ export default function FillOccupationalHealthForm() {
   };
 
   const handlePrint = () => {
-    window.print();
+    if (!printRef.current) return;
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+    const content = printRef.current.innerHTML;
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html dir="${isAr ? 'rtl' : 'ltr'}">
+      <head>
+        <meta charset="UTF-8">
+        <title>${isAr ? 'نماذج الصحة المهنية' : 'Occupational Health Forms'}</title>
+        <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+        <style>
+          * { font-family: 'Cairo', sans-serif; box-sizing: border-box; margin: 0; padding: 0; }
+          body { padding: 20px; color: #111; font-size: 12px; background: white; direction: ${isAr ? 'rtl' : 'ltr'}; }
+          input, textarea, select { border: 1px solid #ccc; padding: 2px 6px; font-family: 'Cairo', sans-serif; font-size: 11px; min-height: 22px; background: white; }
+          input[type="radio"], input[type="checkbox"] { width: 14px; height: 14px; }
+          table { width: 100%; border-collapse: collapse; }
+          th, td { border: 1px solid #ccc; padding: 4px 6px; text-align: right; font-size: 11px; }
+          th { background: #D6E8F7; font-weight: bold; }
+          label { display: inline-flex; align-items: center; gap: 4px; }
+          h2, h3, h4 { color: #5B9BD5; }
+          .bg-\\[\\#5B9BD5\\], [class*="bg-[#5B9BD5]"] { background-color: #5B9BD5 !important; color: white !important; }
+          @media print {
+            body { padding: 10mm; }
+            @page { size: A4; margin: 10mm; }
+            input, textarea { border: none; border-bottom: 1px solid #999; background: transparent; }
+          }
+        </style>
+      </head>
+      <body>${content}</body>
+      </html>
+    `);
+    printWindow.document.close();
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 500);
   };
 
   const renderForm = (formId) => {
