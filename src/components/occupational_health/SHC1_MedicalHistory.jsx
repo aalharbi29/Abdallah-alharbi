@@ -88,20 +88,20 @@ export default function SHC1_MedicalHistory({ data, onChange, lang = 'ar' }) {
   ];
 
   return (
-    <div className="space-y-6 print:text-[11px]" dir={isAr ? 'rtl' : 'ltr'}>
-      <div className="text-center mb-4">
-        <h2 className="text-xl font-bold text-[#5B9BD5]">
+    <div className="space-y-4 print:text-[11px] font-cairo" dir={isAr ? 'rtl' : 'ltr'}>
+      <div className="text-center mb-4 border-b-2 border-black pb-2">
+        <h2 className="text-xl font-bold">
           {isAr ? 'استبيان التاريخ الطبي المهني' : 'Occupational Medical History Questionnaire'}
         </h2>
-        <p className="text-xs text-gray-500">SHC1</p>
+        <p className="text-sm font-bold">SHC1</p>
       </div>
 
       {/* Personal History */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        <div className="bg-[#5B9BD5] text-white text-center py-2 font-bold">
+      <div className="border-2 border-black">
+        <div className="bg-gray-200 border-b-2 border-black text-center py-1 font-bold text-sm">
           {isAr ? 'التاريخ الشخصي' : 'Personal History'}
         </div>
-        <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="p-2 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
           <div>
             <Label className="text-xs">{isAr ? 'رقم الملف الطبي' : 'Medical record number'}</Label>
             <Input value={d.medical_record || ''} onChange={e => set('medical_record', e.target.value)} className="h-8 text-sm" />
@@ -158,11 +158,11 @@ export default function SHC1_MedicalHistory({ data, onChange, lang = 'ar' }) {
       </div>
 
       {/* Department */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        <div className="bg-[#5B9BD5] text-white text-center py-2 font-bold">
+      <div className="border-2 border-black">
+        <div className="bg-gray-200 border-b-2 border-black text-center py-1 font-bold text-sm">
           {isAr ? 'معلومات القسم' : 'Department Information'}
         </div>
-        <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div className="p-2 grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
           <div>
             <Label className="text-xs">{isAr ? 'القسم' : 'Department'}</Label>
             <Input value={d.department || ''} onChange={e => set('department', e.target.value)} className="h-8 text-sm" />
@@ -175,11 +175,11 @@ export default function SHC1_MedicalHistory({ data, onChange, lang = 'ar' }) {
       </div>
 
       {/* Social Habits */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        <div className="bg-[#5B9BD5] text-white text-center py-2 font-bold">
+      <div className="border-2 border-black">
+        <div className="bg-gray-200 border-b-2 border-black text-center py-1 font-bold text-sm">
           {isAr ? 'العادات الاجتماعية' : 'Social Habits'}
         </div>
-        <div className="p-4">
+        <div className="p-2">
           <div>
             <Label className="text-xs">{isAr ? 'هل تستخدم منتجات التبغ؟ اذكر النوع:' : 'Do you use tobacco products? Mention type:'}</Label>
             <Input value={d.tobacco || ''} onChange={e => set('tobacco', e.target.value)} className="h-8 text-sm mt-1" />
@@ -188,11 +188,11 @@ export default function SHC1_MedicalHistory({ data, onChange, lang = 'ar' }) {
       </div>
 
       {/* Family History */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        <div className="bg-[#5B9BD5] text-white text-center py-2 font-bold">
+      <div className="border-2 border-black">
+        <div className="bg-gray-200 border-b-2 border-black text-center py-1 font-bold text-sm">
           {isAr ? 'التاريخ العائلي' : 'Family History'}
         </div>
-        <div className="p-4">
+        <div className="p-2">
           <p className="text-xs text-gray-500 mb-3">{isAr ? 'حدد إذا كان هناك تاريخ عائلي لأي من التالي:' : 'Check if there is any history in your family of:'}</p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
             {familyConditions.map(c => (
@@ -217,11 +217,11 @@ export default function SHC1_MedicalHistory({ data, onChange, lang = 'ar' }) {
       </div>
 
       {/* Statement of Present Health */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        <div className="bg-[#5B9BD5] text-white text-center py-2 font-bold">
+      <div className="border-2 border-black">
+        <div className="bg-gray-200 border-b-2 border-black text-center py-1 font-bold text-sm">
           {isAr ? 'بيان الحالة الصحية الحالية' : 'Statement of Present Health'}
         </div>
-        <div className="p-4 space-y-3">
+        <div className="p-2 space-y-2">
           <div>
             <Label className="text-xs">{isAr ? 'هل تتلقى علاجاً أو متابعة لأي حالة طبية حالياً؟' : 'Are you currently being treated or monitored for any medical conditions?'}</Label>
             <Textarea value={d.current_treatment || ''} onChange={e => set('current_treatment', e.target.value)} className="h-16 text-sm" />
@@ -243,11 +243,11 @@ export default function SHC1_MedicalHistory({ data, onChange, lang = 'ar' }) {
       </div>
 
       {/* Review of Systems */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        <div className="bg-[#5B9BD5] text-white text-center py-2 font-bold">
+      <div className="border-2 border-black">
+        <div className="bg-gray-200 border-b-2 border-black text-center py-1 font-bold text-sm">
           {isAr ? 'مراجعة الأجهزة' : 'Review of Systems'}
         </div>
-        <div className="p-4">
+        <div className="p-2">
           {reviewSystems.map(sys => (
             <div key={sys.category} className="mb-3">
               <h4 className="font-bold text-sm text-[#5B9BD5] border-b border-[#5B9BD5] pb-1 mb-1">
@@ -273,11 +273,11 @@ export default function SHC1_MedicalHistory({ data, onChange, lang = 'ar' }) {
       </div>
 
       {/* Past Medical History */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        <div className="bg-[#5B9BD5] text-white text-center py-2 font-bold">
+      <div className="border-2 border-black">
+        <div className="bg-gray-200 border-b-2 border-black text-center py-1 font-bold text-sm">
           {isAr ? 'التاريخ الطبي السابق' : 'Past Medical History'}
         </div>
-        <div className="p-4 space-y-3">
+        <div className="p-2 space-y-2">
           {[
             { en: 'High blood pressure', ar: 'ارتفاع ضغط الدم' },
             { en: 'High Cholesterol', ar: 'ارتفاع الكوليسترول' },
@@ -317,11 +317,11 @@ export default function SHC1_MedicalHistory({ data, onChange, lang = 'ar' }) {
       </div>
 
       {/* Preventative Care */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        <div className="bg-[#5B9BD5] text-white text-center py-2 font-bold">
+      <div className="border-2 border-black">
+        <div className="bg-gray-200 border-b-2 border-black text-center py-1 font-bold text-sm">
           {isAr ? 'الرعاية الوقائية' : 'Preventative Care'}
         </div>
-        <div className="p-4 space-y-3">
+        <div className="p-2 space-y-2">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div>
               <Label className="text-xs">Tetanus Booster (Td/TT):</Label>
@@ -366,11 +366,11 @@ export default function SHC1_MedicalHistory({ data, onChange, lang = 'ar' }) {
       </div>
 
       {/* Occupational History */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        <div className="bg-[#5B9BD5] text-white text-center py-2 font-bold">
+      <div className="border-2 border-black">
+        <div className="bg-gray-200 border-b-2 border-black text-center py-1 font-bold text-sm">
           {isAr ? 'التاريخ المهني' : 'Occupational History'}
         </div>
-        <div className="p-4 space-y-3">
+        <div className="p-2 space-y-2">
           <div>
             <Label className="text-xs">{isAr ? 'الوظيفة الحالية:' : 'Current job:'}</Label>
             <Input value={d.current_job || ''} onChange={e => set('current_job', e.target.value)} className="h-8 text-sm" />
@@ -401,11 +401,11 @@ export default function SHC1_MedicalHistory({ data, onChange, lang = 'ar' }) {
       </div>
 
       {/* Hepatitis B Vaccine Record */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        <div className="bg-[#5B9BD5] text-white text-center py-2 font-bold">
+      <div className="border-2 border-black">
+        <div className="bg-gray-200 border-b-2 border-black text-center py-1 font-bold text-sm">
           {isAr ? 'سجل لقاح التهاب الكبد ب' : 'Hepatitis B Vaccine Record'}
         </div>
-        <div className="p-4 space-y-3">
+        <div className="p-2 space-y-2">
           <div className="space-y-2">
             {[
               { val: 'completed', en: 'I have previously received the complete Hepatitis B Vaccine series', ar: 'سبق أن حصلت على سلسلة لقاح التهاب الكبد ب كاملة' },
