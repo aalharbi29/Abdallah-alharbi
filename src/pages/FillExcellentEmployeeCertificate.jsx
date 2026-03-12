@@ -42,6 +42,7 @@ export default function FillExcellentEmployeeCertificate() {
       tableHeader: 'bold',
       tableData: 'bold',
       greeting: '900',
+      text: 'bold',
       manager: 'bold'
     }
   });
@@ -88,15 +89,40 @@ export default function FillExcellentEmployeeCertificate() {
     }
   };
 
-  const handleEmployeeSelect = (employee) => {
+  const handleEmployeeSelect = async (employee) => {
+    const healthCenterName = employee.المركز_الصحي || '';
+    
     setFormData(prev => ({
       ...prev,
       employee_record_id: employee.id,
       employee_name: employee.full_name_arabic || '',
       employee_number: employee.رقم_الموظف || '',
-      work_place: employee.المركز_الصحي || ''
+      work_place: healthCenterName,
+      administration_name: healthCenterName
     }));
     setSearchQuery('');
+
+    if (healthCenterName) {
+      try {
+        const centers = await base44.entities.HealthCenter.filter({ 'اسم_المركز': healthCenterName });
+        if (centers && centers.length > 0) {
+          const center = centers[0];
+          if (center.المدير) {
+            const manager = employees.find(emp => emp.id === center.المدير);
+            if (manager) {
+              setFormData(prev => ({ ...prev, supervisor_name: manager.full_name_arabic }));
+            } else {
+              const fetchedManager = await base44.entities.Employee.get(center.المدير);
+              if (fetchedManager) {
+                setFormData(prev => ({ ...prev, supervisor_name: fetchedManager.full_name_arabic }));
+              }
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching center details:', error);
+      }
+    }
   };
 
   const filteredEmployees = useMemo(() => {
@@ -314,6 +340,7 @@ export default function FillExcellentEmployeeCertificate() {
                       { key: 'tableHeader', label: 'رأس الجدول' },
                       { key: 'tableData', label: 'بيانات الجدول' },
                       { key: 'greeting', label: 'السلام' },
+                      { key: 'text', label: 'النص' },
                       { key: 'manager', label: 'المدير' }
                     ].map(item => (
                       <div key={`weight-${item.key}`} className="flex items-center gap-2">
@@ -830,10 +857,12 @@ const CertificatePreview = ({ formData, onClose }) => {
                 fontSize: '20px',
                 fontWeight: formData.weights?.greeting || '900',
                 fontFamily: formData.fonts?.greeting || 'Cairo'
-              }}>السلام عليكم ورحمة الله وبركاته &nbsp;&nbsp;&nbsp; وبعد</p>
+              }}>
+                السلام عليكم ورحمة الله وبركاته <span style={{ display: 'inline-block', width: '40px' }}></span> وبعد
+              </p>
               <p style={{
                 fontSize: '18px',
-                fontWeight: 'bold',
+                fontWeight: formData.weights?.text || 'bold',
                 fontFamily: formData.fonts?.text || 'Cairo',
                 lineHeight: '2.2',
                 textAlign: 'justify',
