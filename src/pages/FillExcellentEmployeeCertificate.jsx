@@ -759,7 +759,7 @@ const CertificatePreview = ({ formData, onClose }) => {
                 fontWeight: 'bold',
                 marginBottom: '8px'
               }}>
-                مدير إدارة شؤون المراكز الصحية بالحناكية
+                مدير {formData.administration_name}
               </p>
               <p style={{ 
                 fontSize: '18px', 
@@ -786,7 +786,7 @@ const CertificatePreview = ({ formData, onClose }) => {
                 fontWeight: 'bold',
                 marginBottom: '8px'
               }}>
-                مدير إدارة شؤون المراكز الصحية بالحناكية
+                مدير {formData.administration_name}
               </p>
               <p style={{ 
                 fontSize: '18px', 
