@@ -287,26 +287,7 @@ export default function FillExcellentEmployeeCertificate() {
               <div className="border-t pt-4 mt-4">
                 <h3 className="text-lg font-semibold mb-4">إعدادات العرض والتنسيق</h3>
                 
-                <div className="flex gap-6 mb-6">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input 
-                      type="checkbox" 
-                      checked={formData.show_stamp}
-                      onChange={(e) => setFormData(prev => ({ ...prev, show_stamp: e.target.checked }))}
-                      className="w-4 h-4"
-                    />
-                    <span>إظهار الختم</span>
-                  </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input 
-                      type="checkbox" 
-                      checked={formData.show_signature}
-                      onChange={(e) => setFormData(prev => ({ ...prev, show_signature: e.target.checked }))}
-                      className="w-4 h-4"
-                    />
-                    <span>إظهار التوقيع</span>
-                  </label>
-                </div>
+
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-4">
@@ -936,125 +917,7 @@ const CertificatePreview = ({ formData, onClose }) => {
             </div>
           </div>
 
-          {/* التوقيع */}
-          {String(formData.show_signature) !== 'false' && (
-            <>
-              <div
-                className="draggable-element no-print"
-                data-draggable-id="signature"
-                style={{
-                  left: `${positions.signature.x}px`,
-                  top: `${positions.signature.y}px`,
-                  zIndex: 11,
-                  border: '2px dashed #10b981',
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                  borderRadius: '4px',
-                  padding: '8px'
-                }}
-                onMouseDown={(e) => handleMouseDown(e, 'signature')}
-              >
-                <div style={{ position: 'relative' }}>
-                  <p style={{ fontSize: '16px', marginBottom: '5px' }}>
-                    التوقيع........................
-                  </p>
-                  <img
-                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/7cc0a0a53_.png"
-                    alt="التوقيع"
-                    style={{
-                      position: 'absolute',
-                      right: '40px',
-                      top: '-30px',
-                      width: '130px',
-                      mixBlendMode: 'darken'
-                    }}
-                    onError={(e) => e.currentTarget.style.display = 'none'}
-                  />
-                </div>
-              </div>
 
-              {/* النسخة للطباعة - التوقيع */}
-              <div
-                className="print-only"
-                style={{
-                  left: `${positions.signature.x}px`,
-                  top: `${positions.signature.y}px`,
-                  zIndex: 11
-                }}
-              >
-                <div style={{ position: 'relative' }}>
-                  <p style={{ fontSize: '16px', marginBottom: '5px' }}>
-                    التوقيع........................
-                  </p>
-                  <img
-                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/7cc0a0a53_.png"
-                    alt="التوقيع"
-                    style={{
-                      position: 'absolute',
-                      right: '40px',
-                      top: '-30px',
-                      width: '130px',
-                      mixBlendMode: 'darken'
-                    }}
-                    onError={(e) => e.currentTarget.style.display = 'none'}
-                  />
-                </div>
-              </div>
-            </>
-          )}
-
-          {/* الختم */}
-          {String(formData.show_stamp) !== 'false' && (
-            <>
-              <div
-                className="draggable-element no-print"
-                data-draggable-id="stamp"
-                style={{
-                  left: `${positions.stamp.x}px`,
-                  top: `${positions.stamp.y}px`,
-                  zIndex: 12,
-                  border: '2px dashed #ef4444',
-                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                  borderRadius: '4px',
-                  padding: '8px'
-                }}
-                onMouseDown={(e) => handleMouseDown(e, 'stamp')}
-              >
-                <p style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '5px' }}>الختم الجهة</p>
-                <img
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/9059c4577_2.png"
-                  alt="الختم"
-                  style={{
-                    width: '150px',
-                    opacity: 0.8,
-                    marginTop: '-55px'
-                  }}
-                  onError={(e) => e.currentTarget.style.display = 'none'}
-                />
-              </div>
-
-              {/* النسخة للطباعة - الختم */}
-              <div
-                className="print-only"
-                style={{
-                  left: `${positions.stamp.x}px`,
-                  top: `${positions.stamp.y}px`,
-                  zIndex: 12
-                }}
-              >
-                <p style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '5px' }}>الختم الجهة</p>
-                <img
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/9059c4577_2.png"
-                  alt="الختم"
-                  style={{
-                    width: '150px',
-                    opacity: 0.8,
-                    marginTop: '-55px'
-                  }}
-                  onError={(e) => e.currentTarget.style.display = 'none'}
-                />
-              </div>
-            </>
-          )}
 
           {/* التاريخ */}
           <p style={{

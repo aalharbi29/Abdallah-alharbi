@@ -246,53 +246,7 @@ export default function ViewExcellentEmployeeCertificate() {
               </p>
             </div>
 
-            {/* التوقيع */}
-            {String(certificate.show_signature) !== 'false' && (
-              <div style={{
-                position: 'absolute',
-                left: '420px',
-                top: '60px'
-              }}>
-                <div style={{ position: 'relative' }}>
-                  <p style={{ fontSize: '16px', marginBottom: '5px' }}>
-                    التوقيع........................
-                  </p>
-                  <img
-                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/7cc0a0a53_.png"
-                    alt="التوقيع"
-                    style={{
-                      position: 'absolute',
-                      right: '40px',
-                      top: '-30px',
-                      width: '130px',
-                      mixBlendMode: 'darken'
-                    }}
-                    onError={(e) => e.target.style.display = 'none'}
-                  />
-                </div>
-              </div>
-            )}
 
-            {/* الختم */}
-            {String(certificate.show_stamp) !== 'false' && (
-              <div style={{
-                position: 'absolute',
-                left: '350px',
-                top: '140px'
-              }}>
-                <p style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '5px' }}>الختم الجهة</p>
-                <img
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/9059c4577_2.png"
-                  alt="الختم"
-                  style={{
-                    width: '150px',
-                    opacity: 0.8,
-                    marginTop: '-55px'
-                  }}
-                  onError={(e) => e.target.style.display = 'none'}
-                />
-              </div>
-            )}
 
             {/* التاريخ */}
             <p style={{
