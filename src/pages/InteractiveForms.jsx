@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle, Target } from 'lucide-react';
+import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle, Target, Stethoscope } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 
@@ -101,6 +101,14 @@ const interactiveForms = [
     color: "from-teal-500 to-green-600",
     link: createPageUrl("FillMedicalWasteSuppliesForm"),
     category: "النفايات الطبية"
+  },
+  {
+    title: "الصحة المهنية",
+    description: "نماذج الفحص الصحي للموظف - استبيان طبي، فحص بدني، تحاليل، تطعيمات، فحص درن، تقييد عمل",
+    icon: Stethoscope,
+    color: "from-teal-500 to-cyan-600",
+    link: createPageUrl("FillOccupationalHealthForm"),
+    category: "الصحة المهنية"
   }
 ];
 
