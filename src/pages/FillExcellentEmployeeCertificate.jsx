@@ -732,7 +732,7 @@ const CertificatePreview = ({ formData, onClose }) => {
                 textAlign: 'justify',
                 padding: '0 50px'
               }}>
-                تشهد {formData.administration_name} بأن الموضح اسمه وبياناته أعلاه {formData.achievement_description}
+                تشهد {formData.administration_name.trim().startsWith('إدارة') ? formData.administration_name : `إدارة ${formData.administration_name}`} بأن الموضح اسمه وبياناته أعلاه {formData.achievement_description}
               </p>
             </div>
           </div>
