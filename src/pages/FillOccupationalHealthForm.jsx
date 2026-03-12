@@ -100,9 +100,26 @@ export default function FillOccupationalHealthForm() {
           h2, h3, h4 { color: #5B9BD5; }
           .bg-\\[\\#5B9BD5\\], [class*="bg-[#5B9BD5]"] { background-color: #5B9BD5 !important; color: white !important; }
           @media print {
-            body { padding: 10mm; }
+            body { padding: 0; margin: 0; }
             @page { size: A4; margin: 10mm; }
-            input, textarea { border: none; border-bottom: 1px solid #999; background: transparent; }
+            * {
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            .no-print { display: none !important; }
+            .border { border: 1px solid #000 !important; }
+            .border-b { border-bottom: 1px solid #000 !important; }
+            .border-t { border-top: 1px solid #000 !important; }
+            .border-r { border-right: 1px solid #000 !important; }
+            .border-l { border-left: 1px solid #000 !important; }
+            input, textarea, select { 
+              border: none !important; 
+              background: transparent !important; 
+              box-shadow: none !important; 
+              padding: 0 !important;
+              resize: none;
+            }
+            .card-content { padding: 0 !important; }
           }
         </style>
       </head>
