@@ -113,11 +113,13 @@ export default function FillOccupationalHealthForm() {
             .border-r { border-right: 1px solid #000 !important; }
             .border-l { border-left: 1px solid #000 !important; }
             input, textarea, select { 
-              border: none !important; 
               background: transparent !important; 
               box-shadow: none !important; 
-              padding: 0 !important;
               resize: none;
+            }
+            /* Remove default borders but keep explicit bottom borders */
+            input:not(.border-b), textarea:not(.border) {
+              border: none !important;
             }
             .card-content { padding: 0 !important; }
           }
