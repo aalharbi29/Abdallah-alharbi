@@ -37,20 +37,20 @@ export default function SHC2_PhysicalExam({ data, onChange, lang = 'ar' }) {
   ];
 
   return (
-    <div className="space-y-6" dir={isAr ? 'rtl' : 'ltr'}>
-      <div className="text-center mb-4">
-        <h2 className="text-xl font-bold text-[#5B9BD5]">
+    <div className="space-y-4 print:text-[11px] font-cairo" dir={isAr ? 'rtl' : 'ltr'}>
+      <div className="text-center mb-4 border-b-2 border-black pb-2">
+        <h2 className="text-xl font-bold">
           {isAr ? 'الفحص الطبي' : 'Physical Examination'}
         </h2>
-        <p className="text-xs text-gray-500">SHC2</p>
+        <p className="text-sm font-bold">SHC2</p>
       </div>
 
       {/* Vitals */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        <div className="bg-[#5B9BD5] text-white text-center py-2 font-bold">
+      <div className="border-2 border-black">
+        <div className="bg-gray-200 border-b-2 border-black text-center py-1 font-bold text-sm">
           {isAr ? 'العلامات الحيوية' : 'Vital Signs'}
         </div>
-        <div className="p-4">
+        <div className="p-2">
           <div className="grid grid-cols-3 md:grid-cols-7 gap-3">
             {vitals.map(v => (
               <div key={v.key} className="text-center">
@@ -64,11 +64,11 @@ export default function SHC2_PhysicalExam({ data, onChange, lang = 'ar' }) {
       </div>
 
       {/* Examination Fields */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        <div className="bg-[#5B9BD5] text-white text-center py-2 font-bold">
+      <div className="border-2 border-black">
+        <div className="bg-gray-200 border-b-2 border-black text-center py-1 font-bold text-sm">
           {isAr ? 'الفحص السريري' : 'Clinical Examination'}
         </div>
-        <div className="p-4 space-y-3">
+        <div className="p-2 space-y-2">
           {examFields.map(f => (
             <div key={f.key}>
               <Label className="text-xs font-semibold">{isAr ? f.ar : f.en}:</Label>
@@ -79,11 +79,11 @@ export default function SHC2_PhysicalExam({ data, onChange, lang = 'ar' }) {
       </div>
 
       {/* Physician Signature */}
-      <div className="border border-gray-200 rounded-lg overflow-hidden">
-        <div className="bg-[#5B9BD5] text-white text-center py-1">
-          <span className="text-sm font-bold">{isAr ? 'توقيع الطبيب' : 'Examining Physician'}</span>
+      <div className="border-2 border-black">
+        <div className="bg-gray-200 border-b-2 border-black text-center py-1 font-bold text-sm">
+          {isAr ? 'توقيع الطبيب' : 'Examining Physician'}
         </div>
-        <div className="p-4 grid grid-cols-3 gap-3">
+        <div className="p-2 grid grid-cols-3 gap-3">
           <div>
             <Label className="text-xs">{isAr ? 'اسم الطبيب' : 'Physician'}</Label>
             <Input value={d.physician_name || ''} onChange={e => set('physician_name', e.target.value)} className="h-8 text-sm" />
