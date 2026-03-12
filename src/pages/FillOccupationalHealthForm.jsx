@@ -13,6 +13,8 @@ import SHC3_Screening from '@/components/occupational_health/SHC3_Screening';
 import SHC5_VaccinationCard from '@/components/occupational_health/SHC5_VaccinationCard';
 import SHC9_WorkRestriction from '@/components/occupational_health/SHC9_WorkRestriction';
 import SHC10_TBScreening from '@/components/occupational_health/SHC10_TBScreening';
+import { base44 } from '@/api/base44Client';
+import { convertPDFToImages } from '@/functions/convertPDFToImages';
 
 const FORMS = [
   { id: 'shc1', code: 'SHC1', title: 'استبيان التاريخ الطبي المهني', titleEn: 'Medical History Questionnaire', color: 'bg-blue-500' },
@@ -30,6 +32,8 @@ export default function FillOccupationalHealthForm() {
   const [formData, setFormData] = useState({});
   const [sharedData, setSharedData] = useState({});
   const printRef = useRef(null);
+  const templateInputRef = useRef(null);
+  const [templateBg, setTemplateBg] = useState({}); // { [formId]: imageUrl }
   const isAr = lang === 'ar';
 
   const toggleForm = (id) => {
@@ -149,6 +153,19 @@ export default function FillOccupationalHealthForm() {
     }
   };
 
+  const handleTemplatePdfUpload = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file || !activeForm) return;
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const res = await convertPDFToImages({ file_url });
+    const data = res?.data;
+    const first = (data?.images?.[0]) || (data?.urls?.[0]) || (Array.isArray(data) ? data[0] : null);
+    if (first) {
+      setTemplateBg(prev => ({ ...prev, [activeForm]: first }));
+    }
+    if (templateInputRef.current) templateInputRef.current.value = '';
+  };
+
   const activeIdx = selectedForms.indexOf(activeForm);
   const canPrev = activeIdx > 0;
   const canNext = activeIdx < selectedForms.length - 1;
@@ -195,10 +212,27 @@ export default function FillOccupationalHealthForm() {
               </div>
 
               {selectedForms.length > 0 && activeForm && (
-                <Button onClick={handlePrint} className="gap-2 bg-teal-600 hover:bg-teal-700">
-                  <Printer className="w-4 h-4" />
-                  {isAr ? 'طباعة' : 'Print'}
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button onClick={handlePrint} className="gap-2 bg-teal-600 hover:bg-teal-700">
+                    <Printer className="w-4 h-4" />
+                    {isAr ? 'طباعة' : 'Print'}
+                  </Button>
+                  <input
+                    ref={templateInputRef}
+                    type="file"
+                    accept="application/pdf"
+                    className="hidden"
+                    onChange={handleTemplatePdfUpload}
+                  />
+                  <Button variant="outline" onClick={() => templateInputRef.current?.click()}>
+                    {isAr ? 'رفع قالب PDF' : 'Upload PDF Template'}
+                  </Button>
+                  {templateBg[activeForm] && (
+                    <Button variant="ghost" onClick={() => setTemplateBg(prev => ({ ...prev, [activeForm]: undefined }))}>
+                      {isAr ? 'إزالة الخلفية' : 'Remove Background'}
+                    </Button>
+                  )}
+                </div>
               )}
             </div>
 
@@ -287,8 +321,20 @@ export default function FillOccupationalHealthForm() {
             {/* Form content */}
             <Card ref={printRef}>
               <CardContent className="p-6">
-                <OHFormHeader formData={formData[activeForm] || sharedData} lang={lang} />
-                {renderForm(activeForm)}
+                <div className="relative">
+                  {templateBg[activeForm] && (
+                    <img
+                      src={templateBg[activeForm]}
+                      alt="template background"
+                      className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none"
+                      style={{ zIndex: 0, opacity: 0.98 }}
+                    />
+                  )}
+                  <div className="relative" style={{ zIndex: 1 }}>
+                    <OHFormHeader formData={formData[activeForm] || sharedData} lang={lang} />
+                    {renderForm(activeForm)}
+                  </div>
+                </div>
               </CardContent>
             </Card>
 
