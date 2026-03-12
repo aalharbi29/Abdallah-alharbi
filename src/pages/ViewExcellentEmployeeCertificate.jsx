@@ -123,46 +123,47 @@ export default function ViewExcellentEmployeeCertificate() {
         }}>
           {/* العنوان */}
           <h1 style={{
-            fontSize: '24px',
-            fontWeight: 'bold',
+            fontFamily: certificate.fonts?.title || 'Cairo',
+            fontSize: '28px',
+            fontWeight: certificate.weights?.title || 'bold',
             textAlign: 'center',
-            marginBottom: '40px',
+            marginBottom: '60px',
             color: '#000'
           }}>
             مشهد إنجاز موظف حاصل تقييم ممتاز
           </h1>
 
           {/* الجدول */}
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '50px', fontFamily: certificate.fonts?.table || 'Cairo' }}>
             <table style={{
               border: '2px solid black',
-              width: '80%',
+              width: '85%',
               borderCollapse: 'collapse'
             }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid black' }}>
                   <th style={{
                     borderLeft: '2px solid black',
-                    padding: '12px',
-                    fontWeight: 'bold',
+                    padding: '15px',
+                    fontWeight: certificate.weights?.tableHeader || 'bold',
                     textAlign: 'center',
-                    backgroundColor: '#f3f4f6',
-                    fontSize: '16px'
+                    backgroundColor: '#7dd3fc',
+                    fontSize: '18px'
                   }}>اسم الموظف</th>
                   <th style={{
                     borderLeft: '2px solid black',
-                    padding: '12px',
-                    fontWeight: 'bold',
+                    padding: '15px',
+                    fontWeight: certificate.weights?.tableHeader || 'bold',
                     textAlign: 'center',
-                    backgroundColor: '#f3f4f6',
-                    fontSize: '16px'
+                    backgroundColor: '#7dd3fc',
+                    fontSize: '18px'
                   }}>رقم الموظف</th>
                   <th style={{
-                    padding: '12px',
-                    fontWeight: 'bold',
+                    padding: '15px',
+                    fontWeight: certificate.weights?.tableHeader || 'bold',
                     textAlign: 'center',
-                    backgroundColor: '#f3f4f6',
-                    fontSize: '16px'
+                    backgroundColor: '#7dd3fc',
+                    fontSize: '18px'
                   }}>جهة العمل</th>
                 </tr>
               </thead>
@@ -170,20 +171,23 @@ export default function ViewExcellentEmployeeCertificate() {
                 <tr>
                   <td style={{
                     borderLeft: '2px solid black',
-                    padding: '12px',
+                    padding: '15px',
                     textAlign: 'center',
-                    fontSize: '15px'
+                    fontSize: '17px',
+                    fontWeight: certificate.weights?.tableData || 'bold'
                   }}>{certificate.employee_name}</td>
                   <td style={{
                     borderLeft: '2px solid black',
-                    padding: '12px',
+                    padding: '15px',
                     textAlign: 'center',
-                    fontSize: '15px'
+                    fontSize: '17px',
+                    fontWeight: certificate.weights?.tableData || 'bold'
                   }}>{certificate.employee_number}</td>
                   <td style={{
-                    padding: '12px',
+                    padding: '15px',
                     textAlign: 'center',
-                    fontSize: '15px'
+                    fontSize: '17px',
+                    fontWeight: certificate.weights?.tableData || 'bold'
                   }}>{certificate.work_place}</td>
                 </tr>
               </tbody>
@@ -191,89 +195,115 @@ export default function ViewExcellentEmployeeCertificate() {
           </div>
 
           {/* نص الشهادة */}
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <p style={{ marginBottom: '20px', fontSize: '15px' }}>السلام عليكم ورحمة الله وبركاته ... وبعد</p>
-            <p style={{
-              fontSize: '17px',
-              lineHeight: '2',
-              textAlign: 'justify',
-              padding: '0 40px'
+          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+            <p style={{ 
+              marginBottom: '30px', 
+              fontSize: '20px',
+              fontWeight: certificate.weights?.greeting || '900',
+              fontFamily: certificate.fonts?.greeting || 'Cairo'
             }}>
-              تشهد إدارة المراكز الصحية بالحناكية بأن الموضح اسمه وبياناته أعلاه {certificate.achievement_description}
+              السلام عليكم ورحمة الله وبركاته <span style={{ display: 'inline-block', width: '40px' }}></span> وبعد
+            </p>
+            <p style={{
+              fontSize: '18px',
+              fontWeight: certificate.weights?.text || 'bold',
+              fontFamily: certificate.fonts?.text || 'Cairo',
+              lineHeight: '2.2',
+              textAlign: 'justify',
+              padding: '0 50px'
+            }}>
+              تشهد {certificate.administration_name ? (certificate.administration_name.trim().startsWith('إدارة') ? certificate.administration_name : `إدارة ${certificate.administration_name}`) : 'إدارة المراكز الصحية بالحناكية'} بأن الموضح اسمه وبياناته أعلاه {certificate.achievement_description}
             </p>
           </div>
 
           {/* منطقة التوقيع والختم */}
           <div style={{
             position: 'relative',
-            marginTop: '80px',
-            marginRight: '60px',
-            minHeight: '200px'
+            marginTop: '60px',
+            minHeight: '250px'
           }}>
-            {/* اسم المدير */}
+            {/* كتلة المدير */}
             <div style={{
               position: 'absolute',
-              right: '50px',
+              left: '300px',
               top: '0px',
-              fontSize: '17px',
-              fontWeight: 'bold'
+              textAlign: 'center',
+              fontFamily: certificate.fonts?.manager || 'Cairo'
             }}>
-              اسم الرئيس المباشر : {certificate.supervisor_name}
+              <p style={{ 
+                fontSize: '17px', 
+                fontWeight: certificate.weights?.manager || 'bold',
+                marginBottom: '8px'
+              }}>
+                مدير {certificate.administration_name || 'إدارة شؤون المراكز الصحية بالحناكية'}
+              </p>
+              <p style={{ 
+                fontSize: '18px', 
+                fontWeight: certificate.weights?.manager || 'bold',
+                color: '#1f2937'
+              }}>
+                {certificate.supervisor_name}
+              </p>
             </div>
 
             {/* التوقيع */}
-            <div style={{
-              position: 'absolute',
-              right: '120px',
-              top: '40px'
-            }}>
-              <div style={{ position: 'relative' }}>
-                <p style={{ fontSize: '15px', marginBottom: '5px' }}>
-                  التوقيع..................................................................
-                </p>
+            {certificate.show_signature !== false && (
+              <div style={{
+                position: 'absolute',
+                left: '420px',
+                top: '60px'
+              }}>
+                <div style={{ position: 'relative' }}>
+                  <p style={{ fontSize: '16px', marginBottom: '5px' }}>
+                    التوقيع........................
+                  </p>
+                  <img
+                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/7cc0a0a53_.png"
+                    alt="التوقيع"
+                    style={{
+                      position: 'absolute',
+                      right: '40px',
+                      top: '-30px',
+                      width: '130px',
+                      mixBlendMode: 'darken'
+                    }}
+                    onError={(e) => e.target.style.display = 'none'}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* الختم */}
+            {certificate.show_stamp !== false && (
+              <div style={{
+                position: 'absolute',
+                left: '350px',
+                top: '140px'
+              }}>
+                <p style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '5px' }}>الختم الجهة</p>
                 <img
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/7cc0a0a53_.png"
-                  alt="التوقيع"
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/9059c4577_2.png"
+                  alt="الختم"
                   style={{
-                    position: 'absolute',
-                    right: '40px',
-                    top: '-25px',
-                    width: '120px',
-                    mixBlendMode: 'darken'
+                    width: '150px',
+                    opacity: 0.8,
+                    marginTop: '-55px'
                   }}
                   onError={(e) => e.target.style.display = 'none'}
                 />
               </div>
-            </div>
+            )}
 
             {/* التاريخ */}
             <p style={{
               position: 'absolute',
-              right: '50px',
-              top: '80px',
-              fontSize: '15px'
+              left: '80px',
+              bottom: '20px',
+              fontSize: '17px',
+              fontWeight: 'bold'
             }}>
               حررت في تاريخ: {certificate.hijri_date} هـ
             </p>
-
-            {/* الختم */}
-            <div style={{
-              position: 'absolute',
-              right: '50px',
-              top: '110px'
-            }}>
-              <p style={{ fontWeight: 'bold', fontSize: '15px', marginBottom: '5px' }}>الختم الجهة</p>
-              <img
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/9059c4577_2.png"
-                alt="الختم"
-                style={{
-                  width: '140px',
-                  opacity: 0.8,
-                  marginTop: '-50px'
-                }}
-                onError={(e) => e.target.style.display = 'none'}
-              />
-            </div>
           </div>
         </div>
       </div>
