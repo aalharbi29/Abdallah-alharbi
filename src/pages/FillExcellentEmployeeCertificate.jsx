@@ -827,12 +827,14 @@ const CertificatePreview = ({ formData, onClose }) => {
             <div style={{ textAlign: 'center', marginBottom: '40px' }}>
               <p style={{ 
                 marginBottom: '30px', 
-                fontSize: '17px',
-                fontWeight: 'bold'
-              }}>السلام عليكم ورحمة الله وبركاته ... وبعد</p>
+                fontSize: '20px',
+                fontWeight: formData.weights?.greeting || '900',
+                fontFamily: formData.fonts?.greeting || 'Cairo'
+              }}>السلام عليكم ورحمة الله وبركاته &nbsp;&nbsp;&nbsp; وبعد</p>
               <p style={{
                 fontSize: '18px',
                 fontWeight: 'bold',
+                fontFamily: formData.fonts?.text || 'Cairo',
                 lineHeight: '2.2',
                 textAlign: 'justify',
                 padding: '0 50px'
@@ -854,21 +856,22 @@ const CertificatePreview = ({ formData, onClose }) => {
               padding: '12px',
               border: '2px dashed #3b82f6',
               backgroundColor: 'rgba(255, 255, 255, 0.9)',
-              borderRadius: '4px'
+              borderRadius: '4px',
+              fontFamily: formData.fonts?.manager || 'Cairo'
             }}
             onMouseDown={(e) => handleMouseDown(e, 'supervisor')}
           >
             <div style={{ textAlign: 'center' }}>
               <p style={{ 
                 fontSize: '17px', 
-                fontWeight: 'bold',
+                fontWeight: formData.weights?.manager || 'bold',
                 marginBottom: '8px'
               }}>
                 مدير {formData.administration_name}
               </p>
               <p style={{ 
                 fontSize: '18px', 
-                fontWeight: 'bold',
+                fontWeight: formData.weights?.manager || 'bold',
                 color: '#1f2937'
               }}>
                 {formData.supervisor_name}
@@ -882,20 +885,21 @@ const CertificatePreview = ({ formData, onClose }) => {
             style={{
               left: `${positions.supervisor.x}px`,
               top: `${positions.supervisor.y}px`,
-              zIndex: 10
+              zIndex: 10,
+              fontFamily: formData.fonts?.manager || 'Cairo'
             }}
           >
             <div style={{ textAlign: 'center' }}>
               <p style={{ 
                 fontSize: '17px', 
-                fontWeight: 'bold',
+                fontWeight: formData.weights?.manager || 'bold',
                 marginBottom: '8px'
               }}>
                 مدير {formData.administration_name}
               </p>
               <p style={{ 
                 fontSize: '18px', 
-                fontWeight: 'bold',
+                fontWeight: formData.weights?.manager || 'bold',
                 color: '#1f2937'
               }}>
                 {formData.supervisor_name}
@@ -904,116 +908,124 @@ const CertificatePreview = ({ formData, onClose }) => {
           </div>
 
           {/* التوقيع */}
-          <div
-            className="draggable-element no-print"
-            data-draggable-id="signature"
-            style={{
-              left: `${positions.signature.x}px`,
-              top: `${positions.signature.y}px`,
-              zIndex: 11,
-              border: '2px dashed #10b981',
-              backgroundColor: 'rgba(255, 255, 255, 0.9)',
-              borderRadius: '4px',
-              padding: '8px'
-            }}
-            onMouseDown={(e) => handleMouseDown(e, 'signature')}
-          >
-            <div style={{ position: 'relative' }}>
-              <p style={{ fontSize: '16px', marginBottom: '5px' }}>
-                التوقيع........................
-              </p>
-              <img
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/7cc0a0a53_.png"
-                alt="التوقيع"
+          {formData.show_signature && (
+            <>
+              <div
+                className="draggable-element no-print"
+                data-draggable-id="signature"
                 style={{
-                  position: 'absolute',
-                  right: '40px',
-                  top: '-30px',
-                  width: '130px',
-                  mixBlendMode: 'darken'
+                  left: `${positions.signature.x}px`,
+                  top: `${positions.signature.y}px`,
+                  zIndex: 11,
+                  border: '2px dashed #10b981',
+                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                  borderRadius: '4px',
+                  padding: '8px'
                 }}
-                onError={(e) => e.currentTarget.style.display = 'none'}
-              />
-            </div>
-          </div>
+                onMouseDown={(e) => handleMouseDown(e, 'signature')}
+              >
+                <div style={{ position: 'relative' }}>
+                  <p style={{ fontSize: '16px', marginBottom: '5px' }}>
+                    التوقيع........................
+                  </p>
+                  <img
+                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/7cc0a0a53_.png"
+                    alt="التوقيع"
+                    style={{
+                      position: 'absolute',
+                      right: '40px',
+                      top: '-30px',
+                      width: '130px',
+                      mixBlendMode: 'darken'
+                    }}
+                    onError={(e) => e.currentTarget.style.display = 'none'}
+                  />
+                </div>
+              </div>
 
-          {/* النسخة للطباعة - التوقيع */}
-          <div
-            className="print-only"
-            style={{
-              left: `${positions.signature.x}px`,
-              top: `${positions.signature.y}px`,
-              zIndex: 11
-            }}
-          >
-            <div style={{ position: 'relative' }}>
-              <p style={{ fontSize: '16px', marginBottom: '5px' }}>
-                التوقيع........................
-              </p>
-              <img
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/7cc0a0a53_.png"
-                alt="التوقيع"
+              {/* النسخة للطباعة - التوقيع */}
+              <div
+                className="print-only"
                 style={{
-                  position: 'absolute',
-                  right: '40px',
-                  top: '-30px',
-                  width: '130px',
-                  mixBlendMode: 'darken'
+                  left: `${positions.signature.x}px`,
+                  top: `${positions.signature.y}px`,
+                  zIndex: 11
                 }}
-                onError={(e) => e.currentTarget.style.display = 'none'}
-              />
-            </div>
-          </div>
+              >
+                <div style={{ position: 'relative' }}>
+                  <p style={{ fontSize: '16px', marginBottom: '5px' }}>
+                    التوقيع........................
+                  </p>
+                  <img
+                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/7cc0a0a53_.png"
+                    alt="التوقيع"
+                    style={{
+                      position: 'absolute',
+                      right: '40px',
+                      top: '-30px',
+                      width: '130px',
+                      mixBlendMode: 'darken'
+                    }}
+                    onError={(e) => e.currentTarget.style.display = 'none'}
+                  />
+                </div>
+              </div>
+            </>
+          )}
 
           {/* الختم */}
-          <div
-            className="draggable-element no-print"
-            data-draggable-id="stamp"
-            style={{
-              left: `${positions.stamp.x}px`,
-              top: `${positions.stamp.y}px`,
-              zIndex: 12,
-              border: '2px dashed #ef4444',
-              backgroundColor: 'rgba(255, 255, 255, 0.9)',
-              borderRadius: '4px',
-              padding: '8px'
-            }}
-            onMouseDown={(e) => handleMouseDown(e, 'stamp')}
-          >
-            <p style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '5px' }}>الختم الجهة</p>
-            <img
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/9059c4577_2.png"
-              alt="الختم"
-              style={{
-                width: '150px',
-                opacity: 0.8,
-                marginTop: '-55px'
-              }}
-              onError={(e) => e.currentTarget.style.display = 'none'}
-            />
-          </div>
+          {formData.show_stamp && (
+            <>
+              <div
+                className="draggable-element no-print"
+                data-draggable-id="stamp"
+                style={{
+                  left: `${positions.stamp.x}px`,
+                  top: `${positions.stamp.y}px`,
+                  zIndex: 12,
+                  border: '2px dashed #ef4444',
+                  backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                  borderRadius: '4px',
+                  padding: '8px'
+                }}
+                onMouseDown={(e) => handleMouseDown(e, 'stamp')}
+              >
+                <p style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '5px' }}>الختم الجهة</p>
+                <img
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/9059c4577_2.png"
+                  alt="الختم"
+                  style={{
+                    width: '150px',
+                    opacity: 0.8,
+                    marginTop: '-55px'
+                  }}
+                  onError={(e) => e.currentTarget.style.display = 'none'}
+                />
+              </div>
 
-          {/* النسخة للطباعة - الختم */}
-          <div
-            className="print-only"
-            style={{
-              left: `${positions.stamp.x}px`,
-              top: `${positions.stamp.y}px`,
-              zIndex: 12
-            }}
-          >
-            <p style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '5px' }}>الختم الجهة</p>
-            <img
-              src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/9059c4577_2.png"
-              alt="الختم"
-              style={{
-                width: '150px',
-                opacity: 0.8,
-                marginTop: '-55px'
-              }}
-              onError={(e) => e.currentTarget.style.display = 'none'}
-            />
-          </div>
+              {/* النسخة للطباعة - الختم */}
+              <div
+                className="print-only"
+                style={{
+                  left: `${positions.stamp.x}px`,
+                  top: `${positions.stamp.y}px`,
+                  zIndex: 12
+                }}
+              >
+                <p style={{ fontWeight: 'bold', fontSize: '16px', marginBottom: '5px' }}>الختم الجهة</p>
+                <img
+                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/9059c4577_2.png"
+                  alt="الختم"
+                  style={{
+                    width: '150px',
+                    opacity: 0.8,
+                    marginTop: '-55px'
+                  }}
+                  onError={(e) => e.currentTarget.style.display = 'none'}
+                />
+              </div>
+            </>
+          )}
 
           {/* التاريخ */}
           <p style={{
