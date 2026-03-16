@@ -145,7 +145,18 @@ export default function CustomExportManager({
           'المدير': 'المدير',
           'نائب_المدير': 'نائب المدير',
           'المشرف_الفني': 'المشرف الفني',
-          'employee_count': 'عدد الموظفين',
+          'سيارة_خدمات_متوفرة': 'سيارة الخدمات',
+          'لوحة_سيارة_الخدمات': 'لوحة سيارة الخدمات',
+          'موديل_سيارة_الخدمات': 'موديل سيارة الخدمات',
+          'نوع_وقود_سيارة_الخدمات': 'وقود سيارة الخدمات',
+          'شريحة_وقود_سيارة_الخدمات': 'شريحة وقود الخدمات',
+          'محطة_وقود_سيارة_الخدمات': 'تبعية محطة الخدمات',
+          'سيارة_اسعاف_متوفرة': 'سيارة الإسعاف',
+          'لوحة_سيارة_الاسعاف': 'لوحة سيارة الإسعاف',
+          'موديل_سيارة_الاسعاف': 'موديل سيارة الإسعاف',
+          'نوع_وقود_سيارة_الاسعاف': 'وقود سيارة الإسعاف',
+          'شريحة_وقود_سيارة_الاسعاف': 'شريحة وقود الإسعاف',
+          'محطة_وقود_سيارة_الاسعاف': 'تبعية محطة الإسعاف',
           'الوصف': 'الوصف'
         };
       default:
@@ -259,6 +270,30 @@ export default function CustomExportManager({
           value = formatDate(item[field]);
         } else if ((field === 'المدير' || field === 'نائب_المدير' || field === 'المشرف_الفني') && type === 'healthcenters') {
           value = getEmployeeName(item[field]);
+        } else if (type === 'healthcenters' && field === 'سيارة_خدمات_متوفرة') {
+          value = item.سيارة_خدمات?.متوفرة ? 'متوفرة' : 'غير متوفرة';
+        } else if (type === 'healthcenters' && field === 'لوحة_سيارة_الخدمات') {
+          value = item.سيارة_خدمات?.رقم_اللوحة_عربي || item.سيارة_خدمات?.رقم_اللوحة_انجليزي || '';
+        } else if (type === 'healthcenters' && field === 'موديل_سيارة_الخدمات') {
+          value = item.سيارة_خدمات?.موديل || '';
+        } else if (type === 'healthcenters' && field === 'نوع_وقود_سيارة_الخدمات') {
+          value = item.سيارة_خدمات?.نوع_الوقود || '';
+        } else if (type === 'healthcenters' && field === 'شريحة_وقود_سيارة_الخدمات') {
+          value = (typeof item.سيارة_خدمات?.شريحة_تعبئة_وقود === 'boolean') ? (item.سيارة_خدمات.شريحة_تعبئة_وقود ? 'متوفرة' : 'غير متوفرة') : '';
+        } else if (type === 'healthcenters' && field === 'محطة_وقود_سيارة_الخدمات') {
+          value = item.سيارة_خدمات?.تبعية_المحطة || '';
+        } else if (type === 'healthcenters' && field === 'سيارة_اسعاف_متوفرة') {
+          value = item.سيارة_اسعاف?.متوفرة ? 'متوفرة' : 'غير متوفرة';
+        } else if (type === 'healthcenters' && field === 'لوحة_سيارة_الاسعاف') {
+          value = item.سيارة_اسعاف?.رقم_اللوحة_عربي || item.سيارة_اسعاف?.رقم_اللوحة_انجليزي || '';
+        } else if (type === 'healthcenters' && field === 'موديل_سيارة_الاسعاف') {
+          value = item.سيارة_اسعاف?.موديل || '';
+        } else if (type === 'healthcenters' && field === 'نوع_وقود_سيارة_الاسعاف') {
+          value = item.سيارة_اسعاف?.نوع_الوقود || '';
+        } else if (type === 'healthcenters' && field === 'شريحة_وقود_سيارة_الاسعاف') {
+          value = (typeof item.سيارة_اسعاف?.شريحة_تعبئة_وقود === 'boolean') ? (item.سيارة_اسعاف.شريحة_تعبئة_وقود ? 'متوفرة' : 'غير متوفرة') : '';
+        } else if (type === 'healthcenters' && field === 'محطة_وقود_سيارة_الاسعاف') {
+          value = item.سيارة_اسعاف?.تبعية_المحطة || '';
         } else {
           value = item[field] || '';
         }
@@ -297,11 +332,35 @@ export default function CustomExportManager({
       } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date' || field === 'start_work_date') {
         return formatDate(item[field]);
       } else if ((field === 'المدير' || field === 'نائب_المدير' || field === 'المشرف_الفني') && type === 'healthcenters') {
-        // تحويل معرف الموظف إلى اسمه
-        return getEmployeeName(item[field]);
-      } else {
-        return item[field] || '';
-      }
+          // تحويل معرف الموظف إلى اسمه
+          return getEmployeeName(item[field]);
+        } else if (type === 'healthcenters' && field === 'سيارة_خدمات_متوفرة') {
+          return item.سيارة_خدمات?.متوفرة ? 'متوفرة' : 'غير متوفرة';
+        } else if (type === 'healthcenters' && field === 'لوحة_سيارة_الخدمات') {
+          return item.سيارة_خدمات?.رقم_اللوحة_عربي || item.سيارة_خدمات?.رقم_اللوحة_انجليزي || '';
+        } else if (type === 'healthcenters' && field === 'موديل_سيارة_الخدمات') {
+          return item.سيارة_خدمات?.موديل || '';
+        } else if (type === 'healthcenters' && field === 'نوع_وقود_سيارة_الخدمات') {
+          return item.سيارة_خدمات?.نوع_الوقود || '';
+        } else if (type === 'healthcenters' && field === 'شريحة_وقود_سيارة_الخدمات') {
+          return (typeof item.سيارة_خدمات?.شريحة_تعبئة_وقود === 'boolean') ? (item.سيارة_خدمات.شريحة_تعبئة_وقود ? 'متوفرة' : 'غير متوفرة') : '';
+        } else if (type === 'healthcenters' && field === 'محطة_وقود_سيارة_الخدمات') {
+          return item.سيارة_خدمات?.تبعية_المحطة || '';
+        } else if (type === 'healthcenters' && field === 'سيارة_اسعاف_متوفرة') {
+          return item.سيارة_اسعاف?.متوفرة ? 'متوفرة' : 'غير متوفرة';
+        } else if (type === 'healthcenters' && field === 'لوحة_سيارة_الاسعاف') {
+          return item.سيارة_اسعاف?.رقم_اللوحة_عربي || item.سيارة_اسعاف?.رقم_اللوحة_انجليزي || '';
+        } else if (type === 'healthcenters' && field === 'موديل_سيارة_الاسعاف') {
+          return item.سيارة_اسعاف?.موديل || '';
+        } else if (type === 'healthcenters' && field === 'نوع_وقود_سيارة_الاسعاف') {
+          return item.سيارة_اسعاف?.نوع_الوقود || '';
+        } else if (type === 'healthcenters' && field === 'شريحة_وقود_سيارة_الاسعاف') {
+          return (typeof item.سيارة_اسعاف?.شريحة_تعبئة_وقود === 'boolean') ? (item.سيارة_اسعاف.شريحة_تعبئة_وقود ? 'متوفرة' : 'غير متوفرة') : '';
+        } else if (type === 'healthcenters' && field === 'محطة_وقود_سيارة_الاسعاف') {
+          return item.سيارة_اسعاف?.تبعية_المحطة || '';
+        } else {
+          return item[field] || '';
+        }
     };
 
     const generateTableRows = (items, startIndex = 1) => {

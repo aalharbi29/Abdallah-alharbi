@@ -92,6 +92,7 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
   const [employees, setEmployees] = useState(initialEmployees || []);
   const [newClinic, setNewClinic] = useState({ اسم_العيادة: "", نوع_العيادة: "", الطبيب_المسؤول: "", ساعات_العمل: "" });
   const [newService, setNewService] = useState("");
+  const isEditMode = !!center;
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -587,6 +588,7 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
              </CardContent>
            </Card>
 
+           {isEditMode && (
            <Card className="shadow-lg overflow-hidden">
              <CardHeader className="bg-gray-50 border-b">
                <CardTitle className="flex items-center gap-3 text-lg">
