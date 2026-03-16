@@ -36,6 +36,16 @@ const availableFields = [
   { key: 'عدد_الموظفين', label: 'عدد الموظفين', category: 'stats', default: true },
   { key: 'سيارة_خدمات', label: 'سيارة الخدمات', category: 'vehicles', default: false },
   { key: 'سيارة_اسعاف', label: 'سيارة الإسعاف', category: 'vehicles', default: false },
+  { key: 'لوحة_سيارة_الخدمات', label: 'لوحة سيارة الخدمات', category: 'vehicles', default: false },
+  { key: 'موديل_سيارة_الخدمات', label: 'موديل سيارة الخدمات', category: 'vehicles', default: false },
+  { key: 'نوع_وقود_سيارة_الخدمات', label: 'وقود سيارة الخدمات', category: 'vehicles', default: false },
+  { key: 'شريحة_وقود_سيارة_الخدمات', label: 'شريحة وقود الخدمات', category: 'vehicles', default: false },
+  { key: 'محطة_وقود_سيارة_الخدمات', label: 'تبعية محطة الخدمات', category: 'vehicles', default: false },
+  { key: 'لوحة_سيارة_الاسعاف', label: 'لوحة سيارة الإسعاف', category: 'vehicles', default: false },
+  { key: 'موديل_سيارة_الاسعاف', label: 'موديل سيارة الإسعاف', category: 'vehicles', default: false },
+  { key: 'نوع_وقود_سيارة_الاسعاف', label: 'وقود سيارة الإسعاف', category: 'vehicles', default: false },
+  { key: 'شريحة_وقود_سيارة_الاسعاف', label: 'شريحة وقود الإسعاف', category: 'vehicles', default: false },
+  { key: 'محطة_وقود_سيارة_الاسعاف', label: 'تبعية محطة الإسعاف', category: 'vehicles', default: false }
 ];
 
 export default function HealthCentersReport() {
