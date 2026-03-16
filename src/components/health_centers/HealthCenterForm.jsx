@@ -92,6 +92,7 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
   const [employees, setEmployees] = useState(initialEmployees || []);
   const [newClinic, setNewClinic] = useState({ اسم_العيادة: "", نوع_العيادة: "", الطبيب_المسؤول: "", ساعات_العمل: "" });
   const [newService, setNewService] = useState("");
+  const isEditMode = !!center;
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -587,7 +588,7 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
              </CardContent>
            </Card>
 
-           <Card className="shadow-lg overflow-hidden">
+           {isEditMode && <Card className="shadow-lg overflow-hidden">
              <CardHeader className="bg-gray-50 border-b">
                <CardTitle className="flex items-center gap-3 text-lg">
                  <Car className="text-orange-600"/>
@@ -606,7 +607,7 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                    <Label htmlFor="has_service_car" className="text-lg font-semibold">سيارة خدمات 🚗</Label>
                  </div>
                  
-                 {formData.سيارة_خدمات?.متوفرة && false && (
+                 {formData.سيارة_خدمات?.متوفرة && (
                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
                      {/* رقم اللوحة */}
                      <div className="lg:col-span-3">
@@ -744,12 +745,9 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                      </div>
                    </div>
                  )}
-                 <div className="p-4 rounded-lg border bg-amber-50 text-amber-800 text-sm">
-                   يتم إدخال تفاصيل المركبات (رقم اللوحة، الموديل، نوع الوقود، الشريحة، تبعية المحطة) من شاشة التحديث الدفعي/التقارير وليس أثناء إضافة المركز هنا.
-                 </div>
-                 </div>
+               </div>
 
-                 {/* سيارة الإسعاف */}
+               {/* سيارة الإسعاف */}
                <div>
                  <div className="flex items-center space-x-2 space-x-reverse mb-4">
                    <Checkbox 
@@ -760,7 +758,7 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                    <Label htmlFor="has_ambulance" className="text-lg font-semibold">سيارة إسعاف 🚑</Label>
                  </div>
                  
-                 {formData.سيارة_اسعاف?.متوفرة && false && (
+                 {formData.سيارة_اسعاف?.متوفرة && (
                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 bg-red-50 rounded-lg">
                      {/* رقم اللوحة */}
                      <div className="lg:col-span-3">
@@ -907,15 +905,14 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                      </div>
                    </div>
                  )}
-                 <div className="p-4 rounded-lg border bg-rose-50 text-rose-800 text-sm">
-                   يتم إدخال تفاصيل مركبة الإسعاف (رقم اللوحة، الموديل، نوع الوقود، الشريحة، تبعية المحطة) من شاشة التحديث الدفعي/التقارير وليس أثناء إضافة المركز هنا.
-                 </div>
-                 </div>
-                 </CardContent>
+               </div>
+             </CardContent>
            </Card>
 
-           <Card className="shadow-lg overflow-hidden">
-             <CardHeader className="bg-gray-50 border-b"><CardTitle className="flex items-center gap-3 text-lg"><User className="text-indigo-600"/> إحصائيات الموظفين (محسوبة تلقائياً)</CardTitle></CardHeader>
+           )} 
+
+                       <Card className="shadow-lg overflow-hidden">
+                         <CardHeader className="bg-gray-50 border-b"><CardTitle className="flex items-center gap-3 text-lg"><User className="text-indigo-600"/> إحصائيات الموظفين (محسوبة تلقائياً)</CardTitle></CardHeader>
              <CardContent className="p-6">
               <div className="bg-blue-50 rounded-lg p-4 mb-4">
                 <p className="text-blue-800 text-sm mb-2 font-medium">📊 الإحصائية التلقائية من النظام</p>
