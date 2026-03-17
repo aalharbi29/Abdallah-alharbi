@@ -609,15 +609,16 @@ export default function CustomExportManager({
             
             th { 
               background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-              font-weight: 700; 
-              padding: 14px 10px;
+              font-weight: 700;
+              font-size: 9pt;
+              padding: 8px 8px;
               border: 1px solid #cbd5e1;
               color: #334155;
               white-space: nowrap;
             }
             
             td { 
-              padding: 12px 10px;
+              padding: 6px 8px;
               border: 1px solid #e2e8f0;
               text-align: center;
             }
