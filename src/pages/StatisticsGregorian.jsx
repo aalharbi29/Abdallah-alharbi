@@ -6,8 +6,12 @@ import { Calendar, RefreshCw } from "lucide-react";
 import StatisticsUploader from "@/components/statistics/StatisticsUploader";
 import MonthGrid from "@/components/statistics/MonthGrid";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { FileText, Activity } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function StatisticsGregorian() {
+  const navigate = useNavigate();
   const months = useMemo(() => ([
     { key: "jan", label: "يناير" }, { key: "feb", label: "فبراير" }, { key: "mar", label: "مارس" },
     { key: "apr", label: "أبريل" }, { key: "may", label: "مايو" }, { key: "jun", label: "يونيو" },
@@ -44,6 +48,20 @@ export default function StatisticsGregorian() {
             <p className="text-gray-600 text-xs md:text-sm lg:text-base mobile-text">ارفع، اعرض، وصدّر الإحصائيات شهرياً حسب السنة.</p>
           </div>
           <div className="flex gap-2 w-full">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="h-11 gap-2">
+                  <FileText className="w-4 h-4" />
+                  <span className="hidden md:inline">النماذج</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => navigate("/MalariaStatisticForm")}>
+                  <Activity className="w-4 h-4 ml-2" />
+                  إحصائية الملاريا
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             <Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
               <SelectTrigger className="flex-1 md:w-[140px] h-11 touch-target">
                 <SelectValue placeholder="السنة" />
