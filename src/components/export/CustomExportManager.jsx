@@ -476,7 +476,7 @@ export default function CustomExportManager({
               font-family: 'Cairo', 'Times New Roman', Arial, sans-serif; 
               direction: rtl; 
               margin: 0;
-              padding: 10px 40px 30px 40px;
+              padding: 6px 24px 20px 24px;
               font-size: 12pt; 
               background: #f8fafc;
               color: #1e293b;
@@ -499,8 +499,8 @@ export default function CustomExportManager({
             }
             
             .report-logo-header img {
-              max-height: 300px;
-              margin: -80px auto -30px auto;
+              max-height: 120px;
+              margin: 0 auto;
               display: block;
             }
             
@@ -600,11 +600,14 @@ export default function CustomExportManager({
             table { 
               width: 100%; 
               border-collapse: collapse; 
+              table-layout: fixed;
               font-size: 10pt;
               background: white;
               border-radius: 0 0 10px 10px;
               overflow: hidden;
               box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+              word-break: break-word;
+              overflow-wrap: anywhere;
             }
             
             th { 
