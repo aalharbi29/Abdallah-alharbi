@@ -240,6 +240,15 @@ export default function CustomExportManager({
           filteredItem[field] = item[field] || '';
         } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date' || field === 'start_work_date') {
           filteredItem[field] = formatDate(item[field]);
+        } else if (type === 'healthcenters' && field === 'شريحة_وقود_عام') {
+          const s = (typeof item.سيارة_خدمات?.شريحة_تعبئة_وقود === 'boolean') ? item.سيارة_خدمات.شريحة_تعبئة_وقود : null;
+          const a = (typeof item.سيارة_اسعاف?.شريحة_تعبئة_وقود === 'boolean') ? item.سيارة_اسعاف.شريحة_تعبئة_وقود : null;
+          const hasInfo = (s !== null) || (a !== null);
+          const anyOn = (s === true) || (a === true);
+          filteredItem[field] = hasInfo ? (anyOn ? 'متوفرة' : 'غير متوفرة') : '';
+        } else if (type === 'healthcenters' && field === 'محطة_وقود_عام') {
+          const stations = [item.سيارة_خدمات?.تبعية_المحطة, item.سيارة_اسعاف?.تبعية_المحطة].filter(Boolean);
+          filteredItem[field] = Array.from(new Set(stations)).join(' / ');
         } else {
           filteredItem[field] = item[field] || '';
         }
@@ -296,6 +305,15 @@ export default function CustomExportManager({
             value = (typeof item.سيارة_اسعاف?.شريحة_تعبئة_وقود === 'boolean') ? (item.سيارة_اسعاف.شريحة_تعبئة_وقود ? 'متوفرة' : 'غير متوفرة') : '';
           } else if (field === 'محطة_وقود_سيارة_الاسعاف') {
             value = item.سيارة_اسعاف?.تبعية_المحطة || '';
+          } else if (field === 'شريحة_وقود_عام') {
+            const s = (typeof item.سيارة_خدمات?.شريحة_تعبئة_وقود === 'boolean') ? item.سيارة_خدمات.شريحة_تعبئة_وقود : null;
+            const a = (typeof item.سيارة_اسعاف?.شريحة_تعبئة_وقود === 'boolean') ? item.سيارة_اسعاف.شريحة_تعبئة_وقود : null;
+            const hasInfo = (s !== null) || (a !== null);
+            const anyOn = (s === true) || (a === true);
+            value = hasInfo ? (anyOn ? 'متوفرة' : 'غير متوفرة') : '';
+          } else if (field === 'محطة_وقود_عام') {
+            const stations = [item.سيارة_خدمات?.تبعية_المحطة, item.سيارة_اسعاف?.تبعية_المحطة].filter(Boolean);
+            value = Array.from(new Set(stations)).join(' / ');
           } else {
             value = item[field] || '';
           }
@@ -365,6 +383,15 @@ export default function CustomExportManager({
           return (typeof item.سيارة_اسعاف?.شريحة_تعبئة_وقود === 'boolean') ? (item.سيارة_اسعاف.شريحة_تعبئة_وقود ? 'متوفرة' : 'غير متوفرة') : '';
         } else if (field === 'محطة_وقود_سيارة_الاسعاف') {
           return item.سيارة_اسعاف?.تبعية_المحطة || '';
+        } else if (field === 'شريحة_وقود_عام') {
+          const s = (typeof item.سيارة_خدمات?.شريحة_تعبئة_وقود === 'boolean') ? item.سيارة_خدمات.شريحة_تعبئة_وقود : null;
+          const a = (typeof item.سيارة_اسعاف?.شريحة_تعبئة_وقود === 'boolean') ? item.سيارة_اسعاف.شريحة_تعبئة_وقود : null;
+          const hasInfo = (s !== null) || (a !== null);
+          const anyOn = (s === true) || (a === true);
+          return hasInfo ? (anyOn ? 'متوفرة' : 'غير متوفرة') : '';
+        } else if (field === 'محطة_وقود_عام') {
+          const stations = [item.سيارة_خدمات?.تبعية_المحطة, item.سيارة_اسعاف?.تبعية_المحطة].filter(Boolean);
+          return Array.from(new Set(stations)).join(' / ');
         } else {
           return item[field] || '';
         }
