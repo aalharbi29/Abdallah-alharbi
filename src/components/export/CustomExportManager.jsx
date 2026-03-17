@@ -614,16 +614,21 @@ export default function CustomExportManager({
               background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
               font-weight: 700;
               font-size: 9pt;
+              line-height: 1.35;
               padding: 8px 8px;
               border: 1px solid #cbd5e1;
               color: #334155;
-              white-space: nowrap;
+              white-space: normal;
+              word-break: break-word;
+              overflow-wrap: anywhere;
             }
             
             td { 
               padding: 6px 8px;
               border: 1px solid #e2e8f0;
               text-align: center;
+              line-height: 1.35;
+              vertical-align: middle;
             }
             
             tbody tr:nth-child(even) {
