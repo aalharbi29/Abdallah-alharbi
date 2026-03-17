@@ -695,26 +695,7 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                        </Select>
                      </div>
 
-                     <div className="flex items-center space-x-2 space-x-reverse">
-                       <Checkbox 
-                         id="service_fuel_chip" 
-                         checked={formData.سيارة_خدمات?.شريحة_تعبئة_وقود || false} 
-                         onCheckedChange={(checked) => handleNestedObjectChange("سيارة_خدمات", "شريحة_تعبئة_وقود", checked)}
-                       />
-                       <Label htmlFor="service_fuel_chip">شريحة/بطاقة تعبئة وقود</Label>
-                     </div>
 
-                     {formData.سيارة_خدمات?.شريحة_تعبئة_وقود && (
-                       <div>
-                         <Label htmlFor="service_station">تبعية المحطة</Label>
-                         <Input 
-                           id="service_station"
-                           value={formData.سيارة_خدمات?.تبعية_المحطة || ""} 
-                           onChange={(e) => handleNestedObjectChange("سيارة_خدمات", "تبعية_المحطة", e.target.value)} 
-                           placeholder="اسم المحطة/الجهة"
-                         />
-                       </div>
-                     )}
 
                      <div>
                        <Label htmlFor="service_mileage">المسافة المقطوعة (كم)</Label>
@@ -881,26 +862,7 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                        </Select>
                      </div>
 
-                     <div className="flex items-center space-x-2 space-x-reverse">
-                       <Checkbox 
-                         id="ambulance_fuel_chip" 
-                         checked={formData.سيارة_اسعاف?.شريحة_تعبئة_وقود || false} 
-                         onCheckedChange={(checked) => handleNestedObjectChange("سيارة_اسعاف", "شريحة_تعبئة_وقود", checked)}
-                       />
-                       <Label htmlFor="ambulance_fuel_chip">شريحة/بطاقة تعبئة وقود</Label>
-                     </div>
 
-                     {formData.سيارة_اسعاف?.شريحة_تعبئة_وقود && (
-                       <div>
-                         <Label htmlFor="ambulance_station">تبعية المحطة</Label>
-                         <Input 
-                           id="ambulance_station"
-                           value={formData.سيارة_اسعاف?.تبعية_المحطة || ""} 
-                           onChange={(e) => handleNestedObjectChange("سيارة_اسعاف", "تبعية_المحطة", e.target.value)} 
-                           placeholder="اسم المحطة/الجهة"
-                         />
-                       </div>
-                     )}
 
                      <div>
                        <Label htmlFor="ambulance_mileage">المسافة المقطوعة (كم)</Label>
