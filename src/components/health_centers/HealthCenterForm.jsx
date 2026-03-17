@@ -602,6 +602,37 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                </CardTitle>
              </CardHeader>
              <CardContent className="p-6 space-y-6">
+               <div className="p-4 rounded-lg border bg-amber-50/40">
+                 <div className="flex items-center space-x-2 space-x-reverse mb-3">
+                   <Checkbox
+                     id="fuel_chip_general"
+                     checked={Boolean(formData.سيارة_خدمات?.شريحة_تعبئة_وقود || formData.سيارة_اسعاف?.شريحة_تعبئة_وقود)}
+                     onCheckedChange={(checked) => {
+                       handleNestedObjectChange("سيارة_خدمات", "شريحة_تعبئة_وقود", checked);
+                       handleNestedObjectChange("سيارة_اسعاف", "شريحة_تعبئة_وقود", checked);
+                       if (!checked) {
+                         handleNestedObjectChange("سيارة_خدمات", "تبعية_المحطة", "");
+                         handleNestedObjectChange("سيارة_اسعاف", "تبعية_المحطة", "");
+                       }
+                     }}
+                   />
+                   <Label htmlFor="fuel_chip_general" className="font-medium">شريحة/بطاقة تعبئة وقود (عام)</Label>
+                 </div>
+                 {Boolean(formData.سيارة_خدمات?.شريحة_تعبئة_وقود || formData.سيارة_اسعاف?.شريحة_تعبئة_وقود) && (
+                   <div>
+                     <Label htmlFor="fuel_station_general">تبعية المحطة (عام)</Label>
+                     <Input
+                       id="fuel_station_general"
+                       value={formData.سيارة_خدمات?.تبعية_المحطة || formData.سيارة_اسعاف?.تبعية_المحطة || ""}
+                       onChange={(e) => {
+                         handleNestedObjectChange("سيارة_خدمات", "تبعية_المحطة", e.target.value);
+                         handleNestedObjectChange("سيارة_اسعاف", "تبعية_المحطة", e.target.value);
+                       }}
+                       placeholder="اسم المحطة/الجهة"
+                     />
+                   </div>
+                 )}
+               </div>
                {/* سيارة الخدمات */}
                <div>
                  <div className="flex items-center space-x-2 space-x-reverse mb-4">
