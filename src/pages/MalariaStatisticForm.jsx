@@ -168,7 +168,6 @@ export default function MalariaStatisticForm() {
                 span.className = input.className + ' cloned-input';
                 span.style.display = 'inline-block';
                 span.style.width = '100%';
-                span.style.textAlign = 'center';
                 input.parentNode.replaceChild(span, input);
               }
             });
@@ -253,7 +252,6 @@ export default function MalariaStatisticForm() {
                 span.className = input.className + ' cloned-input';
                 span.style.display = 'inline-block';
                 span.style.width = '100%';
-                span.style.textAlign = 'center';
                 input.parentNode.replaceChild(span, input);
               }
             });
