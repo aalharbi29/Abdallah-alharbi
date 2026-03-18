@@ -86,7 +86,7 @@ export default function LeishmaniaStatisticForm() {
   };
   
   const emptyRow = {
-    adminName: "مراكز\nالحسو",
+    adminName: "مراكز الحسو",
     patientName: "",
     nationality: "",
     age_u1_s_m: "", age_u1_s_f: "", age_u1_ns_m: "", age_u1_ns_f: "",
@@ -483,12 +483,8 @@ export default function LeishmaniaStatisticForm() {
               <tbody>
                 {data.map((row, index) => (
                   <tr key={index} className="hover:bg-slate-50 transition-colors">
-                    <td className="border border-slate-300 p-0 relative group align-middle">
-                      <textarea 
-                        className={`w-full h-10 resize-none overflow-hidden border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium px-0 py-1 bg-transparent ${row.adminName === 'مراكز\nالحسو' ? 'text-blue-600' : ''}`} 
-                        value={row.adminName} 
-                        onChange={(e) => handleChange(index, 'adminName', e.target.value)} 
-                      />
+                    <td className="border border-slate-300 p-0 relative group">
+                      <Input className={`w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium px-0 ${row.adminName === 'مراكز الحسو' ? 'text-blue-600' : ''}`} value={row.adminName} onChange={(e) => handleChange(index, 'adminName', e.target.value)} />
                       {data.length > 1 && (
                         <button onClick={() => removeRow(index)} className="absolute right-1 top-2 text-red-500 opacity-0 group-hover:opacity-100 no-print transition-opacity">
                           <X className="w-4 h-4" />
@@ -519,7 +515,7 @@ export default function LeishmaniaStatisticForm() {
           </motion.div>
 
           {/* Footer & Draggable Signature */}
-          <div className="mt-32 text-center header-text space-y-4 relative flex flex-col items-center min-h-[150px]">
+          <div className="mt-16 text-center header-text space-y-4 relative flex flex-col items-center min-h-[150px]">
             <motion.div style={{ x: managerX, y: managerY }} drag dragMomentum={false} className="cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50 flex flex-col items-center gap-2">
               <input 
                 value={managerTitle} 
@@ -549,7 +545,7 @@ export default function LeishmaniaStatisticForm() {
             </motion.div>
           </div>
           
-          <OfficialFooter className="mt-48" />
+          <OfficialFooter className="mt-24" />
         </div>
       </div>
     </div>
