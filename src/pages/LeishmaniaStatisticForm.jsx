@@ -10,6 +10,8 @@ import { jsPDF } from "jspdf";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import DraggableLogo from "@/components/common/DraggableLogo";
+import OfficialFooter from "@/components/common/OfficialFooter";
+import { Settings } from "lucide-react";
 
 const months = [
   { value: 1, label: "يناير" }, { value: 2, label: "فبراير" }, { value: 3, label: "مارس" },
@@ -26,8 +28,11 @@ export default function LeishmaniaStatisticForm() {
   const [isSaving, setIsSaving] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [signatureUrl, setSignatureUrl] = useState("https://upload.wikimedia.org/wikipedia/commons/f/f8/Stylized_signature_sample.svg");
-  const [managerName, setManagerName] = useState("أ / عبدالمجيد سعود الربيقي");
-  const [managerTitle, setManagerTitle] = useState("المساعد لشؤون المراكز الصحية بالحسو");
+  
+  const [headerText1, setHeaderText1] = useState(localStorage.getItem('stat_header1') || "تجمع المدينة المنورة الصحي");
+  const [headerText2, setHeaderText2] = useState(localStorage.getItem('stat_header2') || "شؤون المراكز الصحية بالحسو");
+  const [managerName, setManagerName] = useState(localStorage.getItem('stat_managerName') || "أ / عبدالمجيد سعود الربيقي");
+  const [managerTitle, setManagerTitle] = useState(localStorage.getItem('stat_managerTitle') || "المساعد لشؤون المراكز الصحية بالحسو");
 
   useEffect(() => {
     const fetchSignature = async () => {
@@ -35,8 +40,8 @@ export default function LeishmaniaStatisticForm() {
         const records = await base44.entities.StampSignature.filter({ type: 'signature', is_default: true, is_active: true });
         if (records && records.length > 0) {
           setSignatureUrl(records[0].image_url);
-          if (records[0].owner_name) setManagerName(records[0].owner_name);
-          if (records[0].owner_title) setManagerTitle(records[0].owner_title);
+          if (!localStorage.getItem('stat_managerName') && records[0].owner_name) setManagerName(records[0].owner_name);
+          if (!localStorage.getItem('stat_managerTitle') && records[0].owner_title) setManagerTitle(records[0].owner_title);
         }
       } catch (error) {
         console.error("Error fetching signature:", error);
@@ -44,6 +49,14 @@ export default function LeishmaniaStatisticForm() {
     };
     fetchSignature();
   }, []);
+
+  const handleSaveSettings = () => {
+    localStorage.setItem('stat_header1', headerText1);
+    localStorage.setItem('stat_header2', headerText2);
+    localStorage.setItem('stat_managerName', managerName);
+    localStorage.setItem('stat_managerTitle', managerTitle);
+    toast.success("تم حفظ الإعدادات المخصصة كنمط افتراضي");
+  };
   
   const emptyRow = {
     adminName: "مراكز الحسو",
@@ -306,6 +319,14 @@ export default function LeishmaniaStatisticForm() {
           </Button>
           <div className="flex gap-3">
             <Button 
+              onClick={handleSaveSettings} 
+              variant="outline" 
+              className="gap-2 border-slate-300 text-slate-700 hover:bg-slate-100"
+            >
+              <Settings className="w-4 h-4" />
+              حفظ النمط
+            </Button>
+            <Button 
               onClick={addRow} 
               variant="outline"
               className="gap-2 border-blue-600 text-blue-600 hover:bg-blue-50"
@@ -337,8 +358,16 @@ export default function LeishmaniaStatisticForm() {
           {/* Header */}
           <div className="flex justify-between items-start mb-8 relative z-10">
             <motion.div drag dragMomentum={false} className="text-right space-y-1 header-text text-blue-400 font-semibold cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50">
-              <p>تجمع المدينة المنورة الصحي</p>
-              <p>شؤون المراكز الصحية بالحسو</p>
+              <input 
+                value={headerText1} 
+                onChange={(e) => setHeaderText1(e.target.value)} 
+                className="block w-full bg-transparent border-none focus:ring-0 p-0 m-0 text-right font-bold text-blue-400" 
+              />
+              <input 
+                value={headerText2} 
+                onChange={(e) => setHeaderText2(e.target.value)} 
+                className="block w-full bg-transparent border-none focus:ring-0 p-0 m-0 text-right font-bold text-blue-400" 
+              />
             </motion.div>
             <motion.div drag dragMomentum={false} className="text-center cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50">
               <h1 className="title-text text-2xl font-bold text-red-600 mb-6">حالات اللشمانيا الجلدية بمراكز الحسو</h1>
@@ -459,10 +488,17 @@ export default function LeishmaniaStatisticForm() {
 
           {/* Footer & Draggable Signature */}
           <div className="mt-16 text-center header-text space-y-4 relative flex flex-col items-center min-h-[150px]">
-            <motion.div drag dragMomentum={false} className="cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50">
-              <p className="text-sm font-bold text-slate-800">{managerTitle}</p>
-              <br />
-              <p className="text-sm font-bold text-slate-800">{managerName}</p>
+            <motion.div drag dragMomentum={false} className="cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50 flex flex-col items-center gap-2">
+              <input 
+                value={managerTitle} 
+                onChange={(e) => setManagerTitle(e.target.value)} 
+                className="block w-64 bg-transparent border-none focus:ring-0 p-0 m-0 text-center text-sm font-bold text-slate-800" 
+              />
+              <input 
+                value={managerName} 
+                onChange={(e) => setManagerName(e.target.value)} 
+                className="block w-64 bg-transparent border-none focus:ring-0 p-0 m-0 text-center text-sm font-bold text-slate-800" 
+              />
             </motion.div>
             
             <motion.div 
@@ -479,6 +515,8 @@ export default function LeishmaniaStatisticForm() {
               />
             </motion.div>
           </div>
+          
+          <OfficialFooter />
         </div>
       </div>
     </div>
