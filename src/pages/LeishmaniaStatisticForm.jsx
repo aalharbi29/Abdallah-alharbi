@@ -196,10 +196,11 @@ export default function LeishmaniaStatisticForm() {
             .print-container table { border-collapse: collapse !important; width: 100% !important; }
             .print-container th, .print-container td { 
               border: 1px solid #475569 !important; 
-              padding: 4px 2px !important; 
+              padding: 8px 4px !important; 
               text-align: center !important; 
               color: black !important;
               height: auto !important;
+              line-height: 1.8 !important;
             }
             .print-container th { 
               font-weight: 700 !important; 
@@ -350,10 +351,11 @@ export default function LeishmaniaStatisticForm() {
             .print-container table { border-collapse: collapse !important; width: 100% !important; }
             .print-container th, .print-container td { 
               border: 1px solid #475569 !important; 
-              padding: 4px 2px !important; 
+              padding: 8px 4px !important; 
               text-align: center !important; 
               color: black !important;
               height: auto !important;
+              line-height: 1.8 !important;
             }
             .print-container th { 
               font-weight: 700 !important; 
