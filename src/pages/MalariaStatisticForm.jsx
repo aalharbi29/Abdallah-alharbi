@@ -475,10 +475,11 @@ export default function MalariaStatisticForm() {
         .printing-mode table { border-collapse: collapse !important; width: 100% !important; }
         .printing-mode th, .printing-mode td { 
           border: 1px solid #475569 !important; 
-          padding: 1px !important; 
+          padding: 8px 4px !important; 
           text-align: center !important; 
           color: black !important;
-          height: 18px !important;
+          height: auto !important;
+          line-height: 1.8 !important;
         }
         .printing-mode th { 
           font-weight: 700 !important; 
