@@ -550,13 +550,14 @@ export default function InventoryHandoverForm() {
       </div>
 
       {/* Print Area */}
-      <div ref={printRef} className="print-area max-w-5xl mx-auto bg-white shadow-xl min-h-[297mm]">
+      <div ref={printRef} className="print-area max-w-5xl mx-auto bg-white shadow-xl min-h-[297mm] relative overflow-hidden">
+        <DraggableLogo className="top-8 right-8" />
 
         {/* ===== PAGE 1 ===== */}
         {currentPage === 1 && (
           <div className="p-12">
             {/* Header */}
-            <div className="text-center mb-10 pb-6 border-b-2 border-slate-800">
+            <div className="text-center mb-10 pb-6 border-b-2 border-slate-800 pt-16">
               <p className="text-sm text-slate-600 font-semibold tracking-wide mb-1">المملكة العربية السعودية | وزارة الصحة | تجمع المدينة المنورة الصحي</p>
               <h1 className="text-3xl font-extrabold text-slate-900 mt-6 mb-2">{formTitle}</h1>
             </div>
