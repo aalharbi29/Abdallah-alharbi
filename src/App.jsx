@@ -73,6 +73,11 @@ const AuthenticatedApp = () => {
           <MalariaStatisticForm />
         </LayoutWrapper>
       } />
+      <Route path="/LeishmaniaStatisticForm" element={
+        <LayoutWrapper currentPageName="LeishmaniaStatisticForm">
+          <LeishmaniaStatisticForm />
+        </LayoutWrapper>
+      } />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
