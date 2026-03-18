@@ -334,13 +334,13 @@ export default function LeishmaniaStatisticForm() {
         <div id="leishmania-print-container" ref={printRef} className="bg-white p-8 rounded-xl shadow-sm print-container border border-gray-200 relative">
           {/* Header */}
           <div className="flex justify-between items-start mb-8 relative z-10">
-            <div className="text-right space-y-1 header-text text-blue-400 font-semibold">
+            <motion.div drag dragMomentum={false} className="text-right space-y-1 header-text text-blue-400 font-semibold cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50">
               <p>تجمع المدينة المنورة الصحي</p>
               <p>شؤون المراكز الصحية بالحسو</p>
-            </div>
-            <div className="text-center">
+            </motion.div>
+            <motion.div drag dragMomentum={false} className="text-center cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50">
               <h1 className="title-text text-2xl font-bold text-red-600 mb-6">حالات اللشمانيا الجلدية بمراكز الحسو</h1>
-              <div className="flex gap-8 justify-center text-lg font-bold">
+              <div className="flex gap-8 justify-center text-lg font-bold" onPointerDownCapture={(e) => e.stopPropagation()}>
                 <div className="flex items-center gap-2">
                   <span className="text-sm">الشهر :</span>
                   <Select value={month} onValueChange={setMonth}>
