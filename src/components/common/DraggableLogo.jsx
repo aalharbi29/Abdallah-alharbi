@@ -1,16 +1,44 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue } from 'framer-motion';
 import useLogoSettings from '../settings/useLogoSettings';
 
 export default function DraggableLogo({ defaultWidth = 300, className = "" }) {
   const { logoSettings, isLoaded } = useLogoSettings();
-  const [width, setWidth] = useState(defaultWidth);
-  const [brightness, setBrightness] = useState(100);
-  const [opacity, setOpacity] = useState(100);
+  const savedSettings = JSON.parse(localStorage.getItem(`logo_settings_default`)) || {};
+  
+  const [width, setWidth] = useState(savedSettings.width || defaultWidth);
+  const [brightness, setBrightness] = useState(savedSettings.brightness || 100);
+  const [opacity, setOpacity] = useState(savedSettings.opacity || 100);
+  
+  const x = useMotionValue(savedSettings.x || 0);
+  const y = useMotionValue(savedSettings.y || 0);
+  
   const isResizing = useRef(false);
 
   useEffect(() => {
-    if (isLoaded && logoSettings && logoSettings.max_height) {
+    const saveToLocal = () => {
+      localStorage.setItem(`logo_settings_default`, JSON.stringify({
+        width,
+        brightness,
+        opacity,
+        x: x.get(),
+        y: y.get()
+      }));
+    };
+    
+    saveToLocal();
+    
+    const unsubscribeX = x.on("change", saveToLocal);
+    const unsubscribeY = y.on("change", saveToLocal);
+    
+    return () => {
+      unsubscribeX();
+      unsubscribeY();
+    };
+  }, [width, brightness, opacity, x, y]);
+
+  useEffect(() => {
+    if (isLoaded && logoSettings && logoSettings.max_height && !savedSettings.width) {
       setWidth(logoSettings.max_height);
     }
   }, [isLoaded, logoSettings]);
@@ -22,7 +50,7 @@ export default function DraggableLogo({ defaultWidth = 300, className = "" }) {
       drag
       dragMomentum={false}
       className={`absolute z-50 cursor-move group hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-1 ${className}`}
-      style={{ width }}
+      style={{ width, x, y }}
       onPointerDown={(e) => {
         if (isResizing.current) e.stopPropagation();
       }}

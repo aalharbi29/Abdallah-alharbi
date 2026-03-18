@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Printer, ArrowRight, Save, Loader2, Plus, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { motion } from "framer-motion";
+import { motion, useMotionValue } from "framer-motion";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { base44 } from "@/api/base44Client";
@@ -50,12 +50,39 @@ export default function LeishmaniaStatisticForm() {
     fetchSignature();
   }, []);
 
+  const initialHeaderPos = JSON.parse(localStorage.getItem('leish_headerPos')) || { x: 0, y: 0 };
+  const headerX = useMotionValue(initialHeaderPos.x);
+  const headerY = useMotionValue(initialHeaderPos.y);
+
+  const initialTitlePos = JSON.parse(localStorage.getItem('leish_titlePos')) || { x: 0, y: 0 };
+  const titleX = useMotionValue(initialTitlePos.x);
+  const titleY = useMotionValue(initialTitlePos.y);
+
+  const initialTablePos = JSON.parse(localStorage.getItem('leish_tablePos')) || { x: 0, y: 0 };
+  const tableX = useMotionValue(initialTablePos.x);
+  const tableY = useMotionValue(initialTablePos.y);
+
+  const initialManagerPos = JSON.parse(localStorage.getItem('leish_managerPos')) || { x: 0, y: 0 };
+  const managerX = useMotionValue(initialManagerPos.x);
+  const managerY = useMotionValue(initialManagerPos.y);
+
+  const initialSignaturePos = JSON.parse(localStorage.getItem('leish_signaturePos')) || { x: 0, y: 0 };
+  const signatureX = useMotionValue(initialSignaturePos.x);
+  const signatureY = useMotionValue(initialSignaturePos.y);
+
   const handleSaveSettings = () => {
     localStorage.setItem('stat_header1', headerText1);
     localStorage.setItem('stat_header2', headerText2);
     localStorage.setItem('stat_managerName', managerName);
     localStorage.setItem('stat_managerTitle', managerTitle);
-    toast.success("تم حفظ الإعدادات المخصصة كنمط افتراضي");
+    
+    localStorage.setItem('leish_headerPos', JSON.stringify({ x: headerX.get(), y: headerY.get() }));
+    localStorage.setItem('leish_titlePos', JSON.stringify({ x: titleX.get(), y: titleY.get() }));
+    localStorage.setItem('leish_tablePos', JSON.stringify({ x: tableX.get(), y: tableY.get() }));
+    localStorage.setItem('leish_managerPos', JSON.stringify({ x: managerX.get(), y: managerY.get() }));
+    localStorage.setItem('leish_signaturePos', JSON.stringify({ x: signatureX.get(), y: signatureY.get() }));
+    
+    toast.success("تم حفظ النمط ومواقع العناصر بنجاح");
   };
   
   const emptyRow = {
@@ -357,7 +384,7 @@ export default function LeishmaniaStatisticForm() {
           <DraggableLogo className="top-8 right-8" />
           {/* Header */}
           <div className="flex justify-between items-start mb-8 relative z-10">
-            <motion.div drag dragMomentum={false} className="text-right space-y-1 header-text text-blue-400 font-semibold cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50">
+            <motion.div style={{ x: headerX, y: headerY }} drag dragMomentum={false} className="text-right space-y-1 header-text text-blue-400 font-semibold cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50">
               <input 
                 value={headerText1} 
                 onChange={(e) => setHeaderText1(e.target.value)} 
@@ -369,7 +396,7 @@ export default function LeishmaniaStatisticForm() {
                 className="block w-full bg-transparent border-none focus:ring-0 p-0 m-0 text-right font-bold text-blue-400" 
               />
             </motion.div>
-            <motion.div drag dragMomentum={false} className="text-center cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50">
+            <motion.div style={{ x: titleX, y: titleY }} drag dragMomentum={false} className="text-center cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50">
               <h1 className="title-text text-2xl font-bold text-red-600 mb-6">حالات اللشمانيا الجلدية بمراكز الحسو</h1>
               <div className="flex gap-8 justify-center text-lg font-bold" onPointerDownCapture={(e) => e.stopPropagation()}>
                 <div className="flex items-center gap-2">
@@ -400,6 +427,7 @@ export default function LeishmaniaStatisticForm() {
 
           {/* Table */}
           <motion.div 
+            style={{ x: tableX, y: tableY }}
             drag 
             dragMomentum={false} 
             className={`${isExporting ? '' : 'overflow-x-auto'} print:overflow-visible relative z-10 pb-4 cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2`}
@@ -487,23 +515,32 @@ export default function LeishmaniaStatisticForm() {
           </motion.div>
 
           {/* Footer & Draggable Signature */}
-          <div className="mt-24 text-center header-text relative flex flex-col items-center min-h-[200px]">
-            <motion.div drag dragMomentum={false} className="cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-4 z-50 flex flex-col items-center gap-2">
+          <div className="mt-16 text-center header-text space-y-4 relative flex flex-col items-center min-h-[150px]">
+            <motion.div style={{ x: managerX, y: managerY }} drag dragMomentum={false} className="cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50 flex flex-col items-center gap-2">
               <input 
                 value={managerTitle} 
                 onChange={(e) => setManagerTitle(e.target.value)} 
                 className="block w-64 bg-transparent border-none focus:ring-0 p-0 m-0 text-center text-sm font-bold text-slate-800" 
               />
-              <img 
-                src={signatureUrl} 
-                alt="توقيع المدير" 
-                className="h-16 object-contain pointer-events-none mix-blend-multiply my-2" 
-                crossOrigin="anonymous"
-              />
               <input 
                 value={managerName} 
                 onChange={(e) => setManagerName(e.target.value)} 
                 className="block w-64 bg-transparent border-none focus:ring-0 p-0 m-0 text-center text-sm font-bold text-slate-800" 
+              />
+            </motion.div>
+            
+            <motion.div 
+              style={{ x: signatureX, y: signatureY }}
+              drag 
+              dragMomentum={false}
+              className="cursor-move z-50 hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 mt-2"
+              title="اسحب التوقيع لتحريكه"
+            >
+              <img 
+                src={signatureUrl} 
+                alt="توقيع المدير" 
+                className="h-16 object-contain pointer-events-none mix-blend-multiply" 
+                crossOrigin="anonymous"
               />
             </motion.div>
           </div>
