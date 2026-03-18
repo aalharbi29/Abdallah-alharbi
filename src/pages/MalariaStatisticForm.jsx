@@ -438,7 +438,7 @@ export default function MalariaStatisticForm() {
             style={{ x: tableX, y: tableY }}
             drag 
             dragMomentum={false} 
-            className={`${isExporting ? '' : 'overflow-x-auto'} print:overflow-visible relative z-10 cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2`}
+            className={`${isExporting ? '' : 'overflow-x-auto'} print:overflow-visible relative z-10 cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 print:p-0 print:mb-2`}
             onPointerDownCapture={(e) => {
               if (['INPUT', 'BUTTON', 'SELECT', 'OPTION'].includes(e.target.tagName) || e.target.closest('button')) {
                 e.stopPropagation();
@@ -533,7 +533,7 @@ export default function MalariaStatisticForm() {
           </motion.div>
 
           {/* Footer & Draggable Signature */}
-          <div className="mt-16 text-center header-text space-y-4 relative flex flex-col items-center min-h-[150px]">
+          <div className="mt-8 print:mt-2 text-center header-text space-y-4 print:space-y-1 relative flex flex-col items-center min-h-[150px] print:min-h-0">
             <motion.div style={{ x: managerX, y: managerY }} drag dragMomentum={false} className="cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50 flex flex-col items-center gap-2">
               <input 
                 value={managerTitle} 
@@ -563,7 +563,7 @@ export default function MalariaStatisticForm() {
             </motion.div>
           </div>
           
-          <OfficialFooter className="mt-24" />
+          <OfficialFooter className="mt-12 print:mt-2" />
         </div>
       </div>
     </div>);
