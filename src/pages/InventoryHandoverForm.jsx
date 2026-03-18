@@ -413,8 +413,8 @@ export default function InventoryHandoverForm() {
     </div>
 
     <div class="footer-banner">
-      <p class="main-text">شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</p>
-      <p>تجمع المدينة المنورة الصحي - وزارة الصحة</p>
+      <p class="main-text">${logoSettings?.footer_text_1 || 'شؤون المراكز الصحية بالحسو - مستشفى الحسو العام'}</p>
+      <p>${logoSettings?.footer_text_2 || 'تجمع المدينة المنورة الصحي - وزارة الصحة'}</p>
       <p class="date-text">${dateStr}</p>
     </div>
   </div>
@@ -443,8 +443,8 @@ export default function InventoryHandoverForm() {
     <div class="sigs-row">${committeeSigs}</div>
 
     <div class="footer-banner">
-      <p class="main-text">شؤون المراكز الصحية بالحسو - مستشفى الحسو العام</p>
-      <p>تجمع المدينة المنورة الصحي - وزارة الصحة</p>
+      <p class="main-text">${logoSettings?.footer_text_1 || 'شؤون المراكز الصحية بالحسو - مستشفى الحسو العام'}</p>
+      <p>${logoSettings?.footer_text_2 || 'تجمع المدينة المنورة الصحي - وزارة الصحة'}</p>
       <p class="date-text">${dateStr}</p>
     </div>
   </div>
