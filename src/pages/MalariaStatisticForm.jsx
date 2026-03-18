@@ -61,12 +61,7 @@ export default function MalariaStatisticForm() {
   );
 
   const handlePrint = () => {
-    try {
-      window.print();
-    } catch (e) {
-      console.error("Print error:", e);
-      toast.error("عذراً، الطباعة المباشرة غير مدعومة في هذه البيئة. يرجى استخدام زر 'حفظ في الإحصائيات' بدلاً من ذلك.");
-    }
+    toast.info("الطباعة المباشرة غير مدعومة في بيئة المعاينة. يرجى استخدام زر 'حفظ في الإحصائيات' ثم طباعة الملف من قسم الإحصائيات.");
   };
 
   const handleSaveToStatistics = async () => {
