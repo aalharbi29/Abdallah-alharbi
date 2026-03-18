@@ -23,13 +23,11 @@ const initialCenters = [
 "طلال",
 "هدبان"];
 
-
 const months = [
 { value: 1, label: "يناير" }, { value: 2, label: "فبراير" }, { value: 3, label: "مارس" },
 { value: 4, label: "أبريل" }, { value: 5, label: "مايو" }, { value: 6, label: "يونيو" },
 { value: 7, label: "يوليو" }, { value: 8, label: "أغسطس" }, { value: 9, label: "سبتمبر" },
 { value: 10, label: "أكتوبر" }, { value: 11, label: "نوفمبر" }, { value: 12, label: "ديسمبر" }];
-
 
 export default function MalariaStatisticForm() {
   const navigate = useNavigate();
@@ -533,7 +531,7 @@ export default function MalariaStatisticForm() {
           </motion.div>
 
           {/* Footer & Draggable Signature */}
-          <div className="mt-8 print:mt-2 text-center header-text space-y-4 print:space-y-1 relative flex flex-col items-center min-h-[150px] print:min-h-0">
+          <div className="text-center header-text relative flex flex-col items-center">
             <motion.div style={{ x: managerX, y: managerY }} drag dragMomentum={false} className="cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50 flex flex-col items-center gap-2">
               <input 
                 value={managerTitle} 
@@ -551,7 +549,7 @@ export default function MalariaStatisticForm() {
               style={{ x: signatureX, y: signatureY }}
               drag
               dragMomentum={false}
-              className="cursor-move z-50 hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 mt-2"
+              className="cursor-move z-50 hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2"
               title="اسحب التوقيع لتحريكه">
               
               <img
@@ -563,7 +561,7 @@ export default function MalariaStatisticForm() {
             </motion.div>
           </div>
           
-          <OfficialFooter className="mt-12 print:mt-2" />
+          <OfficialFooter className="mt-2" />
         </div>
       </div>
     </div>);
