@@ -51,15 +51,34 @@ export default function PDFViewer({ file, open, onOpenChange, entitySDK, recordI
     
     if (isPDF) {
       // طباعة PDF مباشرة عبر iframe
-      printFrame.src = fileUrl;
-      document.body.appendChild(printFrame);
-      printFrame.onload = () => {
-        setTimeout(() => {
-          printFrame.contentWindow.focus();
-          printFrame.contentWindow.print();
-          setTimeout(() => document.body.removeChild(printFrame), 1000);
-        }, 500);
-      };
+      fetch(fileUrl)
+        .then(res => res.blob())
+        .then(blob => {
+          const blobUrl = URL.createObjectURL(blob);
+          printFrame.src = blobUrl;
+          document.body.appendChild(printFrame);
+          printFrame.onload = () => {
+            setTimeout(() => {
+              try {
+                printFrame.contentWindow.focus();
+                printFrame.contentWindow.print();
+              } catch (e) {
+                console.error("Print failed", e);
+                window.open(fileUrl, '_blank');
+              }
+              setTimeout(() => {
+                if (document.body.contains(printFrame)) {
+                  document.body.removeChild(printFrame);
+                }
+                URL.revokeObjectURL(blobUrl);
+              }, 2000);
+            }, 500);
+          };
+        })
+        .catch(err => {
+          console.error("Error fetching PDF for print", err);
+          window.open(fileUrl, '_blank');
+        });
     } else if (isImage) {
       // طباعة الصورة مباشرة
       const printWindow = window.open('', '_blank', 'width=800,height=600');
