@@ -423,20 +423,20 @@ export default function MalariaStatisticForm() {
           </div>
 
           {/* Footer & Draggable Signature */}
-          <div className="mt-16 text-center header-text space-y-4 relative min-h-[150px]">
+          <div className="mt-16 text-center header-text space-y-4 relative flex flex-col items-center min-h-[150px]">
             <p className="text-sm font-bold text-slate-800">{managerTitle}</p>
             <p className="text-sm font-bold text-slate-800">{managerName}</p>
             
             <motion.div 
               drag 
               dragMomentum={false}
-              className="absolute left-1/2 -translate-x-1/2 top-10 cursor-move z-50 hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2"
+              className="cursor-move z-50 hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 mt-2"
               title="اسحب التوقيع لتحريكه"
             >
               <img 
                 src={signatureUrl} 
                 alt="توقيع المدير" 
-                className="h-20 opacity-80 mix-blend-multiply pointer-events-none" 
+                className={`h-24 object-contain pointer-events-none ${isExporting ? '' : 'mix-blend-multiply opacity-80'}`} 
                 crossOrigin="anonymous"
               />
             </motion.div>
