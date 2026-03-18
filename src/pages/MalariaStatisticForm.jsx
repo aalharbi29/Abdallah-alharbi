@@ -61,7 +61,17 @@ export default function MalariaStatisticForm() {
   );
 
   const handlePrint = () => {
-    window.print();
+    try {
+      if (window.top && window.top !== window) {
+        // We are in an iframe, try to use postMessage or fallback to local print
+        window.print();
+      } else {
+        window.print();
+      }
+    } catch (e) {
+      // Fallback if window.top access is blocked
+      window.print();
+    }
   };
 
   const handleSaveToStatistics = async () => {
