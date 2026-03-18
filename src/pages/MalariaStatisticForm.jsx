@@ -151,66 +151,9 @@ export default function MalariaStatisticForm() {
         scrollX: 0,
         windowWidth: 1500,
         onclone: (clonedDoc) => {
-          const style = clonedDoc.createElement('style');
-          style.innerHTML = `
-            .print-container { 
-              width: 100% !important; 
-              max-width: 100% !important; 
-              padding: 0 !important; 
-              margin: 0 !important; 
-              box-shadow: none !important; 
-              border: none !important;
-            }
-            .print-container input, .cloned-input { 
-              border: none !important; 
-              background: transparent !important; 
-              padding: 0 !important;
-              margin: 0 !important;
-              font-weight: 600 !important;
-              color: black !important;
-            }
-            .print-container table input, .print-container table .cloned-input {
-              height: 16px !important;
-              min-height: 16px !important;
-              text-align: center !important;
-              font-size: 8pt !important;
-            }
-            .print-header-input {
-              font-size: 12pt !important;
-              text-align: right !important;
-            }
-            .print-manager-input {
-              font-size: 14pt !important;
-              text-align: center !important;
-            }
-            .print-container table { border-collapse: collapse !important; width: 100% !important; }
-            .print-container th, .print-container td { 
-              border: 1px solid #475569 !important; 
-              padding: 1px !important; 
-              text-align: center !important; 
-              color: black !important;
-              height: 18px !important;
-            }
-            .print-container th { 
-              font-weight: 700 !important; 
-              background-color: #f1f5f9 !important; 
-              font-size: 8pt !important;
-            }
-            .print-container td {
-              font-size: 8pt !important;
-            }
-            .header-text { font-size: 12pt !important; font-weight: bold !important; color: black !important; }
-            .title-text { font-size: 18pt !important; font-weight: bold !important; text-decoration: underline !important; color: black !important; }
-            .no-print { display: none !important; }
-            .print-only { display: block !important; }
-          `;
-          clonedDoc.head.appendChild(style);
-
           const el = clonedDoc.getElementById('malaria-print-container');
           if (el) {
-            el.style.width = '1500px';
-            el.style.minWidth = '1500px';
-            el.style.maxWidth = 'none';
+            el.classList.add('printing-mode');
             const table = el.querySelector('table');
             if (table && table.parentElement) {
               table.parentElement.classList.remove('overflow-x-auto');
@@ -222,11 +165,10 @@ export default function MalariaStatisticForm() {
               if (input.type !== 'range' && input.type !== 'file') {
                 const span = clonedDoc.createElement('span');
                 span.textContent = input.value || '';
-                span.style.cssText = window.getComputedStyle(input).cssText;
+                span.className = input.className + ' cloned-input';
                 span.style.display = 'inline-block';
                 span.style.width = '100%';
                 span.style.textAlign = 'center';
-                span.className = input.className + ' cloned-input';
                 input.parentNode.replaceChild(span, input);
               }
             });
@@ -294,66 +236,9 @@ export default function MalariaStatisticForm() {
         scrollX: 0,
         windowWidth: 1500,
         onclone: (clonedDoc) => {
-          const style = clonedDoc.createElement('style');
-          style.innerHTML = `
-            .print-container { 
-              width: 100% !important; 
-              max-width: 100% !important; 
-              padding: 0 !important; 
-              margin: 0 !important; 
-              box-shadow: none !important; 
-              border: none !important;
-            }
-            .print-container input, .cloned-input { 
-              border: none !important; 
-              background: transparent !important; 
-              padding: 0 !important;
-              margin: 0 !important;
-              font-weight: 600 !important;
-              color: black !important;
-            }
-            .print-container table input, .print-container table .cloned-input {
-              height: 16px !important;
-              min-height: 16px !important;
-              text-align: center !important;
-              font-size: 8pt !important;
-            }
-            .print-header-input {
-              font-size: 12pt !important;
-              text-align: right !important;
-            }
-            .print-manager-input {
-              font-size: 14pt !important;
-              text-align: center !important;
-            }
-            .print-container table { border-collapse: collapse !important; width: 100% !important; }
-            .print-container th, .print-container td { 
-              border: 1px solid #475569 !important; 
-              padding: 1px !important; 
-              text-align: center !important; 
-              color: black !important;
-              height: 18px !important;
-            }
-            .print-container th { 
-              font-weight: 700 !important; 
-              background-color: #f1f5f9 !important; 
-              font-size: 8pt !important;
-            }
-            .print-container td {
-              font-size: 8pt !important;
-            }
-            .header-text { font-size: 12pt !important; font-weight: bold !important; color: black !important; }
-            .title-text { font-size: 18pt !important; font-weight: bold !important; text-decoration: underline !important; color: black !important; }
-            .no-print { display: none !important; }
-            .print-only { display: block !important; }
-          `;
-          clonedDoc.head.appendChild(style);
-
           const el = clonedDoc.getElementById('malaria-print-container');
           if (el) {
-            el.style.width = '1500px';
-            el.style.minWidth = '1500px';
-            el.style.maxWidth = 'none';
+            el.classList.add('printing-mode');
             const table = el.querySelector('table');
             if (table && table.parentElement) {
               table.parentElement.classList.remove('overflow-x-auto');
@@ -365,11 +250,10 @@ export default function MalariaStatisticForm() {
               if (input.type !== 'range' && input.type !== 'file') {
                 const span = clonedDoc.createElement('span');
                 span.textContent = input.value || '';
-                span.style.cssText = window.getComputedStyle(input).cssText;
+                span.className = input.className + ' cloned-input';
                 span.style.display = 'inline-block';
                 span.style.width = '100%';
                 span.style.textAlign = 'center';
-                span.className = input.className + ' cloned-input';
                 input.parentNode.replaceChild(span, input);
               }
             });
