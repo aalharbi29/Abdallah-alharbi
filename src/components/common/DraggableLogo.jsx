@@ -31,21 +31,32 @@ export default function DraggableLogo({ defaultWidth = 300, className = "" }) {
         src={logoSettings.logo_url} 
         alt="شعار" 
         className="w-full h-auto object-contain pointer-events-none mix-blend-multiply" 
-        style={{ filter: `brightness(${brightness}%)` }}
+        style={{ filter: `brightness(${brightness}%)`, opacity: opacity / 100 }}
         crossOrigin="anonymous" 
         draggable="false"
       />
       
-      {/* لوحة التحكم بالسطوع */}
-      <div className="absolute -top-8 left-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity flex justify-center no-print" onPointerDown={(e) => e.stopPropagation()}>
+      {/* لوحة التحكم بالسطوع والشفافية */}
+      <div className="absolute -top-12 left-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center gap-1 no-print" onPointerDown={(e) => e.stopPropagation()}>
         <div className="bg-white rounded-md shadow-md border border-slate-200 px-2 py-1 flex items-center gap-2">
-          <span className="text-[10px] text-slate-500 font-bold">السطوع:</span>
+          <span className="text-[10px] text-slate-500 font-bold w-12">السطوع:</span>
           <input 
             type="range" 
             min="0" 
             max="200" 
             value={brightness} 
             onChange={(e) => setBrightness(e.target.value)}
+            className="w-20 h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer"
+          />
+        </div>
+        <div className="bg-white rounded-md shadow-md border border-slate-200 px-2 py-1 flex items-center gap-2">
+          <span className="text-[10px] text-slate-500 font-bold w-12">الشفافية:</span>
+          <input 
+            type="range" 
+            min="0" 
+            max="100" 
+            value={opacity} 
+            onChange={(e) => setOpacity(e.target.value)}
             className="w-20 h-1 bg-slate-200 rounded-lg appearance-none cursor-pointer"
           />
         </div>
