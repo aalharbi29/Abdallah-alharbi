@@ -369,7 +369,7 @@ export default function MalariaStatisticForm() {
                 <div className="flex items-center gap-2">
                   <span className="text-sm">الشهر :</span>
                   <Select value={month} onValueChange={setMonth}>
-                    <SelectTrigger className={`w-32 h-8 text-center font-bold border-b-2 border-t-0 border-l-0 border-r-0 rounded-none focus:ring-0 px-0 bg-transparent ${isExporting ? 'border-transparent' : 'border-slate-300'}`}>
+                    <SelectTrigger className={`w-32 h-8 text-center font-bold border-b-2 border-t-0 border-l-0 border-r-0 rounded-none focus:ring-0 px-0 bg-transparent [&>svg]:print:hidden ${isExporting ? 'border-transparent [&>svg]:hidden' : 'border-slate-300'}`}>
                       <SelectValue placeholder="اختر الشهر" />
                     </SelectTrigger>
                     <SelectContent>
@@ -491,12 +491,18 @@ export default function MalariaStatisticForm() {
           </motion.div>
 
           {/* Footer & Draggable Signature */}
-          <div className="mt-16 text-center header-text space-y-4 relative flex flex-col items-center min-h-[150px]">
-            <motion.div drag dragMomentum={false} className="cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50 flex flex-col items-center gap-2">
+          <div className="mt-24 text-center header-text relative flex flex-col items-center min-h-[200px]">
+            <motion.div drag dragMomentum={false} className="cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-4 z-50 flex flex-col items-center gap-2">
               <input 
                 value={managerTitle} 
                 onChange={(e) => setManagerTitle(e.target.value)} 
                 className="block w-64 bg-transparent border-none focus:ring-0 p-0 m-0 text-center text-sm font-bold text-slate-800" 
+              />
+              <img 
+                src={signatureUrl} 
+                alt="توقيع المدير" 
+                className="h-16 object-contain pointer-events-none mix-blend-multiply my-2" 
+                crossOrigin="anonymous"
               />
               <input 
                 value={managerName} 
@@ -504,23 +510,9 @@ export default function MalariaStatisticForm() {
                 className="block w-64 bg-transparent border-none focus:ring-0 p-0 m-0 text-center text-sm font-bold text-slate-800" 
               />
             </motion.div>
-            
-            <motion.div
-              drag
-              dragMomentum={false}
-              className="cursor-move z-50 hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 mt-2"
-              title="اسحب التوقيع لتحريكه">
-              
-              <img
-                src={signatureUrl}
-                alt="توقيع المدير"
-                className="h-16 object-contain pointer-events-none mix-blend-multiply"
-                crossOrigin="anonymous" />
-              
-            </motion.div>
           </div>
           
-          <OfficialFooter />
+          <OfficialFooter className="mt-24" />
         </div>
       </div>
     </div>);
