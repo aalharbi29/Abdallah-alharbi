@@ -465,54 +465,54 @@ export default function MalariaStatisticForm() {
               <tbody>
                 {data.map((row, index) =>
                 <tr key={index} className="hover:bg-slate-50 transition-colors">
-                    <td className="border border-slate-300 p-1 text-sm font-semibold text-slate-800">{row.name}</td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.totalPatients} onChange={(e) => handleChange(index, 'totalPatients', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.testedSamples} onChange={(e) => handleChange(index, 'testedSamples', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="bg-slate-50 text-slate-950 px-3 py-1 text-sm font-medium text-center rounded-none flex border-input shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm w-full h-8 border-0 focus-visible:ring-1" value={row.percentage} readOnly /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.positives} onChange={(e) => handleChange(index, 'positives', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0.5 text-xs font-semibold text-slate-800">{row.name}</td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.totalPatients} onChange={(e) => handleChange(index, 'totalPatients', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.testedSamples} onChange={(e) => handleChange(index, 'testedSamples', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="bg-slate-50 text-slate-950 px-1 py-0.5 text-xs font-medium text-center rounded-none flex border-input shadow-sm transition-colors file:border-0 file:bg-transparent file:text-xs file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-xs w-full h-6 border-0 focus-visible:ring-1" value={row.percentage} readOnly /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.positives} onChange={(e) => handleChange(index, 'positives', e.target.value)} /></td>
                     
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.distBenign} onChange={(e) => handleChange(index, 'distBenign', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.distMalignant} onChange={(e) => handleChange(index, 'distMalignant', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.distQuad} onChange={(e) => handleChange(index, 'distQuad', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.distMixed} onChange={(e) => handleChange(index, 'distMixed', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.distBenign} onChange={(e) => handleChange(index, 'distBenign', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.distMalignant} onChange={(e) => handleChange(index, 'distMalignant', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.distQuad} onChange={(e) => handleChange(index, 'distQuad', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.distMixed} onChange={(e) => handleChange(index, 'distMixed', e.target.value)} /></td>
                     
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.casesInside} onChange={(e) => handleChange(index, 'casesInside', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.casesOutside} onChange={(e) => handleChange(index, 'casesOutside', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.casesInside} onChange={(e) => handleChange(index, 'casesInside', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.casesOutside} onChange={(e) => handleChange(index, 'casesOutside', e.target.value)} /></td>
                     
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.treatmentQuad} onChange={(e) => handleChange(index, 'treatmentQuad', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.treatmentOct} onChange={(e) => handleChange(index, 'treatmentOct', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.treatmentFansidar} onChange={(e) => handleChange(index, 'treatmentFansidar', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.treatmentOther} onChange={(e) => handleChange(index, 'treatmentOther', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.treatmentQuad} onChange={(e) => handleChange(index, 'treatmentQuad', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.treatmentOct} onChange={(e) => handleChange(index, 'treatmentOct', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.treatmentFansidar} onChange={(e) => handleChange(index, 'treatmentFansidar', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.treatmentOther} onChange={(e) => handleChange(index, 'treatmentOther', e.target.value)} /></td>
                     
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.ageUnder1} onChange={(e) => handleChange(index, 'ageUnder1', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.age1to4} onChange={(e) => handleChange(index, 'age1to4', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.age5to9} onChange={(e) => handleChange(index, 'age5to9', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.age10to14} onChange={(e) => handleChange(index, 'age10to14', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.ageOver14} onChange={(e) => handleChange(index, 'ageOver14', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.ageUnder1} onChange={(e) => handleChange(index, 'ageUnder1', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.age1to4} onChange={(e) => handleChange(index, 'age1to4', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.age5to9} onChange={(e) => handleChange(index, 'age5to9', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.age10to14} onChange={(e) => handleChange(index, 'age10to14', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.ageOver14} onChange={(e) => handleChange(index, 'ageOver14', e.target.value)} /></td>
                   </tr>
                 )}
                 {/* Totals Row */}
                 <tr className="bg-slate-200 font-bold text-slate-800">
-                  <td className="border border-slate-400 p-2 text-sm">المجموع</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('totalPatients')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('testedSamples')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('percentage')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('positives')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('distBenign')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('distMalignant')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('distQuad')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('distMixed')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('casesInside')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('casesOutside')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('treatmentQuad')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('treatmentOct')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('treatmentFansidar')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('treatmentOther')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('ageUnder1')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('age1to4')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('age5to9')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('age10to14')}</td>
-                  <td className="border border-slate-400 p-2 text-sm">{calculateTotal('ageOver14')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">المجموع</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('totalPatients')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('testedSamples')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('percentage')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('positives')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('distBenign')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('distMalignant')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('distQuad')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('distMixed')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('casesInside')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('casesOutside')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('treatmentQuad')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('treatmentOct')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('treatmentFansidar')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('treatmentOther')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('ageUnder1')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('age1to4')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('age5to9')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('age10to14')}</td>
+                  <td className="border border-slate-400 p-1 text-xs">{calculateTotal('ageOver14')}</td>
                 </tr>
               </tbody>
             </table>
