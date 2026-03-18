@@ -30,9 +30,15 @@ export default function StatisticsGregorian() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const data = await Statistic.filter({ period_type: "gregorian", year });
-    setItems(Array.isArray(data) ? data : []);
-    setLoading(false);
+    try {
+      const data = await Statistic.filter({ period_type: "gregorian", year });
+      setItems(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Error loading statistics:", error);
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
   }, [year]);
 
   useEffect(() => {

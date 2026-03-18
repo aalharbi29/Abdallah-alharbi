@@ -32,9 +32,15 @@ export default function StatisticsHijri() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const data = await Statistic.filter({ period_type: "hijri", year });
-    setItems(Array.isArray(data) ? data : []);
-    setLoading(false);
+    try {
+      const data = await Statistic.filter({ period_type: "hijri", year });
+      setItems(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error("Error loading statistics:", error);
+      setItems([]);
+    } finally {
+      setLoading(false);
+    }
   }, [year]);
 
   useEffect(() => {
