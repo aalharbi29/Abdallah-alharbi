@@ -157,6 +157,50 @@ export default function LeishmaniaStatisticForm() {
         scrollX: 0,
         windowWidth: 1500,
         onclone: (clonedDoc) => {
+          const style = clonedDoc.createElement('style');
+          style.innerHTML = `
+            .print-container { 
+              width: 100% !important; 
+              max-width: 100% !important; 
+              padding: 0 !important; 
+              margin: 0 !important; 
+              box-shadow: none !important; 
+              border: none !important;
+            }
+            .print-container input, .cloned-input { 
+              border: none !important; 
+              background: transparent !important; 
+              padding: 0 !important; 
+              text-align: center !important;
+              font-size: 10pt !important;
+              font-weight: 600 !important;
+              color: black !important;
+            }
+            .print-container table { border-collapse: collapse !important; width: 100% !important; }
+            .print-container th, .print-container td { 
+              border: 1px solid #475569 !important; 
+              padding: 2px !important; 
+              text-align: center !important; 
+              color: black !important;
+            }
+            .print-container th { 
+              font-weight: 700 !important; 
+              background-color: #f1f5f9 !important; 
+              font-size: 8pt !important;
+            }
+            .print-container td {
+              font-size: 9pt !important;
+            }
+            .header-text { font-size: 12pt !important; font-weight: bold !important; color: black !important; }
+            .title-text { font-size: 18pt !important; font-weight: bold !important; color: red !important; }
+            .text-blue-400 { color: #60a5fa !important; }
+            .text-blue-600 { color: #2563eb !important; }
+            .text-red-600 { color: #dc2626 !important; }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+          `;
+          clonedDoc.head.appendChild(style);
+
           const el = clonedDoc.getElementById('leishmania-print-container');
           if (el) {
             el.style.width = '1500px';
@@ -177,7 +221,7 @@ export default function LeishmaniaStatisticForm() {
                 span.style.display = 'inline-block';
                 span.style.width = '100%';
                 span.style.textAlign = 'center';
-                span.className = input.className;
+                span.className = input.className + ' cloned-input';
                 input.parentNode.replaceChild(span, input);
               }
             });
@@ -231,6 +275,50 @@ export default function LeishmaniaStatisticForm() {
         scrollX: 0,
         windowWidth: 1500,
         onclone: (clonedDoc) => {
+          const style = clonedDoc.createElement('style');
+          style.innerHTML = `
+            .print-container { 
+              width: 100% !important; 
+              max-width: 100% !important; 
+              padding: 0 !important; 
+              margin: 0 !important; 
+              box-shadow: none !important; 
+              border: none !important;
+            }
+            .print-container input, .cloned-input { 
+              border: none !important; 
+              background: transparent !important; 
+              padding: 0 !important; 
+              text-align: center !important;
+              font-size: 10pt !important;
+              font-weight: 600 !important;
+              color: black !important;
+            }
+            .print-container table { border-collapse: collapse !important; width: 100% !important; }
+            .print-container th, .print-container td { 
+              border: 1px solid #475569 !important; 
+              padding: 2px !important; 
+              text-align: center !important; 
+              color: black !important;
+            }
+            .print-container th { 
+              font-weight: 700 !important; 
+              background-color: #f1f5f9 !important; 
+              font-size: 8pt !important;
+            }
+            .print-container td {
+              font-size: 9pt !important;
+            }
+            .header-text { font-size: 12pt !important; font-weight: bold !important; color: black !important; }
+            .title-text { font-size: 18pt !important; font-weight: bold !important; color: red !important; }
+            .text-blue-400 { color: #60a5fa !important; }
+            .text-blue-600 { color: #2563eb !important; }
+            .text-red-600 { color: #dc2626 !important; }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+          `;
+          clonedDoc.head.appendChild(style);
+
           const el = clonedDoc.getElementById('leishmania-print-container');
           if (el) {
             el.style.width = '1500px';
@@ -251,7 +339,7 @@ export default function LeishmaniaStatisticForm() {
                 span.style.display = 'inline-block';
                 span.style.width = '100%';
                 span.style.textAlign = 'center';
-                span.className = input.className;
+                span.className = input.className + ' cloned-input';
                 input.parentNode.replaceChild(span, input);
               }
             });
