@@ -353,7 +353,7 @@ export default function MalariaStatisticForm() {
             max-width: 100%; 
             padding: 0; 
             margin: 0; 
-            box-shadow: none; 
+            box-shadow: none !important; 
             border: none !important;
           }
           input { 
