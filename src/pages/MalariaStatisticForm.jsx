@@ -318,6 +318,10 @@ export default function MalariaStatisticForm() {
               {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Printer className="w-4 h-4" />}
               تصدير PDF
             </Button>
+            <Button onClick={() => window.print()} className="gap-2 bg-slate-600 hover:bg-slate-700 text-white">
+              <Printer className="w-4 h-4" />
+              طباعة
+            </Button>
           </div>
         </div>
 
