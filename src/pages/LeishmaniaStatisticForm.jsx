@@ -297,7 +297,7 @@ export default function LeishmaniaStatisticForm() {
         }
       `}</style>
 
-      <div className="max-w-[1400px] mx-auto">
+      <div className="max-w-[98%] mx-auto">
         <div className="flex justify-between items-center mb-6 no-print">
           <Button variant="ghost" onClick={() => navigate(-1)} className="gap-2">
             <ArrowRight className="w-4 h-4" />
