@@ -95,16 +95,28 @@ export default function MalariaStatisticForm() {
       
       const element = printRef.current;
       const originalScrollY = window.scrollY;
+      const originalScrollX = window.scrollX;
+      
+      const originalWidth = element.style.width;
+      const originalMaxWidth = element.style.maxWidth;
+      
+      element.style.width = `${element.scrollWidth}px`;
+      element.style.maxWidth = 'none';
+      
       window.scrollTo(0, 0);
       
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
         scrollY: 0,
+        scrollX: 0,
+        windowWidth: element.scrollWidth,
         ignoreElements: (el) => el.classList.contains('no-print') || el.tagName.toLowerCase() === 'svg'
       });
       
-      window.scrollTo(0, originalScrollY);
+      element.style.width = originalWidth;
+      element.style.maxWidth = originalMaxWidth;
+      window.scrollTo(originalScrollX, originalScrollY);
       
       const imgData = canvas.toDataURL('image/jpeg', 1.0);
       const pdf = new jsPDF({
@@ -144,16 +156,28 @@ export default function MalariaStatisticForm() {
       
       const element = printRef.current;
       const originalScrollY = window.scrollY;
+      const originalScrollX = window.scrollX;
+      
+      const originalWidth = element.style.width;
+      const originalMaxWidth = element.style.maxWidth;
+      
+      element.style.width = `${element.scrollWidth}px`;
+      element.style.maxWidth = 'none';
+      
       window.scrollTo(0, 0);
       
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
         scrollY: 0,
+        scrollX: 0,
+        windowWidth: element.scrollWidth,
         ignoreElements: (el) => el.classList.contains('no-print') || el.tagName.toLowerCase() === 'svg'
       });
       
-      window.scrollTo(0, originalScrollY);
+      element.style.width = originalWidth;
+      element.style.maxWidth = originalMaxWidth;
+      window.scrollTo(originalScrollX, originalScrollY);
       
       const imgData = canvas.toDataURL('image/jpeg', 1.0);
       const pdf = new jsPDF({
