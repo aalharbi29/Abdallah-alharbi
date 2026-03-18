@@ -357,7 +357,7 @@ export default function MalariaStatisticForm() {
                   
                 </div>
               </div>
-            </div>
+            </motion.div>
             <div className="w-48"></div> {/* Spacer for balance */}
           </div>
 
