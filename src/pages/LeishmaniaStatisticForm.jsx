@@ -416,30 +416,30 @@ export default function LeishmaniaStatisticForm() {
                 {data.map((row, index) => (
                   <tr key={index} className="hover:bg-slate-50 transition-colors">
                     <td className="border border-slate-300 p-0 relative group">
-                      <Input className={`w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium ${row.adminName === 'مراكز الحسو' ? 'text-blue-600' : ''}`} value={row.adminName} onChange={(e) => handleChange(index, 'adminName', e.target.value)} />
+                      <Input className={`w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium px-1 ${row.adminName === 'مراكز الحسو' ? 'text-blue-600' : ''}`} value={row.adminName} onChange={(e) => handleChange(index, 'adminName', e.target.value)} />
                       {data.length > 1 && (
                         <button onClick={() => removeRow(index)} className="absolute right-1 top-2 text-red-500 opacity-0 group-hover:opacity-100 no-print transition-opacity">
                           <X className="w-4 h-4" />
                         </button>
                       )}
                     </td>
-                    <td className="border border-slate-300 p-0"><Input className={`w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium ${row.patientName === 'لاتوجد حالات' ? 'text-red-600' : ''}`} value={row.patientName} onChange={(e) => handleChange(index, 'patientName', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.nationality} onChange={(e) => handleChange(index, 'nationality', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className={`w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium px-1 ${row.patientName === 'لاتوجد حالات' ? 'text-red-600' : ''}`} value={row.patientName} onChange={(e) => handleChange(index, 'patientName', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium px-1" value={row.nationality} onChange={(e) => handleChange(index, 'nationality', e.target.value)} /></td>
                     
                     {fields.map(field => (
-                      <td key={field} className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row[field]} onChange={(e) => handleChange(index, field, e.target.value)} /></td>
+                      <td key={field} className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium px-1" value={row[field]} onChange={(e) => handleChange(index, field, e.target.value)} /></td>
                     ))}
                     
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.res_resident} onChange={(e) => handleChange(index, 'res_resident', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.res_non_resident} onChange={(e) => handleChange(index, 'res_non_resident', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium px-1" value={row.res_resident} onChange={(e) => handleChange(index, 'res_resident', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium px-1" value={row.res_non_resident} onChange={(e) => handleChange(index, 'res_non_resident', e.target.value)} /></td>
                     
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.diag_clinical} onChange={(e) => handleChange(index, 'diag_clinical', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.diag_microscopic} onChange={(e) => handleChange(index, 'diag_microscopic', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium px-1" value={row.diag_clinical} onChange={(e) => handleChange(index, 'diag_clinical', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium px-1" value={row.diag_microscopic} onChange={(e) => handleChange(index, 'diag_microscopic', e.target.value)} /></td>
                     
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.ulcers} onChange={(e) => handleChange(index, 'ulcers', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.treatment} onChange={(e) => handleChange(index, 'treatment', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.infection_age} onChange={(e) => handleChange(index, 'infection_age', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.infection_place} onChange={(e) => handleChange(index, 'infection_place', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium px-1" value={row.ulcers} onChange={(e) => handleChange(index, 'ulcers', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium px-1" value={row.treatment} onChange={(e) => handleChange(index, 'treatment', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium px-1" value={row.infection_age} onChange={(e) => handleChange(index, 'infection_age', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium px-1" value={row.infection_place} onChange={(e) => handleChange(index, 'infection_place', e.target.value)} /></td>
                   </tr>
                 ))}
               </tbody>
