@@ -62,15 +62,10 @@ export default function MalariaStatisticForm() {
 
   const handlePrint = () => {
     try {
-      if (window.top && window.top !== window) {
-        // We are in an iframe, try to use postMessage or fallback to local print
-        window.print();
-      } else {
-        window.print();
-      }
-    } catch (e) {
-      // Fallback if window.top access is blocked
       window.print();
+    } catch (e) {
+      console.error("Print error:", e);
+      toast.error("عذراً، الطباعة المباشرة غير مدعومة في هذه البيئة. يرجى استخدام زر 'حفظ في الإحصائيات' بدلاً من ذلك.");
     }
   };
 
