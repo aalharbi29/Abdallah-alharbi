@@ -352,9 +352,11 @@ export default function InventoryHandoverForm() {
 <body>
   <!-- PAGE 1 -->
   <div class="page">
-    <div class="header-banner">
-      <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/ebae7336b_1407.png" alt="تجمع المدينة المنورة الصحي" />
+    ${logoSettings.show_logo ? `
+    <div class="header-banner" style="text-align: center; border-bottom: 2px solid #0284c7; padding: 0 0 8px; margin-bottom: 15px; overflow: hidden;">
+      <img src="${logoSettings.logo_url}" alt="تجمع المدينة المنورة الصحي" style="max-height: ${logoSettings.max_height || 300}px; margin-top: ${logoSettings.margin_top || -80}px; margin-bottom: ${logoSettings.margin_bottom || -30}px; display: block; margin-left: auto; margin-right: auto;" />
     </div>
+    ` : ''}
     <div class="title-section">
       <p class="sub">المملكة العربية السعودية | وزارة الصحة | تجمع المدينة المنورة الصحي</p>
       <h1>${formTitle}</h1>
