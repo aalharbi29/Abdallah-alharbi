@@ -34,6 +34,25 @@ export default function MalariaStatisticForm() {
   const [month, setMonth] = useState("");
   const [year, setYear] = useState(new Date().getFullYear().toString());
   const [isSaving, setIsSaving] = useState(false);
+  const [signatureUrl, setSignatureUrl] = useState("https://upload.wikimedia.org/wikipedia/commons/f/f8/Stylized_signature_sample.svg");
+  const [managerName, setManagerName] = useState("أ / عبدالمجيد سعود الربيقي");
+  const [managerTitle, setManagerTitle] = useState("مدير إدارة المراكز الصحية بالحناكية");
+
+  React.useEffect(() => {
+    const fetchSignature = async () => {
+      try {
+        const records = await base44.entities.StampSignature.filter({ type: 'signature', is_default: true, is_active: true });
+        if (records && records.length > 0) {
+          setSignatureUrl(records[0].image_url);
+          if (records[0].owner_name) setManagerName(records[0].owner_name);
+          if (records[0].owner_title) setManagerTitle(records[0].owner_title);
+        }
+      } catch (error) {
+        console.error("Error fetching signature:", error);
+      }
+    };
+    fetchSignature();
+  }, []);
   
   const [data, setData] = useState(
     initialCenters.map(center => ({
