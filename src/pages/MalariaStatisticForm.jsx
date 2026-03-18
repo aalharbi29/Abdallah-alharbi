@@ -288,7 +288,7 @@ export default function MalariaStatisticForm() {
           </div>
 
           {/* Table */}
-          <div className="overflow-x-auto relative z-10">
+          <div className="overflow-x-auto print:overflow-visible relative z-10">
             <table className="w-full border-collapse border border-slate-400 text-center">
               <thead>
                 <tr className="bg-slate-100">
