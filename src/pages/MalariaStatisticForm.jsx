@@ -421,8 +421,8 @@ export default function MalariaStatisticForm() {
           color: black !important;
         }
         .printing-mode table input, .printing-mode table .cloned-input {
-          height: 16px !important;
-          min-height: 16px !important;
+          height: auto !important;
+          min-height: 20px !important;
           text-align: center !important;
           font-size: 8pt !important;
         }
