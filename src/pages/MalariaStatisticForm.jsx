@@ -528,12 +528,12 @@ export default function MalariaStatisticForm() {
               <input 
                 value={managerTitle} 
                 onChange={(e) => setManagerTitle(e.target.value)} 
-                className="block w-64 bg-transparent border-none focus:ring-0 p-0 m-0 text-center text-sm font-bold text-slate-800" 
+                className="block w-80 bg-transparent border-none focus:ring-0 p-0 m-0 text-center text-lg font-bold text-slate-800" 
               />
               <input 
                 value={managerName} 
                 onChange={(e) => setManagerName(e.target.value)} 
-                className="block w-64 bg-transparent border-none focus:ring-0 p-0 m-0 text-center text-sm font-bold text-slate-800" 
+                className="block w-80 bg-transparent border-none focus:ring-0 p-0 m-0 text-center text-lg font-bold text-slate-800" 
               />
             </motion.div>
             
