@@ -459,6 +459,7 @@ export default function LeishmaniaStatisticForm() {
           <div className="mt-16 text-center header-text space-y-4 relative flex flex-col items-center min-h-[150px]">
             <motion.div drag dragMomentum={false} className="cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50">
               <p className="text-sm font-bold text-slate-800">{managerTitle}</p>
+              <br />
               <p className="text-sm font-bold text-slate-800">{managerName}</p>
             </motion.div>
             
@@ -471,7 +472,7 @@ export default function LeishmaniaStatisticForm() {
               <img 
                 src={signatureUrl} 
                 alt="توقيع المدير" 
-                className={`h-24 object-contain pointer-events-none ${isExporting ? '' : 'mix-blend-multiply opacity-80'}`} 
+                className="h-16 object-contain pointer-events-none mix-blend-multiply" 
                 crossOrigin="anonymous"
               />
             </motion.div>
