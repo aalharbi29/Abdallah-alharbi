@@ -266,13 +266,12 @@ export default function VisualEditAgent() {
 
 		// Update classes for all matching elements
 		elements.forEach(element => {
-			if (replace) {
-				// For reverts, replace classes completely
-				element.className = classes;
+			const newClasses = replace ? classes : twMerge(element.className?.baseVal || element.className || '', classes);
+			
+			if (element.tagName.toLowerCase() === 'svg' || element.tagName.toLowerCase() === 'path') {
+				element.setAttribute('class', newClasses);
 			} else {
-				// For normal updates, merge with existing classes
-				const currentClasses = element.className?.baseVal || element.className || '';
-				element.className = twMerge(currentClasses, classes);
+				element.className = newClasses;
 			}
 		});
 
