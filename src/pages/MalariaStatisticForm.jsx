@@ -325,7 +325,7 @@ export default function MalariaStatisticForm() {
           </div>
         </div>
 
-        <div id="malaria-print-container" ref={printRef} className="bg-white p-8 rounded-xl shadow-sm print-container border border-gray-200 relative">
+        <div ref={printRef} className="bg-white p-8 rounded-xl shadow-sm print-container border border-gray-200 relative">
           {/* Header */}
           <div className="flex justify-between items-start mb-8 relative z-10">
             <div className="text-right space-y-1 header-text">
