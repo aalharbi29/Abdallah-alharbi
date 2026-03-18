@@ -80,8 +80,53 @@ export default function MalariaStatisticForm() {
     }))
   );
 
-  const handlePrint = () => {
-    toast.info("الطباعة المباشرة غير مدعومة في بيئة المعاينة. يرجى استخدام زر 'حفظ في الإحصائيات' ثم طباعة الملف من قسم الإحصائيات.");
+  const handleDownloadPDF = async () => {
+    if (!month) {
+      toast.error("الرجاء اختيار الشهر أولاً");
+      return;
+    }
+    
+    try {
+      setIsExporting(true);
+      setIsSaving(true);
+      toast.loading("جاري تجهيز الملف...", { id: "download-pdf" });
+      
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      const element = printRef.current;
+      const originalScrollY = window.scrollY;
+      window.scrollTo(0, 0);
+      
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        scrollY: 0,
+        ignoreElements: (el) => el.classList.contains('no-print') || el.tagName.toLowerCase() === 'svg'
+      });
+      
+      window.scrollTo(0, originalScrollY);
+      
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a4'
+      });
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`malaria_statistic_${year}_${month}.pdf`);
+      
+      toast.success("تم تحميل الملف بنجاح", { id: "download-pdf" });
+    } catch (error) {
+      console.error(error);
+      toast.error("حدث خطأ أثناء التحميل", { id: "download-pdf" });
+    } finally {
+      setIsExporting(false);
+      setIsSaving(false);
+    }
   };
 
   const handleSaveToStatistics = async () => {
@@ -91,12 +136,13 @@ export default function MalariaStatisticForm() {
     }
     
     try {
+      setIsExporting(true);
       setIsSaving(true);
       toast.loading("جاري حفظ الإحصائية...", { id: "save-stat" });
       
-      const element = printRef.current;
+      await new Promise(resolve => setTimeout(resolve, 100));
       
-      // Fix for html2canvas cutting off content when scrolled
+      const element = printRef.current;
       const originalScrollY = window.scrollY;
       window.scrollTo(0, 0);
       
@@ -104,9 +150,7 @@ export default function MalariaStatisticForm() {
         scale: 2,
         useCORS: true,
         scrollY: 0,
-        windowWidth: document.documentElement.offsetWidth,
-        windowHeight: document.documentElement.offsetHeight,
-        ignoreElements: (el) => el.classList.contains('no-print')
+        ignoreElements: (el) => el.classList.contains('no-print') || el.tagName.toLowerCase() === 'svg'
       });
       
       window.scrollTo(0, originalScrollY);
@@ -146,6 +190,7 @@ export default function MalariaStatisticForm() {
       console.error(error);
       toast.error("حدث خطأ أثناء الحفظ", { id: "save-stat" });
     } finally {
+      setIsExporting(false);
       setIsSaving(false);
     }
   };
