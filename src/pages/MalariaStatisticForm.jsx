@@ -313,12 +313,22 @@ export default function MalariaStatisticForm() {
             background: transparent !important; 
             padding: 0 !important;
             margin: 0 !important;
+            font-weight: 600;
+            color: black !important;
+          }
+          table input {
             height: 16px !important;
             min-height: 16px !important;
             text-align: center;
             font-size: 8pt !important;
-            font-weight: 600;
-            color: black !important;
+          }
+          .print-header-input {
+            font-size: 12pt !important;
+            text-align: right !important;
+          }
+          .print-manager-input {
+            font-size: 14pt !important;
+            text-align: center !important;
           }
           input::placeholder { color: transparent; }
           table { border-collapse: collapse; width: 100%; }
@@ -386,12 +396,12 @@ export default function MalariaStatisticForm() {
               <input 
                 value={headerText1} 
                 onChange={(e) => setHeaderText1(e.target.value)} 
-                className="block w-full bg-transparent border-none focus:ring-0 p-0 m-0 text-right font-bold text-black" 
+                className="block w-full bg-transparent border-none focus:ring-0 p-0 m-0 text-right font-bold text-black print-header-input" 
               />
               <input 
                 value={headerText2} 
                 onChange={(e) => setHeaderText2(e.target.value)} 
-                className="block w-full bg-transparent border-none focus:ring-0 p-0 m-0 text-right font-bold text-black" 
+                className="block w-full bg-transparent border-none focus:ring-0 p-0 m-0 text-right font-bold text-black print-header-input" 
               />
             </motion.div>
             <motion.div style={{ x: titleX, y: titleY }} drag dragMomentum={false} className="text-center cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50">
@@ -528,12 +538,12 @@ export default function MalariaStatisticForm() {
               <input 
                 value={managerTitle} 
                 onChange={(e) => setManagerTitle(e.target.value)} 
-                className="block w-80 bg-transparent border-none focus:ring-0 p-0 m-0 text-center text-lg font-bold text-slate-800" 
+                className="block w-80 bg-transparent border-none focus:ring-0 p-0 m-0 text-center text-lg font-bold text-slate-800 print-manager-input" 
               />
               <input 
                 value={managerName} 
                 onChange={(e) => setManagerName(e.target.value)} 
-                className="block w-80 bg-transparent border-none focus:ring-0 p-0 m-0 text-center text-lg font-bold text-slate-800" 
+                className="block w-80 bg-transparent border-none focus:ring-0 p-0 m-0 text-center text-lg font-bold text-slate-800 print-manager-input" 
               />
             </motion.div>
             
