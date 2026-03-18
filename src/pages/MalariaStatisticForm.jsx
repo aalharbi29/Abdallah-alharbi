@@ -94,28 +94,29 @@ export default function MalariaStatisticForm() {
       await new Promise(resolve => setTimeout(resolve, 100));
       
       const element = printRef.current;
+      const originalScrollY = window.scrollY;
+      const originalScrollX = window.scrollX;
+      
+      const originalWidth = element.style.width;
+      const originalMaxWidth = element.style.maxWidth;
+      
+      element.style.width = `${element.scrollWidth}px`;
+      element.style.maxWidth = 'none';
+      
+      window.scrollTo(0, 0);
       
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
         scrollY: 0,
         scrollX: 0,
-        windowWidth: 1500,
-        onclone: (clonedDoc) => {
-          const el = clonedDoc.getElementById('malaria-print-container');
-          if (el) {
-            el.style.width = '1500px';
-            el.style.minWidth = '1500px';
-            el.style.maxWidth = 'none';
-            const table = el.querySelector('table');
-            if (table && table.parentElement) {
-              table.parentElement.classList.remove('overflow-x-auto');
-              table.parentElement.style.overflow = 'visible';
-            }
-          }
-        },
+        windowWidth: element.scrollWidth,
         ignoreElements: (el) => el.classList.contains('no-print') || el.tagName.toLowerCase() === 'svg'
       });
+      
+      element.style.width = originalWidth;
+      element.style.maxWidth = originalMaxWidth;
+      window.scrollTo(originalScrollX, originalScrollY);
       
       const imgData = canvas.toDataURL('image/jpeg', 1.0);
       const pdf = new jsPDF({
@@ -154,28 +155,29 @@ export default function MalariaStatisticForm() {
       await new Promise(resolve => setTimeout(resolve, 100));
       
       const element = printRef.current;
+      const originalScrollY = window.scrollY;
+      const originalScrollX = window.scrollX;
+      
+      const originalWidth = element.style.width;
+      const originalMaxWidth = element.style.maxWidth;
+      
+      element.style.width = `${element.scrollWidth}px`;
+      element.style.maxWidth = 'none';
+      
+      window.scrollTo(0, 0);
       
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
         scrollY: 0,
         scrollX: 0,
-        windowWidth: 1500,
-        onclone: (clonedDoc) => {
-          const el = clonedDoc.getElementById('malaria-print-container');
-          if (el) {
-            el.style.width = '1500px';
-            el.style.minWidth = '1500px';
-            el.style.maxWidth = 'none';
-            const table = el.querySelector('table');
-            if (table && table.parentElement) {
-              table.parentElement.classList.remove('overflow-x-auto');
-              table.parentElement.style.overflow = 'visible';
-            }
-          }
-        },
+        windowWidth: element.scrollWidth,
         ignoreElements: (el) => el.classList.contains('no-print') || el.tagName.toLowerCase() === 'svg'
       });
+      
+      element.style.width = originalWidth;
+      element.style.maxWidth = originalMaxWidth;
+      window.scrollTo(originalScrollX, originalScrollY);
       
       const imgData = canvas.toDataURL('image/jpeg', 1.0);
       const pdf = new jsPDF({
