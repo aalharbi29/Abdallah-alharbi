@@ -139,7 +139,10 @@ export default function MalariaStatisticForm() {
       const originalWidth = element.style.width;
       const originalMaxWidth = element.style.maxWidth;
 
-      element.style.width = `${element.scrollWidth}px`;
+      const tableContainer = element.querySelector('.overflow-x-auto');
+      if (tableContainer) tableContainer.classList.remove('overflow-x-auto');
+
+      element.style.width = '1500px';
       element.style.maxWidth = 'none';
 
       window.scrollTo(0, 0);
@@ -238,7 +241,10 @@ export default function MalariaStatisticForm() {
       const originalWidth = element.style.width;
       const originalMaxWidth = element.style.maxWidth;
 
-      element.style.width = `${element.scrollWidth}px`;
+      const tableContainer = element.querySelector('.overflow-x-auto');
+      if (tableContainer) tableContainer.classList.remove('overflow-x-auto');
+
+      element.style.width = '1500px';
       element.style.maxWidth = 'none';
 
       window.scrollTo(0, 0);
