@@ -56,6 +56,7 @@ const getNavigationItems = (t) => [
       { name: t('nav.forms') + " - " + t('nav.assignments'), href: createPageUrl("Forms?type=assignments"), icon: DollarSign },
       { name: t('nav.forms') + " - " + t('reports.statisticsReport'), href: createPageUrl("Forms?type=epidemiology"), icon: Activity },
       { name: t('nav.forms') + " - " + t('nav.statistics'), href: createPageUrl("Forms?type=statistics"), icon: FileBarChart },
+      { name: "إحصائية اللشمانيا", href: createPageUrl("LeishmaniaStatisticForm"), icon: Activity },
       { name: t('nav.forms') + " - " + t('forms.formTemplates'), href: createPageUrl("Forms?type=contract_renewal"), icon: RefreshCw },
       { name: "Equipment Request", href: createPageUrl("FillNonMedicalEquipmentForm"), icon: FilePlus },
       { name: "Additional Forms", href: createPageUrl("Forms?type=additional"), icon: FilePlus },
