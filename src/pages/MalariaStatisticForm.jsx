@@ -310,7 +310,7 @@ export default function MalariaStatisticForm() {
                 <div className="flex items-center gap-2">
                   <span className="text-sm">الشهر :</span>
                   <Select value={month} onValueChange={setMonth}>
-                    <SelectTrigger className="w-32 h-8 text-center font-bold border-b-2 border-t-0 border-l-0 border-r-0 rounded-none focus:ring-0 px-0 bg-transparent">
+                    <SelectTrigger className={`w-32 h-8 text-center font-bold border-b-2 border-t-0 border-l-0 border-r-0 rounded-none focus:ring-0 px-0 bg-transparent ${isExporting ? 'border-transparent' : 'border-slate-300'}`}>
                       <SelectValue placeholder="اختر الشهر" />
                     </SelectTrigger>
                     <SelectContent>
@@ -325,7 +325,7 @@ export default function MalariaStatisticForm() {
                   <Input 
                     value={year} 
                     onChange={(e) => setYear(e.target.value)} 
-                    className="w-24 h-8 text-center font-bold border-b-2 border-t-0 border-l-0 border-r-0 rounded-none focus-visible:ring-0 px-0 bg-transparent"
+                    className={`w-24 h-8 text-center font-bold border-b-2 border-t-0 border-l-0 border-r-0 rounded-none focus-visible:ring-0 px-0 bg-transparent ${isExporting ? 'border-transparent' : 'border-slate-300'}`}
                   />
                 </div>
               </div>
@@ -334,7 +334,7 @@ export default function MalariaStatisticForm() {
           </div>
 
           {/* Table */}
-          <div className="overflow-x-auto print:overflow-visible relative z-10">
+          <div className={`${isExporting ? '' : 'overflow-x-auto'} print:overflow-visible relative z-10`}>
             <table className="w-full border-collapse border border-slate-400 text-center">
               <thead>
                 <tr className="bg-slate-100">
