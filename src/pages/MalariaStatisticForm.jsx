@@ -311,9 +311,12 @@ export default function MalariaStatisticForm() {
           input { 
             border: none !important; 
             background: transparent !important; 
-            padding: 0 !important; 
+            padding: 0 !important;
+            margin: 0 !important;
+            height: 16px !important;
+            min-height: 16px !important;
             text-align: center;
-            font-size: 10pt !important;
+            font-size: 8pt !important;
             font-weight: 600;
             color: black !important;
           }
@@ -321,19 +324,20 @@ export default function MalariaStatisticForm() {
           table { border-collapse: collapse; width: 100%; }
           th, td { 
             border: 1px solid #475569 !important; 
-            padding: 4px !important; 
+            padding: 1px !important; 
             text-align: center; 
             color: black !important;
+            height: 18px !important;
           }
           th { 
             font-weight: 700; 
             background-color: #f1f5f9 !important; 
-            font-size: 9pt !important;
+            font-size: 8pt !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
           td {
-            font-size: 10pt !important;
+            font-size: 8pt !important;
           }
           .header-text { font-size: 12pt; font-weight: bold; color: black; }
           .title-text { font-size: 18pt; font-weight: bold; text-decoration: underline; color: black; }
@@ -465,30 +469,30 @@ export default function MalariaStatisticForm() {
               <tbody>
                 {data.map((row, index) =>
                 <tr key={index} className="hover:bg-slate-50 transition-colors">
-                    <td className="border border-slate-300 p-0.5 text-xs font-semibold text-slate-800">{row.name}</td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.totalPatients} onChange={(e) => handleChange(index, 'totalPatients', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.testedSamples} onChange={(e) => handleChange(index, 'testedSamples', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="bg-slate-50 text-slate-950 px-1 py-0.5 text-xs font-medium text-center rounded-none flex border-input shadow-sm transition-colors file:border-0 file:bg-transparent file:text-xs file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-xs w-full h-6 border-0 focus-visible:ring-1" value={row.percentage} readOnly /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.positives} onChange={(e) => handleChange(index, 'positives', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0 text-[10px] font-semibold text-slate-800">{row.name}</td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.totalPatients} onChange={(e) => handleChange(index, 'totalPatients', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.testedSamples} onChange={(e) => handleChange(index, 'testedSamples', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="bg-slate-50 text-slate-950 p-0 text-[10px] font-medium text-center rounded-none flex border-input shadow-sm transition-colors file:border-0 file:bg-transparent file:text-[10px] file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 w-full h-5 border-0 focus-visible:ring-1" value={row.percentage} readOnly /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.positives} onChange={(e) => handleChange(index, 'positives', e.target.value)} /></td>
                     
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.distBenign} onChange={(e) => handleChange(index, 'distBenign', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.distMalignant} onChange={(e) => handleChange(index, 'distMalignant', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.distQuad} onChange={(e) => handleChange(index, 'distQuad', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.distMixed} onChange={(e) => handleChange(index, 'distMixed', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.distBenign} onChange={(e) => handleChange(index, 'distBenign', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.distMalignant} onChange={(e) => handleChange(index, 'distMalignant', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.distQuad} onChange={(e) => handleChange(index, 'distQuad', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.distMixed} onChange={(e) => handleChange(index, 'distMixed', e.target.value)} /></td>
                     
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.casesInside} onChange={(e) => handleChange(index, 'casesInside', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.casesOutside} onChange={(e) => handleChange(index, 'casesOutside', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.casesInside} onChange={(e) => handleChange(index, 'casesInside', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.casesOutside} onChange={(e) => handleChange(index, 'casesOutside', e.target.value)} /></td>
                     
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.treatmentQuad} onChange={(e) => handleChange(index, 'treatmentQuad', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.treatmentOct} onChange={(e) => handleChange(index, 'treatmentOct', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.treatmentFansidar} onChange={(e) => handleChange(index, 'treatmentFansidar', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.treatmentOther} onChange={(e) => handleChange(index, 'treatmentOther', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.treatmentQuad} onChange={(e) => handleChange(index, 'treatmentQuad', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.treatmentOct} onChange={(e) => handleChange(index, 'treatmentOct', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.treatmentFansidar} onChange={(e) => handleChange(index, 'treatmentFansidar', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.treatmentOther} onChange={(e) => handleChange(index, 'treatmentOther', e.target.value)} /></td>
                     
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.ageUnder1} onChange={(e) => handleChange(index, 'ageUnder1', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.age1to4} onChange={(e) => handleChange(index, 'age1to4', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.age5to9} onChange={(e) => handleChange(index, 'age5to9', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.age10to14} onChange={(e) => handleChange(index, 'age10to14', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-6 border-0 text-center rounded-none focus-visible:ring-1 text-xs font-medium" value={row.ageOver14} onChange={(e) => handleChange(index, 'ageOver14', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.ageUnder1} onChange={(e) => handleChange(index, 'ageUnder1', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.age1to4} onChange={(e) => handleChange(index, 'age1to4', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.age5to9} onChange={(e) => handleChange(index, 'age5to9', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.age10to14} onChange={(e) => handleChange(index, 'age10to14', e.target.value)} /></td>
+                    <td className="border border-slate-300 p-0"><Input className="w-full h-5 border-0 text-center rounded-none focus-visible:ring-1 text-[10px] font-medium p-0" value={row.ageOver14} onChange={(e) => handleChange(index, 'ageOver14', e.target.value)} /></td>
                   </tr>
                 )}
                 {/* Totals Row */}
