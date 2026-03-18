@@ -11,22 +11,22 @@ import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 
 const initialCenters = [
-  "الحسو",
-  "الماوية",
-  "الهميج",
-  "بطحي",
-  "بلغه",
-  "صخيبره",
-  "طلال",
-  "هدبان"
-];
+"الحسو",
+"الماوية",
+"الهميج",
+"بطحي",
+"بلغه",
+"صخيبره",
+"طلال",
+"هدبان"];
+
 
 const months = [
-  { value: 1, label: "يناير" }, { value: 2, label: "فبراير" }, { value: 3, label: "مارس" },
-  { value: 4, label: "أبريل" }, { value: 5, label: "مايو" }, { value: 6, label: "يونيو" },
-  { value: 7, label: "يوليو" }, { value: 8, label: "أغسطس" }, { value: 9, label: "سبتمبر" },
-  { value: 10, label: "أكتوبر" }, { value: 11, label: "نوفمبر" }, { value: 12, label: "ديسمبر" },
-];
+{ value: 1, label: "يناير" }, { value: 2, label: "فبراير" }, { value: 3, label: "مارس" },
+{ value: 4, label: "أبريل" }, { value: 5, label: "مايو" }, { value: 6, label: "يونيو" },
+{ value: 7, label: "يوليو" }, { value: 8, label: "أغسطس" }, { value: 9, label: "سبتمبر" },
+{ value: 10, label: "أكتوبر" }, { value: 11, label: "نوفمبر" }, { value: 12, label: "ديسمبر" }];
+
 
 export default function MalariaStatisticForm() {
   const navigate = useNavigate();
@@ -54,9 +54,9 @@ export default function MalariaStatisticForm() {
     };
     fetchSignature();
   }, []);
-  
+
   const [data, setData] = useState(
-    initialCenters.map(center => ({
+    initialCenters.map((center) => ({
       name: center,
       totalPatients: "0",
       testedSamples: "0",
@@ -85,26 +85,26 @@ export default function MalariaStatisticForm() {
       toast.error("الرجاء اختيار الشهر أولاً");
       return;
     }
-    
+
     try {
       setIsExporting(true);
       setIsSaving(true);
       toast.loading("جاري تجهيز الملف...", { id: "download-pdf" });
-      
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       const element = printRef.current;
       const originalScrollY = window.scrollY;
       const originalScrollX = window.scrollX;
-      
+
       const originalWidth = element.style.width;
       const originalMaxWidth = element.style.maxWidth;
-      
+
       element.style.width = `${element.scrollWidth}px`;
       element.style.maxWidth = 'none';
-      
+
       window.scrollTo(0, 0);
-      
+
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
@@ -113,24 +113,24 @@ export default function MalariaStatisticForm() {
         windowWidth: element.scrollWidth,
         ignoreElements: (el) => el.classList.contains('no-print') || el.tagName.toLowerCase() === 'svg'
       });
-      
+
       element.style.width = originalWidth;
       element.style.maxWidth = originalMaxWidth;
       window.scrollTo(originalScrollX, originalScrollY);
-      
+
       const imgData = canvas.toDataURL('image/jpeg', 1.0);
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'mm',
         format: 'a4'
       });
-      
+
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      
+      const pdfHeight = canvas.height * pdfWidth / canvas.width;
+
       pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(`malaria_statistic_${year}_${month}.pdf`);
-      
+
       toast.success("تم تحميل الملف بنجاح", { id: "download-pdf" });
     } catch (error) {
       console.error(error);
@@ -146,26 +146,26 @@ export default function MalariaStatisticForm() {
       toast.error("الرجاء اختيار الشهر أولاً");
       return;
     }
-    
+
     try {
       setIsExporting(true);
       setIsSaving(true);
       toast.loading("جاري حفظ الإحصائية...", { id: "save-stat" });
-      
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       const element = printRef.current;
       const originalScrollY = window.scrollY;
       const originalScrollX = window.scrollX;
-      
+
       const originalWidth = element.style.width;
       const originalMaxWidth = element.style.maxWidth;
-      
+
       element.style.width = `${element.scrollWidth}px`;
       element.style.maxWidth = 'none';
-      
+
       window.scrollTo(0, 0);
-      
+
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
@@ -174,30 +174,30 @@ export default function MalariaStatisticForm() {
         windowWidth: element.scrollWidth,
         ignoreElements: (el) => el.classList.contains('no-print') || el.tagName.toLowerCase() === 'svg'
       });
-      
+
       element.style.width = originalWidth;
       element.style.maxWidth = originalMaxWidth;
       window.scrollTo(originalScrollX, originalScrollY);
-      
+
       const imgData = canvas.toDataURL('image/jpeg', 1.0);
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'mm',
         format: 'a4'
       });
-      
+
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      
+      const pdfHeight = canvas.height * pdfWidth / canvas.width;
+
       pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
       const pdfBlob = pdf.output('blob');
-      
+
       const file = new File([pdfBlob], `malaria_statistic_${year}_${month}.pdf`, { type: 'application/pdf' });
-      
+
       const uploadRes = await base44.integrations.Core.UploadFile({ file });
-      
-      const selectedMonth = months.find(m => m.value.toString() === month);
-      
+
+      const selectedMonth = months.find((m) => m.value.toString() === month);
+
       await base44.entities.Statistic.create({
         period_type: "gregorian",
         year: parseInt(year),
@@ -208,7 +208,7 @@ export default function MalariaStatisticForm() {
         file_url: uploadRes.file_url,
         file_name: file.name
       });
-      
+
       toast.success("تم حفظ الإحصائية بنجاح في الملفات المخصصة", { id: "save-stat" });
     } catch (error) {
       console.error(error);
@@ -222,18 +222,18 @@ export default function MalariaStatisticForm() {
   const handleChange = (index, field, value) => {
     const newData = [...data];
     newData[index][field] = value;
-    
+
     // Auto calculate percentage if possible
     if (field === 'totalPatients' || field === 'testedSamples') {
       const patients = parseFloat(newData[index].totalPatients) || 0;
       const samples = parseFloat(newData[index].testedSamples) || 0;
       if (patients > 0 && samples > 0) {
-        newData[index].percentage = ((samples / patients) * 100).toFixed(1) + '%';
+        newData[index].percentage = (samples / patients * 100).toFixed(1) + '%';
       } else {
         newData[index].percentage = "0%";
       }
     }
-    
+
     setData(newData);
   };
 
@@ -243,7 +243,7 @@ export default function MalariaStatisticForm() {
       const totalPatients = data.reduce((sum, row) => sum + (parseFloat(row.totalPatients) || 0), 0);
       const totalSamples = data.reduce((sum, row) => sum + (parseFloat(row.testedSamples) || 0), 0);
       if (totalPatients > 0 && totalSamples > 0) {
-        return ((totalSamples / totalPatients) * 100).toFixed(1) + '%';
+        return (totalSamples / totalPatients * 100).toFixed(1) + '%';
       }
       return "0%";
     }
@@ -306,11 +306,11 @@ export default function MalariaStatisticForm() {
             عودة
           </Button>
           <div className="flex gap-3">
-            <Button 
-              onClick={handleSaveToStatistics} 
+            <Button
+              onClick={handleSaveToStatistics}
               disabled={isSaving}
-              className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white"
-            >
+              className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
+              
               {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               حفظ في الإحصائيات
             </Button>
@@ -342,19 +342,19 @@ export default function MalariaStatisticForm() {
                       <SelectValue placeholder="اختر الشهر" />
                     </SelectTrigger>
                     <SelectContent>
-                      {months.map(m => (
-                        <SelectItem key={m.value} value={m.value.toString()}>{m.label}</SelectItem>
-                      ))}
+                      {months.map((m) =>
+                      <SelectItem key={m.value} value={m.value.toString()}>{m.label}</SelectItem>
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-sm">السنة :</span>
-                  <Input 
-                    value={year} 
-                    onChange={(e) => setYear(e.target.value)} 
-                    className={`w-24 h-8 text-center font-bold border-b-2 border-t-0 border-l-0 border-r-0 rounded-none focus-visible:ring-0 px-0 bg-transparent ${isExporting ? 'border-transparent' : 'border-slate-300'}`}
-                  />
+                  <Input
+                    value={year}
+                    onChange={(e) => setYear(e.target.value)}
+                    className={`w-24 h-8 text-center font-bold border-b-2 border-t-0 border-l-0 border-r-0 rounded-none focus-visible:ring-0 px-0 bg-transparent ${isExporting ? 'border-transparent' : 'border-slate-300'}`} />
+                  
                 </div>
               </div>
             </div>
@@ -367,10 +367,10 @@ export default function MalariaStatisticForm() {
               <thead>
                 <tr className="bg-slate-100">
                   <th rowSpan={2} className="border border-slate-400 p-2 w-32 text-xs font-bold text-slate-800">اسم المركز</th>
-                  <th rowSpan={2} className="border border-slate-400 p-2 w-20 text-xs font-bold text-slate-800">اجمالي<br/>المراجعين</th>
-                  <th rowSpan={2} className="border border-slate-400 p-2 w-20 text-xs font-bold text-slate-800">عدد<br/>العينات<br/>المفحوصة</th>
+                  <th rowSpan={2} className="border border-slate-400 p-2 w-20 text-xs font-bold text-slate-800">اجمالي<br />المراجعين</th>
+                  <th rowSpan={2} className="border border-slate-400 p-2 w-20 text-xs font-bold text-slate-800">عدد<br />العينات<br />المفحوصة</th>
                   <th rowSpan={2} className="border border-slate-400 p-2 w-16 text-xs font-bold text-slate-800">النسبة</th>
-                  <th rowSpan={2} className="border border-slate-400 p-2 w-16 text-xs font-bold text-slate-800">عدد<br/>الايجابي</th>
+                  <th rowSpan={2} className="border border-slate-400 p-2 w-16 text-xs font-bold text-slate-800">عدد<br />الايجابي</th>
                   <th colSpan={4} className="border border-slate-400 p-2 text-xs font-bold text-slate-800">توزيع الحالات</th>
                   <th colSpan={2} className="border border-slate-400 p-2 text-xs font-bold text-slate-800">عدد الحالات</th>
                   <th colSpan={4} className="border border-slate-400 p-2 text-xs font-bold text-slate-800">نوع وكمية العلاج</th>
@@ -381,8 +381,8 @@ export default function MalariaStatisticForm() {
                   <th className="border border-slate-400 p-1 w-12 text-[10px] font-semibold text-slate-700">خبيثة</th>
                   <th className="border border-slate-400 p-1 w-12 text-[10px] font-semibold text-slate-700">رباعية</th>
                   <th className="border border-slate-400 p-1 w-12 text-[10px] font-semibold text-slate-700">مختلفة</th>
-                  <th className="border border-slate-400 p-1 w-16 text-[10px] font-semibold text-slate-700">من داخل<br/>المملكة</th>
-                  <th className="border border-slate-400 p-1 w-16 text-[10px] font-semibold text-slate-700">من خارج<br/>المملكة</th>
+                  <th className="border border-slate-400 p-1 w-16 text-[10px] font-semibold text-slate-700">من داخل<br />المملكة</th>
+                  <th className="border border-slate-400 p-1 w-16 text-[10px] font-semibold text-slate-700">من خارج<br />المملكة</th>
                   <th className="border border-slate-400 p-1 w-12 text-[10px] font-semibold text-slate-700">رباعي</th>
                   <th className="border border-slate-400 p-1 w-12 text-[10px] font-semibold text-slate-700">ثماني</th>
                   <th className="border border-slate-400 p-1 w-12 text-[10px] font-semibold text-slate-700">فانسار</th>
@@ -395,12 +395,12 @@ export default function MalariaStatisticForm() {
                 </tr>
               </thead>
               <tbody>
-                {data.map((row, index) => (
-                  <tr key={index} className="hover:bg-slate-50 transition-colors">
+                {data.map((row, index) =>
+                <tr key={index} className="hover:bg-slate-50 transition-colors">
                     <td className="border border-slate-300 p-1 text-sm font-semibold text-slate-800">{row.name}</td>
                     <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.totalPatients} onChange={(e) => handleChange(index, 'totalPatients', e.target.value)} /></td>
                     <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.testedSamples} onChange={(e) => handleChange(index, 'testedSamples', e.target.value)} /></td>
-                    <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 bg-slate-50 text-sm font-medium text-slate-600" value={row.percentage} readOnly /></td>
+                    <td className="border border-slate-300 p-0"><Input className="bg-slate-50 text-slate-950 px-3 py-1 text-sm font-medium text-center rounded-none flex border-input shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 md:text-sm w-full h-8 border-0 focus-visible:ring-1" value={row.percentage} readOnly /></td>
                     <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.positives} onChange={(e) => handleChange(index, 'positives', e.target.value)} /></td>
                     
                     <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.distBenign} onChange={(e) => handleChange(index, 'distBenign', e.target.value)} /></td>
@@ -422,7 +422,7 @@ export default function MalariaStatisticForm() {
                     <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.age10to14} onChange={(e) => handleChange(index, 'age10to14', e.target.value)} /></td>
                     <td className="border border-slate-300 p-0"><Input className="w-full h-8 border-0 text-center rounded-none focus-visible:ring-1 text-sm font-medium" value={row.ageOver14} onChange={(e) => handleChange(index, 'ageOver14', e.target.value)} /></td>
                   </tr>
-                ))}
+                )}
                 {/* Totals Row */}
                 <tr className="bg-slate-200 font-bold text-slate-800">
                   <td className="border border-slate-400 p-2 text-sm">المجموع</td>
@@ -455,22 +455,22 @@ export default function MalariaStatisticForm() {
             <p className="text-sm font-bold text-slate-800">{managerTitle}</p>
             <p className="text-sm font-bold text-slate-800">{managerName}</p>
             
-            <motion.div 
-              drag 
+            <motion.div
+              drag
               dragMomentum={false}
               className="cursor-move z-50 hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 mt-2"
-              title="اسحب التوقيع لتحريكه"
-            >
-              <img 
-                src={signatureUrl} 
-                alt="توقيع المدير" 
-                className={`h-24 object-contain pointer-events-none ${isExporting ? '' : 'mix-blend-multiply opacity-80'}`} 
-                crossOrigin="anonymous"
-              />
+              title="اسحب التوقيع لتحريكه">
+              
+              <img
+                src={signatureUrl}
+                alt="توقيع المدير"
+                className={`h-24 object-contain pointer-events-none ${isExporting ? '' : 'mix-blend-multiply opacity-80'}`}
+                crossOrigin="anonymous" />
+              
             </motion.div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
