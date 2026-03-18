@@ -753,7 +753,7 @@ export default function InventoryHandoverForm() {
         {currentPage === 2 && (
           <div className="p-12">
             {/* Header */}
-            <div className="text-center mb-8 pb-5 border-b-2 border-slate-800">
+            <div className="text-center mb-8 pb-5 border-b-2 border-slate-800 pt-16">
               <p className="text-sm text-slate-600 font-semibold tracking-wide">المملكة العربية السعودية | وزارة الصحة | تجمع المدينة المنورة الصحي</p>
               <h1 className="text-2xl font-extrabold text-slate-900 mt-4">قائمة الأجهزة المجرودة</h1>
               {department && <p className="text-lg text-slate-700 font-bold mt-2">إدارة / مركز: <span className="text-blue-800">{department}</span></p>}
