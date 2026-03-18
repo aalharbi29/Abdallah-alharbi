@@ -159,7 +159,19 @@ export default function MalariaStatisticForm() {
               table.parentElement.classList.remove('overflow-x-auto');
               table.parentElement.style.overflow = 'visible';
             }
-            // Replace inputs with spans to fix text rendering issues in html2canvas
+            
+            const selectTriggers = el.querySelectorAll('button[role="combobox"]');
+            selectTriggers.forEach(trigger => {
+               const span = clonedDoc.createElement('span');
+               span.textContent = trigger.textContent;
+               span.className = trigger.className;
+               span.style.display = 'inline-block';
+               span.style.border = 'none';
+               span.style.background = 'transparent';
+               span.style.color = 'black';
+               trigger.parentNode.replaceChild(span, trigger);
+            });
+
             const inputs = el.querySelectorAll('input');
             inputs.forEach(input => {
               if (input.type !== 'range' && input.type !== 'file') {
@@ -168,8 +180,9 @@ export default function MalariaStatisticForm() {
                 span.className = input.className + ' cloned-input';
                 span.style.display = 'inline-block';
                 span.style.width = '100%';
-                span.style.lineHeight = 'normal';
-                span.style.padding = '2px 0';
+                span.style.minHeight = '24px';
+                span.style.lineHeight = '24px';
+                span.style.paddingBottom = '4px';
                 input.parentNode.replaceChild(span, input);
               }
             });
@@ -245,7 +258,19 @@ export default function MalariaStatisticForm() {
               table.parentElement.classList.remove('overflow-x-auto');
               table.parentElement.style.overflow = 'visible';
             }
-            // Replace inputs with spans to fix text rendering issues in html2canvas
+            
+            const selectTriggers = el.querySelectorAll('button[role="combobox"]');
+            selectTriggers.forEach(trigger => {
+               const span = clonedDoc.createElement('span');
+               span.textContent = trigger.textContent;
+               span.className = trigger.className;
+               span.style.display = 'inline-block';
+               span.style.border = 'none';
+               span.style.background = 'transparent';
+               span.style.color = 'black';
+               trigger.parentNode.replaceChild(span, trigger);
+            });
+
             const inputs = el.querySelectorAll('input');
             inputs.forEach(input => {
               if (input.type !== 'range' && input.type !== 'file') {
@@ -254,8 +279,9 @@ export default function MalariaStatisticForm() {
                 span.className = input.className + ' cloned-input';
                 span.style.display = 'inline-block';
                 span.style.width = '100%';
-                span.style.lineHeight = 'normal';
-                span.style.padding = '2px 0';
+                span.style.minHeight = '24px';
+                span.style.lineHeight = '24px';
+                span.style.paddingBottom = '4px';
                 input.parentNode.replaceChild(span, input);
               }
             });
@@ -419,10 +445,12 @@ export default function MalariaStatisticForm() {
           margin: 0 !important;
           font-weight: 600 !important;
           color: black !important;
+          line-height: 1.5 !important;
+          padding-bottom: 4px !important;
         }
         .printing-mode table input, .printing-mode table .cloned-input {
           height: auto !important;
-          min-height: 20px !important;
+          min-height: 24px !important;
           text-align: center !important;
           font-size: 8pt !important;
         }

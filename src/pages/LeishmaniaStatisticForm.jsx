@@ -149,6 +149,16 @@ export default function LeishmaniaStatisticForm() {
       await new Promise(resolve => setTimeout(resolve, 100));
       
       const element = printRef.current;
+      const originalScrollY = window.scrollY;
+      const originalScrollX = window.scrollX;
+
+      const originalWidth = element.style.width;
+      const originalMaxWidth = element.style.maxWidth;
+
+      element.style.width = `${Math.max(1500, element.scrollWidth)}px`;
+      element.style.maxWidth = 'none';
+
+      window.scrollTo(0, 0);
       
       const canvas = await html2canvas(element, {
         scale: 2,
@@ -160,12 +170,13 @@ export default function LeishmaniaStatisticForm() {
           const style = clonedDoc.createElement('style');
           style.innerHTML = `
             .print-container { 
-              width: 100% !important; 
-              max-width: 100% !important; 
-              padding: 0 !important; 
+              width: 1500px !important; 
+              max-width: none !important; 
+              padding: 20px !important; 
               margin: 0 !important; 
               box-shadow: none !important; 
               border: none !important;
+              background: white !important;
             }
             .print-container input, .cloned-input { 
               border: none !important; 
@@ -175,13 +186,16 @@ export default function LeishmaniaStatisticForm() {
               font-size: 10pt !important;
               font-weight: 600 !important;
               color: black !important;
+              line-height: 1.5 !important;
+              padding-bottom: 4px !important;
             }
             .print-container table { border-collapse: collapse !important; width: 100% !important; }
             .print-container th, .print-container td { 
               border: 1px solid #475569 !important; 
-              padding: 2px !important; 
+              padding: 4px 2px !important; 
               text-align: center !important; 
               color: black !important;
+              height: auto !important;
             }
             .print-container th { 
               font-weight: 700 !important; 
@@ -211,17 +225,30 @@ export default function LeishmaniaStatisticForm() {
               table.parentElement.classList.remove('overflow-x-auto');
               table.parentElement.style.overflow = 'visible';
             }
-            // Replace inputs with spans to fix text rendering issues in html2canvas
+            
+            const selectTriggers = el.querySelectorAll('button[role="combobox"]');
+            selectTriggers.forEach(trigger => {
+               const span = clonedDoc.createElement('span');
+               span.textContent = trigger.textContent;
+               span.className = trigger.className;
+               span.style.display = 'inline-block';
+               span.style.border = 'none';
+               span.style.background = 'transparent';
+               span.style.color = 'black';
+               trigger.parentNode.replaceChild(span, trigger);
+            });
+
             const inputs = el.querySelectorAll('input');
             inputs.forEach(input => {
               if (input.type !== 'range' && input.type !== 'file') {
                 const span = clonedDoc.createElement('span');
                 span.textContent = input.value || '';
-                span.style.cssText = window.getComputedStyle(input).cssText;
+                span.className = input.className + ' cloned-input';
                 span.style.display = 'inline-block';
                 span.style.width = '100%';
-                span.style.textAlign = 'center';
-                span.className = input.className + ' cloned-input';
+                span.style.minHeight = '24px';
+                span.style.lineHeight = '24px';
+                span.style.paddingBottom = '4px';
                 input.parentNode.replaceChild(span, input);
               }
             });
@@ -230,6 +257,10 @@ export default function LeishmaniaStatisticForm() {
         ignoreElements: (el) => el.classList.contains('no-print') || el.tagName.toLowerCase() === 'svg'
       });
       
+      element.style.width = originalWidth;
+      element.style.maxWidth = originalMaxWidth;
+      window.scrollTo(originalScrollX, originalScrollY);
+
       const imgData = canvas.toDataURL('image/jpeg', 1.0);
       const pdf = new jsPDF({
         orientation: 'landscape',
@@ -267,6 +298,16 @@ export default function LeishmaniaStatisticForm() {
       await new Promise(resolve => setTimeout(resolve, 100));
       
       const element = printRef.current;
+      const originalScrollY = window.scrollY;
+      const originalScrollX = window.scrollX;
+
+      const originalWidth = element.style.width;
+      const originalMaxWidth = element.style.maxWidth;
+
+      element.style.width = `${Math.max(1500, element.scrollWidth)}px`;
+      element.style.maxWidth = 'none';
+
+      window.scrollTo(0, 0);
       
       const canvas = await html2canvas(element, {
         scale: 2,
@@ -278,12 +319,13 @@ export default function LeishmaniaStatisticForm() {
           const style = clonedDoc.createElement('style');
           style.innerHTML = `
             .print-container { 
-              width: 100% !important; 
-              max-width: 100% !important; 
-              padding: 0 !important; 
+              width: 1500px !important; 
+              max-width: none !important; 
+              padding: 20px !important; 
               margin: 0 !important; 
               box-shadow: none !important; 
               border: none !important;
+              background: white !important;
             }
             .print-container input, .cloned-input { 
               border: none !important; 
@@ -293,13 +335,16 @@ export default function LeishmaniaStatisticForm() {
               font-size: 10pt !important;
               font-weight: 600 !important;
               color: black !important;
+              line-height: 1.5 !important;
+              padding-bottom: 4px !important;
             }
             .print-container table { border-collapse: collapse !important; width: 100% !important; }
             .print-container th, .print-container td { 
               border: 1px solid #475569 !important; 
-              padding: 2px !important; 
+              padding: 4px 2px !important; 
               text-align: center !important; 
               color: black !important;
+              height: auto !important;
             }
             .print-container th { 
               font-weight: 700 !important; 
@@ -329,17 +374,30 @@ export default function LeishmaniaStatisticForm() {
               table.parentElement.classList.remove('overflow-x-auto');
               table.parentElement.style.overflow = 'visible';
             }
-            // Replace inputs with spans to fix text rendering issues in html2canvas
+            
+            const selectTriggers = el.querySelectorAll('button[role="combobox"]');
+            selectTriggers.forEach(trigger => {
+               const span = clonedDoc.createElement('span');
+               span.textContent = trigger.textContent;
+               span.className = trigger.className;
+               span.style.display = 'inline-block';
+               span.style.border = 'none';
+               span.style.background = 'transparent';
+               span.style.color = 'black';
+               trigger.parentNode.replaceChild(span, trigger);
+            });
+
             const inputs = el.querySelectorAll('input');
             inputs.forEach(input => {
               if (input.type !== 'range' && input.type !== 'file') {
                 const span = clonedDoc.createElement('span');
                 span.textContent = input.value || '';
-                span.style.cssText = window.getComputedStyle(input).cssText;
+                span.className = input.className + ' cloned-input';
                 span.style.display = 'inline-block';
                 span.style.width = '100%';
-                span.style.textAlign = 'center';
-                span.className = input.className + ' cloned-input';
+                span.style.minHeight = '24px';
+                span.style.lineHeight = '24px';
+                span.style.paddingBottom = '4px';
                 input.parentNode.replaceChild(span, input);
               }
             });
@@ -348,6 +406,10 @@ export default function LeishmaniaStatisticForm() {
         ignoreElements: (el) => el.classList.contains('no-print') || el.tagName.toLowerCase() === 'svg'
       });
       
+      element.style.width = originalWidth;
+      element.style.maxWidth = originalMaxWidth;
+      window.scrollTo(originalScrollX, originalScrollY);
+
       const imgData = canvas.toDataURL('image/jpeg', 1.0);
       const pdf = new jsPDF({
         orientation: 'landscape',
