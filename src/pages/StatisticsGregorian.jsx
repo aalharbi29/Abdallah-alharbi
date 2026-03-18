@@ -60,6 +60,10 @@ export default function StatisticsGregorian() {
                   <Activity className="w-4 h-4 ml-2" />
                   إحصائية الملاريا
                 </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/LeishmaniaStatisticForm")}>
+                  <Activity className="w-4 h-4 ml-2" />
+                  إحصائية اللشمانيا
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <Select value={String(year)} onValueChange={(v) => setYear(Number(v))}>
