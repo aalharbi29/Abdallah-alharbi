@@ -519,7 +519,7 @@ export default function MalariaStatisticForm() {
           </motion.div>
 
           {/* Footer & Draggable Signature */}
-          <div className="mt-16 text-center header-text space-y-4 relative flex flex-col items-center min-h-[150px]">
+          <div className="mt-32 text-center header-text space-y-4 relative flex flex-col items-center min-h-[150px]">
             <motion.div style={{ x: managerX, y: managerY }} drag dragMomentum={false} className="cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50 flex flex-col items-center gap-2">
               <input 
                 value={managerTitle} 
@@ -549,7 +549,7 @@ export default function MalariaStatisticForm() {
             </motion.div>
           </div>
           
-          <OfficialFooter className="mt-24" />
+          <OfficialFooter className="mt-48" />
         </div>
       </div>
     </div>);
