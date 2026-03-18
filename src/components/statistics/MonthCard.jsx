@@ -9,7 +9,9 @@ import { Statistic } from '@/entities/Statistic';
 export default function MonthCard({
   month,
   statistics,
+  items,
   onViewDetails,
+  onClick,
   periodType,
   onRefresh
 }) {
@@ -20,10 +22,16 @@ export default function MonthCard({
     return null;
   }
 
-  const hasFiles = statistics && Array.isArray(statistics) && statistics.length > 0;
-  const fileCount = hasFiles ? statistics.length : 0;
-  const firstFile = hasFiles ? statistics[0] : null;
+  const dataItems = items || statistics || [];
+  const hasFiles = dataItems && Array.isArray(dataItems) && dataItems.length > 0;
+  const fileCount = hasFiles ? dataItems.length : 0;
+  const firstFile = hasFiles ? dataItems[0] : null;
   const monthLabel = month.label || month.name || 'شهر';
+
+  const handleViewDetails = () => {
+    if (onClick) onClick(month);
+    else if (onViewDetails) onViewDetails(month);
+  };
 
   return (
     <>
@@ -31,7 +39,7 @@ export default function MonthCard({
         className={`cursor-pointer transition-all duration-300 hover:shadow-xl ${
           hasFiles ? 'bg-gradient-to-br from-blue-50 to-indigo-50' : ''
         }`}
-        onClick={() => onViewDetails(month)}
+        onClick={handleViewDetails}
         title={hasFiles && firstFile ? `${fileCount} ملف - انقر للعرض` : monthLabel}
       >
         <CardHeader className="flex flex-row items-center justify-between space-x-4 p-4 pb-2">
@@ -67,7 +75,7 @@ export default function MonthCard({
         <CardContent className="p-4 pt-2">
           <div className="space-y-2">
             {hasFiles ? (
-                statistics.slice(0, 3).map((stat) => (
+                dataItems.slice(0, 3).map((stat) => (
                   <div
                     key={stat.id}
                     className="flex items-center gap-2 text-sm p-2 bg-white rounded-lg hover:bg-blue-50 transition-colors relative group/stat"
@@ -94,7 +102,7 @@ export default function MonthCard({
 
             {fileCount > 3 && (
               <p className="text-center text-sm text-gray-500 pt-2 cursor-pointer hover:text-blue-600"
-                 onClick={(e) => { e.stopPropagation(); onViewDetails(month); }}>
+                 onClick={(e) => { e.stopPropagation(); handleViewDetails(); }}>
                 +{fileCount - 3} المزيد من المستندات...
               </p>
             )}
