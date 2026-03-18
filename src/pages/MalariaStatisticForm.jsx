@@ -107,10 +107,10 @@ export default function MalariaStatisticForm() {
             el.style.width = '1500px';
             el.style.minWidth = '1500px';
             el.style.maxWidth = 'none';
-            const tableContainer = el.querySelector('.overflow-x-auto');
-            if (tableContainer) {
-              tableContainer.classList.remove('overflow-x-auto');
-              tableContainer.style.overflow = 'visible';
+            const table = el.querySelector('table');
+            if (table && table.parentElement) {
+              table.parentElement.classList.remove('overflow-x-auto');
+              table.parentElement.style.overflow = 'visible';
             }
           }
         },
@@ -167,10 +167,10 @@ export default function MalariaStatisticForm() {
             el.style.width = '1500px';
             el.style.minWidth = '1500px';
             el.style.maxWidth = 'none';
-            const tableContainer = el.querySelector('.overflow-x-auto');
-            if (tableContainer) {
-              tableContainer.classList.remove('overflow-x-auto');
-              tableContainer.style.overflow = 'visible';
+            const table = el.querySelector('table');
+            if (table && table.parentElement) {
+              table.parentElement.classList.remove('overflow-x-auto');
+              table.parentElement.style.overflow = 'visible';
             }
           }
         },
