@@ -372,42 +372,42 @@ export default function LeishmaniaStatisticForm() {
             <table className="w-full min-w-max border-collapse border border-slate-400 text-center">
               <thead>
                 <tr className="bg-slate-100">
-                  <th rowSpan={4} className="border border-slate-400 p-2 text-xs font-bold text-slate-800 w-24">اسم الإدارة</th>
-                  <th rowSpan={4} className="border border-slate-400 p-2 text-xs font-bold text-slate-800 w-32">اسم المريض</th>
-                  <th rowSpan={4} className="border border-slate-400 p-2 text-xs font-bold text-slate-800 w-20">الجنسية</th>
-                  <th colSpan={24} className="border border-slate-400 p-2 text-xs font-bold text-slate-800">فئات الاعمار</th>
-                  <th colSpan={2} className="border border-slate-400 p-2 text-xs font-bold text-slate-800">الاقامة</th>
-                  <th colSpan={2} className="border border-slate-400 p-2 text-xs font-bold text-slate-800">التشخيص</th>
-                  <th rowSpan={4} className="border border-slate-400 p-2 text-xs font-bold text-slate-800 w-16">القرح</th>
-                  <th rowSpan={4} className="border border-slate-400 p-2 text-xs font-bold text-slate-800 w-16">نوع العلاج</th>
-                  <th rowSpan={4} className="border border-slate-400 p-2 text-xs font-bold text-slate-800 w-16">عمر الاصابة</th>
-                  <th rowSpan={4} className="border border-slate-400 p-2 text-xs font-bold text-slate-800 w-20">مكان احتمال العدوي</th>
+                  <th rowSpan={4} className="border border-slate-400 p-1 text-[11px] font-bold text-slate-800 w-16">اسم الإدارة</th>
+                  <th rowSpan={4} className="border border-slate-400 p-1 text-[11px] font-bold text-slate-800 w-24">اسم المريض</th>
+                  <th rowSpan={4} className="border border-slate-400 p-1 text-[11px] font-bold text-slate-800 w-12">الجنسية</th>
+                  <th colSpan={24} className="border border-slate-400 p-1 text-[11px] font-bold text-slate-800">فئات الاعمار</th>
+                  <th colSpan={2} className="border border-slate-400 p-1 text-[11px] font-bold text-slate-800">الاقامة</th>
+                  <th colSpan={2} className="border border-slate-400 p-1 text-[11px] font-bold text-slate-800">التشخيص</th>
+                  <th rowSpan={4} className="border border-slate-400 p-1 text-[11px] font-bold text-slate-800 w-10">القرح</th>
+                  <th rowSpan={4} className="border border-slate-400 p-1 text-[11px] font-bold text-slate-800 w-14">نوع العلاج</th>
+                  <th rowSpan={4} className="border border-slate-400 p-1 text-[11px] font-bold text-slate-800 w-12">عمر الاصابة</th>
+                  <th rowSpan={4} className="border border-slate-400 p-1 text-[11px] font-bold text-slate-800 w-16">مكان احتمال العدوي</th>
                 </tr>
                 <tr className="bg-slate-50">
-                  <th colSpan={4} className="border border-slate-400 p-1 text-[10px] font-semibold text-slate-700">اقل من عام</th>
-                  <th colSpan={4} className="border border-slate-400 p-1 text-[10px] font-semibold text-slate-700">من 1 الي 4</th>
-                  <th colSpan={4} className="border border-slate-400 p-1 text-[10px] font-semibold text-slate-700">من 5 الي 9</th>
-                  <th colSpan={4} className="border border-slate-400 p-1 text-[10px] font-semibold text-slate-700">من 10 الي 14</th>
-                  <th colSpan={4} className="border border-slate-400 p-1 text-[10px] font-semibold text-slate-700">من 15 الي 44</th>
-                  <th colSpan={4} className="border border-slate-400 p-1 text-[10px] font-semibold text-slate-700">اكثر من 45</th>
-                  <th rowSpan={3} className="border border-slate-400 p-1 text-[10px] font-semibold text-slate-700 w-12">مقيم</th>
-                  <th rowSpan={3} className="border border-slate-400 p-1 text-[10px] font-semibold text-slate-700 w-12">غ/مقيم</th>
-                  <th rowSpan={3} className="border border-slate-400 p-1 text-[10px] font-semibold text-slate-700 w-12">سرير</th>
-                  <th rowSpan={3} className="border border-slate-400 p-1 text-[10px] font-semibold text-slate-700 w-12">مجهري</th>
+                  <th colSpan={4} className="border border-slate-400 p-0.5 text-[9px] font-semibold text-slate-700">اقل من عام</th>
+                  <th colSpan={4} className="border border-slate-400 p-0.5 text-[9px] font-semibold text-slate-700">من 1 الي 4</th>
+                  <th colSpan={4} className="border border-slate-400 p-0.5 text-[9px] font-semibold text-slate-700">من 5 الي 9</th>
+                  <th colSpan={4} className="border border-slate-400 p-0.5 text-[9px] font-semibold text-slate-700">من 10 الي 14</th>
+                  <th colSpan={4} className="border border-slate-400 p-0.5 text-[9px] font-semibold text-slate-700">من 15 الي 44</th>
+                  <th colSpan={4} className="border border-slate-400 p-0.5 text-[9px] font-semibold text-slate-700">اكثر من 45</th>
+                  <th rowSpan={3} className="border border-slate-400 p-0.5 text-[9px] font-semibold text-slate-700 w-8">مقيم</th>
+                  <th rowSpan={3} className="border border-slate-400 p-0.5 text-[9px] font-semibold text-slate-700 w-8">غ/مقيم</th>
+                  <th rowSpan={3} className="border border-slate-400 p-0.5 text-[9px] font-semibold text-slate-700 w-8">سرير</th>
+                  <th rowSpan={3} className="border border-slate-400 p-0.5 text-[9px] font-semibold text-slate-700 w-8">مجهري</th>
                 </tr>
                 <tr className="bg-slate-50">
                   {Array.from({ length: 6 }).map((_, i) => (
                     <React.Fragment key={i}>
-                      <th colSpan={2} className="border border-slate-400 p-1 text-[10px] font-semibold text-slate-700">س</th>
-                      <th colSpan={2} className="border border-slate-400 p-1 text-[10px] font-semibold text-slate-700">غ/س</th>
+                      <th colSpan={2} className="border border-slate-400 p-0 text-[9px] font-semibold text-slate-700">س</th>
+                      <th colSpan={2} className="border border-slate-400 p-0 text-[9px] font-semibold text-slate-700">غ/س</th>
                     </React.Fragment>
                   ))}
                 </tr>
                 <tr className="bg-slate-50">
                   {Array.from({ length: 12 }).map((_, i) => (
                     <React.Fragment key={i}>
-                      <th className="border border-slate-400 p-1 text-[10px] font-semibold text-slate-700 w-8">ذكر</th>
-                      <th className="border border-slate-400 p-1 text-[10px] font-semibold text-slate-700 w-8">انثي</th>
+                      <th className="border border-slate-400 p-0 text-[8px] font-semibold text-slate-700 w-5">ذكر</th>
+                      <th className="border border-slate-400 p-0 text-[8px] font-semibold text-slate-700 w-5">انثي</th>
                     </React.Fragment>
                   ))}
                 </tr>
