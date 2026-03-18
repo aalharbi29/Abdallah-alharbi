@@ -196,6 +196,7 @@ export default function MalariaStatisticForm() {
 
       element.style.width = originalWidth;
       element.style.maxWidth = originalMaxWidth;
+      if (tableContainer) tableContainer.classList.add('overflow-x-auto');
       window.scrollTo(originalScrollX, originalScrollY);
 
       const imgData = canvas.toDataURL('image/jpeg', 1.0);
@@ -298,6 +299,7 @@ export default function MalariaStatisticForm() {
 
       element.style.width = originalWidth;
       element.style.maxWidth = originalMaxWidth;
+      if (tableContainer) tableContainer.classList.add('overflow-x-auto');
       window.scrollTo(originalScrollX, originalScrollY);
 
       const imgData = canvas.toDataURL('image/jpeg', 1.0);
@@ -452,11 +454,12 @@ export default function MalariaStatisticForm() {
           font-weight: 600 !important;
           color: black !important;
           line-height: 1.5 !important;
-          padding-bottom: 4px !important;
+          padding-bottom: 10px !important;
+          padding-top: 10px !important;
         }
         .printing-mode table input, .printing-mode table .cloned-input {
           height: auto !important;
-          min-height: 24px !important;
+          min-height: 30px !important;
           text-align: center !important;
           font-size: 8pt !important;
         }

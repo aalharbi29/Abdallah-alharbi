@@ -155,7 +155,10 @@ export default function LeishmaniaStatisticForm() {
       const originalWidth = element.style.width;
       const originalMaxWidth = element.style.maxWidth;
 
-      element.style.width = `${Math.max(1500, element.scrollWidth)}px`;
+      const tableContainer = element.querySelector('.overflow-x-auto');
+      if (tableContainer) tableContainer.classList.remove('overflow-x-auto');
+
+      element.style.width = '1500px';
       element.style.maxWidth = 'none';
 
       window.scrollTo(0, 0);
@@ -187,7 +190,8 @@ export default function LeishmaniaStatisticForm() {
               font-weight: 600 !important;
               color: black !important;
               line-height: 1.5 !important;
-              padding-bottom: 4px !important;
+              padding-bottom: 10px !important;
+              padding-top: 10px !important;
             }
             .print-container table { border-collapse: collapse !important; width: 100% !important; }
             .print-container th, .print-container td { 
@@ -259,6 +263,7 @@ export default function LeishmaniaStatisticForm() {
       
       element.style.width = originalWidth;
       element.style.maxWidth = originalMaxWidth;
+      if (tableContainer) tableContainer.classList.add('overflow-x-auto');
       window.scrollTo(originalScrollX, originalScrollY);
 
       const imgData = canvas.toDataURL('image/jpeg', 1.0);
@@ -304,7 +309,10 @@ export default function LeishmaniaStatisticForm() {
       const originalWidth = element.style.width;
       const originalMaxWidth = element.style.maxWidth;
 
-      element.style.width = `${Math.max(1500, element.scrollWidth)}px`;
+      const tableContainer = element.querySelector('.overflow-x-auto');
+      if (tableContainer) tableContainer.classList.remove('overflow-x-auto');
+
+      element.style.width = '1500px';
       element.style.maxWidth = 'none';
 
       window.scrollTo(0, 0);
@@ -336,7 +344,8 @@ export default function LeishmaniaStatisticForm() {
               font-weight: 600 !important;
               color: black !important;
               line-height: 1.5 !important;
-              padding-bottom: 4px !important;
+              padding-bottom: 10px !important;
+              padding-top: 10px !important;
             }
             .print-container table { border-collapse: collapse !important; width: 100% !important; }
             .print-container th, .print-container td { 
@@ -408,6 +417,7 @@ export default function LeishmaniaStatisticForm() {
       
       element.style.width = originalWidth;
       element.style.maxWidth = originalMaxWidth;
+      if (tableContainer) tableContainer.classList.add('overflow-x-auto');
       window.scrollTo(originalScrollX, originalScrollY);
 
       const imgData = canvas.toDataURL('image/jpeg', 1.0);
