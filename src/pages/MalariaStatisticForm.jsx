@@ -514,6 +514,61 @@ export default function MalariaStatisticForm() {
           .header-text { font-size: 12pt; font-weight: bold; color: black; }
           .title-text { font-size: 18pt; font-weight: bold; text-decoration: underline; color: black; }
         }
+
+        /* html2canvas printing mode styles */
+        .printing-mode {
+          width: 1500px !important;
+          max-width: none !important;
+          background: white !important;
+          padding: 20px !important;
+          box-shadow: none !important;
+          border: none !important;
+        }
+        .printing-mode .no-print { display: none !important; }
+        .printing-mode .print-only { display: block !important; }
+        .printing-mode input, .printing-mode .cloned-input { 
+          border: none !important; 
+          background: transparent !important; 
+          padding: 0 !important;
+          margin: 0 !important;
+          font-weight: 600 !important;
+          color: black !important;
+        }
+        .printing-mode table input, .printing-mode table .cloned-input {
+          height: 16px !important;
+          min-height: 16px !important;
+          text-align: center !important;
+          font-size: 8pt !important;
+        }
+        .printing-mode .print-header-input {
+          font-size: 12pt !important;
+          text-align: right !important;
+        }
+        .printing-mode .print-manager-input {
+          font-size: 14pt !important;
+          text-align: center !important;
+        }
+        .printing-mode input::placeholder { color: transparent !important; }
+        .printing-mode table { border-collapse: collapse !important; width: 100% !important; }
+        .printing-mode th, .printing-mode td { 
+          border: 1px solid #475569 !important; 
+          padding: 1px !important; 
+          text-align: center !important; 
+          color: black !important;
+          height: 18px !important;
+        }
+        .printing-mode th { 
+          font-weight: 700 !important; 
+          background-color: #f1f5f9 !important; 
+          font-size: 8pt !important;
+        }
+        .printing-mode td {
+          font-size: 8pt !important;
+        }
+        .printing-mode .header-text { font-size: 12pt !important; font-weight: bold !important; color: black !important; }
+        .printing-mode .title-text { font-size: 18pt !important; font-weight: bold !important; text-decoration: underline !important; color: black !important; }
+        .printing-mode button[role="combobox"] { border-color: transparent !important; }
+        .printing-mode button[role="combobox"] svg { display: none !important; }
       `}</style>
 
       <div className="max-w-[1400px] mx-auto">
