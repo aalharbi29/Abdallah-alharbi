@@ -5,6 +5,8 @@ import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import useLogoSettings from "@/components/settings/useLogoSettings";
 import DraggableLogo from "@/components/common/DraggableLogo";
+import OfficialFooter from "@/components/common/OfficialFooter";
+import { Settings } from "lucide-react";
 
 const EQUIPMENT_CATEGORIES = [
   {
@@ -181,8 +183,8 @@ export default function InventoryHandoverForm() {
   const { logoSettings } = useLogoSettings();
 
   // Page 1
-  const [formTitle, setFormTitle] = useState("محضر جرد ونقل عهدة");
-  const [customText, setCustomText] = useState("");
+  const [formTitle, setFormTitle] = useState(localStorage.getItem('inventory_formTitle') || "محضر جرد ونقل عهدة");
+  const [customText, setCustomText] = useState(localStorage.getItem('inventory_customText') || "");
   const [meetingDay, setMeetingDay] = useState("");
   const [meetingHijriDate, setMeetingHijriDate] = useState("");
   const [department, setDepartment] = useState("");
@@ -190,6 +192,15 @@ export default function InventoryHandoverForm() {
   const [toPerson, setToPerson] = useState("");
   const [fromEmpNumber, setFromEmpNumber] = useState("");
   const [toEmpNumber, setToEmpNumber] = useState("");
+  
+  const [headerText1, setHeaderText1] = useState(localStorage.getItem('inventory_header1') || "المملكة العربية السعودية | وزارة الصحة | تجمع المدينة المنورة الصحي");
+
+  const handleSaveSettings = () => {
+    localStorage.setItem('inventory_formTitle', formTitle);
+    localStorage.setItem('inventory_customText', customText);
+    localStorage.setItem('inventory_header1', headerText1);
+    toast.success("تم حفظ الإعدادات المخصصة كنمط افتراضي");
+  };
 
   const [attendees, setAttendees] = useState([
     { name: "", employeeId: "", workplace: "", jobRole: "", role: "عضو لجنة" }
@@ -501,6 +512,9 @@ export default function InventoryHandoverForm() {
             </div>
           </div>
           <div className="flex gap-2">
+            <button onClick={handleSaveSettings} className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-sm font-semibold hover:bg-slate-50 transition-colors shadow-sm">
+              <Settings className="w-4 h-4" /> حفظ النمط
+            </button>
             <button onClick={handlePrint} className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-sm font-semibold hover:bg-slate-50 transition-colors shadow-sm">
               <Printer className="w-4 h-4" /> طباعة النموذج
             </button>
@@ -558,7 +572,11 @@ export default function InventoryHandoverForm() {
           <div className="p-12">
             {/* Header */}
             <div className="text-center mb-10 pb-6 border-b-2 border-slate-800 pt-16">
-              <p className="text-sm text-slate-600 font-semibold tracking-wide mb-1">المملكة العربية السعودية | وزارة الصحة | تجمع المدينة المنورة الصحي</p>
+              <input 
+                value={headerText1} 
+                onChange={(e) => setHeaderText1(e.target.value)} 
+                className="w-full text-center bg-transparent border-none focus:ring-0 p-0 m-0 text-sm text-slate-600 font-semibold tracking-wide mb-1" 
+              />
               <h1 className="text-3xl font-extrabold text-slate-900 mt-6 mb-2">{formTitle}</h1>
             </div>
 
@@ -754,7 +772,11 @@ export default function InventoryHandoverForm() {
           <div className="p-12">
             {/* Header */}
             <div className="text-center mb-8 pb-5 border-b-2 border-slate-800 pt-16">
-              <p className="text-sm text-slate-600 font-semibold tracking-wide">المملكة العربية السعودية | وزارة الصحة | تجمع المدينة المنورة الصحي</p>
+              <input 
+                value={headerText1} 
+                onChange={(e) => setHeaderText1(e.target.value)} 
+                className="w-full text-center bg-transparent border-none focus:ring-0 p-0 m-0 text-sm text-slate-600 font-semibold tracking-wide" 
+              />
               <h1 className="text-2xl font-extrabold text-slate-900 mt-4">قائمة الأجهزة المجرودة</h1>
               {department && <p className="text-lg text-slate-700 font-bold mt-2">إدارة / مركز: <span className="text-blue-800">{department}</span></p>}
             </div>
@@ -844,6 +866,8 @@ export default function InventoryHandoverForm() {
                 ))}
               </div>
             </div>
+            
+            <OfficialFooter />
           </div>
         )}
       </div>
