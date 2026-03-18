@@ -9,6 +9,7 @@ import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
+import DraggableLogo from "@/components/common/DraggableLogo";
 
 const initialCenters = [
 "الحسو",
@@ -326,6 +327,7 @@ export default function MalariaStatisticForm() {
         </div>
 
         <div ref={printRef} className="bg-white p-8 rounded-xl shadow-sm print-container border border-gray-200 relative">
+          <DraggableLogo className="top-8 right-8" />
           {/* Header */}
           <div className="flex justify-between items-start mb-8 relative z-10">
             <motion.div drag dragMomentum={false} className="text-right space-y-1 header-text cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50">
