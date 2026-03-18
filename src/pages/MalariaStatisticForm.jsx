@@ -461,8 +461,10 @@ export default function MalariaStatisticForm() {
 
           {/* Footer & Draggable Signature */}
           <div className="mt-16 text-center header-text space-y-4 relative flex flex-col items-center min-h-[150px]">
-            <p className="text-sm font-bold text-slate-800">{managerTitle}</p>
-            <p className="text-sm font-bold text-slate-800">{managerName}</p>
+            <motion.div drag dragMomentum={false} className="cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50">
+              <p className="text-sm font-bold text-slate-800">{managerTitle}</p>
+              <p className="text-sm font-bold text-slate-800">{managerName}</p>
+            </motion.div>
             
             <motion.div
               drag
