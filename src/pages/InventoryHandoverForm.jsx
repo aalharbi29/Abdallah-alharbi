@@ -178,6 +178,7 @@ function EmployeeSelect({ value, onChange, onSelect, placeholder, className }) {
 export default function InventoryHandoverForm() {
   const printRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const { logoSettings } = useLogoSettings();
 
   // Page 1
   const [formTitle, setFormTitle] = useState("محضر جرد ونقل عهدة");
