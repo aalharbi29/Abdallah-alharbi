@@ -95,11 +95,20 @@ export default function MalariaStatisticForm() {
       
       const element = printRef.current;
       
+      // Fix for html2canvas cutting off content when scrolled
+      const originalScrollY = window.scrollY;
+      window.scrollTo(0, 0);
+      
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
+        scrollY: 0,
+        windowWidth: document.documentElement.offsetWidth,
+        windowHeight: document.documentElement.offsetHeight,
         ignoreElements: (el) => el.classList.contains('no-print')
       });
+      
+      window.scrollTo(0, originalScrollY);
       
       const imgData = canvas.toDataURL('image/jpeg', 1.0);
       const pdf = new jsPDF({
