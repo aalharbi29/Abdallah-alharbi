@@ -378,8 +378,8 @@ export default function MalariaStatisticForm() {
 
           {/* Footer & Draggable Signature */}
           <div className="mt-16 text-center header-text space-y-4 relative min-h-[150px]">
-            <p className="text-sm font-bold text-slate-800">مدير إدارة المراكز الصحية بالحناكية</p>
-            <p className="text-sm font-bold text-slate-800">أ / عبدالمجيد سعود الربيقي</p>
+            <p className="text-sm font-bold text-slate-800">{managerTitle}</p>
+            <p className="text-sm font-bold text-slate-800">{managerName}</p>
             
             <motion.div 
               drag 
@@ -388,9 +388,10 @@ export default function MalariaStatisticForm() {
               title="اسحب التوقيع لتحريكه"
             >
               <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/f/f8/Stylized_signature_sample.svg" 
+                src={signatureUrl} 
                 alt="توقيع المدير" 
                 className="h-20 opacity-80 mix-blend-multiply pointer-events-none" 
+                crossOrigin="anonymous"
               />
             </motion.div>
           </div>
