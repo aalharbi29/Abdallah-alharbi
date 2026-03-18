@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import FillOccupationalHealthForm from './pages/FillOccupationalHealthForm';
 import MalariaStatisticForm from './pages/MalariaStatisticForm';
+import LeishmaniaStatisticForm from './pages/LeishmaniaStatisticForm';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
