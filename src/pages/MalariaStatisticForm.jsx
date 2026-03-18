@@ -440,7 +440,7 @@ export default function MalariaStatisticForm() {
           </div>
         </div>
 
-        <div ref={printRef} className="bg-white p-8 rounded-xl shadow-sm print-container border border-gray-200 relative">
+        <div id="malaria-print-container" ref={printRef} className="bg-white p-8 rounded-xl shadow-sm print-container border border-gray-200 relative">
           <DraggableLogo className="top-8 right-8" storageKey="malaria" />
           {/* Header */}
           <div className="flex justify-between items-start mb-8 relative z-10">
