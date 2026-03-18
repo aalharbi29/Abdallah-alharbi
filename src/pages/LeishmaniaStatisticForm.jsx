@@ -368,8 +368,8 @@ export default function LeishmaniaStatisticForm() {
           </div>
 
           {/* Table */}
-          <div className={`${isExporting ? '' : 'overflow-x-auto'} print:overflow-visible relative z-10`}>
-            <table className="w-full min-w-[1500px] border-collapse border border-slate-400 text-center">
+          <div className={`${isExporting ? '' : 'overflow-x-auto'} print:overflow-visible relative z-10 pb-4`}>
+            <table className="w-full min-w-max border-collapse border border-slate-400 text-center">
               <thead>
                 <tr className="bg-slate-100">
                   <th rowSpan={4} className="border border-slate-400 p-2 text-xs font-bold text-slate-800 w-24">اسم الإدارة</th>
