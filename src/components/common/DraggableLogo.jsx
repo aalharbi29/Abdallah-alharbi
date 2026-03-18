@@ -5,6 +5,7 @@ import useLogoSettings from '../settings/useLogoSettings';
 export default function DraggableLogo({ defaultWidth = 300, className = "" }) {
   const { logoSettings, isLoaded } = useLogoSettings();
   const [width, setWidth] = useState(defaultWidth);
+  const [brightness, setBrightness] = useState(100);
   const isResizing = useRef(false);
 
   useEffect(() => {
