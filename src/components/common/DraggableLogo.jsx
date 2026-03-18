@@ -2,9 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, useMotionValue } from 'framer-motion';
 import useLogoSettings from '../settings/useLogoSettings';
 
-export default function DraggableLogo({ defaultWidth = 300, className = "" }) {
+export default function DraggableLogo({ defaultWidth = 300, className = "", storageKey = "default" }) {
   const { logoSettings, isLoaded } = useLogoSettings();
-  const savedSettings = JSON.parse(localStorage.getItem(`logo_settings_default`)) || {};
+  const savedSettings = JSON.parse(localStorage.getItem(`logo_settings_${storageKey}`)) || {};
   
   const [width, setWidth] = useState(savedSettings.width || defaultWidth);
   const [brightness, setBrightness] = useState(savedSettings.brightness || 100);
@@ -17,7 +17,7 @@ export default function DraggableLogo({ defaultWidth = 300, className = "" }) {
 
   useEffect(() => {
     const saveToLocal = () => {
-      localStorage.setItem(`logo_settings_default`, JSON.stringify({
+      localStorage.setItem(`logo_settings_${storageKey}`, JSON.stringify({
         width,
         brightness,
         opacity,

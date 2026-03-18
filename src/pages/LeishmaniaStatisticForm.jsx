@@ -381,7 +381,7 @@ export default function LeishmaniaStatisticForm() {
         </div>
 
         <div id="leishmania-print-container" ref={printRef} className="bg-white p-8 rounded-xl shadow-sm print-container border border-gray-200 relative">
-          <DraggableLogo className="top-8 right-8" />
+          <DraggableLogo className="top-8 right-8" storageKey="leishmania" />
           {/* Header */}
           <div className="flex justify-between items-start mb-8 relative z-10">
             <motion.div style={{ x: headerX, y: headerY }} drag dragMomentum={false} className="text-right space-y-1 header-text text-blue-400 font-semibold cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50">

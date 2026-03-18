@@ -565,7 +565,7 @@ export default function InventoryHandoverForm() {
 
       {/* Print Area */}
       <div ref={printRef} className="print-area max-w-5xl mx-auto bg-white shadow-xl min-h-[297mm] relative overflow-hidden">
-        <DraggableLogo className="top-8 right-8" />
+        <DraggableLogo className="top-8 right-8" storageKey="inventory" />
 
         {/* ===== PAGE 1 ===== */}
         {currentPage === 1 && (
