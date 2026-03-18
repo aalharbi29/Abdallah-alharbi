@@ -5,14 +5,14 @@ import { Printer, ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const initialCenters = [
-  "مركز صحي الحسو",
-  "مركز صحي الماوية",
-  "مركز صحي الهميج",
-  "مركز صحي بطحي",
-  "مركز صحي بلغه",
-  "مركز صحي صخيبره",
-  "مركز صحي طلال",
-  "مركز صحي هدبان"
+  "الحسو",
+  "الماوية",
+  "الهميج",
+  "بطحي",
+  "بلغه",
+  "صخيبره",
+  "طلال",
+  "هدبان"
 ];
 
 export default function MalariaStatisticForm() {
@@ -23,25 +23,25 @@ export default function MalariaStatisticForm() {
   const [data, setData] = useState(
     initialCenters.map(center => ({
       name: center,
-      totalPatients: "",
-      testedSamples: "",
-      percentage: "",
-      positives: "",
-      distBenign: "",
-      distMalignant: "",
-      distQuad: "",
-      distMixed: "",
-      casesInside: "",
-      casesOutside: "",
-      treatmentQuad: "",
-      treatmentOct: "",
-      treatmentFansidar: "",
-      treatmentOther: "",
-      ageUnder1: "",
-      age1to4: "",
-      age5to9: "",
-      age10to14: "",
-      ageOver14: ""
+      totalPatients: "0",
+      testedSamples: "0",
+      percentage: "0%",
+      positives: "0",
+      distBenign: "0",
+      distMalignant: "0",
+      distQuad: "0",
+      distMixed: "0",
+      casesInside: "0",
+      casesOutside: "0",
+      treatmentQuad: "0",
+      treatmentOct: "0",
+      treatmentFansidar: "0",
+      treatmentOther: "0",
+      ageUnder1: "0",
+      age1to4: "0",
+      age5to9: "0",
+      age10to14: "0",
+      ageOver14: "0"
     }))
   );
 
@@ -60,7 +60,7 @@ export default function MalariaStatisticForm() {
       if (patients > 0 && samples > 0) {
         newData[index].percentage = ((samples / patients) * 100).toFixed(1) + '%';
       } else {
-        newData[index].percentage = "";
+        newData[index].percentage = "0%";
       }
     }
     
@@ -75,10 +75,10 @@ export default function MalariaStatisticForm() {
       if (totalPatients > 0 && totalSamples > 0) {
         return ((totalSamples / totalPatients) * 100).toFixed(1) + '%';
       }
-      return "";
+      return "0%";
     }
     const sum = data.reduce((sum, row) => sum + (parseFloat(row[field]) || 0), 0);
-    return sum > 0 ? sum : "";
+    return sum;
   };
 
   return (
