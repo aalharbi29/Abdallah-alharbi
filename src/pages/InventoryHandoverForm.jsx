@@ -3,6 +3,8 @@ import { Printer, Download, Plus, Trash2, Package, Search } from "lucide-react";
 import HijriDatePicker from "@/components/ui/HijriDatePicker";
 import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
+import useLogoSettings from "@/components/settings/useLogoSettings";
+import DraggableLogo from "@/components/common/DraggableLogo";
 
 const EQUIPMENT_CATEGORIES = [
   {

@@ -81,6 +81,7 @@ import FillExcellentEmployeeCertificate from './pages/FillExcellentEmployeeCerti
 import FillForm from './pages/FillForm';
 import FillMedicalWasteSuppliesForm from './pages/FillMedicalWasteSuppliesForm';
 import FillNonMedicalEquipmentForm from './pages/FillNonMedicalEquipmentForm';
+import FillOccupationalHealthForm from './pages/FillOccupationalHealthForm';
 import FillOfficialAssignmentForm from './pages/FillOfficialAssignmentForm';
 import FillPerformanceCharter from './pages/FillPerformanceCharter';
 import FillReleaseForm from './pages/FillReleaseForm';
@@ -97,6 +98,8 @@ import HumanResources from './pages/HumanResources';
 import InteractiveForms from './pages/InteractiveForms';
 import InventoryHandoverForm from './pages/InventoryHandoverForm';
 import Leaves from './pages/Leaves';
+import LeishmaniaStatisticForm from './pages/LeishmaniaStatisticForm';
+import MalariaStatisticForm from './pages/MalariaStatisticForm';
 import MedicalEquipmentReport from './pages/MedicalEquipmentReport';
 import NoteSorter from './pages/NoteSorter';
 import PDFEditor from './pages/PDFEditor';
@@ -150,6 +153,7 @@ export const PAGES = {
     "FillForm": FillForm,
     "FillMedicalWasteSuppliesForm": FillMedicalWasteSuppliesForm,
     "FillNonMedicalEquipmentForm": FillNonMedicalEquipmentForm,
+    "FillOccupationalHealthForm": FillOccupationalHealthForm,
     "FillOfficialAssignmentForm": FillOfficialAssignmentForm,
     "FillPerformanceCharter": FillPerformanceCharter,
     "FillReleaseForm": FillReleaseForm,
@@ -166,6 +170,8 @@ export const PAGES = {
     "InteractiveForms": InteractiveForms,
     "InventoryHandoverForm": InventoryHandoverForm,
     "Leaves": Leaves,
+    "LeishmaniaStatisticForm": LeishmaniaStatisticForm,
+    "MalariaStatisticForm": MalariaStatisticForm,
     "MedicalEquipmentReport": MedicalEquipmentReport,
     "NoteSorter": NoteSorter,
     "PDFEditor": PDFEditor,
