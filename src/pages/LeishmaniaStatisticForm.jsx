@@ -464,20 +464,16 @@ export default function LeishmaniaStatisticForm() {
                   <th rowSpan={3} className="border border-slate-400 p-0.5 text-[9px] font-semibold text-slate-700 w-8">مجهري</th>
                 </tr>
                 <tr className="bg-slate-50">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <React.Fragment key={i}>
-                      <th colSpan={2} className="border border-slate-400 p-0 text-[9px] font-semibold text-slate-700">س</th>
-                      <th colSpan={2} className="border border-slate-400 p-0 text-[9px] font-semibold text-slate-700">غ/س</th>
-                    </React.Fragment>
-                  ))}
+                  {Array.from({ length: 6 }).flatMap((_, i) => [
+                    <th key={`s-${i}`} colSpan={2} className="border border-slate-400 p-0 text-[9px] font-semibold text-slate-700">س</th>,
+                    <th key={`ns-${i}`} colSpan={2} className="border border-slate-400 p-0 text-[9px] font-semibold text-slate-700">غ/س</th>
+                  ])}
                 </tr>
                 <tr className="bg-slate-50">
-                  {Array.from({ length: 12 }).map((_, i) => (
-                    <React.Fragment key={i}>
-                      <th className="border border-slate-400 p-0 text-[8px] font-semibold text-slate-700 w-5">ذكر</th>
-                      <th className="border border-slate-400 p-0 text-[8px] font-semibold text-slate-700 w-5">انثي</th>
-                    </React.Fragment>
-                  ))}
+                  {Array.from({ length: 12 }).flatMap((_, i) => [
+                    <th key={`m-${i}`} className="border border-slate-400 p-0 text-[8px] font-semibold text-slate-700 w-5">ذكر</th>,
+                    <th key={`f-${i}`} className="border border-slate-400 p-0 text-[8px] font-semibold text-slate-700 w-5">انثي</th>
+                  ])}
                 </tr>
               </thead>
               <tbody>
