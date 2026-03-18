@@ -382,10 +382,10 @@ export default function MalariaStatisticForm() {
           table { border-collapse: collapse; width: 100%; }
           th, td { 
             border: 1px solid #475569 !important; 
-            padding: 1px !important; 
+            padding: 4px 2px !important; 
             text-align: center; 
             color: black !important;
-            height: 18px !important;
+            height: auto !important;
           }
           th { 
             font-weight: 700; 
