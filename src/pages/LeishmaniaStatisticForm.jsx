@@ -368,7 +368,16 @@ export default function LeishmaniaStatisticForm() {
           </div>
 
           {/* Table */}
-          <div className={`${isExporting ? '' : 'overflow-x-auto'} print:overflow-visible relative z-10 pb-4`}>
+          <motion.div 
+            drag 
+            dragMomentum={false} 
+            className={`${isExporting ? '' : 'overflow-x-auto'} print:overflow-visible relative z-10 pb-4 cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2`}
+            onPointerDownCapture={(e) => {
+              if (['INPUT', 'BUTTON', 'SELECT', 'OPTION'].includes(e.target.tagName) || e.target.closest('button')) {
+                e.stopPropagation();
+              }
+            }}
+          >
             <table className="w-full border-collapse border border-slate-400 text-center">
               <thead>
                 <tr className="bg-slate-100">
