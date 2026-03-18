@@ -34,6 +34,7 @@ export default function MalariaStatisticForm() {
   const [month, setMonth] = useState("");
   const [year, setYear] = useState(new Date().getFullYear().toString());
   const [isSaving, setIsSaving] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [signatureUrl, setSignatureUrl] = useState("https://upload.wikimedia.org/wikipedia/commons/f/f8/Stylized_signature_sample.svg");
   const [managerName, setManagerName] = useState("أ / عبدالمجيد سعود الربيقي");
   const [managerTitle, setManagerTitle] = useState("مدير إدارة المراكز الصحية بالحناكية");
