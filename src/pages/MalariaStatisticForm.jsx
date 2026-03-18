@@ -149,7 +149,34 @@ export default function MalariaStatisticForm() {
         useCORS: true,
         scrollY: 0,
         scrollX: 0,
-        windowWidth: element.scrollWidth,
+        windowWidth: 1500,
+        onclone: (clonedDoc) => {
+          const el = clonedDoc.getElementById('malaria-print-container');
+          if (el) {
+            el.style.width = '1500px';
+            el.style.minWidth = '1500px';
+            el.style.maxWidth = 'none';
+            const table = el.querySelector('table');
+            if (table && table.parentElement) {
+              table.parentElement.classList.remove('overflow-x-auto');
+              table.parentElement.style.overflow = 'visible';
+            }
+            // Replace inputs with spans to fix text rendering issues in html2canvas
+            const inputs = el.querySelectorAll('input');
+            inputs.forEach(input => {
+              if (input.type !== 'range' && input.type !== 'file') {
+                const span = clonedDoc.createElement('span');
+                span.textContent = input.value || '';
+                span.style.cssText = window.getComputedStyle(input).cssText;
+                span.style.display = 'inline-block';
+                span.style.width = '100%';
+                span.style.textAlign = 'center';
+                span.className = input.className;
+                input.parentNode.replaceChild(span, input);
+              }
+            });
+          }
+        },
         ignoreElements: (el) => el.classList.contains('no-print') || el.tagName.toLowerCase() === 'svg'
       });
 
@@ -210,7 +237,34 @@ export default function MalariaStatisticForm() {
         useCORS: true,
         scrollY: 0,
         scrollX: 0,
-        windowWidth: element.scrollWidth,
+        windowWidth: 1500,
+        onclone: (clonedDoc) => {
+          const el = clonedDoc.getElementById('malaria-print-container');
+          if (el) {
+            el.style.width = '1500px';
+            el.style.minWidth = '1500px';
+            el.style.maxWidth = 'none';
+            const table = el.querySelector('table');
+            if (table && table.parentElement) {
+              table.parentElement.classList.remove('overflow-x-auto');
+              table.parentElement.style.overflow = 'visible';
+            }
+            // Replace inputs with spans to fix text rendering issues in html2canvas
+            const inputs = el.querySelectorAll('input');
+            inputs.forEach(input => {
+              if (input.type !== 'range' && input.type !== 'file') {
+                const span = clonedDoc.createElement('span');
+                span.textContent = input.value || '';
+                span.style.cssText = window.getComputedStyle(input).cssText;
+                span.style.display = 'inline-block';
+                span.style.width = '100%';
+                span.style.textAlign = 'center';
+                span.className = input.className;
+                input.parentNode.replaceChild(span, input);
+              }
+            });
+          }
+        },
         ignoreElements: (el) => el.classList.contains('no-print') || el.tagName.toLowerCase() === 'svg'
       });
 
