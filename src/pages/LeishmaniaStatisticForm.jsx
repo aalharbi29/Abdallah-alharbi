@@ -453,7 +453,7 @@ export default function LeishmaniaStatisticForm() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </motion.div>
 
           {/* Footer & Draggable Signature */}
           <div className="mt-16 text-center header-text space-y-4 relative flex flex-col items-center min-h-[150px]">
