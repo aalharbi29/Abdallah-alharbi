@@ -749,7 +749,7 @@ export default function LeishmaniaStatisticForm() {
             </motion.div>
           </div>
           
-          <OfficialFooter className="mt-24" />
+          <OfficialFooter className="mt-24 print:mt-8" />
         </div>
       </div>
     </div>
