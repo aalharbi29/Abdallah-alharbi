@@ -207,9 +207,18 @@ export default function MalariaStatisticForm() {
       });
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = canvas.height * pdfWidth / canvas.width;
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      let imgHeight = (canvas.height * pdfWidth) / canvas.width;
+      let imgWidth = pdfWidth;
 
-      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      if (imgHeight > pageHeight) {
+        imgHeight = pageHeight;
+        imgWidth = (canvas.width * pageHeight) / canvas.height;
+      }
+
+      const xOffset = (pdfWidth - imgWidth) / 2;
+
+      pdf.addImage(imgData, 'JPEG', xOffset, 0, imgWidth, imgHeight);
       pdf.save(`malaria_statistic_${year}_${month}.pdf`);
 
       toast.success("تم تحميل الملف بنجاح", { id: "download-pdf" });
@@ -310,9 +319,18 @@ export default function MalariaStatisticForm() {
       });
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = canvas.height * pdfWidth / canvas.width;
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      let imgHeight = (canvas.height * pdfWidth) / canvas.width;
+      let imgWidth = pdfWidth;
 
-      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      if (imgHeight > pageHeight) {
+        imgHeight = pageHeight;
+        imgWidth = (canvas.width * pageHeight) / canvas.height;
+      }
+
+      const xOffset = (pdfWidth - imgWidth) / 2;
+
+      pdf.addImage(imgData, 'JPEG', xOffset, 0, imgWidth, imgHeight);
       const pdfBlob = pdf.output('blob');
 
       const file = new File([pdfBlob], `malaria_statistic_${year}_${month}.pdf`, { type: 'application/pdf' });
