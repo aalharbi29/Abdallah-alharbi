@@ -719,7 +719,7 @@ export default function LeishmaniaStatisticForm() {
           </motion.div>
 
           {/* Footer & Draggable Signature */}
-          <div className="mt-16 text-center header-text space-y-4 relative flex flex-col items-center min-h-[150px]">
+          <div className="mt-16 print:mt-8 text-center header-text space-y-4 relative flex flex-col items-center min-h-[150px] print:min-h-0 print:break-inside-avoid">
             <motion.div style={{ x: managerX, y: managerY }} drag dragMomentum={false} className="cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50 flex flex-col items-center gap-2">
               <input 
                 value={managerTitle} 
