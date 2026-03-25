@@ -110,6 +110,7 @@ export default function EmployeeDataRequest() {
     paragraphSpacing: 10,
     lineHeight: '2.0',
   });
+  const [lineStyles, setLineStyles] = useState({});
   const { logoSettings } = useLogoSettings();
 
   // حفظ وتحميل النموذج الافتراضي
@@ -591,18 +592,22 @@ export default function EmployeeDataRequest() {
       const greetingKeywords = ['السلام', 'التحية', 'وبعد', 'تحية'];
       const boldKeywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
       
-      return paragraphs.map(paragraph => {
+      return paragraphs.map((paragraph, pi) => {
         const lines = paragraph.split('\n');
-        const processedLines = lines.map(line => {
+        const processedLines = lines.map((line, i) => {
           const isGreeting = greetingKeywords.some(kw => line.includes(kw));
           const isBold = boldKeywords.some(kw => line.includes(kw));
-          if (isGreeting) {
-            return `<span class="narrative-greeting">${line}</span>`;
-          }
-          if (isBold) {
-            return `<span class="narrative-bold">${line}</span>`;
-          }
-          return `<span class="narrative-body">${line}</span>`;
+          let className = 'narrative-body';
+          if (isGreeting) className = 'narrative-greeting';
+          if (isBold) className = 'narrative-bold';
+          
+          const lineKey = `${pi}_${i}`;
+          const customStyle = lineStyles[lineKey] || {};
+          const textAlign = customStyle.textAlign || 'right';
+          const paddingRight = customStyle.indent ? `${customStyle.indent}px` : '0';
+          const marginBottom = customStyle.spacing ? `${customStyle.spacing}px` : '0';
+          
+          return `<div style="text-align: ${textAlign}; padding-right: ${paddingRight}; margin-bottom: ${marginBottom};"><span class="${className}">${line}</span></div>`;
         });
         return `<div class="paragraph">${processedLines.join('\n')}</div>`;
       }).join('');
@@ -1962,6 +1967,8 @@ export default function EmployeeDataRequest() {
           fontSettings={fontSettings}
           mergeWorkplace={mergeWorkplace}
           mergeAssignment={mergeAssignment}
+          lineStyles={lineStyles}
+          setLineStyles={setLineStyles}
         />
       </div>
     </div>

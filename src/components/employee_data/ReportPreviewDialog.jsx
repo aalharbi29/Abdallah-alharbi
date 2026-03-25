@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
-import { FileOutput, X } from 'lucide-react';
+import { FileOutput, X, AlignRight, AlignCenter, AlignLeft, Indent, Outdent, ArrowUp, ArrowDown } from 'lucide-react';
 
 export default function ReportPreviewDialog({
   open,
@@ -30,7 +30,16 @@ export default function ReportPreviewDialog({
   fontSettings,
   mergeWorkplace,
   mergeAssignment,
+  lineStyles = {},
+  setLineStyles,
 }) {
+  const updateLineStyle = (pi, i, updates) => {
+    if (!setLineStyles) return;
+    setLineStyles(prev => ({
+      ...prev,
+      [`${pi}_${i}`]: { ...(prev[`${pi}_${i}`] || {}), ...updates }
+    }));
+  };
   const dateStr = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   
   const logoJustifyClass = logoPosition === 'right' ? 'justify-end' : logoPosition === 'left' ? 'justify-start' : 'justify-center';
@@ -213,6 +222,52 @@ export default function ReportPreviewDialog({
     return rows;
   };
 
+  const renderNarrative = (extraClass = "mb-4 text-sm") => {
+    if (!reportNarrative) return null;
+    return (
+      <div className={extraClass}>
+        {reportNarrative.split(/\n\s*\n/).map((paragraph, pi) => (
+          <div key={pi} style={{ marginBottom: `${fontSettings?.paragraphSpacing || 10}px` }}>
+            {paragraph.split('\n').map((line, i) => {
+              const greetingKeywords = ['السلام', 'التحية', 'وبعد', 'تحية'];
+              const boldKeywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
+              const isGreeting = greetingKeywords.some(kw => line.includes(kw));
+              const isBold = boldKeywords.some(kw => line.includes(kw));
+              
+              const lineKey = `${pi}_${i}`;
+              const customStyle = lineStyles[lineKey] || {};
+
+              return (
+                <div key={i} className="relative group/line" style={{ textAlign: customStyle.textAlign || 'right', paddingRight: customStyle.indent ? `${customStyle.indent}px` : '0', marginBottom: customStyle.spacing ? `${customStyle.spacing}px` : '0' }}>
+                  <span className="block" style={
+                    isBold ? { fontFamily: `'${fontSettings?.narrativeBold?.font || 'PT Sans Caption'}', 'Cairo', sans-serif`, fontWeight: fontSettings?.narrativeBold?.weight || 900, fontSize: `${fontSettings?.narrativeBold?.size || 17}px`, lineHeight: '1.0' }
+                    : isGreeting ? { fontFamily: `'${fontSettings?.narrativeGreeting?.font || 'Cairo'}', sans-serif`, fontWeight: fontSettings?.narrativeGreeting?.weight || 700, fontSize: `${fontSettings?.narrativeGreeting?.size || 16}px`, lineHeight: '1.0' }
+                    : { fontFamily: `'${fontSettings?.narrativeBody?.font || 'Cairo'}', sans-serif`, fontWeight: fontSettings?.narrativeBody?.weight || 600, fontSize: `${fontSettings?.narrativeBody?.size || 16}px`, lineHeight: fontSettings?.lineHeight || '2.0' }
+                  }>
+                    {line}
+                  </span>
+                  
+                  {/* Toolbar */}
+                  <div className="absolute -top-8 right-0 opacity-0 group-hover/line:opacity-100 transition-opacity bg-white border border-gray-200 shadow-md rounded-md flex items-center gap-1 p-1 no-print z-50" dir="rtl">
+                     <button onClick={() => updateLineStyle(pi, i, { textAlign: 'right' })} className="p-1 hover:bg-gray-100 rounded text-gray-600" title="يمين"><AlignRight size={14}/></button>
+                     <button onClick={() => updateLineStyle(pi, i, { textAlign: 'center' })} className="p-1 hover:bg-gray-100 rounded text-gray-600" title="توسيط"><AlignCenter size={14}/></button>
+                     <button onClick={() => updateLineStyle(pi, i, { textAlign: 'left' })} className="p-1 hover:bg-gray-100 rounded text-gray-600" title="يسار"><AlignLeft size={14}/></button>
+                     <div className="w-px h-4 bg-gray-300 mx-1"></div>
+                     <button onClick={() => updateLineStyle(pi, i, { indent: (customStyle.indent || 0) + 20 })} className="p-1 hover:bg-gray-100 rounded text-gray-600" title="إزاحة لليسار"><Indent size={14}/></button>
+                     <button onClick={() => updateLineStyle(pi, i, { indent: Math.max(0, (customStyle.indent || 0) - 20) })} className="p-1 hover:bg-gray-100 rounded text-gray-600" title="إزاحة لليمين"><Outdent size={14}/></button>
+                     <div className="w-px h-4 bg-gray-300 mx-1"></div>
+                     <button onClick={() => updateLineStyle(pi, i, { spacing: (customStyle.spacing || 0) + 5 })} className="p-1 hover:bg-gray-100 rounded text-gray-600" title="زيادة المسافة"><ArrowDown size={14}/></button>
+                     <button onClick={() => updateLineStyle(pi, i, { spacing: Math.max(-20, (customStyle.spacing || 0) - 5) })} className="p-1 hover:bg-gray-100 rounded text-gray-600" title="تقليل المسافة"><ArrowUp size={14}/></button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   const tableRows = useMemo(() => {
     if (displayMode === 'normal') {
       return buildGroupedRows(selectedEmployees);
@@ -285,29 +340,7 @@ export default function ReportPreviewDialog({
           {splitPages ? (
             <>
               {/* صفحة 1: النص التعبيري */}
-              {reportNarrative && (
-                <div className="mb-4 text-sm">
-                  {reportNarrative.split(/\n\s*\n/).map((paragraph, pi) => (
-                    <div key={pi} style={{ marginBottom: `${fontSettings?.paragraphSpacing || 10}px` }}>
-                      {paragraph.split('\n').map((line, i) => {
-                        const greetingKeywords = ['السلام', 'التحية', 'وبعد', 'تحية'];
-                        const boldKeywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
-                        const isGreeting = greetingKeywords.some(kw => line.includes(kw));
-                        const isBold = boldKeywords.some(kw => line.includes(kw));
-                        return (
-                          <span key={i} className="block" style={
-                            isBold ? { fontFamily: `'${fontSettings?.narrativeBold?.font || 'PT Sans Caption'}', 'Cairo', sans-serif`, fontWeight: fontSettings?.narrativeBold?.weight || 900, fontSize: `${fontSettings?.narrativeBold?.size || 17}px`, lineHeight: '1.0' }
-                            : isGreeting ? { fontFamily: `'${fontSettings?.narrativeGreeting?.font || 'Cairo'}', sans-serif`, fontWeight: fontSettings?.narrativeGreeting?.weight || 700, fontSize: `${fontSettings?.narrativeGreeting?.size || 16}px`, lineHeight: '1.0' }
-                            : { fontFamily: `'${fontSettings?.narrativeBody?.font || 'Cairo'}', sans-serif`, fontWeight: fontSettings?.narrativeBody?.weight || 600, fontSize: `${fontSettings?.narrativeBody?.size || 16}px`, lineHeight: fontSettings?.lineHeight || '2.0' }
-                          }>
-                            {line}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  ))}
-                </div>
-              )}
+              {renderNarrative()}
 
               {finalRequest && (
                 <div className="mt-4 p-3 bg-yellow-50 border border-yellow-300 rounded-lg text-sm whitespace-pre-wrap">
@@ -382,30 +415,7 @@ export default function ReportPreviewDialog({
           ) : (
             <>
               {/* نص تعبيري قبل الجدول */}
-              {narrativePosition === 'before' && reportNarrative && (
-                <div className="mb-4 text-sm">
-                  {reportNarrative.split(/\n\s*\n/).map((paragraph, pi) => (
-                    <div key={pi} style={{ marginBottom: `${fontSettings?.paragraphSpacing || 10}px` }}>
-                      {paragraph.split('\n').map((line, i) => {
-                        const greetingKeywords = ['السلام', 'التحية', 'وبعد', 'تحية'];
-                        const boldKeywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
-                        const isGreeting = greetingKeywords.some(kw => line.includes(kw));
-                        const isBold = boldKeywords.some(kw => line.includes(kw));
-                        const isStructural = isGreeting || isBold;
-                        return (
-                          <span key={i} className="block" style={
-                            isBold ? { fontFamily: `'${fontSettings?.narrativeBold?.font || 'PT Sans Caption'}', 'Cairo', sans-serif`, fontWeight: fontSettings?.narrativeBold?.weight || 900, fontSize: `${fontSettings?.narrativeBold?.size || 17}px`, lineHeight: '1.0' }
-                            : isGreeting ? { fontFamily: `'${fontSettings?.narrativeGreeting?.font || 'Cairo'}', sans-serif`, fontWeight: fontSettings?.narrativeGreeting?.weight || 700, fontSize: `${fontSettings?.narrativeGreeting?.size || 16}px`, lineHeight: '1.0' }
-                            : { fontFamily: `'${fontSettings?.narrativeBody?.font || 'Cairo'}', sans-serif`, fontWeight: fontSettings?.narrativeBody?.weight || 600, fontSize: `${fontSettings?.narrativeBody?.size || 16}px`, lineHeight: fontSettings?.lineHeight || '2.0' }
-                          }>
-                            {line}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  ))}
-                </div>
-              )}
+              {narrativePosition === 'before' && renderNarrative()}
 
               {/* الجدول */}
               <div className="overflow-x-auto">
@@ -422,29 +432,7 @@ export default function ReportPreviewDialog({
               </div>
 
               {/* نص تعبيري بعد الجدول */}
-              {narrativePosition === 'after' && reportNarrative && (
-                <div className="mt-4 text-sm">
-                  {reportNarrative.split(/\n\s*\n/).map((paragraph, pi) => (
-                    <div key={pi} style={{ marginBottom: `${fontSettings?.paragraphSpacing || 10}px` }}>
-                      {paragraph.split('\n').map((line, i) => {
-                        const greetingKeywords = ['السلام', 'التحية', 'وبعد', 'تحية'];
-                        const boldKeywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
-                        const isGreeting = greetingKeywords.some(kw => line.includes(kw));
-                        const isBold = boldKeywords.some(kw => line.includes(kw));
-                        return (
-                          <span key={i} className="block" style={
-                            isBold ? { fontFamily: `'${fontSettings?.narrativeBold?.font || 'PT Sans Caption'}', 'Cairo', sans-serif`, fontWeight: fontSettings?.narrativeBold?.weight || 900, fontSize: `${fontSettings?.narrativeBold?.size || 17}px`, lineHeight: '1.0' }
-                            : isGreeting ? { fontFamily: `'${fontSettings?.narrativeGreeting?.font || 'Cairo'}', sans-serif`, fontWeight: fontSettings?.narrativeGreeting?.weight || 700, fontSize: `${fontSettings?.narrativeGreeting?.size || 16}px`, lineHeight: '1.0' }
-                            : { fontFamily: `'${fontSettings?.narrativeBody?.font || 'Cairo'}', sans-serif`, fontWeight: fontSettings?.narrativeBody?.weight || 600, fontSize: `${fontSettings?.narrativeBody?.size || 16}px`, lineHeight: fontSettings?.lineHeight || '2.0' }
-                          }>
-                            {line}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  ))}
-                </div>
-              )}
+              {narrativePosition === 'after' && renderNarrative("mt-4 text-sm")}
 
               {/* نص الطلب */}
               {finalRequest && (
