@@ -183,12 +183,26 @@ export default function ReportPreviewDialog({
                   lineHeight: '1.6',
                 }}
               >
-                {group && (group.fromDate || group.toDate)
-                  ? <>
-                      <div>من {group.fromDate || '...'}</div>
-                      <div>إلى {group.toDate || '...'} {group.dateType === 'hijri' ? 'هـ' : 'م'}</div>
+                {(() => {
+                  if (!group) return '-';
+                  const suffix = group.dateType === 'hijri' ? 'هـ' : 'م';
+                  let text = '';
+                  if (group.periodType === 'duration') {
+                    text = <><div>{group.durationText || '...'}</div><div>اعتباراً من {group.fromDate || '...'} {suffix}</div></>;
+                  } else if (group.fromDate || group.toDate) {
+                    text = <><div>من {group.fromDate || '...'}</div><div>إلى {group.toDate || '...'} {suffix}</div></>;
+                  } else {
+                    return '-';
+                  }
+                  return (
+                    <>
+                      {text}
+                      {group.specificDays && group.specificDays.length > 0 && (
+                        <div style={{ fontSize: '10px', marginTop: '4px', color: '#4b5563' }}>(أيام: {group.specificDays.join('، ')})</div>
+                      )}
                     </>
-                  : '-'}
+                  );
+                })()}
               </td>
             )}
           </tr>

@@ -31,6 +31,7 @@ import AITextEnhancer from '@/components/employee_data/AITextEnhancer';
 import EmployeeMultiSelect from '@/components/employee_data/EmployeeMultiSelect';
 import FontSettings from '@/components/employee_data/FontSettings';
 import HijriDatePicker from '@/components/ui/HijriDatePicker';
+import { exportToCSV, exportToHTML } from '@/components/employee_data/exportUtils';
 
 const availableFields = [
   { key: 'full_name_arabic', label: 'الاسم الكامل', default: true },
@@ -87,7 +88,7 @@ export default function EmployeeDataRequest() {
   const [assignmentCenters, setAssignmentCenters] = useState({});
   // مجموعات التكليف - كل مجموعة لها فترة وموظفين
   const [assignmentGroups, setAssignmentGroups] = useState([
-    { id: 1, fromDate: '', toDate: '', dateType: 'hijri', employeeIds: [] }
+    { id: 1, fromDate: '', toDate: '', dateType: 'hijri', periodType: 'range', durationText: '', specificDays: [], employeeIds: [] }
   ]);
   const [logoPosition, setLogoPosition] = useState('center');
   const [signaturePosition, setSignaturePosition] = useState('center');
@@ -420,7 +421,7 @@ export default function EmployeeDataRequest() {
         const bgColor = idx % 2 === 0 ? '#fff' : '#f9fafb';
         htmlTable += `<tr style="background-color: ${bgColor};">`;
         selectedFields.forEach(key => {
-          htmlTable += `<td style="border: 1px solid #000; padding: 8px; text-align: center;">${emp[key] || '-'}</td>`;
+          htmlTable += `<td style="border: 1px solid #000; padding: 8px; text-align: center; white-space: pre-wrap;">${getFieldValue(emp, key)}</td>`;
         });
         htmlTable += '</tr>';
       });
@@ -428,7 +429,7 @@ export default function EmployeeDataRequest() {
       selectedEmployees.forEach(emp => {
         htmlTable += '<tr style="background-color: #dbeafe;">';
         selectedFields.forEach(key => {
-          htmlTable += `<td style="border: 1px solid #000; padding: 8px; text-align: center;">${emp[key] || '-'}</td>`;
+          htmlTable += `<td style="border: 1px solid #000; padding: 8px; text-align: center; white-space: pre-wrap;">${getFieldValue(emp, key)}</td>`;
         });
         htmlTable += '</tr>';
       });
@@ -441,7 +442,7 @@ export default function EmployeeDataRequest() {
             htmlTable += `<tr style="background-color: #d1fae5;"><td colspan="${selectedFields.length}" style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">بيانات المدير المباشر</td></tr>`;
             htmlTable += '<tr style="background-color: #ecfdf5;">';
             selectedFields.forEach(key => {
-              htmlTable += `<td style="border: 1px solid #000; padding: 8px; text-align: center;">${manager[key] || '-'}</td>`;
+              htmlTable += `<td style="border: 1px solid #000; padding: 8px; text-align: center; white-space: pre-wrap;">${getFieldValue(manager, key)}</td>`;
             });
             htmlTable += '</tr>';
             processedManagers.add(managerId);
@@ -456,11 +457,11 @@ export default function EmployeeDataRequest() {
     let plainText = headers.join('\t') + '\n';
     if (displayMode === 'normal') {
       plainText += selectedEmployees.map(emp =>
-        selectedFields.map(key => emp[key] || '-').join('\t')
+        selectedFields.map(key => getFieldValue(emp, key).replace(/\n/g, ' ')).join('\t')
       ).join('\n');
     } else {
       selectedEmployees.forEach(emp => {
-        plainText += selectedFields.map(key => emp[key] || '-').join('\t') + '\n';
+        plainText += selectedFields.map(key => getFieldValue(emp, key).replace(/\n/g, ' ')).join('\t') + '\n';
       });
       const processedManagers = new Set();
       Object.entries(groupedByManager).forEach(([managerId, employeeIds]) => {
@@ -468,7 +469,7 @@ export default function EmployeeDataRequest() {
           const manager = getManagerWithCenters(managerId, employeeIds);
           if (manager) {
             plainText += 'بيانات المدير المباشر\n';
-            plainText += selectedFields.map(key => manager[key] || '-').join('\t') + '\n';
+            plainText += selectedFields.map(key => getFieldValue(manager, key).replace(/\n/g, ' ')).join('\t') + '\n';
             processedManagers.add(managerId);
           }
         }
@@ -500,144 +501,37 @@ export default function EmployeeDataRequest() {
     }
   };
 
-  const exportToCSV = () => {
-    const headers = selectedFields.map(key =>
-      availableFields.find(f => f.key === key)?.label || key
-    ).join(',');
-
-    let csvContent = "\ufeff" + headers + '\n';
-
-    if (displayMode === 'normal') {
-      const rows = selectedEmployees.map(emp =>
-        selectedFields.map(key => `"${emp[key] || ''}"`.replace(/"/g, '""')).join(',')
-      ).join('\n');
-      csvContent += rows;
-    } else {
-      const rows = [];
-      selectedEmployees.forEach(emp => {
-        rows.push(selectedFields.map(key => `"${emp[key] || ''}"`.replace(/"/g, '""')).join(','));
-      });
-
-      const processedManagers = new Set();
-      Object.entries(groupedByManager).forEach(([managerId, employeeIds]) => {
-        if (!processedManagers.has(managerId)) {
-          const manager = getManagerWithCenters(managerId, employeeIds);
-          if (manager) {
-            rows.push('"بيانات المدير المباشر"' + ','.repeat(selectedFields.length - 1));
-            rows.push(selectedFields.map(key => `"${manager[key] || ''}"`.replace(/"/g, '""')).join(','));
-            processedManagers.add(managerId);
-          }
-        }
-      });
-
-      csvContent += rows.join('\n');
-    }
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `بيانات_الموظفين_${new Date().toLocaleDateString('ar-SA')}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
-  };
-
-  const exportToHTML = () => {
+  const handleExportToCSV = () => {
     const headers = selectedFields.map(key =>
       availableFields.find(f => f.key === key)?.label || key
     );
+    exportToCSV({
+      headers,
+      displayMode,
+      selectedEmployees,
+      selectedFields,
+      groupedByManager,
+      getManagerWithCenters,
+      getFieldValue,
+      availableFields
+    });
+  };
 
-    let tableRows = '';
-    if (displayMode === 'normal') {
-      selectedEmployees.forEach((emp, idx) => {
-        const bgColor = idx % 2 === 0 ? '#fff' : '#f9fafb';
-        tableRows += `<tr style="background-color: ${bgColor};">`;
-        selectedFields.forEach(key => {
-          tableRows += `<td style="border: 1px solid #000; padding: 8px 16px; text-align: center;">${emp[key] || '-'}</td>`;
-        });
-        tableRows += '</tr>';
-      });
-    } else {
-      selectedEmployees.forEach(emp => {
-        tableRows += '<tr style="background-color: #dbeafe;">';
-        selectedFields.forEach(key => {
-          tableRows += `<td style="border: 1px solid #000; padding: 8px 16px; text-align: center;">${emp[key] || '-'}</td>`;
-        });
-        tableRows += '</tr>';
-      });
-
-      const processedManagers = new Set();
-      Object.entries(groupedByManager).forEach(([managerId, employeeIds]) => {
-        if (!processedManagers.has(managerId)) {
-          const manager = getManagerWithCenters(managerId, employeeIds);
-          if (manager) {
-            tableRows += `<tr style="background-color: #d1fae5;"><td colspan="${selectedFields.length}" style="border: 1px solid #000; padding: 8px 16px; text-align: center; font-weight: bold;">بيانات المدير المباشر</td></tr>`;
-            tableRows += '<tr style="background-color: #ecfdf5;">';
-            selectedFields.forEach(key => {
-              tableRows += `<td style="border: 1px solid #000; padding: 8px 16px; text-align: center;">${manager[key] || '-'}</td>`;
-            });
-            tableRows += '</tr>';
-            processedManagers.add(managerId);
-          }
-        }
-      });
-    }
-
-    const html = `<!DOCTYPE html>
-<html dir="rtl" lang="ar">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>طلب بيانات الموظفين</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-    body { font-family: 'Cairo', sans-serif; padding: 30px; background: #f8fafc; color: #000; }
-    .container { max-width: 900px; margin: 0 auto; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
-    h2 { text-align: center; color: #1e40af; margin-bottom: 30px; }
-    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-    th { background-color: #f3f4f6; border: 1px solid #000; padding: 12px 16px; text-align: center; font-weight: bold; }
-    td { border: 1px solid #000; padding: 8px 16px; text-align: center; }
-    .greeting { font-size: 18px; font-weight: 600; margin-bottom: 20px; }
-    .request-text { background: #fef3c7; border: 2px solid #fcd34d; padding: 15px; border-radius: 8px; margin: 20px 0; white-space: pre-wrap; }
-    .closing { margin-top: 30px; }
-    .closing p { margin: 10px 0; font-size: 16px; }
-    @media print { body { background: white; } .container { box-shadow: none; } }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <p class="greeting">بعد التحية</p>
-    
-    <table>
-      <thead>
-        <tr>
-          ${headers.map(h => `<th>${h}</th>`).join('')}
-        </tr>
-      </thead>
-      <tbody>
-        ${tableRows}
-      </tbody>
-    </table>
-    
-    ${finalRequest ? `<div class="request-text">${finalRequest}</div>` : ''}
-    
-    <div class="closing">
-    </div>
-  </div>
-</body>
-</html>`;
-
-    const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
-    const url = window.URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `طلب_بيانات_الموظفين_${new Date().toLocaleDateString('ar-SA')}.html`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    window.URL.revokeObjectURL(url);
+  const handleExportToHTML = () => {
+    const headers = selectedFields.map(key =>
+      availableFields.find(f => f.key === key)?.label || key
+    );
+    exportToHTML({
+      headers,
+      displayMode,
+      selectedEmployees,
+      selectedFields,
+      groupedByManager,
+      getManagerWithCenters,
+      getFieldValue,
+      finalRequest,
+      availableFields
+    });
   };
 
   const handlePrint = () => {
@@ -657,9 +551,18 @@ export default function EmployeeDataRequest() {
         if (assignmentGroups.length === 1) return true;
         return false;
       });
-      if (!group || (!group.fromDate && !group.toDate)) return '-';
+      if (!group || (!group.fromDate && !group.toDate && !group.durationText)) return '-';
       const suffix = group.dateType === 'hijri' ? 'هـ' : 'م';
-      return `من ${group.fromDate || '...'} إلى ${group.toDate || '...'} ${suffix}`;
+      let text = '';
+      if (group.periodType === 'duration') {
+        text = `${group.durationText || '...'} اعتباراً من ${group.fromDate || '...'} ${suffix}`;
+      } else {
+        text = `من ${group.fromDate || '...'} إلى ${group.toDate || '...'} ${suffix}`;
+      }
+      if (group.specificDays && group.specificDays.length > 0) {
+        text += `\n(أيام: ${group.specificDays.join('، ')})`;
+      }
+      return text;
     }
     if (key === 'المركز_الصحي') {
       const val = emp[key] || '-';
@@ -873,9 +776,18 @@ export default function EmployeeDataRequest() {
       let html = '';
       let idxInPage = 0;
       segments.forEach(seg => {
-        const periodLine1 = seg.group && seg.group.fromDate ? `من ${seg.group.fromDate}` : '';
-        const periodLine2 = seg.group && seg.group.toDate ? `إلى ${seg.group.toDate} ${seg.group.dateType === 'hijri' ? 'هـ' : 'م'}` : '';
-        const periodText = (periodLine1 || periodLine2) ? `<div>${periodLine1}</div><div>${periodLine2}</div>` : '-';
+        let periodText = '-';
+        if (seg.group) {
+          const suffix = seg.group.dateType === 'hijri' ? 'هـ' : 'م';
+          if (seg.group.periodType === 'duration') {
+            periodText = `<div>${seg.group.durationText || '...'}</div><div>اعتباراً من ${seg.group.fromDate || '...'} ${suffix}</div>`;
+          } else if (seg.group.fromDate || seg.group.toDate) {
+            periodText = `<div>من ${seg.group.fromDate || '...'}</div><div>إلى ${seg.group.toDate || '...'} ${suffix}</div>`;
+          }
+          if (seg.group.specificDays && seg.group.specificDays.length > 0) {
+            periodText += `<div style="font-size: 10px; margin-top: 4px; color: #4b5563;">(أيام: ${seg.group.specificDays.join('، ')})</div>`;
+          }
+        }
 
         seg.rows.forEach((r, li) => {
           html += `<tr style="background-color: ${r.bg};">`;
@@ -1457,31 +1369,97 @@ export default function EmployeeDataRequest() {
                             <SelectItem value="gregorian">ميلادي</SelectItem>
                           </SelectContent>
                         </Select>
-                        <div className="flex items-center gap-2">
-                          <Label className="text-xs font-bold">من:</Label>
-                          {group.dateType === 'gregorian' ? (
-                            <Input type="date" value={group.fromDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, fromDate: e.target.value } : g))} className="w-40" />
-                          ) : (
-                            <HijriDatePicker
-                              value={group.fromDate}
-                              onChange={(val) => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, fromDate: val } : g))}
-                              placeholder="مثال: 1446/10/01"
-                              className="flex h-9 w-44 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm text-center"
-                            />
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Label className="text-xs font-bold">إلى:</Label>
-                          {group.dateType === 'gregorian' ? (
-                            <Input type="date" value={group.toDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, toDate: e.target.value } : g))} className="w-40" />
-                          ) : (
-                            <HijriDatePicker
-                              value={group.toDate}
-                              onChange={(val) => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, toDate: val } : g))}
-                              placeholder="مثال: 1446/10/15"
-                              className="flex h-9 w-44 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm text-center"
-                            />
-                          )}
+
+                        <Select
+                          value={group.periodType || 'range'}
+                          onValueChange={(val) => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, periodType: val } : g))}
+                        >
+                          <SelectTrigger className="w-32">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="range">من / إلى</SelectItem>
+                            <SelectItem value="duration">لمدة (اعتباراً من)</SelectItem>
+                          </SelectContent>
+                        </Select>
+
+                        {group.periodType === 'duration' ? (
+                          <>
+                            <div className="flex items-center gap-2">
+                              <Label className="text-xs font-bold">لمدة:</Label>
+                              <Input type="text" placeholder="مثال: شهر" value={group.durationText || ''} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, durationText: e.target.value } : g))} className="w-32" />
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Label className="text-xs font-bold">اعتباراً من:</Label>
+                              {group.dateType === 'gregorian' ? (
+                                <Input type="date" value={group.fromDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, fromDate: e.target.value } : g))} className="w-40" />
+                              ) : (
+                                <HijriDatePicker
+                                  value={group.fromDate}
+                                  onChange={(val) => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, fromDate: val } : g))}
+                                  placeholder="مثال: 1446/10/01"
+                                  className="flex h-9 w-44 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm text-center"
+                                />
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="flex items-center gap-2">
+                              <Label className="text-xs font-bold">من:</Label>
+                              {group.dateType === 'gregorian' ? (
+                                <Input type="date" value={group.fromDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, fromDate: e.target.value } : g))} className="w-40" />
+                              ) : (
+                                <HijriDatePicker
+                                  value={group.fromDate}
+                                  onChange={(val) => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, fromDate: val } : g))}
+                                  placeholder="مثال: 1446/10/01"
+                                  className="flex h-9 w-44 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm text-center"
+                                />
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Label className="text-xs font-bold">إلى:</Label>
+                              {group.dateType === 'gregorian' ? (
+                                <Input type="date" value={group.toDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, toDate: e.target.value } : g))} className="w-40" />
+                              ) : (
+                                <HijriDatePicker
+                                  value={group.toDate}
+                                  onChange={(val) => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, toDate: val } : g))}
+                                  placeholder="مثال: 1446/10/15"
+                                  className="flex h-9 w-44 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm text-center"
+                                />
+                              )}
+                            </div>
+                          </>
+                        )}
+                        
+                        <div className="flex items-center gap-2 w-full mt-2">
+                          <Label className="text-xs font-bold">أيام محددة (اختياري):</Label>
+                          <div className="flex flex-wrap gap-1">
+                            {['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'].map(day => {
+                              const isSelected = (group.specificDays || []).includes(day);
+                              return (
+                                <Badge
+                                  key={day}
+                                  variant={isSelected ? "default" : "outline"}
+                                  className="cursor-pointer text-xs"
+                                  onClick={() => {
+                                    setAssignmentGroups(prev => prev.map(g => {
+                                      if (g.id !== group.id) return g;
+                                      const days = g.specificDays || [];
+                                      return {
+                                        ...g,
+                                        specificDays: isSelected ? days.filter(d => d !== day) : [...days, day]
+                                      };
+                                    }));
+                                  }}
+                                >
+                                  {day}
+                                </Badge>
+                              );
+                            })}
+                          </div>
                         </div>
                       </div>
                       <div>
@@ -1714,7 +1692,7 @@ export default function EmployeeDataRequest() {
                   نسخ الطلب والجدول
                 </Button>
                 <Button
-                  onClick={exportToCSV}
+                  onClick={handleExportToCSV}
                   disabled={selectedEmployees.length === 0 || selectedFields.length === 0}
                   className="bg-green-600 hover:bg-green-700"
                 >
@@ -1722,7 +1700,7 @@ export default function EmployeeDataRequest() {
                   تصدير Excel
                 </Button>
                 <Button
-                  onClick={exportToHTML}
+                  onClick={handleExportToHTML}
                   disabled={selectedEmployees.length === 0 || selectedFields.length === 0}
                   className="bg-purple-600 hover:bg-purple-700"
                 >
@@ -1856,7 +1834,26 @@ export default function EmployeeDataRequest() {
                                   })}
                                   {li === 0 && (
                                     <td key="فترة_التكليف" rowSpan={grpEmps.length} style={{ border: '1px solid #000', padding: '6px 4px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px', backgroundColor: '#fff', minWidth: '80px', lineHeight: '1.6', color: '#000' }}>
-                                      {group && (group.fromDate || group.toDate) ? <><div>من {group.fromDate || '...'}</div><div>إلى {group.toDate || '...'} {group.dateType === 'hijri' ? 'هـ' : 'م'}</div></> : '-'}
+                                      {(() => {
+                                        if (!group) return '-';
+                                        const suffix = group.dateType === 'hijri' ? 'هـ' : 'م';
+                                        let text = '';
+                                        if (group.periodType === 'duration') {
+                                          text = <><div>{group.durationText || '...'}</div><div>اعتباراً من {group.fromDate || '...'} {suffix}</div></>;
+                                        } else if (group.fromDate || group.toDate) {
+                                          text = <><div>من {group.fromDate || '...'}</div><div>إلى {group.toDate || '...'} {suffix}</div></>;
+                                        } else {
+                                          return '-';
+                                        }
+                                        return (
+                                          <>
+                                            {text}
+                                            {group.specificDays && group.specificDays.length > 0 && (
+                                              <div style={{ fontSize: '10px', marginTop: '4px', color: '#4b5563' }}>(أيام: {group.specificDays.join('، ')})</div>
+                                            )}
+                                          </>
+                                        );
+                                      })()}
                                     </td>
                                   )}
                                 </tr>
