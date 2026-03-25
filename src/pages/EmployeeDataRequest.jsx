@@ -98,6 +98,8 @@ export default function EmployeeDataRequest() {
   const [rowsPerFirstPage, setRowsPerFirstPage] = useState(15);
   const [rowsPerNextPage, setRowsPerNextPage] = useState(25);
   const [pageBreakAfterRows, setPageBreakAfterRows] = useState([]);
+  const [mergeWorkplace, setMergeWorkplace] = useState(false);
+  const [mergeAssignment, setMergeAssignment] = useState(false);
   const [fontSettings, setFontSettings] = useState({
     narrativeBold: { font: 'PT Sans Caption', size: '17', weight: '900' },
     narrativeGreeting: { font: 'Cairo', size: '16', weight: '700' },
@@ -115,6 +117,7 @@ export default function EmployeeDataRequest() {
       reportTitle, reportNarrative, narrativePosition, selectedFields,
       displayMode, logoPosition, signaturePosition, signerName, signerTitle,
       showSignature, selectedSignatureId, splitPages, fontSettings,
+      mergeWorkplace, mergeAssignment
     };
     localStorage.setItem('employeeDataRequestTemplate', JSON.stringify(template));
     alert('تم حفظ النموذج الافتراضي بنجاح');
@@ -137,6 +140,8 @@ export default function EmployeeDataRequest() {
     if (t.selectedSignatureId) setSelectedSignatureId(t.selectedSignatureId);
     if (t.splitPages !== undefined) setSplitPages(t.splitPages);
     if (t.fontSettings) setFontSettings(t.fontSettings);
+    if (t.mergeWorkplace !== undefined) setMergeWorkplace(t.mergeWorkplace);
+    if (t.mergeAssignment !== undefined) setMergeAssignment(t.mergeAssignment);
     alert('تم تحميل النموذج الافتراضي');
   };
 
@@ -158,6 +163,8 @@ export default function EmployeeDataRequest() {
       if (t.selectedSignatureId) setSelectedSignatureId(t.selectedSignatureId);
       if (t.splitPages !== undefined) setSplitPages(t.splitPages);
       if (t.fontSettings) setFontSettings(t.fontSettings);
+      if (t.mergeWorkplace !== undefined) setMergeWorkplace(t.mergeWorkplace);
+      if (t.mergeAssignment !== undefined) setMergeAssignment(t.mergeAssignment);
     }
   }, []);
 
@@ -757,6 +764,44 @@ export default function EmployeeDataRequest() {
 
     let allRowsData = buildRowsData(selectedEmployees, displayMode === 'with-manager' ? () => '#dbeafe' : undefined);
 
+    // حساب دمج الخلايا لجهة العمل وجهة التكليف
+    const workplaceSpans = {};
+    const assignmentSpans = {};
+    
+    if (mergeWorkplace || mergeAssignment) {
+      let currentWorkplace = null;
+      let workplaceStartIdx = 0;
+      let currentAssignment = null;
+      let assignmentStartIdx = 0;
+
+      allRowsData.forEach((row, idx) => {
+        const wpVal = getFieldValue(row.emp, 'المركز_الصحي');
+        const asVal = getFieldValue(row.emp, 'جهة_التكليف');
+
+        if (mergeWorkplace) {
+          if (wpVal !== currentWorkplace) {
+            currentWorkplace = wpVal;
+            workplaceStartIdx = idx;
+            workplaceSpans[idx] = 1;
+          } else {
+            workplaceSpans[workplaceStartIdx]++;
+            workplaceSpans[idx] = 0;
+          }
+        }
+
+        if (mergeAssignment) {
+          if (asVal !== currentAssignment) {
+            currentAssignment = asVal;
+            assignmentStartIdx = idx;
+            assignmentSpans[idx] = 1;
+          } else {
+            assignmentSpans[assignmentStartIdx]++;
+            assignmentSpans[idx] = 0;
+          }
+        }
+      });
+    }
+
     // إضافة صفوف المدراء
     const managerRowsHtml = [];
     if (displayMode === 'with-manager') {
@@ -782,10 +827,31 @@ export default function EmployeeDataRequest() {
 
     // دالة تحويل مجموعة صفوف إلى HTML مع rowspan حسب المجموعة
     const renderPageRowsHtml = (pageRows) => {
+      // حساب الدمج داخل الصفحة فقط لتجنب كسر الجدول عبر الصفحات
+      const pageWSpans = {}; const pageASpans = {};
+      if (mergeWorkplace || mergeAssignment) {
+        let cw = null, ws = 0, ca = null, as = 0;
+        pageRows.forEach((r, i) => {
+          const w = getFieldValue(r.emp, 'المركز_الصحي'); const a = getFieldValue(r.emp, 'جهة_التكليف');
+          if (mergeWorkplace) { if (w !== cw) { cw = w; ws = i; pageWSpans[i] = 1; } else { pageWSpans[ws]++; pageWSpans[i] = 0; } }
+          if (mergeAssignment) { if (a !== ca) { ca = a; as = i; pageASpans[i] = 1; } else { pageASpans[as]++; pageASpans[i] = 0; } }
+        });
+      }
+
       if (!hasAssignmentCol || !assignmentGroups || assignmentGroups.length === 0) {
-        return pageRows.map(r => {
+        return pageRows.map((r, idxInPage) => {
           let html = `<tr style="background-color: ${r.bg};">`;
           selectedFields.forEach(key => {
+            if (mergeWorkplace && key === 'المركز_الصحي') {
+              if (pageWSpans[idxInPage] === 0) return;
+              html += `<td rowspan="${pageWSpans[idxInPage]}" style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px; writing-mode: ${pageWSpans[idxInPage] > 1 ? 'vertical-rl' : 'horizontal-tb'}; transform: ${pageWSpans[idxInPage] > 1 ? 'rotate(180deg)' : 'none'}; white-space: nowrap; vertical-align: middle;">${getFieldValue(r.emp, key)}</td>`;
+              return;
+            }
+            if (mergeAssignment && key === 'جهة_التكليف') {
+              if (pageASpans[idxInPage] === 0) return;
+              html += `<td rowspan="${pageASpans[idxInPage]}" style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px; writing-mode: ${pageASpans[idxInPage] > 1 ? 'vertical-rl' : 'horizontal-tb'}; transform: ${pageASpans[idxInPage] > 1 ? 'rotate(180deg)' : 'none'}; white-space: nowrap; vertical-align: middle;">${getFieldValue(r.emp, key)}</td>`;
+              return;
+            }
             html += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(r.emp, key)}</td>`;
           });
           html += '</tr>';
@@ -805,6 +871,7 @@ export default function EmployeeDataRequest() {
       });
 
       let html = '';
+      let idxInPage = 0;
       segments.forEach(seg => {
         const periodLine1 = seg.group && seg.group.fromDate ? `من ${seg.group.fromDate}` : '';
         const periodLine2 = seg.group && seg.group.toDate ? `إلى ${seg.group.toDate} ${seg.group.dateType === 'hijri' ? 'هـ' : 'م'}` : '';
@@ -813,12 +880,23 @@ export default function EmployeeDataRequest() {
         seg.rows.forEach((r, li) => {
           html += `<tr style="background-color: ${r.bg};">`;
           otherFieldsExport.forEach(key => {
+            if (mergeWorkplace && key === 'المركز_الصحي') {
+              if (pageWSpans[idxInPage] === 0) return;
+              html += `<td rowspan="${pageWSpans[idxInPage]}" style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px; writing-mode: ${pageWSpans[idxInPage] > 1 ? 'vertical-rl' : 'horizontal-tb'}; transform: ${pageWSpans[idxInPage] > 1 ? 'rotate(180deg)' : 'none'}; white-space: nowrap; vertical-align: middle;">${getFieldValue(r.emp, key)}</td>`;
+              return;
+            }
+            if (mergeAssignment && key === 'جهة_التكليف') {
+              if (pageASpans[idxInPage] === 0) return;
+              html += `<td rowspan="${pageASpans[idxInPage]}" style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px; writing-mode: ${pageASpans[idxInPage] > 1 ? 'vertical-rl' : 'horizontal-tb'}; transform: ${pageASpans[idxInPage] > 1 ? 'rotate(180deg)' : 'none'}; white-space: nowrap; vertical-align: middle;">${getFieldValue(r.emp, key)}</td>`;
+              return;
+            }
             html += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(r.emp, key)}</td>`;
           });
           if (li === 0) {
             html += `<td rowspan="${seg.rows.length}" style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: #fff; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
           }
           html += '</tr>';
+          idxInPage++;
         });
       });
       return html;
@@ -941,7 +1019,7 @@ export default function EmployeeDataRequest() {
     .narrative-body { font-family: '${fontSettings.narrativeBody.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeBody.weight}; font-size: ${fontSettings.narrativeBody.size}px; display: inline; line-height: ${fontSettings.lineHeight || '2.0'}; }
     table { width: 100%; border-collapse: collapse; margin: 15px 0; }
     th { background: #e0f2fe; color: #000; border: 1px solid #d1d5db; padding: 10px 12px; text-align: center; font-family: '${fontSettings.tableHeader.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.tableHeader.weight}; font-size: ${fontSettings.tableHeader.size}px; }
-    td { border: 1px solid #d1d5db; padding: 4px 8px; text-align: center; font-family: '${fontSettings.tableBody.font}', 'Cairo', sans-serif; font-size: ${fontSettings.tableBody.size}px; font-weight: ${fontSettings.tableBody.weight}; }
+    td { border: 1px solid #d1d5db; padding: 4px 8px; text-align: center; font-family: '${fontSettings.tableBody.font}', 'Cairo', sans-serif; font-size: ${fontSettings.tableBody.size}px; font-weight: ${fontSettings.tableBody.weight}; vertical-align: middle; }
     .request-box { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; }
     .signature-section { text-align: ${sigAlign}; margin-top: 50px; padding: 15px 0; }
     .signature-section .sig-name { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 700; font-size: 18px; margin-top: 8px; color: #000; }
@@ -1444,6 +1522,33 @@ export default function EmployeeDataRequest() {
               {/* إعدادات الخطوط */}
               <FontSettings fontSettings={fontSettings} onFontSettingsChange={setFontSettings} />
 
+              {/* إعدادات دمج الخلايا */}
+              <div className="space-y-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <Label className="text-sm font-bold">إعدادات دمج الخلايا المتشابهة في الجدول</Label>
+                <div className="flex flex-col gap-2 mt-2">
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="mergeWorkplace"
+                      checked={mergeWorkplace}
+                      onCheckedChange={setMergeWorkplace}
+                    />
+                    <Label htmlFor="mergeWorkplace" className="cursor-pointer text-sm">
+                      دمج خلايا "جهة العمل" المتشابهة المتتالية (كتابة طولية)
+                    </Label>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="mergeAssignment"
+                      checked={mergeAssignment}
+                      onCheckedChange={setMergeAssignment}
+                    />
+                    <Label htmlFor="mergeAssignment" className="cursor-pointer text-sm">
+                      دمج خلايا "جهة التكليف" المتشابهة المتتالية (كتابة طولية)
+                    </Label>
+                  </div>
+                </div>
+              </div>
+
               {/* تجزئة الصفحات */}
               <div className="space-y-3 p-3 bg-indigo-50 rounded-lg border border-indigo-200">
                 <div className="flex items-center gap-2">
@@ -1681,14 +1786,30 @@ export default function EmployeeDataRequest() {
                         const otherCols = selectedFields.filter(k => k !== 'فترة_التكليف');
 
                         const renderMergedRows = (empList, bgFn) => {
+                          const wSpans = {}; const aSpans = {};
+                          if (mergeWorkplace || mergeAssignment) {
+                            let cw = null, ws = 0, ca = null, as = 0;
+                            empList.forEach((e, i) => {
+                              const w = getFieldValue(e, 'المركز_الصحي'); const a = getFieldValue(e, 'جهة_التكليف');
+                              if (mergeWorkplace) { if (w !== cw) { cw = w; ws = i; wSpans[i] = 1; } else { wSpans[ws]++; wSpans[i] = 0; } }
+                              if (mergeAssignment) { if (a !== ca) { ca = a; as = i; aSpans[i] = 1; } else { aSpans[as]++; aSpans[i] = 0; } }
+                            });
+                          }
+
                           if (!hasAssignCol || !assignmentGroups || assignmentGroups.length === 0) {
                             return empList.map((emp, idx) => (
                               <tr key={emp.id} style={{ backgroundColor: bgFn ? bgFn(idx) : (idx % 2 === 0 ? '#fff' : '#f9fafb') }}>
-                                {selectedFields.map(key => (
-                                  <td key={key} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000' }}>
-                                    {getFieldValue(emp, key)}
-                                  </td>
-                                ))}
+                                {selectedFields.map(key => {
+                                  if (mergeWorkplace && key === 'المركز_الصحي') {
+                                    if (wSpans[idx] === 0) return null;
+                                    return <td key={key} rowSpan={wSpans[idx]} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000', writingMode: wSpans[idx] > 1 ? 'vertical-rl' : 'horizontal-tb', transform: wSpans[idx] > 1 ? 'rotate(180deg)' : 'none', whiteSpace: 'nowrap', verticalAlign: 'middle', width: wSpans[idx] > 1 ? '40px' : 'auto' }}>{getFieldValue(emp, key)}</td>;
+                                  }
+                                  if (mergeAssignment && key === 'جهة_التكليف') {
+                                    if (aSpans[idx] === 0) return null;
+                                    return <td key={key} rowSpan={aSpans[idx]} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000', writingMode: aSpans[idx] > 1 ? 'vertical-rl' : 'horizontal-tb', transform: aSpans[idx] > 1 ? 'rotate(180deg)' : 'none', whiteSpace: 'nowrap', verticalAlign: 'middle', width: aSpans[idx] > 1 ? '40px' : 'auto' }}>{getFieldValue(emp, key)}</td>;
+                                  }
+                                  return <td key={key} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000' }}>{getFieldValue(emp, key)}</td>;
+                                })}
                               </tr>
                             ));
                           }
@@ -1702,6 +1823,19 @@ export default function EmployeeDataRequest() {
                           const ungrouped = empList.filter(e => !usedIds.has(e.id));
                           if (ungrouped.length > 0) grouped.push({ group: null, employees: ungrouped });
 
+                          const sortedEmps = [];
+                          grouped.forEach(({ employees: grpEmps }) => sortedEmps.push(...grpEmps));
+                          
+                          const sortedWSpans = {}; const sortedASpans = {};
+                          if (mergeWorkplace || mergeAssignment) {
+                            let cw = null, ws = 0, ca = null, as = 0;
+                            sortedEmps.forEach((e, i) => {
+                              const w = getFieldValue(e, 'المركز_الصحي'); const a = getFieldValue(e, 'جهة_التكليف');
+                              if (mergeWorkplace) { if (w !== cw) { cw = w; ws = i; sortedWSpans[i] = 1; } else { sortedWSpans[ws]++; sortedWSpans[i] = 0; } }
+                              if (mergeAssignment) { if (a !== ca) { ca = a; as = i; sortedASpans[i] = 1; } else { sortedASpans[as]++; sortedASpans[i] = 0; } }
+                            });
+                          }
+
                           const rows = [];
                           let gi = 0;
                           grouped.forEach(({ group, employees: grpEmps }) => {
@@ -1709,26 +1843,20 @@ export default function EmployeeDataRequest() {
                               const bg = bgFn ? bgFn(gi) : (gi % 2 === 0 ? '#fff' : '#f9fafb');
                               rows.push(
                                 <tr key={emp.id} style={{ backgroundColor: bg }}>
-                                  {otherCols.map(key => (
-                                    <td key={key} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000' }}>
-                                      {getFieldValue(emp, key)}
-                                    </td>
-                                  ))}
+                                  {otherCols.map(key => {
+                                    if (mergeWorkplace && key === 'المركز_الصحي') {
+                                      if (sortedWSpans[gi] === 0) return null;
+                                      return <td key={key} rowSpan={sortedWSpans[gi]} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000', writingMode: sortedWSpans[gi] > 1 ? 'vertical-rl' : 'horizontal-tb', transform: sortedWSpans[gi] > 1 ? 'rotate(180deg)' : 'none', whiteSpace: 'nowrap', verticalAlign: 'middle' }}>{getFieldValue(emp, key)}</td>;
+                                    }
+                                    if (mergeAssignment && key === 'جهة_التكليف') {
+                                      if (sortedASpans[gi] === 0) return null;
+                                      return <td key={key} rowSpan={sortedASpans[gi]} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000', writingMode: sortedASpans[gi] > 1 ? 'vertical-rl' : 'horizontal-tb', transform: sortedASpans[gi] > 1 ? 'rotate(180deg)' : 'none', whiteSpace: 'nowrap', verticalAlign: 'middle' }}>{getFieldValue(emp, key)}</td>;
+                                    }
+                                    return <td key={key} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000' }}>{getFieldValue(emp, key)}</td>;
+                                  })}
                                   {li === 0 && (
-                                    <td
-                                      key="فترة_التكليف"
-                                      rowSpan={grpEmps.length}
-                                      style={{
-                                        border: '1px solid #000', padding: '6px 4px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px',
-                                        backgroundColor: '#fff', minWidth: '80px', lineHeight: '1.6', color: '#000'
-                                      }}
-                                    >
-                                      {group && (group.fromDate || group.toDate)
-                                        ? <>
-                                            <div>من {group.fromDate || '...'}</div>
-                                            <div>إلى {group.toDate || '...'} {group.dateType === 'hijri' ? 'هـ' : 'م'}</div>
-                                          </>
-                                        : '-'}
+                                    <td key="فترة_التكليف" rowSpan={grpEmps.length} style={{ border: '1px solid #000', padding: '6px 4px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px', backgroundColor: '#fff', minWidth: '80px', lineHeight: '1.6', color: '#000' }}>
+                                      {group && (group.fromDate || group.toDate) ? <><div>من {group.fromDate || '...'}</div><div>إلى {group.toDate || '...'} {group.dateType === 'hijri' ? 'هـ' : 'م'}</div></> : '-'}
                                     </td>
                                   )}
                                 </tr>
@@ -1835,6 +1963,8 @@ export default function EmployeeDataRequest() {
           assignmentGroups={assignmentGroups}
           splitPages={splitPages}
           fontSettings={fontSettings}
+          mergeWorkplace={mergeWorkplace}
+          mergeAssignment={mergeAssignment}
         />
       </div>
     </div>

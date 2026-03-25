@@ -28,6 +28,8 @@ export default function ReportPreviewDialog({
   assignmentGroups,
   splitPages,
   fontSettings,
+  mergeWorkplace,
+  mergeAssignment,
 }) {
   const dateStr = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   
@@ -39,17 +41,73 @@ export default function ReportPreviewDialog({
   const otherFields = selectedFields.filter(k => k !== 'فترة_التكليف');
 
   const buildGroupedRows = (empList, bgFn) => {
+    // حساب دمج الخلايا لجهة العمل وجهة التكليف
+    const workplaceSpans = {};
+    const assignmentSpans = {};
+    
+    if (mergeWorkplace || mergeAssignment) {
+      let currentWorkplace = null;
+      let workplaceStartIdx = 0;
+      let currentAssignment = null;
+      let assignmentStartIdx = 0;
+
+      empList.forEach((emp, idx) => {
+        const wpVal = getFieldValue(emp, 'المركز_الصحي');
+        const asVal = getFieldValue(emp, 'جهة_التكليف');
+
+        if (mergeWorkplace) {
+          if (wpVal !== currentWorkplace) {
+            currentWorkplace = wpVal;
+            workplaceStartIdx = idx;
+            workplaceSpans[idx] = 1;
+          } else {
+            workplaceSpans[workplaceStartIdx]++;
+            workplaceSpans[idx] = 0;
+          }
+        }
+
+        if (mergeAssignment) {
+          if (asVal !== currentAssignment) {
+            currentAssignment = asVal;
+            assignmentStartIdx = idx;
+            assignmentSpans[idx] = 1;
+          } else {
+            assignmentSpans[assignmentStartIdx]++;
+            assignmentSpans[idx] = 0;
+          }
+        }
+      });
+    }
+
     if (!hasAssignmentField || !assignmentGroups || assignmentGroups.length === 0) {
       return empList.map((emp, idx) => (
         <tr key={emp.id} style={{ backgroundColor: bgFn ? bgFn(idx) : (idx % 2 === 0 ? '#fff' : '#f9fafb') }}>
-          {selectedFields.map(key => (
-            <td key={key} className="border border-gray-300 px-2 text-center text-xs font-bold" style={{ padding: '4px 8px' }}>
+          {selectedFields.map(key => {
+            if (mergeWorkplace && key === 'المركز_الصحي') {
+              if (workplaceSpans[idx] === 0) return null;
+              return (
+                <td key={key} rowSpan={workplaceSpans[idx]} className="border border-gray-300 px-2 text-center text-xs font-bold" style={{ padding: '4px 8px', writingMode: workplaceSpans[idx] > 1 ? 'vertical-rl' : 'horizontal-tb', transform: workplaceSpans[idx] > 1 ? 'rotate(180deg)' : 'none', whiteSpace: 'nowrap', verticalAlign: 'middle' }}>
+                  {getFieldValue(emp, key)}
+                </td>
+              );
+            }
+            if (mergeAssignment && key === 'جهة_التكليف') {
+              if (assignmentSpans[idx] === 0) return null;
+              return (
+                <td key={key} rowSpan={assignmentSpans[idx]} className="border border-gray-300 px-2 text-center text-xs font-bold" style={{ padding: '4px 8px', writingMode: assignmentSpans[idx] > 1 ? 'vertical-rl' : 'horizontal-tb', transform: assignmentSpans[idx] > 1 ? 'rotate(180deg)' : 'none', whiteSpace: 'nowrap', verticalAlign: 'middle' }}>
+                  {getFieldValue(emp, key)}
+                </td>
+              );
+            }
+            return (
+              <td key={key} className="border border-gray-300 px-2 text-center text-xs font-bold" style={{ padding: '4px 8px' }}>
                 {getFieldValue(emp, key)}
               </td>
-            ))}
-            </tr>
-            ));
-            }
+            );
+          })}
+        </tr>
+      ));
+    }
 
             // ترتيب الموظفين حسب المجموعات
     const grouped = [];
@@ -68,6 +126,21 @@ export default function ReportPreviewDialog({
       grouped.push({ group: null, employees: ungrouped });
     }
 
+    // إعادة حساب الدمج بعد الترتيب الجديد
+    const sortedEmps = [];
+    grouped.forEach(({ employees: grpEmps }) => sortedEmps.push(...grpEmps));
+    
+    const sortedWorkplaceSpans = {};
+    const sortedAssignmentSpans = {};
+    if (mergeWorkplace || mergeAssignment) {
+      let cw = null, ws = 0, ca = null, as = 0;
+      sortedEmps.forEach((e, i) => {
+        const w = getFieldValue(e, 'المركز_الصحي'); const a = getFieldValue(e, 'جهة_التكليف');
+        if (mergeWorkplace) { if (w !== cw) { cw = w; ws = i; sortedWorkplaceSpans[i] = 1; } else { sortedWorkplaceSpans[ws]++; sortedWorkplaceSpans[i] = 0; } }
+        if (mergeAssignment) { if (a !== ca) { ca = a; as = i; sortedAssignmentSpans[i] = 1; } else { sortedAssignmentSpans[as]++; sortedAssignmentSpans[i] = 0; } }
+      });
+    }
+
     const rows = [];
     let globalIdx = 0;
     grouped.forEach(({ group, employees: grpEmps }) => {
@@ -75,17 +148,36 @@ export default function ReportPreviewDialog({
         const bg = bgFn ? bgFn(globalIdx) : (globalIdx % 2 === 0 ? '#fff' : '#f9fafb');
         rows.push(
           <tr key={emp.id} style={{ backgroundColor: bg }}>
-            {otherFields.map(key => (
-              <td key={key} className="border border-gray-300 text-center text-xs font-bold" style={{ padding: '4px 8px' }}>
-                {getFieldValue(emp, key)}
-              </td>
-            ))}
+            {otherFields.map(key => {
+              if (mergeWorkplace && key === 'المركز_الصحي') {
+                if (sortedWorkplaceSpans[globalIdx] === 0) return null;
+                return (
+                  <td key={key} rowSpan={sortedWorkplaceSpans[globalIdx]} className="border border-gray-300 text-center text-xs font-bold" style={{ padding: '4px 8px', writingMode: sortedWorkplaceSpans[globalIdx] > 1 ? 'vertical-rl' : 'horizontal-tb', transform: sortedWorkplaceSpans[globalIdx] > 1 ? 'rotate(180deg)' : 'none', whiteSpace: 'nowrap', verticalAlign: 'middle' }}>
+                    {getFieldValue(emp, key)}
+                  </td>
+                );
+              }
+              if (mergeAssignment && key === 'جهة_التكليف') {
+                if (sortedAssignmentSpans[globalIdx] === 0) return null;
+                return (
+                  <td key={key} rowSpan={sortedAssignmentSpans[globalIdx]} className="border border-gray-300 text-center text-xs font-bold" style={{ padding: '4px 8px', writingMode: sortedAssignmentSpans[globalIdx] > 1 ? 'vertical-rl' : 'horizontal-tb', transform: sortedAssignmentSpans[globalIdx] > 1 ? 'rotate(180deg)' : 'none', whiteSpace: 'nowrap', verticalAlign: 'middle' }}>
+                    {getFieldValue(emp, key)}
+                  </td>
+                );
+              }
+              return (
+                <td key={key} className="border border-gray-300 text-center text-xs font-bold" style={{ padding: '4px 8px' }}>
+                  {getFieldValue(emp, key)}
+                </td>
+              );
+            })}
             {localIdx === 0 && (
               <td
                 key="فترة_التكليف"
                 rowSpan={grpEmps.length}
-                className="border border-gray-300 text-center text-xs font-bold" style={{ padding: '4px 8px' }}
+                className="border border-gray-300 text-center text-xs font-bold"
                 style={{
+                  padding: '4px 8px',
                   backgroundColor: '#fff',
                   minWidth: '80px',
                   lineHeight: '1.6',
