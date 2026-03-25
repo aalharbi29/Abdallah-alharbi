@@ -519,24 +519,20 @@ export default function EmployeeDataRequest() {
   };
 
   const handleExportToHTML = () => {
-    const headers = selectedFields.map(key =>
-      availableFields.find(f => f.key === key)?.label || key
-    );
-    exportToHTML({
-      headers,
-      displayMode,
-      selectedEmployees,
-      selectedFields,
-      groupedByManager,
-      getManagerWithCenters,
-      getFieldValue,
-      finalRequest,
-      availableFields
-    });
+    const html = generateReportHtml();
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${reportTitle || 'تقرير_بيانات_الموظفين'}_${new Date().toLocaleDateString('ar-SA')}.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
   };
 
   const handlePrint = () => {
-    window.print();
+    exportAsReport();
   };
 
   const getFieldValue = (emp, key) => {
@@ -572,7 +568,7 @@ export default function EmployeeDataRequest() {
     return emp[key] || '-';
   };
 
-  const exportAsReport = () => {
+  const generateReportHtml = () => {
     const headers = selectedFields.map(key =>
       availableFields.find(f => f.key === key)?.label || key
     );
