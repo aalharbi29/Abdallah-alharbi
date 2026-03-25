@@ -135,6 +135,12 @@ export default function CustomExportManager({
           'موقع_الخريطة': 'رابط الخريطة',
           'حالة_التشغيل': 'حالة التشغيل',
           'حالة_المركز': 'نوع الملكية',
+          'اسم_المؤجر': 'اسم المؤجر',
+          'هاتف_المؤجر': 'هاتف المؤجر',
+          'رقم_العقد': 'رقم العقد',
+          'تاريخ_بداية_العقد': 'تاريخ بداية العقد',
+          'تاريخ_انتهاء_العقد': 'تاريخ انتهاء العقد',
+          'قيمة_عقد_الايجار': 'قيمة عقد الإيجار',
           'مركز_نائي': 'مركز نائي',
           'هاتف_المركز': 'الهاتف الأرضي',
           'رقم_الشريحة': 'رقم الشريحة',
@@ -240,7 +246,7 @@ export default function CustomExportManager({
           filteredItem[field] = calculateAge(item.birth_date);
         } else if (field === 'contract_end_date_hijri' || field === 'hire_date_hijri' || field === 'birth_date_hijri' || field === 'start_work_date_hijri') {
           filteredItem[field] = item[field] || '';
-        } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date' || field === 'start_work_date') {
+        } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date' || field === 'start_work_date' || field === 'تاريخ_بداية_العقد' || field === 'تاريخ_انتهاء_العقد') {
           filteredItem[field] = formatDate(item[field]);
         } else if (type === 'healthcenters' && field === 'شريحة_وقود_عام') {
           const s = (typeof item.سيارة_خدمات?.شريحة_تعبئة_وقود === 'boolean') ? item.سيارة_خدمات.شريحة_تعبئة_وقود : null;
@@ -278,7 +284,7 @@ export default function CustomExportManager({
           value = calculateAge(item.birth_date);
         } else if (field === 'contract_end_date_hijri' || field === 'hire_date_hijri' || field === 'birth_date_hijri' || field === 'start_work_date_hijri') {
           value = item[field] || '';
-        } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date' || field === 'start_work_date') {
+        } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date' || field === 'start_work_date' || field === 'تاريخ_بداية_العقد' || field === 'تاريخ_انتهاء_العقد') {
           value = formatDate(item[field]);
         } else if ((field === 'المدير' || field === 'نائب_المدير' || field === 'المشرف_الفني') && type === 'healthcenters') {
           value = getEmployeeName(item[field]);
@@ -354,7 +360,7 @@ export default function CustomExportManager({
         return calculateAge(item.birth_date);
       } else if (field === 'contract_end_date_hijri' || field === 'hire_date_hijri' || field === 'birth_date_hijri' || field === 'start_work_date_hijri') {
         return item[field] || '';
-      } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date' || field === 'start_work_date') {
+      } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date' || field === 'start_work_date' || field === 'تاريخ_بداية_العقد' || field === 'تاريخ_انتهاء_العقد') {
         return formatDate(item[field]);
       } else if ((field === 'المدير' || field === 'نائب_المدير' || field === 'المشرف_الفني') && type === 'healthcenters') {
         // تحويل معرف الموظف إلى اسمه
