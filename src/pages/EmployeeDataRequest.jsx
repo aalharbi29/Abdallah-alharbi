@@ -640,7 +640,7 @@ export default function EmployeeDataRequest() {
 
   const handleExportToHTML = () => {
     const html = generateReportHtml({
-      selectedFields, availableFields, reportTitle, reportNarrative, lineStyles, fontSettings,
+      selectedFields, availableFields, reportTitle, reportNarrative, narrativePosition, lineStyles, fontSettings,
       logoSettings, logoPosition, showSignature, selectedSignatureId, signatures,
       signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees,
       displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
@@ -660,7 +660,7 @@ export default function EmployeeDataRequest() {
 
   const exportAsReport = () => {
     const html = generateReportHtml({
-      selectedFields, availableFields, reportTitle, reportNarrative, lineStyles, fontSettings,
+      selectedFields, availableFields, reportTitle, reportNarrative, narrativePosition, lineStyles, fontSettings,
       logoSettings, logoPosition, showSignature, selectedSignatureId, signatures,
       signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees,
       displayMode, groupedByManager, getManagerWithCenters, getFieldValue,

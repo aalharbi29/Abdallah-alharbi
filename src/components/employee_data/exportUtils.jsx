@@ -162,7 +162,7 @@ export const exportToHTML = ({
 };
 
 export const generateReportHtml = ({
-  selectedFields, availableFields, reportTitle, reportNarrative, lineStyles, fontSettings,
+  selectedFields, availableFields, reportTitle, reportNarrative, narrativePosition, lineStyles, fontSettings,
   logoSettings, logoPosition, showSignature, selectedSignatureId, signatures,
   signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees,
   displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
