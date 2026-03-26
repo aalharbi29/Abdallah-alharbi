@@ -236,9 +236,19 @@ export default function CenterEmployeeExporter({
         acc[ct] = (acc[ct] || 0) + 1;
         return acc;
       }, {});
+      
+      const annualPatientsHtml = center.annual_patients && center.annual_patients.length > 0 
+        ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #e5e7eb;">
+            <div style="font-weight:bold;font-size:11px;margin-bottom:5px;color:#374151;">عدد المراجعين السنوي:</div>
+            <div class="center-grid">
+              ${center.annual_patients.map(p => `<div class="center-item"><span class="ci-label">${p.year}:</span> <span class="ci-value" style="font-weight:bold;">${p.count}</span></div>`).join('')}
+            </div>
+          </div>`
+        : '';
+
       html += `
       <div class="center-section">
-        <div class="center-section-title" style="background:linear-gradient(135deg,#059669,#34d399);">إحصائيات الموظفين</div>
+        <div class="center-section-title" style="background:linear-gradient(135deg,#059669,#34d399);">إحصائيات الموظفين والمراجعين</div>
         <div style="text-align:center;padding:10px;font-size:18px;font-weight:bold;color:#0369a1;">إجمالي الموظفين: ${employees.length}</div>
         <div class="center-grid">
           ${Object.entries(jobCategoryCounts).map(([k,v]) => `<div class="center-item"><span class="ci-label">${k}:</span> <span class="ci-value" style="font-weight:bold;">${v}</span></div>`).join('')}
@@ -250,6 +260,7 @@ export default function CenterEmployeeExporter({
             ${Object.entries(contractCounts).map(([k,v]) => `<div class="center-item"><span class="ci-label">${k}:</span> <span class="ci-value" style="font-weight:bold;">${v}</span></div>`).join('')}
           </div>
         </div>` : ''}
+        ${annualPatientsHtml}
       </div>`;
     }
 

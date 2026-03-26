@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge"; // Added Badge import
-import { ArrowRight, Save, Hospital, User, Car, Phone, Building, MapPin, CheckCircle2, Plus, Trash2, X, ArrowLeftRight, MoveRight, MoveLeft } from "lucide-react";
+import { ArrowRight, Save, Hospital, User, Car, Phone, Building, MapPin, CheckCircle2, Plus, Trash2, X, ArrowLeftRight, MoveRight, MoveLeft, Users } from "lucide-react";
 import VoiceInput from "@/components/ui/VoiceInput";
 import { Employee } from "@/entities/Employee";
 import EmployeeSelector from "./EmployeeSelector";
@@ -92,7 +92,8 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
     organization_code: "",
     الوصف: "",
     حالة_التشغيل: "نشط",
-    معلومات_اضافية: ""
+    معلومات_اضافية: "",
+    annual_patients: []
   });
 
   const [employees, setEmployees] = useState(initialEmployees || []);
@@ -1023,6 +1024,72 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                 />
                 <p className="text-xs text-gray-500 mt-1">يُستخدم فقط إذا كانت هناك حاجة لرقم مختلف عن الحساب التلقائي</p>
               </div>
+             </CardContent>
+           </Card>
+
+           {/* عدد المراجعين السنوي */}
+           <Card className="shadow-lg overflow-hidden">
+             <CardHeader className="bg-gray-50 border-b">
+               <CardTitle className="flex items-center gap-3 text-lg">
+                 <Users className="text-teal-600"/>
+                 عدد المراجعين السنوي
+               </CardTitle>
+             </CardHeader>
+             <CardContent className="p-6 space-y-4">
+               {formData.annual_patients?.map((item, index) => (
+                 <div key={index} className="flex items-center gap-4">
+                   <div className="flex-1">
+                     <Label className="text-xs text-gray-600 mb-1 block">السنة</Label>
+                     <Input 
+                       type="number" 
+                       placeholder="مثال: 2025" 
+                       value={item.year || ''} 
+                       onChange={(e) => {
+                         const newPatients = [...(formData.annual_patients || [])];
+                         newPatients[index].year = parseInt(e.target.value) || '';
+                         handleChange('annual_patients', newPatients);
+                       }} 
+                     />
+                   </div>
+                   <div className="flex-1">
+                     <Label className="text-xs text-gray-600 mb-1 block">عدد المراجعين</Label>
+                     <Input 
+                       type="number" 
+                       placeholder="العدد" 
+                       value={item.count || ''} 
+                       onChange={(e) => {
+                         const newPatients = [...(formData.annual_patients || [])];
+                         newPatients[index].count = parseInt(e.target.value) || '';
+                         handleChange('annual_patients', newPatients);
+                       }} 
+                     />
+                   </div>
+                   <div className="pt-5">
+                     <Button 
+                       type="button" 
+                       variant="ghost" 
+                       onClick={() => {
+                         const newPatients = formData.annual_patients.filter((_, i) => i !== index);
+                         handleChange('annual_patients', newPatients);
+                       }}
+                       className="text-red-600 hover:bg-red-50"
+                     >
+                       <Trash2 className="w-4 h-4" />
+                     </Button>
+                   </div>
+                 </div>
+               ))}
+               <Button 
+                 type="button" 
+                 variant="outline" 
+                 onClick={() => {
+                   handleChange('annual_patients', [...(formData.annual_patients || []), { year: new Date().getFullYear(), count: 0 }]);
+                 }}
+                 className="mt-2"
+               >
+                 <Plus className="w-4 h-4 ml-2" />
+                 إضافة سنة جديدة
+               </Button>
              </CardContent>
            </Card>
 

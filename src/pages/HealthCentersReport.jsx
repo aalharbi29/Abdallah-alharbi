@@ -36,6 +36,7 @@ const availableFields = [
   { key: 'عدد_الموظفين', label: 'عدد الموظفين', category: 'stats', default: true },
   { key: 'سيارة_خدمات', label: 'سيارة الخدمات', category: 'vehicles', default: false },
   { key: 'سيارة_اسعاف', label: 'سيارة الإسعاف', category: 'vehicles', default: false },
+  { key: 'annual_patients', label: 'عدد المراجعين السنوي', category: 'stats', default: false },
 ];
 
 export default function HealthCentersReport() {
@@ -127,6 +128,9 @@ export default function HealthCentersReport() {
         نوع_وقود_سيارة_الاسعاف: center.سيارة_اسعاف?.نوع_الوقود || '',
         شريحة_وقود_سيارة_الاسعاف: (typeof center.سيارة_اسعاف?.شريحة_تعبئة_وقود === 'boolean') ? (center.سيارة_اسعاف.شريحة_تعبئة_وقود ? 'متوفرة' : 'غير متوفرة') : '',
         محطة_وقود_سيارة_الاسعاف: center.سيارة_اسعاف?.تبعية_المحطة || '',
+        annual_patients: center.annual_patients && center.annual_patients.length > 0 
+          ? center.annual_patients.map(p => `${p.year}: ${p.count}`).join(' | ')
+          : 'غير متوفر',
       };
     });
   }, [healthCenters, selectedCenters, employees]);
