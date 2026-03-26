@@ -1037,23 +1037,23 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
              </CardHeader>
              <CardContent className="p-6 space-y-4">
                {formData.annual_patients?.map((item, index) => (
-                 <div key={index} className="flex flex-col gap-4 p-4 border rounded-lg bg-gray-50">
+                 <div key={index} className="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-4">
                    <div className="flex items-center justify-between">
-                     <h4 className="font-semibold text-gray-700">إحصائية سنة {item.year || 'غير محددة'}</h4>
+                     <Label className="text-sm font-bold text-gray-700">إحصائية سنة {item.year || ''}</Label>
                      <Button 
                        type="button" 
                        variant="ghost" 
-                       size="sm"
                        onClick={() => {
                          const newPatients = formData.annual_patients.filter((_, i) => i !== index);
                          handleChange('annual_patients', newPatients);
                        }}
-                       className="text-red-600 hover:bg-red-100"
+                       className="text-red-600 hover:bg-red-50 h-8 px-2"
                      >
-                       <Trash2 className="w-4 h-4 ml-1" /> حذف الإحصائية
+                       <Trash2 className="w-4 h-4 ml-1" /> حذف
                      </Button>
                    </div>
-                   <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                   
+                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                      <div>
                        <Label className="text-xs text-gray-600 mb-1 block">السنة</Label>
                        <Input 
@@ -1068,70 +1068,86 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                        />
                      </div>
                      <div>
-                       <Label className="text-xs text-gray-600 mb-1 block">المراجعين (يومي)</Label>
+                       <Label className="text-xs text-gray-600 mb-1 block">المتوسط اليومي</Label>
                        <Input 
                          type="number" 
                          placeholder="العدد اليومي" 
                          value={item.daily_count || ''} 
                          onChange={(e) => {
+                           const val = parseInt(e.target.value) || 0;
                            const newPatients = [...(formData.annual_patients || [])];
-                           const daily = parseInt(e.target.value) || 0;
-                           newPatients[index].daily_count = daily;
-                           newPatients[index].monthly_count = daily * 22; // 22 working days approx
-                           newPatients[index].annual_count = (daily * 22) * 12;
+                           newPatients[index].daily_count = val;
+                           newPatients[index].monthly_count = val * 22;
+                           newPatients[index].count = val * 260;
                            handleChange('annual_patients', newPatients);
                          }} 
                        />
                      </div>
                      <div>
-                       <Label className="text-xs text-gray-600 mb-1 block">المراجعين (شهري)</Label>
+                       <Label className="text-xs text-gray-600 mb-1 block">المتوسط الشهري</Label>
                        <Input 
                          type="number" 
                          placeholder="العدد الشهري" 
                          value={item.monthly_count || ''} 
                          onChange={(e) => {
                            const newPatients = [...(formData.annual_patients || [])];
-                           const monthly = parseInt(e.target.value) || 0;
-                           newPatients[index].monthly_count = monthly;
-                           newPatients[index].annual_count = monthly * 12;
+                           newPatients[index].monthly_count = parseInt(e.target.value) || '';
                            handleChange('annual_patients', newPatients);
                          }} 
                        />
                      </div>
                      <div>
-                       <Label className="text-xs text-gray-600 mb-1 block">المراجعين (سنوي)</Label>
+                       <Label className="text-xs text-gray-600 mb-1 block">العدد السنوي</Label>
                        <Input 
                          type="number" 
                          placeholder="العدد السنوي" 
-                         value={item.annual_count || item.count || ''} 
+                         value={item.count || ''} 
                          onChange={(e) => {
                            const newPatients = [...(formData.annual_patients || [])];
-                           const annual = parseInt(e.target.value) || 0;
-                           newPatients[index].annual_count = annual;
+                           newPatients[index].count = parseInt(e.target.value) || '';
                            handleChange('annual_patients', newPatients);
                          }} 
                        />
                      </div>
-                     <div>
-                       <Label className="text-xs text-gray-600 mb-1 block">تفضيل العرض</Label>
-                       <Select 
-                         value={item.display_preference || 'سنوي'} 
-                         onValueChange={(val) => {
+                   </div>
+                   
+                   <div className="flex flex-wrap gap-4 pt-2 border-t border-gray-200">
+                     <Label className="text-xs text-gray-600 w-full">البيانات المراد إظهارها في الإحصائيات والتقارير:</Label>
+                     <div className="flex items-center gap-2">
+                       <Checkbox 
+                         id={`show_daily_${index}`}
+                         checked={item.show_daily || false}
+                         onCheckedChange={(checked) => {
                            const newPatients = [...(formData.annual_patients || [])];
-                           newPatients[index].display_preference = val;
+                           newPatients[index].show_daily = checked;
                            handleChange('annual_patients', newPatients);
                          }}
-                       >
-                         <SelectTrigger className="bg-white">
-                           <SelectValue />
-                         </SelectTrigger>
-                         <SelectContent>
-                           <SelectItem value="يومي">يومي</SelectItem>
-                           <SelectItem value="شهري">شهري</SelectItem>
-                           <SelectItem value="سنوي">سنوي</SelectItem>
-                           <SelectItem value="الكل">الكل</SelectItem>
-                         </SelectContent>
-                       </Select>
+                       />
+                       <Label htmlFor={`show_daily_${index}`} className="text-xs cursor-pointer">اليومي</Label>
+                     </div>
+                     <div className="flex items-center gap-2">
+                       <Checkbox 
+                         id={`show_monthly_${index}`}
+                         checked={item.show_monthly || false}
+                         onCheckedChange={(checked) => {
+                           const newPatients = [...(formData.annual_patients || [])];
+                           newPatients[index].show_monthly = checked;
+                           handleChange('annual_patients', newPatients);
+                         }}
+                       />
+                       <Label htmlFor={`show_monthly_${index}`} className="text-xs cursor-pointer">الشهري</Label>
+                     </div>
+                     <div className="flex items-center gap-2">
+                       <Checkbox 
+                         id={`show_annual_${index}`}
+                         checked={item.show_annual !== false}
+                         onCheckedChange={(checked) => {
+                           const newPatients = [...(formData.annual_patients || [])];
+                           newPatients[index].show_annual = checked;
+                           handleChange('annual_patients', newPatients);
+                         }}
+                       />
+                       <Label htmlFor={`show_annual_${index}`} className="text-xs cursor-pointer">السنوي</Label>
                      </div>
                    </div>
                  </div>
@@ -1144,14 +1160,16 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                      year: new Date().getFullYear(), 
                      daily_count: 0,
                      monthly_count: 0,
-                     annual_count: 0,
-                     display_preference: 'سنوي'
+                     count: 0,
+                     show_daily: false,
+                     show_monthly: false,
+                     show_annual: true
                    }]);
                  }}
                  className="mt-2"
                >
                  <Plus className="w-4 h-4 ml-2" />
-                 إضافة إحصائية سنة جديدة
+                 إضافة سنة جديدة
                </Button>
              </CardContent>
            </Card>

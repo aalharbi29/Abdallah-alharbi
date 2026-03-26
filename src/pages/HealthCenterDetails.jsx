@@ -1561,25 +1561,62 @@ export default function HealthCenterDetails() {
               </CardContent>
             </Card>
 
-            {/* إحصائيات الموظفين */}
+            {/* إحصائيات المركز */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Users className="text-blue-600" />
-                  إحصائيات الموظفين (محسوبة من النظام)
+                  <Activity className="text-blue-600" />
+                  إحصائيات المركز
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                {/* العدد الإجمالي */}
-                <div className="text-center mb-4 p-4 bg-blue-50 rounded-lg">
-                  <div className="text-3xl font-bold text-blue-600">{centerEmployees.length}</div>
-                  <div className="text-sm text-blue-500">إجمالي الموظفين المسجلين فعلياً</div>
-                </div>
-
-                {/* التقسيم بالتخصصات الفعلية */}
-                {centerEmployees.length > 0 && (
+              <CardContent className="space-y-6">
+                {/* إحصائيات المراجعين */}
+                {center.annual_patients && center.annual_patients.length > 0 && (
                   <div>
-                    <h4 className="font-semibold mb-3 text-gray-700">التوزيع حسب ملاك الوظيفة</h4>
+                    <h4 className="font-semibold mb-3 text-gray-700 flex items-center gap-2">
+                      <Users className="w-4 h-4 text-teal-600" />
+                      إحصائيات المراجعين
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {center.annual_patients.map((p, idx) => {
+                        const pref = p.display_preference || 'سنوي';
+                        const annual = p.annual_count || p.count || 0;
+                        let displayStr = '';
+                        let label = '';
+                        if (pref === 'يومي') { displayStr = p.daily_count || 0; label = 'يومياً'; }
+                        else if (pref === 'شهري') { displayStr = p.monthly_count || 0; label = 'شهرياً'; }
+                        else if (pref === 'سنوي') { displayStr = annual; label = 'سنوياً'; }
+                        else if (pref === 'الكل') { 
+                          displayStr = `${p.daily_count || 0} ي | ${p.monthly_count || 0} ش | ${annual} س`; 
+                          label = 'إحصائية شاملة';
+                        }
+                        else { displayStr = annual; label = 'سنوياً'; }
+
+                        return (
+                          <div key={idx} className="p-3 bg-teal-50 rounded-lg border border-teal-100">
+                            <div className="text-sm text-teal-600 font-medium mb-1">سنة {p.year}</div>
+                            <div className="text-xl font-bold text-teal-700">{displayStr}</div>
+                            <div className="text-xs text-teal-500">{label}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* إحصائيات الموظفين */}
+                <div>
+                  <h4 className="font-semibold mb-3 text-gray-700 flex items-center gap-2">
+                    <Briefcase className="w-4 h-4 text-blue-600" />
+                    إحصائيات الموظفين
+                  </h4>
+                  <div className="text-center mb-4 p-4 bg-blue-50 rounded-lg">
+                    <div className="text-3xl font-bold text-blue-600">{centerEmployees.length}</div>
+                    <div className="text-sm text-blue-500">إجمالي الموظفين المسجلين فعلياً</div>
+                  </div>
+
+                  {/* التقسيم بالتخصصات الفعلية */}
+                  {centerEmployees.length > 0 && (
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       {['طبيب', 'ممرض', 'صيدلي', 'فني', 'إداري', 'خدمات مساندة', 'أخرى'].map(category => {
                         const count = centerEmployees.filter(emp =>
@@ -1594,8 +1631,8 @@ export default function HealthCenterDetails() {
                         ) : null;
                       })}
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </CardContent>
             </Card>
           </div>

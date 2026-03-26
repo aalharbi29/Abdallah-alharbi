@@ -239,19 +239,14 @@ export default function CenterEmployeeExporter({
       
       const annualPatientsHtml = center.annual_patients && center.annual_patients.length > 0 
         ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #e5e7eb;">
-            <div style="font-weight:bold;font-size:11px;margin-bottom:5px;color:#374151;">عدد المراجعين السنوي:</div>
+            <div style="font-weight:bold;font-size:11px;margin-bottom:5px;color:#374151;">إحصائيات المراجعين:</div>
             <div class="center-grid">
               ${center.annual_patients.map(p => {
-                const pref = p.display_preference || 'سنوي';
-                const annual = p.annual_count || p.count || 0;
-                let displayStr = '';
-                if (pref === 'يومي') displayStr = `${p.daily_count || 0} يومياً`;
-                else if (pref === 'شهري') displayStr = `${p.monthly_count || 0} شهرياً`;
-                else if (pref === 'سنوي') displayStr = `${annual} سنوياً`;
-                else if (pref === 'الكل') displayStr = `${p.daily_count || 0} يومياً | ${p.monthly_count || 0} شهرياً | ${annual} سنوياً`;
-                else displayStr = `${annual} سنوياً`;
-                
-                return `<div class="center-item"><span class="ci-label">سنة ${p.year}:</span> <span class="ci-value" style="font-weight:bold;">${displayStr}</span></div>`;
+                const stats = [];
+                if (p.show_daily) stats.push(`يومي: ${p.daily_count || 0}`);
+                if (p.show_monthly) stats.push(`شهري: ${p.monthly_count || 0}`);
+                if (p.show_annual !== false) stats.push(`سنوي: ${p.count || 0}`);
+                return `<div class="center-item"><span class="ci-label">سنة ${p.year}:</span> <span class="ci-value" style="font-weight:bold;">${stats.join(' - ')}</span></div>`;
               }).join('')}
             </div>
           </div>`

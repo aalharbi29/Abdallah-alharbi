@@ -36,7 +36,7 @@ const availableFields = [
   { key: 'عدد_الموظفين', label: 'عدد الموظفين', category: 'stats', default: true },
   { key: 'سيارة_خدمات', label: 'سيارة الخدمات', category: 'vehicles', default: false },
   { key: 'سيارة_اسعاف', label: 'سيارة الإسعاف', category: 'vehicles', default: false },
-  { key: 'annual_patients', label: 'عدد المراجعين السنوي', category: 'stats', default: false },
+  { key: 'annual_patients', label: 'إحصائيات المراجعين', category: 'stats', default: false },
 ];
 
 export default function HealthCentersReport() {
@@ -130,14 +130,12 @@ export default function HealthCentersReport() {
         محطة_وقود_سيارة_الاسعاف: center.سيارة_اسعاف?.تبعية_المحطة || '',
         annual_patients: center.annual_patients && center.annual_patients.length > 0 
           ? center.annual_patients.map(p => {
-              const pref = p.display_preference || 'سنوي';
-              const annual = p.annual_count || p.count || 0;
-              if (pref === 'يومي') return `سنة ${p.year}: ${p.daily_count || 0} يومياً`;
-              if (pref === 'شهري') return `سنة ${p.year}: ${p.monthly_count || 0} شهرياً`;
-              if (pref === 'سنوي') return `سنة ${p.year}: ${annual} سنوياً`;
-              if (pref === 'الكل') return `سنة ${p.year}: ${p.daily_count || 0} يومياً | ${p.monthly_count || 0} شهرياً | ${annual} سنوياً`;
-              return `سنة ${p.year}: ${annual} سنوياً`;
-            }).join(' \n ')
+              const stats = [];
+              if (p.show_daily) stats.push(`يومي: ${p.daily_count || 0}`);
+              if (p.show_monthly) stats.push(`شهري: ${p.monthly_count || 0}`);
+              if (p.show_annual !== false) stats.push(`سنوي: ${p.count || 0}`);
+              return `${p.year} (${stats.join(' - ')})`;
+            }).join(' | ')
           : 'غير متوفر',
       };
     });
