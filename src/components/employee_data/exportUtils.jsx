@@ -404,7 +404,13 @@ export const generateReportHtml = ({
 
       seg.rows.forEach((r, li) => {
         html += `<tr style="background-color: ${r.bg};">`;
-        otherFieldsExport.forEach(key => {
+        selectedFields.forEach(key => {
+          if (key === 'فترة_التكليف') {
+            if (li === 0) {
+              html += `<td rowspan="${seg.rows.length}" style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: #fff; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
+            }
+            return;
+          }
           if (mergeWorkplace && key === 'المركز_الصحي') {
             if (pageWSpans[idxInPage] === 0) return;
             html += `<td rowspan="${pageWSpans[idxInPage]}" style="${getMergedCellStyle(pageWSpans[idxInPage], mergeWorkplaceOrientation)}">${renderMergedCellContent(getFieldValue(r.emp, key), pageWSpans[idxInPage], mergeWorkplaceOrientation)}</td>`;
@@ -417,9 +423,6 @@ export const generateReportHtml = ({
           }
           html += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(r.emp, key)}</td>`;
         });
-        if (li === 0) {
-          html += `<td rowspan="${seg.rows.length}" style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: #fff; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
-        }
         html += '</tr>';
         idxInPage++;
       });

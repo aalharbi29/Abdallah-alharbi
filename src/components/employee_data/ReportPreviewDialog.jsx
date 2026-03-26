@@ -179,7 +179,47 @@ export default function ReportPreviewDialog({
         const bg = bgFn ? bgFn(globalIdx) : (globalIdx % 2 === 0 ? '#fff' : '#f9fafb');
         rows.push(
           <tr key={emp.id} style={{ backgroundColor: bg }}>
-            {otherFields.map(key => {
+            {selectedFields.map(key => {
+              if (key === 'فترة_التكليف') {
+                if (localIdx === 0) {
+                  return (
+                    <td
+                      key="فترة_التكليف"
+                      rowSpan={grpEmps.length}
+                      className="border border-gray-300 text-center text-xs font-bold"
+                      style={{
+                        padding: '4px 8px',
+                        backgroundColor: '#fff',
+                        minWidth: '80px',
+                        lineHeight: '1.6',
+                      }}
+                    >
+                      {(() => {
+                        if (!group) return '-';
+                        const suffix = group.dateType === 'hijri' ? 'هـ' : 'م';
+                        let text = '';
+                        if (group.periodType === 'duration') {
+                          text = <><div>{group.durationText || '...'}</div><div>اعتباراً من {group.fromDate || '...'} {suffix}</div></>;
+                        } else if (group.fromDate || group.toDate) {
+                          text = <><div>من {group.fromDate || '...'}</div><div>إلى {group.toDate || '...'} {suffix}</div></>;
+                        } else {
+                          return '-';
+                        }
+                        return (
+                          <>
+                            {text}
+                            {group.specificDays && group.specificDays.length > 0 && (
+                              <div style={{ fontSize: '10px', marginTop: '4px', color: '#4b5563' }}>(أيام: {group.specificDays.join('، ')})</div>
+                            )}
+                          </>
+                        );
+                      })()}
+                    </td>
+                  );
+                }
+                return null;
+              }
+
               if (mergeWorkplace && key === 'المركز_الصحي') {
                 if (sortedWorkplaceSpans[globalIdx] === 0) return null;
                 return (
@@ -202,40 +242,6 @@ export default function ReportPreviewDialog({
                 </td>
               );
             })}
-            {localIdx === 0 && (
-              <td
-                key="فترة_التكليف"
-                rowSpan={grpEmps.length}
-                className="border border-gray-300 text-center text-xs font-bold"
-                style={{
-                  padding: '4px 8px',
-                  backgroundColor: '#fff',
-                  minWidth: '80px',
-                  lineHeight: '1.6',
-                }}
-              >
-                {(() => {
-                  if (!group) return '-';
-                  const suffix = group.dateType === 'hijri' ? 'هـ' : 'م';
-                  let text = '';
-                  if (group.periodType === 'duration') {
-                    text = <><div>{group.durationText || '...'}</div><div>اعتباراً من {group.fromDate || '...'} {suffix}</div></>;
-                  } else if (group.fromDate || group.toDate) {
-                    text = <><div>من {group.fromDate || '...'}</div><div>إلى {group.toDate || '...'} {suffix}</div></>;
-                  } else {
-                    return '-';
-                  }
-                  return (
-                    <>
-                      {text}
-                      {group.specificDays && group.specificDays.length > 0 && (
-                        <div style={{ fontSize: '10px', marginTop: '4px', color: '#4b5563' }}>(أيام: {group.specificDays.join('، ')})</div>
-                      )}
-                    </>
-                  );
-                })()}
-              </td>
-            )}
           </tr>
         );
         globalIdx++;

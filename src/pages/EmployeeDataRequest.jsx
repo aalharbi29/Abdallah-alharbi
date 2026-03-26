@@ -1638,7 +1638,36 @@ export default function EmployeeDataRequest() {
                               const bg = bgFn ? bgFn(gi) : (gi % 2 === 0 ? '#fff' : '#f9fafb');
                               rows.push(
                                 <tr key={emp.id} style={{ backgroundColor: bg }}>
-                                  {otherCols.map(key => {
+                                  {selectedFields.map(key => {
+                                    if (key === 'فترة_التكليف') {
+                                      if (li === 0) {
+                                        return (
+                                          <td key="فترة_التكليف" rowSpan={grpEmps.length} style={{ border: '1px solid #000', padding: '6px 4px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px', backgroundColor: '#fff', minWidth: '80px', lineHeight: '1.6', color: '#000' }}>
+                                            {(() => {
+                                              if (!group) return '-';
+                                              const suffix = group.dateType === 'hijri' ? 'هـ' : 'م';
+                                              let text = '';
+                                              if (group.periodType === 'duration') {
+                                                text = <><div>{group.durationText || '...'}</div><div>اعتباراً من {group.fromDate || '...'} {suffix}</div></>;
+                                              } else if (group.fromDate || group.toDate) {
+                                                text = <><div>من {group.fromDate || '...'}</div><div>إلى {group.toDate || '...'} {suffix}</div></>;
+                                              } else {
+                                                return '-';
+                                              }
+                                              return (
+                                                <>
+                                                  {text}
+                                                  {group.specificDays && group.specificDays.length > 0 && (
+                                                    <div style={{ fontSize: '10px', marginTop: '4px', color: '#4b5563' }}>(أيام: {group.specificDays.join('، ')})</div>
+                                                  )}
+                                                </>
+                                              );
+                                            })()}
+                                          </td>
+                                        );
+                                      }
+                                      return null;
+                                    }
                                     if (mergeWorkplace && key === 'المركز_الصحي') {
                                       if (sortedWSpans[gi] === 0) return null;
                                       return <td key={key} rowSpan={sortedWSpans[gi]} style={getMergedCellStyle(sortedWSpans[gi], mergeWorkplaceOrientation)}>{renderMergedCellContent(getFieldValue(emp, key), sortedWSpans[gi], mergeWorkplaceOrientation)}</td>;
@@ -1649,30 +1678,6 @@ export default function EmployeeDataRequest() {
                                     }
                                     return <td key={key} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000' }}>{getFieldValue(emp, key)}</td>;
                                   })}
-                                  {li === 0 && (
-                                    <td key="فترة_التكليف" rowSpan={grpEmps.length} style={{ border: '1px solid #000', padding: '6px 4px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px', backgroundColor: '#fff', minWidth: '80px', lineHeight: '1.6', color: '#000' }}>
-                                      {(() => {
-                                        if (!group) return '-';
-                                        const suffix = group.dateType === 'hijri' ? 'هـ' : 'م';
-                                        let text = '';
-                                        if (group.periodType === 'duration') {
-                                          text = <><div>{group.durationText || '...'}</div><div>اعتباراً من {group.fromDate || '...'} {suffix}</div></>;
-                                        } else if (group.fromDate || group.toDate) {
-                                          text = <><div>من {group.fromDate || '...'}</div><div>إلى {group.toDate || '...'} {suffix}</div></>;
-                                        } else {
-                                          return '-';
-                                        }
-                                        return (
-                                          <>
-                                            {text}
-                                            {group.specificDays && group.specificDays.length > 0 && (
-                                              <div style={{ fontSize: '10px', marginTop: '4px', color: '#4b5563' }}>(أيام: {group.specificDays.join('، ')})</div>
-                                            )}
-                                          </>
-                                        );
-                                      })()}
-                                    </td>
-                                  )}
                                 </tr>
                               );
                               gi++;
