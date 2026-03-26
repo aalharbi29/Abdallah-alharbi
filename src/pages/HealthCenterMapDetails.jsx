@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CenterMapLegend from '@/components/health_centers/CenterMapLegend';
 import CenterMapFilters from '@/components/health_centers/CenterMapFilters';
 import HealthCenterDetailMapView from '@/components/health_centers/HealthCenterDetailMapView';
+import AddMapPointForm from '@/components/health_centers/AddMapPointForm';
+import AddEpidemicCaseForm from '@/components/health_centers/AddEpidemicCaseForm';
 
 export default function HealthCenterMapDetails() {
   const location = useLocation();
@@ -18,7 +20,7 @@ export default function HealthCenterMapDetails() {
   const [showEpidemicCases, setShowEpidemicCases] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
+  const loadData = async () => {
     const params = new URLSearchParams(location.search);
     const id = params.get('id');
     if (!id) {
@@ -26,18 +28,18 @@ export default function HealthCenterMapDetails() {
       return;
     }
 
-    const loadData = async () => {
-      const [centerData, pointsData, casesData] = await Promise.all([
-        base44.entities.HealthCenter.get(id),
-        base44.entities.CenterMapPoint.filter({ health_center_id: id }, '-updated_date', 500),
-        base44.entities.EpidemicCasePoint.filter({ health_center_id: id }, '-updated_date', 500),
-      ]);
-      setCenter(centerData || null);
-      setImportantPoints(Array.isArray(pointsData) ? pointsData : []);
-      setEpidemicCases(Array.isArray(casesData) ? casesData : []);
-      setIsLoading(false);
-    };
+    const [centerData, pointsData, casesData] = await Promise.all([
+      base44.entities.HealthCenter.get(id),
+      base44.entities.CenterMapPoint.filter({ health_center_id: id }, '-updated_date', 500),
+      base44.entities.EpidemicCasePoint.filter({ health_center_id: id }, '-updated_date', 500),
+    ]);
+    setCenter(centerData || null);
+    setImportantPoints(Array.isArray(pointsData) ? pointsData : []);
+    setEpidemicCases(Array.isArray(casesData) ? casesData : []);
+    setIsLoading(false);
+  };
 
+  useEffect(() => {
     loadData();
   }, [location.search]);
 
@@ -103,6 +105,11 @@ export default function HealthCenterMapDetails() {
           importantPoints={filteredImportantPoints}
           epidemicCases={filteredEpidemicCases}
         />
+
+        <div className="grid gap-6 lg:grid-cols-2">
+          <AddMapPointForm center={center} onCreated={loadData} />
+          <AddEpidemicCaseForm center={center} onCreated={loadData} />
+        </div>
 
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
