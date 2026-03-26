@@ -1143,39 +1143,55 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                      <Label className="text-xs text-gray-600 w-full">البيانات المراد إظهارها في الإحصائيات والتقارير:</Label>
                      <div className="flex items-center gap-2">
                        <Checkbox 
-                         id={`show_daily_${index}`}
-                         checked={item.show_daily || false}
+                         id={`display_daily_${index}`}
+                         checked={item.display_preference === 'يومي'}
                          onCheckedChange={(checked) => {
+                           if (!checked) return;
                            const newPatients = [...(formData.annual_patients || [])];
-                           newPatients[index].show_daily = checked;
+                           newPatients[index].display_preference = 'يومي';
                            handleChange('annual_patients', newPatients);
                          }}
                        />
-                       <Label htmlFor={`show_daily_${index}`} className="text-xs cursor-pointer">اليومي</Label>
+                       <Label htmlFor={`display_daily_${index}`} className="text-xs cursor-pointer">اليومي</Label>
                      </div>
                      <div className="flex items-center gap-2">
                        <Checkbox 
-                         id={`show_monthly_${index}`}
-                         checked={item.show_monthly || false}
+                         id={`display_monthly_${index}`}
+                         checked={item.display_preference === 'شهري'}
                          onCheckedChange={(checked) => {
+                           if (!checked) return;
                            const newPatients = [...(formData.annual_patients || [])];
-                           newPatients[index].show_monthly = checked;
+                           newPatients[index].display_preference = 'شهري';
                            handleChange('annual_patients', newPatients);
                          }}
                        />
-                       <Label htmlFor={`show_monthly_${index}`} className="text-xs cursor-pointer">الشهري</Label>
+                       <Label htmlFor={`display_monthly_${index}`} className="text-xs cursor-pointer">الشهري</Label>
                      </div>
                      <div className="flex items-center gap-2">
                        <Checkbox 
-                         id={`show_annual_${index}`}
-                         checked={item.show_annual !== false}
+                         id={`display_annual_${index}`}
+                         checked={item.display_preference === 'سنوي' || !item.display_preference}
                          onCheckedChange={(checked) => {
+                           if (!checked) return;
                            const newPatients = [...(formData.annual_patients || [])];
-                           newPatients[index].show_annual = checked;
+                           newPatients[index].display_preference = 'سنوي';
                            handleChange('annual_patients', newPatients);
                          }}
                        />
-                       <Label htmlFor={`show_annual_${index}`} className="text-xs cursor-pointer">السنوي</Label>
+                       <Label htmlFor={`display_annual_${index}`} className="text-xs cursor-pointer">السنوي</Label>
+                     </div>
+                     <div className="flex items-center gap-2">
+                       <Checkbox 
+                         id={`display_all_${index}`}
+                         checked={item.display_preference === 'الكل'}
+                         onCheckedChange={(checked) => {
+                           if (!checked) return;
+                           const newPatients = [...(formData.annual_patients || [])];
+                           newPatients[index].display_preference = 'الكل';
+                           handleChange('annual_patients', newPatients);
+                         }}
+                       />
+                       <Label htmlFor={`display_all_${index}`} className="text-xs cursor-pointer">الكل</Label>
                      </div>
                    </div>
                  </div>
@@ -1188,10 +1204,8 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                      year: new Date().getFullYear(), 
                      daily_count: 0,
                      monthly_count: 0,
-                     count: 0,
-                     show_daily: false,
-                     show_monthly: false,
-                     show_annual: true
+                     annual_count: 0,
+                     display_preference: 'سنوي'
                    }]);
                  }}
                  className="mt-2"
