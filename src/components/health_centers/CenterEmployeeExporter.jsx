@@ -274,7 +274,7 @@ export default function CenterEmployeeExporter({
                 const stats = [];
                 if (p.show_daily) stats.push(`يومي: ${p.daily_count || 0}`);
                 if (p.show_monthly) stats.push(`شهري: ${p.monthly_count || 0}`);
-                if (p.show_annual !== false) stats.push(`سنوي: ${p.count || 0}`);
+                if (p.show_annual !== false) stats.push(`سنوي: ${p.annual_count || p.count || 0}`);
                 return `<div class="center-item"><span class="ci-label">سنة ${p.year}:</span> <span class="ci-value" style="font-weight:bold;">${stats.join(' - ')}</span></div>`;
               }).join('')}
             </div>

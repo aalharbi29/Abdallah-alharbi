@@ -168,7 +168,7 @@ export default function HealthCentersReport() {
               const stats = [];
               if (p.show_daily) stats.push(`يومي: ${p.daily_count || 0}`);
               if (p.show_monthly) stats.push(`شهري: ${p.monthly_count || 0}`);
-              if (p.show_annual !== false) stats.push(`سنوي: ${p.count || 0}`);
+              if (p.show_annual !== false) stats.push(`سنوي: ${p.annual_count || p.count || 0}`);
               return `${p.year} (${stats.join(' - ')})`;
             }).join(' | ')
           : 'غير متوفر',
