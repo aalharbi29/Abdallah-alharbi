@@ -129,7 +129,15 @@ export default function HealthCentersReport() {
         شريحة_وقود_سيارة_الاسعاف: (typeof center.سيارة_اسعاف?.شريحة_تعبئة_وقود === 'boolean') ? (center.سيارة_اسعاف.شريحة_تعبئة_وقود ? 'متوفرة' : 'غير متوفرة') : '',
         محطة_وقود_سيارة_الاسعاف: center.سيارة_اسعاف?.تبعية_المحطة || '',
         annual_patients: center.annual_patients && center.annual_patients.length > 0 
-          ? center.annual_patients.map(p => `${p.year}: ${p.count}`).join(' | ')
+          ? center.annual_patients.map(p => {
+              const pref = p.display_preference || 'سنوي';
+              const annual = p.annual_count || p.count || 0;
+              if (pref === 'يومي') return `سنة ${p.year}: ${p.daily_count || 0} يومياً`;
+              if (pref === 'شهري') return `سنة ${p.year}: ${p.monthly_count || 0} شهرياً`;
+              if (pref === 'سنوي') return `سنة ${p.year}: ${annual} سنوياً`;
+              if (pref === 'الكل') return `سنة ${p.year}: ${p.daily_count || 0} يومياً | ${p.monthly_count || 0} شهرياً | ${annual} سنوياً`;
+              return `سنة ${p.year}: ${annual} سنوياً`;
+            }).join(' \n ')
           : 'غير متوفر',
       };
     });

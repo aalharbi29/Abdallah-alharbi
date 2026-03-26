@@ -241,7 +241,18 @@ export default function CenterEmployeeExporter({
         ? `<div style="margin-top:8px;padding-top:8px;border-top:1px solid #e5e7eb;">
             <div style="font-weight:bold;font-size:11px;margin-bottom:5px;color:#374151;">عدد المراجعين السنوي:</div>
             <div class="center-grid">
-              ${center.annual_patients.map(p => `<div class="center-item"><span class="ci-label">${p.year}:</span> <span class="ci-value" style="font-weight:bold;">${p.count}</span></div>`).join('')}
+              ${center.annual_patients.map(p => {
+                const pref = p.display_preference || 'سنوي';
+                const annual = p.annual_count || p.count || 0;
+                let displayStr = '';
+                if (pref === 'يومي') displayStr = `${p.daily_count || 0} يومياً`;
+                else if (pref === 'شهري') displayStr = `${p.monthly_count || 0} شهرياً`;
+                else if (pref === 'سنوي') displayStr = `${annual} سنوياً`;
+                else if (pref === 'الكل') displayStr = `${p.daily_count || 0} يومياً | ${p.monthly_count || 0} شهرياً | ${annual} سنوياً`;
+                else displayStr = `${annual} سنوياً`;
+                
+                return `<div class="center-item"><span class="ci-label">سنة ${p.year}:</span> <span class="ci-value" style="font-weight:bold;">${displayStr}</span></div>`;
+              }).join('')}
             </div>
           </div>`
         : '';
