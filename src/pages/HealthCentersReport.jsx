@@ -166,10 +166,9 @@ export default function HealthCentersReport() {
         annual_patients: center.annual_patients && center.annual_patients.length > 0 
           ? center.annual_patients.map(p => {
               const stats = [];
-              const pref = p.display_preference || 'سنوي';
-              if (pref === 'يومي' || pref === 'الكل') stats.push(`يومي: ${p.daily_count || 0}`);
-              if (pref === 'شهري' || pref === 'الكل') stats.push(`شهري: ${p.monthly_count || 0}`);
-              if (pref === 'سنوي' || pref === 'الكل') stats.push(`سنوي: ${p.annual_count || 0}`);
+              if (p.show_daily) stats.push(`يومي: ${p.daily_count || 0}`);
+              if (p.show_monthly) stats.push(`شهري: ${p.monthly_count || 0}`);
+              if (p.show_annual !== false) stats.push(`سنوي: ${p.count || 0}`);
               return `${p.year} (${stats.join(' - ')})`;
             }).join(' | ')
           : 'غير متوفر',
@@ -405,6 +404,18 @@ export default function HealthCentersReport() {
       withAmbulance: processedCenters.filter(c => c.سيارة_اسعاف === 'متوفرة').length,
     };
 
+    const clinicStats = {};
+    processedCenters.forEach(center => {
+      if (center.العيادات_المتوفرة && Array.isArray(center.العيادات_المتوفرة)) {
+        center.العيادات_المتوفرة.forEach(clinic => {
+          const type = getClinicType(clinic);
+          if (selectedClinicTypes.includes(type)) {
+            clinicStats[type] = (clinicStats[type] || 0) + 1;
+          }
+        });
+      }
+    });
+
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -441,6 +452,24 @@ export default function HealthCentersReport() {
             </CardContent>
           </Card>
         </div>
+
+        {Object.keys(clinicStats).length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>إحصائيات العيادات المتوفرة</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {Object.entries(clinicStats).map(([type, count]) => (
+                  <div key={type} className="bg-purple-50 p-4 rounded-lg text-center border border-purple-100">
+                    <div className="text-2xl font-bold text-purple-600">{count}</div>
+                    <div className="text-sm text-gray-600 mt-1">{type}</div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <Card>
           <CardHeader>

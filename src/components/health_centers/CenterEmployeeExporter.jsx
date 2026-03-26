@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -32,6 +32,32 @@ export default function CenterEmployeeExporter({
   const [selectedCenterSections, setSelectedCenterSections] = useState(new Set([
     "basic", "contact", "leadership", "stats"
   ]));
+  const [selectedClinicTypes, setSelectedClinicTypes] = useState(new Set());
+
+  const getClinicType = (clinic) => {
+    let type = clinic.نوع_العيادة;
+    if (!type || type.trim() === '') {
+       type = (clinic.اسم_العيادة || '').replace(/عيادة/g, '').replace(/[0-9\u0660-\u0669]/g, '').replace(/-/g, '').trim();
+       type = type.replace(/\s+/g, ' ');
+    }
+    if (!type) type = 'أخرى';
+    return type;
+  };
+
+  const availableClinicTypes = React.useMemo(() => {
+    if (!center || !center.العيادات_المتوفرة) return [];
+    const types = new Set();
+    center.العيادات_المتوفرة.forEach(clinic => {
+      types.add(getClinicType(clinic));
+    });
+    return Array.from(types).sort();
+  }, [center]);
+
+  useEffect(() => {
+    if (availableClinicTypes.length > 0 && selectedClinicTypes.size === 0) {
+      setSelectedClinicTypes(new Set(availableClinicTypes));
+    }
+  }, [availableClinicTypes]);
 
   const centerSectionOptions = [
     { key: "basic", label: "المعلومات الأساسية" },
@@ -203,15 +229,18 @@ export default function CenterEmployeeExporter({
     }
 
     if (selectedCenterSections.has("clinics") && center.العيادات_المتوفرة?.length > 0) {
-      html += `
-      <div class="center-section">
-        <div class="center-section-title" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">العيادات والخدمات</div>
-        <div class="center-grid">
-          ${center.العيادات_المتوفرة.map(c => `
-            <div class="center-item"><span class="ci-label">${c.اسم_العيادة || 'عيادة'}:</span> <span class="ci-value">${c.نوع_العيادة || ''} ${c.الطبيب_المسؤول ? '- ' + c.الطبيب_المسؤول : ''}</span></div>
-          `).join('')}
-        </div>
-      </div>`;
+      const filteredClinics = center.العيادات_المتوفرة.filter(c => selectedClinicTypes.has(getClinicType(c)));
+      if (filteredClinics.length > 0) {
+        html += `
+        <div class="center-section">
+          <div class="center-section-title" style="background:linear-gradient(135deg,#7c3aed,#a78bfa);">العيادات والخدمات</div>
+          <div class="center-grid">
+            ${filteredClinics.map(c => `
+              <div class="center-item"><span class="ci-label">${c.اسم_العيادة || 'عيادة'}:</span> <span class="ci-value">${c.نوع_العيادة || ''} ${c.الطبيب_المسؤول ? '- ' + c.الطبيب_المسؤول : ''}</span></div>
+            `).join('')}
+          </div>
+        </div>`;
+      }
     }
 
     if (selectedCenterSections.has("vehicles")) {
@@ -243,10 +272,9 @@ export default function CenterEmployeeExporter({
             <div class="center-grid">
               ${center.annual_patients.map(p => {
                 const stats = [];
-                const pref = p.display_preference || 'سنوي';
-                if (pref === 'يومي' || pref === 'الكل') stats.push(`يومي: ${p.daily_count || 0}`);
-                if (pref === 'شهري' || pref === 'الكل') stats.push(`شهري: ${p.monthly_count || 0}`);
-                if (pref === 'سنوي' || pref === 'الكل') stats.push(`سنوي: ${p.annual_count || 0}`);
+                if (p.show_daily) stats.push(`يومي: ${p.daily_count || 0}`);
+                if (p.show_monthly) stats.push(`شهري: ${p.monthly_count || 0}`);
+                if (p.show_annual !== false) stats.push(`سنوي: ${p.count || 0}`);
                 return `<div class="center-item"><span class="ci-label">سنة ${p.year}:</span> <span class="ci-value" style="font-weight:bold;">${stats.join(' - ')}</span></div>`;
               }).join('')}
             </div>
@@ -619,24 +647,67 @@ export default function CenterEmployeeExporter({
             </div>
 
             {includeCenterInfo && (
-              <div className="grid grid-cols-2 gap-3">
-                {centerSectionOptions.map(section => (
-                  <div
-                    key={section.key}
-                    className={`flex items-center space-x-2 space-x-reverse p-3 rounded-lg border transition-all cursor-pointer ${
-                      selectedCenterSections.has(section.key)
-                        ? 'bg-green-50 border-green-300'
-                        : 'bg-white hover:bg-gray-50'
-                    }`}
-                    onClick={() => toggleCenterSection(section.key)}
-                  >
-                    <Checkbox
-                      checked={selectedCenterSections.has(section.key)}
-                      onCheckedChange={() => toggleCenterSection(section.key)}
-                    />
-                    <Label className="cursor-pointer flex-1">{section.label}</Label>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  {centerSectionOptions.map(section => (
+                    <div
+                      key={section.key}
+                      className={`flex items-center space-x-2 space-x-reverse p-3 rounded-lg border transition-all cursor-pointer ${
+                        selectedCenterSections.has(section.key)
+                          ? 'bg-green-50 border-green-300'
+                          : 'bg-white hover:bg-gray-50'
+                      }`}
+                      onClick={() => toggleCenterSection(section.key)}
+                    >
+                      <Checkbox
+                        checked={selectedCenterSections.has(section.key)}
+                        onCheckedChange={() => toggleCenterSection(section.key)}
+                      />
+                      <Label className="cursor-pointer flex-1">{section.label}</Label>
+                    </div>
+                  ))}
+                </div>
+
+                {selectedCenterSections.has("clinics") && availableClinicTypes.length > 0 && (
+                  <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                    <Label className="mb-3 block font-semibold text-gray-700">تخصيص العيادات المراد تصديرها</Label>
+                    <div className="flex gap-2 mb-3">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => setSelectedClinicTypes(new Set(availableClinicTypes))}
+                      >
+                        تحديد الكل
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        onClick={() => setSelectedClinicTypes(new Set())}
+                      >
+                        إلغاء التحديد
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-[150px] overflow-y-auto p-2 border rounded-md bg-white">
+                      {availableClinicTypes.map(type => (
+                        <div key={type} className="flex items-center space-x-2 space-x-reverse">
+                          <Checkbox
+                            id={`clinic-${type}`}
+                            checked={selectedClinicTypes.has(type)}
+                            onCheckedChange={() => {
+                              const newSet = new Set(selectedClinicTypes);
+                              if (newSet.has(type)) newSet.delete(type);
+                              else newSet.add(type);
+                              setSelectedClinicTypes(newSet);
+                            }}
+                          />
+                          <Label htmlFor={`clinic-${type}`} className="cursor-pointer text-sm">
+                            {type}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                ))}
+                )}
               </div>
             )}
 
