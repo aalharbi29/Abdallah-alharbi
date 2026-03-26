@@ -14,6 +14,7 @@ import LeishmaniaStatisticForm from './pages/LeishmaniaStatisticForm';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import HealthCentersMap from './pages/HealthCentersMap';
+import HealthCenterMapDetails from './pages/HealthCenterMapDetails';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -83,6 +84,11 @@ const AuthenticatedApp = () => {
       <Route path="/HealthCentersMap" element={
         <LayoutWrapper currentPageName="HealthCentersMap">
           <HealthCentersMap />
+        </LayoutWrapper>
+      } />
+      <Route path="/HealthCenterMapDetails" element={
+        <LayoutWrapper currentPageName="HealthCenterMapDetails">
+          <HealthCenterMapDetails />
         </LayoutWrapper>
       } />
       <Route path="*" element={<PageNotFound />} />

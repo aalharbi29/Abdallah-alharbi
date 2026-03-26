@@ -5,6 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Building2, Phone, Users, MapPin } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const markerIcon = new L.Icon({
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
@@ -82,6 +83,11 @@ export default function HealthCentersMapView({ centers }) {
                         <Users className="w-4 h-4 text-blue-600" />
                       </div>
                     )}
+                    <div className="pt-2 text-left">
+                      <Link to={`/HealthCenterMapDetails?id=${center.id}`} className="text-sm font-medium text-blue-600 hover:underline">
+                        فتح خريطة المركز التفصيلية
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </Popup>
