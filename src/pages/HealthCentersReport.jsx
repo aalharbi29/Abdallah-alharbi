@@ -37,6 +37,7 @@ const availableFields = [
   { key: 'سيارة_خدمات', label: 'سيارة الخدمات', category: 'vehicles', default: false },
   { key: 'سيارة_اسعاف', label: 'سيارة الإسعاف', category: 'vehicles', default: false },
   { key: 'annual_patients', label: 'إحصائيات المراجعين', category: 'stats', default: false },
+  { key: 'clinics_list', label: 'العيادات المتوفرة', category: 'basic', default: false },
 ];
 
 export default function HealthCentersReport() {
@@ -46,6 +47,7 @@ export default function HealthCentersReport() {
   const [selectedFields, setSelectedFields] = useState(
     availableFields.filter(f => f.default).map(f => f.key)
   );
+  const [availableClinicTypes, setAvailableClinicTypes] = useState([]);
   const [viewMode, setViewMode] = useState('cards'); // 'cards', 'table', 'presentation', 'stats'
   const [isLoading, setIsLoading] = useState(true);
   const [reportTitle, setReportTitle] = useState('تقرير المراكز الصحية');
@@ -137,6 +139,9 @@ export default function HealthCentersReport() {
               return `${p.year} (${stats.join(' - ')})`;
             }).join(' | ')
           : 'غير متوفر',
+        clinics_list: center.العيادات_المتوفرة && center.العيادات_المتوفرة.length > 0
+          ? center.العيادات_المتوفرة.map(c => c.اسم_العيادة).join('، ')
+          : 'لا يوجد',
       };
     });
   }, [healthCenters, selectedCenters, employees]);
