@@ -55,6 +55,7 @@ export default function HealthCentersReport() {
   const [colorScheme, setColorScheme] = useState('blue');
   const [showFilters, setShowFilters] = useState(true);
   const [pageOrientation, setPageOrientation] = useState('portrait'); // 'portrait' or 'landscape'
+  const [nameDisplayLanguage, setNameDisplayLanguage] = useState('ar'); // 'ar', 'en', 'both'
 
   useEffect(() => {
     loadData();
@@ -114,8 +115,16 @@ export default function HealthCentersReport() {
       const technicalSupervisor = getEmployeeById(center.المشرف_الفني);
       const employeesCount = getCenterEmployeesCount(center.اسم_المركز);
 
+      let displayName = center.اسم_المركز;
+      if (nameDisplayLanguage === 'en' && center.اسم_المركز_انجليزي) {
+        displayName = center.اسم_المركز_انجليزي;
+      } else if (nameDisplayLanguage === 'both' && center.اسم_المركز_انجليزي) {
+        displayName = `${center.اسم_المركز} - ${center.اسم_المركز_انجليزي}`;
+      }
+
       return {
         ...center,
+        اسم_المركز: displayName,
         المدير: manager
           ? [
               manager.full_name_arabic || '',
@@ -164,7 +173,7 @@ export default function HealthCentersReport() {
           : 'لا يوجد',
       };
     });
-  }, [healthCenters, selectedCenters, employees]);
+  }, [healthCenters, selectedCenters, employees, nameDisplayLanguage]);
 
   const toggleCenter = (centerId) => {
     if (selectedCenters.includes(centerId)) {
@@ -537,6 +546,34 @@ export default function HealthCentersReport() {
                       {scheme === 'red' && 'أحمر'}
                     </Button>
                   ))}
+                </div>
+              </div>
+
+              {/* Name Display Language */}
+              <div>
+                <Label>لغة عرض اسم المركز</Label>
+                <div className="flex gap-2 mt-2">
+                  <Button
+                    variant={nameDisplayLanguage === 'ar' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setNameDisplayLanguage('ar')}
+                  >
+                    العربية
+                  </Button>
+                  <Button
+                    variant={nameDisplayLanguage === 'en' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setNameDisplayLanguage('en')}
+                  >
+                    English
+                  </Button>
+                  <Button
+                    variant={nameDisplayLanguage === 'both' ? 'default' : 'outline'}
+                    size="sm"
+                    onClick={() => setNameDisplayLanguage('both')}
+                  >
+                    عربي + English
+                  </Button>
                 </div>
               </div>
 

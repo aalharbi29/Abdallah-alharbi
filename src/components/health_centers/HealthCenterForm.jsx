@@ -7,14 +7,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge"; // Added Badge import
-import { ArrowRight, Save, Hospital, User, Car, Phone, Building, MapPin, CheckCircle2, Plus, Trash2, X, ArrowLeftRight, MoveRight, MoveLeft, Users } from "lucide-react";
+import { ArrowRight, Save, Hospital, User, Car, Phone, Building, MapPin, CheckCircle2, Plus, Trash2, X, ArrowLeftRight, MoveRight, MoveLeft, Users, Sparkles, Loader2 } from "lucide-react";
 import VoiceInput from "@/components/ui/VoiceInput";
 import { Employee } from "@/entities/Employee";
 import EmployeeSelector from "./EmployeeSelector";
+import { base44 } from "@/api/base44Client";
 
 export default function HealthCenterForm({ center, onSubmit, onCancel, employees: initialEmployees }) {
   const [formData, setFormData] = useState(center || {
     اسم_المركز: "",
+    اسم_المركز_انجليزي: "",
     المدير: "",
     نائب_المدير: "",
     المشرف_الفني: "",
@@ -99,7 +101,23 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
   const [employees, setEmployees] = useState(initialEmployees || []);
   const [newClinic, setNewClinic] = useState({ اسم_العيادة: "", نوع_العيادة: "", الطبيب_المسؤول: "", ساعات_العمل: "" });
   const [newService, setNewService] = useState("");
+  const [isTranslating, setIsTranslating] = useState(false);
   const isEditMode = !!center;
+
+  const translateName = async () => {
+    if (!formData.اسم_المركز) return;
+    setIsTranslating(true);
+    try {
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: `Translate the following Saudi health center name to English. Only output the translated name, nothing else. Name: ${formData.اسم_المركز}`
+      });
+      handleChange("اسم_المركز_انجليزي", result);
+    } catch (error) {
+      console.error("Translation error:", error);
+    } finally {
+      setIsTranslating(false);
+    }
+  };
 
   useEffect(() => {
     const fetchEmployees = async () => {
@@ -227,6 +245,16 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                 <div className="flex gap-2">
                   <Input id="center_name" value={formData.اسم_المركز} onChange={(e) => handleChange("اسم_المركز", e.target.value)} required placeholder="مثل: مركز صحي العزيزية" className="flex-1" />
                   <VoiceInput onResult={(text) => handleChange("اسم_المركز", formData.اسم_المركز ? `${formData.اسم_المركز} ${text}` : text)} />
+                </div>
+              </div>
+              <div className="lg:col-span-2">
+                <Label htmlFor="center_name_en">اسم المركز (إنجليزي)</Label>
+                <div className="flex gap-2">
+                  <Input id="center_name_en" value={formData.اسم_المركز_انجليزي || ""} onChange={(e) => handleChange("اسم_المركز_انجليزي", e.target.value)} placeholder="e.g. Al-Aziziyah Health Center" className="flex-1 text-left" dir="ltr" />
+                  <Button type="button" variant="outline" onClick={translateName} disabled={isTranslating || !formData.اسم_المركز} className="shrink-0 gap-2">
+                    {isTranslating ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4 text-purple-500" />}
+                    ترجمة AI
+                  </Button>
                 </div>
               </div>
               <div>
