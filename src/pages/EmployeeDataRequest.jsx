@@ -118,6 +118,7 @@ export default function EmployeeDataRequest() {
 
   // حفظ وتحميل النموذج الافتراضي
   const saveDefaultTemplate = async () => {
+    console.log('Saving default template...');
     try {
       const template = {
         config_name: 'default',
