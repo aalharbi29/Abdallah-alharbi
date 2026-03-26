@@ -18,6 +18,7 @@ export default function HealthCenterMapDetails() {
   const [showCommercialPoints, setShowCommercialPoints] = useState(true);
   const [showOtherPoints, setShowOtherPoints] = useState(true);
   const [showEpidemicCases, setShowEpidemicCases] = useState(true);
+  const [selectedLocation, setSelectedLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const loadData = async () => {
@@ -104,11 +105,12 @@ export default function HealthCenterMapDetails() {
           center={center}
           importantPoints={filteredImportantPoints}
           epidemicCases={filteredEpidemicCases}
+          onMapClick={setSelectedLocation}
         />
 
         <div className="grid gap-6 lg:grid-cols-2">
-          <AddMapPointForm center={center} onCreated={loadData} />
-          <AddEpidemicCaseForm center={center} onCreated={loadData} />
+          <AddMapPointForm center={center} onCreated={loadData} selectedLocation={selectedLocation} />
+          <AddEpidemicCaseForm center={center} onCreated={loadData} selectedLocation={selectedLocation} />
         </div>
 
         <div className="grid gap-6 md:grid-cols-2">

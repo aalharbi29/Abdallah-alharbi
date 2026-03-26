@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Badge } from '@/components/ui/badge';
@@ -41,7 +41,17 @@ const redIcon = new L.DivIcon({
   iconAnchor: [9, 9],
 });
 
-export default function HealthCenterDetailMapView({ center, importantPoints, epidemicCases }) {
+function MapClickHandler({ onMapClick }) {
+  useMapEvents({
+    click(event) {
+      onMapClick({ latitude: event.latlng.lat, longitude: event.latlng.lng });
+    },
+  });
+
+  return null;
+}
+
+export default function HealthCenterDetailMapView({ center, importantPoints, epidemicCases, onMapClick }) {
   const lat = Number(center['خط_العرض']);
   const lng = Number(center['خط_الطول']);
   const position = !Number.isNaN(lat) && !Number.isNaN(lng) ? [lat, lng] : [24.7136, 46.6753];
@@ -50,6 +60,7 @@ export default function HealthCenterDetailMapView({ center, importantPoints, epi
     <div className="h-[70vh] rounded-2xl overflow-hidden border shadow-sm">
       <MapContainer center={position} zoom={13} className="h-full w-full" scrollWheelZoom>
         <TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <MapClickHandler onMapClick={onMapClick} />
 
         {!Number.isNaN(lat) && !Number.isNaN(lng) && (
           <Marker position={position} icon={blueIcon}>

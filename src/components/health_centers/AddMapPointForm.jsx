@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-export default function AddMapPointForm({ center, onCreated }) {
+export default function AddMapPointForm({ center, onCreated, selectedLocation }) {
   const [form, setForm] = useState({
     title: '',
     category: 'government',
@@ -13,6 +13,16 @@ export default function AddMapPointForm({ center, onCreated }) {
     latitude: center?.['خط_العرض'] || '',
     longitude: center?.['خط_الطول'] || '',
   });
+
+  useEffect(() => {
+    if (selectedLocation) {
+      setForm((prev) => ({
+        ...prev,
+        latitude: String(selectedLocation.latitude),
+        longitude: String(selectedLocation.longitude),
+      }));
+    }
+  }, [selectedLocation]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
