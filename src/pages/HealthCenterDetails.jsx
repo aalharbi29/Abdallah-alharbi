@@ -1580,7 +1580,7 @@ export default function HealthCenterDetails() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                       {center.annual_patients.map((p, idx) => {
                         const pref = p.display_preference || 'سنوي';
-                        const annual = p.annual_count || p.count || 0;
+                        const annual = p.annual_count || 0;
                         let displayStr = '';
                         let label = '';
                         if (pref === 'يومي') { displayStr = p.daily_count || 0; label = 'يومياً'; }
@@ -1595,7 +1595,7 @@ export default function HealthCenterDetails() {
                         return (
                           <div key={idx} className="p-3 bg-teal-50 rounded-lg border border-teal-100">
                             <div className="text-sm text-teal-600 font-medium mb-1">سنة {p.year}</div>
-                            <div className="text-xl font-bold text-teal-700">{displayStr}</div>
+                            <div className="text-xl font-bold text-teal-700">{String(displayStr)}</div>
                             <div className="text-xs text-teal-500">{label}</div>
                           </div>
                         );
