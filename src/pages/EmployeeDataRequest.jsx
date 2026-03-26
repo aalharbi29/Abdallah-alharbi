@@ -100,7 +100,9 @@ export default function EmployeeDataRequest() {
   const [rowsPerNextPage, setRowsPerNextPage] = useState(25);
   const [pageBreakAfterRows, setPageBreakAfterRows] = useState([]);
   const [mergeWorkplace, setMergeWorkplace] = useState(false);
+  const [mergeWorkplaceOrientation, setMergeWorkplaceOrientation] = useState('vertical');
   const [mergeAssignment, setMergeAssignment] = useState(false);
+  const [mergeAssignmentOrientation, setMergeAssignmentOrientation] = useState('vertical');
   const [fontSettings, setFontSettings] = useState({
     narrativeBold: { font: 'PT Sans Caption', size: '17', weight: '900' },
     narrativeGreeting: { font: 'Cairo', size: '16', weight: '700' },
@@ -135,7 +137,9 @@ export default function EmployeeDataRequest() {
         split_pages: splitPages,
         font_settings: fontSettings,
         merge_workplace: mergeWorkplace,
+        merge_workplace_orientation: mergeWorkplaceOrientation,
         merge_assignment: mergeAssignment,
+        merge_assignment_orientation: mergeAssignmentOrientation,
         assignment_groups: assignmentGroups,
         line_styles: lineStyles,
         rows_per_first_page: rowsPerFirstPage,
@@ -185,7 +189,9 @@ export default function EmployeeDataRequest() {
       if (t.split_pages !== undefined) setSplitPages(t.split_pages);
       if (t.font_settings) setFontSettings(t.font_settings);
       if (t.merge_workplace !== undefined) setMergeWorkplace(t.merge_workplace);
+      if (t.merge_workplace_orientation) setMergeWorkplaceOrientation(t.merge_workplace_orientation);
       if (t.merge_assignment !== undefined) setMergeAssignment(t.merge_assignment);
+      if (t.merge_assignment_orientation) setMergeAssignmentOrientation(t.merge_assignment_orientation);
       if (t.assignment_groups) setAssignmentGroups(t.assignment_groups);
       if (t.line_styles) setLineStyles(t.line_styles);
       if (t.rows_per_first_page) setRowsPerFirstPage(t.rows_per_first_page);
@@ -233,7 +239,9 @@ export default function EmployeeDataRequest() {
         lineHeight: '2.0',
       });
       setMergeWorkplace(false);
+      setMergeWorkplaceOrientation('vertical');
       setMergeAssignment(false);
+      setMergeAssignmentOrientation('vertical');
       setAssignmentGroups([{ id: Date.now(), fromDate: '', toDate: '', dateType: 'hijri', periodType: 'range', durationText: '', specificDays: [], employeeIds: [] }]);
       setLineStyles({});
       setRowsPerFirstPage(15);
@@ -275,7 +283,9 @@ export default function EmployeeDataRequest() {
             if (t.split_pages !== undefined) setSplitPages(t.split_pages);
             if (t.font_settings) setFontSettings(t.font_settings);
             if (t.merge_workplace !== undefined) setMergeWorkplace(t.merge_workplace);
+            if (t.merge_workplace_orientation) setMergeWorkplaceOrientation(t.merge_workplace_orientation);
             if (t.merge_assignment !== undefined) setMergeAssignment(t.merge_assignment);
+            if (t.merge_assignment_orientation) setMergeAssignmentOrientation(t.merge_assignment_orientation);
             if (t.assignment_groups) setAssignmentGroups(t.assignment_groups);
             if (t.line_styles) setLineStyles(t.line_styles);
             if (t.rows_per_first_page) setRowsPerFirstPage(t.rows_per_first_page);
@@ -649,7 +659,7 @@ export default function EmployeeDataRequest() {
       logoSettings, logoPosition, showSignature, selectedSignatureId, signatures,
       signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees,
       displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
-      mergeWorkplace, mergeAssignment, splitPages, rowsPerFirstPage, rowsPerNextPage,
+      mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, splitPages, rowsPerFirstPage, rowsPerNextPage,
       pageBreakAfterRows, finalRequest
     });
     const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
@@ -669,7 +679,7 @@ export default function EmployeeDataRequest() {
       logoSettings, logoPosition, showSignature, selectedSignatureId, signatures,
       signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees,
       displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
-      mergeWorkplace, mergeAssignment, splitPages, rowsPerFirstPage, rowsPerNextPage,
+      mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, splitPages, rowsPerFirstPage, rowsPerNextPage,
       pageBreakAfterRows, finalRequest
     });
 
@@ -720,6 +730,26 @@ export default function EmployeeDataRequest() {
       return val !== '-' ? val.replace(/\s*صحي\s*/g, ' ').trim() : '-';
     }
     return emp[key] || '-';
+  };
+
+  const getMergedCellStyle = (spanCount, orientation) => {
+    const baseStyle = { border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000', verticalAlign: 'middle' };
+    if (spanCount <= 1) return baseStyle;
+    
+    if (orientation === 'vertical') {
+      return { ...baseStyle, writingMode: 'vertical-rl', transform: 'rotate(180deg)', whiteSpace: 'nowrap', width: '40px' };
+    } else if (orientation === 'diagonal') {
+      return { ...baseStyle, whiteSpace: 'nowrap' };
+    } else {
+      return { ...baseStyle, whiteSpace: 'normal' };
+    }
+  };
+
+  const renderMergedCellContent = (content, spanCount, orientation) => {
+    if (spanCount > 1 && orientation === 'diagonal') {
+      return <div style={{ transform: 'rotate(-45deg)', display: 'inline-block', whiteSpace: 'nowrap' }}>{content}</div>;
+    }
+    return content;
   };
 
   return (
@@ -1258,26 +1288,54 @@ export default function EmployeeDataRequest() {
               {/* إعدادات دمج الخلايا */}
               <div className="space-y-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
                 <Label className="text-sm font-bold">إعدادات دمج الخلايا المتشابهة في الجدول</Label>
-                <div className="flex flex-col gap-2 mt-2">
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="mergeWorkplace"
-                      checked={mergeWorkplace}
-                      onCheckedChange={setMergeWorkplace}
-                    />
-                    <Label htmlFor="mergeWorkplace" className="cursor-pointer text-sm">
-                      دمج خلايا "جهة العمل" المتشابهة المتتالية (كتابة طولية)
-                    </Label>
+                <div className="flex flex-col gap-4 mt-2">
+                  <div className="flex flex-wrap items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id="mergeWorkplace"
+                        checked={mergeWorkplace}
+                        onCheckedChange={setMergeWorkplace}
+                      />
+                      <Label htmlFor="mergeWorkplace" className="cursor-pointer text-sm">
+                        دمج خلايا "جهة العمل" المتشابهة المتتالية
+                      </Label>
+                    </div>
+                    {mergeWorkplace && (
+                      <Select value={mergeWorkplaceOrientation} onValueChange={setMergeWorkplaceOrientation}>
+                        <SelectTrigger className="w-[180px] h-8 text-xs bg-white">
+                          <SelectValue placeholder="اتجاه النص" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="vertical">كتابة طولية</SelectItem>
+                          <SelectItem value="horizontal">كتابة بالعرض</SelectItem>
+                          <SelectItem value="diagonal">مائل 45 درجة</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      id="mergeAssignment"
-                      checked={mergeAssignment}
-                      onCheckedChange={setMergeAssignment}
-                    />
-                    <Label htmlFor="mergeAssignment" className="cursor-pointer text-sm">
-                      دمج خلايا "جهة التكليف" المتشابهة المتتالية (كتابة طولية)
-                    </Label>
+                  <div className="flex flex-wrap items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id="mergeAssignment"
+                        checked={mergeAssignment}
+                        onCheckedChange={setMergeAssignment}
+                      />
+                      <Label htmlFor="mergeAssignment" className="cursor-pointer text-sm">
+                        دمج خلايا "جهة التكليف" المتشابهة المتتالية
+                      </Label>
+                    </div>
+                    {mergeAssignment && (
+                      <Select value={mergeAssignmentOrientation} onValueChange={setMergeAssignmentOrientation}>
+                        <SelectTrigger className="w-[180px] h-8 text-xs bg-white">
+                          <SelectValue placeholder="اتجاه النص" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="vertical">كتابة طولية</SelectItem>
+                          <SelectItem value="horizontal">كتابة بالعرض</SelectItem>
+                          <SelectItem value="diagonal">مائل 45 درجة</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1538,11 +1596,11 @@ export default function EmployeeDataRequest() {
                                 {selectedFields.map(key => {
                                   if (mergeWorkplace && key === 'المركز_الصحي') {
                                     if (wSpans[idx] === 0) return null;
-                                    return <td key={key} rowSpan={wSpans[idx]} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000', writingMode: wSpans[idx] > 1 ? 'vertical-rl' : 'horizontal-tb', transform: wSpans[idx] > 1 ? 'rotate(180deg)' : 'none', whiteSpace: 'nowrap', verticalAlign: 'middle', width: wSpans[idx] > 1 ? '40px' : 'auto' }}>{getFieldValue(emp, key)}</td>;
+                                    return <td key={key} rowSpan={wSpans[idx]} style={getMergedCellStyle(wSpans[idx], mergeWorkplaceOrientation)}>{renderMergedCellContent(getFieldValue(emp, key), wSpans[idx], mergeWorkplaceOrientation)}</td>;
                                   }
                                   if (mergeAssignment && key === 'جهة_التكليف') {
                                     if (aSpans[idx] === 0) return null;
-                                    return <td key={key} rowSpan={aSpans[idx]} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000', writingMode: aSpans[idx] > 1 ? 'vertical-rl' : 'horizontal-tb', transform: aSpans[idx] > 1 ? 'rotate(180deg)' : 'none', whiteSpace: 'nowrap', verticalAlign: 'middle', width: aSpans[idx] > 1 ? '40px' : 'auto' }}>{getFieldValue(emp, key)}</td>;
+                                    return <td key={key} rowSpan={aSpans[idx]} style={getMergedCellStyle(aSpans[idx], mergeAssignmentOrientation)}>{renderMergedCellContent(getFieldValue(emp, key), aSpans[idx], mergeAssignmentOrientation)}</td>;
                                   }
                                   return <td key={key} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000' }}>{getFieldValue(emp, key)}</td>;
                                 })}
@@ -1582,11 +1640,11 @@ export default function EmployeeDataRequest() {
                                   {otherCols.map(key => {
                                     if (mergeWorkplace && key === 'المركز_الصحي') {
                                       if (sortedWSpans[gi] === 0) return null;
-                                      return <td key={key} rowSpan={sortedWSpans[gi]} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000', writingMode: sortedWSpans[gi] > 1 ? 'vertical-rl' : 'horizontal-tb', transform: sortedWSpans[gi] > 1 ? 'rotate(180deg)' : 'none', whiteSpace: 'nowrap', verticalAlign: 'middle' }}>{getFieldValue(emp, key)}</td>;
+                                      return <td key={key} rowSpan={sortedWSpans[gi]} style={getMergedCellStyle(sortedWSpans[gi], mergeWorkplaceOrientation)}>{renderMergedCellContent(getFieldValue(emp, key), sortedWSpans[gi], mergeWorkplaceOrientation)}</td>;
                                     }
                                     if (mergeAssignment && key === 'جهة_التكليف') {
                                       if (sortedASpans[gi] === 0) return null;
-                                      return <td key={key} rowSpan={sortedASpans[gi]} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000', writingMode: sortedASpans[gi] > 1 ? 'vertical-rl' : 'horizontal-tb', transform: sortedASpans[gi] > 1 ? 'rotate(180deg)' : 'none', whiteSpace: 'nowrap', verticalAlign: 'middle' }}>{getFieldValue(emp, key)}</td>;
+                                      return <td key={key} rowSpan={sortedASpans[gi]} style={getMergedCellStyle(sortedASpans[gi], mergeAssignmentOrientation)}>{renderMergedCellContent(getFieldValue(emp, key), sortedASpans[gi], mergeAssignmentOrientation)}</td>;
                                     }
                                     return <td key={key} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000' }}>{getFieldValue(emp, key)}</td>;
                                   })}
@@ -1719,7 +1777,9 @@ export default function EmployeeDataRequest() {
           splitPages={splitPages}
           fontSettings={fontSettings}
           mergeWorkplace={mergeWorkplace}
+          mergeWorkplaceOrientation={mergeWorkplaceOrientation}
           mergeAssignment={mergeAssignment}
+          mergeAssignmentOrientation={mergeAssignmentOrientation}
           lineStyles={lineStyles}
           setLineStyles={setLineStyles}
         />

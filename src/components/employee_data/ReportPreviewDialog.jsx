@@ -29,7 +29,9 @@ export default function ReportPreviewDialog({
   splitPages,
   fontSettings,
   mergeWorkplace,
+  mergeWorkplaceOrientation,
   mergeAssignment,
+  mergeAssignmentOrientation,
   lineStyles = {},
   setLineStyles,
 }) {
@@ -44,6 +46,26 @@ export default function ReportPreviewDialog({
   
   const logoJustifyClass = logoPosition === 'right' ? 'justify-end' : logoPosition === 'left' ? 'justify-start' : 'justify-center';
   const sigAlignClass = signaturePosition === 'right' ? 'text-right' : signaturePosition === 'left' ? 'text-left' : 'text-center';
+
+  const getMergedCellStyle = (spanCount, orientation) => {
+    const baseStyle = { padding: '4px 8px', verticalAlign: 'middle' };
+    if (spanCount <= 1) return baseStyle;
+    
+    if (orientation === 'vertical') {
+      return { ...baseStyle, writingMode: 'vertical-rl', transform: 'rotate(180deg)', whiteSpace: 'nowrap' };
+    } else if (orientation === 'diagonal') {
+      return { ...baseStyle, whiteSpace: 'nowrap' };
+    } else {
+      return { ...baseStyle, whiteSpace: 'normal' };
+    }
+  };
+
+  const renderMergedCellContent = (content, spanCount, orientation) => {
+    if (spanCount > 1 && orientation === 'diagonal') {
+      return <div style={{ transform: 'rotate(-45deg)', display: 'inline-block', whiteSpace: 'nowrap' }}>{content}</div>;
+    }
+    return content;
+  };
 
   // بناء خريطة المجموعات لعمود فترة التكليف المدمج
   const hasAssignmentField = selectedFields.includes('فترة_التكليف');
@@ -95,16 +117,16 @@ export default function ReportPreviewDialog({
             if (mergeWorkplace && key === 'المركز_الصحي') {
               if (workplaceSpans[idx] === 0) return null;
               return (
-                <td key={key} rowSpan={workplaceSpans[idx]} className="border border-gray-300 px-2 text-center text-xs font-bold" style={{ padding: '4px 8px', writingMode: workplaceSpans[idx] > 1 ? 'vertical-rl' : 'horizontal-tb', transform: workplaceSpans[idx] > 1 ? 'rotate(180deg)' : 'none', whiteSpace: 'nowrap', verticalAlign: 'middle' }}>
-                  {getFieldValue(emp, key)}
+                <td key={key} rowSpan={workplaceSpans[idx]} className="border border-gray-300 px-2 text-center text-xs font-bold" style={getMergedCellStyle(workplaceSpans[idx], mergeWorkplaceOrientation)}>
+                  {renderMergedCellContent(getFieldValue(emp, key), workplaceSpans[idx], mergeWorkplaceOrientation)}
                 </td>
               );
             }
             if (mergeAssignment && key === 'جهة_التكليف') {
               if (assignmentSpans[idx] === 0) return null;
               return (
-                <td key={key} rowSpan={assignmentSpans[idx]} className="border border-gray-300 px-2 text-center text-xs font-bold" style={{ padding: '4px 8px', writingMode: assignmentSpans[idx] > 1 ? 'vertical-rl' : 'horizontal-tb', transform: assignmentSpans[idx] > 1 ? 'rotate(180deg)' : 'none', whiteSpace: 'nowrap', verticalAlign: 'middle' }}>
-                  {getFieldValue(emp, key)}
+                <td key={key} rowSpan={assignmentSpans[idx]} className="border border-gray-300 px-2 text-center text-xs font-bold" style={getMergedCellStyle(assignmentSpans[idx], mergeAssignmentOrientation)}>
+                  {renderMergedCellContent(getFieldValue(emp, key), assignmentSpans[idx], mergeAssignmentOrientation)}
                 </td>
               );
             }
@@ -161,16 +183,16 @@ export default function ReportPreviewDialog({
               if (mergeWorkplace && key === 'المركز_الصحي') {
                 if (sortedWorkplaceSpans[globalIdx] === 0) return null;
                 return (
-                  <td key={key} rowSpan={sortedWorkplaceSpans[globalIdx]} className="border border-gray-300 text-center text-xs font-bold" style={{ padding: '4px 8px', writingMode: sortedWorkplaceSpans[globalIdx] > 1 ? 'vertical-rl' : 'horizontal-tb', transform: sortedWorkplaceSpans[globalIdx] > 1 ? 'rotate(180deg)' : 'none', whiteSpace: 'nowrap', verticalAlign: 'middle' }}>
-                    {getFieldValue(emp, key)}
+                  <td key={key} rowSpan={sortedWorkplaceSpans[globalIdx]} className="border border-gray-300 text-center text-xs font-bold" style={getMergedCellStyle(sortedWorkplaceSpans[globalIdx], mergeWorkplaceOrientation)}>
+                    {renderMergedCellContent(getFieldValue(emp, key), sortedWorkplaceSpans[globalIdx], mergeWorkplaceOrientation)}
                   </td>
                 );
               }
               if (mergeAssignment && key === 'جهة_التكليف') {
                 if (sortedAssignmentSpans[globalIdx] === 0) return null;
                 return (
-                  <td key={key} rowSpan={sortedAssignmentSpans[globalIdx]} className="border border-gray-300 text-center text-xs font-bold" style={{ padding: '4px 8px', writingMode: sortedAssignmentSpans[globalIdx] > 1 ? 'vertical-rl' : 'horizontal-tb', transform: sortedAssignmentSpans[globalIdx] > 1 ? 'rotate(180deg)' : 'none', whiteSpace: 'nowrap', verticalAlign: 'middle' }}>
-                    {getFieldValue(emp, key)}
+                  <td key={key} rowSpan={sortedAssignmentSpans[globalIdx]} className="border border-gray-300 text-center text-xs font-bold" style={getMergedCellStyle(sortedAssignmentSpans[globalIdx], mergeAssignmentOrientation)}>
+                    {renderMergedCellContent(getFieldValue(emp, key), sortedAssignmentSpans[globalIdx], mergeAssignmentOrientation)}
                   </td>
                 );
               }

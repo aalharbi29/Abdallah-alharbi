@@ -166,7 +166,7 @@ export const generateReportHtml = ({
   logoSettings, logoPosition, showSignature, selectedSignatureId, signatures,
   signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees,
   displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
-  mergeWorkplace, mergeAssignment, splitPages, rowsPerFirstPage, rowsPerNextPage,
+  mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, splitPages, rowsPerFirstPage, rowsPerNextPage,
   pageBreakAfterRows, finalRequest
 }) => {
   const headers = selectedFields.map(key =>
@@ -334,18 +334,39 @@ export const generateReportHtml = ({
       });
     }
 
+    const getMergedCellStyle = (spanCount, orientation) => {
+      let styleStr = 'border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px; vertical-align: middle;';
+      if (spanCount > 1) {
+        if (orientation === 'vertical') {
+          styleStr += ' writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; width: 40px;';
+        } else if (orientation === 'diagonal') {
+          styleStr += ' white-space: nowrap;';
+        } else {
+          styleStr += ' white-space: normal;';
+        }
+      }
+      return styleStr;
+    };
+
+    const renderMergedCellContent = (content, spanCount, orientation) => {
+      if (spanCount > 1 && orientation === 'diagonal') {
+        return `<div style="transform: rotate(-45deg); display: inline-block; white-space: nowrap;">${content}</div>`;
+      }
+      return content;
+    };
+
     if (!hasAssignmentCol || !assignmentGroups || assignmentGroups.length === 0) {
       return pageRows.map((r, idxInPage) => {
         let html = `<tr style="background-color: ${r.bg};">`;
         selectedFields.forEach(key => {
           if (mergeWorkplace && key === 'المركز_الصحي') {
             if (pageWSpans[idxInPage] === 0) return;
-            html += `<td rowspan="${pageWSpans[idxInPage]}" style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px; writing-mode: ${pageWSpans[idxInPage] > 1 ? 'vertical-rl' : 'horizontal-tb'}; transform: ${pageWSpans[idxInPage] > 1 ? 'rotate(180deg)' : 'none'}; white-space: nowrap; vertical-align: middle;">${getFieldValue(r.emp, key)}</td>`;
+            html += `<td rowspan="${pageWSpans[idxInPage]}" style="${getMergedCellStyle(pageWSpans[idxInPage], mergeWorkplaceOrientation)}">${renderMergedCellContent(getFieldValue(r.emp, key), pageWSpans[idxInPage], mergeWorkplaceOrientation)}</td>`;
             return;
           }
           if (mergeAssignment && key === 'جهة_التكليف') {
             if (pageASpans[idxInPage] === 0) return;
-            html += `<td rowspan="${pageASpans[idxInPage]}" style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px; writing-mode: ${pageASpans[idxInPage] > 1 ? 'vertical-rl' : 'horizontal-tb'}; transform: ${pageASpans[idxInPage] > 1 ? 'rotate(180deg)' : 'none'}; white-space: nowrap; vertical-align: middle;">${getFieldValue(r.emp, key)}</td>`;
+            html += `<td rowspan="${pageASpans[idxInPage]}" style="${getMergedCellStyle(pageASpans[idxInPage], mergeAssignmentOrientation)}">${renderMergedCellContent(getFieldValue(r.emp, key), pageASpans[idxInPage], mergeAssignmentOrientation)}</td>`;
             return;
           }
           html += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(r.emp, key)}</td>`;
@@ -386,12 +407,12 @@ export const generateReportHtml = ({
         otherFieldsExport.forEach(key => {
           if (mergeWorkplace && key === 'المركز_الصحي') {
             if (pageWSpans[idxInPage] === 0) return;
-            html += `<td rowspan="${pageWSpans[idxInPage]}" style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px; writing-mode: ${pageWSpans[idxInPage] > 1 ? 'vertical-rl' : 'horizontal-tb'}; transform: ${pageWSpans[idxInPage] > 1 ? 'rotate(180deg)' : 'none'}; white-space: nowrap; vertical-align: middle;">${getFieldValue(r.emp, key)}</td>`;
+            html += `<td rowspan="${pageWSpans[idxInPage]}" style="${getMergedCellStyle(pageWSpans[idxInPage], mergeWorkplaceOrientation)}">${renderMergedCellContent(getFieldValue(r.emp, key), pageWSpans[idxInPage], mergeWorkplaceOrientation)}</td>`;
             return;
           }
           if (mergeAssignment && key === 'جهة_التكليف') {
             if (pageASpans[idxInPage] === 0) return;
-            html += `<td rowspan="${pageASpans[idxInPage]}" style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px; writing-mode: ${pageASpans[idxInPage] > 1 ? 'vertical-rl' : 'horizontal-tb'}; transform: ${pageASpans[idxInPage] > 1 ? 'rotate(180deg)' : 'none'}; white-space: nowrap; vertical-align: middle;">${getFieldValue(r.emp, key)}</td>`;
+            html += `<td rowspan="${pageASpans[idxInPage]}" style="${getMergedCellStyle(pageASpans[idxInPage], mergeAssignmentOrientation)}">${renderMergedCellContent(getFieldValue(r.emp, key), pageASpans[idxInPage], mergeAssignmentOrientation)}</td>`;
             return;
           }
           html += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(r.emp, key)}</td>`;
