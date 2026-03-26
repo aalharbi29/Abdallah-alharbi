@@ -49,6 +49,7 @@ export default function HealthCentersMapView({ centers }) {
           <TileLayer
             attribution='&copy; OpenStreetMap contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            maxZoom={19}
           />
 
           {validCenters.map((center) => (

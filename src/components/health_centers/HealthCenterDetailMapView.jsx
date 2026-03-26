@@ -60,12 +60,8 @@ export default function HealthCenterDetailMapView({ center, importantPoints, epi
     <div className="h-[70vh] rounded-2xl overflow-hidden border shadow-sm">
       <MapContainer center={position} zoom={13} className="h-full w-full" scrollWheelZoom>
         <TileLayer
-          attribution='&copy; Esri &mdash; Esri, Maxar, Earthstar Geographics, and the GIS User Community'
-          url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-        />
-        <TileLayer
-          attribution='&copy; Esri'
-          url="https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
+          attribution='&copy; OpenStreetMap contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <MapClickHandler onMapClick={onMapClick} />
 
