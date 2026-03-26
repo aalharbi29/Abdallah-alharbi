@@ -297,8 +297,13 @@ export default function EmployeeDataRequest() {
   }, []);
 
   const loadSignatures = async () => {
-    const sigs = await base44.entities.StampSignature.filter({ is_active: true });
-    setSignatures(Array.isArray(sigs) ? sigs : []);
+    try {
+      const sigs = await base44.entities.StampSignature.filter({ is_active: true });
+      setSignatures(Array.isArray(sigs) ? sigs : []);
+    } catch (error) {
+      console.error('Error loading signatures:', error);
+      setSignatures([]);
+    }
   };
 
   const loadEmployees = async () => {
