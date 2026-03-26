@@ -148,6 +148,19 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
     }));
   };
 
+  const normalizePatientStats = (entry = {}) => {
+    const daily = Number(entry.daily_count) || 0;
+    const monthly = Number(entry.monthly_count) || 0;
+    const annual = Number(entry.annual_count ?? entry.count) || 0;
+    return {
+      year: Number(entry.year) || '',
+      daily_count: daily,
+      monthly_count: monthly,
+      annual_count: annual,
+      display_preference: entry.display_preference || 'سنوي'
+    };
+  };
+
   const addClinic = () => {
     if (newClinic.اسم_العيادة.trim()) {
       setFormData(prev => ({
@@ -1064,7 +1077,9 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                </CardTitle>
              </CardHeader>
              <CardContent className="p-6 space-y-4">
-               {formData.annual_patients?.map((item, index) => (
+               {(formData.annual_patients || []).map((rawItem, index) => {
+                 const item = normalizePatientStats(rawItem);
+                 return (
                  <div key={index} className="p-4 bg-gray-50 rounded-lg border border-gray-200 space-y-4">
                    <div className="flex items-center justify-between">
                      <Label className="text-sm font-bold text-gray-700">إحصائية سنة {item.year || ''}</Label>
@@ -1090,7 +1105,10 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                          value={item.year || ''} 
                          onChange={(e) => {
                            const newPatients = [...(formData.annual_patients || [])];
-                           newPatients[index].year = parseInt(e.target.value) || '';
+                           newPatients[index] = {
+                             ...normalizePatientStats(newPatients[index]),
+                             year: parseInt(e.target.value) || ''
+                           };
                            handleChange('annual_patients', newPatients);
                          }} 
                        />
@@ -1104,9 +1122,12 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                          onChange={(e) => {
                            const val = parseInt(e.target.value) || 0;
                            const newPatients = [...(formData.annual_patients || [])];
-                           newPatients[index].daily_count = val;
-                           newPatients[index].monthly_count = val * 22;
-                           newPatients[index].count = val * 260;
+                           newPatients[index] = {
+                             ...normalizePatientStats(newPatients[index]),
+                             daily_count: val,
+                             monthly_count: val * 22,
+                             annual_count: val * 260
+                           };
                            handleChange('annual_patients', newPatients);
                          }} 
                        />
@@ -1118,8 +1139,14 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                          placeholder="العدد الشهري" 
                          value={item.monthly_count || ''} 
                          onChange={(e) => {
+                           const monthly = parseInt(e.target.value) || 0;
                            const newPatients = [...(formData.annual_patients || [])];
-                           newPatients[index].monthly_count = parseInt(e.target.value) || '';
+                           newPatients[index] = {
+                             ...normalizePatientStats(newPatients[index]),
+                             monthly_count: monthly,
+                             daily_count: monthly ? Math.round(monthly / 22) : 0,
+                             annual_count: monthly * 12
+                           };
                            handleChange('annual_patients', newPatients);
                          }} 
                        />
@@ -1129,10 +1156,16 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                        <Input 
                          type="number" 
                          placeholder="العدد السنوي" 
-                         value={item.count || ''} 
+                         value={item.annual_count || ''} 
                          onChange={(e) => {
+                           const annual = parseInt(e.target.value) || 0;
                            const newPatients = [...(formData.annual_patients || [])];
-                           newPatients[index].count = parseInt(e.target.value) || '';
+                           newPatients[index] = {
+                             ...normalizePatientStats(newPatients[index]),
+                             annual_count: annual,
+                             monthly_count: annual ? Math.round(annual / 12) : 0,
+                             daily_count: annual ? Math.round(annual / 260) : 0
+                           };
                            handleChange('annual_patients', newPatients);
                          }} 
                        />
@@ -1148,7 +1181,10 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                          onCheckedChange={(checked) => {
                            if (!checked) return;
                            const newPatients = [...(formData.annual_patients || [])];
-                           newPatients[index].display_preference = 'يومي';
+                           newPatients[index] = {
+                             ...normalizePatientStats(newPatients[index]),
+                             display_preference: 'يومي'
+                           };
                            handleChange('annual_patients', newPatients);
                          }}
                        />
@@ -1161,7 +1197,10 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                          onCheckedChange={(checked) => {
                            if (!checked) return;
                            const newPatients = [...(formData.annual_patients || [])];
-                           newPatients[index].display_preference = 'شهري';
+                           newPatients[index] = {
+                             ...normalizePatientStats(newPatients[index]),
+                             display_preference: 'شهري'
+                           };
                            handleChange('annual_patients', newPatients);
                          }}
                        />
@@ -1174,7 +1213,10 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                          onCheckedChange={(checked) => {
                            if (!checked) return;
                            const newPatients = [...(formData.annual_patients || [])];
-                           newPatients[index].display_preference = 'سنوي';
+                           newPatients[index] = {
+                             ...normalizePatientStats(newPatients[index]),
+                             display_preference: 'سنوي'
+                           };
                            handleChange('annual_patients', newPatients);
                          }}
                        />
@@ -1187,16 +1229,20 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
                          onCheckedChange={(checked) => {
                            if (!checked) return;
                            const newPatients = [...(formData.annual_patients || [])];
-                           newPatients[index].display_preference = 'الكل';
+                           newPatients[index] = {
+                             ...normalizePatientStats(newPatients[index]),
+                             display_preference: 'الكل'
+                           };
                            handleChange('annual_patients', newPatients);
                          }}
                        />
                        <Label htmlFor={`display_all_${index}`} className="text-xs cursor-pointer">الكل</Label>
                      </div>
                    </div>
-                 </div>
-               ))}
-               <Button 
+                   </div>
+                   );
+                   })}
+                   <Button 
                  type="button" 
                  variant="outline" 
                  onClick={() => {

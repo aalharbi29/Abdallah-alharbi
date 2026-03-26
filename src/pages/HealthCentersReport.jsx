@@ -165,11 +165,14 @@ export default function HealthCentersReport() {
         محطة_وقود_سيارة_الاسعاف: center.سيارة_اسعاف?.تبعية_المحطة || '',
         annual_patients: center.annual_patients && center.annual_patients.length > 0 
           ? center.annual_patients.map(p => {
-              const stats = [];
-              if (p.show_daily) stats.push(`يومي: ${p.daily_count || 0}`);
-              if (p.show_monthly) stats.push(`شهري: ${p.monthly_count || 0}`);
-              if (p.show_annual !== false) stats.push(`سنوي: ${p.annual_count || p.count || 0}`);
-              return `${p.year} (${stats.join(' - ')})`;
+              const daily = Number(p.daily_count) || 0;
+              const monthly = Number(p.monthly_count) || 0;
+              const annual = Number(p.annual_count ?? p.count) || 0;
+              const pref = p.display_preference || 'سنوي';
+              if (pref === 'يومي') return `${p.year} (يومي: ${daily})`;
+              if (pref === 'شهري') return `${p.year} (شهري: ${monthly})`;
+              if (pref === 'الكل') return `${p.year} (يومي: ${daily} - شهري: ${monthly} - سنوي: ${annual})`;
+              return `${p.year} (سنوي: ${annual})`;
             }).join(' | ')
           : 'غير متوفر',
         clinics_list: center.العيادات_المتوفرة && center.العيادات_المتوفرة.length > 0
