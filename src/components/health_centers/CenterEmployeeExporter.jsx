@@ -243,9 +243,10 @@ export default function CenterEmployeeExporter({
             <div class="center-grid">
               ${center.annual_patients.map(p => {
                 const stats = [];
-                if (p.show_daily) stats.push(`يومي: ${p.daily_count || 0}`);
-                if (p.show_monthly) stats.push(`شهري: ${p.monthly_count || 0}`);
-                if (p.show_annual !== false) stats.push(`سنوي: ${p.count || 0}`);
+                const pref = p.display_preference || 'سنوي';
+                if (pref === 'يومي' || pref === 'الكل') stats.push(`يومي: ${p.daily_count || 0}`);
+                if (pref === 'شهري' || pref === 'الكل') stats.push(`شهري: ${p.monthly_count || 0}`);
+                if (pref === 'سنوي' || pref === 'الكل') stats.push(`سنوي: ${p.annual_count || 0}`);
                 return `<div class="center-item"><span class="ci-label">سنة ${p.year}:</span> <span class="ci-value" style="font-weight:bold;">${stats.join(' - ')}</span></div>`;
               }).join('')}
             </div>

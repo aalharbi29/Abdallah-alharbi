@@ -61,6 +61,16 @@ export default function HealthCentersReport() {
     loadData();
   }, []);
 
+  const getClinicType = (clinic) => {
+    let type = clinic.نوع_العيادة;
+    if (!type || type.trim() === '') {
+       type = (clinic.اسم_العيادة || '').replace(/عيادة/g, '').replace(/[0-9\u0660-\u0669]/g, '').replace(/-/g, '').trim();
+       type = type.replace(/\s+/g, ' ');
+    }
+    if (!type) type = 'أخرى';
+    return type;
+  };
+
   const loadData = async () => {
     setIsLoading(true);
     try {
@@ -76,13 +86,7 @@ export default function HealthCentersReport() {
       centers.forEach(center => {
         if (center.العيادات_المتوفرة && Array.isArray(center.العيادات_المتوفرة)) {
           center.العيادات_المتوفرة.forEach(clinic => {
-            let type = clinic.نوع_العيادة;
-            if (!type || type.trim() === '') {
-               type = (clinic.اسم_العيادة || '').replace(/عيادة/g, '').replace(/[0-9\u0660-\u0669]/g, '').replace(/-/g, '').trim();
-               type = type.replace(/\s+/g, ' ');
-            }
-            if (!type) type = 'أخرى';
-            types.add(type);
+            types.add(getClinicType(clinic));
           });
         }
       });
@@ -162,18 +166,22 @@ export default function HealthCentersReport() {
         annual_patients: center.annual_patients && center.annual_patients.length > 0 
           ? center.annual_patients.map(p => {
               const stats = [];
-              if (p.show_daily) stats.push(`يومي: ${p.daily_count || 0}`);
-              if (p.show_monthly) stats.push(`شهري: ${p.monthly_count || 0}`);
-              if (p.show_annual !== false) stats.push(`سنوي: ${p.count || 0}`);
+              const pref = p.display_preference || 'سنوي';
+              if (pref === 'يومي' || pref === 'الكل') stats.push(`يومي: ${p.daily_count || 0}`);
+              if (pref === 'شهري' || pref === 'الكل') stats.push(`شهري: ${p.monthly_count || 0}`);
+              if (pref === 'سنوي' || pref === 'الكل') stats.push(`سنوي: ${p.annual_count || 0}`);
               return `${p.year} (${stats.join(' - ')})`;
             }).join(' | ')
           : 'غير متوفر',
         clinics_list: center.العيادات_المتوفرة && center.العيادات_المتوفرة.length > 0
-          ? center.العيادات_المتوفرة.map(c => c.اسم_العيادة).join('، ')
+          ? center.العيادات_المتوفرة
+              .filter(c => selectedClinicTypes.includes(getClinicType(c)))
+              .map(c => c.اسم_العيادة)
+              .join('، ') || 'لا يوجد عيادات محددة'
           : 'لا يوجد',
       };
     });
-  }, [healthCenters, selectedCenters, employees, nameDisplayLanguage]);
+  }, [healthCenters, selectedCenters, employees, nameDisplayLanguage, selectedClinicTypes]);
 
   const toggleCenter = (centerId) => {
     if (selectedCenters.includes(centerId)) {
