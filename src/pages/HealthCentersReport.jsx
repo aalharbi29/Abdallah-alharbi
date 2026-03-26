@@ -48,6 +48,7 @@ export default function HealthCentersReport() {
     availableFields.filter(f => f.default).map(f => f.key)
   );
   const [availableClinicTypes, setAvailableClinicTypes] = useState([]);
+  const [selectedClinicTypes, setSelectedClinicTypes] = useState([]);
   const [viewMode, setViewMode] = useState('cards'); // 'cards', 'table', 'presentation', 'stats'
   const [isLoading, setIsLoading] = useState(true);
   const [reportTitle, setReportTitle] = useState('تقرير المراكز الصحية');
@@ -66,8 +67,27 @@ export default function HealthCentersReport() {
         base44.entities.HealthCenter.list('-updated_date', 500),
         base44.entities.Employee.list('-updated_date', 1000)
       ]);
-      setHealthCenters(Array.isArray(centersData) ? centersData : []);
+      const centers = Array.isArray(centersData) ? centersData : [];
+      setHealthCenters(centers);
       setEmployees(Array.isArray(employeesData) ? employeesData : []);
+
+      const types = new Set();
+      centers.forEach(center => {
+        if (center.العيادات_المتوفرة && Array.isArray(center.العيادات_المتوفرة)) {
+          center.العيادات_المتوفرة.forEach(clinic => {
+            let type = clinic.نوع_العيادة;
+            if (!type || type.trim() === '') {
+               type = (clinic.اسم_العيادة || '').replace(/عيادة/g, '').replace(/[0-9\u0660-\u0669]/g, '').replace(/-/g, '').trim();
+               type = type.replace(/\s+/g, ' ');
+            }
+            if (!type) type = 'أخرى';
+            types.add(type);
+          });
+        }
+      });
+      const uniqueTypes = Array.from(types).sort();
+      setAvailableClinicTypes(uniqueTypes);
+      setSelectedClinicTypes(uniqueTypes);
     } catch (error) {
       console.error('Error loading data:', error);
     } finally {
@@ -568,6 +588,41 @@ export default function HealthCentersReport() {
                       />
                       <Label htmlFor={center.id} className="cursor-pointer text-sm">
                         {center.اسم_المركز}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Clinic Selection */}
+              <div>
+                <Label>تخصيص إحصائية العيادات</Label>
+                <div className="flex gap-2 mt-2 mb-3">
+                  <Button variant="outline" size="sm" onClick={() => setSelectedClinicTypes(availableClinicTypes)}>
+                    <Check className="w-3 h-3 ml-1" />
+                    تحديد الكل
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => setSelectedClinicTypes([])}>
+                    <X className="w-3 h-3 ml-1" />
+                    إلغاء التحديد
+                  </Button>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-[200px] overflow-y-auto p-2 border rounded-md">
+                  {availableClinicTypes.map(type => (
+                    <div key={type} className="flex items-center space-x-2 space-x-reverse">
+                      <Checkbox
+                        id={`clinic-${type}`}
+                        checked={selectedClinicTypes.includes(type)}
+                        onCheckedChange={() => {
+                          if (selectedClinicTypes.includes(type)) {
+                            setSelectedClinicTypes(selectedClinicTypes.filter(t => t !== type));
+                          } else {
+                            setSelectedClinicTypes([...selectedClinicTypes, type]);
+                          }
+                        }}
+                      />
+                      <Label htmlFor={`clinic-${type}`} className="cursor-pointer text-sm">
+                        {type}
                       </Label>
                     </div>
                   ))}
