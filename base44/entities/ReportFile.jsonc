@@ -1,0 +1,32 @@
+{
+  "name": "ReportFile",
+  "type": "object",
+  "properties": {
+    "report_category": {
+      "type": "string",
+      "description": "\u0641\u0626\u0629 \u0627\u0644\u062a\u0642\u0631\u064a\u0631 (\u0645\u0641\u062a\u0627\u062d)"
+    },
+    "report_title": {
+      "type": "string",
+      "description": "\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u062a\u0642\u0631\u064a\u0631"
+    },
+    "description": {
+      "type": "string",
+      "description": "\u0648\u0635\u0641 \u0644\u0644\u062a\u0642\u0631\u064a\u0631"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "\u0631\u0627\u0628\u0637 \u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0645\u0631\u0641\u0648\u0639"
+    },
+    "file_name": {
+      "type": "string",
+      "description": "\u0627\u0633\u0645 \u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0623\u0635\u0644\u064a"
+    }
+  },
+  "required": [
+    "report_category",
+    "report_title",
+    "file_url",
+    "file_name"
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "name": "ReportConfiguration",
+  "type": "object",
+  "properties": {
+    "config_name": {
+      "type": "string",
+      "default": "default"
+    },
+    "selected_employees_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "employee_managers": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "assignment_centers": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "report_title": {
+      "type": "string"
+    },
+    "report_narrative": {
+      "type": "string"
+    },
+    "narrative_position": {
+      "type": "string"
+    },
+    "selected_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "display_mode": {
+      "type": "string"
+    },
+    "logo_position": {
+      "type": "string"
+    },
+    "signature_position": {
+      "type": "string"
+    },
+    "signer_name": {
+      "type": "string"
+    },
+    "signer_title": {
+      "type": "string"
+    },
+    "show_signature": {
+      "type": "boolean"
+    },
+    "selected_signature_id": {
+      "type": "string"
+    },
+    "split_pages": {
+      "type": "boolean"
+    },
+    "font_settings": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "merge_workplace": {
+      "type": "boolean"
+    },
+    "merge_assignment": {
+      "type": "boolean"
+    },
+    "assignment_groups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "line_styles": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "rows_per_first_page": {
+      "type": "number"
+    },
+    "rows_per_next_page": {
+      "type": "number"
+    },
+    "page_break_after_rows": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      }
+    }
+  },
+  "required": [
+    "config_name"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "name": "ResponseTemplate",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0642\u0627\u0644\u0628"
+    },
+    "category": {
+      "type": "string",
+      "description": "\u062a\u0635\u0646\u064a\u0641 \u0627\u0644\u0645\u0644\u0627\u062d\u0638\u0629 \u0627\u0644\u0645\u0646\u0627\u0633\u0628"
+    },
+    "department": {
+      "type": "string",
+      "description": "\u0627\u0644\u0642\u0633\u0645 \u0627\u0644\u0645\u0646\u0627\u0633\u0628"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "\u062d\u0631\u062c\u0629",
+        "\u0639\u0627\u0644\u064a\u0629",
+        "\u0645\u062a\u0648\u0633\u0637\u0629",
+        "\u0645\u0646\u062e\u0641\u0636\u0629",
+        "\u0627\u0644\u0643\u0644"
+      ],
+      "default": "\u0627\u0644\u0643\u0644",
+      "description": "\u0645\u0633\u062a\u0648\u0649 \u0627\u0644\u062e\u0637\u0648\u0631\u0629 \u0627\u0644\u0645\u0646\u0627\u0633\u0628"
+    },
+    "response_text": {
+      "type": "string",
+      "description": "\u0646\u0635 \u0627\u0644\u0631\u062f \u0627\u0644\u062c\u0627\u0647\u0632"
+    },
+    "corrective_action": {
+      "type": "string",
+      "description": "\u0627\u0644\u0625\u062c\u0631\u0627\u0621 \u0627\u0644\u062a\u0635\u062d\u064a\u062d\u064a \u0627\u0644\u0645\u0642\u062a\u0631\u062d"
+    },
+    "estimated_days": {
+      "type": "number",
+      "description": "\u0627\u0644\u0645\u062f\u0629 \u0627\u0644\u0645\u0642\u062f\u0631\u0629 \u0644\u0644\u062a\u0646\u0641\u064a\u0630 \u0628\u0627\u0644\u0623\u064a\u0627\u0645"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "\u0647\u0644 \u0627\u0644\u0642\u0627\u0644\u0628 \u0646\u0634\u0637"
+    }
+  },
+  "required": [
+    "title",
+    "category",
+    "response_text"
+  ]
+}

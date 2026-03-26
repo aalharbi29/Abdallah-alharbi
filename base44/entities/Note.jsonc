@@ -1,0 +1,38 @@
+{
+  "name": "Note",
+  "type": "object",
+  "properties": {
+    "content": {
+      "type": "string",
+      "description": "\u0645\u062d\u062a\u0648\u0649 \u0627\u0644\u0645\u0644\u0627\u062d\u0638\u0629"
+    },
+    "color": {
+      "type": "string",
+      "enum": [
+        "yellow",
+        "blue",
+        "green",
+        "pink",
+        "purple",
+        "orange"
+      ],
+      "default": "yellow",
+      "description": "\u0644\u0648\u0646 \u0627\u0644\u0645\u0644\u0627\u062d\u0638\u0629"
+    },
+    "position": {
+      "type": "object",
+      "description": "\u0645\u0648\u0636\u0639 \u0627\u0644\u0645\u0644\u0627\u062d\u0638\u0629 \u0639\u0644\u0649 \u0627\u0644\u0634\u0627\u0634\u0629",
+      "properties": {
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      }
+    }
+  },
+  "required": [
+    "content"
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "name": "HolidayAssignmentStatement",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "\u0639\u0646\u0648\u0627\u0646 \u0627\u0644\u0628\u064a\u0627\u0646"
+    },
+    "holiday_type": {
+      "type": "string",
+      "enum": [
+        "\u0627\u0644\u062d\u062c",
+        "\u0639\u064a\u062f \u0627\u0644\u0641\u0637\u0631",
+        "\u0627\u0644\u064a\u0648\u0645 \u0627\u0644\u0648\u0637\u0646\u064a \u0648\u064a\u0648\u0645 \u0627\u0644\u062a\u0623\u0633\u064a\u0633"
+      ],
+      "description": "\u0646\u0648\u0639 \u0627\u0644\u0625\u062c\u0627\u0632\u0629"
+    },
+    "year": {
+      "type": "number",
+      "description": "\u0627\u0644\u0633\u0646\u0629"
+    },
+    "year_type": {
+      "type": "string",
+      "enum": [
+        "hijri",
+        "gregorian"
+      ],
+      "description": "\u0646\u0648\u0639 \u0627\u0644\u062a\u0642\u0648\u064a\u0645"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u0628\u062f\u0627\u064a\u0629"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u0646\u0647\u0627\u064a\u0629"
+    },
+    "department": {
+      "type": "string",
+      "description": "\u0627\u0644\u0625\u062f\u0627\u0631\u0629 \u0623\u0648 \u0627\u0644\u062c\u0647\u0629"
+    },
+    "header_text": {
+      "type": "string",
+      "description": "\u0646\u0635 \u0627\u0644\u0645\u0642\u062f\u0645\u0629"
+    },
+    "footer_text": {
+      "type": "string",
+      "description": "\u0646\u0635 \u0627\u0644\u062e\u062a\u0627\u0645"
+    },
+    "employees_data": {
+      "type": "array",
+      "description": "\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u0645\u0648\u0638\u0641\u064a\u0646 \u0627\u0644\u0645\u0643\u0644\u0641\u064a\u0646",
+      "items": {
+        "type": "object",
+        "properties": {
+          "employee_id": {
+            "type": "string"
+          },
+          "full_name": {
+            "type": "string"
+          },
+          "employee_number": {
+            "type": "string"
+          },
+          "national_id": {
+            "type": "string"
+          },
+          "position": {
+            "type": "string"
+          },
+          "health_center": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "department": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "original_file_url": {
+      "type": "string",
+      "description": "\u0631\u0627\u0628\u0637 \u0627\u0644\u0645\u0644\u0641 \u0627\u0644\u0623\u0635\u0644\u064a"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "final"
+      ],
+      "default": "draft",
+      "description": "\u062d\u0627\u0644\u0629 \u0627\u0644\u0628\u064a\u0627\u0646"
+    }
+  },
+  "required": [
+    "title",
+    "holiday_type",
+    "year",
+    "employees_data"
+  ]
+}

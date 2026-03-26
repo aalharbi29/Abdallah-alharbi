@@ -1,0 +1,146 @@
+{
+  "name": "Form205",
+  "type": "object",
+  "properties": {
+    "employee_record_id": {
+      "type": "string",
+      "description": "\u0645\u0639\u0631\u0641 \u0633\u062c\u0644 \u0627\u0644\u0645\u0648\u0638\u0641"
+    },
+    "ministry": {
+      "type": "string",
+      "description": "\u0627\u0644\u0648\u0632\u0627\u0631\u0629"
+    },
+    "administration": {
+      "type": "string",
+      "description": "\u0627\u0644\u0625\u062f\u0627\u0631\u0629"
+    },
+    "country": {
+      "type": "string",
+      "description": "\u0627\u0644\u0628\u0644\u062f"
+    },
+    "job_title_budget": {
+      "type": "string",
+      "description": "\u0645\u0633\u0645\u0649 \u0627\u0644\u0648\u0638\u064a\u0641\u0629 \u0628\u0627\u0644\u0645\u064a\u0632\u0627\u0646\u064a\u0629"
+    },
+    "job_rank": {
+      "type": "string",
+      "description": "\u0645\u0631\u062a\u0628\u062a\u0647\u0627"
+    },
+    "job_number": {
+      "type": "string",
+      "description": "\u0631\u0642\u0645\u0647\u0627"
+    },
+    "employee_name": {
+      "type": "string",
+      "description": "\u0627\u0633\u0645 \u0634\u0627\u063a\u0644\u0647\u0627"
+    },
+    "employee_position": {
+      "type": "string",
+      "description": "\u0648\u0638\u064a\u0641\u062a\u0647"
+    },
+    "assignment_decision_number": {
+      "type": "string",
+      "description": "\u0631\u0642\u0645 \u0642\u0631\u0627\u0631 \u0627\u0644\u062a\u0643\u0644\u064a\u0641"
+    },
+    "assignment_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u062a\u0627\u0631\u064a\u062e\u0647"
+    },
+    "duty_1": {
+      "type": "string",
+      "description": "\u0627\u0644\u0648\u0627\u062c\u0628 \u0627\u0644\u0623\u0648\u0644"
+    },
+    "duty_1_percentage": {
+      "type": "number",
+      "description": "\u0646\u0633\u0628\u0629 \u0627\u0644\u0648\u0627\u062c\u0628 \u0627\u0644\u0623\u0648\u0644"
+    },
+    "duty_2": {
+      "type": "string",
+      "description": "\u0627\u0644\u0648\u0627\u062c\u0628 \u0627\u0644\u062b\u0627\u0646\u064a"
+    },
+    "duty_2_percentage": {
+      "type": "number",
+      "description": "\u0646\u0633\u0628\u0629 \u0627\u0644\u0648\u0627\u062c\u0628 \u0627\u0644\u062b\u0627\u0646\u064a"
+    },
+    "duty_3": {
+      "type": "string",
+      "description": "\u0627\u0644\u0648\u0627\u062c\u0628 \u0627\u0644\u062b\u0627\u0644\u062b"
+    },
+    "duty_3_percentage": {
+      "type": "number",
+      "description": "\u0646\u0633\u0628\u0629 \u0627\u0644\u0648\u0627\u062c\u0628 \u0627\u0644\u062b\u0627\u0644\u062b"
+    },
+    "duty_4": {
+      "type": "string",
+      "description": "\u0627\u0644\u0648\u0627\u062c\u0628 \u0627\u0644\u0631\u0627\u0628\u0639"
+    },
+    "duty_4_percentage": {
+      "type": "number",
+      "description": "\u0646\u0633\u0628\u0629 \u0627\u0644\u0648\u0627\u062c\u0628 \u0627\u0644\u0631\u0627\u0628\u0639"
+    },
+    "duty_5": {
+      "type": "string",
+      "description": "\u0627\u0644\u0648\u0627\u062c\u0628 \u0627\u0644\u062e\u0627\u0645\u0633"
+    },
+    "duty_5_percentage": {
+      "type": "number",
+      "description": "\u0646\u0633\u0628\u0629 \u0627\u0644\u0648\u0627\u062c\u0628 \u0627\u0644\u062e\u0627\u0645\u0633"
+    },
+    "duty_6": {
+      "type": "string",
+      "description": "\u0627\u0644\u0648\u0627\u062c\u0628 \u0627\u0644\u0633\u0627\u062f\u0633"
+    },
+    "duty_6_percentage": {
+      "type": "number",
+      "description": "\u0646\u0633\u0628\u0629 \u0627\u0644\u0648\u0627\u062c\u0628 \u0627\u0644\u0633\u0627\u062f\u0633"
+    },
+    "work_location_office": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u0645\u0643\u062a\u0628"
+    },
+    "work_location_lab": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u0645\u0639\u0645\u0644"
+    },
+    "work_location_hospital": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u0645\u0633\u062a\u0634\u0641\u0649"
+    },
+    "work_location_field": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u0645\u064a\u062f\u0627\u0646"
+    },
+    "work_location_street": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u0634\u0627\u0631\u0639"
+    },
+    "work_location_warehouse": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u0645\u0633\u062a\u0648\u062f\u0639"
+    },
+    "work_location_workshop": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u0648\u0631\u0634\u0629"
+    },
+    "work_location_other": {
+      "type": "string",
+      "description": "\u0645\u0643\u0627\u0646 \u0622\u062e\u0631 \u064a\u062d\u062f\u062f"
+    },
+    "reason_for_presence": {
+      "type": "string",
+      "description": "\u0633\u0628\u0628 \u0627\u0644\u062a\u0648\u0627\u062c\u062f \u0641\u064a \u0647\u0630\u0627 \u0627\u0644\u0645\u0643\u0627\u0646"
+    }
+  },
+  "required": [
+    "employee_name",
+    "employee_position"
+  ]
+}

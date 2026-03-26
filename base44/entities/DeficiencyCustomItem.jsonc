@@ -1,0 +1,26 @@
+{
+  "name": "DeficiencyCustomItem",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "\u0627\u0633\u0645 \u0627\u0644\u0639\u0646\u0635\u0631 \u0627\u0644\u0645\u062e\u0635\u0635"
+    },
+    "category": {
+      "type": "string",
+      "description": "\u062a\u0635\u0646\u064a\u0641 \u0627\u0644\u0639\u0646\u0635\u0631"
+    },
+    "item_type": {
+      "type": "string",
+      "enum": [
+        "medical",
+        "nonmedical"
+      ],
+      "description": "\u0646\u0648\u0639 \u0627\u0644\u0639\u0646\u0635\u0631: \u0637\u0628\u064a \u0623\u0648 \u063a\u064a\u0631 \u0637\u0628\u064a"
+    }
+  },
+  "required": [
+    "name",
+    "item_type"
+  ]
+}

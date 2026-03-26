@@ -1,0 +1,178 @@
+{
+  "name": "PerformanceCharter",
+  "type": "object",
+  "properties": {
+    "employee_record_id": {
+      "type": "string",
+      "description": "\u0645\u0639\u0631\u0641 \u0633\u062c\u0644 \u0627\u0644\u0645\u0648\u0638\u0641"
+    },
+    "employee_name": {
+      "type": "string",
+      "description": "\u0627\u0633\u0645 \u0627\u0644\u0645\u0648\u0638\u0641"
+    },
+    "agency_department": {
+      "type": "string",
+      "description": "\u0627\u0644\u0648\u0643\u0627\u0644\u0629 / \u0627\u0644\u0627\u062f\u0627\u0631\u0629 \u0627\u0644\u0639\u0627\u0645\u0629"
+    },
+    "job_title": {
+      "type": "string",
+      "description": "\u0627\u0644\u0645\u0633\u0645\u0649 \u0627\u0644\u0648\u0638\u064a\u0641\u064a"
+    },
+    "department": {
+      "type": "string",
+      "description": "\u0627\u0644\u0625\u062f\u0627\u0631\u0629 / \u0627\u0644\u0642\u0633\u0645"
+    },
+    "employee_id_number": {
+      "type": "string",
+      "description": "\u0627\u0644\u0633\u062c\u0644 \u0627\u0644\u0645\u062f\u0646\u064a / \u0631\u0642\u0645 \u0627\u0644\u0645\u0648\u0638\u0641"
+    },
+    "manager_name": {
+      "type": "string",
+      "description": "\u0627\u0644\u0645\u062f\u064a\u0631 \u0627\u0644\u0645\u0642\u064a\u0645"
+    },
+    "goals": {
+      "type": "array",
+      "description": "\u0627\u0644\u0623\u0647\u062f\u0627\u0641",
+      "items": {
+        "type": "object",
+        "properties": {
+          "goal": {
+            "type": "string"
+          },
+          "measurement_criterion": {
+            "type": "string"
+          },
+          "relative_weight": {
+            "type": "number"
+          },
+          "target_output": {
+            "type": "string"
+          },
+          "actual_output": {
+            "type": "number"
+          },
+          "difference": {
+            "type": "number"
+          },
+          "weighted_rating": {
+            "type": "number"
+          }
+        }
+      },
+      "default": []
+    },
+    "competencies": {
+      "type": "array",
+      "description": "\u0627\u0644\u062c\u062f\u0627\u0631\u0627\u062a",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "relative_weight": {
+            "type": "number"
+          },
+          "required_level": {
+            "type": "number"
+          },
+          "achieved_level": {
+            "type": "number"
+          },
+          "rating": {
+            "type": "number"
+          }
+        }
+      },
+      "default": []
+    },
+    "total_goals_weight": {
+      "type": "number",
+      "default": 0
+    },
+    "total_goals_rating": {
+      "type": "number",
+      "default": 0
+    },
+    "total_competencies_weight": {
+      "type": "number",
+      "default": 0
+    },
+    "total_competencies_rating": {
+      "type": "number",
+      "default": 0
+    },
+    "overall_rating": {
+      "type": "number",
+      "default": 0
+    },
+    "overall_rating_text": {
+      "type": "string",
+      "enum": [
+        "\u0645\u0645\u062a\u0627\u0632",
+        "\u062c\u064a\u062f \u062c\u062f\u0627",
+        "\u062c\u064a\u062f",
+        "\u0645\u0631\u0636\u064a",
+        "\u063a\u064a\u0631 \u0645\u0631\u0636\u064a"
+      ],
+      "description": "\u0627\u0644\u062a\u0642\u062f\u064a\u0631 \u0627\u0644\u0639\u0627\u0645"
+    },
+    "evaluation_cycle": {
+      "type": "string",
+      "enum": [
+        "\u0633\u0646\u0648\u064a",
+        "\u0645\u0631\u0627\u062c\u0639\u0629 \u0646\u0635\u0641 \u0633\u0646\u0648\u064a\u0629"
+      ],
+      "description": "\u062f\u0648\u0631\u0629 \u0627\u0644\u062a\u0642\u064a\u064a\u0645"
+    },
+    "promotion_readiness": {
+      "type": "string",
+      "description": "\u0627\u0644\u062c\u0627\u0647\u0632\u064a\u0629 \u0644\u0644\u062a\u0631\u0642\u064a\u0629"
+    },
+    "strength_points": {
+      "type": "string",
+      "description": "\u0646\u0642\u0627\u0637 \u0627\u0644\u0642\u0648\u0629"
+    },
+    "improvement_points": {
+      "type": "string",
+      "description": "\u0646\u0642\u0627\u0637 \u0627\u0644\u062a\u0637\u0648\u064a\u0631"
+    },
+    "remarks": {
+      "type": "string",
+      "description": "\u0627\u0644\u0645\u0644\u0627\u062d\u0638\u0627\u062a"
+    },
+    "justifications": {
+      "type": "string",
+      "description": "\u0627\u0644\u0645\u0628\u0631\u0631\u0627\u062a"
+    },
+    "supporting_documents": {
+      "type": "string",
+      "description": "\u0627\u0644\u0648\u062b\u0627\u0626\u0642 \u0627\u0644\u062f\u0627\u0639\u0645\u0629"
+    },
+    "charter_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u0645\u064a\u062b\u0627\u0642"
+    },
+    "evaluation_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u062a\u0642\u064a\u064a\u0645"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "\u0645\u064a\u062b\u0627\u0642",
+        "\u062a\u0642\u064a\u064a\u0645",
+        "\u0645\u0643\u062a\u0645\u0644"
+      ],
+      "default": "\u0645\u064a\u062b\u0627\u0642",
+      "description": "\u062d\u0627\u0644\u0629 \u0627\u0644\u0646\u0645\u0648\u0630\u062c"
+    }
+  },
+  "required": [
+    "employee_name",
+    "job_title",
+    "employee_id_number"
+  ]
+}

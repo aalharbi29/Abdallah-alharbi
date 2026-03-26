@@ -1,0 +1,161 @@
+{
+  "name": "Form205Part2",
+  "type": "object",
+  "properties": {
+    "form205_part1_id": {
+      "type": "string",
+      "description": "\u0645\u0639\u0631\u0641 \u0627\u0644\u062c\u0632\u0621 \u0627\u0644\u0623\u0648\u0644 \u0645\u0646 \u0627\u0644\u0646\u0645\u0648\u0630\u062c"
+    },
+    "employee_record_id": {
+      "type": "string",
+      "description": "\u0645\u0639\u0631\u0641 \u0633\u062c\u0644 \u0627\u0644\u0645\u0648\u0638\u0641"
+    },
+    "employee_name": {
+      "type": "string",
+      "description": "\u0627\u0633\u0645 \u0627\u0644\u0645\u0648\u0638\u0641"
+    },
+    "equipment_type": {
+      "type": "string",
+      "description": "\u0646\u0648\u0639 \u0627\u0644\u0623\u062c\u0647\u0632\u0629 \u0648\u0627\u0644\u0645\u0648\u0627\u062f \u0627\u0644\u0645\u0633\u062a\u0639\u0645\u0644\u0629"
+    },
+    "effect_poisoning": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u062a\u0633\u0645\u0645"
+    },
+    "effect_explosion": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u0627\u0646\u0641\u062c\u0627\u0631"
+    },
+    "effect_infection": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u0639\u062f\u0648\u0649"
+    },
+    "effect_disfigurement": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u062a\u0634\u0648\u064a\u0647"
+    },
+    "effect_fire": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u062d\u0631\u064a\u0642"
+    },
+    "effect_stress": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u0625\u062c\u0647\u0627\u062f"
+    },
+    "effect_deafness": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u0635\u0645\u0645"
+    },
+    "effect_pollution": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u062a\u0644\u0648\u062b"
+    },
+    "effect_radiation": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u0625\u0634\u0639\u0627\u0639"
+    },
+    "other_effect": {
+      "type": "string",
+      "description": "\u0623\u062b\u0631 \u0622\u062e\u0631 \u064a\u062d\u062f\u062f"
+    },
+    "exposure_reason": {
+      "type": "string",
+      "description": "\u0633\u0628\u0628 \u0627\u0644\u062a\u0639\u0631\u0636 \u0644\u0630\u0644\u0643"
+    },
+    "time_all": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u0643\u0644 \u0627\u0644\u0648\u0642\u062a"
+    },
+    "time_most": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u0645\u0639\u0638\u0645 \u0627\u0644\u0648\u0642\u062a"
+    },
+    "time_some": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u0628\u0639\u0636 \u0627\u0644\u0648\u0642\u062a"
+    },
+    "time_percentage": {
+      "type": "boolean",
+      "default": false,
+      "description": "\u0627\u0644\u0646\u0633\u0628\u0629 \u0627\u0644\u0645\u0626\u0648\u064a\u0629"
+    },
+    "time_reason": {
+      "type": "string",
+      "description": "\u0627\u0644\u0633\u0628\u0628"
+    },
+    "safety_measure_1": {
+      "type": "string",
+      "description": "\u0648\u0633\u064a\u0644\u0629 \u0627\u0644\u0648\u0642\u0627\u064a\u0629 \u0648\u0627\u0644\u0633\u0644\u0627\u0645\u0629 \u0627\u0644\u0623\u0648\u0644\u0649"
+    },
+    "safety_measure_2": {
+      "type": "string",
+      "description": "\u0648\u0633\u064a\u0644\u0629 \u0627\u0644\u0648\u0642\u0627\u064a\u0629 \u0648\u0627\u0644\u0633\u0644\u0627\u0645\u0629 \u0627\u0644\u062b\u0627\u0646\u064a\u0629"
+    },
+    "safety_measure_3": {
+      "type": "string",
+      "description": "\u0648\u0633\u064a\u0644\u0629 \u0627\u0644\u0648\u0642\u0627\u064a\u0629 \u0648\u0627\u0644\u0633\u0644\u0627\u0645\u0629 \u0627\u0644\u062b\u0627\u0644\u062b\u0629"
+    },
+    "safety_measure_4": {
+      "type": "string",
+      "description": "\u0648\u0633\u064a\u0644\u0629 \u0627\u0644\u0648\u0642\u0627\u064a\u0629 \u0648\u0627\u0644\u0633\u0644\u0627\u0645\u0629 \u0627\u0644\u0631\u0627\u0628\u0639\u0629"
+    },
+    "safety_measure_5": {
+      "type": "string",
+      "description": "\u0648\u0633\u064a\u0644\u0629 \u0627\u0644\u0648\u0642\u0627\u064a\u0629 \u0648\u0627\u0644\u0633\u0644\u0627\u0645\u0629 \u0627\u0644\u062e\u0627\u0645\u0633\u0629"
+    },
+    "safety_measure_6": {
+      "type": "string",
+      "description": "\u0648\u0633\u064a\u0644\u0629 \u0627\u0644\u0648\u0642\u0627\u064a\u0629 \u0648\u0627\u0644\u0633\u0644\u0627\u0645\u0629 \u0627\u0644\u0633\u0627\u062f\u0633\u0629"
+    },
+    "exposure_percentage_after_safety": {
+      "type": "string",
+      "description": "\u0646\u0633\u0628\u0629 \u0627\u0644\u062a\u0639\u0631\u0636 \u0644\u0644\u0636\u0631\u0631 \u0623\u0648 \u0627\u0644\u062e\u0637\u0631 \u0628\u0639\u062f \u0627\u0644\u062a\u0642\u064a\u062f \u0627\u0644\u062a\u0627\u0645 \u0628\u0627\u0633\u062a\u062e\u062f\u0627\u0645 \u062a\u0644\u0643 \u0627\u0644\u0648\u0633\u0627\u0626\u0644"
+    },
+    "exposure_reasons": {
+      "type": "string",
+      "description": "\u0627\u0644\u0623\u0633\u0628\u0627\u0628"
+    },
+    "direct_supervisor_name": {
+      "type": "string",
+      "description": "\u0627\u0633\u0645 \u0627\u0644\u0631\u0626\u064a\u0633 \u0627\u0644\u0645\u0628\u0627\u0634\u0631"
+    },
+    "direct_supervisor_signature_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u062a\u0627\u0631\u064a\u062e \u062a\u0648\u0642\u064a\u0639 \u0627\u0644\u0631\u0626\u064a\u0633 \u0627\u0644\u0645\u0628\u0627\u0634\u0631"
+    },
+    "hr_manager_name": {
+      "type": "string",
+      "description": "\u0627\u0633\u0645 \u0645\u062f\u064a\u0631 \u0625\u062f\u0627\u0631\u0629 \u0627\u0644\u0645\u0648\u0627\u0631\u062f \u0627\u0644\u0628\u0634\u0631\u064a\u0629"
+    },
+    "hr_manager_signature_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u062a\u0627\u0631\u064a\u062e \u062a\u0648\u0642\u064a\u0639 \u0645\u062f\u064a\u0631 \u0625\u062f\u0627\u0631\u0629 \u0627\u0644\u0645\u0648\u0627\u0631\u062f \u0627\u0644\u0628\u0634\u0631\u064a\u0629"
+    },
+    "executive_manager_name": {
+      "type": "string",
+      "description": "\u0627\u0633\u0645 \u0627\u0644\u0645\u062f\u064a\u0631 \u0627\u0644\u062a\u0646\u0641\u064a\u0630\u064a \u0644\u0644\u0631\u0639\u0627\u064a\u0629 \u0627\u0644\u0623\u0648\u0644\u064a\u0629"
+    },
+    "executive_manager_signature_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u062a\u0627\u0631\u064a\u062e \u062a\u0648\u0642\u064a\u0639 \u0627\u0644\u0645\u062f\u064a\u0631 \u0627\u0644\u062a\u0646\u0641\u064a\u0630\u064a \u0644\u0644\u0631\u0639\u0627\u064a\u0629 \u0627\u0644\u0623\u0648\u0644\u064a\u0629"
+    }
+  },
+  "required": [
+    "employee_name"
+  ]
+}

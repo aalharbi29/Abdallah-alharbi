@@ -1,0 +1,44 @@
+{
+  "name": "LogoSettings",
+  "type": "object",
+  "properties": {
+    "logo_url": {
+      "type": "string",
+      "description": "\u0631\u0627\u0628\u0637 \u0635\u0648\u0631\u0629 \u0627\u0644\u0634\u0639\u0627\u0631"
+    },
+    "max_height": {
+      "type": "number",
+      "default": 300,
+      "description": "\u0623\u0642\u0635\u0649 \u0627\u0631\u062a\u0641\u0627\u0639 \u0644\u0644\u0634\u0639\u0627\u0631 \u0628\u0627\u0644\u0628\u0643\u0633\u0644"
+    },
+    "margin_top": {
+      "type": "number",
+      "default": -80,
+      "description": "\u0627\u0644\u0647\u0627\u0645\u0634 \u0627\u0644\u0639\u0644\u0648\u064a (\u0633\u0627\u0644\u0628 \u0644\u0631\u0641\u0639\u0647 \u0644\u0644\u0623\u0639\u0644\u0649)"
+    },
+    "margin_bottom": {
+      "type": "number",
+      "default": -30,
+      "description": "\u0627\u0644\u0647\u0627\u0645\u0634 \u0627\u0644\u0633\u0641\u0644\u064a"
+    },
+    "show_logo": {
+      "type": "boolean",
+      "default": true,
+      "description": "\u0625\u0638\u0647\u0627\u0631 \u0627\u0644\u0634\u0639\u0627\u0631 \u0641\u064a \u0627\u0644\u062a\u0642\u0627\u0631\u064a\u0631"
+    },
+    "show_footer": {
+      "type": "boolean",
+      "default": true,
+      "description": "\u0625\u0638\u0647\u0627\u0631 \u0627\u0644\u062a\u0630\u064a\u064a\u0644 \u0641\u064a \u0627\u0644\u062a\u0642\u0627\u0631\u064a\u0631"
+    },
+    "footer_text_1": {
+      "type": "string",
+      "description": "\u0627\u0644\u0646\u0635 \u0627\u0644\u0623\u0648\u0644 \u0641\u064a \u0627\u0644\u062a\u0630\u064a\u064a\u0644"
+    },
+    "footer_text_2": {
+      "type": "string",
+      "description": "\u0627\u0644\u0646\u0635 \u0627\u0644\u062b\u0627\u0646\u064a \u0641\u064a \u0627\u0644\u062a\u0630\u064a\u064a\u0644"
+    }
+  },
+  "required": []
+}
