@@ -13,9 +13,23 @@ const blueIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
-const greenIcon = new L.DivIcon({
+const governmentIcon = new L.DivIcon({
   className: 'custom-div-icon',
   html: '<div style="background:#10b981;border:3px solid white;width:18px;height:18px;border-radius:9999px;box-shadow:0 2px 6px rgba(0,0,0,.25)"></div>',
+  iconSize: [18, 18],
+  iconAnchor: [9, 9],
+});
+
+const commercialIcon = new L.DivIcon({
+  className: 'custom-div-icon',
+  html: '<div style="background:#f59e0b;border:3px solid white;width:18px;height:18px;border-radius:9999px;box-shadow:0 2px 6px rgba(0,0,0,.25)"></div>',
+  iconSize: [18, 18],
+  iconAnchor: [9, 9],
+});
+
+const otherIcon = new L.DivIcon({
+  className: 'custom-div-icon',
+  html: '<div style="background:#64748b;border:3px solid white;width:18px;height:18px;border-radius:9999px;box-shadow:0 2px 6px rgba(0,0,0,.25)"></div>',
   iconSize: [18, 18],
   iconAnchor: [9, 9],
 });
@@ -49,17 +63,29 @@ export default function HealthCenterDetailMapView({ center, importantPoints, epi
           </Marker>
         )}
 
-        {importantPoints.map((point) => (
-          <Marker key={point.id} position={[point.latitude, point.longitude]} icon={greenIcon}>
-            <Popup>
-              <div dir="rtl" className="text-right space-y-2">
-                <div className="font-bold">{point.title}</div>
-                <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100">{point.category}</Badge>
-                {point.description ? <div className="text-sm text-gray-600">{point.description}</div> : null}
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+        {importantPoints.map((point) => {
+          const isGovernment = point.category === 'government';
+          const isCommercial = point.category === 'shop';
+          const pointIcon = isGovernment ? governmentIcon : isCommercial ? commercialIcon : otherIcon;
+          const badgeClass = isGovernment
+            ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-100'
+            : isCommercial
+              ? 'bg-amber-100 text-amber-800 hover:bg-amber-100'
+              : 'bg-slate-100 text-slate-800 hover:bg-slate-100';
+          const label = isGovernment ? 'جهة حكومية' : isCommercial ? 'منشأة تجارية' : 'نقطة أخرى';
+
+          return (
+            <Marker key={point.id} position={[point.latitude, point.longitude]} icon={pointIcon}>
+              <Popup>
+                <div dir="rtl" className="text-right space-y-2">
+                  <div className="font-bold">{point.title}</div>
+                  <Badge className={badgeClass}>{label}</Badge>
+                  {point.description ? <div className="text-sm text-gray-600">{point.description}</div> : null}
+                </div>
+              </Popup>
+            </Marker>
+          );
+        })}
 
         {epidemicCases.map((item) => (
           <Marker key={item.id} position={[item.latitude, item.longitude]} icon={redIcon}>

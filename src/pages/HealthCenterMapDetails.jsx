@@ -12,7 +12,9 @@ export default function HealthCenterMapDetails() {
   const [importantPoints, setImportantPoints] = useState([]);
   const [epidemicCases, setEpidemicCases] = useState([]);
   const [search, setSearch] = useState('');
-  const [showImportantPoints, setShowImportantPoints] = useState(true);
+  const [showGovernmentPoints, setShowGovernmentPoints] = useState(true);
+  const [showCommercialPoints, setShowCommercialPoints] = useState(true);
+  const [showOtherPoints, setShowOtherPoints] = useState(true);
   const [showEpidemicCases, setShowEpidemicCases] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -40,12 +42,16 @@ export default function HealthCenterMapDetails() {
   }, [location.search]);
 
   const filteredImportantPoints = useMemo(() => {
-    if (!showImportantPoints) return [];
     return importantPoints.filter((item) => {
       const text = `${item.title || ''} ${item.description || ''} ${item.category || ''}`.toLowerCase();
-      return text.includes(search.toLowerCase());
+      const matchesSearch = text.includes(search.toLowerCase());
+      const isGovernment = item.category === 'government';
+      const isCommercial = item.category === 'shop';
+      const isOther = !isGovernment && !isCommercial;
+      const matchesLayer = (showGovernmentPoints && isGovernment) || (showCommercialPoints && isCommercial) || (showOtherPoints && isOther);
+      return matchesSearch && matchesLayer;
     });
-  }, [importantPoints, search, showImportantPoints]);
+  }, [importantPoints, search, showGovernmentPoints, showCommercialPoints, showOtherPoints]);
 
   const filteredEpidemicCases = useMemo(() => {
     if (!showEpidemicCases) return [];
@@ -80,8 +86,12 @@ export default function HealthCenterMapDetails() {
             <CenterMapFilters
               search={search}
               onSearchChange={setSearch}
-              showImportantPoints={showImportantPoints}
-              onImportantPointsChange={setShowImportantPoints}
+              showGovernmentPoints={showGovernmentPoints}
+              onGovernmentPointsChange={setShowGovernmentPoints}
+              showCommercialPoints={showCommercialPoints}
+              onCommercialPointsChange={setShowCommercialPoints}
+              showOtherPoints={showOtherPoints}
+              onOtherPointsChange={setShowOtherPoints}
               showEpidemicCases={showEpidemicCases}
               onEpidemicCasesChange={setShowEpidemicCases}
             />
@@ -97,12 +107,13 @@ export default function HealthCenterMapDetails() {
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>النقاط المهمة اليدوية</CardTitle>
+              <CardTitle>نقاط الاهتمام</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {filteredImportantPoints.length ? filteredImportantPoints.map((point) => (
                 <div key={point.id} className="rounded-lg border p-3">
                   <div className="font-semibold">{point.title}</div>
+                  <div className="text-xs text-gray-500 mb-1">{point.category === 'government' ? 'جهة حكومية' : point.category === 'shop' ? 'منشأة تجارية' : 'نقطة أخرى'}</div>
                   <div className="text-sm text-gray-600">{point.description || '—'}</div>
                 </div>
               )) : <div className="text-sm text-gray-500">لا توجد نقاط حالياً.</div>}
@@ -111,7 +122,7 @@ export default function HealthCenterMapDetails() {
 
           <Card>
             <CardHeader>
-              <CardTitle>الحالات الوبائية على الخريطة</CardTitle>
+              <CardTitle>البؤر الوبائية</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {filteredEpidemicCases.length ? filteredEpidemicCases.map((item) => (
