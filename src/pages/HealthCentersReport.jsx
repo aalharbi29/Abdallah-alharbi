@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import ExcelJS from 'exceljs';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,15 @@ import {
 } from 'lucide-react';
 
 
+
+const LOGO_URL = 'https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/ebae7336b_1407.png';
+
+const excelThemeColors = {
+  blue: '2563EB',
+  green: '16A34A',
+  purple: '7C3AED',
+  red: 'DC2626',
+};
 
 const availableFields = [
   { key: 'اسم_المركز', label: 'اسم المركز', category: 'basic', default: true },
@@ -236,21 +246,123 @@ export default function HealthCentersReport() {
     handlePrint(); // سيستخدم نفس إعدادات الطباعة
   };
 
-  const exportToExcel = () => {
-    const headers = selectedFields.map(key =>
-      availableFields.find(f => f.key === key)?.label || key
-    ).join(',');
+  const exportToExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet('تقرير المراكز الصحية', {
+      views: [{ rightToLeft: true }],
+      pageSetup: {
+        paperSize: 9,
+        orientation: pageOrientation,
+        fitToPage: true,
+        fitToWidth: 1,
+        margins: { left: 0.3, right: 0.3, top: 0.4, bottom: 0.4, header: 0.2, footer: 0.2 },
+      },
+    });
 
-    const rows = processedCenters.map(center =>
-      selectedFields.map(key => `"${center[key] || ''}"`.replace(/"/g, '""')).join(',')
-    ).join('\n');
+    const primaryColor = excelThemeColors[colorScheme] || excelThemeColors.blue;
+    const headers = selectedFields.map(key => availableFields.find(f => f.key === key)?.label || key);
 
-    const csvContent = "\ufeff" + headers + '\n' + rows;
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const logoResponse = await fetch(LOGO_URL);
+    const logoBuffer = await logoResponse.arrayBuffer();
+    const logoId = workbook.addImage({
+      buffer: logoBuffer,
+      extension: 'png',
+    });
+
+    const totalColumns = Math.max(headers.length, 1);
+    worksheet.addImage(logoId, {
+      tl: { col: 0, row: 0 },
+      ext: { width: 420, height: 120 },
+    });
+
+    worksheet.mergeCells(6, 1, 6, totalColumns);
+    worksheet.getCell('A6').value = reportTitle;
+    worksheet.getCell('A6').font = { name: 'Arial', size: 18, bold: true, color: { argb: primaryColor } };
+    worksheet.getCell('A6').alignment = { horizontal: 'center', vertical: 'middle' };
+
+    worksheet.mergeCells(7, 1, 7, totalColumns);
+    worksheet.getCell('A7').value = `تاريخ الإعداد: ${new Date().toLocaleDateString('ar-SA')}`;
+    worksheet.getCell('A7').font = { name: 'Arial', size: 11, color: { argb: '6B7280' } };
+    worksheet.getCell('A7').alignment = { horizontal: 'center', vertical: 'middle' };
+
+    const headerRowIndex = 9;
+    const headerRow = worksheet.getRow(headerRowIndex);
+    headerRow.values = headers;
+    headerRow.height = 24;
+
+    headerRow.eachCell((cell) => {
+      cell.font = { name: 'Arial', size: 12, bold: true, color: { argb: 'FFFFFFFF' } };
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: primaryColor },
+      };
+      cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+      cell.border = {
+        top: { style: 'thin', color: { argb: 'D1D5DB' } },
+        left: { style: 'thin', color: { argb: 'D1D5DB' } },
+        bottom: { style: 'thin', color: { argb: 'D1D5DB' } },
+        right: { style: 'thin', color: { argb: 'D1D5DB' } },
+      };
+    });
+
+    processedCenters.forEach((center, index) => {
+      const row = worksheet.getRow(headerRowIndex + 1 + index);
+      row.values = selectedFields.map((key) => {
+        const value = center[key];
+        if (key === 'موقع_الخريطة' && value) return 'عرض الخريطة';
+        return value ?? '-';
+      });
+      row.height = 22;
+
+      row.eachCell((cell, colNumber) => {
+        cell.font = { name: 'Arial', size: 11, color: { argb: '111827' } };
+        cell.alignment = {
+          horizontal: colNumber === 1 ? 'right' : 'center',
+          vertical: 'middle',
+          wrapText: true,
+        };
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: index % 2 === 0 ? 'FFFFFFFF' : 'F8FAFC' },
+        };
+        cell.border = {
+          top: { style: 'thin', color: { argb: 'E5E7EB' } },
+          left: { style: 'thin', color: { argb: 'E5E7EB' } },
+          bottom: { style: 'thin', color: { argb: 'E5E7EB' } },
+          right: { style: 'thin', color: { argb: 'E5E7EB' } },
+        };
+      });
+    });
+
+    worksheet.columns = headers.map((header, index) => {
+      const key = selectedFields[index];
+      const maxDataLength = Math.max(
+        header.length,
+        ...processedCenters.map(center => String(center[key] ?? '-').length)
+      );
+      return {
+        width: Math.min(Math.max(maxDataLength + 4, 16), 40),
+      };
+    });
+
+    worksheet.autoFilter = {
+      from: { row: headerRowIndex, column: 1 },
+      to: { row: headerRowIndex, column: totalColumns },
+    };
+
+    worksheet.views = [{ rightToLeft: true, state: 'frozen', ySplit: headerRowIndex }];
+    worksheet.headerFooter.oddFooter = '&Cشؤون المراكز الصحية بالحسو - مستشفى الحسو العام';
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `تقرير_المراكز_الصحية_${new Date().toLocaleDateString('ar-SA')}.csv`;
+    link.download = `تقرير_المراكز_الصحية_${new Date().toLocaleDateString('ar-SA')}.xlsx`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -772,7 +884,7 @@ export default function HealthCentersReport() {
                 </Button>
                 <Button onClick={exportToExcel} className="bg-green-600 hover:bg-green-700">
                   <Download className="w-4 h-4 ml-2" />
-                  تصدير Excel
+                  تصدير Excel منسق
                 </Button>
                 <Button onClick={exportToPDF} variant="outline">
                   <Download className="w-4 h-4 ml-2" />
