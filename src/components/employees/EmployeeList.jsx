@@ -156,7 +156,108 @@ export default function EmployeeList({
                   />
                 </div>
 
-                <div className="hidden md:block h-full">
+                <div className="hidden md:block lg:hidden h-full">
+                  <Card
+                    className={`relative h-full overflow-hidden bg-gradient-to-br from-slate-800/95 via-slate-800/90 to-indigo-900/70 border shadow-xl rounded-2xl ${
+                      isSelected ? "ring-2 ring-indigo-400 border-indigo-400" : isPinned ? "border-amber-400" : "border-white/15"
+                    }`}
+                  >
+                    <CardContent className="p-4 h-full">
+                      <div className="flex flex-col gap-3 h-full">
+                        <div className="flex items-start gap-3">
+                          <div className="flex flex-col items-center gap-1.5 w-[82px] shrink-0">
+                            {onToggleSelection && (
+                              <button
+                                onClick={() => onToggleSelection(employee.id)}
+                                className={`w-6 h-6 rounded-md border flex items-center justify-center ${isSelected ? 'bg-indigo-500 border-indigo-400' : 'border-white/30 bg-white/5'}`}
+                              >
+                                {isSelected && <CheckSquare className="w-3.5 h-3.5 text-white" />}
+                              </button>
+                            )}
+
+                            {employee.المركز_الصحي && (
+                              <Badge className="text-[10px] px-2 py-0.5 bg-emerald-500/20 text-emerald-200 w-full justify-center text-center">
+                                <span className="truncate max-w-[54px]">{getShortCenterName(employee.المركز_الصحي)}</span>
+                              </Badge>
+                            )}
+
+                            {employee.contract_type && (
+                              <Badge className="text-[10px] px-2 py-0.5 bg-purple-500/20 text-purple-200 w-full justify-center text-center">
+                                {employee.contract_type}
+                              </Badge>
+                            )}
+                          </div>
+
+                          {employee.profile_image_url ? (
+                            <img
+                              src={employee.profile_image_url}
+                              alt={employee.full_name_arabic || "صورة الموظف"}
+                              className="w-18 h-18 rounded-xl object-cover border border-white/20 shrink-0"
+                            />
+                          ) : (
+                            <div className="w-18 h-18 rounded-xl bg-gradient-to-br from-indigo-600/40 to-purple-600/40 border border-white/20 flex items-center justify-center shrink-0">
+                              <User className="w-8 h-8 text-white/80" />
+                            </div>
+                          )}
+
+                          <div className="flex-1 min-w-0 space-y-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="min-w-0 flex-1">
+                                <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="block text-base font-black text-white leading-6">
+                                  {employee.full_name_arabic || "غير محدد"}
+                                </Link>
+                                <div className="flex flex-wrap gap-1 mt-1.5">
+                                  {employee.position && <Badge className="text-[10px] px-2 py-0.5 bg-indigo-500/20 text-indigo-200">{employee.position}</Badge>}
+                                </div>
+                              </div>
+
+                              <div className="flex gap-1 shrink-0">
+                                {onPinEmployee && (
+                                  <Button variant="ghost" size="icon" onClick={() => onPinEmployee(employee.id)} className={`h-8 w-8 rounded-md ${isPinned ? 'text-amber-300 bg-amber-500/20' : 'text-white/60 bg-white/5'}`}>
+                                    <Pin className={`w-4 h-4 ${isPinned ? 'fill-current' : ''}`} />
+                                  </Button>
+                                )}
+                                {employee.phone && (
+                                  <a href={`https://wa.me/${normalizePhoneForWhatsApp(employee.phone)}?text=${encodeURIComponent(`مرحبا ${employee.full_name_arabic}`)}`} target="_blank" rel="noopener noreferrer">
+                                    <Button variant="ghost" size="icon" className="h-8 w-8 rounded-md text-emerald-400 bg-white/5">
+                                      <MessageCircle className="w-4 h-4" />
+                                    </Button>
+                                  </a>
+                                )}
+                              </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-2 text-[11px] text-white/90 bg-black/10 rounded-2xl p-3 border border-white/10">
+                              {employee.رقم_الموظف && <div className="truncate"><span className="text-white/60">الرقم:</span> {employee.رقم_الموظف}</div>}
+                              {employee.phone && <div className="truncate"><span className="text-white/60">الجوال:</span> {employee.phone}</div>}
+                              {employee.رقم_الهوية && <div className="truncate"><span className="text-white/60">الهوية:</span> {employee.رقم_الهوية}</div>}
+                              {employee.hire_date && <div className="truncate"><span className="text-white/60">التعيين:</span> {employee.hire_date}</div>}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-wrap gap-1.5">
+                          {employee.is_externally_assigned && <Badge className="text-[10px] px-2 py-0.5 bg-amber-500 text-white">تكليف خارجي</Badge>}
+                          {activeHolidayAssignments.length > 0 && <Badge className="text-[10px] px-2 py-0.5 bg-purple-500 text-white">{activeHolidayAssignments[0].holiday_name}</Badge>}
+                          {employeeRoles.slice(0, 2).map((role, idx) => <Badge key={idx} className="text-[10px] px-2 py-0.5 bg-cyan-500 text-white">{role}</Badge>)}
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-2 pt-2 border-t border-white/10 mt-auto">
+                          <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="col-span-3">
+                            <Button size="sm" className="w-full h-8 text-xs bg-indigo-600 hover:bg-indigo-500 rounded-lg">
+                              <Eye className="w-3.5 h-3.5 ml-1" />عرض الملف
+                            </Button>
+                          </Link>
+                          {onEdit && <Button size="sm" onClick={() => onEdit(employee)} className="h-8 text-xs bg-cyan-600 hover:bg-cyan-500 rounded-lg"><Edit className="w-3.5 h-3.5 ml-1" />تعديل</Button>}
+                          {onAddLeave && <Button size="sm" onClick={() => onAddLeave(employee)} className="h-8 text-xs bg-amber-600 hover:bg-amber-500 rounded-lg"><Calendar className="w-3.5 h-3.5 ml-1" />إجازة</Button>}
+                          {onAddAssignment && <Button size="sm" onClick={() => onAddAssignment(employee)} className="h-8 text-xs bg-purple-600 hover:bg-purple-500 rounded-lg"><Briefcase className="w-3.5 h-3.5 ml-1" />تكليف</Button>}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="hidden lg:block h-full">
                   <Card
                     className={`relative h-full w-full max-w-full overflow-hidden bg-gradient-to-br from-slate-800/90 via-slate-800/80 to-indigo-900/60 backdrop-blur-2xl border transition-all duration-500 shadow-xl md:shadow-2xl hover:shadow-indigo-500/20 ${
                       isPinned
