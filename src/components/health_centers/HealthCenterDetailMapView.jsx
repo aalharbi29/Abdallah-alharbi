@@ -68,7 +68,7 @@ export default function HealthCenterDetailMapView({ center, importantPoints, epi
         {!Number.isNaN(lat) && !Number.isNaN(lng) && (
           <Marker position={position} icon={blueIcon}>
             <Popup>
-              <div dir="rtl" className="text-right space-y-2">
+              <div dir="rtl" className="text-right space-y-2" style={{ unicodeBidi: 'plaintext', fontFamily: 'Cairo, Tahoma, Arial, sans-serif' }}>
                 <div className="font-bold">{center['اسم_المركز']}</div>
                 <div className="text-sm text-gray-600">{center['الموقع'] || 'بدون وصف موقع'}</div>
                 <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">المركز الصحي</Badge>
@@ -91,7 +91,7 @@ export default function HealthCenterDetailMapView({ center, importantPoints, epi
           return (
             <Marker key={point.id} position={[point.latitude, point.longitude]} icon={pointIcon}>
               <Popup>
-                <div dir="rtl" className="text-right space-y-2">
+                <div dir="rtl" className="text-right space-y-2" style={{ unicodeBidi: 'plaintext', fontFamily: 'Cairo, Tahoma, Arial, sans-serif' }}>
                   <div className="font-bold">{point.title}</div>
                   <Badge className={badgeClass}>{label}</Badge>
                   {point.description ? <div className="text-sm text-gray-600">{point.description}</div> : null}

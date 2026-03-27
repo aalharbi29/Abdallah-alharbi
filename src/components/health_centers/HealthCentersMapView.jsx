@@ -38,7 +38,7 @@ function createLabeledIcon(name, zoom) {
     className: 'health-center-label-marker',
     html: `
       <div style="position: relative; display: flex; flex-direction: column; align-items: center; transform: translateY(-6px);">
-        <div style="margin-bottom: 4px; max-width: ${maxWidth}px; padding: 2px 6px; border-radius: 999px; background: rgba(255,255,255,0.92); color: #1e3a8a; font-weight: 700; font-size: ${fontSize}px; line-height: 1.2; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 1px 4px rgba(0,0,0,0.18); direction: rtl;">
+        <div style="margin-bottom: 4px; max-width: ${maxWidth}px; padding: 2px 6px; border-radius: 999px; background: rgba(255,255,255,0.92); color: #1e3a8a; font-weight: 700; font-size: ${fontSize}px; line-height: 1.2; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 1px 4px rgba(0,0,0,0.18); direction: rtl; unicode-bidi: plaintext; font-family: Cairo, Tahoma, Arial, sans-serif;">
           ${safeName}
         </div>
         <img src="https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png" style="width: 25px; height: 41px; display: block;" />
@@ -104,7 +104,7 @@ export default function HealthCentersMapView({ centers }) {
               icon={center.markerIcon}
             >
               <Popup minWidth={260}>
-                <div className="space-y-3 text-right" dir="rtl">
+                <div className="space-y-3 text-right" dir="rtl" style={{ unicodeBidi: 'plaintext', fontFamily: 'Cairo, Tahoma, Arial, sans-serif' }}>
                   <div>
                     <h3 className="font-bold text-base text-gray-900">{center['اسم_المركز']}</h3>
                     <p className="text-sm text-gray-600">{center['الموقع'] || 'بدون موقع'}</p>
