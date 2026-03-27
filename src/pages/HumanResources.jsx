@@ -18,17 +18,8 @@ import HumanResourcesToolbar from "../components/hr/HumanResourcesToolbar";
 import HumanResourcesEmptyState from "../components/hr/HumanResourcesEmptyState";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import QuickLeaveForm from "../components/leaves/QuickLeaveForm";
-import QuickAssignmentForm from "../components/assignments/QuickAssignmentForm";
-import HolidayAssignmentForm from "../components/assignments/HolidayAssignmentForm";
-import BulkHolidayAssignmentDialog from "../components/assignments/BulkHolidayAssignmentDialog";
-import BulkWhatsAppDialog from "../components/employees/BulkWhatsAppDialog";
+
+import HumanResourcesDialogs from "@/components/hr/HumanResourcesDialogs";
 
 
 
@@ -515,104 +506,29 @@ export default function HumanResources() {
         )}
       </div>
 
-      {/* Dialogs */}
-      <Dialog open={showEmployeeForm} onOpenChange={setShowEmployeeForm}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>
-              {editingEmployee ? 'تعديل بيانات الموظف' : 'إضافة موظف جديد'}
-            </DialogTitle>
-          </DialogHeader>
-          <EmployeeForm
-            employee={editingEmployee}
-            onSubmit={editingEmployee ? handleUpdateEmployee : handleCreateEmployee}
-            onCancel={() => {
-              setShowEmployeeForm(false);
-              setEditingEmployee(null);
-            }}
-            healthCenters={healthCenters}
-          />
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={showLeaveForm} onOpenChange={setShowLeaveForm}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>إضافة إجازة</DialogTitle>
-          </DialogHeader>
-          <QuickLeaveForm
-            employee={selectedEmployee}
-            onSubmit={async (leaveData) => {
-              await base44.entities.Leave.create(leaveData);
-              setShowLeaveForm(false);
-              setSelectedEmployee(null);
-              loadData();
-            }}
-            onCancel={() => {
-              setShowLeaveForm(false);
-              setSelectedEmployee(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={showAssignmentForm} onOpenChange={setShowAssignmentForm}>
-        <DialogContent className="max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>إضافة تكليف</DialogTitle>
-          </DialogHeader>
-          <QuickAssignmentForm
-            employee={selectedEmployee}
-            onSubmit={async (assignmentData) => {
-              await base44.entities.Assignment.create(assignmentData);
-              setShowAssignmentForm(false);
-              setSelectedEmployee(null);
-              loadData();
-            }}
-            onCancel={() => {
-              setShowAssignmentForm(false);
-              setSelectedEmployee(null);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
-
-      <Dialog open={showHolidayForm} onOpenChange={setShowHolidayForm}>
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle>تكليف العمل خلال إجازة</DialogTitle>
-          </DialogHeader>
-          <HolidayAssignmentForm
-            employee={selectedEmployee}
-            healthCenters={healthCenters}
-            onClose={() => {
-              setShowHolidayForm(false);
-              setSelectedEmployee(null);
-              loadData();
-            }}
-          />
-        </DialogContent>
-      </Dialog>
-
-      <BulkHolidayAssignmentDialog
-        open={showBulkAssignmentDialog}
-        onOpenChange={setShowBulkAssignmentDialog}
-        selectedEmployeeIds={Array.from(selectedEmployees)}
-        employees={employees}
+      <HumanResourcesDialogs
+        showEmployeeForm={showEmployeeForm}
+        setShowEmployeeForm={setShowEmployeeForm}
+        editingEmployee={editingEmployee}
+        setEditingEmployee={setEditingEmployee}
+        handleUpdateEmployee={handleUpdateEmployee}
+        handleCreateEmployee={handleCreateEmployee}
         healthCenters={healthCenters}
-        onComplete={() => {
-          setShowBulkAssignmentDialog(false);
-          setSelectedEmployees(new Set());
-          loadData();
-        }}
-      />
-
-      {/* حوار واتساب الجماعي - جديد */}
-      <BulkWhatsAppDialog
-        open={showBulkWhatsAppDialog}
-        onOpenChange={setShowBulkWhatsAppDialog}
-        selectedEmployees={Array.from(selectedEmployees)}
+        showLeaveForm={showLeaveForm}
+        setShowLeaveForm={setShowLeaveForm}
+        selectedEmployee={selectedEmployee}
+        setSelectedEmployee={setSelectedEmployee}
+        loadData={loadData}
+        showAssignmentForm={showAssignmentForm}
+        setShowAssignmentForm={setShowAssignmentForm}
+        showHolidayForm={showHolidayForm}
+        setShowHolidayForm={setShowHolidayForm}
+        showBulkAssignmentDialog={showBulkAssignmentDialog}
+        setShowBulkAssignmentDialog={setShowBulkAssignmentDialog}
+        selectedEmployees={selectedEmployees}
         employees={employees}
+        showBulkWhatsAppDialog={showBulkWhatsAppDialog}
+        setShowBulkWhatsAppDialog={setShowBulkWhatsAppDialog}
       />
     </div>
   );

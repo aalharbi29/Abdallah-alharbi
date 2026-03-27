@@ -14,6 +14,8 @@ import {
 import { motion } from 'framer-motion';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import OfficialLetterHeader from '@/components/official/OfficialLetterHeader';
+import OfficialFooter from '@/components/common/OfficialFooter';
 
 export default function FillOfficialAssignmentForm() {
   const location = useLocation();
@@ -230,29 +232,8 @@ export default function FillOfficialAssignmentForm() {
             className="bg-white rounded-2xl shadow-xl overflow-hidden print:shadow-none print:rounded-none"
             style={{ direction: 'rtl' }}
           >
-            {/* Header with Logo */}
-            <div className="relative bg-gradient-to-r from-[#00796B] to-[#009688] p-6">
-              {/* الشريط الجانبي */}
-              <div className="absolute left-0 top-0 bottom-0 w-12 bg-[#00695C] flex flex-col items-center justify-center gap-1 text-white/60 text-xs">
-                <span>ح</span><span>ص</span><span>ت</span><span>ك</span><span>م</span>
-                <span className="my-2">...</span>
-                <span>غ</span><span>ا</span><span>ي</span><span>ت</span><span>ن</span><span>ا</span>
-              </div>
-              
-              <div className="flex items-center justify-between mr-4">
-                <div className="text-white">
-                  <h2 className="text-lg font-bold">تجمع المدينة المنورة الصحي | إدارة رأس المال البشري</h2>
-                  <p className="text-teal-100 text-sm">Human capital management | Madinah Health Cluster</p>
-                </div>
-                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-lg">
-                  <img 
-                    src="https://upload.wikimedia.org/wikipedia/ar/thumb/4/4c/%D8%B4%D8%B9%D8%A7%D8%B1_%D9%88%D8%B2%D8%A7%D8%B1%D8%A9_%D8%A7%D9%84%D8%B5%D8%AD%D8%A9_%D8%A7%D9%84%D8%B3%D8%B9%D9%88%D8%AF%D9%8A%D8%A9.svg/1200px-%D8%B4%D8%B9%D8%A7%D8%B1_%D9%88%D8%B2%D8%A7%D8%B1%D8%A9_%D8%A7%D9%84%D8%B5%D8%AD%D8%A9_%D8%A7%D9%84%D8%B3%D8%B9%D9%88%D8%AF%D9%8A%D8%A9.svg.png"
-                    alt="Logo"
-                    className="w-12 h-12 object-contain"
-                    onError={(e) => { e.target.style.display = 'none'; }}
-                  />
-                </div>
-              </div>
+            <div className="p-6 pb-0">
+              <OfficialLetterHeader arabicDepartment="تجمع المدينة المنورة الصحي | إدارة رأس المال البشري" englishDepartment="Human Capital Management | Madinah Health Cluster" />
             </div>
 
             {/* Form Content */}
@@ -468,16 +449,8 @@ export default function FillOfficialAssignmentForm() {
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="bg-[#00796B] p-4 mt-6 mr-12">
-              <div className="flex justify-center items-center gap-6 text-white/80 text-sm">
-                <span className="flex items-center gap-2">
-                  <span>f</span>
-                  <span>Madinah.Cluster</span>
-                </span>
-                <span>Med_Cluster</span>
-                <span>Med-Cluster@moh.gov.sa</span>
-              </div>
+            <div className="px-6 pb-6 mr-12 mt-6">
+              <OfficialFooter />
             </div>
           </div>
         </motion.div>
