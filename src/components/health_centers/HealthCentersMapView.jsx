@@ -47,8 +47,8 @@ export default function HealthCentersMapView({ centers }) {
       <div className="h-[70vh] rounded-2xl overflow-hidden border shadow-sm">
         <MapContainer center={centerPosition} zoom={8} className="h-full w-full" scrollWheelZoom={true}>
           <TileLayer
-            attribution='&copy; OpenStreetMap contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; Esri & contributors'
+            url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
             maxZoom={19}
           />
 
