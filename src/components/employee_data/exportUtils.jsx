@@ -1,4 +1,6 @@
-export const exportToCSV = ({
+import ExcelJS from 'exceljs';
+
+export const exportToCSV = async ({
   headers,
   displayMode,
   selectedEmployees,
@@ -6,25 +8,46 @@ export const exportToCSV = ({
   groupedByManager,
   getManagerWithCenters,
   getFieldValue,
-  availableFields
+  reportTitle
 }) => {
-  let csvContent = "\ufeff" + headers.join(',') + '\n';
+  const workbook = new ExcelJS.Workbook();
+  workbook.creator = 'Base44';
+  workbook.created = new Date();
 
+  const worksheet = workbook.addWorksheet('بيانات الموظفين', {
+    views: [{ rightToLeft: true, state: 'frozen', ySplit: 2 }]
+  });
+
+  worksheet.mergeCells(1, 1, 1, headers.length);
+  const titleCell = worksheet.getCell(1, 1);
+  titleCell.value = reportTitle || 'تقرير بيانات الموظفين';
+  titleCell.font = { name: 'Arial', size: 16, bold: true, color: { argb: 'FFFFFFFF' } };
+  titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
+  titleCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '1D4ED8' } };
+
+  const headerRow = worksheet.getRow(2);
+  headers.forEach((header, index) => {
+    const cell = headerRow.getCell(index + 1);
+    cell.value = header;
+    cell.font = { name: 'Arial', size: 12, bold: true, color: { argb: 'FFFFFFFF' } };
+    cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '0F766E' } };
+    cell.border = {
+      top: { style: 'thin', color: { argb: 'D1D5DB' } },
+      left: { style: 'thin', color: { argb: 'D1D5DB' } },
+      bottom: { style: 'thin', color: { argb: 'D1D5DB' } },
+      right: { style: 'thin', color: { argb: 'D1D5DB' } },
+    };
+  });
+
+  const rows = [];
   if (displayMode === 'normal') {
-    const rows = selectedEmployees.map(emp =>
-      selectedFields.map(key => {
-        const val = getFieldValue ? getFieldValue(emp, key) : (emp[key] || '');
-        return `"${String(val).replace(/"/g, '""')}"`;
-      }).join(',')
-    ).join('\n');
-    csvContent += rows;
+    selectedEmployees.forEach((emp) => {
+      rows.push(selectedFields.map((key) => getFieldValue ? getFieldValue(emp, key) : (emp[key] || '')));
+    });
   } else {
-    const rows = [];
-    selectedEmployees.forEach(emp => {
-      rows.push(selectedFields.map(key => {
-        const val = getFieldValue ? getFieldValue(emp, key) : (emp[key] || '');
-        return `"${String(val).replace(/"/g, '""')}"`;
-      }).join(','));
+    selectedEmployees.forEach((emp) => {
+      rows.push(selectedFields.map((key) => getFieldValue ? getFieldValue(emp, key) : (emp[key] || '')));
     });
 
     const processedManagers = new Set();
@@ -32,24 +55,62 @@ export const exportToCSV = ({
       if (!processedManagers.has(managerId)) {
         const manager = getManagerWithCenters(managerId, employeeIds);
         if (manager) {
-          rows.push('"بيانات المدير المباشر"' + ','.repeat(selectedFields.length - 1));
-          rows.push(selectedFields.map(key => {
-            const val = getFieldValue ? getFieldValue(manager, key) : (manager[key] || '');
-            return `"${String(val).replace(/"/g, '""')}"`;
-          }).join(','));
+          rows.push(['بيانات المدير المباشر', ...Array(Math.max(0, selectedFields.length - 1)).fill('')]);
+          rows.push(selectedFields.map((key) => getFieldValue ? getFieldValue(manager, key) : (manager[key] || '')));
           processedManagers.add(managerId);
         }
       }
     });
-
-    csvContent += rows.join('\n');
   }
 
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  rows.forEach((rowData, rowIndex) => {
+    const row = worksheet.addRow(rowData);
+    const isManagerLabel = rowData[0] === 'بيانات المدير المباشر';
+    const isManagerData = displayMode !== 'normal' && rowIndex > 0 && rows[rowIndex - 1]?.[0] === 'بيانات المدير المباشر';
+
+    row.eachCell((cell) => {
+      cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+      cell.font = { name: 'Arial', size: 11, bold: isManagerLabel || isManagerData };
+      cell.border = {
+        top: { style: 'thin', color: { argb: 'E5E7EB' } },
+        left: { style: 'thin', color: { argb: 'E5E7EB' } },
+        bottom: { style: 'thin', color: { argb: 'E5E7EB' } },
+        right: { style: 'thin', color: { argb: 'E5E7EB' } },
+      };
+
+      if (isManagerLabel) {
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'D1FAE5' } };
+      } else if (isManagerData) {
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'ECFDF5' } };
+      } else {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: row.number % 2 === 0 ? 'F8FAFC' : 'FFFFFF' }
+        };
+      }
+    });
+
+    if (isManagerLabel && selectedFields.length > 1) {
+      worksheet.mergeCells(row.number, 1, row.number, selectedFields.length);
+    }
+  });
+
+  worksheet.columns = headers.map((header, index) => {
+    const values = [header, ...rows.map((row) => String(row[index] || ''))];
+    const maxLength = Math.min(Math.max(...values.map((value) => value.length), 12), 28);
+    return { width: maxLength + 4 };
+  });
+
+  worksheet.getRow(1).height = 26;
+  worksheet.getRow(2).height = 22;
+
+  const buffer = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
   const url = window.URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.href = url;
-  link.download = `بيانات_الموظفين_${new Date().toLocaleDateString('ar-SA')}.csv`;
+  link.download = `بيانات_الموظفين_${new Date().toLocaleDateString('ar-SA')}.xlsx`;
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

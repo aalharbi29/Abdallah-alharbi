@@ -651,7 +651,7 @@ export default function EmployeeDataRequest() {
       groupedByManager,
       getManagerWithCenters,
       getFieldValue,
-      availableFields
+      reportTitle
     });
   };
 
@@ -1515,7 +1515,7 @@ export default function EmployeeDataRequest() {
                   className="bg-green-600 hover:bg-green-700"
                 >
                   <Download className="w-4 h-4 ml-2" />
-                  تصدير Excel
+                  تصدير XLSX
                 </Button>
                 <Button
                   onClick={handleExportToHTML}
