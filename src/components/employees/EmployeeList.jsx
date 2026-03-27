@@ -147,7 +147,7 @@ export default function EmployeeList({
 
   return (
     <motion.div 
-      className="space-y-3 md:space-y-5"
+      className="space-y-3 md:space-y-5 overflow-x-hidden"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -171,7 +171,7 @@ export default function EmployeeList({
             className="group"
           >
             <Card
-              className={`relative overflow-hidden bg-gradient-to-br from-slate-800/90 via-slate-800/80 to-indigo-900/60 backdrop-blur-2xl border transition-all duration-500 shadow-xl md:shadow-2xl hover:shadow-indigo-500/20 ${
+              className={`relative w-full max-w-full overflow-hidden bg-gradient-to-br from-slate-800/90 via-slate-800/80 to-indigo-900/60 backdrop-blur-2xl border transition-all duration-500 shadow-xl md:shadow-2xl hover:shadow-indigo-500/20 ${
                 isPinned 
                   ? 'border-amber-400 bg-gradient-to-br from-amber-900/40 via-slate-800/80 to-amber-900/30 shadow-amber-500/20' 
                   : 'border-white/20 hover:border-indigo-400/60'
@@ -190,8 +190,8 @@ export default function EmployeeList({
                 <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-purple-400 to-transparent" />
               </div>
 
-            <CardContent className="relative z-10 p-3 md:p-5">
-              <div className="flex items-start gap-3 md:gap-5">
+            <CardContent className="relative z-10 p-3 md:p-5 max-w-full overflow-hidden">
+              <div className="flex items-start gap-3 md:gap-5 max-w-full overflow-hidden">
                 {/* Checkbox للتحديد */}
                 {onToggleSelection && (
                   <motion.div 
@@ -246,24 +246,24 @@ export default function EmployeeList({
                   )}
                 </motion.div>
 
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="flex-1 min-w-0 max-w-full overflow-hidden">
+                  <div className="flex flex-col sm:flex-row items-start justify-between gap-3 mb-3 max-w-full overflow-hidden">
                     <div className="flex-1">
                       <Link
                         to={createPageUrl(`EmployeeProfile?id=${employee.id}`)}
                         className="text-base md:text-xl font-black text-white hover:text-indigo-300 transition-all duration-300 flex items-center gap-1.5 md:gap-2 group/name"
                       >
-                        <span className="bg-gradient-to-r from-white to-white/90 bg-clip-text">{employee.full_name_arabic || 'غير محدد'}</span>
+                        <span className="bg-gradient-to-r from-white to-white/90 bg-clip-text truncate max-w-full mobile-paragraph">{employee.full_name_arabic || 'غير محدد'}</span>
                         <Sparkles className="w-5 h-5 text-yellow-400 opacity-0 group-hover/name:opacity-100 transition-all duration-300 group-hover/name:rotate-12" />
                       </Link>
-                      <div className="flex flex-wrap items-center gap-2 mt-2">
+                      <div className="flex flex-wrap items-center gap-1.5 md:gap-2 mt-2 max-w-full overflow-hidden">
                         {employee.position && (
                           <span className="text-xs md:text-sm font-bold text-indigo-300 bg-indigo-500/20 px-2.5 md:px-3 py-1 rounded-lg mobile-paragraph compact">{employee.position}</span>
                         )}
                         {employee.المركز_الصحي && (
                           <span className="flex items-center gap-1 text-xs md:text-sm font-semibold text-emerald-300 bg-emerald-500/20 px-2.5 md:px-3 py-1 rounded-lg mobile-paragraph compact">
                             <Building2 className="w-3 h-3 md:w-3.5 md:h-3.5 shrink-0" />
-                            <span className="truncate max-w-[140px] md:max-w-none">{employee.المركز_الصحي}</span>
+                            <span className="truncate max-w-[120px] sm:max-w-[180px] md:max-w-none">{employee.المركز_الصحي}</span>
                           </span>
                         )}
                         {employee.contract_type && (
@@ -274,7 +274,7 @@ export default function EmployeeList({
                       </div>
                     </div>
 
-                    <div className="flex gap-1.5 md:gap-2 flex-shrink-0">
+                    <div className="flex gap-1.5 md:gap-2 w-full sm:w-auto flex-shrink-0 justify-start sm:justify-end">
                       {onPinEmployee && (
                         <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
                           <Button
@@ -346,7 +346,7 @@ export default function EmployeeList({
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2 md:gap-3 text-xs md:text-sm mb-3 md:mb-4 p-3 md:p-4 bg-gradient-to-br from-white/10 to-white/5 rounded-xl md:rounded-2xl border border-white/20 backdrop-blur-sm">
+                  <div className="grid grid-cols-1 md:grid-cols-5 gap-2 md:gap-3 text-xs md:text-sm mb-3 md:mb-4 p-3 md:p-4 bg-gradient-to-br from-white/10 to-white/5 rounded-xl md:rounded-2xl border border-white/20 backdrop-blur-sm max-w-full overflow-hidden">
                     {employee.رقم_الموظف && (
                       <div className="flex items-center gap-2 text-white">
                         <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
@@ -365,7 +365,7 @@ export default function EmployeeList({
                         </div>
                         <div>
                           <span className="text-white/50 text-xs block">الجوال</span>
-                          <span className="font-black text-white">{employee.phone}</span>
+                          <span className="font-black text-white break-all">{employee.phone}</span>
                         </div>
                       </div>
                     )}
@@ -376,7 +376,7 @@ export default function EmployeeList({
                         </div>
                         <div>
                           <span className="text-white/50 text-xs block">الهوية</span>
-                          <span className="font-black text-white">{employee.رقم_الهوية}</span>
+                          <span className="font-black text-white break-all">{employee.رقم_الهوية}</span>
                         </div>
                       </div>
                     )}
@@ -404,8 +404,8 @@ export default function EmployeeList({
                     )}
                   </div>
 
-                  <div className="flex flex-wrap gap-1.5 md:gap-2">
-                    <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)}>
+                  <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-1.5 md:gap-2 max-w-full">
+                    <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="col-span-2 sm:col-span-1">
                       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                         <Button 
                           size="sm" 
