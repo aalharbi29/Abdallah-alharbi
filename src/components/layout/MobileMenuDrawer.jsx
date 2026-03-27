@@ -14,7 +14,7 @@ export default function MobileMenuDrawer({
   if (!isOpen) return null;
 
   const renderItem = (item) => {
-    const isActive = !item.subItems && (location.pathname === item.href || (item.name === "لوحة التحكم" && location.pathname === "/"));
+    const isActive = !item.subItems && (location.pathname === item.href || item.href === "/");
 
     if (item.subItems) {
       const isExpanded = expandedMenu === item.name;

@@ -31,7 +31,7 @@ export default function useLayoutState({ currentPageName, navigationItems, locat
     }
 
     const activeTopLevelItem = navigationItems.find(
-      (item) => !item.subItems && (location.pathname === item.href || (item.name === "لوحة التحكم" && location.pathname === "/"))
+      (item) => !item.subItems && (location.pathname === item.href || item.href === "/")
     );
 
     if (activeTopLevelItem && !activeSubItemParent) {

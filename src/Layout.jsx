@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useLocation } from "react-router-dom";
 import InstallPrompt from "./components/pwa/InstallPrompt";
 import ThemeProvider from "./components/theme/ThemeProvider";
@@ -10,6 +10,7 @@ import SidebarNav from "./components/layout/SidebarNav";
 import MobileMenuDrawer from "./components/layout/MobileMenuDrawer";
 import LayoutStyles from "./components/layout/LayoutStyles";
 import useLayoutState from "./components/layout/useLayoutState";
+import useMainScrollKeyboard from "./components/layout/useMainScrollKeyboard";
 
 
 
@@ -17,6 +18,7 @@ function LayoutContent({ children, currentPageName }) {
   const { t } = useLanguage();
   const navigationItems = getNavigationItems(t);
   const location = useLocation();
+  const mainRef = useRef(null);
   const {
     isMobileMenuOpen,
     isMobile,
@@ -25,6 +27,8 @@ function LayoutContent({ children, currentPageName }) {
     closeMobileMenu,
     toggleSubmenu,
   } = useLayoutState({ currentPageName, navigationItems, location });
+
+  useMainScrollKeyboard(mainRef);
 
   if (currentPageName === 'ViewAssignment') {
     return (
@@ -66,31 +70,10 @@ function LayoutContent({ children, currentPageName }) {
           />
 
           <main 
-                            className={`flex-1 overflow-y-auto ${mainPadding}`}
-                            tabIndex={-1}
-                            ref={(el) => {
-                              if (el) {
-                                const handleKeyDown = (e) => {
-                                  if (e.key === 'PageDown') {
-                                    e.preventDefault();
-                                    el.scrollBy({ top: window.innerHeight * 0.8, behavior: 'smooth' });
-                                  } else if (e.key === 'PageUp') {
-                                    e.preventDefault();
-                                    el.scrollBy({ top: -window.innerHeight * 0.8, behavior: 'smooth' });
-                                  } else if (e.key === 'Home') {
-                                    e.preventDefault();
-                                    el.scrollTo({ top: 0, behavior: 'smooth' });
-                                  } else if (e.key === 'End') {
-                                    e.preventDefault();
-                                    el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
-                                  }
-                                };
-                                window.removeEventListener('keydown', window._layoutKeyHandler);
-                                window._layoutKeyHandler = handleKeyDown;
-                                window.addEventListener('keydown', handleKeyDown);
-                              }
-                            }}
-                          >
+            className={`flex-1 overflow-y-auto ${mainPadding}`}
+            tabIndex={-1}
+            ref={mainRef}
+          >
             <div className="min-h-full">
               {children}
             </div>
