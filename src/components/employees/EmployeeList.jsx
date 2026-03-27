@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { motion, AnimatePresence } from "framer-motion";
+import MobileEmployeeCard from "./MobileEmployeeCard";
 
 export default function EmployeeList({
   employees,
@@ -170,6 +171,25 @@ export default function EmployeeList({
             whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
             className="group"
           >
+            <div className="block md:hidden">
+              <MobileEmployeeCard
+                employee={employee}
+                isPinned={isPinned}
+                isSelected={isSelected}
+                activeHolidayAssignments={activeHolidayAssignments}
+                employeeRoles={employeeRoles}
+                onEdit={onEdit}
+                onDelete={onDelete}
+                onAddLeave={onAddLeave}
+                onAddAssignment={onAddAssignment}
+                onAddHolidayAssignment={onAddHolidayAssignment}
+                onPinEmployee={onPinEmployee}
+                onToggleSelection={onToggleSelection}
+                normalizePhoneForWhatsApp={normalizePhoneForWhatsApp}
+              />
+            </div>
+
+            <div className="hidden md:block">
             <Card
               className={`relative w-full max-w-full overflow-hidden bg-gradient-to-br from-slate-800/90 via-slate-800/80 to-indigo-900/60 backdrop-blur-2xl border transition-all duration-500 shadow-xl md:shadow-2xl hover:shadow-indigo-500/20 ${
                 isPinned 
@@ -481,6 +501,7 @@ export default function EmployeeList({
               </div>
             </CardContent>
           </Card>
+            </div>
         </motion.div>
         );
       })}
