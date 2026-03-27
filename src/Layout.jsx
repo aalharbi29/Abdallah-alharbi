@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Hospital, X, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useLocation } from "react-router-dom";
 import InstallPrompt from "./components/pwa/InstallPrompt";
 import ThemeProvider from "./components/theme/ThemeProvider";
 import { LanguageProvider, useLanguage } from "./components/language/LanguageProvider";
 import { getNavigationItems } from "./components/layout/navigationConfig";
 import AppHeader from "./components/layout/AppHeader";
 import MobileBottomNav from "./components/layout/MobileBottomNav";
+import SidebarNav from "./components/layout/SidebarNav";
+import MobileMenuDrawer from "./components/layout/MobileMenuDrawer";
 
 
 
@@ -68,78 +68,6 @@ function LayoutContent({ children, currentPageName }) {
 
   const toggleSubmenu = (itemName) => {
     setExpandedMenu(expandedMenu === itemName ? null : itemName);
-  };
-
-  const renderNavigationItem = (item, isMobileLayout = false) => {
-    const isActive = !item.subItems && (location.pathname === item.href ||
-      (item.name === "لوحة التحكم" && location.pathname === "/"));
-
-    if (item.subItems) {
-      const isExpanded = expandedMenu === item.name;
-      const hasActiveSubItem = (item.subItems || []).some(subItem => {
-        const subItemPath = subItem.href.split('?')[0];
-        const subItemSearch = subItem.href.split('?')[1] || '';
-        const currentLocationPath = location.pathname;
-        const currentLocationSearch = location.search;
-
-        return currentLocationPath === subItemPath && (subItemSearch ? currentLocationSearch.includes(subItemSearch) : true);
-      });
-
-      return (
-        <div key={item.name}>
-          <button
-            onClick={() => toggleSubmenu(item.name)}
-            className={`flex w-full items-center justify-between gap-3 px-4 py-3 rounded-xl font-semibold transition-all duration-300 ${
-              isExpanded || hasActiveSubItem 
-                ? "bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg" 
-                : "text-gray-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:text-green-700"
-            } ${isMobileLayout ? 'text-sm' : 'text-base'}`}
-          >
-            <div className="flex items-center gap-3">
-              <item.icon className={`${isMobileLayout ? "w-4 h-4" : "w-5 h-5"} ${isExpanded || hasActiveSubItem ? 'text-white' : ''}`} />
-              <span>{item.name}</span>
-            </div>
-            <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`} />
-          </button>
-
-          {isExpanded && (
-            <div className="mr-7 mt-2 space-y-1 animate-fade-in">
-              {(item.subItems || []).map((subItem) => (
-                <Link
-                  key={subItem.name}
-                  to={subItem.href}
-                  onClick={isMobileLayout ? closeMobileMenu : undefined}
-                  className={`flex items-center gap-3 px-4 py-2.5 rounded-lg font-medium transition-all duration-200 ${
-                    location.pathname === subItem.href.split('?')[0] && (subItem.href.split('?')[1] ? location.search.includes(subItem.href.split('?')[1]) : true)
-                      ? "bg-green-100 text-green-800 shadow-sm border-r-4 border-green-600"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-green-700"
-                  } ${isMobileLayout ? 'text-xs' : 'text-sm'}`}
-                >
-                  <subItem.icon className={isMobileLayout ? "w-3.5 h-3.5" : "w-4 h-4"} />
-                  <span>{subItem.name}</span>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    return (
-      <Link
-        key={item.name}
-        to={item.href}
-        onClick={isMobileLayout ? closeMobileMenu : undefined}
-        className={`flex items-center gap-3 px-4 py-3 rounded-xl font-semibold transition-all duration-300 group ${
-          isActive
-            ? "bg-gradient-to-r from-green-600 to-green-700 text-white shadow-lg"
-            : "text-gray-700 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 hover:text-green-700 hover:shadow-md"
-        } ${isMobileLayout ? 'text-sm' : 'text-base'}`}
-      >
-        <item.icon className={`${isMobileLayout ? "w-4 h-4" : "w-5 h-5"} group-hover:scale-110 transition-transform duration-200`} />
-        <span>{item.name}</span>
-      </Link>
-    );
   };
 
   const mainPadding = 'p-1 md:p-2 lg:p-4';
@@ -394,60 +322,26 @@ function LayoutContent({ children, currentPageName }) {
         <InstallPrompt />
 
         {!isMobile && (
-          <aside className="w-72 bg-gradient-to-br from-gray-50 via-white to-green-50/30 border-l border-gray-200/50 flex flex-col shadow-2xl no-print backdrop-blur-sm">
-            <header className="border-b border-gray-200/50 p-6 bg-gradient-to-r from-green-600 to-emerald-600">
-              <div className="flex items-center gap-3">
-                <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-xl border border-white/30">
-                  <Hospital className="w-7 h-7 text-white drop-shadow-lg" />
-                </div>
-                <div>
-                  <h2 className="text-xl font-bold text-white drop-shadow-md">المراكز الصحية الحسو</h2>
-                  <p className="text-sm text-green-50 font-medium">{t('header.alHanakiyah')}</p>
-                </div>
-              </div>
-            </header>
-
-            <nav className="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
-              {(navigationItems || []).map((item) => renderNavigationItem(item))}
-            </nav>
-
-            <footer className="border-t border-gray-200/50 p-5 bg-gradient-to-br from-gray-50 to-green-50">
-              <div className="text-center">
-                <p className="font-bold text-sm text-gray-700">نظام إدارة المراكز الصحية - الحسو</p>
-                <p className="text-xs mt-1.5 text-gray-500 font-medium">{t('footer.version')}</p>
-              </div>
-            </footer>
-          </aside>
+          <SidebarNav
+            navigationItems={navigationItems}
+            expandedMenu={expandedMenu}
+            toggleSubmenu={toggleSubmenu}
+            location={location}
+            t={t}
+          />
         )}
 
         <div className="flex-1 flex flex-col">
           <AppHeader onMenuClick={toggleMobileMenu} />
 
-          {isMobileMenuOpen && (
-            <div className="fixed inset-0 z-50 md:hidden no-print">
-              <div className="mobile-overlay absolute inset-0" onClick={closeMobileMenu}></div>
-              <aside className="absolute right-0 top-0 h-full w-72 max-w-[85vw] bg-white shadow-2xl transform transition-transform duration-300 safe-top overflow-y-auto">
-                <header className="border-b border-gray-200 p-3 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 bg-gradient-to-br from-green-600 to-green-700 rounded-lg flex items-center justify-center">
-                      <Hospital className="w-4 h-4 text-white" />
-                    </div>
-                    <div>
-                      <h2 className="text-sm font-bold text-gray-900">المراكز الصحية الحسو</h2>
-                      <p className="text-xs text-gray-500">الحسو</p>
-                    </div>
-                    </div>
-                    <Button variant="ghost" size="sm" onClick={closeMobileMenu} className="p-2">
-                    <X className="w-4 h-4" />
-                    </Button>
-                </header>
-
-                <nav className="p-3 space-y-1 safe-bottom custom-scrollbar">
-                  {(navigationItems || []).map((item) => renderNavigationItem(item, true))}
-                </nav>
-              </aside>
-            </div>
-          )}
+          <MobileMenuDrawer
+            isOpen={isMobileMenuOpen}
+            navigationItems={navigationItems}
+            expandedMenu={expandedMenu}
+            toggleSubmenu={toggleSubmenu}
+            closeMobileMenu={closeMobileMenu}
+            location={location}
+          />
 
           <main 
                             className={`flex-1 overflow-y-auto ${mainPadding}`}
