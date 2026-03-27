@@ -19,11 +19,49 @@ export default function FormExportManager({ formData, formHTMLGenerator, fileNam
     document.body.removeChild(a);
   };
 
+  const handleExcelExport = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet(fileName);
+    const headerRow = worksheet.addRow(["الحقل", "القيمة"]);
+    headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '166534' } };
+    headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== '') {
+        worksheet.addRow([getArabicFieldName(key), value]);
+      }
+    });
+
+    worksheet.columns = [{ width: 28 }, { width: 50 }];
+    worksheet.eachRow((row, rowNumber) => {
+      row.alignment = { horizontal: 'right', vertical: 'middle', wrapText: true };
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: 'thin', color: { argb: 'D1D5DB' } },
+          left: { style: 'thin', color: { argb: 'D1D5DB' } },
+          bottom: { style: 'thin', color: { argb: 'D1D5DB' } },
+          right: { style: 'thin', color: { argb: 'D1D5DB' } },
+        };
+        if (rowNumber > 1) {
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: rowNumber % 2 === 0 ? 'F9FAFB' : 'FFFFFFFF' },
+          };
+        }
+      });
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    downloadFile(buffer, `${fileName}.xlsx`, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+  };
+
   const handleExport = async (format) => {
     setIsExporting(true);
     try {
       const htmlContent = formHTMLGenerator();
-      
+
       if (format === 'word') {
         const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Export HTML to Word</title></head><body>";
         const footer = "</body></html>";
@@ -33,41 +71,7 @@ export default function FormExportManager({ formData, formHTMLGenerator, fileNam
         const fullHtml = `<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><title>${fileName}</title></head><body>${htmlContent}</body></html>`;
         downloadFile(fullHtml, `${fileName}.html`, "text/html");
       } else if (format === 'excel') {
-        const workbook = new ExcelJS.Workbook();
-        const worksheet = workbook.addWorksheet(fileName);
-        const headerRow = worksheet.addRow(["الحقل", "القيمة"]);
-        headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-        headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '166534' } };
-        headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
-
-        Object.entries(formData).forEach(([key, value]) => {
-          if (value !== null && value !== undefined && value !== '') {
-            worksheet.addRow([getArabicFieldName(key), value]);
-          }
-        });
-
-        worksheet.columns = [{ width: 28 }, { width: 50 }];
-        worksheet.eachRow((row, rowNumber) => {
-          row.alignment = { horizontal: 'right', vertical: 'middle', wrapText: true };
-          row.eachCell((cell) => {
-            cell.border = {
-              top: { style: 'thin', color: { argb: 'D1D5DB' } },
-              left: { style: 'thin', color: { argb: 'D1D5DB' } },
-              bottom: { style: 'thin', color: { argb: 'D1D5DB' } },
-              right: { style: 'thin', color: { argb: 'D1D5DB' } },
-            };
-            if (rowNumber > 1) {
-              cell.fill = {
-                type: 'pattern',
-                pattern: 'solid',
-                fgColor: { argb: rowNumber % 2 === 0 ? 'F9FAFB' : 'FFFFFFFF' },
-              };
-            }
-          });
-        });
-
-        const buffer = await workbook.xlsx.writeBuffer();
-        downloadFile(buffer, `${fileName}.xlsx`, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        await handleExcelExport();
       }
     } catch (e) {
       console.error("Export failed:", e);
