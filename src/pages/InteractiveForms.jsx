@@ -150,30 +150,30 @@ export default function InteractiveForms() {
         </div>
 
         {/* Forms Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-6">
           {interactiveForms.map((form) => {
             const Icon = form.icon;
             return (
-              <Link key={form.title} to={form.link}>
-                <Card className="group h-full hover:shadow-2xl transition-all duration-300 border-2 hover:border-indigo-300 cursor-pointer hover:scale-105">
-                  <CardContent className="p-6">
-                    <div className="flex flex-col items-center text-center space-y-5">
+              <Link key={form.title} to={form.link} className="min-w-0">
+                <Card className="group h-full hover:shadow-2xl transition-all duration-300 border hover:border-indigo-300 cursor-pointer md:hover:scale-105">
+                  <CardContent className="p-2 md:p-6">
+                    <div className="flex flex-col items-center text-center space-y-2 md:space-y-5">
                       {/* Icon */}
-                      <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${form.color} flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform`}>
-                        <Icon className="w-10 h-10 text-white" />
+                      <div className={`w-10 h-10 md:w-20 md:h-20 rounded-xl md:rounded-2xl bg-gradient-to-br ${form.color} flex items-center justify-center shadow-md md:shadow-xl group-hover:scale-110 transition-transform`}>
+                        <Icon className="w-5 h-5 md:w-10 md:h-10 text-white" />
                       </div>
                       
                       {/* Category Badge */}
-                      <div className="inline-block px-3 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-600">
+                      <div className="hidden md:inline-block px-3 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-600">
                         {form.category}
                       </div>
                       
                       {/* Title & Description */}
-                      <div className="space-y-2">
-                        <h3 className="font-bold text-lg text-gray-900 leading-tight">
+                      <div className="space-y-1 md:space-y-2 min-w-0 w-full">
+                        <h3 className="font-bold text-[11px] md:text-lg text-gray-900 leading-tight line-clamp-2">
                           {form.title}
                         </h3>
-                        <p className="text-sm text-gray-600 leading-relaxed">
+                        <p className="hidden md:block text-sm text-gray-600 leading-relaxed">
                           {form.description}
                         </p>
                       </div>
@@ -181,11 +181,12 @@ export default function InteractiveForms() {
                       {/* Button */}
                       <Button 
                         variant="outline" 
-                        size="lg"
-                        className="w-full group-hover:bg-indigo-50 group-hover:text-indigo-700 group-hover:border-indigo-300 transition-all"
+                        size="sm"
+                        className="w-full text-[10px] md:text-sm px-1.5 md:px-4 group-hover:bg-indigo-50 group-hover:text-indigo-700 group-hover:border-indigo-300 transition-all"
                       >
-                        <Edit className="w-4 h-4 ml-2" />
-                        تعبئة النموذج
+                        <Edit className="w-3 h-3 md:w-4 md:h-4 ml-1 md:ml-2" />
+                        <span className="hidden md:inline">تعبئة النموذج</span>
+                        <span className="md:hidden">فتح</span>
                       </Button>
                     </div>
                   </CardContent>
