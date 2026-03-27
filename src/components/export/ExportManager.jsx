@@ -1,5 +1,5 @@
-
 import React, { useState } from "react";
+import ExcelJS from "exceljs";
 import { Button } from "@/components/ui/button";
 import { 
   Download, 
@@ -18,14 +18,56 @@ import {
 export default function ExportManager({ data, filename = "تقرير" }) {
   const [isExporting, setIsExporting] = useState(false);
 
-  const exportToExcel = () => {
+  const exportToExcel = async () => {
     setIsExporting(true);
     try {
-      const csvContent = convertToCSV(data);
-      const blob = new Blob(["\ufeff" + csvContent], { 
-        type: 'text/csv;charset=utf-8;' 
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet(filename);
+      const rows = Array.isArray(data) ? data : [];
+
+      if (!rows.length) {
+        worksheet.addRow(["لا توجد بيانات للتصدير"]);
+      } else {
+        const headers = Object.keys(rows[0]);
+        const headerRow = worksheet.addRow(headers);
+        headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+        headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '166534' } };
+        headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
+
+        rows.forEach((row) => {
+          worksheet.addRow(headers.map((header) => row[header] ?? ''));
+        });
+
+        worksheet.columns = headers.map((header) => ({
+          key: header,
+          width: Math.min(Math.max(String(header).length + 6, 16), 40),
+        }));
+
+        worksheet.eachRow((row, rowNumber) => {
+          row.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+          row.eachCell((cell) => {
+            cell.border = {
+              top: { style: 'thin', color: { argb: 'D1D5DB' } },
+              left: { style: 'thin', color: { argb: 'D1D5DB' } },
+              bottom: { style: 'thin', color: { argb: 'D1D5DB' } },
+              right: { style: 'thin', color: { argb: 'D1D5DB' } },
+            };
+            if (rowNumber > 1) {
+              cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: rowNumber % 2 === 0 ? 'F9FAFB' : 'FFFFFFFF' },
+              };
+            }
+          });
+        });
+      }
+
+      const buffer = await workbook.xlsx.writeBuffer();
+      const blob = new Blob([buffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
       });
-      downloadFile(blob, `${filename}.csv`);
+      downloadFile(blob, `${filename}.xlsx`);
     } catch (error) {
       alert("حدث خطأ في التصدير");
     } finally {
@@ -65,22 +107,6 @@ export default function ExportManager({ data, filename = "تقرير" }) {
     }
   };
 
-  const convertToCSV = (data) => {
-    if (!Array.isArray(data) || data.length === 0) return "";
-    
-    const headers = Object.keys(data[0]);
-    const csvRows = [headers.join(',')];
-    
-    data.forEach(row => {
-      const values = headers.map(header => {
-        const value = row[header] || '';
-        return `"${value.toString().replace(/"/g, '""')}"`;
-      });
-      csvRows.push(values.join(','));
-    });
-    
-    return csvRows.join('\n');
-  };
 
   const generateHTMLReport = (data) => {
     if (!data || data.length === 0) return `<html dir="rtl"><body><h1>${filename}</h1><p>لا توجد بيانات للتصدير</p></body></html>`;

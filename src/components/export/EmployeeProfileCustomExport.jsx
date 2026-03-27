@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import ExcelJS from "exceljs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -90,14 +91,6 @@ function buildHTML({ employee, rows, title, subtitle }) {
 </body></html>`;
 }
 
-function buildCSV(rows) {
-  const lines = [["الحقل","القيمة"], ...rows.map(({ key, label, value }) => {
-    const v = formatValue(key, value);
-    const esc = (s) => `"${String(s ?? "—").replace(/"/g, '""')}"`;
-    return [esc(label || key), esc(v)];
-  })];
-  return "\ufeff" + lines.map(r => r.join(",")).join("\n");
-}
 
 export default function EmployeeProfileCustomExport({ employee }) {
   const allEntries = useMemo(() => toEntries(employee), [employee]);
@@ -182,12 +175,43 @@ export default function EmployeeProfileCustomExport({ employee }) {
     URL.revokeObjectURL(url);
   };
 
-  const doExcel = () => {
-    const csv = buildCSV(rows);
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const doExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("ملف الموظف");
+    const headerRow = worksheet.addRow(["الحقل", "القيمة"]);
+    headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '166534' } };
+    headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    rows.forEach(({ key, label, value }) => {
+      worksheet.addRow([label || key, formatValue(key, value)]);
+    });
+
+    worksheet.columns = [{ width: 28 }, { width: 50 }];
+    worksheet.eachRow((row, rowNumber) => {
+      row.alignment = { horizontal: 'right', vertical: 'middle', wrapText: true };
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: 'thin', color: { argb: 'D1D5DB' } },
+          left: { style: 'thin', color: { argb: 'D1D5DB' } },
+          bottom: { style: 'thin', color: { argb: 'D1D5DB' } },
+          right: { style: 'thin', color: { argb: 'D1D5DB' } },
+        };
+        if (rowNumber > 1) {
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: rowNumber % 2 === 0 ? 'F9FAFB' : 'FFFFFFFF' },
+          };
+        }
+      });
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = `${filenameBase}.csv`;
+    a.href = url; a.download = `${filenameBase}.xlsx`;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };

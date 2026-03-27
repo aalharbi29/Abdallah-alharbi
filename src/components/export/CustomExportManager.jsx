@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+import ExcelJS from "exceljs";
 import { Button } from "@/components/ui/button";
 import { 
   Download, 
@@ -265,75 +266,59 @@ export default function CustomExportManager({
     });
   }, [exportData, selectedFields, type, dateFormat]);
 
-  const generateCSV = () => {
-    if (!selectedFields.length || !sortedExportData || sortedExportData.length === 0) return '';
-    
-    const headers = selectedFields.map(field => fieldDefinitions[field]);
-    const csvRows = [headers.join(',')];
-    
-    sortedExportData.forEach(item => {
-      const values = selectedFields.map(field => {
-        let value = '';
-        if (field === 'special_roles' && Array.isArray(item[field])) {
-          value = item[field].join(', ');
-        } else if (field === 'assigned_tasks' && Array.isArray(item[field])) {
-          value = item[field].join(', ');
-        } else if (field === 'employee_count' && type === 'healthcenters') {
-          value = item.employees ? item.employees.length : 0;
-        } else if (field === 'age') {
-          value = calculateAge(item.birth_date);
-        } else if (field === 'contract_end_date_hijri' || field === 'hire_date_hijri' || field === 'birth_date_hijri' || field === 'start_work_date_hijri') {
-          value = item[field] || '';
-        } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date' || field === 'start_work_date' || field === 'تاريخ_بداية_العقد' || field === 'تاريخ_انتهاء_العقد') {
-          value = formatDate(item[field]);
-        } else if ((field === 'المدير' || field === 'نائب_المدير' || field === 'المشرف_الفني') && type === 'healthcenters') {
-          value = getEmployeeName(item[field]);
-        } else if (type === 'healthcenters') {
-          if (field === 'سيارة_خدمات_متوفرة') {
-            value = item.سيارة_خدمات?.متوفرة ? 'متوفرة' : 'غير متوفرة';
-          } else if (field === 'لوحة_سيارة_الخدمات') {
-            value = item.سيارة_خدمات?.رقم_اللوحة_عربي || item.سيارة_خدمات?.رقم_اللوحة_انجليزي || '';
-          } else if (field === 'موديل_سيارة_الخدمات') {
-            value = item.سيارة_خدمات?.موديل || '';
-          } else if (field === 'نوع_وقود_سيارة_الخدمات') {
-            value = item.سيارة_خدمات?.نوع_الوقود || '';
-          } else if (field === 'شريحة_وقود_سيارة_الخدمات') {
-            value = (typeof item.سيارة_خدمات?.شريحة_تعبئة_وقود === 'boolean') ? (item.سيارة_خدمات.شريحة_تعبئة_وقود ? 'متوفرة' : 'غير متوفرة') : '';
-          } else if (field === 'محطة_وقود_سيارة_الخدمات') {
-            value = item.سيارة_خدمات?.تبعية_المحطة || '';
-          } else if (field === 'سيارة_اسعاف_متوفرة') {
-            value = item.سيارة_اسعاف?.متوفرة ? 'متوفرة' : 'غير متوفرة';
-          } else if (field === 'لوحة_سيارة_الاسعاف') {
-            value = item.سيارة_اسعاف?.رقم_اللوحة_عربي || item.سيارة_اسعاف?.رقم_اللوحة_انجليزي || '';
-          } else if (field === 'موديل_سيارة_الاسعاف') {
-            value = item.سيارة_اسعاف?.موديل || '';
-          } else if (field === 'نوع_وقود_سيارة_الاسعاف') {
-            value = item.سيارة_اسعاف?.نوع_الوقود || '';
-          } else if (field === 'شريحة_وقود_سيارة_الاسعاف') {
-            value = (typeof item.سيارة_اسعاف?.شريحة_تعبئة_وقود === 'boolean') ? (item.سيارة_اسعاف.شريحة_تعبئة_وقود ? 'متوفرة' : 'غير متوفرة') : '';
-          } else if (field === 'محطة_وقود_سيارة_الاسعاف') {
-            value = item.سيارة_اسعاف?.تبعية_المحطة || '';
-          } else if (field === 'شريحة_وقود_عام') {
-            const s = (typeof item.سيارة_خدمات?.شريحة_تعبئة_وقود === 'boolean') ? item.سيارة_خدمات.شريحة_تعبئة_وقود : null;
-            const a = (typeof item.سيارة_اسعاف?.شريحة_تعبئة_وقود === 'boolean') ? item.سيارة_اسعاف.شريحة_تعبئة_وقود : null;
-            const hasInfo = (s !== null) || (a !== null);
-            const anyOn = (s === true) || (a === true);
-            value = hasInfo ? (anyOn ? 'متوفرة' : 'غير متوفرة') : '';
-          } else if (field === 'محطة_وقود_عام') {
-            const stations = [item.سيارة_خدمات?.تبعية_المحطة, item.سيارة_اسعاف?.تبعية_المحطة].filter(Boolean);
-            value = Array.from(new Set(stations)).join(' / ');
-          } else {
-            value = item[field] || '';
-          }
-        } else {
-          value = item[field] || '';
-        }
-        return `"${value.toString().replace(/"/g, '""')}"`;
-      });
-      csvRows.push(values.join(','));
-    });
-    
-    return csvRows.join('\n');
+  const getExportValue = (item, field) => {
+    if (field === 'special_roles' && Array.isArray(item[field])) {
+      return item[field].join(', ');
+    } else if (field === 'assigned_tasks' && Array.isArray(item[field])) {
+      return item[field].join(', ');
+    } else if (field === 'employee_count' && type === 'healthcenters') {
+      return item.employees ? item.employees.length : 0;
+    } else if (field === 'age') {
+      return calculateAge(item.birth_date);
+    } else if (field === 'contract_end_date_hijri' || field === 'hire_date_hijri' || field === 'birth_date_hijri' || field === 'start_work_date_hijri') {
+      return item[field] || '';
+    } else if (field === 'hire_date' || field === 'birth_date' || field === 'contract_end_date' || field === 'start_work_date' || field === 'تاريخ_بداية_العقد' || field === 'تاريخ_انتهاء_العقد') {
+      return formatDate(item[field]);
+    } else if ((field === 'المدير' || field === 'نائب_المدير' || field === 'المشرف_الفني') && type === 'healthcenters') {
+      return getEmployeeName(item[field]);
+    } else if (type === 'healthcenters') {
+      if (field === 'سيارة_خدمات_متوفرة') {
+        return item.سيارة_خدمات?.متوفرة ? 'متوفرة' : 'غير متوفرة';
+      } else if (field === 'لوحة_سيارة_الخدمات') {
+        return item.سيارة_خدمات?.رقم_اللوحة_عربي || item.سيارة_خدمات?.رقم_اللوحة_انجليزي || '';
+      } else if (field === 'موديل_سيارة_الخدمات') {
+        return item.سيارة_خدمات?.موديل || '';
+      } else if (field === 'نوع_وقود_سيارة_الخدمات') {
+        return item.سيارة_خدمات?.نوع_الوقود || '';
+      } else if (field === 'شريحة_وقود_سيارة_الخدمات') {
+        return (typeof item.سيارة_خدمات?.شريحة_تعبئة_وقود === 'boolean') ? (item.سيارة_خدمات.شريحة_تعبئة_وقود ? 'متوفرة' : 'غير متوفرة') : '';
+      } else if (field === 'محطة_وقود_سيارة_الخدمات') {
+        return item.سيارة_خدمات?.تبعية_المحطة || '';
+      } else if (field === 'سيارة_اسعاف_متوفرة') {
+        return item.سيارة_اسعاف?.متوفرة ? 'متوفرة' : 'غير متوفرة';
+      } else if (field === 'لوحة_سيارة_الاسعاف') {
+        return item.سيارة_اسعاف?.رقم_اللوحة_عربي || item.سيارة_اسعاف?.رقم_اللوحة_انجليزي || '';
+      } else if (field === 'موديل_سيارة_الاسعاف') {
+        return item.سيارة_اسعاف?.موديل || '';
+      } else if (field === 'نوع_وقود_سيارة_الاسعاف') {
+        return item.سيارة_اسعاف?.نوع_الوقود || '';
+      } else if (field === 'شريحة_وقود_سيارة_الاسعاف') {
+        return (typeof item.سيارة_اسعاف?.شريحة_تعبئة_وقود === 'boolean') ? (item.سيارة_اسعاف.شريحة_تعبئة_وقود ? 'متوفرة' : 'غير متوفرة') : '';
+      } else if (field === 'محطة_وقود_سيارة_الاسعاف') {
+        return item.سيارة_اسعاف?.تبعية_المحطة || '';
+      } else if (field === 'شريحة_وقود_عام') {
+        const s = (typeof item.سيارة_خدمات?.شريحة_تعبئة_وقود === 'boolean') ? item.سيارة_خدمات.شريحة_تعبئة_وقود : null;
+        const a = (typeof item.سيارة_اسعاف?.شريحة_تعبئة_وقود === 'boolean') ? item.سيارة_اسعاف.شريحة_تعبئة_وقود : null;
+        const hasInfo = (s !== null) || (a !== null);
+        const anyOn = (s === true) || (a === true);
+        return hasInfo ? (anyOn ? 'متوفرة' : 'غير متوفرة') : '';
+      } else if (field === 'محطة_وقود_عام') {
+        const stations = [item.سيارة_خدمات?.تبعية_المحطة, item.سيارة_اسعاف?.تبعية_المحطة].filter(Boolean);
+        return Array.from(new Set(stations)).join(' / ');
+      }
+    }
+
+    return item[field] || '';
   };
 
   const generateHTML = () => {
@@ -805,10 +790,47 @@ export default function CustomExportManager({
     
     try {
       switch(format) {
-        case 'excel':
-          const csvContent = "\ufeff" + generateCSV();
-          downloadFile(csvContent, `${filename}.csv`, 'text/csv;charset=utf-8;');
+        case 'excel': {
+          const workbook = new ExcelJS.Workbook();
+          const worksheet = workbook.addWorksheet(exportTitle || filename);
+          const headerLabels = selectedFields.map(field => fieldDefinitions[field]);
+          const headerRow = worksheet.addRow(headerLabels);
+          headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+          headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '166534' } };
+          headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
+
+          sortedExportData.forEach((item) => {
+            worksheet.addRow(selectedFields.map((field) => getExportValue(item, field)));
+          });
+
+          worksheet.columns = selectedFields.map((field) => ({
+            key: field,
+            width: Math.min(Math.max(String(fieldDefinitions[field] || field).length + 6, 16), 40),
+          }));
+
+          worksheet.eachRow((row, rowNumber) => {
+            row.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+            row.eachCell((cell) => {
+              cell.border = {
+                top: { style: 'thin', color: { argb: 'D1D5DB' } },
+                left: { style: 'thin', color: { argb: 'D1D5DB' } },
+                bottom: { style: 'thin', color: { argb: 'D1D5DB' } },
+                right: { style: 'thin', color: { argb: 'D1D5DB' } },
+              };
+              if (rowNumber > 1) {
+                cell.fill = {
+                  type: 'pattern',
+                  pattern: 'solid',
+                  fgColor: { argb: rowNumber % 2 === 0 ? 'F9FAFB' : 'FFFFFFFF' },
+                };
+              }
+            });
+          });
+
+          const buffer = await workbook.xlsx.writeBuffer();
+          downloadFile(buffer, `${filename}.xlsx`, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
           break;
+        }
           
         case 'word':
           const htmlContentWord = generateHTML();

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ExcelJS from "exceljs";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Download, FileText, FileSpreadsheet, Printer, Loader2, FileImage } from "lucide-react";
@@ -18,7 +19,7 @@ export default function FormExportManager({ formData, formHTMLGenerator, fileNam
     document.body.removeChild(a);
   };
 
-  const handleExport = (format) => {
+  const handleExport = async (format) => {
     setIsExporting(true);
     try {
       const htmlContent = formHTMLGenerator();
@@ -32,8 +33,41 @@ export default function FormExportManager({ formData, formHTMLGenerator, fileNam
         const fullHtml = `<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><title>${fileName}</title></head><body>${htmlContent}</body></html>`;
         downloadFile(fullHtml, `${fileName}.html`, "text/html");
       } else if (format === 'excel') {
-        const csvData = convertFormDataToCSV(formData);
-        downloadFile(csvData, `${fileName}.csv`, "text/csv;charset=utf-8");
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet(fileName);
+        const headerRow = worksheet.addRow(["الحقل", "القيمة"]);
+        headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+        headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '166534' } };
+        headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
+
+        Object.entries(formData).forEach(([key, value]) => {
+          if (value !== null && value !== undefined && value !== '') {
+            worksheet.addRow([getArabicFieldName(key), value]);
+          }
+        });
+
+        worksheet.columns = [{ width: 28 }, { width: 50 }];
+        worksheet.eachRow((row, rowNumber) => {
+          row.alignment = { horizontal: 'right', vertical: 'middle', wrapText: true };
+          row.eachCell((cell) => {
+            cell.border = {
+              top: { style: 'thin', color: { argb: 'D1D5DB' } },
+              left: { style: 'thin', color: { argb: 'D1D5DB' } },
+              bottom: { style: 'thin', color: { argb: 'D1D5DB' } },
+              right: { style: 'thin', color: { argb: 'D1D5DB' } },
+            };
+            if (rowNumber > 1) {
+              cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: rowNumber % 2 === 0 ? 'F9FAFB' : 'FFFFFFFF' },
+              };
+            }
+          });
+        });
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        downloadFile(buffer, `${fileName}.xlsx`, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
       }
     } catch (e) {
       console.error("Export failed:", e);
@@ -43,19 +77,6 @@ export default function FormExportManager({ formData, formHTMLGenerator, fileNam
     }
   };
 
-  const convertFormDataToCSV = (data) => {
-    const csvRows = [];
-    csvRows.push("الحقل,القيمة");
-    
-    Object.entries(data).forEach(([key, value]) => {
-      if (value !== null && value !== undefined && value !== '') {
-        const fieldName = getArabicFieldName(key);
-        csvRows.push(`"${fieldName}","${value}"`);
-      }
-    });
-    
-    return csvRows.join('\n');
-  };
 
   const getArabicFieldName = (key) => {
     const fieldNames = {

@@ -1,4 +1,5 @@
 import React from "react";
+import ExcelJS from "exceljs";
 import { Button } from "@/components/ui/button";
 import { FileText, FileSpreadsheet, Printer } from "lucide-react";
 
@@ -42,21 +43,6 @@ function generateHTML(employee) {
 </body></html>`;
 }
 
-function generateCSV(employee) {
-  const entries = toKeyValueArray(employee);
-  const lines = [["الحقل", "القيمة"], ...entries.map(([k, v]) => {
-    let val = v;
-    if (typeof val === "boolean") val = val ? "نعم" : "لا";
-    if (Array.isArray(val)) val = val.join(", ");
-    if (typeof val === "object" && val !== null) val = JSON.stringify(val);
-    if ((k.toLowerCase().includes("date") || k.includes("تاريخ")) && v) {
-      try { val = new Date(v).toLocaleDateString("ar-SA"); } catch {}
-    }
-    const esc = (s) => `"${String(s ?? "—").replace(/"/g, '""')}"`;
-    return [esc(k), esc(val)];
-  })];
-  return "\ufeff" + lines.map(r => r.join(",")).join("\n");
-}
 
 export default function EmployeeProfileExporter({ employee }) {
   const filenameBase = `ملف_الموظف_${employee?.full_name_arabic || "بدون_اسم"}`;
@@ -73,12 +59,50 @@ export default function EmployeeProfileExporter({ employee }) {
     URL.revokeObjectURL(url);
   };
 
-  const handleExcel = () => {
-    const csv = generateCSV(employee);
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const handleExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("ملف الموظف");
+    const headerRow = worksheet.addRow(["الحقل", "القيمة"]);
+    headerRow.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    headerRow.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '166534' } };
+    headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
+
+    toKeyValueArray(employee).forEach(([k, v]) => {
+      let val = v;
+      if (typeof val === "boolean") val = val ? "نعم" : "لا";
+      if (Array.isArray(val)) val = val.join(", ");
+      if (typeof val === "object" && val !== null) val = JSON.stringify(val);
+      if ((k.toLowerCase().includes("date") || k.includes("تاريخ")) && v) {
+        try { val = new Date(v).toLocaleDateString("ar-SA"); } catch {}
+      }
+      worksheet.addRow([k, val ?? "—"]);
+    });
+
+    worksheet.columns = [{ width: 28 }, { width: 50 }];
+    worksheet.eachRow((row, rowNumber) => {
+      row.alignment = { horizontal: 'right', vertical: 'middle', wrapText: true };
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: 'thin', color: { argb: 'D1D5DB' } },
+          left: { style: 'thin', color: { argb: 'D1D5DB' } },
+          bottom: { style: 'thin', color: { argb: 'D1D5DB' } },
+          right: { style: 'thin', color: { argb: 'D1D5DB' } },
+        };
+        if (rowNumber > 1) {
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: rowNumber % 2 === 0 ? 'F9FAFB' : 'FFFFFFFF' },
+          };
+        }
+      });
+    });
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = `${filenameBase}.csv`;
+    a.href = url; a.download = `${filenameBase}.xlsx`;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
