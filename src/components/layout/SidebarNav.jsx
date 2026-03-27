@@ -10,7 +10,9 @@ export default function SidebarNav({
   t,
 }) {
   const renderItem = (item) => {
-    const isActive = !item.subItems && (location.pathname === item.href || item.href === "/");
+    const itemPath = item.href?.split('?')[0];
+    const itemSearch = item.href?.split('?')[1] || '';
+    const isActive = !item.subItems && itemPath && location.pathname === itemPath && (itemSearch ? location.search.includes(itemSearch) : true);
 
     if (item.subItems) {
       const isExpanded = expandedMenu === item.name;
