@@ -159,18 +159,18 @@ export default function ArchivePage() {
   }
 
   return (
-    <div className="p-4 md:p-6 bg-gray-50 min-h-screen">
+    <div className="p-3 md:p-6 bg-gray-50 min-h-screen mobile-page-shell">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8 text-center">
+        <div className="mb-5 md:mb-8 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full mb-4">
             <ArchiveIcon className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">🗄️ الأرشيف المركزي</h1>
+          <h1 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">🗄️ الأرشيف المركزي</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">إدارة وتنظيم وأرشفة جميع المستندات الهامة بكفاءة وأمان.</p>
         </div>
 
         <Tabs value={activeTab} onValueChange={(val) => { setActiveTab(val); setActiveSubTab(''); }} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-6">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto mb-6 gap-2 bg-transparent p-0">
             {Object.entries(categories).map(([key, categoryData]) => {
               const Icon = categoryData.icon;
               return (

@@ -592,13 +592,13 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse" style={{animationDelay: '4s'}}></div>
       </div>
 
-      <div className="relative z-10 p-4 md:p-6 max-w-7xl mx-auto">
+      <div className="relative z-10 p-3 md:p-6 max-w-7xl mx-auto mobile-page-shell">
         {/* Header احترافي */}
         <motion.div 
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-10"
+          className="text-center mb-6 md:mb-10"
         >
           <div className="relative inline-block mb-6">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl blur-xl opacity-50 animate-pulse"></div>
@@ -609,7 +609,7 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
               <Sparkles className="w-3 h-3 text-yellow-900" />
             </div>
           </div>
-          <h1 className="text-4xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-pink-200 mb-4 tracking-tight">
+          <h1 className="text-2xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-200 to-pink-200 mb-3 md:mb-4 tracking-tight leading-tight">
             استوديو التصميم الذكي
           </h1>
           <p className="text-lg md:text-xl text-purple-200/80 max-w-2xl mx-auto leading-relaxed">
@@ -617,7 +617,7 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
           </p>
           
           {/* شريط الإحصائيات السريعة */}
-          <div className="flex flex-wrap justify-center gap-4 mt-8">
+          <div className="flex flex-wrap justify-center gap-2 md:gap-4 mt-5 md:mt-8">
             {[
               { icon: Layers, label: 'إعلانات', color: 'from-blue-500 to-cyan-500' },
               { icon: BookOpen, label: 'بروشورات', color: 'from-green-500 to-emerald-500' },
@@ -736,7 +736,7 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
           {/* لوحة الإدخال */}
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
@@ -1258,7 +1258,7 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
             transition={{ delay: 0.5 }}
             className="space-y-6"
           >
-            <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 overflow-hidden shadow-2xl sticky top-6">
+            <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 overflow-hidden shadow-2xl lg:sticky lg:top-6">
               <div className="p-5 border-b border-white/10 flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg">
@@ -1318,7 +1318,7 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                   >
                     <iframe
                       srcDoc={generatedDesign}
-                      className="w-full h-[600px] bg-white"
+                      className="w-full h-[420px] md:h-[600px] bg-white"
                       title="معاينة التصميم"
                     />
                   </motion.div>

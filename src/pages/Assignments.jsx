@@ -39,6 +39,7 @@ import { exportAssignment } from "@/functions/exportAssignment";
 import { UploadFile } from "@/integrations/Core";
 import { ArchivedFile } from "@/entities/ArchivedFile";
 import { EmployeeDocument } from "@/entities/EmployeeDocument";
+import MobileAssignmentCard from "../components/assignments/MobileAssignmentCard";
 
 export default function AssignmentsPage() {
   const navigate = useNavigate();
@@ -520,7 +521,32 @@ export default function AssignmentsPage() {
   );
 
   const AssignmentTable = ({ data, isArchive = false, isDraft = false }) => (
-    <div className="overflow-x-auto" dir="rtl">
+    <>
+    <div className="md:hidden space-y-3 p-3">
+      {isLoading ? (
+        <div className="text-center p-6 text-sm text-gray-500">جاري التحميل...</div>
+      ) : data.length > 0 ? (
+        data.map((assignment) => (
+          <MobileAssignmentCard
+            key={assignment.id}
+            assignment={assignment}
+            isArchive={isArchive}
+            isDraft={isDraft}
+            isSelected={selectedAssignments.includes(assignment.id)}
+            onToggleSelection={toggleSelection}
+            onExportPDF={handleExportPDF}
+            onStatusUpdate={handleStatusUpdate}
+            onDelete={handleDelete}
+            isLoading={isLoading}
+            isArchiving={isArchiving}
+            statusBadge={<AssignmentStatusBadge assignment={assignment} isArchive={isArchive} />}
+          />
+        ))
+      ) : (
+        <div className="text-center p-6 text-sm text-gray-500">لا توجد نتائج</div>
+      )}
+    </div>
+    <div className="hidden md:block overflow-x-auto" dir="rtl">
       <Table style={{ tableLayout: 'auto' }} className="min-w-[600px] md:min-w-full">
         <TableHeader>
           <TableRow className="text-[10px] md:text-sm">
@@ -665,12 +691,13 @@ export default function AssignmentsPage() {
         </TableBody>
       </Table>
     </div>
+    </>
   );
 
   return (
-    <div className="p-4 md:p-6 bg-gradient-to-br from-gray-50 via-white to-purple-50/30 min-h-screen" dir="rtl">
+    <div className="p-3 md:p-6 bg-gradient-to-br from-gray-50 via-white to-purple-50/30 min-h-screen mobile-page-shell" dir="rtl">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-8 gap-3 md:gap-4 animate-fade-in">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 md:mb-8 gap-3 md:gap-4 animate-fade-in mobile-stack-section">
           <div>
             <h1 className="text-xl md:text-4xl font-display text-gray-900 mb-1 md:mb-2">سجل التكليفات</h1>
             <p className="text-sm md:text-lg text-gray-600 font-medium">إدارة تكليفات الموظفين</p>
@@ -761,7 +788,7 @@ export default function AssignmentsPage() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3 md:space-y-4">
           <div className="flex flex-col gap-3">
-            <TabsList className="grid w-full grid-cols-3 h-auto">
+            <TabsList className="grid w-full grid-cols-3 h-auto rounded-2xl p-1">
               <TabsTrigger value="drafts" className="flex items-center justify-center gap-1 text-[10px] md:text-sm py-2 px-1 md:px-3">
                 <Badge variant="secondary" className="text-[9px] md:text-xs bg-yellow-100 text-yellow-700 px-1 md:px-2">{draftAssignments.length}</Badge>
                 <span className="hidden sm:inline">المسودات</span>
