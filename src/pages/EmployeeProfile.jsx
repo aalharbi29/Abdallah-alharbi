@@ -438,33 +438,33 @@ export default function EmployeeProfile() {
         
         <div className="relative max-w-7xl mx-auto px-3 md:px-6 py-3 md:py-10">
           {/* Navigation Bar */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 md:mb-6 gap-2">
+          <div className="flex flex-col gap-2 mb-3 md:mb-6 sm:flex-row sm:items-center sm:justify-between">
             <Button 
               variant="ghost" 
               onClick={() => navigate(createPageUrl('HumanResources'))} 
-              className="text-white hover:bg-white/20 rounded-xl gap-2"
+              className="text-white hover:bg-white/20 rounded-xl gap-2 h-9 px-3 self-start"
             >
-              <ArrowRight className="w-5 h-5" />
-              <span className="hidden sm:inline">العودة للموظفين</span>
+              <ArrowRight className="w-4 h-4" />
+              <span className="text-sm sm:inline">العودة</span>
             </Button>
-            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 no-print w-full md:w-auto">
+            <div className="grid grid-cols-2 gap-2 no-print w-full sm:flex sm:flex-wrap sm:w-auto">
               <Button 
                 variant="ghost" 
                 onClick={() => setShowIDCard(true)}
-                className="text-white hover:bg-white/20 rounded-xl justify-center h-10"
+                className="text-white hover:bg-white/20 rounded-xl justify-center h-9 px-3 text-sm"
               >
-                <CreditCard className="w-4 h-4 ml-2" />
-                <span className="hidden sm:inline">البطاقة</span>
+                <CreditCard className="w-4 h-4 ml-1" />
+                <span>البطاقة</span>
               </Button>
               <EmployeeProfileExporter employee={employee} />
               <EmployeeProfileCustomExport employee={employee} />
               <Button 
                 variant="ghost" 
                 onClick={() => window.print()}
-                className="text-white hover:bg-white/20 rounded-xl justify-center h-10"
+                className="text-white hover:bg-white/20 rounded-xl justify-center h-9 px-3 text-sm"
               >
-                <Printer className="w-4 h-4 ml-2" />
-                <span className="hidden sm:inline">طباعة</span>
+                <Printer className="w-4 h-4 ml-1" />
+                <span>طباعة</span>
               </Button>
             </div>
           </div>
@@ -473,76 +473,24 @@ export default function EmployeeProfile() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6"
+            className="flex flex-col md:flex-row items-center md:items-start gap-3 md:gap-6"
           >
-            {/* Profile Image */}
-            <div className="relative">
-              {employee.profile_image_url ? (
-                <img 
-                  src={employee.profile_image_url} 
-                  alt={employee.full_name_arabic} 
-                  className="relative w-24 h-24 md:w-36 md:h-36 rounded-2xl object-cover border-2 border-white/30 shadow-lg"
-                />
-              ) : (
-                <div className="relative w-28 h-28 md:w-36 md:h-36 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center border-4 border-white/30 shadow-2xl">
-                  <User className="w-14 h-14 md:w-18 md:h-18 text-white" />
-                </div>
-              )}
-              {employee.is_externally_assigned && (
-                <div className="absolute -bottom-2 -right-2 bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md flex items-center gap-1">
-                  <FileClock className="w-3 h-3" />
-                  مكلف
-                </div>
-              )}
-            </div>
-            
-            {/* Employee Info */}
-            <div className="flex-1 text-center md:text-right w-full min-w-0">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2 break-words leading-tight">
-                {employee.full_name_arabic}
-              </h1>
-              <p className="text-blue-100 text-sm sm:text-base md:text-lg mb-4 break-words">{employee.position}</p>
-              
-              {/* Quick Stats */}
-              <div className="grid grid-cols-1 sm:flex sm:flex-wrap justify-center md:justify-start gap-2 sm:gap-3 w-full">
-                <div className="bg-white/20 backdrop-blur-sm rounded-xl px-3 py-2 flex items-center justify-center md:justify-start gap-2 min-w-0">
-                  <span className="text-white/70 text-sm">الرقم الوظيفي:</span>
-                  <span className="text-white font-bold break-all">{employee.رقم_الموظف}</span>
-                </div>
-                <div className="bg-white/20 backdrop-blur-sm rounded-xl px-3 py-2 flex items-center justify-center md:justify-start gap-2 min-w-0">
-                  <span className="text-white/70 text-sm">المركز:</span>
-                  <span className="text-white font-bold break-words">{employee.المركز_الصحي || 'غير محدد'}</span>
-                </div>
-                {employee.phone && (
-                  <a
-                    href={`https://wa.me/${normalizePhoneForWhatsApp(employee.phone)}?text=${encodeURIComponent(`مرحبا ${employee.full_name_arabic}`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-emerald-500/80 hover:bg-emerald-500 backdrop-blur-sm rounded-xl px-3 py-2 flex items-center justify-center md:justify-start gap-2 transition-colors min-w-0"
-                  >
-                    <MessageCircle className="w-4 h-4 text-white" />
-                    <span className="text-white font-medium">تواصل واتساب</span>
-                  </a>
-                )}
+...
+            <div className="grid grid-cols-3 gap-1 mt-1 md:mt-0 w-full md:w-auto max-w-[230px] md:max-w-none mx-auto md:mx-0">
+              <div className="bg-white/15 rounded-lg p-1.5 text-center border border-white/15 min-w-0">
+                <FileText className="w-3.5 h-3.5 md:w-6 md:h-6 text-white mx-auto mb-1" />
+                <p className="text-base sm:text-2xl font-bold text-white leading-none">{documents.length}</p>
+                <p className="text-[10px] text-white/70">مستند</p>
               </div>
-            </div>
-
-            {/* Stats Cards */}
-            <div className="grid grid-cols-3 gap-1 mt-2 md:mt-0 w-full md:w-auto max-w-[260px] md:max-w-none mx-auto md:mx-0">
-              <div className="bg-white/15 rounded-lg p-2 text-center border border-white/15 min-w-0">
-                <FileText className="w-4 h-4 md:w-6 md:h-6 text-white mx-auto mb-1" />
-                <p className="text-lg sm:text-2xl font-bold text-white">{documents.length}</p>
-                <p className="text-xs text-white/70">مستند</p>
+              <div className="bg-white/15 rounded-lg p-1.5 text-center border border-white/15 min-w-0">
+                <Calendar className="w-3.5 h-3.5 md:w-6 md:h-6 text-white mx-auto mb-1" />
+                <p className="text-base sm:text-2xl font-bold text-white leading-none">{leaves.length}</p>
+                <p className="text-[10px] text-white/70">إجازة</p>
               </div>
-              <div className="bg-white/15 rounded-lg p-2 text-center border border-white/15 min-w-0">
-                <Calendar className="w-4 h-4 md:w-6 md:h-6 text-white mx-auto mb-1" />
-                <p className="text-lg sm:text-2xl font-bold text-white">{leaves.length}</p>
-                <p className="text-xs text-white/70">إجازة</p>
-              </div>
-              <div className="bg-white/15 rounded-lg p-2 text-center border border-white/15 min-w-0">
-                <Briefcase className="w-4 h-4 md:w-6 md:h-6 text-white mx-auto mb-1" />
-                <p className="text-lg sm:text-2xl font-bold text-white">{assignments.length}</p>
-                <p className="text-xs text-white/70">تكليف</p>
+              <div className="bg-white/15 rounded-lg p-1.5 text-center border border-white/15 min-w-0">
+                <Briefcase className="w-3.5 h-3.5 md:w-6 md:h-6 text-white mx-auto mb-1" />
+                <p className="text-base sm:text-2xl font-bold text-white leading-none">{assignments.length}</p>
+                <p className="text-[10px] text-white/70">تكليف</p>
               </div>
             </div>
           </motion.div>
@@ -553,7 +501,7 @@ export default function EmployeeProfile() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="mt-6 flex flex-wrap justify-center md:justify-start gap-2"
+              className="mt-3 md:mt-6 flex flex-wrap justify-center md:justify-start gap-1.5 md:gap-2"
             >
               {employeeRoles.map((roleObj, index) => (
                 <Badge
@@ -566,9 +514,9 @@ export default function EmployeeProfile() {
                       : roleObj.roleType === 'supervisor'
                       ? 'bg-gradient-to-r from-emerald-400 to-green-500 text-white'
                       : 'bg-white/30 text-white'
-                  } px-4 py-2 text-sm font-semibold rounded-full shadow-lg`}
+                  } px-3 py-1.5 text-xs md:text-sm font-semibold rounded-full shadow-lg`}
                 >
-                  <Shield className="w-4 h-4 ml-1 inline" />
+                  <Shield className="w-3.5 h-3.5 md:w-4 md:h-4 ml-1 inline" />
                   {roleObj.role}
                   {roleObj.centerName && <span className="mr-1 opacity-80">- {roleObj.centerName}</span>}
                 </Badge>
@@ -587,17 +535,17 @@ export default function EmployeeProfile() {
           transition={{ delay: 0.1 }}
         >
           <Card className="shadow-md border-0 bg-white/80 overflow-hidden">
-            <div className="p-4 md:p-5 bg-gradient-to-r from-indigo-500 to-blue-500 border-b">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+            <div className="p-3 md:p-5 bg-gradient-to-r from-indigo-500 to-blue-500 border-b">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                <h2 className="text-lg md:text-xl font-bold text-white flex items-center gap-2">
                   <User className="w-5 h-5" />
                   البيانات التفصيلية
                 </h2>
-                <Link to={createPageUrl(`HumanResources?id=${employee.id}`)}>
+                <Link to={createPageUrl(`HumanResources?id=${employee.id}`)} className="w-full sm:w-auto">
                   <Button 
                     variant="secondary" 
                     size="sm"
-                    className="rounded-xl"
+                    className="rounded-xl w-full sm:w-auto h-9"
                   >
                     <Edit className="w-4 h-4 ml-1" />
                     تعديل البيانات
@@ -619,31 +567,37 @@ export default function EmployeeProfile() {
         >
           <Card className="shadow-md border-0 bg-white/80 overflow-hidden">
             <Tabs defaultValue="documents" className="w-full">
-              <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b">
+              <div className="p-3 md:p-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b">
                 <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 bg-white/80 p-1 rounded-xl shadow-sm h-auto gap-1">
                   <TabsTrigger 
                     value="documents" 
-                    className="flex items-center gap-2 py-3 data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500 data-[state=active]:to-blue-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg transition-all"
+                    className="flex items-center justify-between sm:justify-center gap-2 py-2 text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500 data-[state=active]:to-blue-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg transition-all"
                   >
-                    <FileText className="w-5 h-5" />
-                    <span className="font-semibold">المستندات</span>
-                    <Badge className="bg-white/20 border-0 text-inherit">{documents.length}</Badge>
+                    <span className="flex items-center gap-2 min-w-0">
+                      <FileText className="w-4 h-4" />
+                      <span className="font-semibold">المستندات</span>
+                    </span>
+                    <Badge className="bg-white/20 border-0 text-inherit text-[10px] px-2">{documents.length}</Badge>
                   </TabsTrigger>
                   <TabsTrigger 
                     value="leaves" 
-                    className="flex items-center gap-2 py-3 data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg transition-all"
+                    className="flex items-center justify-between sm:justify-center gap-2 py-2 text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg transition-all"
                   >
-                    <Calendar className="w-5 h-5" />
-                    <span className="font-semibold">الإجازات</span>
-                    <Badge className="bg-white/20 border-0 text-inherit">{leaves.length}</Badge>
+                    <span className="flex items-center gap-2 min-w-0">
+                      <Calendar className="w-4 h-4" />
+                      <span className="font-semibold">الإجازات</span>
+                    </span>
+                    <Badge className="bg-white/20 border-0 text-inherit text-[10px] px-2">{leaves.length}</Badge>
                   </TabsTrigger>
                   <TabsTrigger 
                     value="assignments" 
-                    className="flex items-center gap-2 py-3 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-violet-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg transition-all"
+                    className="flex items-center justify-between sm:justify-center gap-2 py-2 text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-violet-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg transition-all"
                   >
-                    <Briefcase className="w-5 h-5" />
-                    <span className="font-semibold">التكاليف</span>
-                    <Badge className="bg-white/20 border-0 text-inherit">{assignments.length}</Badge>
+                    <span className="flex items-center gap-2 min-w-0">
+                      <Briefcase className="w-4 h-4" />
+                      <span className="font-semibold">التكاليف</span>
+                    </span>
+                    <Badge className="bg-white/20 border-0 text-inherit text-[10px] px-2">{assignments.length}</Badge>
                   </TabsTrigger>
                 </TabsList>
               </div>
@@ -712,8 +666,8 @@ export default function EmployeeProfile() {
                   التكليف الخارجي
                 </h3>
               </div>
-              <CardContent className="p-6 space-y-4">
-                <div className="flex items-center justify-between p-4 bg-amber-50 rounded-xl border border-amber-200">
+              <CardContent className="p-4 md:p-6 space-y-3 md:space-y-4">
+                <div className="flex items-center justify-between p-3 md:p-4 bg-amber-50 rounded-xl border border-amber-200 gap-3">
                   <Label htmlFor="is_externally_assigned" className="font-semibold text-amber-800">
                     مكلف خارج المنطقة؟
                   </Label>

@@ -34,15 +34,15 @@ const LeaveItem = ({ leave }) => {
 
   return (
     <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
-            <div className="flex items-center justify-between mb-2">
-              <h4 className="font-medium text-gray-900">{leave.leave_type}</h4>
+      <CardContent className="p-3 md:p-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex-1 min-w-0">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mb-2">
+              <h4 className="font-medium text-gray-900 text-sm md:text-base break-words">{leave.leave_type}</h4>
               <LeaveStatusBadge leave={leave} />
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-600">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 text-xs md:text-sm text-gray-600">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
                 <span>من: {format(new Date(leave.start_date), 'dd/MM/yyyy', { locale: ar })}</span>
@@ -145,17 +145,17 @@ export default function EmployeeLeaveHistory({ leaves }) {
       </div>
 
       {/* شريط البحث */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-4">
         <div className="relative flex-1">
           <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
           <Input
             placeholder="البحث في الإجازات..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pr-10"
+            className="pr-10 h-9"
           />
         </div>
-        <div className="text-sm text-gray-500">
+        <div className="text-xs md:text-sm text-gray-500">
           {filteredLeaves.length} من {leaves.length} إجازة
         </div>
       </div>

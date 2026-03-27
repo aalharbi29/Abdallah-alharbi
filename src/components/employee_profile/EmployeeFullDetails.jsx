@@ -117,8 +117,8 @@ export default function EmployeeFullDetails({ employee }) {
 
         return (
           <Card key={category.title} className={`border ${colorClasses[category.color]} shadow-sm hover:shadow-md transition-shadow overflow-hidden`}>
-            <CardHeader className="pb-2 px-3 md:px-6 pt-3 md:pt-6">
-              <CardTitle className="flex items-center gap-2 text-base md:text-lg leading-tight">
+            <CardHeader className="pb-2 px-2.5 md:px-6 pt-2.5 md:pt-6">
+              <CardTitle className="flex items-center gap-2 text-sm md:text-lg leading-tight">
                 <Icon className="w-5 h-5" />
                 {category.title}
               </CardTitle>
@@ -132,13 +132,13 @@ export default function EmployeeFullDetails({ employee }) {
                   const items = Array.isArray(value) ? value : [];
                   return (
                     <div key={key} className="space-y-2">
-                      <div className="flex items-center gap-2 text-sm font-medium text-gray-600">
-                        <FieldIcon className="w-4 h-4" />
+                      <div className="flex items-center gap-2 text-xs md:text-sm font-medium text-gray-600">
+                        <FieldIcon className="w-3.5 h-3.5 md:w-4 md:h-4" />
                         {LABELS[key]}
                       </div>
                       <div className="flex flex-wrap gap-2 pr-6">
                         {items.length > 0 ? items.map((item, idx) => (
-                          <Badge key={idx} variant="secondary" className="text-sm">
+                          <Badge key={idx} variant="secondary" className="text-xs md:text-sm">
                             {item}
                           </Badge>
                         )) : (
