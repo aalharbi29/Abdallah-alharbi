@@ -205,10 +205,9 @@ export default function EmployeeList({
 ...
             <CardContent className="relative z-10 p-3 md:p-5 h-full max-w-full overflow-hidden">
               <div className="flex items-start gap-3 md:gap-5 max-w-full overflow-hidden h-full">
-                <div className="flex w-20 shrink-0 flex-col items-center justify-between self-stretch py-1">
-                  {onToggleSelection ? (
+                <div className="flex w-20 shrink-0 flex-col items-center gap-3 py-1">
+                  {onToggleSelection && (
                     <motion.div 
-                      className="pt-1"
                       whileTap={{ scale: 0.9 }}
                     >
                       <div 
@@ -222,7 +221,7 @@ export default function EmployeeList({
                         {isSelected && <CheckSquare className="w-4 h-4 text-white" />}
                       </div>
                     </motion.div>
-                  ) : <div />}
+                  )}
 
                   <motion.div 
                     className="relative"
@@ -257,39 +256,6 @@ export default function EmployeeList({
                       </motion.div>
                     )}
                   </motion.div>
-
-                  <div className="flex flex-col gap-1.5 pt-2">
-                    {onPinEmployee && (
-                      <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => onPinEmployee(employee.id)}
-                          className={`h-8 w-8 md:h-10 md:w-10 rounded-lg md:rounded-xl transition-all duration-300 ${
-                            isPinned 
-                              ? 'text-amber-300 bg-gradient-to-br from-amber-500/30 to-orange-500/30 shadow-lg shadow-amber-500/20' 
-                              : 'text-white/50 hover:text-amber-400 hover:bg-amber-500/20'
-                          }`}
-                        >
-                          <Pin className={`w-5 h-5 ${isPinned ? 'fill-current' : ''}`} />
-                        </Button>
-                      </motion.div>
-                    )}
-
-                    {employee.phone && (
-                      <motion.a
-                        href={`https://wa.me/${normalizePhoneForWhatsApp(employee.phone)}?text=${encodeURIComponent(`مرحبا ${employee.full_name_arabic}`)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <Button variant="ghost" size="icon" className="text-emerald-400 hover:bg-gradient-to-br hover:from-emerald-500/30 hover:to-green-500/30 h-8 w-8 md:h-10 md:w-10 rounded-lg md:rounded-xl shadow-lg shadow-emerald-500/0 hover:shadow-emerald-500/20 transition-all duration-300">
-                          <MessageCircle className="w-4 h-4 md:w-5 md:h-5" />
-                        </Button>
-                      </motion.a>
-                    )}
-                  </div>
                 </div>
 
                 <div className="flex-1 min-w-0 max-w-full overflow-hidden flex flex-col">
