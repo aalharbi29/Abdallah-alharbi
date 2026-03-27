@@ -244,7 +244,7 @@ export default function EmployeeList({
                               <div className="flex-1">
                                 <Link
                                   to={createPageUrl(`EmployeeProfile?id=${employee.id}`)}
-                                  className="block text-base md:text-xl font-black text-white hover:text-indigo-300 transition-all duration-300"
+                                  className="block text-sm md:text-lg font-black text-white hover:text-indigo-300 transition-all duration-300"
                                 >
                                   <div className="flex items-center gap-1.5 md:gap-2">
                                     <span className="text-white leading-7 md:leading-8 mobile-paragraph">
