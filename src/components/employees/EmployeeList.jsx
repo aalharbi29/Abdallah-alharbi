@@ -241,13 +241,13 @@ export default function EmployeeList({
 
                           <div className="flex-1 min-w-0 overflow-hidden">
                             <div className="flex items-start justify-between gap-3 max-w-full overflow-hidden">
-                              <div className="min-w-0 flex-1">
+                              <div className="flex-1">
                                 <Link
                                   to={createPageUrl(`EmployeeProfile?id=${employee.id}`)}
                                   className="block text-base md:text-xl font-black text-white hover:text-indigo-300 transition-all duration-300"
                                 >
-                                  <div className="flex items-center gap-1.5 md:gap-2 min-w-0">
-                                    <span className="truncate max-w-full mobile-paragraph">
+                                  <div className="flex items-center gap-1.5 md:gap-2">
+                                    <span className="text-white leading-7 md:leading-8 mobile-paragraph">
                                       {employee.full_name_arabic || "غير محدد"}
                                     </span>
                                     <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-yellow-400 opacity-0 group-hover:opacity-100 transition-all duration-300 shrink-0" />
