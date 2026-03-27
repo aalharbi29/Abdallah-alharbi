@@ -50,9 +50,35 @@ const AssignmentItem = ({ assignment }) => {
               </h4>
               <AssignmentStatusBadge assignment={assignment} />
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4 text-xs md:text-sm text-gray-600">
-...
+              <div className="flex items-center gap-2 min-w-0">
+                <MapPin className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                <span className="break-words">من {assignment.from_health_center || 'غير محدد'}</span>
+              </div>
+              <div className="flex items-center gap-2 min-w-0">
+                <Calendar className="w-4 h-4 text-green-500 flex-shrink-0" />
+                <span>
+                  {assignment.start_date ? format(new Date(assignment.start_date), 'dd MMM yyyy', { locale: ar }) : '—'}
+                  {' - '}
+                  {assignment.end_date ? format(new Date(assignment.end_date), 'dd MMM yyyy', { locale: ar }) : '—'}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 min-w-0">
+                <Briefcase className="w-4 h-4 text-purple-500 flex-shrink-0" />
+                <span>{assignment.assignment_type || 'تكليف'}</span>
+              </div>
+              <div className="flex items-center gap-2 min-w-0">
+                <Calendar className="w-4 h-4 text-orange-500 flex-shrink-0" />
+                <span>{duration} يوم</span>
+              </div>
+            </div>
+
+            {assignment.notes && (
+              <p className="mt-2 text-xs md:text-sm text-gray-500 break-words">{assignment.notes}</p>
+            )}
+          </div>
+
           <div className="flex flex-col gap-2 flex-shrink-0 w-full sm:w-auto">
             <Link to={createPageUrl(`ViewAssignment?id=${assignment.id}`)}>
               <Button variant="outline" size="sm" className="w-full sm:w-auto">
