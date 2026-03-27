@@ -432,7 +432,7 @@ export default function EmployeeProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 mobile-page-shell">
       {/* Hero Section مع بيانات الموظف */}
       <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 relative overflow-hidden">
         {/* Background Pattern */}
@@ -479,7 +479,7 @@ export default function EmployeeProfile() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col md:flex-row items-center gap-6"
+            className="flex flex-col md:flex-row items-center gap-4 md:gap-6"
           >
             {/* Profile Image */}
             <div className="relative">
@@ -585,7 +585,7 @@ export default function EmployeeProfile() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 md:px-6 py-6 space-y-6">
+      <div className="max-w-7xl mx-auto px-3 md:px-6 py-5 md:py-6 space-y-4 md:space-y-6">
 
         {/* البيانات التفصيلية */}
         <motion.div

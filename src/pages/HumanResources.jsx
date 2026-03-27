@@ -447,10 +447,10 @@ export default function HumanResources() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10"></div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto p-4 md:p-6 space-y-6">
+      <div className="relative z-10 max-w-7xl mx-auto p-3 md:p-6 space-y-4 md:space-y-6 mobile-page-shell">
         {/* Header احترافي */}
         <div className="mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-6 mobile-stack-section">
             <div className="flex items-center gap-4">
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-blue-600 rounded-2xl blur-lg opacity-50"></div>
@@ -459,7 +459,7 @@ export default function HumanResources() {
                 </div>
               </div>
               <div>
-                <h1 className="text-3xl md:text-5xl font-black text-white drop-shadow-lg tracking-tight">
+                <h1 className="text-2xl md:text-5xl font-black text-white drop-shadow-lg tracking-tight leading-tight">
                   الموارد البشرية
                 </h1>
                 <div className="flex items-center gap-3 mt-2">

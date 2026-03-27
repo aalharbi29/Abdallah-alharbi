@@ -60,10 +60,10 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen p-4 md:p-6" style={{ background: 'var(--bg-primary)' }}>
+    <div className="min-h-screen p-3 md:p-6 mobile-page-shell" style={{ background: 'var(--bg-primary)' }}>
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-2xl md:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
+          <h1 className="text-2xl md:text-3xl font-bold leading-tight" style={{ color: 'var(--text-primary)' }}>
             <Settings2 className="w-7 h-7 inline ml-2" />
             الإعدادات
           </h1>
@@ -73,7 +73,7 @@ export default function SettingsPage() {
         </div>
 
         <Tabs defaultValue="appearance" dir="rtl">
-          <TabsList className="mb-6 flex-wrap h-auto gap-1">
+          <TabsList className="mb-6 grid grid-cols-2 md:flex flex-wrap h-auto gap-1 w-full">
             <TabsTrigger value="appearance" className="flex items-center gap-2">
               <Palette className="w-4 h-4" />
               المظهر

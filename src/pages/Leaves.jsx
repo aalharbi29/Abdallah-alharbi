@@ -186,9 +186,9 @@ export default function Leaves() {
   if (showForm) return <LeaveForm leave={editingLeave} onSubmit={handleSubmit} onCancel={() => { setShowForm(false); setEditingLeave(null); }} employees={employees} />;
 
   return (
-    <div className="p-4 md:p-6 bg-gradient-to-br from-gray-50 via-white to-orange-50/30 min-h-screen">
+    <div className="p-3 md:p-6 bg-gradient-to-br from-gray-50 via-white to-orange-50/30 min-h-screen mobile-page-shell">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4 print-hide animate-fade-in">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-5 md:mb-8 gap-3 md:gap-4 print-hide animate-fade-in mobile-stack-section">
           <div>
             <h1 className="text-3xl md:text-4xl font-display text-gray-900 mb-2">سجل الإجازات</h1>
             <p className="text-gray-600 text-base md:text-lg font-medium">إدارة وتتبع جميع إجازات الموظفين والأرشيف</p>

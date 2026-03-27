@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { ReportFile } from "@/entities/ReportFile";
 import { UploadFile } from "@/integrations/Core";
@@ -206,13 +205,13 @@ export default function Reports() {
   }, {});
 
   return (
-    <div className="p-6 bg-gradient-to-br from-gray-50 via-blue-50 to-green-50 min-h-screen">
+    <div className="p-3 md:p-6 bg-gradient-to-br from-gray-50 via-blue-50 to-green-50 min-h-screen mobile-page-shell">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-green-500 rounded-full mb-4">
             <FileText className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent mb-3">📊 أرشيف التقارير الشامل</h1>
+          <h1 className="text-2xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent mb-3 leading-tight">📊 أرشيف التقارير الشامل</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">🚀 إدارة ورفع التقارير الدورية والإضافية بأحدث التقنيات والأساليب المتطورة</p>
         </div>
 
