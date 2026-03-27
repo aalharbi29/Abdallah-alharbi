@@ -21,6 +21,13 @@ export default function MobileEmployeeCard({
   onToggleSelection,
   normalizePhoneForWhatsApp,
 }) {
+  const getShortCenterName = (centerName) => {
+    if (!centerName) return '';
+    return String(centerName)
+      .replace(/^مركز\s+صحي\s+/i, '')
+      .replace(/^مركز\s+/i, '')
+      .trim();
+  };
   return (
     <Card className={`w-full overflow-hidden bg-gradient-to-br from-slate-800/95 via-slate-800/90 to-indigo-900/70 border ${isSelected ? 'ring-2 ring-indigo-400 border-indigo-400' : isPinned ? 'border-amber-400' : 'border-white/15'} shadow-xl rounded-2xl`}>
       <CardContent className="p-4">
@@ -65,19 +72,20 @@ export default function MobileEmployeeCard({
 
           <div className="flex-1 min-w-0 space-y-2">
             <div>
-              <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="block text-sm font-black text-white truncate">
+              <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="block text-sm font-black text-white leading-6 break-words">
                 {employee.full_name_arabic || 'غير محدد'}
               </Link>
-              <div className="flex flex-wrap gap-1.5 mt-1">
+              <div className="flex flex-wrap gap-1 mt-1.5">
                 {employee.position && <Badge className="text-[10px] px-2 py-0.5 bg-indigo-500/20 text-indigo-200">{employee.position}</Badge>}
                 {employee.المركز_الصحي && (
                   <Badge className="text-[10px] px-2 py-0.5 bg-emerald-500/20 text-emerald-200 max-w-full">
                     <span className="flex items-center gap-1 truncate">
                       <Building2 className="w-3 h-3 shrink-0" />
-                      <span className="truncate max-w-[120px]">{employee.المركز_الصحي}</span>
+                      <span className="truncate max-w-[90px]">{getShortCenterName(employee.المركز_الصحي)}</span>
                     </span>
                   </Badge>
                 )}
+                {employee.contract_type && <Badge className="text-[10px] px-2 py-0.5 bg-purple-500/20 text-purple-200">{employee.contract_type}</Badge>}
               </div>
             </div>
 
@@ -108,7 +116,7 @@ export default function MobileEmployeeCard({
             <div className="flex flex-wrap gap-1.5">
               {employee.is_externally_assigned && <Badge className="text-[10px] px-2 py-0.5 bg-amber-500 text-white">تكليف خارجي</Badge>}
               {activeHolidayAssignments.length > 0 && <Badge className="text-[10px] px-2 py-0.5 bg-purple-500 text-white">{activeHolidayAssignments[0].holiday_name}</Badge>}
-              {employeeRoles.slice(0, 1).map((role, idx) => <Badge key={idx} className="text-[10px] px-2 py-0.5 bg-cyan-500 text-white">{role}</Badge>)}
+              {employeeRoles.slice(0, 2).map((role, idx) => <Badge key={idx} className="text-[10px] px-2 py-0.5 bg-cyan-500 text-white">{role}</Badge>)}
             </div>
 
             <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/10">

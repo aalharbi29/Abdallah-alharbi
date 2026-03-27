@@ -52,34 +52,28 @@ export default function EmployeeList({
     });
   };
 
+  const getShortCenterName = (centerName) => {
+    if (!centerName) return "";
+    return String(centerName)
+      .replace(/^مركز\s+صحي\s+/i, "")
+      .replace(/^مركز\s+/i, "")
+      .trim();
+  };
+
   const getEmployeeRoles = (employee) => {
     const roles = [];
 
-    if (employee.special_roles && Array.isArray(employee.special_roles)) {
-      roles.push(...employee.special_roles);
-    }
-
     if (healthCenters && Array.isArray(healthCenters)) {
       healthCenters.forEach((center) => {
-        if (center.المدير === employee.id) roles.push(`مدير ${center.اسم_المركز}`);
-        if (center.نائب_المدير === employee.id) roles.push(`نائب مدير ${center.اسم_المركز}`);
-        if (center.المشرف_الفني === employee.id) roles.push(`مشرف فني - ${center.اسم_المركز}`);
+        const centerName = getShortCenterName(center.اسم_المركز || center.المركز_الصحي || "");
+        if (center.المدير === employee.id) roles.push(centerName ? `مدير ${centerName}` : "مدير");
+        if (center.نائب_المدير === employee.id) roles.push(centerName ? `نائب مدير ${centerName}` : "نائب مدير");
+        if (center.المشرف_الفني === employee.id) roles.push(centerName ? `مشرف ${centerName}` : "مشرف");
       });
     }
 
     if (employee.department && employee.department.includes("إشرافي") && !roles.includes("مشرف")) {
       roles.push("مشرف");
-    }
-
-    if (employee.department && employee.department.trim() !== "" && !roles.some((role) => role.includes(employee.department))) {
-      const isSpecificCenterDept = healthCenters.some((center) =>
-        center.المركز_الصحي === employee.المركز_الصحي &&
-        (center.المدير_قسم === employee.id || center.نائب_المدير_قسم === employee.id)
-      );
-
-      if (!isSpecificCenterDept) {
-        roles.push(employee.department);
-      }
     }
 
     return [...new Set(roles)];
@@ -235,7 +229,7 @@ export default function EmployeeList({
                                   to={createPageUrl(`EmployeeProfile?id=${employee.id}`)}
                                   className="text-base md:text-xl font-black text-white hover:text-indigo-300 transition-all duration-300 flex items-center gap-1.5 md:gap-2 group/name"
                                 >
-                                  <span className="bg-gradient-to-r from-white to-white/90 bg-clip-text truncate max-w-full mobile-paragraph">
+                                  <span className="text-white truncate max-w-full mobile-paragraph">
                                     {employee.full_name_arabic || "غير محدد"}
                                   </span>
                                   <Sparkles className="w-5 h-5 text-yellow-400 opacity-0 group-hover/name:opacity-100 transition-all duration-300 group-hover/name:rotate-12 shrink-0" />
@@ -248,15 +242,15 @@ export default function EmployeeList({
                                     </span>
                                   )}
                                   {employee.المركز_الصحي && (
-                                    <span className="flex items-center gap-1 text-xs md:text-sm font-semibold text-emerald-300 bg-emerald-500/20 px-2.5 md:px-3 py-1 rounded-lg mobile-paragraph compact">
-                                      <Building2 className="w-3 h-3 md:w-3.5 md:h-3.5 shrink-0" />
-                                      <span className="truncate max-w-[120px] sm:max-w-[180px] md:max-w-[260px]">
-                                        {employee.المركز_الصحي}
+                                    <span className="flex items-center gap-1 text-[11px] md:text-xs font-semibold text-emerald-300 bg-emerald-500/20 px-2 md:px-2.5 py-1 rounded-lg mobile-paragraph compact">
+                                      <Building2 className="w-3 h-3 shrink-0" />
+                                      <span className="truncate max-w-[90px] sm:max-w-[120px] md:max-w-[140px]">
+                                        {getShortCenterName(employee.المركز_الصحي)}
                                       </span>
                                     </span>
                                   )}
                                   {employee.contract_type && (
-                                    <Badge className="text-[11px] md:text-xs py-1 px-2.5 md:px-3 bg-gradient-to-r from-purple-500/30 to-pink-500/30 border border-purple-400/40 text-purple-200 font-bold mobile-paragraph compact">
+                                    <Badge className="text-[11px] md:text-xs py-1 px-2 md:px-2.5 bg-gradient-to-r from-purple-500/30 to-pink-500/30 border border-purple-400/40 text-purple-200 font-bold mobile-paragraph compact">
                                       {employee.contract_type}
                                     </Badge>
                                   )}
