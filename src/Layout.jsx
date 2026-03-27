@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useLocation } from "react-router-dom";
 import InstallPrompt from "./components/pwa/InstallPrompt";
 import ThemeProvider from "./components/theme/ThemeProvider";
@@ -9,6 +9,7 @@ import MobileBottomNav from "./components/layout/MobileBottomNav";
 import SidebarNav from "./components/layout/SidebarNav";
 import MobileMenuDrawer from "./components/layout/MobileMenuDrawer";
 import LayoutStyles from "./components/layout/LayoutStyles";
+import useLayoutState from "./components/layout/useLayoutState";
 
 
 
@@ -16,40 +17,14 @@ function LayoutContent({ children, currentPageName }) {
   const { t } = useLanguage();
   const navigationItems = getNavigationItems(t);
   const location = useLocation();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [expandedMenu, setExpandedMenu] = useState(null);
-
-  useEffect(() => {
-    if (currentPageName === 'ViewAssignment') return;
-
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    const activeSubItemParent = navigationItems.find(item => item.subItems?.some(sub => {
-      const subItemPath = sub.href.split('?')[0];
-      const subItemSearch = sub.href.split('?')[1] || '';
-      const currentLocationPath = location.pathname;
-      const currentLocationSearch = location.search;
-
-      return currentLocationPath === subItemPath && (subItemSearch ? currentLocationSearch.includes(subItemSearch) : true);
-    }));
-
-    if (activeSubItemParent) {
-      setExpandedMenu(activeSubItemParent.name);
-    }
-    
-    const activeTopLevelItem = navigationItems.find(item => !item.subItems && (location.pathname === item.href || (item.name === "لوحة التحكم" && location.pathname === "/")));
-    if (activeTopLevelItem && !activeSubItemParent) {
-      setExpandedMenu(null);
-    }
-
-    return () => window.removeEventListener('resize', checkMobile);
-  }, [location, currentPageName]);
+  const {
+    isMobileMenuOpen,
+    isMobile,
+    expandedMenu,
+    toggleMobileMenu,
+    closeMobileMenu,
+    toggleSubmenu,
+  } = useLayoutState({ currentPageName, navigationItems, location });
 
   if (currentPageName === 'ViewAssignment') {
     return (
@@ -58,18 +33,6 @@ function LayoutContent({ children, currentPageName }) {
       </div>
     );
   }
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
-
-  const toggleSubmenu = (itemName) => {
-    setExpandedMenu(expandedMenu === itemName ? null : itemName);
-  };
 
   const mainPadding = 'p-1 md:p-2 lg:p-4';
 
