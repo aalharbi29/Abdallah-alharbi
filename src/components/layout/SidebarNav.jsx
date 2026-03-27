@@ -76,7 +76,7 @@ export default function SidebarNav({
   };
 
   return (
-    <aside className="w-72 bg-gradient-to-br from-gray-50 via-white to-green-50/30 border-l border-gray-200/50 flex flex-col shadow-2xl no-print backdrop-blur-sm">
+    <aside className="hidden lg:flex w-72 xl:w-80 bg-gradient-to-br from-gray-50 via-white to-green-50/30 border-l border-gray-200/50 flex-col shadow-2xl no-print backdrop-blur-sm responsive-sidebar">
       <header className="border-b border-gray-200/50 p-6 bg-gradient-to-r from-green-600 to-emerald-600">
         <div className="flex items-center gap-3">
           <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center shadow-xl border border-white/30">

@@ -44,7 +44,7 @@ function LayoutContent({ children, currentPageName }) {
     <div dir="rtl" className="font-cairo">
       <LayoutStyles />
 
-      <div className="flex h-screen bg-gradient-to-br from-gray-50 to-green-50 overflow-hidden">
+      <div className="flex h-screen bg-gradient-to-br from-gray-50 to-green-50 overflow-hidden responsive-shell">
         <InstallPrompt />
 
         {!isMobile && (

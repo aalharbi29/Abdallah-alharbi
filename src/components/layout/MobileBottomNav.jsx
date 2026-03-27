@@ -12,13 +12,13 @@ const mobileNavItems = [
 
 export default function MobileBottomNav({ pathname }) {
   return (
-    <div className="bottom-nav safe-bottom no-print overflow-x-auto">
-      <div className="flex justify-around items-center py-1 min-w-max px-2">
+    <div className="bottom-nav safe-bottom no-print overflow-x-auto lg:hidden">
+      <div className="flex justify-around items-center py-1 min-w-full px-2 sm:px-3">
         {mobileNavItems.map((item) => (
           <Link
             key={item.name}
             to={item.href}
-            className={`flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg transition-colors mobile-nav-item touch-target min-w-[70px] ${
+            className={`flex flex-col items-center gap-0.5 px-1.5 sm:px-2 py-1.5 rounded-lg transition-colors mobile-nav-item touch-target min-w-[64px] sm:min-w-[70px] ${
               pathname === item.href ? "text-green-600" : "text-gray-500"
             }`}
           >

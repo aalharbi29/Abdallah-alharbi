@@ -84,7 +84,7 @@ export default function MobileMenuDrawer({
   return (
     <div className="fixed inset-0 z-50 md:hidden no-print">
       <div className="mobile-overlay absolute inset-0" onClick={closeMobileMenu}></div>
-      <aside className="absolute right-0 top-0 h-full w-72 max-w-[85vw] bg-white shadow-2xl transform transition-transform duration-300 safe-top overflow-y-auto">
+      <aside className="absolute right-0 top-0 h-full w-[20rem] max-w-[88vw] bg-white shadow-2xl transform transition-transform duration-300 safe-top overflow-y-auto">
         <header className="border-b border-gray-200 p-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-gradient-to-br from-green-600 to-green-700 rounded-lg flex items-center justify-center">

@@ -43,7 +43,54 @@ export default function LayoutStyles() {
       .print-title { display: none; }
       .print-only { display: none; }
 
-      @media (max-width: 768px) {
+      @media (max-width: 1023px) {
+        .responsive-shell {
+          overflow-x: hidden;
+        }
+
+        .responsive-header {
+          position: sticky;
+          top: 0;
+          z-index: 30;
+        }
+      }
+
+      @media (min-width: 768px) and (max-width: 1023px) {
+        body {
+          font-size: 15px;
+          overflow-x: hidden;
+        }
+
+        .mobile-title {
+          font-size: 17px !important;
+          line-height: 1.25 !important;
+        }
+
+        .mobile-text {
+          font-size: 13px !important;
+          line-height: 1.45 !important;
+        }
+
+        .mobile-card {
+          border-radius: 10px !important;
+          padding: 12px !important;
+        }
+
+        .mobile-button {
+          height: 38px !important;
+          font-size: 12px !important;
+          padding: 6px 12px !important;
+        }
+
+        .mobile-table th,
+        .mobile-table td {
+          padding: 6px 4px !important;
+          font-size: 11px !important;
+          min-width: 90px !important;
+        }
+      }
+
+      @media (max-width: 767px) {
         body {
           font-size: 14px;
           overflow-x: hidden;
@@ -59,9 +106,15 @@ export default function LayoutStyles() {
           padding: 8px !important;
         }
 
-        .mobile-text {
+        .mobile-text,
+        .mobile-paragraph {
           font-size: 12px !important;
           line-height: 1.3 !important;
+        }
+
+        .mobile-paragraph {
+          word-break: break-word;
+          overflow-wrap: anywhere;
         }
 
         .mobile-title {
@@ -138,6 +191,10 @@ export default function LayoutStyles() {
       }
 
       @media (max-width: 480px) {
+        .responsive-toolbar {
+          gap: 4px !important;
+        }
+
         .mobile-table th,
         .mobile-table td {
           padding: 2px !important;
@@ -156,8 +213,15 @@ export default function LayoutStyles() {
           font-size: 14px !important;
         }
 
-        .mobile-text {
+        .mobile-text,
+        .mobile-paragraph {
           font-size: 11px !important;
+        }
+
+        .mobile-paragraph.compact,
+        .compact.mobile-paragraph {
+          font-size: 10px !important;
+          line-height: 1.25 !important;
         }
       }
 
@@ -235,7 +299,11 @@ export default function LayoutStyles() {
         height: auto;
       }
 
-      @media (max-width: 768px) {
+      p, li, span, h1, h2, h3, h4, h5, h6 {
+        overflow-wrap: break-word;
+      }
+
+      @media (max-width: 767px) {
         table {
           font-size: 12px;
         }
