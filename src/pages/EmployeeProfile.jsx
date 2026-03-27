@@ -435,16 +435,10 @@ export default function EmployeeProfile() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 mobile-page-shell">
       {/* Hero Section مع بيانات الموظف */}
       <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 relative overflow-hidden">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-          }}></div>
-        </div>
         
-        <div className="relative max-w-7xl mx-auto px-3 md:px-6 py-4 md:py-10">
+        <div className="relative max-w-7xl mx-auto px-3 md:px-6 py-3 md:py-10">
           {/* Navigation Bar */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 md:mb-6 gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 md:mb-6 gap-2">
             <Button 
               variant="ghost" 
               onClick={() => navigate(createPageUrl('HumanResources'))} 
@@ -483,12 +477,11 @@ export default function EmployeeProfile() {
           >
             {/* Profile Image */}
             <div className="relative">
-              <div className="absolute inset-0 bg-white rounded-3xl blur-xl opacity-30 transform scale-110"></div>
               {employee.profile_image_url ? (
                 <img 
                   src={employee.profile_image_url} 
                   alt={employee.full_name_arabic} 
-                  className="relative w-28 h-28 md:w-36 md:h-36 rounded-3xl object-cover border-4 border-white/30 shadow-2xl"
+                  className="relative w-24 h-24 md:w-36 md:h-36 rounded-2xl object-cover border-2 border-white/30 shadow-lg"
                 />
               ) : (
                 <div className="relative w-28 h-28 md:w-36 md:h-36 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center border-4 border-white/30 shadow-2xl">
@@ -496,7 +489,7 @@ export default function EmployeeProfile() {
                 </div>
               )}
               {employee.is_externally_assigned && (
-                <div className="absolute -bottom-2 -right-2 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg flex items-center gap-1">
+                <div className="absolute -bottom-2 -right-2 bg-amber-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-md flex items-center gap-1">
                   <FileClock className="w-3 h-3" />
                   مكلف
                 </div>
@@ -535,19 +528,19 @@ export default function EmployeeProfile() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-3 gap-1.5 mt-3 md:mt-0 w-full md:w-auto max-w-sm md:max-w-none mx-auto md:mx-0">
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2.5 text-center border border-white/20 min-w-0">
-                <FileText className="w-6 h-6 text-white mx-auto mb-2" />
+            <div className="grid grid-cols-3 gap-1 mt-2 md:mt-0 w-full md:w-auto max-w-[260px] md:max-w-none mx-auto md:mx-0">
+              <div className="bg-white/15 rounded-lg p-2 text-center border border-white/15 min-w-0">
+                <FileText className="w-4 h-4 md:w-6 md:h-6 text-white mx-auto mb-1" />
                 <p className="text-lg sm:text-2xl font-bold text-white">{documents.length}</p>
                 <p className="text-xs text-white/70">مستند</p>
               </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2.5 text-center border border-white/20 min-w-0">
-                <Calendar className="w-6 h-6 text-white mx-auto mb-2" />
+              <div className="bg-white/15 rounded-lg p-2 text-center border border-white/15 min-w-0">
+                <Calendar className="w-4 h-4 md:w-6 md:h-6 text-white mx-auto mb-1" />
                 <p className="text-lg sm:text-2xl font-bold text-white">{leaves.length}</p>
                 <p className="text-xs text-white/70">إجازة</p>
               </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2.5 text-center border border-white/20 min-w-0">
-                <Briefcase className="w-6 h-6 text-white mx-auto mb-2" />
+              <div className="bg-white/15 rounded-lg p-2 text-center border border-white/15 min-w-0">
+                <Briefcase className="w-4 h-4 md:w-6 md:h-6 text-white mx-auto mb-1" />
                 <p className="text-lg sm:text-2xl font-bold text-white">{assignments.length}</p>
                 <p className="text-xs text-white/70">تكليف</p>
               </div>
@@ -585,7 +578,7 @@ export default function EmployeeProfile() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-3 md:px-6 py-5 md:py-6 space-y-4 md:space-y-6">
+      <div className="max-w-7xl mx-auto px-3 md:px-6 py-4 md:py-6 space-y-3 md:space-y-6">
 
         {/* البيانات التفصيلية */}
         <motion.div
@@ -593,7 +586,7 @@ export default function EmployeeProfile() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
+          <Card className="shadow-md border-0 bg-white/80 overflow-hidden">
             <div className="p-4 md:p-5 bg-gradient-to-r from-indigo-500 to-blue-500 border-b">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -624,7 +617,7 @@ export default function EmployeeProfile() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
+          <Card className="shadow-md border-0 bg-white/80 overflow-hidden">
             <Tabs defaultValue="documents" className="w-full">
               <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b">
                 <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 bg-white/80 p-1 rounded-xl shadow-sm h-auto gap-1">
