@@ -649,16 +649,16 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
         >
           <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 overflow-hidden shadow-2xl">
             <div 
-              className="p-3 md:p-5 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
+              className="p-5 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-colors"
               onClick={() => setShowTemplates(!showTemplates)}
             >
-              <div className="flex items-center gap-3 md:gap-4 min-w-0">
-                <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shrink-0">
-                  <Sparkles className="w-5 h-5 md:w-6 md:h-6 text-white" />
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg">
+                  <Sparkles className="w-6 h-6 text-white" />
                 </div>
-                <div className="min-w-0">
-                  <h3 className="text-lg md:text-xl font-bold text-white">قوالب جاهزة للاستخدام</h3>
-                  <p className="text-purple-200/70 text-xs md:text-sm">اختر من بين {templates.length} قالب احترافي</p>
+                <div>
+                  <h3 className="text-xl font-bold text-white">قوالب جاهزة للاستخدام</h3>
+                  <p className="text-purple-200/70 text-sm">اختر من بين {templates.length} قالب احترافي</p>
                 </div>
               </div>
               <motion.div
@@ -678,7 +678,7 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                   transition={{ duration: 0.3 }}
                   className="overflow-hidden"
                 >
-                  <div className="p-3 md:p-6 pt-0 space-y-4 md:space-y-6">
+                  <div className="p-6 pt-0 space-y-6">
                     {[
                       { type: 'announcement', title: 'إعلانات', icon: Megaphone, color: 'from-blue-500 to-cyan-500' },
                       { type: 'brochure', title: 'بروشورات', icon: BookOpen, color: 'from-green-500 to-emerald-500' },
@@ -693,7 +693,7 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                           <h4 className="font-bold text-white">{category.title}</h4>
                           <div className="flex-1 h-px bg-gradient-to-r from-white/20 to-transparent"></div>
                         </div>
-                        <div className="grid grid-cols-2 xl:grid-cols-4 gap-2 md:gap-4">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                           {templates.filter(t => t.designType === category.type).map((template, idx) => (
                             <motion.button
                               key={template.id}
@@ -701,12 +701,12 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                               animate={{ opacity: 1, scale: 1 }}
                               transition={{ delay: catIdx * 0.1 + idx * 0.05 }}
                               onClick={() => applyTemplate(template)}
-                              className="group relative p-3 md:p-5 bg-white/5 backdrop-blur-sm rounded-xl md:rounded-2xl border border-white/10 hover:border-white/30 hover:bg-white/10 transition-all duration-300 text-center overflow-hidden min-h-[108px] md:min-h-[140px]"
+                              className="group relative p-5 bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 hover:border-white/30 hover:bg-white/10 transition-all duration-300 text-center overflow-hidden"
                             >
                               <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                               <div className="relative">
-                                <div className="text-3xl md:text-4xl mb-2 md:mb-3 transform group-hover:scale-110 transition-transform duration-300">{template.icon}</div>
-                                <div className="font-semibold text-white/90 group-hover:text-white text-xs md:text-sm leading-tight">
+                                <div className="text-4xl mb-3 transform group-hover:scale-110 transition-transform duration-300">{template.icon}</div>
+                                <div className="font-semibold text-white/90 group-hover:text-white text-sm">
                                   {template.name}
                                 </div>
                                 {template.needsEmployees && (
@@ -736,27 +736,27 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-3 md:gap-6 xl:gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
           {/* لوحة الإدخال */}
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
-            className="space-y-4 md:space-y-6"
+            className="space-y-6"
           >
             {/* معلومات التصميم - محسّنة */}
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 overflow-hidden shadow-2xl">
-              <div className="p-3 md:p-5 border-b border-white/10 flex items-center gap-3 md:gap-4">
-                <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg shrink-0">
-                  <FileText className="w-5 h-5 md:w-6 md:h-6 text-white" />
+              <div className="p-5 border-b border-white/10 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg">
+                  <FileText className="w-6 h-6 text-white" />
                 </div>
-                <div className="min-w-0">
-                  <h3 className="text-lg md:text-xl font-bold text-white">معلومات التصميم</h3>
-                  <p className="text-purple-200/70 text-xs md:text-sm">حدد تفاصيل المحتوى</p>
+                <div>
+                  <h3 className="text-xl font-bold text-white">معلومات التصميم</h3>
+                  <p className="text-purple-200/70 text-sm">حدد تفاصيل المحتوى</p>
                 </div>
               </div>
               
-              <div className="p-3 md:p-6 space-y-4 md:space-y-5">
+              <div className="p-6 space-y-5">
                 <div>
                   <Label className="text-white/90 font-medium mb-2 block">نوع التصميم</Label>
                   <Select
@@ -796,7 +796,7 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label className="text-white/90 font-medium mb-2 block flex items-center gap-2">
                       <Calendar className="w-4 h-4 text-purple-400" />
@@ -853,7 +853,7 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                     <Settings className="w-4 h-4 text-purple-400" />
                     إعدادات التصميم
                   </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 md:gap-3">
+                  <div className="grid grid-cols-3 gap-3">
                     <div>
                       <Label className="text-white/70 text-xs mb-1 block">مقاس الصفحة</Label>
                       <Select
@@ -915,7 +915,7 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
 
             {/* توليد صورة بالذكاء الاصطناعي - محسّن */}
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 overflow-hidden shadow-2xl">
-              <div className="p-3 md:p-5 border-b border-white/10 flex items-center gap-3 md:gap-4">
+              <div className="p-5 border-b border-white/10 flex items-center gap-4">
                 <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-500 to-rose-500 flex items-center justify-center shadow-lg">
                   <ImageIcon className="w-6 h-6 text-white" />
                 </div>
@@ -925,7 +925,7 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                 </div>
               </div>
               
-              <div className="p-3 md:p-6 space-y-4 md:space-y-5">
+              <div className="p-6 space-y-5">
                 <div>
                   <Label className="text-white/90 font-medium mb-2 block">وصف الصورة المطلوبة</Label>
                   <Textarea
@@ -1055,7 +1055,7 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                         } : {}}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center p-4">
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex gap-2">
                           <Button size="sm" variant="secondary" onClick={handleEditImage} className="rounded-full">
                             <Edit2 className="w-4 h-4" />
                           </Button>
@@ -1126,14 +1126,14 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                     transition={{ duration: 0.3 }}
                     className="overflow-hidden"
                   >
-                    <div className="p-3 md:p-6 pt-0 space-y-4 md:space-y-6">
+                    <div className="p-6 pt-0 space-y-6">
                       {/* البيانات المراد إظهارها */}
                       <div>
                         <h4 className="text-white font-semibold mb-3 flex items-center gap-2">
                           <Eye className="w-4 h-4 text-green-400" />
                           البيانات المراد إظهارها
                         </h4>
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
                           {[
                             { id: 'full_name_arabic', label: 'الاسم' },
                             { id: 'position', label: 'التخصص' },
@@ -1160,7 +1160,7 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
 
                       {/* اختيار الموظفين */}
                       <div>
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                        <div className="flex items-center justify-between mb-3">
                           <h4 className="text-white font-semibold flex items-center gap-2">
                             <Users className="w-4 h-4 text-purple-400" />
                             اختيار الموظفين ({selectedEmployees.length})
@@ -1256,7 +1256,7 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
-            className="space-y-4 md:space-y-6"
+            className="space-y-6"
           >
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 overflow-hidden shadow-2xl lg:sticky lg:top-6">
               <div className="p-5 border-b border-white/10 flex items-center justify-between">
@@ -1335,7 +1335,7 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                   exit={{ opacity: 0, y: -20 }}
                   className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 overflow-hidden"
                 >
-                  <div className="p-3 md:p-5 border-b border-white/10 flex items-center gap-3 md:gap-4">
+                  <div className="p-5 border-b border-white/10 flex items-center gap-4">
                     <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-lg">
                       <Users className="w-5 h-5 text-white" />
                     </div>
@@ -1343,7 +1343,7 @@ ${generatedImage ? '10. دمج الصورة:\n   - ضع الصورة في موق
                       <h3 className="text-lg font-bold text-white">المحددين ({selectedEmployees.length})</h3>
                     </div>
                   </div>
-                  <div className="p-3 md:p-4 max-h-48 overflow-y-auto space-y-2">
+                  <div className="p-4 max-h-48 overflow-y-auto space-y-2">
                     {selectedEmployees.map((emp, index) => (
                       <div key={emp.id} className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
                         <div className="flex items-center gap-3">
