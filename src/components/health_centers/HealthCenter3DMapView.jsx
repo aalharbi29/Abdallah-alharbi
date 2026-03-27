@@ -14,37 +14,10 @@ export default function HealthCenter3DMapView({ center }) {
 
     const map = new maplibregl.Map({
       container: mapContainer.current,
-      style: {
-        version: 8,
-        sources: {
-          osm: {
-            type: 'raster',
-            tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
-            tileSize: 256,
-            maxzoom: 19,
-            attribution: '&copy; OpenStreetMap contributors',
-          },
-          terrainSource: {
-            type: 'raster-dem',
-            tiles: ['https://demotiles.maplibre.org/terrain-tiles/tiles.json'],
-            tileSize: 256,
-          },
-        },
-        layers: [
-          {
-            id: 'osm-layer',
-            type: 'raster',
-            source: 'osm',
-          },
-        ],
-        terrain: {
-          source: 'terrainSource',
-          exaggeration: 1.35,
-        },
-      },
+      style: 'https://tiles.openfreemap.org/styles/bright',
       center: [lng, lat],
-      zoom: 15,
-      pitch: 70,
+      zoom: 17,
+      pitch: 75,
       bearing: 25,
       antialias: true,
     });
@@ -52,6 +25,32 @@ export default function HealthCenter3DMapView({ center }) {
     map.addControl(new maplibregl.NavigationControl(), 'top-left');
 
     map.on('load', () => {
+      const layers = map.getStyle()?.layers || [];
+      const labelLayerId = layers.find((layer) => layer.type === 'symbol' && layer.layout?.['text-field'])?.id;
+
+      const buildingSourceLayer = layers.find((layer) =>
+        layer.type === 'fill' && String(layer['source-layer'] || '').toLowerCase().includes('building')
+      )?.['source-layer'];
+
+      if (buildingSourceLayer) {
+        map.addLayer(
+          {
+            id: '3d-buildings',
+            source: 'openmaptiles',
+            'source-layer': buildingSourceLayer,
+            type: 'fill-extrusion',
+            minzoom: 15,
+            paint: {
+              'fill-extrusion-color': '#94a3b8',
+              'fill-extrusion-height': ['coalesce', ['get', 'render_height'], ['get', 'height'], 18],
+              'fill-extrusion-base': ['coalesce', ['get', 'render_min_height'], ['get', 'min_height'], 0],
+              'fill-extrusion-opacity': 0.88,
+            },
+          },
+          labelLayerId
+        );
+      }
+
       new maplibregl.Marker({ color: '#2563eb' })
         .setLngLat([lng, lat])
         .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(`<div dir="rtl" style="text-align:right"><strong>${center?.['اسم_المركز'] || 'المركز الصحي'}</strong></div>`))
