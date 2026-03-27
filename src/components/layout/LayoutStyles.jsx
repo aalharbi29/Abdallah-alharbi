@@ -73,7 +73,7 @@ export default function LayoutStyles() {
         }
 
         main {
-          padding: 10px 10px 84px 10px !important;
+          padding: 8px 8px 84px 8px !important;
         }
 
         .responsive-toolbar {
@@ -83,6 +83,16 @@ export default function LayoutStyles() {
         .responsive-toolbar > * {
           transform: scale(0.95);
           transform-origin: center;
+        }
+
+        .app-page-stack {
+          gap: 10px !important;
+        }
+
+        .app-page-stack > .rounded-xl,
+        .app-page-stack > .rounded-2xl,
+        .app-page-stack > [class*="shadow"] {
+          margin-bottom: 0 !important;
         }
       }
 
@@ -132,9 +142,17 @@ export default function LayoutStyles() {
         }
 
         .mobile-card {
-          margin: 2px !important;
+          margin: 1px !important;
           border-radius: 6px !important;
           padding: 8px !important;
+        }
+
+        .page-card-grid {
+          gap: 8px !important;
+        }
+
+        .page-card-grid > * {
+          min-width: 0;
         }
 
         .mobile-text,
@@ -185,6 +203,14 @@ export default function LayoutStyles() {
           font-size: 10px !important;
         }
 
+        .compact-page-section {
+          margin-bottom: 8px !important;
+        }
+
+        .compact-page-section:last-child {
+          margin-bottom: 0 !important;
+        }
+
         .overflow-x-auto {
           -webkit-overflow-scrolling: touch;
           scrollbar-width: thin;
@@ -224,6 +250,10 @@ export default function LayoutStyles() {
       @media (max-width: 480px) {
         .responsive-toolbar {
           gap: 4px !important;
+        }
+
+        main {
+          padding: 6px 6px 82px 6px !important;
         }
 
         .mobile-table th,
@@ -332,6 +362,12 @@ export default function LayoutStyles() {
 
       p, li, span, h1, h2, h3, h4, h5, h6 {
         overflow-wrap: break-word;
+      }
+
+      .app-page-stack,
+      .page-card-grid,
+      .compact-page-section {
+        width: 100%;
       }
 
       @media (max-width: 767px) {

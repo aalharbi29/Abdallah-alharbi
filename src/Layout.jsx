@@ -38,7 +38,7 @@ function LayoutContent({ children, currentPageName }) {
     );
   }
 
-  const mainPadding = 'p-1 md:p-2 lg:p-4';
+  const mainPadding = 'p-1 sm:p-1.5 md:p-2 lg:p-4';
 
   return (
     <div dir="rtl" className="font-cairo">
