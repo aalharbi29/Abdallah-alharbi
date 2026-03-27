@@ -33,8 +33,6 @@ import {
 import { base44 } from '@/api/base44Client';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import DraggableLogo from '@/components/common/DraggableLogo';
-import OfficialFooter from '@/components/common/OfficialFooter';
 
 export default function EmployeeIntroductionLetter() {
   const [employees, setEmployees] = useState([]);
@@ -1074,7 +1072,7 @@ export default function EmployeeIntroductionLetter() {
 
           {/* معاينة الخطاب */}
           <div className="lg:col-span-2">
-            <Card className="overflow-hidden sticky top-4">
+            <Card className="overflow-hidden">
               <CardHeader className="pb-2 no-print">
                 <CardTitle className="text-base flex items-center gap-2">
                   <Eye className="w-4 h-4" />
@@ -1084,11 +1082,9 @@ export default function EmployeeIntroductionLetter() {
               <CardContent className="p-0">
                 <div 
                   ref={letterRef}
-                  className="print-area bg-white p-8 md:p-12 min-h-[1000px] relative letter-content overflow-hidden"
+                  className="print-area bg-white p-8 md:p-12 min-h-[1000px] relative letter-content"
                   style={{ direction: 'rtl' }}
                 >
-                  <DraggableLogo defaultWidth={150} storageKey="employee-introduction-letter" className="top-6 right-6 no-print" />
-
                   {/* ترويسة الخطاب */}
                   <div className="text-center mb-8 border-b-2 border-green-700 pb-6">
                     <div className="flex justify-between items-start">
@@ -1098,12 +1094,7 @@ export default function EmployeeIntroductionLetter() {
                         <p className="text-sm font-bold text-green-800">إدارة المراكز الصحية بالحناكية</p>
                       </div>
                       <div className="w-20 h-20 flex items-center justify-center">
-                        <img
-                          src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/ebae7336b_1407.png"
-                          alt="شعار التجمع"
-                          className="w-16 h-16 object-contain"
-                          crossOrigin="anonymous"
-                        />
+                        <Building2 className="w-16 h-16 text-green-700" />
                       </div>
                       <div className="text-left">
                         <p className="text-sm text-gray-600">Kingdom of Saudi Arabia</p>
@@ -1264,9 +1255,10 @@ export default function EmployeeIntroductionLetter() {
                     )}
                   </div>
 
-                  {/* التذييل الرسمي */}
-                  <div className="absolute bottom-8 left-8 right-8">
-                    <OfficialFooter />
+                  {/* تذييل */}
+                  <div className="absolute bottom-8 left-8 right-8 text-center text-xs text-gray-500 border-t pt-4">
+                    <p>إدارة المراكز الصحية بالحناكية - المملكة العربية السعودية</p>
+                    <p>هاتف: .............. | فاكس: .............. | بريد إلكتروني: info@moh.gov.sa</p>
                   </div>
                 </div>
               </CardContent>
