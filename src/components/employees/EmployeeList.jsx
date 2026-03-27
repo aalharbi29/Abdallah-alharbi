@@ -120,7 +120,7 @@ export default function EmployeeList({
   return (
     <motion.div className="overflow-x-hidden" variants={containerVariants} initial="hidden" animate="visible">
       <AnimatePresence mode="popLayout">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
           {employees.map((employee) => {
             if (!employee || !employee.id) return null;
 
