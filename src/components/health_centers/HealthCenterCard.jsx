@@ -68,7 +68,7 @@ export default function HealthCenterCard({ center, employees, onEdit, onDataChan
       className="h-full hover:shadow-lg transition-shadow cursor-pointer"
       title={center.اسم_المركز || 'مركز غير محدد'}
     >
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-2 px-3 pt-3 md:pb-3 md:px-6 md:pt-6">
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2 flex-1 min-w-0">
             <Building2 className="w-5 h-5 text-blue-600 flex-shrink-0" />
@@ -121,7 +121,7 @@ export default function HealthCenterCard({ center, employees, onEdit, onDataChan
         </div>
       </CardHeader>
       
-      <CardContent className="space-y-3 pt-0">
+      <CardContent className="space-y-2.5 pt-0 px-3 pb-3 md:space-y-3 md:px-6 md:pb-6">
         {/* الموقع */}
         {center.الموقع && (
           <div className="flex items-start gap-2 text-sm" title={center.الموقع}>

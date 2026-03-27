@@ -23,7 +23,7 @@ export default function MobileEmployeeCard({
 }) {
   return (
     <Card className={`w-full overflow-hidden bg-gradient-to-br from-slate-800/95 via-slate-800/90 to-indigo-900/70 border ${isSelected ? 'ring-2 ring-indigo-400 border-indigo-400' : isPinned ? 'border-amber-400' : 'border-white/15'} shadow-xl`}>
-      <CardContent className="p-3">
+      <CardContent className="p-2.5 sm:p-3">
         <div className="flex items-start gap-3">
           <div className="flex flex-col items-center gap-2 shrink-0">
             {onToggleSelection && (
@@ -63,7 +63,7 @@ export default function MobileEmployeeCard({
             </div>
           </div>
 
-          <div className="flex-1 min-w-0 space-y-2">
+          <div className="flex-1 min-w-0 space-y-1.5">
             <div>
               <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="block text-sm font-black text-white truncate">
                 {employee.full_name_arabic || 'غير محدد'}

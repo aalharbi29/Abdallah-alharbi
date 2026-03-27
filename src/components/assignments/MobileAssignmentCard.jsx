@@ -10,7 +10,7 @@ import { format } from "date-fns";
 export default function MobileAssignmentCard({ assignment, isArchive, isDraft, isSelected, onToggleSelection, onExportPDF, onStatusUpdate, onDelete, isLoading, isArchiving, statusBadge }) {
   return (
     <Card className={`md:hidden border-0 shadow-sm rounded-2xl overflow-hidden ${isSelected ? 'ring-2 ring-blue-400 bg-blue-50' : 'bg-white'}`}>
-      <CardContent className="p-3 space-y-3">
+      <CardContent className="p-2.5 space-y-2.5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1" onClick={() => onToggleSelection(assignment.id)}>
             <div className="flex items-center gap-2 mb-1">
@@ -43,7 +43,7 @@ export default function MobileAssignmentCard({ assignment, isArchive, isDraft, i
           {isArchive && assignment.completion_date && <span className="text-gray-500">الإنهاء: {format(new Date(assignment.completion_date), 'yyyy/MM/dd')}</span>}
         </div>
 
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-4 gap-1.5">
           <Link to={createPageUrl(`ViewAssignment?id=${assignment.id}`)}>
             <Button variant="outline" size="sm" className="w-full h-9 rounded-xl"><Eye className="w-4 h-4" /></Button>
           </Link>
