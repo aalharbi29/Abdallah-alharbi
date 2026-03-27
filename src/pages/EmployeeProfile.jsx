@@ -535,18 +535,18 @@ export default function EmployeeProfile() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-3 gap-2 mt-4 md:mt-0 w-full md:w-auto">
-              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-3 text-center border border-white/20 min-w-0">
+            <div className="grid grid-cols-3 gap-1.5 mt-3 md:mt-0 w-full md:w-auto max-w-sm md:max-w-none mx-auto md:mx-0">
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2.5 text-center border border-white/20 min-w-0">
                 <FileText className="w-6 h-6 text-white mx-auto mb-2" />
                 <p className="text-lg sm:text-2xl font-bold text-white">{documents.length}</p>
                 <p className="text-xs text-white/70">مستند</p>
               </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-3 text-center border border-white/20 min-w-0">
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2.5 text-center border border-white/20 min-w-0">
                 <Calendar className="w-6 h-6 text-white mx-auto mb-2" />
                 <p className="text-lg sm:text-2xl font-bold text-white">{leaves.length}</p>
                 <p className="text-xs text-white/70">إجازة</p>
               </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-3 text-center border border-white/20 min-w-0">
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-2.5 text-center border border-white/20 min-w-0">
                 <Briefcase className="w-6 h-6 text-white mx-auto mb-2" />
                 <p className="text-lg sm:text-2xl font-bold text-white">{assignments.length}</p>
                 <p className="text-xs text-white/70">تكليف</p>

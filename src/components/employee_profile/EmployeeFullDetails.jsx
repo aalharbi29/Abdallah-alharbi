@@ -96,7 +96,7 @@ export default function EmployeeFullDetails({ employee }) {
   if (!employee) return null;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-6">
       {CATEGORY_ORDER.map(category => {
         const categoryFields = category.fields.filter(field => 
           employee.hasOwnProperty(field) && 
@@ -116,14 +116,14 @@ export default function EmployeeFullDetails({ employee }) {
         };
 
         return (
-          <Card key={category.title} className={`border-2 ${colorClasses[category.color]} shadow-sm hover:shadow-md transition-shadow`}>
-            <CardHeader className="pb-3 px-4 md:px-6">
-              <CardTitle className="flex items-center gap-2 text-lg">
+          <Card key={category.title} className={`border ${colorClasses[category.color]} shadow-sm hover:shadow-md transition-shadow overflow-hidden`}>
+            <CardHeader className="pb-2 px-3 md:px-6 pt-3 md:pt-6">
+              <CardTitle className="flex items-center gap-2 text-base md:text-lg leading-tight">
                 <Icon className="w-5 h-5" />
                 {category.title}
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3 px-3 md:px-6">
+            <CardContent className="space-y-2 px-2.5 md:px-6 pb-3 md:pb-6">
               {categoryFields.map(key => {
                 const FieldIcon = FIELD_ICONS[key] || FileText;
                 const value = employee[key];
@@ -150,11 +150,11 @@ export default function EmployeeFullDetails({ employee }) {
                 }
 
                 return (
-                  <div key={key} className="flex items-start gap-3 p-3 bg-white rounded-lg border">
+                  <div key={key} className="flex items-start gap-2 p-2.5 md:p-3 bg-white rounded-lg border min-w-0 overflow-hidden">
                     <FieldIcon className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs text-gray-500">{LABELS[key] || key}</p>
-                      <p className="font-medium text-gray-900 break-words">{formatValue(key, value)}</p>
+                      <p className="text-[11px] md:text-xs text-gray-500">{LABELS[key] || key}</p>
+                      <p className="text-sm md:text-base font-medium text-gray-900 break-words">{formatValue(key, value)}</p>
                     </div>
                   </div>
                 );
