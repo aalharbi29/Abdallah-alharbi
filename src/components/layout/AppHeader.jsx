@@ -7,13 +7,13 @@ import Notifications from "../notifications/Notifications";
 
 export default function AppHeader({ onMenuClick }) {
   return (
-    <header className="bg-white/95 backdrop-blur-md border-b border-gray-200/60 px-3 sm:px-4 lg:px-6 py-3 lg:py-4 flex items-center justify-between gap-3 shadow-soft safe-top no-print responsive-header">
+    <header className="bg-white/95 backdrop-blur-md border-b border-gray-200/60 px-3 sm:px-4 lg:px-6 py-2.5 lg:py-4 flex items-center justify-between gap-2 shadow-soft safe-top no-print responsive-header mobile-app-header">
       <div className="flex items-center gap-2 sm:gap-3 min-w-0">
         <Button
           variant="ghost"
           size="sm"
           onClick={onMenuClick}
-          className="md:hidden hover:bg-green-50 rounded-xl p-2 touch-target"
+          className="lg:hidden hover:bg-green-50 rounded-xl p-2 touch-target"
         >
           <Menu className="w-5 h-5 text-gray-700" />
         </Button>

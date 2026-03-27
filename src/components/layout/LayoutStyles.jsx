@@ -55,6 +55,37 @@ export default function LayoutStyles() {
         }
       }
 
+      @media (max-width: 767px) {
+        .responsive-shell {
+          background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+        }
+
+        .mobile-app-header {
+          padding-left: 12px !important;
+          padding-right: 12px !important;
+          min-height: 64px;
+        }
+
+        .mobile-bottom-nav-shell {
+          position: sticky;
+          bottom: 0;
+          z-index: 35;
+        }
+
+        main {
+          padding: 10px 10px 84px 10px !important;
+        }
+
+        .responsive-toolbar {
+          gap: 6px !important;
+        }
+
+        .responsive-toolbar > * {
+          transform: scale(0.95);
+          transform-origin: center;
+        }
+      }
+
       @media (min-width: 768px) and (max-width: 1023px) {
         body {
           font-size: 15px;

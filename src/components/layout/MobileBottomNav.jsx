@@ -12,7 +12,7 @@ const mobileNavItems = [
 
 export default function MobileBottomNav({ pathname }) {
   return (
-    <div className="bottom-nav safe-bottom no-print overflow-x-auto lg:hidden">
+    <div className="bottom-nav safe-bottom no-print overflow-x-auto lg:hidden mobile-bottom-nav-shell">
       <div className="flex justify-around items-center py-1 min-w-full px-2 sm:px-3">
         {mobileNavItems.map((item) => (
           <Link
