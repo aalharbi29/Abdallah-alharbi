@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import CenterMapLegend from '@/components/health_centers/CenterMapLegend';
@@ -7,6 +7,8 @@ import CenterMapFilters from '@/components/health_centers/CenterMapFilters';
 import HealthCenterDetailMapView from '@/components/health_centers/HealthCenterDetailMapView';
 import AddMapPointForm from '@/components/health_centers/AddMapPointForm';
 import AddEpidemicCaseForm from '@/components/health_centers/AddEpidemicCaseForm';
+import { Button } from '@/components/ui/button';
+import { Box } from 'lucide-react';
 
 export default function HealthCenterMapDetails() {
   const location = useLocation();
@@ -75,9 +77,17 @@ export default function HealthCenterMapDetails() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 p-4 md:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">الخريطة التفصيلية - {center['اسم_المركز']}</h1>
-          <p className="text-gray-600">عرض المركز مع النقاط المهمة اليدوية والحالات الوبائية.</p>
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">الخريطة التفصيلية - {center['اسم_المركز']}</h1>
+            <p className="text-gray-600">عرض المركز مع النقاط المهمة اليدوية والحالات الوبائية.</p>
+          </div>
+          <Button asChild className="bg-slate-900 hover:bg-slate-800">
+            <Link to={`/HealthCenterMap3D?id=${center.id}`}>
+              <Box className="w-4 h-4" />
+              فتح العرض ثلاثي الأبعاد
+            </Link>
+          </Button>
         </div>
 
         <Card>
