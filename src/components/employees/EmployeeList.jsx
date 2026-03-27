@@ -147,7 +147,7 @@ export default function EmployeeList({
 
   return (
     <motion.div 
-      className="space-y-5"
+      className="space-y-3 md:space-y-5"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -171,7 +171,7 @@ export default function EmployeeList({
             className="group"
           >
             <Card
-              className={`relative overflow-hidden bg-gradient-to-br from-slate-800/90 via-slate-800/80 to-indigo-900/60 backdrop-blur-2xl border-2 transition-all duration-500 shadow-2xl hover:shadow-indigo-500/20 ${
+              className={`relative overflow-hidden bg-gradient-to-br from-slate-800/90 via-slate-800/80 to-indigo-900/60 backdrop-blur-2xl border transition-all duration-500 shadow-xl md:shadow-2xl hover:shadow-indigo-500/20 ${
                 isPinned 
                   ? 'border-amber-400 bg-gradient-to-br from-amber-900/40 via-slate-800/80 to-amber-900/30 shadow-amber-500/20' 
                   : 'border-white/20 hover:border-indigo-400/60'
@@ -190,8 +190,8 @@ export default function EmployeeList({
                 <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-purple-400 to-transparent" />
               </div>
 
-            <CardContent className="relative z-10 p-4 md:p-5">
-              <div className="flex items-start gap-4 md:gap-5">
+            <CardContent className="relative z-10 p-3 md:p-5">
+              <div className="flex items-start gap-3 md:gap-5">
                 {/* Checkbox للتحديد */}
                 {onToggleSelection && (
                   <motion.div 
@@ -223,7 +223,7 @@ export default function EmployeeList({
                       <img 
                         src={employee.profile_image_url} 
                         alt={employee.full_name_arabic || 'صورة الموظف'} 
-                        className="relative w-16 h-16 md:w-20 md:h-20 rounded-2xl object-cover border-3 border-white/30 shadow-2xl"
+                        className="relative w-14 h-14 md:w-20 md:h-20 rounded-xl md:rounded-2xl object-cover border-2 md:border-3 border-white/30 shadow-xl md:shadow-2xl"
                       />
                     </div>
                   ) : (
@@ -251,37 +251,37 @@ export default function EmployeeList({
                     <div className="flex-1">
                       <Link
                         to={createPageUrl(`EmployeeProfile?id=${employee.id}`)}
-                        className="text-lg md:text-xl font-black text-white hover:text-indigo-300 transition-all duration-300 flex items-center gap-2 group/name"
+                        className="text-base md:text-xl font-black text-white hover:text-indigo-300 transition-all duration-300 flex items-center gap-1.5 md:gap-2 group/name"
                       >
                         <span className="bg-gradient-to-r from-white to-white/90 bg-clip-text">{employee.full_name_arabic || 'غير محدد'}</span>
                         <Sparkles className="w-5 h-5 text-yellow-400 opacity-0 group-hover/name:opacity-100 transition-all duration-300 group-hover/name:rotate-12" />
                       </Link>
                       <div className="flex flex-wrap items-center gap-2 mt-2">
                         {employee.position && (
-                          <span className="text-sm font-bold text-indigo-300 bg-indigo-500/20 px-3 py-1 rounded-lg">{employee.position}</span>
+                          <span className="text-xs md:text-sm font-bold text-indigo-300 bg-indigo-500/20 px-2.5 md:px-3 py-1 rounded-lg mobile-paragraph compact">{employee.position}</span>
                         )}
                         {employee.المركز_الصحي && (
-                          <span className="flex items-center gap-1.5 text-sm font-semibold text-emerald-300 bg-emerald-500/20 px-3 py-1 rounded-lg">
-                            <Building2 className="w-3.5 h-3.5" />
-                            {employee.المركز_الصحي}
+                          <span className="flex items-center gap-1 text-xs md:text-sm font-semibold text-emerald-300 bg-emerald-500/20 px-2.5 md:px-3 py-1 rounded-lg mobile-paragraph compact">
+                            <Building2 className="w-3 h-3 md:w-3.5 md:h-3.5 shrink-0" />
+                            <span className="truncate max-w-[140px] md:max-w-none">{employee.المركز_الصحي}</span>
                           </span>
                         )}
                         {employee.contract_type && (
-                          <Badge className="text-xs py-1 px-3 bg-gradient-to-r from-purple-500/30 to-pink-500/30 border border-purple-400/40 text-purple-200 font-bold">
+                          <Badge className="text-[11px] md:text-xs py-1 px-2.5 md:px-3 bg-gradient-to-r from-purple-500/30 to-pink-500/30 border border-purple-400/40 text-purple-200 font-bold mobile-paragraph compact">
                             {employee.contract_type}
                           </Badge>
                         )}
                       </div>
                     </div>
 
-                    <div className="flex gap-2 flex-shrink-0">
+                    <div className="flex gap-1.5 md:gap-2 flex-shrink-0">
                       {onPinEmployee && (
                         <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => onPinEmployee(employee.id)}
-                            className={`h-10 w-10 rounded-xl transition-all duration-300 ${
+                            className={`h-8 w-8 md:h-10 md:w-10 rounded-lg md:rounded-xl transition-all duration-300 ${
                               isPinned 
                                 ? 'text-amber-300 bg-gradient-to-br from-amber-500/30 to-orange-500/30 shadow-lg shadow-amber-500/20' 
                                 : 'text-white/50 hover:text-amber-400 hover:bg-amber-500/20'
@@ -308,10 +308,10 @@ export default function EmployeeList({
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-2 mb-4">
+                  <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-4">
                     {employee.is_externally_assigned && (
                       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }}>
-                        <Badge className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white text-xs py-1.5 px-3 font-black shadow-xl shadow-orange-500/30 border border-orange-300/30">
+                        <Badge className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white text-[11px] md:text-xs py-1 md:py-1.5 px-2.5 md:px-3 font-black shadow-xl shadow-orange-500/30 border border-orange-300/30 mobile-paragraph compact">
                           🌍 مكلف خارجي {employee.external_assignment_center && `- ${employee.external_assignment_center}`}
                         </Badge>
                       </motion.div>
@@ -319,7 +319,7 @@ export default function EmployeeList({
 
                     {activeHolidayAssignments.length > 0 && (
                       <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring", delay: 0.1 }}>
-                        <Badge className="bg-gradient-to-r from-purple-500 via-violet-500 to-fuchsia-500 text-white text-xs py-1.5 px-3 font-black shadow-xl shadow-purple-500/30 border border-purple-300/30">
+                        <Badge className="bg-gradient-to-r from-purple-500 via-violet-500 to-fuchsia-500 text-white text-[11px] md:text-xs py-1 md:py-1.5 px-2.5 md:px-3 font-black shadow-xl shadow-purple-500/30 border border-purple-300/30 mobile-paragraph compact">
                           🎯 {activeHolidayAssignments[0].holiday_name}
                         </Badge>
                       </motion.div>
@@ -333,20 +333,20 @@ export default function EmployeeList({
                           animate={{ scale: 1 }} 
                           transition={{ type: "spring", delay: 0.1 * (idx + 1) }}
                         >
-                          <Badge className="bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white text-xs py-1.5 px-3 font-bold shadow-lg shadow-blue-500/20 border border-blue-300/30">
+                          <Badge className="bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 text-white text-[11px] md:text-xs py-1 md:py-1.5 px-2.5 md:px-3 font-bold shadow-lg shadow-blue-500/20 border border-blue-300/30 mobile-paragraph compact">
                             {role}
                           </Badge>
                         </motion.div>
                       ))
                     )}
                     {employeeRoles.length > 2 && (
-                      <Badge className="bg-white/20 text-white text-xs py-1.5 px-3 font-bold border-2 border-white/30 backdrop-blur-sm">
+                      <Badge className="bg-white/20 text-white text-[11px] md:text-xs py-1 md:py-1.5 px-2.5 md:px-3 font-bold border-2 border-white/30 backdrop-blur-sm">
                         +{employeeRoles.length - 2}
                       </Badge>
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-sm mb-4 p-4 bg-gradient-to-br from-white/10 to-white/5 rounded-2xl border border-white/20 backdrop-blur-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-2 md:gap-3 text-xs md:text-sm mb-3 md:mb-4 p-3 md:p-4 bg-gradient-to-br from-white/10 to-white/5 rounded-xl md:rounded-2xl border border-white/20 backdrop-blur-sm">
                     {employee.رقم_الموظف && (
                       <div className="flex items-center gap-2 text-white">
                         <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
@@ -404,7 +404,7 @@ export default function EmployeeList({
                     )}
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 md:gap-2">
                     <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)}>
                       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                         <Button 

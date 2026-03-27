@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { X, ChevronDown } from "lucide-react";
+import { X, ChevronDown, SlidersHorizontal } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import {
@@ -13,6 +12,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function EmployeeFilters({ onFiltersChange, healthCenters, employees, assignments }) {
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [activeFilters, setActiveFilters] = useState({
     healthCenters: [],
     positions: [],
@@ -221,7 +221,20 @@ export default function EmployeeFilters({ onFiltersChange, healthCenters, employ
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-3">
+      <div className="flex items-center gap-2 md:hidden">
+        <Button variant="outline" className="gap-2 bg-white/10 text-white border-white/20 hover:bg-white/20" onClick={() => setShowMobileFilters(!showMobileFilters)}>
+          <SlidersHorizontal className="w-4 h-4" />
+          الفلاتر
+          {totalActiveFilters > 0 && <Badge className="bg-blue-600 text-white">{totalActiveFilters}</Badge>}
+        </Button>
+        {hasActiveFilters && (
+          <Button variant="ghost" size="sm" onClick={clearAllFilters} className="text-red-300 hover:text-red-200 hover:bg-red-500/10">
+            مسح الكل
+          </Button>
+        )}
+      </div>
+
+      <div className={`${showMobileFilters ? 'flex' : 'hidden'} md:flex flex-wrap gap-2 md:gap-3 bg-white/5 md:bg-transparent border border-white/10 md:border-0 rounded-2xl p-3 md:p-0`}>
         <FilterPopover
           title="حالة الموظف"
           items={statusOptions}
@@ -319,10 +332,10 @@ export default function EmployeeFilters({ onFiltersChange, healthCenters, employ
       </div>
 
       {hasActiveFilters && (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap gap-2 px-1 md:px-0">
           {Object.entries(activeFilters).map(([category, values]) =>
             values.map(value => (
-              <Badge key={`${category}-${value}`} variant="secondary" className="bg-blue-50 text-blue-700 border-blue-200 gap-1">
+              <Badge key={`${category}-${value}`} variant="secondary" className="bg-blue-50 text-blue-700 border-blue-200 gap-1 text-[11px] md:text-xs max-w-full break-all">
                 {getFilterLabel(category, value)}
                 <button
                   onClick={() => toggleFilter(category, value)}
