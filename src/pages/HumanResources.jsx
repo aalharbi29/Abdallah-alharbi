@@ -4,8 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Plus, Search, Printer, AlertTriangle, RefreshCw, Loader2, Users, UserPlus, Calendar, FileText, Filter, Award, CheckSquare, Square, Pin, X, WifiOff, MessageCircle, User, Sparkles, Building2, TrendingUp } from "lucide-react";
+import { WifiOff, RefreshCw } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,8 +12,10 @@ import { Badge } from "@/components/ui/badge";
 import EmployeeList from "../components/employees/EmployeeList";
 import EmployeeForm from "../components/employees/EmployeeForm";
 import EmployeeFilters from "../components/employees/EmployeeFilters";
-import ExportManager from "../components/export/ExportManager";
-import CustomExportManager from "../components/export/CustomExportManager";
+import HumanResourcesHeader from "../components/hr/HumanResourcesHeader";
+import HumanResourcesStats from "../components/hr/HumanResourcesStats";
+import HumanResourcesToolbar from "../components/hr/HumanResourcesToolbar";
+import HumanResourcesEmptyState from "../components/hr/HumanResourcesEmptyState";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
@@ -448,120 +449,34 @@ export default function HumanResources() {
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto p-3 md:p-6 space-y-4 md:space-y-6 mobile-page-shell">
-        {/* Header احترافي */}
-        <div className="mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-6 mobile-stack-section">
-            <div className="flex items-center gap-4">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 to-blue-600 rounded-2xl blur-lg opacity-50"></div>
-                <div className="relative w-16 h-16 bg-gradient-to-br from-indigo-600 to-blue-600 rounded-2xl flex items-center justify-center shadow-2xl">
-                  <Users className="w-8 h-8 text-white" />
-                </div>
-              </div>
-              <div>
-                <h1 className="text-2xl md:text-5xl font-black text-white drop-shadow-lg tracking-tight leading-tight">
-                  الموارد البشرية
-                </h1>
-                <div className="flex items-center gap-3 mt-2">
-                  <div className="flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-md rounded-full border border-white/30">
-                    <Building2 className="w-5 h-5 text-white" />
-                    <span className="text-white text-sm font-bold">{employees.length} موظف</span>
-                  </div>
-                  <div className="flex items-center gap-2 px-4 py-2 bg-emerald-500/30 backdrop-blur-md rounded-full border border-emerald-400/50">
-                    <TrendingUp className="w-5 h-5 text-emerald-300" />
-                    <span className="text-emerald-200 text-sm font-bold">{filteredEmployees.length} معروض</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+        <HumanResourcesHeader
+          employeesCount={employees.length}
+          filteredCount={filteredEmployees.length}
+          isLoading={isLoading}
+          onRefresh={loadData}
+          onAddEmployee={() => {
+            setEditingEmployee(null);
+            setShowEmployeeForm(true);
+          }}
+        />
 
-            <div className="flex gap-2 no-print">
-              <Button 
-                onClick={loadData} 
-                variant="outline" 
-                size="sm" 
-                disabled={isLoading}
-                className="border-white/30 bg-white/10 text-white font-bold hover:bg-white/20 rounded-xl backdrop-blur-md shadow-lg"
-              >
-                <RefreshCw className={`w-4 h-4 ml-2 ${isLoading ? 'animate-spin' : ''}`} />
-                تحديث
-              </Button>
-              <Button 
-                onClick={() => {
-                  setEditingEmployee(null);
-                  setShowEmployeeForm(true);
-                }}
-                className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold shadow-xl rounded-xl"
-              >
-                <UserPlus className="w-4 h-4 ml-2" />
-                إضافة موظف
-              </Button>
-            </div>
-          </div>
-        </div>
+        <HumanResourcesStats
+          employeesCount={employees.length}
+          centersCount={healthCenters.length}
+          pinnedCount={pinnedEmployees.size}
+          selectedCount={selectedEmployees.size}
+        />
 
-        {/* Search and Actions - محسّن */}
-        <div>
-          <div className="bg-white/15 backdrop-blur-xl rounded-2xl border border-white/30 p-5 md:p-6 mb-6 no-print shadow-2xl">
-            <div className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white/60 w-5 h-5" />
-                <Input
-                  placeholder="ابحث بالاسم، رقم الهوية، رقم الموظف، الجوال..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pr-12 h-12 text-base font-semibold bg-white/15 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 rounded-xl shadow-lg"
-                />
-              </div>
-              
-              <div className="flex gap-2 flex-wrap">
-                {selectedEmployees.size > 0 && (
-                  <>
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowBulkWhatsAppDialog(true)}
-                      className="gap-2 bg-green-500/30 hover:bg-green-500/40 text-white font-bold border-green-400/50 rounded-xl shadow-lg"
-                    >
-                      <MessageCircle className="w-4 h-4" />
-                      واتساب ({selectedEmployees.size})
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowBulkAssignmentDialog(true)}
-                      className="gap-2 bg-white/15 border-white/30 text-white font-bold hover:bg-white/25 rounded-xl shadow-lg"
-                    >
-                      <Award className="w-4 h-4" />
-                      تكليف ({selectedEmployees.size})
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => setSelectedEmployees(new Set())}
-                      size="icon"
-                      className="bg-red-500/30 border-red-400/50 text-white font-bold hover:bg-red-500/40 rounded-xl shadow-lg"
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  </>
-                )}
-
-                <ExportManager employees={exportEmployees} />
-                <CustomExportManager 
-                  employees={exportEmployees}
-                  selectedCount={selectedEmployees.size}
-                />
-
-                <Button 
-                  variant="outline" 
-                  onClick={() => window.print()}
-                  className="bg-white/15 border-white/30 text-white font-bold hover:bg-white/25 rounded-xl shadow-lg"
-                >
-                  <Printer className="w-4 h-4 ml-2" />
-                  طباعة
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <HumanResourcesToolbar
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          selectedCount={selectedEmployees.size}
+          exportEmployees={exportEmployees}
+          onOpenWhatsApp={() => setShowBulkWhatsAppDialog(true)}
+          onOpenBulkAssignment={() => setShowBulkAssignmentDialog(true)}
+          onClearSelection={() => setSelectedEmployees(new Set())}
+          onPrint={() => window.print()}
+        />
 
         {/* Filters */}
         <EmployeeFilters
@@ -590,40 +505,13 @@ export default function HumanResources() {
         />
 
         {filteredEmployees.length === 0 && !isLoading && (
-          <Card>
-            <CardContent className="p-12 text-center">
-              <Users className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <p className="text-gray-500 text-lg">لا توجد نتائج</p>
-              <p className="text-gray-400 text-sm mt-2">جرب تعديل معايير البحث أو الفلترة</p>
-              {(searchQuery || Object.values(filters).some(f => f.length > 0)) && (
-                <Button
-                  variant="outline"
-                  className="mt-4"
-                  onClick={() => {
-                    setSearchQuery('');
-                    setFilters({
-                      healthCenters: [],
-                      positions: [],
-                      departments: [],
-                      jobCategories: [],
-                      jobCategoryTypes: [],
-                      qualifications: [],
-                      ranks: [],
-                      sequences: [],
-                      contractTypes: [],
-                      specialRoles: [],
-                      statuses: [],
-                      holidays: [],
-                      nationalities: [],
-                      holidayWorks: []
-                    });
-                  }}
-                >
-                  مسح جميع الفلاتر
-                </Button>
-              )}
-            </CardContent>
-          </Card>
+          <HumanResourcesEmptyState
+            hasFilters={!!searchQuery || Object.values(filters).some(f => f.length > 0)}
+            onClear={(emptyFilters) => {
+              setSearchQuery('');
+              setFilters(emptyFilters);
+            }}
+          />
         )}
       </div>
 
