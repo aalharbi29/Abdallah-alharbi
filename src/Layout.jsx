@@ -1,104 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { createPageUrl } from "@/utils";
-import {
-  Users,
-  Hospital,
-  MapPinned,
-  FileText,
-  BarChart3,
-  Home,
-  Calendar,
-  FileSignature,
-  Menu,
-  X,
-  Bell,
-  ChevronDown,
-  DollarSign,
-  Activity,
-  FileBarChart,
-  RefreshCw,
-  FilePlus,
-  Briefcase,
-  Archive,
-  Building2,
-  Edit,
-  Mail,
-  Settings,
-  FileCheck,
-  Eye,
-} from "lucide-react";
+import { Hospital, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import InstallPrompt from "./components/pwa/InstallPrompt";
-import Notifications from "./components/notifications/Notifications";
-import ThemeProvider, { useTheme } from "./components/theme/ThemeProvider";
-import ThemeSwitcher from "./components/theme/ThemeSwitcher";
+import ThemeProvider from "./components/theme/ThemeProvider";
 import { LanguageProvider, useLanguage } from "./components/language/LanguageProvider";
-import LanguageSwitcher from "./components/language/LanguageSwitcher";
+import { getNavigationItems } from "./components/layout/navigationConfig";
+import AppHeader from "./components/layout/AppHeader";
+import MobileBottomNav from "./components/layout/MobileBottomNav";
 
-const getNavigationItems = (t) => [
-  { name: t('nav.dashboard'), href: createPageUrl("Dashboard"), icon: Home },
-  { name: t('nav.humanResources'), href: createPageUrl("HumanResources"), icon: Users },
-  { name: t('nav.hrAnalytics'), href: createPageUrl("HRAnalytics"), icon: BarChart3 },
-  { name: t('nav.healthCenters'), href: createPageUrl("HealthCenters"), icon: Building2 },
-  { name: "خريطة المراكز الصحية", href: createPageUrl("HealthCentersMap"), icon: MapPinned },
-  { name: t('nav.leaves'), href: createPageUrl("Leaves"), icon: Calendar },
-  { name: t('nav.quickNotes'), href: createPageUrl("QuickNotes"), icon: FileSignature },
-  { name: t('nav.employeeDataRequest'), href: createPageUrl("EmployeeDataRequest"), icon: FileBarChart },
-  { name: t('nav.healthCentersReport'), href: createPageUrl("HealthCentersReport"), icon: BarChart3 },
-  { name: t('nav.bulkUpdateCenterData'), href: createPageUrl("BulkUpdateCenterData"), icon: RefreshCw },
-  
-  { name: t('nav.interactiveForms'), href: createPageUrl("InteractiveForms"), icon: Edit },
-  {
-    name: t('nav.forms'),
-    icon: FileSignature,
-    subItems: [
-      { name: t('nav.forms') + " - " + t('nav.leaves'), href: createPageUrl("Forms?type=leaves"), icon: Calendar },
-      { name: t('nav.forms') + " - " + t('nav.assignments'), href: createPageUrl("Forms?type=assignments"), icon: DollarSign },
-      { name: t('nav.forms') + " - " + t('reports.statisticsReport'), href: createPageUrl("Forms?type=epidemiology"), icon: Activity },
-      { name: t('nav.forms') + " - " + t('nav.statistics'), href: createPageUrl("Forms?type=statistics"), icon: FileBarChart },
-      { name: "إحصائية اللشمانيا", href: createPageUrl("LeishmaniaStatisticForm"), icon: Activity },
-      { name: t('nav.forms') + " - " + t('forms.formTemplates'), href: createPageUrl("Forms?type=contract_renewal"), icon: RefreshCw },
-      { name: "Equipment Request", href: createPageUrl("FillNonMedicalEquipmentForm"), icon: FilePlus },
-      { name: "Additional Forms", href: createPageUrl("Forms?type=additional"), icon: FilePlus },
-            { name: "تكليف مهمة رسمية", href: createPageUrl("FillOfficialAssignmentForm"), icon: FileText },
-                        { name: "طلب استعادة بريد", href: createPageUrl("FillEmailRecoveryForm"), icon: Mail },
-                        { name: "إخلاء طرف", href: createPageUrl("FillReleaseForm"), icon: FileText },
-                      ]
-                    },
-            { name: "نموذج جرد عهدة", href: createPageUrl("InventoryHandoverForm"), icon: FileText },
-  { name: t('nav.reports'), href: createPageUrl("Reports"), icon: BarChart3 },
-  {
-    name: t('nav.assignments'),
-    icon: FileText,
-    subItems: [
-      { name: t('nav.assignments') + " - " + t('common.view'), href: createPageUrl("Assignments"), icon: FileText },
-      { name: t('nav.assignmentsCalendar'), href: createPageUrl("AssignmentsCalendar"), icon: Calendar },
-      { name: t('nav.assignmentsAnalytics'), href: createPageUrl("AssignmentsAnalytics"), icon: BarChart3 }
-    ]
-  },
-  { name: t('nav.holidayAssignments'), href: createPageUrl("HolidayAssignments"), icon: Briefcase },
-  { name: t('nav.pdfEditor'), href: createPageUrl("PDFEditor"), icon: FileText },
-  { name: t('nav.archive'), href: createPageUrl("Archive"), icon: Archive },
-  {
-    name: t('nav.statistics'),
-    icon: BarChart3,
-    subItems: [
-      { name: t('nav.statisticsGregorian'), href: createPageUrl("StatisticsGregorian"), icon: BarChart3 },
-      { name: t('nav.statisticsHijri'), href: createPageUrl("StatisticsHijri"), icon: BarChart3 }
-    ]
-  },
-  { name: t('nav.settings'), href: createPageUrl("Settings"), icon: Settings },
-  { name: t('nav.clinicManagement'), href: createPageUrl("ClinicManagement"), icon: Hospital },
-  { name: t('nav.aiAnnouncementDesigner'), href: createPageUrl("AIAnnouncementDesigner"), icon: FileSignature },
-  { name: "نواقص المراكز", href: createPageUrl("NoteSorter"), icon: FileText },
-    { name: "تقارير الأجهزة الطبية", href: createPageUrl("MedicalEquipmentReport"), icon: Activity },
-    { name: "الزائر السري", href: createPageUrl("SecretVisitorReports"), icon: Eye },
-              { name: "تختيم سريع", href: createPageUrl("QuickSignArchive"), icon: FileCheck },
-                        { name: "خطاب تعريف", href: createPageUrl("EmployeeIntroductionLetter"), icon: FileText },
-                        { name: "اعتماد الطلبات", href: createPageUrl("ApprovalRequests"), icon: FileCheck },
-                                              ];
+
 
 function LayoutContent({ children, currentPageName }) {
   const { t } = useLanguage();
@@ -510,30 +421,7 @@ function LayoutContent({ children, currentPageName }) {
         )}
 
         <div className="flex-1 flex flex-col">
-          <header className="bg-white/95 backdrop-blur-md border-b border-gray-200/60 px-3 md:px-6 py-3 md:py-4 flex items-center justify-between shadow-soft safe-top no-print">
-            <div className="flex items-center gap-3">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={toggleMobileMenu}
-                className="md:hidden hover:bg-green-50 rounded-xl p-2 touch-target"
-              >
-                <Menu className="w-5 h-5 text-gray-700" />
-              </Button>
-              <div className="flex items-center gap-2 md:gap-3">
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-br from-green-600 to-green-700 rounded-xl flex items-center justify-center shadow-md">
-                  <Hospital className="w-4 h-4 md:w-5 md:h-5 text-white" />
-                </div>
-                <h1 className="text-base md:text-xl font-bold text-gray-900 mobile-title">المراكز الصحية الحسو</h1>
-                </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                <LanguageSwitcher variant="ghost" size="sm" />
-                <ThemeSwitcher variant="compact" />
-                <Notifications />
-                </div>
-            </header>
+          <AppHeader onMenuClick={toggleMobileMenu} />
 
           {isMobileMenuOpen && (
             <div className="fixed inset-0 z-50 md:hidden no-print">
@@ -592,31 +480,7 @@ function LayoutContent({ children, currentPageName }) {
             </div>
           </main>
 
-          {isMobile && (
-            <div className="bottom-nav safe-bottom no-print overflow-x-auto">
-              <div className="flex justify-around items-center py-1 min-w-max px-2">
-                {[
-                  { name: "الرئيسية", href: createPageUrl("Dashboard"), icon: Home },
-                  { name: "المراكز", href: createPageUrl("HealthCenters"), icon: Building2 },
-                  { name: "الموارد", href: createPageUrl("HumanResources"), icon: Users },
-                  { name: "النماذج", href: createPageUrl("Forms"), icon: FileSignature },
-                ].map((item) => ( 
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    className={`flex flex-col items-center gap-0.5 px-2 py-1.5 rounded-lg transition-colors mobile-nav-item touch-target min-w-[70px] ${
-                      location.pathname === item.href
-                        ? "text-green-600" 
-                        : "text-gray-500"
-                    }`}
-                  >
-                    <item.icon className="w-4 h-4" />
-                    <span className="text-[10px] font-medium text-center leading-tight">{item.name}</span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
+          {isMobile && <MobileBottomNav pathname={location.pathname} />}
         </div>
       </div>
     </div>
