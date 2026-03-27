@@ -190,9 +190,9 @@ export default function EmployeeList({
               />
             </div>
 
-            <div className="hidden md:block">
+            <div className="hidden md:block h-full">
             <Card
-              className={`relative w-full max-w-full overflow-hidden bg-gradient-to-br from-slate-800/90 via-slate-800/80 to-indigo-900/60 backdrop-blur-2xl border transition-all duration-500 shadow-xl md:shadow-2xl hover:shadow-indigo-500/20 ${
+              className={`relative h-full w-full max-w-full overflow-hidden bg-gradient-to-br from-slate-800/90 via-slate-800/80 to-indigo-900/60 backdrop-blur-2xl border transition-all duration-500 shadow-xl md:shadow-2xl hover:shadow-indigo-500/20 ${
                 isPinned 
                   ? 'border-amber-400 bg-gradient-to-br from-amber-900/40 via-slate-800/80 to-amber-900/30 shadow-amber-500/20' 
                   : 'border-white/20 hover:border-indigo-400/60'
@@ -202,72 +202,97 @@ export default function EmployeeList({
                   : ''
               }`}
             >
-              {/* Gradient overlay on hover */}
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/0 via-purple-600/0 to-pink-600/0 group-hover:from-indigo-600/5 group-hover:via-purple-600/5 group-hover:to-pink-600/5 transition-all duration-500 pointer-events-none" />
-              
-              {/* Animated border glow */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
-                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-400 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-purple-400 to-transparent" />
-              </div>
-
-            <CardContent className="relative z-10 p-3 md:p-5 max-w-full overflow-hidden">
-              <div className="flex items-start gap-3 md:gap-5 max-w-full overflow-hidden">
-                {/* Checkbox للتحديد */}
-                {onToggleSelection && (
-                  <motion.div 
-                    className="pt-2"
-                    whileTap={{ scale: 0.9 }}
-                  >
-                    <div 
-                      className={`w-7 h-7 rounded-xl border-2 flex items-center justify-center cursor-pointer transition-all duration-300 ${
-                        isSelected 
-                          ? 'bg-gradient-to-br from-indigo-500 to-purple-600 border-indigo-400 shadow-lg shadow-indigo-500/30' 
-                          : 'border-white/30 hover:border-indigo-400 hover:bg-white/10'
-                      }`}
-                      onClick={() => onToggleSelection(employee.id)}
-                    >
-                      {isSelected && <CheckSquare className="w-4 h-4 text-white" />}
-                    </div>
-                  </motion.div>
-                )}
-
-                {/* الصورة الشخصية */}
-                <motion.div 
-                  className="flex-shrink-0 relative"
-                  whileHover={{ scale: 1.05 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  {employee.profile_image_url ? (
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl blur-md opacity-40" />
-                      <img 
-                        src={employee.profile_image_url} 
-                        alt={employee.full_name_arabic || 'صورة الموظف'} 
-                        className="relative w-14 h-14 md:w-20 md:h-20 rounded-xl md:rounded-2xl object-cover border-2 md:border-3 border-white/30 shadow-xl md:shadow-2xl"
-                      />
-                    </div>
-                  ) : (
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl blur-md opacity-30" />
-                      <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-indigo-600/40 to-purple-600/40 border-2 border-white/30 flex items-center justify-center shadow-2xl">
-                        <User className="w-8 h-8 md:w-10 md:h-10 text-white/80" />
-                      </div>
-                    </div>
-                  )}
-                  {isPinned && (
+...
+            <CardContent className="relative z-10 p-3 md:p-5 h-full max-w-full overflow-hidden">
+              <div className="flex items-start gap-3 md:gap-5 max-w-full overflow-hidden h-full">
+                <div className="flex w-20 shrink-0 flex-col items-center justify-between self-stretch py-1">
+                  {onToggleSelection ? (
                     <motion.div 
-                      className="absolute -top-2 -right-2 w-7 h-7 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center shadow-xl border-2 border-white/50"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ type: "spring", stiffness: 500 }}
+                      className="pt-1"
+                      whileTap={{ scale: 0.9 }}
                     >
-                      <Pin className="w-3.5 h-3.5 text-white fill-current" />
+                      <div 
+                        className={`w-7 h-7 rounded-xl border-2 flex items-center justify-center cursor-pointer transition-all duration-300 ${
+                          isSelected 
+                            ? 'bg-gradient-to-br from-indigo-500 to-purple-600 border-indigo-400 shadow-lg shadow-indigo-500/30' 
+                            : 'border-white/30 hover:border-indigo-400 hover:bg-white/10'
+                        }`}
+                        onClick={() => onToggleSelection(employee.id)}
+                      >
+                        {isSelected && <CheckSquare className="w-4 h-4 text-white" />}
+                      </div>
                     </motion.div>
-                  )}
-                </motion.div>
+                  ) : <div />}
 
-                <div className="flex-1 min-w-0 max-w-full overflow-hidden">
+                  <motion.div 
+                    className="relative"
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ type: "spring", stiffness: 300 }}
+                  >
+                    {employee.profile_image_url ? (
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl blur-md opacity-40" />
+                        <img 
+                          src={employee.profile_image_url} 
+                          alt={employee.full_name_arabic || 'صورة الموظف'} 
+                          className="relative w-14 h-14 md:w-20 md:h-20 rounded-xl md:rounded-2xl object-cover border-2 md:border-3 border-white/30 shadow-xl md:shadow-2xl"
+                        />
+                      </div>
+                    ) : (
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl blur-md opacity-30" />
+                        <div className="relative w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-indigo-600/40 to-purple-600/40 border-2 border-white/30 flex items-center justify-center shadow-2xl">
+                          <User className="w-8 h-8 md:w-10 md:h-10 text-white/80" />
+                        </div>
+                      </div>
+                    )}
+                    {isPinned && (
+                      <motion.div 
+                        className="absolute -top-2 -right-2 w-7 h-7 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center shadow-xl border-2 border-white/50"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ type: "spring", stiffness: 500 }}
+                      >
+                        <Pin className="w-3.5 h-3.5 text-white fill-current" />
+                      </motion.div>
+                    )}
+                  </motion.div>
+
+                  <div className="flex flex-col gap-1.5 pt-2">
+                    {onPinEmployee && (
+                      <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => onPinEmployee(employee.id)}
+                          className={`h-8 w-8 md:h-10 md:w-10 rounded-lg md:rounded-xl transition-all duration-300 ${
+                            isPinned 
+                              ? 'text-amber-300 bg-gradient-to-br from-amber-500/30 to-orange-500/30 shadow-lg shadow-amber-500/20' 
+                              : 'text-white/50 hover:text-amber-400 hover:bg-amber-500/20'
+                          }`}
+                        >
+                          <Pin className={`w-5 h-5 ${isPinned ? 'fill-current' : ''}`} />
+                        </Button>
+                      </motion.div>
+                    )}
+
+                    {employee.phone && (
+                      <motion.a
+                        href={`https://wa.me/${normalizePhoneForWhatsApp(employee.phone)}?text=${encodeURIComponent(`مرحبا ${employee.full_name_arabic}`)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                      >
+                        <Button variant="ghost" size="icon" className="text-emerald-400 hover:bg-gradient-to-br hover:from-emerald-500/30 hover:to-green-500/30 h-8 w-8 md:h-10 md:w-10 rounded-lg md:rounded-xl shadow-lg shadow-emerald-500/0 hover:shadow-emerald-500/20 transition-all duration-300">
+                          <MessageCircle className="w-4 h-4 md:w-5 md:h-5" />
+                        </Button>
+                      </motion.a>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex-1 min-w-0 max-w-full overflow-hidden flex flex-col">
                   <div className="flex flex-col sm:flex-row items-start justify-between gap-3 mb-3 max-w-full overflow-hidden">
                     <div className="flex-1">
                       <Link
@@ -295,38 +320,7 @@ export default function EmployeeList({
                       </div>
                     </div>
 
-                    <div className="flex gap-1.5 md:gap-2 w-full sm:w-auto flex-shrink-0 justify-start sm:justify-end">
-                      {onPinEmployee && (
-                        <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => onPinEmployee(employee.id)}
-                            className={`h-8 w-8 md:h-10 md:w-10 rounded-lg md:rounded-xl transition-all duration-300 ${
-                              isPinned 
-                                ? 'text-amber-300 bg-gradient-to-br from-amber-500/30 to-orange-500/30 shadow-lg shadow-amber-500/20' 
-                                : 'text-white/50 hover:text-amber-400 hover:bg-amber-500/20'
-                            }`}
-                          >
-                            <Pin className={`w-5 h-5 ${isPinned ? 'fill-current' : ''}`} />
-                          </Button>
-                        </motion.div>
-                      )}
 
-                      {employee.phone && (
-                        <motion.a
-                          href={`https://wa.me/${normalizePhoneForWhatsApp(employee.phone)}?text=${encodeURIComponent(`مرحبا ${employee.full_name_arabic}`)}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          <Button variant="ghost" size="icon" className="text-emerald-400 hover:bg-gradient-to-br hover:from-emerald-500/30 hover:to-green-500/30 h-10 w-10 rounded-xl shadow-lg shadow-emerald-500/0 hover:shadow-emerald-500/20 transition-all duration-300">
-                            <MessageCircle className="w-5 h-5" />
-                          </Button>
-                        </motion.a>
-                      )}
-                    </div>
                   </div>
 
                   <div className="flex flex-wrap gap-1.5 md:gap-2 mb-3 md:mb-4">
