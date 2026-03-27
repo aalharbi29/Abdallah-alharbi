@@ -2,10 +2,11 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MapPin, Users, Phone, Mail, ExternalLink, Building2, Edit, Trash2 } from 'lucide-react';
+import { MapPin, Users, Phone, Mail, ExternalLink, Building2, Edit, Trash2, FileBarChart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 import { HealthCenter } from '@/entities/HealthCenter';
+import HealthCenterDataAlerts from './HealthCenterDataAlerts';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -158,6 +159,8 @@ export default function HealthCenterCard({ center, employees, onEdit, onDataChan
           </div>
         )}
 
+        <HealthCenterDataAlerts center={center} />
+
         {/* الشارات */}
         <div className="flex flex-wrap gap-2">
           {/* عدد الموظفين */}
@@ -200,14 +203,26 @@ export default function HealthCenterCard({ center, employees, onEdit, onDataChan
         )}
 
         {/* زر عرض التفاصيل */}
-        <Link 
-          to={createPageUrl(`HealthCenterDetails?id=${center.id}`)}
-          onClick={(e) => e.stopPropagation()}
-        >
-          <Button variant="outline" size="sm" className="w-full mt-2">
-            عرض التفاصيل الكاملة
-          </Button>
-        </Link>
+        <div className="grid grid-cols-1 gap-2 mt-2">
+          <Link 
+            to={createPageUrl(`HealthCenterDetails?id=${center.id}`)}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Button variant="outline" size="sm" className="w-full">
+              عرض التفاصيل الكاملة
+            </Button>
+          </Link>
+
+          <Link
+            to={`/HealthCentersReport?centerId=${center.id}`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Button variant="outline" size="sm" className="w-full">
+              <FileBarChart className="w-4 h-4 ml-2" />
+              إنشاء تقرير لهذا المركز
+            </Button>
+          </Link>
+        </div>
       </CardContent>
     </Card>
   );

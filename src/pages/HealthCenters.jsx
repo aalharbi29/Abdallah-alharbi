@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import HealthCenterCard from "../components/health_centers/HealthCenterCard";
 import HealthCenterForm from "../components/health_centers/HealthCenterForm";
+import HealthCentersQuickStats from "../components/health_centers/HealthCentersQuickStats";
 import ExportManager from "../components/export/ExportManager";
 import CustomExportManager from "../components/export/CustomExportManager";
 
@@ -257,56 +258,7 @@ export default function HealthCenters() {
           </Alert>
         )}
 
-        {/* Stats Summary */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="bg-gradient-to-r from-green-500 to-green-600 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-green-100 text-sm">إجمالي المراكز</p>
-                  <p className="text-3xl font-bold">{filteredCenters.length}</p>
-                </div>
-                <Building2 className="w-12 h-12 text-green-100" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-blue-100 text-sm">المراكز النشطة</p>
-                  <p className="text-3xl font-bold">{filteredCenters.filter(c => c.حالة_التشغيل === 'نشط').length}</p>
-                </div>
-                <Building2 className="w-12 h-12 text-blue-100" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-amber-500 to-amber-600 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-amber-100 text-sm">المراكز النائية</p>
-                  <p className="text-3xl font-bold">{filteredCenters.filter(c => c.مركز_نائي).length}</p>
-                </div>
-                <Building2 className="w-12 h-12 text-amber-100" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-purple-100 text-sm">إجمالي الموظفين</p>
-                  <p className="text-3xl font-bold">{employees.length}</p>
-                </div>
-                <Building2 className="w-12 h-12 text-purple-100" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <HealthCentersQuickStats centers={filteredCenters} employees={employees} />
 
         {/* Search and Filters */}
         <Card>

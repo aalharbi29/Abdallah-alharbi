@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import ExcelJS from 'exceljs';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -10,6 +11,8 @@ import {
   Building2, Download, Printer, BarChart3,
   Grid3x3, Table, Presentation, Filter, Settings, X, Check
 } from 'lucide-react';
+import ReportTemplatesBar from '@/components/health_centers/ReportTemplatesBar';
+import CenterComparisonStats from '@/components/health_centers/CenterComparisonStats';
 
 
 
@@ -51,6 +54,7 @@ const availableFields = [
 ];
 
 export default function HealthCentersReport() {
+  const location = useLocation();
   const [healthCenters, setHealthCenters] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [selectedCenters, setSelectedCenters] = useState([]);
@@ -70,6 +74,14 @@ export default function HealthCentersReport() {
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const centerId = params.get('centerId');
+    if (centerId && healthCenters.length > 0) {
+      setSelectedCenters([centerId]);
+    }
+  }, [location.search, healthCenters]);
 
   const getClinicType = (clinic) => {
     let type = clinic.نوع_العيادة;
@@ -378,6 +390,12 @@ export default function HealthCentersReport() {
 
   const currentScheme = colorSchemes[colorScheme];
 
+  const applyTemplate = (template) => {
+    setSelectedFields(template.fields);
+    setViewMode(template.viewMode);
+    setPageOrientation(template.orientation);
+  };
+
   // Cards View Component
   const CardsView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -439,7 +457,7 @@ export default function HealthCentersReport() {
           {processedCenters.map((center, idx) => (
             <tr key={center.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
               {selectedFields.map(key => (
-                <td key={key} className="border border-gray-300 px-4 py-2 text-sm">
+                <td key={key} className="border border-gray-300 px-4 py-2 text-sm break-words max-w-[280px] align-top leading-7">
                   {key === 'موقع_الخريطة' && center[key] ? (
                     <a
                       href={center[key]}
@@ -480,8 +498,8 @@ export default function HealthCentersReport() {
               return (
                 <div key={key} className="bg-white p-4 rounded-lg shadow">
                   <div className="text-sm text-gray-500 mb-1">{field?.label}</div>
-                  <div className="text-lg font-semibold text-gray-800">
-                    {field?.key === 'موقع_الخريطة' && center[key] ? (
+                  <div className="text-lg font-semibold text-gray-800 break-words leading-8">
+                      {field?.key === 'موقع_الخريطة' && center[key] ? (
                       <a
                         href={center[key]}
                         target="_blank"
@@ -837,6 +855,13 @@ export default function HealthCentersReport() {
                 </div>
               </div>
 
+              <div>
+                <Label>قوالب جاهزة</Label>
+                <div className="mt-2">
+                  <ReportTemplatesBar onApplyTemplate={applyTemplate} />
+                </div>
+              </div>
+
               {/* View Mode */}
               <div>
                 <Label>نمط العرض</Label>
@@ -912,6 +937,7 @@ export default function HealthCentersReport() {
           <div className="text-center mb-6 print-show">
             <h1 className={`text-3xl font-bold ${currentScheme.text}`}>{reportTitle}</h1>
             <p className="text-gray-600 mt-2">تاريخ الإعداد: {new Date().toLocaleDateString('ar-SA')}</p>
+            <p className="text-sm text-gray-500 mt-1">عدد المراكز في التقرير: {processedCenters.length}</p>
           </div>
 
           {processedCenters.length === 0 ? (
@@ -926,7 +952,14 @@ export default function HealthCentersReport() {
               {viewMode === 'cards' && <CardsView />}
               {viewMode === 'table' && <TableView />}
               {viewMode === 'presentation' && <PresentationView />}
-              {viewMode === 'stats' && <StatsView />}
+              {viewMode === 'stats' && (
+              <>
+                <CenterComparisonStats centers={processedCenters} />
+                <div className="mt-6">
+                  <StatsView />
+                </div>
+              </>
+              )}
             </>
           )}
           <div className="report-footer-banner" style={{textAlign: 'center'}}>
