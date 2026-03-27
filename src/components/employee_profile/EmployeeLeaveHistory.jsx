@@ -123,7 +123,7 @@ export default function EmployeeLeaveHistory({ leaves }) {
   return (
     <div className="space-y-4">
       {/* إحصائيات سريعة */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-6">
         <Card>
           <CardContent className="p-4 text-center">
             <div className="text-2xl font-bold text-blue-600">{totalLeaves}</div>

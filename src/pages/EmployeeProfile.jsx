@@ -442,9 +442,9 @@ export default function EmployeeProfile() {
           }}></div>
         </div>
         
-        <div className="relative max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10">
+        <div className="relative max-w-7xl mx-auto px-3 md:px-6 py-4 md:py-10">
           {/* Navigation Bar */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 md:mb-6 gap-3">
             <Button 
               variant="ghost" 
               onClick={() => navigate(createPageUrl('HumanResources'))} 
@@ -453,7 +453,7 @@ export default function EmployeeProfile() {
               <ArrowRight className="w-5 h-5" />
               <span className="hidden sm:inline">العودة للموظفين</span>
             </Button>
-            <div className="flex gap-2 no-print">
+            <div className="flex flex-wrap gap-2 no-print justify-end w-full md:w-auto">
               <Button 
                 variant="ghost" 
                 onClick={() => setShowIDCard(true)}
@@ -479,7 +479,7 @@ export default function EmployeeProfile() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col md:flex-row items-center gap-4 md:gap-6"
+            className="flex flex-col md:flex-row items-center md:items-start gap-4 md:gap-6"
           >
             {/* Profile Image */}
             <div className="relative">
@@ -504,7 +504,7 @@ export default function EmployeeProfile() {
             </div>
             
             {/* Employee Info */}
-            <div className="flex-1 text-center md:text-right">
+            <div className="flex-1 text-center md:text-right w-full min-w-0">
               <h1 className="text-3xl md:text-4xl font-black text-white mb-2">
                 {employee.full_name_arabic}
               </h1>
@@ -535,7 +535,7 @@ export default function EmployeeProfile() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-3 gap-3 mt-4 md:mt-0">
+            <div className="grid grid-cols-3 gap-2 md:gap-3 mt-4 md:mt-0 w-full md:w-auto">
               <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/20">
                 <FileText className="w-6 h-6 text-white mx-auto mb-2" />
                 <p className="text-2xl font-bold text-white">{documents.length}</p>
@@ -627,7 +627,7 @@ export default function EmployeeProfile() {
           <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
             <Tabs defaultValue="documents" className="w-full">
               <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 border-b">
-                <TabsList className="grid w-full grid-cols-3 bg-white/80 p-1 rounded-xl shadow-sm h-auto">
+                <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 bg-white/80 p-1 rounded-xl shadow-sm h-auto gap-1">
                   <TabsTrigger 
                     value="documents" 
                     className="flex items-center gap-2 py-3 data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500 data-[state=active]:to-blue-500 data-[state=active]:text-white data-[state=active]:shadow-lg rounded-lg transition-all"
@@ -705,7 +705,7 @@ export default function EmployeeProfile() {
         </motion.div>
 
         {/* التكليف الخارجي والعمل في الإجازات */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           {/* التكليف الخارجي */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}

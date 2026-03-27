@@ -137,7 +137,7 @@ ${employee.birth_date ? `🎂 *تاريخ الميلاد:* ${format(new Date(emp
       `}</style>
 
       <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4" onClick={onClose}>
-        <div className="relative" onClick={(e) => e.stopPropagation()}>
+        <div className="relative w-full max-w-[420px]" onClick={(e) => e.stopPropagation()}>
           {/* أزرار الإجراءات */}
           <div className="print-actions flex gap-2 mb-4 justify-center flex-wrap">
             <Button
@@ -182,7 +182,7 @@ ${employee.birth_date ? `🎂 *تاريخ الميلاد:* ${format(new Date(emp
           </div>
 
           {/* البطاقة */}
-          <div ref={cardRef} className="id-card-print bg-white rounded-2xl shadow-2xl overflow-hidden" style={{ width: '100mm', maxWidth: '380px' }}>
+          <div ref={cardRef} className="id-card-print bg-white rounded-2xl shadow-2xl overflow-hidden w-full" style={{ width: '100mm', maxWidth: '380px' }}>
             {/* Header with gradient */}
             <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 text-white p-5 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full -mr-16 -mt-16"></div>

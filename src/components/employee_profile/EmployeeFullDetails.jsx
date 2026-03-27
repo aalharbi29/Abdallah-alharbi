@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -97,7 +96,7 @@ export default function EmployeeFullDetails({ employee }) {
   if (!employee) return null;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
       {CATEGORY_ORDER.map(category => {
         const categoryFields = category.fields.filter(field => 
           employee.hasOwnProperty(field) && 
@@ -118,13 +117,13 @@ export default function EmployeeFullDetails({ employee }) {
 
         return (
           <Card key={category.title} className={`border-2 ${colorClasses[category.color]} shadow-sm hover:shadow-md transition-shadow`}>
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-3 px-4 md:px-6">
               <CardTitle className="flex items-center gap-2 text-lg">
                 <Icon className="w-5 h-5" />
                 {category.title}
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-3 px-3 md:px-6">
               {categoryFields.map(key => {
                 const FieldIcon = FIELD_ICONS[key] || FileText;
                 const value = employee[key];
