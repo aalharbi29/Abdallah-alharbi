@@ -453,11 +453,11 @@ export default function EmployeeProfile() {
               <ArrowRight className="w-5 h-5" />
               <span className="hidden sm:inline">العودة للموظفين</span>
             </Button>
-            <div className="flex flex-wrap gap-2 no-print justify-end w-full md:w-auto">
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 no-print w-full md:w-auto">
               <Button 
                 variant="ghost" 
                 onClick={() => setShowIDCard(true)}
-                className="text-white hover:bg-white/20 rounded-xl"
+                className="text-white hover:bg-white/20 rounded-xl justify-center h-10"
               >
                 <CreditCard className="w-4 h-4 ml-2" />
                 <span className="hidden sm:inline">البطاقة</span>
@@ -467,7 +467,7 @@ export default function EmployeeProfile() {
               <Button 
                 variant="ghost" 
                 onClick={() => window.print()}
-                className="text-white hover:bg-white/20 rounded-xl"
+                className="text-white hover:bg-white/20 rounded-xl justify-center h-10"
               >
                 <Printer className="w-4 h-4 ml-2" />
                 <span className="hidden sm:inline">طباعة</span>
@@ -505,27 +505,27 @@ export default function EmployeeProfile() {
             
             {/* Employee Info */}
             <div className="flex-1 text-center md:text-right w-full min-w-0">
-              <h1 className="text-3xl md:text-4xl font-black text-white mb-2">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2 break-words leading-tight">
                 {employee.full_name_arabic}
               </h1>
-              <p className="text-blue-100 text-lg mb-4">{employee.position}</p>
+              <p className="text-blue-100 text-sm sm:text-base md:text-lg mb-4 break-words">{employee.position}</p>
               
               {/* Quick Stats */}
-              <div className="flex flex-wrap justify-center md:justify-start gap-3">
-                <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 flex items-center gap-2">
+              <div className="grid grid-cols-1 sm:flex sm:flex-wrap justify-center md:justify-start gap-2 sm:gap-3 w-full">
+                <div className="bg-white/20 backdrop-blur-sm rounded-xl px-3 py-2 flex items-center justify-center md:justify-start gap-2 min-w-0">
                   <span className="text-white/70 text-sm">الرقم الوظيفي:</span>
-                  <span className="text-white font-bold">{employee.رقم_الموظف}</span>
+                  <span className="text-white font-bold break-all">{employee.رقم_الموظف}</span>
                 </div>
-                <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-2 flex items-center gap-2">
+                <div className="bg-white/20 backdrop-blur-sm rounded-xl px-3 py-2 flex items-center justify-center md:justify-start gap-2 min-w-0">
                   <span className="text-white/70 text-sm">المركز:</span>
-                  <span className="text-white font-bold">{employee.المركز_الصحي || 'غير محدد'}</span>
+                  <span className="text-white font-bold break-words">{employee.المركز_الصحي || 'غير محدد'}</span>
                 </div>
                 {employee.phone && (
                   <a
                     href={`https://wa.me/${normalizePhoneForWhatsApp(employee.phone)}?text=${encodeURIComponent(`مرحبا ${employee.full_name_arabic}`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-emerald-500/80 hover:bg-emerald-500 backdrop-blur-sm rounded-xl px-4 py-2 flex items-center gap-2 transition-colors"
+                    className="bg-emerald-500/80 hover:bg-emerald-500 backdrop-blur-sm rounded-xl px-3 py-2 flex items-center justify-center md:justify-start gap-2 transition-colors min-w-0"
                   >
                     <MessageCircle className="w-4 h-4 text-white" />
                     <span className="text-white font-medium">تواصل واتساب</span>
@@ -535,20 +535,20 @@ export default function EmployeeProfile() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-3 gap-2 md:gap-3 mt-4 md:mt-0 w-full md:w-auto">
-              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/20">
+            <div className="grid grid-cols-3 gap-2 mt-4 md:mt-0 w-full md:w-auto">
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-3 text-center border border-white/20 min-w-0">
                 <FileText className="w-6 h-6 text-white mx-auto mb-2" />
-                <p className="text-2xl font-bold text-white">{documents.length}</p>
+                <p className="text-lg sm:text-2xl font-bold text-white">{documents.length}</p>
                 <p className="text-xs text-white/70">مستند</p>
               </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/20">
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-3 text-center border border-white/20 min-w-0">
                 <Calendar className="w-6 h-6 text-white mx-auto mb-2" />
-                <p className="text-2xl font-bold text-white">{leaves.length}</p>
+                <p className="text-lg sm:text-2xl font-bold text-white">{leaves.length}</p>
                 <p className="text-xs text-white/70">إجازة</p>
               </div>
-              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-4 text-center border border-white/20">
+              <div className="bg-white/20 backdrop-blur-sm rounded-2xl p-3 text-center border border-white/20 min-w-0">
                 <Briefcase className="w-6 h-6 text-white mx-auto mb-2" />
-                <p className="text-2xl font-bold text-white">{assignments.length}</p>
+                <p className="text-lg sm:text-2xl font-bold text-white">{assignments.length}</p>
                 <p className="text-xs text-white/70">تكليف</p>
               </div>
             </div>
@@ -594,8 +594,8 @@ export default function EmployeeProfile() {
           transition={{ delay: 0.1 }}
         >
           <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm overflow-hidden">
-            <div className="p-5 bg-gradient-to-r from-indigo-500 to-blue-500 border-b">
-              <div className="flex items-center justify-between">
+            <div className="p-4 md:p-5 bg-gradient-to-r from-indigo-500 to-blue-500 border-b">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                 <h2 className="text-xl font-bold text-white flex items-center gap-2">
                   <User className="w-5 h-5" />
                   البيانات التفصيلية
@@ -612,7 +612,7 @@ export default function EmployeeProfile() {
                 </Link>
               </div>
             </div>
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-4 md:p-6">
               <EmployeeFullDetails employee={employee} />
             </CardContent>
           </Card>
@@ -655,12 +655,12 @@ export default function EmployeeProfile() {
                 </TabsList>
               </div>
 
-              <CardContent className="p-6">
+              <CardContent className="p-3 sm:p-4 md:p-6">
                 <TabsContent value="documents" className="mt-0">
-                  <div className="mb-4 flex justify-end">
+                  <div className="mb-4 flex justify-stretch sm:justify-end">
                     <Button 
                       onClick={() => setShowUpload(true)}
-                      className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 shadow-lg rounded-xl"
+                      className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 shadow-lg rounded-xl w-full sm:w-auto"
                     >
                       <Plus className="w-4 h-4 ml-2" />
                       رفع مستند جديد
@@ -713,7 +713,7 @@ export default function EmployeeProfile() {
             transition={{ delay: 0.3 }}
           >
             <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm overflow-hidden h-full">
-              <div className="p-5 bg-gradient-to-r from-amber-500 to-orange-500 border-b">
+              <div className="p-4 md:p-5 bg-gradient-to-r from-amber-500 to-orange-500 border-b">
                 <h3 className="font-bold text-white flex items-center gap-2">
                   <FileClock className="w-5 h-5" />
                   التكليف الخارجي
