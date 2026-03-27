@@ -496,7 +496,7 @@ function LayoutContent({ children, currentPageName }) {
               </div>
             </header>
 
-            <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+            <nav className="flex-1 p-4 space-y-2 overflow-y-auto custom-scrollbar">
               {(navigationItems || []).map((item) => renderNavigationItem(item))}
             </nav>
 
@@ -554,7 +554,7 @@ function LayoutContent({ children, currentPageName }) {
                     </Button>
                 </header>
 
-                <nav className="p-3 space-y-1 safe-bottom">
+                <nav className="p-3 space-y-1 safe-bottom custom-scrollbar">
                   {(navigationItems || []).map((item) => renderNavigationItem(item, true))}
                 </nav>
               </aside>
@@ -598,8 +598,8 @@ function LayoutContent({ children, currentPageName }) {
                 {[
                   { name: "الرئيسية", href: createPageUrl("Dashboard"), icon: Home },
                   { name: "المراكز", href: createPageUrl("HealthCenters"), icon: Building2 },
-                  { name: "الخريطة", href: createPageUrl("HealthCentersMap"), icon: MapPinned },
-                  { name: "الإجازات", href: createPageUrl("Leaves"), icon: Calendar },
+                  { name: "الموارد", href: createPageUrl("HumanResources"), icon: Users },
+                  { name: "النماذج", href: createPageUrl("Forms"), icon: FileSignature },
                 ].map((item) => ( 
                   <Link
                     key={item.name}

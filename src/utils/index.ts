@@ -1,3 +1,4 @@
 export function createPageUrl(pageName: string) {
-    return '/' + pageName.replace(/ /g, '-');
+    if (!pageName) return '/';
+    return `/${String(pageName).trim()}`;
 }
