@@ -27,7 +27,10 @@ function ZoomTracker({ onZoomChange }) {
 }
 
 function createLabeledIcon(name, zoom) {
-  const safeName = String(name || '').trim();
+  const safeName = String(name || '')
+    .replace(/^مركز\s+صحي\s+/i, '')
+    .replace(/^مركز\s+/i, '')
+    .trim();
   const fontSize = zoom >= 12 ? 14 : zoom >= 10 ? 12 : zoom >= 8 ? 11 : 10;
   const maxWidth = zoom >= 12 ? 140 : zoom >= 10 ? 120 : zoom >= 8 ? 96 : 76;
 
