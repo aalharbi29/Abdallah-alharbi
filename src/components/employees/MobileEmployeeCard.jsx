@@ -22,9 +22,9 @@ export default function MobileEmployeeCard({
   normalizePhoneForWhatsApp,
 }) {
   return (
-    <Card className={`w-full overflow-hidden bg-gradient-to-br from-slate-800/95 via-slate-800/90 to-indigo-900/70 border ${isSelected ? 'ring-2 ring-indigo-400 border-indigo-400' : isPinned ? 'border-amber-400' : 'border-white/15'} shadow-xl`}>
-      <CardContent className="p-3">
-        <div className="flex items-start gap-3">
+    <Card className={`w-full overflow-hidden bg-gradient-to-br from-slate-800/95 via-slate-800/90 to-indigo-900/70 border ${isSelected ? 'ring-2 ring-indigo-400 border-indigo-400' : isPinned ? 'border-amber-400' : 'border-white/15'} shadow-xl rounded-2xl`}>
+      <CardContent className="p-4">
+        <div className="flex items-start gap-4">
           <div className="flex flex-col items-center gap-2 shrink-0">
             {onToggleSelection && (
               <button
@@ -81,7 +81,7 @@ export default function MobileEmployeeCard({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-1.5 text-[11px] text-white/90 bg-white/5 rounded-xl p-2.5 border border-white/10">
+            <div className="grid grid-cols-1 gap-2 text-[11px] text-white/90 bg-black/10 rounded-2xl p-3 border border-white/10">
               {employee.رقم_الموظف && (
                 <div className="flex items-center gap-2 min-w-0">
                   <IdCard className="w-3.5 h-3.5 text-blue-300 shrink-0" />
@@ -111,7 +111,7 @@ export default function MobileEmployeeCard({
               {employeeRoles.slice(0, 1).map((role, idx) => <Badge key={idx} className="text-[10px] px-2 py-0.5 bg-cyan-500 text-white">{role}</Badge>)}
             </div>
 
-            <div className="grid grid-cols-2 gap-1.5 pt-1">
+            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/10">
               <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="col-span-2">
                 <Button size="sm" className="w-full h-8 text-xs bg-indigo-600 hover:bg-indigo-500 rounded-lg">
                   <Eye className="w-3.5 h-3.5 ml-1" />عرض الملف

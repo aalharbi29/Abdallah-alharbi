@@ -126,7 +126,7 @@ export default function EmployeeList({
   return (
     <motion.div className="overflow-x-hidden" variants={containerVariants} initial="hidden" animate="visible">
       <AnimatePresence mode="popLayout">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 md:gap-5 lg:gap-6">
           {employees.map((employee) => {
             if (!employee || !employee.id) return null;
 
@@ -174,9 +174,9 @@ export default function EmployeeList({
                         : ""
                     }`}
                   >
-                    <CardContent className="relative z-10 p-4 md:p-5 h-full max-w-full overflow-hidden">
+                    <CardContent className="relative z-10 p-5 md:p-6 h-full max-w-full overflow-hidden">
                       <div className="flex flex-col gap-4 h-full max-w-full overflow-hidden">
-                        <div className="flex items-start gap-3 md:gap-4 max-w-full overflow-hidden">
+                        <div className="flex items-start gap-4 md:gap-5 max-w-full overflow-hidden">
                           <div className="flex items-center gap-3 shrink-0">
                             {onToggleSelection && (
                               <motion.div whileTap={{ scale: 0.9 }}>
@@ -298,7 +298,7 @@ export default function EmployeeList({
                           </div>
                         </div>
 
-                        <div className="flex flex-wrap gap-1.5 md:gap-2">
+                        <div className="flex flex-wrap gap-2">
                           {employee.is_externally_assigned && (
                             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }}>
                               <Badge className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white text-[11px] md:text-xs py-1 md:py-1.5 px-2.5 md:px-3 font-black shadow-xl shadow-orange-500/30 border border-orange-300/30 mobile-paragraph compact">
@@ -335,7 +335,7 @@ export default function EmployeeList({
                           )}
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 md:gap-3 text-xs md:text-sm p-3 md:p-4 bg-gradient-to-br from-white/10 to-white/5 rounded-xl md:rounded-2xl border border-white/20 backdrop-blur-sm max-w-full overflow-hidden">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs md:text-sm p-4 md:p-5 bg-black/10 rounded-2xl border border-white/15 backdrop-blur-sm max-w-full overflow-hidden">
                           {employee.رقم_الموظف && (
                             <div className="flex items-center gap-2 text-white">
                               <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
@@ -397,7 +397,7 @@ export default function EmployeeList({
                           )}
                         </div>
 
-                        <div className="grid grid-cols-2 xl:grid-cols-3 gap-1.5 md:gap-2 max-w-full mt-auto">
+                        <div className="grid grid-cols-2 gap-2 max-w-full mt-auto pt-2 border-t border-white/10">
                           <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="col-span-2 xl:col-span-1">
                             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                               <Button size="sm" className="w-full h-10 text-sm px-4 font-black bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-xl shadow-lg shadow-indigo-500/30 border-0">
