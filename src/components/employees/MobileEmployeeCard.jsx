@@ -31,9 +31,8 @@ export default function MobileEmployeeCard({
   return (
     <Card className={`w-full overflow-hidden bg-gradient-to-br from-slate-800/95 via-slate-800/90 to-indigo-900/70 border ${isSelected ? 'ring-2 ring-indigo-400 border-indigo-400' : isPinned ? 'border-amber-400' : 'border-white/15'} shadow-xl rounded-2xl`}>
       <CardContent className="p-4">
-        <div className="flex items-start gap-4">
-          <div className="flex items-start gap-3 shrink-0">
-            <div className="flex flex-col items-center gap-1.5 w-[82px] shrink-0">
+        <div className="flex items-start gap-3">
+          <div className="flex flex-col items-center gap-1.5 w-[72px] shrink-0">
               {onToggleSelection && (
                 <button
                   onClick={() => onToggleSelection(employee.id)}
@@ -59,14 +58,13 @@ export default function MobileEmployeeCard({
               <img
                 src={employee.profile_image_url}
                 alt={employee.full_name_arabic || 'صورة الموظف'}
-                className="w-16 h-16 rounded-xl object-cover border border-white/20"
+                className="w-14 h-14 rounded-xl object-cover border border-white/20 shrink-0"
               />
             ) : (
-              <div className="w-16 h-16 rounded-xl bg-gradient-to-br from-indigo-600/40 to-purple-600/40 border border-white/20 flex items-center justify-center">
-                <User className="w-7 h-7 text-white/80" />
+              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-600/40 to-purple-600/40 border border-white/20 flex items-center justify-center shrink-0">
+                <User className="w-6 h-6 text-white/80" />
               </div>
             )}
-          </div>
 
           <div className="flex-1 min-w-0 space-y-2">
             <div className="flex items-start justify-between gap-2">
