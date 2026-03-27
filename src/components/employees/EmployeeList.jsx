@@ -172,7 +172,7 @@ export default function EmployeeList({
                       <div className="flex flex-col gap-4 h-full max-w-full overflow-hidden">
                         <div className="flex items-start gap-4 md:gap-5 max-w-full overflow-hidden">
                           <div className="flex items-start gap-3 shrink-0">
-                            <div className="flex flex-col items-center gap-2 w-[92px] md:w-[108px] shrink-0">
+                            <div className="flex flex-col items-center gap-2 w-[86px] md:w-[100px] shrink-0">
                               {onToggleSelection && (
                                 <motion.div whileTap={{ scale: 0.9 }}>
                                   <div
@@ -244,12 +244,14 @@ export default function EmployeeList({
                               <div className="min-w-0 flex-1">
                                 <Link
                                   to={createPageUrl(`EmployeeProfile?id=${employee.id}`)}
-                                  className="text-base md:text-xl font-black text-white hover:text-indigo-300 transition-all duration-300 flex items-start gap-1.5 md:gap-2 group/name"
+                                  className="block text-base md:text-xl font-black text-white hover:text-indigo-300 transition-all duration-300"
                                 >
-                                  <span className="text-white leading-7 md:leading-8 break-words whitespace-normal max-w-full mobile-paragraph">
-                                    {employee.full_name_arabic || "غير محدد"}
-                                  </span>
-                                  <Sparkles className="w-5 h-5 text-yellow-400 opacity-0 group-hover/name:opacity-100 transition-all duration-300 group-hover/name:rotate-12 shrink-0 mt-1" />
+                                  <div className="flex items-center gap-1.5 md:gap-2 min-w-0">
+                                    <span className="truncate max-w-full mobile-paragraph">
+                                      {employee.full_name_arabic || "غير محدد"}
+                                    </span>
+                                    <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-yellow-400 opacity-0 group-hover:opacity-100 transition-all duration-300 shrink-0" />
+                                  </div>
                                 </Link>
 
                                 <div className="flex flex-wrap items-center gap-1.5 md:gap-2 mt-2 max-w-full overflow-hidden">

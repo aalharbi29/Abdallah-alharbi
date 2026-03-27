@@ -71,7 +71,7 @@ export default function MobileEmployeeCard({
           <div className="flex-1 min-w-0 space-y-2">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0 flex-1">
-                <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="block text-sm font-black text-white leading-6 break-words whitespace-normal">
+                <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="block text-sm font-black text-white truncate">
                   {employee.full_name_arabic || 'غير محدد'}
                 </Link>
                 <div className="flex flex-wrap gap-1 mt-1.5">
