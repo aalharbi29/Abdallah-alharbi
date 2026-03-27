@@ -327,7 +327,7 @@ export default function EmployeeList({
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-5 gap-2 md:gap-3 text-xs md:text-sm mb-3 md:mb-4 p-3 md:p-4 bg-gradient-to-br from-white/10 to-white/5 rounded-xl md:rounded-2xl border border-white/20 backdrop-blur-sm max-w-full overflow-hidden">
+                  <div className="grid grid-cols-2 xl:grid-cols-3 gap-2 md:gap-3 text-xs md:text-sm mb-3 md:mb-4 p-3 md:p-4 bg-gradient-to-br from-white/10 to-white/5 rounded-xl md:rounded-2xl border border-white/20 backdrop-blur-sm max-w-full overflow-hidden">
                     {employee.رقم_الموظف && (
                       <div className="flex items-center gap-2 text-white">
                         <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
@@ -385,7 +385,7 @@ export default function EmployeeList({
                     )}
                   </div>
 
-                  <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-1.5 md:gap-2 max-w-full">
+                  <div className="grid grid-cols-2 lg:grid-cols-3 gap-1.5 md:gap-2 max-w-full">
                     <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="col-span-2 sm:col-span-1">
                       <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                         <Button 
