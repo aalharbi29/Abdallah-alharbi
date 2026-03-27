@@ -42,7 +42,7 @@ const getNavigationItems = (t) => [
   { name: t('nav.humanResources'), href: createPageUrl("HumanResources"), icon: Users },
   { name: t('nav.hrAnalytics'), href: createPageUrl("HRAnalytics"), icon: BarChart3 },
   { name: t('nav.healthCenters'), href: createPageUrl("HealthCenters"), icon: Building2 },
-  { name: "خريطة المراكز الصحية", href: "/HealthCentersMap", icon: MapPinned },
+  { name: "خريطة المراكز الصحية", href: createPageUrl("HealthCentersMap"), icon: MapPinned },
   { name: t('nav.leaves'), href: createPageUrl("Leaves"), icon: Calendar },
   { name: t('nav.quickNotes'), href: createPageUrl("QuickNotes"), icon: FileSignature },
   { name: t('nav.employeeDataRequest'), href: createPageUrl("EmployeeDataRequest"), icon: FileBarChart },
@@ -598,7 +598,7 @@ function LayoutContent({ children, currentPageName }) {
                 {[
                   { name: "الرئيسية", href: createPageUrl("Dashboard"), icon: Home },
                   { name: "المراكز", href: createPageUrl("HealthCenters"), icon: Building2 },
-                  { name: "الخريطة", href: "/HealthCentersMap", icon: MapPinned },
+                  { name: "الخريطة", href: createPageUrl("HealthCentersMap"), icon: MapPinned },
                   { name: "الإجازات", href: createPageUrl("Leaves"), icon: Calendar },
                 ].map((item) => ( 
                   <Link
