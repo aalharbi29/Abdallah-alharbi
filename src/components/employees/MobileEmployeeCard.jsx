@@ -32,15 +32,28 @@ export default function MobileEmployeeCard({
     <Card className={`w-full overflow-hidden bg-gradient-to-br from-slate-800/95 via-slate-800/90 to-indigo-900/70 border ${isSelected ? 'ring-2 ring-indigo-400 border-indigo-400' : isPinned ? 'border-amber-400' : 'border-white/15'} shadow-xl rounded-2xl`}>
       <CardContent className="p-4">
         <div className="flex items-start gap-4">
-          <div className="flex flex-col items-center gap-2 shrink-0">
-            {onToggleSelection && (
-              <button
-                onClick={() => onToggleSelection(employee.id)}
-                className={`w-6 h-6 rounded-md border flex items-center justify-center ${isSelected ? 'bg-indigo-500 border-indigo-400' : 'border-white/30 bg-white/5'}`}
-              >
-                {isSelected && <div className="w-2.5 h-2.5 rounded-sm bg-white" />}
-              </button>
-            )}
+          <div className="flex items-start gap-3 shrink-0">
+            <div className="flex flex-col items-center gap-1.5 w-[82px] shrink-0">
+              {onToggleSelection && (
+                <button
+                  onClick={() => onToggleSelection(employee.id)}
+                  className={`w-6 h-6 rounded-md border flex items-center justify-center ${isSelected ? 'bg-indigo-500 border-indigo-400' : 'border-white/30 bg-white/5'}`}
+                >
+                  {isSelected && <div className="w-2.5 h-2.5 rounded-sm bg-white" />}
+                </button>
+              )}
+
+              {employee.المركز_الصحي && (
+                <Badge className="text-[10px] px-2 py-0.5 bg-emerald-500/20 text-emerald-200 w-full justify-center">
+                  <span className="flex items-center gap-1 truncate max-w-full">
+                    <Building2 className="w-3 h-3 shrink-0" />
+                    <span className="truncate max-w-[54px]">{getShortCenterName(employee.المركز_الصحي)}</span>
+                  </span>
+                </Badge>
+              )}
+
+              {employee.contract_type && <Badge className="text-[10px] px-2 py-0.5 bg-purple-500/20 text-purple-200 w-full justify-center text-center">{employee.contract_type}</Badge>}
+            </div>
 
             {employee.profile_image_url ? (
               <img
@@ -53,39 +66,32 @@ export default function MobileEmployeeCard({
                 <User className="w-7 h-7 text-white/80" />
               </div>
             )}
-
-            <div className="flex gap-1">
-              {onPinEmployee && (
-                <Button variant="ghost" size="icon" onClick={() => onPinEmployee(employee.id)} className={`h-7 w-7 rounded-md ${isPinned ? 'text-amber-300 bg-amber-500/20' : 'text-white/60 bg-white/5'}`}>
-                  <Pin className={`w-3.5 h-3.5 ${isPinned ? 'fill-current' : ''}`} />
-                </Button>
-              )}
-              {employee.phone && (
-                <a href={`https://wa.me/${normalizePhoneForWhatsApp(employee.phone)}?text=${encodeURIComponent(`مرحبا ${employee.full_name_arabic}`)}`} target="_blank" rel="noopener noreferrer">
-                  <Button variant="ghost" size="icon" className="h-7 w-7 rounded-md text-emerald-400 bg-white/5">
-                    <MessageCircle className="w-3.5 h-3.5" />
-                  </Button>
-                </a>
-              )}
-            </div>
           </div>
 
           <div className="flex-1 min-w-0 space-y-2">
-            <div>
-              <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="block text-sm font-black text-white leading-6 break-words">
-                {employee.full_name_arabic || 'غير محدد'}
-              </Link>
-              <div className="flex flex-wrap gap-1 mt-1.5">
-                {employee.position && <Badge className="text-[10px] px-2 py-0.5 bg-indigo-500/20 text-indigo-200">{employee.position}</Badge>}
-                {employee.المركز_الصحي && (
-                  <Badge className="text-[10px] px-2 py-0.5 bg-emerald-500/20 text-emerald-200 max-w-full">
-                    <span className="flex items-center gap-1 truncate">
-                      <Building2 className="w-3 h-3 shrink-0" />
-                      <span className="truncate max-w-[90px]">{getShortCenterName(employee.المركز_الصحي)}</span>
-                    </span>
-                  </Badge>
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0 flex-1">
+                <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="block text-sm font-black text-white leading-6 break-words whitespace-normal">
+                  {employee.full_name_arabic || 'غير محدد'}
+                </Link>
+                <div className="flex flex-wrap gap-1 mt-1.5">
+                  {employee.position && <Badge className="text-[10px] px-2 py-0.5 bg-indigo-500/20 text-indigo-200">{employee.position}</Badge>}
+                </div>
+              </div>
+
+              <div className="flex gap-1 shrink-0">
+                {onPinEmployee && (
+                  <Button variant="ghost" size="icon" onClick={() => onPinEmployee(employee.id)} className={`h-7 w-7 rounded-md ${isPinned ? 'text-amber-300 bg-amber-500/20' : 'text-white/60 bg-white/5'}`}>
+                    <Pin className={`w-3.5 h-3.5 ${isPinned ? 'fill-current' : ''}`} />
+                  </Button>
                 )}
-                {employee.contract_type && <Badge className="text-[10px] px-2 py-0.5 bg-purple-500/20 text-purple-200">{employee.contract_type}</Badge>}
+                {employee.phone && (
+                  <a href={`https://wa.me/${normalizePhoneForWhatsApp(employee.phone)}?text=${encodeURIComponent(`مرحبا ${employee.full_name_arabic}`)}`} target="_blank" rel="noopener noreferrer">
+                    <Button variant="ghost" size="icon" className="h-7 w-7 rounded-md text-emerald-400 bg-white/5">
+                      <MessageCircle className="w-3.5 h-3.5" />
+                    </Button>
+                  </a>
+                )}
               </div>
             </div>
 

@@ -171,21 +171,38 @@ export default function EmployeeList({
                     <CardContent className="relative z-10 p-5 md:p-6 h-full max-w-full overflow-hidden">
                       <div className="flex flex-col gap-4 h-full max-w-full overflow-hidden">
                         <div className="flex items-start gap-4 md:gap-5 max-w-full overflow-hidden">
-                          <div className="flex items-center gap-3 shrink-0">
-                            {onToggleSelection && (
-                              <motion.div whileTap={{ scale: 0.9 }}>
-                                <div
-                                  className={`w-7 h-7 rounded-xl border-2 flex items-center justify-center cursor-pointer transition-all duration-300 ${
-                                    isSelected
-                                      ? "bg-gradient-to-br from-indigo-500 to-purple-600 border-indigo-400 shadow-lg shadow-indigo-500/30"
-                                      : "border-white/30 hover:border-indigo-400 hover:bg-white/10"
-                                  }`}
-                                  onClick={() => onToggleSelection(employee.id)}
-                                >
-                                  {isSelected && <CheckSquare className="w-4 h-4 text-white" />}
-                                </div>
-                              </motion.div>
-                            )}
+                          <div className="flex items-start gap-3 shrink-0">
+                            <div className="flex flex-col items-center gap-2 w-[92px] md:w-[108px] shrink-0">
+                              {onToggleSelection && (
+                                <motion.div whileTap={{ scale: 0.9 }}>
+                                  <div
+                                    className={`w-7 h-7 rounded-xl border-2 flex items-center justify-center cursor-pointer transition-all duration-300 ${
+                                      isSelected
+                                        ? "bg-gradient-to-br from-indigo-500 to-purple-600 border-indigo-400 shadow-lg shadow-indigo-500/30"
+                                        : "border-white/30 hover:border-indigo-400 hover:bg-white/10"
+                                    }`}
+                                    onClick={() => onToggleSelection(employee.id)}
+                                  >
+                                    {isSelected && <CheckSquare className="w-4 h-4 text-white" />}
+                                  </div>
+                                </motion.div>
+                              )}
+
+                              {employee.المركز_الصحي && (
+                                <span className="flex items-center justify-center gap-1 text-[11px] md:text-xs font-semibold text-emerald-300 bg-emerald-500/20 px-2 py-1 rounded-lg w-full mobile-paragraph compact">
+                                  <Building2 className="w-3 h-3 shrink-0" />
+                                  <span className="truncate max-w-[70px] md:max-w-[84px] text-center">
+                                    {getShortCenterName(employee.المركز_الصحي)}
+                                  </span>
+                                </span>
+                              )}
+
+                              {employee.contract_type && (
+                                <Badge className="text-[11px] md:text-xs py-1 px-2 bg-gradient-to-r from-purple-500/30 to-pink-500/30 border border-purple-400/40 text-purple-200 font-bold mobile-paragraph compact w-full justify-center text-center">
+                                  {employee.contract_type}
+                                </Badge>
+                              )}
+                            </div>
 
                             <motion.div
                               className="relative"
@@ -227,32 +244,19 @@ export default function EmployeeList({
                               <div className="min-w-0 flex-1">
                                 <Link
                                   to={createPageUrl(`EmployeeProfile?id=${employee.id}`)}
-                                  className="text-base md:text-xl font-black text-white hover:text-indigo-300 transition-all duration-300 flex items-center gap-1.5 md:gap-2 group/name"
+                                  className="text-base md:text-xl font-black text-white hover:text-indigo-300 transition-all duration-300 flex items-start gap-1.5 md:gap-2 group/name"
                                 >
-                                  <span className="text-white truncate max-w-full mobile-paragraph">
+                                  <span className="text-white leading-7 md:leading-8 break-words whitespace-normal max-w-full mobile-paragraph">
                                     {employee.full_name_arabic || "غير محدد"}
                                   </span>
-                                  <Sparkles className="w-5 h-5 text-yellow-400 opacity-0 group-hover/name:opacity-100 transition-all duration-300 group-hover/name:rotate-12 shrink-0" />
+                                  <Sparkles className="w-5 h-5 text-yellow-400 opacity-0 group-hover/name:opacity-100 transition-all duration-300 group-hover/name:rotate-12 shrink-0 mt-1" />
                                 </Link>
 
                                 <div className="flex flex-wrap items-center gap-1.5 md:gap-2 mt-2 max-w-full overflow-hidden">
                                   {employee.position && (
-                                    <span className="text-xs md:text-sm font-bold text-indigo-300 bg-indigo-500/20 px-2.5 md:px-3 py-1 rounded-lg mobile-paragraph compact">
+                                    <span className="text-[11px] md:text-xs font-bold text-indigo-300 bg-indigo-500/20 px-2.5 md:px-3 py-1 rounded-lg mobile-paragraph compact">
                                       {employee.position}
                                     </span>
-                                  )}
-                                  {employee.المركز_الصحي && (
-                                    <span className="flex items-center gap-1 text-[11px] md:text-xs font-semibold text-emerald-300 bg-emerald-500/20 px-2 md:px-2.5 py-1 rounded-lg mobile-paragraph compact">
-                                      <Building2 className="w-3 h-3 shrink-0" />
-                                      <span className="truncate max-w-[90px] sm:max-w-[120px] md:max-w-[140px]">
-                                        {getShortCenterName(employee.المركز_الصحي)}
-                                      </span>
-                                    </span>
-                                  )}
-                                  {employee.contract_type && (
-                                    <Badge className="text-[11px] md:text-xs py-1 px-2 md:px-2.5 bg-gradient-to-r from-purple-500/30 to-pink-500/30 border border-purple-400/40 text-purple-200 font-bold mobile-paragraph compact">
-                                      {employee.contract_type}
-                                    </Badge>
                                   )}
                                 </div>
                               </div>
