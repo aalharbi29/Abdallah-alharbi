@@ -9,6 +9,7 @@ import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import FillOccupationalHealthForm from './pages/FillOccupationalHealthForm';
+import InventoryHandoverForm from './pages/InventoryHandoverForm';
 import MalariaStatisticForm from './pages/MalariaStatisticForm';
 import LeishmaniaStatisticForm from './pages/LeishmaniaStatisticForm';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -52,8 +53,8 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route path="/" element={
-        <LayoutWrapper currentPageName={mainPageKey}>
-          <MainPage />
+        <LayoutWrapper currentPageName="InventoryHandoverForm">
+          <InventoryHandoverForm />
         </LayoutWrapper>
       } />
       {Object.entries(Pages).map(([path, Page]) => (
