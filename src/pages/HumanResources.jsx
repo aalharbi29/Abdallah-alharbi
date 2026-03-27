@@ -675,8 +675,13 @@ export default function HumanResources() {
           </DialogHeader>
           <QuickAssignmentForm
             employee={selectedEmployee}
-            healthCenters={healthCenters}
-            onClose={() => {
+            onSubmit={async (assignmentData) => {
+              await base44.entities.Assignment.create(assignmentData);
+              setShowAssignmentForm(false);
+              setSelectedEmployee(null);
+              loadData();
+            }}
+            onCancel={() => {
               setShowAssignmentForm(false);
               setSelectedEmployee(null);
             }}

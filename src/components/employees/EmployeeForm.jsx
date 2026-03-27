@@ -643,21 +643,19 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
                             <DropdownMenuContent className="w-[--radix-popover-trigger-width] max-h-[300px] overflow-y-auto">
                                 {(() => {
                                     const categories = [...new Set(assignedTasksOptions.map(t => t.category))];
-                                    return categories.map(category => (
-                                        <React.Fragment key={category}>
-                                            <DropdownMenuLabel className="text-xs text-gray-500 bg-gray-50">{category}</DropdownMenuLabel>
-                                            {assignedTasksOptions.filter(t => t.category === category).map(task => (
-                                                <DropdownMenuItem
-                                                    key={task.key}
-                                                    onSelect={() => handleAddTask(task.key)}
-                                                    disabled={(formData.assigned_tasks || []).includes(task.key)}
-                                                >
-                                                    {task.label}
-                                                </DropdownMenuItem>
-                                            ))}
-                                            <DropdownMenuSeparator />
-                                        </React.Fragment>
-                                    ));
+                                    return categories.map(category => ([
+                                        <DropdownMenuLabel key={`${category}-label`} className="text-xs text-gray-500 bg-gray-50">{category}</DropdownMenuLabel>,
+                                        ...assignedTasksOptions.filter(t => t.category === category).map(task => (
+                                            <DropdownMenuItem
+                                                key={task.key}
+                                                onSelect={() => handleAddTask(task.key)}
+                                                disabled={(formData.assigned_tasks || []).includes(task.key)}
+                                            >
+                                                {task.label}
+                                            </DropdownMenuItem>
+                                        )),
+                                        <DropdownMenuSeparator key={`${category}-separator`} />
+                                    ]));
                                 })()}
                             </DropdownMenuContent>
                         </DropdownMenu>
