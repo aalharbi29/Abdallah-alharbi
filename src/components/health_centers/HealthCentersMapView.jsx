@@ -1,5 +1,5 @@
-import React from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import React, { useMemo, useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Card, CardContent } from '@/components/ui/card';
@@ -16,7 +16,40 @@ const markerIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
+function ZoomTracker({ onZoomChange }) {
+  useMapEvents({
+    zoomend: (event) => {
+      onZoomChange(event.target.getZoom());
+    },
+  });
+
+  return null;
+}
+
+function createLabeledIcon(name, zoom) {
+  const safeName = String(name || '').trim();
+  const fontSize = zoom >= 12 ? 14 : zoom >= 10 ? 12 : zoom >= 8 ? 11 : 10;
+  const maxWidth = zoom >= 12 ? 140 : zoom >= 10 ? 120 : zoom >= 8 ? 96 : 76;
+
+  return L.divIcon({
+    className: 'health-center-label-marker',
+    html: `
+      <div style="position: relative; display: flex; flex-direction: column; align-items: center; transform: translateY(-6px);">
+        <div style="margin-bottom: 4px; max-width: ${maxWidth}px; padding: 2px 6px; border-radius: 999px; background: rgba(255,255,255,0.92); color: #1e3a8a; font-weight: 700; font-size: ${fontSize}px; line-height: 1.2; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; box-shadow: 0 1px 4px rgba(0,0,0,0.18); direction: rtl;">
+          ${safeName}
+        </div>
+        <img src="https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png" style="width: 25px; height: 41px; display: block;" />
+      </div>
+    `,
+    iconSize: [maxWidth, 64],
+    iconAnchor: [maxWidth / 2, 64],
+    popupAnchor: [0, -52],
+  });
+}
+
 export default function HealthCentersMapView({ centers }) {
+  const [zoomLevel, setZoomLevel] = useState(8);
+
   const validCenters = centers.filter((center) => {
     const lat = Number(center['خط_العرض']);
     const lng = Number(center['خط_الطول']);
@@ -26,6 +59,14 @@ export default function HealthCentersMapView({ centers }) {
   const centerPosition = validCenters.length
     ? [Number(validCenters[0]['خط_العرض']), Number(validCenters[0]['خط_الطول'])]
     : [24.7136, 46.6753];
+
+  const labeledCenters = useMemo(
+    () => validCenters.map((center) => ({
+      ...center,
+      markerIcon: createLabeledIcon(center['اسم_المركز'], zoomLevel),
+    })),
+    [validCenters, zoomLevel]
+  );
 
   return (
     <div className="space-y-4">
@@ -46,17 +87,18 @@ export default function HealthCentersMapView({ centers }) {
 
       <div className="h-[70vh] rounded-2xl overflow-hidden border shadow-sm">
         <MapContainer center={centerPosition} zoom={8} className="h-full w-full" scrollWheelZoom={true}>
+          <ZoomTracker onZoomChange={setZoomLevel} />
           <TileLayer
             attribution='&copy; Esri & contributors'
             url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
             maxZoom={19}
           />
 
-          {validCenters.map((center) => (
+          {labeledCenters.map((center) => (
             <Marker
               key={center.id}
               position={[Number(center['خط_العرض']), Number(center['خط_الطول'])]}
-              icon={markerIcon}
+              icon={center.markerIcon}
             >
               <Popup minWidth={260}>
                 <div className="space-y-3 text-right" dir="rtl">
