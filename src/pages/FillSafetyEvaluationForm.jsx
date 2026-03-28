@@ -307,12 +307,12 @@ export default function FillSafetyEvaluationForm() {
           <CardContent className="p-8 md:p-12 print:p-4">
             
             {/* Single Table with Thead for repeating header */}
-            <table className="w-full text-right border-collapse">
+            <table className="w-full text-right border-collapse border border-gray-800 print:border-gray-800">
               <thead className="print:table-header-group">
                 <tr>
-                  <td colSpan={5} className="border-0 pb-6 bg-white">
+                  <td colSpan={6} className="border-0 pb-6 bg-white">
                     {/* Header */}
-                    <div className="relative flex justify-between items-start mb-10">
+                    <div className="relative flex justify-between items-start mb-6">
                       <motion.div
                         drag={isEditingLayout}
                         dragMomentum={false}
@@ -349,62 +349,70 @@ export default function FillSafetyEvaluationForm() {
                       </motion.div>
                     </div>
 
-                    <h1 className="text-2xl font-bold text-center text-gray-900 mb-10 underline underline-offset-8 decoration-2">
-                      تقرير عن مدى توفر أنظمة ومتطلبات السلامة بالمراكز الصحية
-                    </h1>
+                    <div className="bg-gray-300 border border-gray-800 p-3 mb-6 text-center print:bg-gray-300">
+                      <h1 className="text-2xl font-bold text-gray-900">
+                        تقرير عن مدى توفر أنظمة ومتطلبات السلامة بالمراكز الصحية
+                      </h1>
+                    </div>
 
                     {/* General Info */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-4">
-                      <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200 print:bg-transparent print:border-0 print:p-0">
-                        <label className="font-bold text-blue-900 whitespace-nowrap text-lg">اسم المنشأة:</label>
-                        <Input 
-                          value={formData.health_center_name}
-                          onChange={(e) => setFormData({...formData, health_center_name: e.target.value})}
-                          className="border-b-2 border-t-0 border-x-0 border-gray-400 rounded-none bg-transparent focus-visible:ring-0 px-2 text-lg font-semibold"
-                          placeholder="أدخل اسم المركز الصحي"
-                        />
-                      </div>
-                      <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200 print:bg-transparent print:border-0 print:p-0">
-                        <label className="font-bold text-blue-900 whitespace-nowrap text-lg">تاريخ التقرير:</label>
-                        <Input 
-                          type="date"
-                          value={formData.report_date}
-                          onChange={(e) => setFormData({...formData, report_date: e.target.value})}
-                          className="border-b-2 border-t-0 border-x-0 border-gray-400 rounded-none bg-transparent focus-visible:ring-0 px-2 text-lg font-semibold"
-                        />
-                      </div>
-                    </div>
+                    <table className="w-full border-collapse border border-gray-800 mb-4 text-center">
+                      <tbody>
+                        <tr>
+                          <td className="border border-gray-800 bg-gray-200 print:bg-gray-200 font-bold p-2 w-1/4">اسم المنشأة</td>
+                          <td className="border border-gray-800 p-0 w-1/4">
+                            <Input 
+                              value={formData.health_center_name}
+                              onChange={(e) => setFormData({...formData, health_center_name: e.target.value})}
+                              className="border-0 rounded-none bg-transparent focus-visible:ring-0 text-center font-semibold h-full w-full"
+                              placeholder="أدخل اسم المركز الصحي"
+                            />
+                          </td>
+                          <td className="border border-gray-800 bg-gray-200 print:bg-gray-200 font-bold p-2 w-1/4">تاريخ التقرير</td>
+                          <td className="border border-gray-800 p-0 w-1/4">
+                            <Input 
+                              type="date"
+                              value={formData.report_date}
+                              onChange={(e) => setFormData({...formData, report_date: e.target.value})}
+                              className="border-0 rounded-none bg-transparent focus-visible:ring-0 text-center font-semibold h-full w-full"
+                            />
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </td>
+                </tr>
+                {/* Table Column Headers */}
+                <tr className="bg-gray-300 print:bg-gray-300 text-center">
+                  <th rowSpan={2} className="p-2 border border-gray-800 print:border-gray-800 font-bold w-12 text-lg">م</th>
+                  <th rowSpan={2} className="p-2 border border-gray-800 print:border-gray-800 font-bold text-lg">المتطلبات</th>
+                  <th colSpan={3} className="p-2 border border-gray-800 print:border-gray-800 font-bold text-lg">التقييم</th>
+                  <th rowSpan={2} className="p-2 border border-gray-800 print:border-gray-800 font-bold w-48 text-lg">ملاحظات</th>
+                </tr>
+                <tr className="bg-gray-300 print:bg-gray-300 text-center">
+                  <th className="p-2 border border-gray-800 print:border-gray-800 font-bold w-16 text-md">نعم</th>
+                  <th className="p-2 border border-gray-800 print:border-gray-800 font-bold w-16 text-md">لا</th>
+                  <th className="p-2 border border-gray-800 print:border-gray-800 font-bold w-20 text-md">لا ينطبق</th>
                 </tr>
               </thead>
               <tbody>
                 {SECTIONS.map((section) => (
                   <React.Fragment key={section.id}>
-                    <tr className="bg-gray-100 print:bg-gray-100">
-                      <th className="p-3 border border-gray-800 print:border-gray-800 font-bold text-blue-900 text-lg w-1/2">
+                    <tr className="bg-gray-200 print:bg-gray-200">
+                      <td colSpan={6} className="p-2 border border-gray-800 print:border-gray-800 font-bold text-center text-lg text-blue-900">
                         {section.title}
-                      </th>
-                      <th className="p-3 border border-gray-800 print:border-gray-800 font-bold text-center w-16">نعم</th>
-                      <th className="p-3 border border-gray-800 print:border-gray-800 font-bold text-center w-16">لا</th>
-                      {section.hasNA ? (
-                        <>
-                          <th className="p-3 border border-gray-800 print:border-gray-800 font-bold text-center w-24">لا ينطبق</th>
-                          <th className="p-3 border border-gray-800 print:border-gray-800 font-bold text-center">ملاحظات</th>
-                        </>
-                      ) : (
-                        <th colSpan={2} className="p-3 border border-gray-800 print:border-gray-800 font-bold text-center">ملاحظات</th>
-                      )}
+                      </td>
                     </tr>
                     {section.hasCount && (
                       <tr>
-                        <td colSpan={5} className="p-3 border border-gray-800 print:border-gray-800 bg-gray-50/50">
-                          <div className="flex items-center gap-4 text-blue-800 font-semibold">
+                        <td colSpan={6} className="p-2 border border-gray-800 print:border-gray-800 bg-gray-50/50">
+                          <div className="flex items-center justify-center gap-4 font-semibold text-blue-900">
                             <span>عدد مخارج الطوارئ:</span>
                             <Input 
                               type="number" 
                               value={formData.emergency_exits_count}
                               onChange={(e) => setFormData({...formData, emergency_exits_count: e.target.value})}
-                              className="w-24 h-8 border-gray-400" 
+                              className="w-24 h-8 border-gray-400 text-center" 
                             />
                           </div>
                         </td>
@@ -412,13 +420,13 @@ export default function FillSafetyEvaluationForm() {
                     )}
                     {section.questions.map((q, idx) => (
                       <tr key={q.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="p-3 border border-gray-800 print:border-gray-800 font-medium text-gray-900">
-                          <div className="flex gap-2">
-                            <span className="font-bold">{idx + 1}.</span>
-                            <span>{q.text}</span>
-                          </div>
+                        <td className="p-2 border border-gray-800 print:border-gray-800 font-bold text-center">
+                          {idx + 1}
                         </td>
-                        <td className="p-3 border border-gray-800 print:border-gray-800 text-center align-middle">
+                        <td className="p-2 border border-gray-800 print:border-gray-800 font-medium">
+                          {q.text}
+                        </td>
+                        <td className="p-2 border border-gray-800 print:border-gray-800 text-center align-middle">
                           <input 
                             type="radio" 
                             name={q.id} 
@@ -427,7 +435,7 @@ export default function FillSafetyEvaluationForm() {
                             className="w-5 h-5 text-blue-600 cursor-pointer"
                           />
                         </td>
-                        <td className="p-3 border border-gray-800 print:border-gray-800 text-center align-middle">
+                        <td className="p-2 border border-gray-800 print:border-gray-800 text-center align-middle">
                           <input 
                             type="radio" 
                             name={q.id} 
@@ -436,36 +444,27 @@ export default function FillSafetyEvaluationForm() {
                             className="w-5 h-5 text-red-600 cursor-pointer"
                           />
                         </td>
-                        {section.hasNA ? (
-                          <>
-                            <td className="p-3 border border-gray-800 print:border-gray-800 text-center align-middle">
-                              <input 
-                                type="radio" 
-                                name={q.id} 
-                                checked={formData.answers[q.id] === 'na'}
-                                onChange={() => handleAnswerChange(q.id, 'na')}
-                                className="w-5 h-5 text-gray-500 cursor-pointer"
-                              />
-                            </td>
-                            <td className="p-2 border border-gray-800 print:border-gray-800">
-                              <Input 
-                                value={formData.notes[q.id] || ''}
-                                onChange={(e) => handleNoteChange(q.id, e.target.value)}
-                                className="border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-blue-200 h-full min-h-[40px] text-gray-900"
-                                placeholder="أضف ملاحظة..."
-                              />
-                            </td>
-                          </>
-                        ) : (
-                          <td colSpan={2} className="p-2 border border-gray-800 print:border-gray-800">
-                            <Input 
-                              value={formData.notes[q.id] || ''}
-                              onChange={(e) => handleNoteChange(q.id, e.target.value)}
-                              className="border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-blue-200 h-full min-h-[40px] text-gray-900"
-                              placeholder="أضف ملاحظة..."
+                        <td className="p-2 border border-gray-800 print:border-gray-800 text-center align-middle">
+                          {section.hasNA ? (
+                            <input 
+                              type="radio" 
+                              name={q.id} 
+                              checked={formData.answers[q.id] === 'na'}
+                              onChange={() => handleAnswerChange(q.id, 'na')}
+                              className="w-5 h-5 text-gray-500 cursor-pointer"
                             />
-                          </td>
-                        )}
+                          ) : (
+                            <div className="bg-gray-200 print:bg-gray-200 w-full h-full min-h-[24px]"></div>
+                          )}
+                        </td>
+                        <td className="p-1 border border-gray-800 print:border-gray-800">
+                          <Input 
+                            value={formData.notes[q.id] || ''}
+                            onChange={(e) => handleNoteChange(q.id, e.target.value)}
+                            className="border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-blue-200 h-full min-h-[40px] rounded-none"
+                            placeholder="ملاحظات..."
+                          />
+                        </td>
                       </tr>
                     ))}
                   </React.Fragment>
@@ -613,7 +612,6 @@ export default function FillSafetyEvaluationForm() {
           }
           input[type="text"], input[type="number"], input[type="date"] {
             border: none !important;
-            border-bottom: 1px solid #000 !important;
             background: transparent !important;
             padding: 0 !important;
             color: #000 !important;
@@ -623,6 +621,8 @@ export default function FillSafetyEvaluationForm() {
           th, td { border: 1px solid #000 !important; }
           .bg-gray-100 { background-color: #f3f4f6 !important; -webkit-print-color-adjust: exact; color-adjust: exact; }
           .bg-gray-50 { background-color: #f9fafb !important; -webkit-print-color-adjust: exact; color-adjust: exact; }
+          .bg-gray-200 { background-color: #e5e7eb !important; -webkit-print-color-adjust: exact; color-adjust: exact; }
+          .bg-gray-300 { background-color: #d1d5db !important; -webkit-print-color-adjust: exact; color-adjust: exact; }
         }
       `}</style>
     </div>
