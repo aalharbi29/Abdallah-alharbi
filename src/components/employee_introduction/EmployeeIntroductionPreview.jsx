@@ -154,7 +154,6 @@ export default function EmployeeIntroductionPreview({
             )}
           </div>
         </div>
-      </div>
     </div>
   );
 }
