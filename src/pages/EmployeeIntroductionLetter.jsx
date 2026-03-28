@@ -119,7 +119,6 @@ export default function EmployeeIntroductionLetter() {
   // حالة السحب
   const [dragging, setDragging] = useState(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [showPreview, setShowPreview] = useState(true);
 
   const letterRef = useRef(null);
   const signatureAreaRef = useRef(null);
@@ -1053,10 +1052,6 @@ export default function EmployeeIntroductionLetter() {
                 إرسال للاعتماد
               </Button>
               <div className="flex gap-2">
-                <Button onClick={() => setShowPreview((prev) => !prev)} variant="outline" className="flex-1">
-                  <Eye className="w-4 h-4 ml-2" />
-                  {showPreview ? 'إخفاء المعاينة' : 'إظهار المعاينة'}
-                </Button>
                 <Button onClick={handlePrint} variant="outline" className="flex-1">
                   <Printer className="w-4 h-4 ml-2" />
                   طباعة
@@ -1074,33 +1069,31 @@ export default function EmployeeIntroductionLetter() {
           </div>
 
           {/* معاينة الخطاب */}
-          {showPreview && (
-            <div className="lg:col-span-2">
-              <Card className="overflow-hidden">
-                <CardHeader className="pb-2 no-print">
-                  <CardTitle className="text-base flex items-center gap-2">
-                    <Eye className="w-4 h-4" />
-                    معاينة الخطاب
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                  <EmployeeIntroductionPreview
-                    letterRef={letterRef}
-                    signatureAreaRef={signatureAreaRef}
-                    selectedEmployee={selectedEmployee}
-                    letterSettings={letterSettings}
-                    additionalFields={additionalFields}
-                    letterTemplates={letterTemplates}
-                    signatureSettings={signatureSettings}
-                    stampSettings={stampSettings}
-                    directorPosition={directorPosition}
-                    dragging={dragging}
-                    handleMouseDown={handleMouseDown}
-                  />
-                </CardContent>
-              </Card>
-            </div>
-          )}
+          <div className="lg:col-span-2">
+            <Card className="overflow-hidden">
+              <CardHeader className="pb-2 no-print">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Eye className="w-4 h-4" />
+                  معاينة الخطاب
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <EmployeeIntroductionPreview
+                  letterRef={letterRef}
+                  signatureAreaRef={signatureAreaRef}
+                  selectedEmployee={selectedEmployee}
+                  letterSettings={letterSettings}
+                  additionalFields={additionalFields}
+                  letterTemplates={letterTemplates}
+                  signatureSettings={signatureSettings}
+                  stampSettings={stampSettings}
+                  directorPosition={directorPosition}
+                  dragging={dragging}
+                  handleMouseDown={handleMouseDown}
+                />
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
