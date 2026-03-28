@@ -607,18 +607,21 @@ export default function FillSafetyEvaluationForm() {
 
       <style>{`
         @media print {
-          body { background-color: white !important; }
+          @page { margin: 10mm; }
+          * { box-sizing: border-box !important; }
+          body { background-color: white !important; margin: 0 !important; padding: 0 !important; direction: rtl !important; }
           .print\\:hidden { display: none !important; }
           .print\\:shadow-none { box-shadow: none !important; }
           .print\\:border-0 { border: none !important; }
           .print\\:bg-transparent { background-color: transparent !important; }
           .print\\:p-0 { padding: 0 !important; }
           .print\\:px-0 { padding-left: 0 !important; padding-right: 0 !important; }
-          .print\\:max-w-none { max-width: none !important; }
+          .print\\:max-w-none { max-width: 100% !important; width: 100% !important; }
           .break-before-page { page-break-before: always; }
-          html, body, #root { height: auto !important; overflow: visible !important; }
-          .responsive-shell { display: block !important; height: auto !important; overflow: visible !important; }
-          main { overflow: visible !important; height: auto !important; }
+          html, body, #root { height: auto !important; overflow: visible !important; width: 100% !important; }
+          .responsive-shell { display: block !important; height: auto !important; overflow: visible !important; width: 100% !important; }
+          main { overflow: visible !important; height: auto !important; width: 100% !important; padding: 0 !important; margin: 0 !important; }
+          table { width: 100% !important; max-width: 100% !important; }
           .bg-gray-100 { background-color: #f3f4f6 !important; -webkit-print-color-adjust: exact; color-adjust: exact; }
           .bg-gray-50 { background-color: #f9fafb !important; -webkit-print-color-adjust: exact; color-adjust: exact; }
           .bg-gray-200 { background-color: #e5e7eb !important; -webkit-print-color-adjust: exact; color-adjust: exact; }
