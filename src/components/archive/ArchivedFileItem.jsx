@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -128,56 +127,58 @@ export default function ArchivedFileItem({ fileGroup, onDelete, onRefresh, emplo
         onClick={() => onSelect && onSelect(groupId)}
         title={mainFile.file_name || mainFile.title}
       >
-        <CardContent className="p-4">
-          <div className="flex items-start gap-3">
-            {/* Checkbox للتحديد */}
-            {onSelect && (
-              <div className="flex-shrink-0 mt-1">
-                <input
-                  type="checkbox"
-                  checked={isSelected}
-                  onChange={(e) => {
-                    e.stopPropagation();
-                    onSelect(groupId);
-                  }}
-                  className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
-                />
-              </div>
-            )}
-
+        <CardContent className="p-0">
+          <div className="p-4 flex items-start gap-4">
             {/* أيقونة الملف */}
-            <div className="flex-shrink-0 mt-1" title={mainFile.file_name || mainFile.title}>
+            <div className="flex-shrink-0 p-3 bg-gray-50 rounded-xl border border-gray-100" title={mainFile.file_name || mainFile.title}>
               {getFileIcon(mainFile.file_name)}
             </div>
 
             {/* محتوى البطاقة */}
             <div className="flex-1 min-w-0">
-              {/* العنوان والقلم للتعديل */}
-              <div className="relative group/title flex items-center gap-2 mb-1">
-                <h3
-                  className="font-semibold text-base truncate"
-                  title={mainFile.file_name || mainFile.title}
-                >
-                  {mainFile.title}
-                </h3>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={(e) => {
-                    e.stopPropagation(); // Prevent card selection
-                    setShowEditDialog(true);
-                  }}
-                  className="h-6 w-6 p-0 opacity-0 group-hover/title:opacity-100 transition-opacity"
-                  title="تعديل العنوان"
-                >
-                  <Edit className="w-4 h-4" />
-                </Button>
+              <div className="flex justify-between items-start mb-1">
+                {/* العنوان والقلم للتعديل */}
+                <div className="relative group/title flex items-center gap-2 flex-1 min-w-0 pr-2">
+                  <h3
+                    className="font-semibold text-base text-gray-900 truncate"
+                    title={mainFile.file_name || mainFile.title}
+                  >
+                    {mainFile.title}
+                  </h3>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowEditDialog(true);
+                    }}
+                    className="h-6 w-6 p-0 opacity-0 group-hover/title:opacity-100 transition-opacity flex-shrink-0"
+                    title="تعديل العنوان"
+                  >
+                    <Edit className="w-4 h-4 text-gray-400 hover:text-blue-600" />
+                  </Button>
+                </div>
+
+                {/* Checkbox للتحديد */}
+                {onSelect && (
+                  <div className="flex-shrink-0 ml-1">
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={(e) => {
+                        e.stopPropagation();
+                        onSelect(groupId);
+                      }}
+                      className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500 cursor-pointer"
+                    />
+                  </div>
+                )}
               </div>
 
               {/* الوصف */}
               {mainFile.description && (
                 <p
-                  className="text-sm text-gray-600 mb-2 line-clamp-2"
+                  className="text-sm text-gray-500 mb-3 line-clamp-2"
                   title={mainFile.file_name}
                 >
                   {mainFile.description}
@@ -185,187 +186,191 @@ export default function ArchivedFileItem({ fileGroup, onDelete, onRefresh, emplo
               )}
 
               {/* الشارات */}
-              <div className="flex flex-wrap gap-2 mb-3" title={mainFile.file_name}>
+              <div className="flex flex-wrap gap-1.5 mb-3" title={mainFile.file_name}>
                 {mainFile.category && categoryLabels[mainFile.category] && (
-                  <Badge variant="secondary" className="bg-blue-100 text-blue-700">
+                  <Badge variant="secondary" className="bg-blue-50 text-blue-700 border-blue-100 font-normal">
                     {categoryLabels[mainFile.category]}
                   </Badge>
                 )}
                 {mainFile.sub_category && subCategoryLabels[mainFile.sub_category] && (
-                  <Badge variant="outline">
+                  <Badge variant="outline" className="text-gray-600 font-normal bg-gray-50">
                     {subCategoryLabels[mainFile.sub_category]}
                   </Badge>
                 )}
                 {mainFile.tags && Array.isArray(mainFile.tags) && mainFile.tags.map(tag => tag && (
-                  <Badge key={tag} variant="outline" className="text-xs">
+                  <Badge key={tag} variant="outline" className="text-xs font-normal text-gray-500">
                     {tag}
                   </Badge>
                 ))}
               </div>
 
               {/* معلومات إضافية */}
-              <div className="flex items-center gap-4 text-xs text-gray-500 mb-3" title={mainFile.file_name}>
-                <div className="flex items-center gap-1">
-                  <Calendar className="w-3 h-3" />
+              <div className="flex items-center gap-4 text-xs text-gray-400" title={mainFile.file_name}>
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5" />
                   {format(new Date(mainFile.created_date), 'dd/MM/yyyy', { locale: ar })}
                 </div>
-                <div className="flex items-center gap-1">
-                  <User className="w-3 h-3" />
-                  {mainFile.created_by || 'غير معروف'}
+                <div className="flex items-center gap-1.5 truncate">
+                  <User className="w-3.5 h-3.5" />
+                  <span className="truncate max-w-[120px]">{mainFile.created_by || 'غير معروف'}</span>
                 </div>
               </div>
+            </div>
+          </div>
 
-              {/* أزرار الإجراءات */}
-              <div className="flex flex-wrap gap-2 no-drag">
+          {/* أزرار الإجراءات - Footer */}
+          <div className="px-4 py-3 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between no-drag">
+            <div className="flex items-center gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm" onClick={(e) => e.stopPropagation()}>
+                    <Eye className="w-4 h-4 ml-1.5" />
+                    عرض
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuLabel className="text-xs truncate text-gray-500">{mainFile.file_name}</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {mainFile.file_name && /\.(doc|docx|xls|xlsx|ppt|pptx)$/i.test(mainFile.file_name) ? (
+                    <>
+                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openInGoogleViewer(mainFile); }} className="cursor-pointer py-2">
+                        <svg className="w-4 h-4 ml-2 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                        </svg>
+                        Google Viewer
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openInOfficeViewer(mainFile); }} className="cursor-pointer py-2">
+                        <FileText className="w-4 h-4 ml-2 text-blue-600" />
+                        Office Viewer
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openInOffice365(mainFile); }} className="cursor-pointer py-2">
+                        <ExternalLink className="w-4 h-4 ml-2 text-orange-500" />
+                        Office 365
+                      </DropdownMenuItem>
+                    </>
+                  ) : (
+                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setViewingFile(mainFile); }} className="cursor-pointer py-2">
+                      <Eye className="w-4 h-4 ml-2 text-gray-500" />
+                      معاينة داخل التطبيق
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openDirect(mainFile); }} className="cursor-pointer py-2">
+                    <ExternalLink className="w-4 h-4 ml-2 text-gray-500" />
+                    فتح في نافذة جديدة
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-gray-600 hover:text-blue-600 hover:bg-blue-50 border-gray-200"
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  downloadFileWithName(mainFile.file_url, mainFile.file_name); 
+                }}
+                title={`تحميل: ${mainFile.file_name}`}
+              >
+                <Download className="w-4 h-4 ml-1.5" />
+                تحميل
+              </Button>
+            </div>
+
+            <div className="flex items-center gap-1">
+              {hasMultipleFiles && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" onClick={(e) => e.stopPropagation()}>
-                      <Eye className="w-3 h-3 ml-1" />
-                      عرض
+                    <Button variant="ghost" size="sm" className="text-gray-500 hover:text-gray-900" onClick={(e) => e.stopPropagation()}>
+                      <FileGeneric className="w-4 h-4 ml-1" />
+                      +{fileGroup.length - 1}
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuLabel className="text-xs truncate">{mainFile.file_name}</DropdownMenuLabel>
+                  <DropdownMenuContent align="end" className="max-h-64 overflow-y-auto">
+                    <DropdownMenuLabel>ملفات مرتبطة</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    {mainFile.file_name && /\.(doc|docx|xls|xlsx|ppt|pptx)$/i.test(mainFile.file_name) ? (
-                      <>
-                        <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openInGoogleViewer(mainFile); }} className="cursor-pointer">
-                          <svg className="w-4 h-4 ml-2" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-                          </svg>
-                          عرض في Google Viewer
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openInOfficeViewer(mainFile); }} className="cursor-pointer">
-                          <FileText className="w-4 h-4 ml-2" />
-                          عرض في Office Viewer
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openInOffice365(mainFile); }} className="cursor-pointer">
-                          <ExternalLink className="w-4 h-4 ml-2" />
-                          عرض في Office 365
-                        </DropdownMenuItem>
-                      </>
-                    ) : (
-                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setViewingFile(mainFile); }} className="cursor-pointer">
-                        <Eye className="w-4 h-4 ml-2" />
-                        معاينة الملف
+                    {fileGroup.slice(1).map((file) => (
+                      <DropdownMenuItem key={file.id} onClick={(e) => { e.stopPropagation(); setViewingFile(file); }} className="cursor-pointer">
+                        {getFileIcon(file.file_name)}
+                        <span className="mr-2 truncate max-w-[200px]">{file.file_name}</span>
                       </DropdownMenuItem>
-                    )}
-                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openDirect(mainFile); }} className="cursor-pointer">
-                      <ExternalLink className="w-4 h-4 ml-2" />
-                      فتح مباشر
-                    </DropdownMenuItem>
+                    ))}
                   </DropdownMenuContent>
                 </DropdownMenu>
+              )}
 
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={(e) => { 
-                    e.stopPropagation(); 
-                    downloadFileWithName(mainFile.file_url, mainFile.file_name); 
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 text-gray-400 hover:text-gray-700"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrint();
+                }}
+                title="طباعة"
+              >
+                <Printer className="w-4 h-4" />
+              </Button>
+
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="h-8 w-8 text-gray-400 hover:text-blue-600"
+                onClick={(e) => { 
+                  e.stopPropagation(); 
+                  setShowMover(true); 
+                }}
+                title="نقل الملف"
+              >
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+
+              <div onClick={(e) => e.stopPropagation()} title="استبدال الملف" className="flex items-center justify-center h-8 w-8 rounded-md hover:bg-accent text-gray-400 hover:text-gray-700 cursor-pointer">
+                <InlineFileReplacer
+                  currentFile={mainFile}
+                  onReplace={async (newFileUrl, newFileName) => {
+                    await ArchivedFile.update(mainFile.id, {
+                      file_url: newFileUrl,
+                      file_name: newFileName
+                    });
+                    onRefresh && onRefresh();
                   }}
-                  title={`تحميل: ${mainFile.file_name}`}
-                >
-                  <Download className="w-3 h-3 ml-1" />
-                  تحميل
-                </Button>
-
-                {/* زر استبدال الملف */}
-                <div onClick={(e) => e.stopPropagation()}>
-                  <InlineFileReplacer
-                    currentFile={mainFile}
-                    onReplace={async (newFileUrl, newFileName) => {
-                      await ArchivedFile.update(mainFile.id, {
-                        file_url: newFileUrl,
-                        file_name: newFileName
-                      });
-                      onRefresh && onRefresh();
-                    }}
-                  />
-                </div>
-
-                {hasMultipleFiles && (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={(e) => e.stopPropagation()}>
-                        المزيد ({fileGroup.length})
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="max-h-64 overflow-y-auto">
-                      <DropdownMenuLabel>الملفات في المجموعة</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      {fileGroup.slice(1).map((file) => ( // Display files other than the main file
-                        <DropdownMenuItem key={file.id} onClick={(e) => { e.stopPropagation(); setViewingFile(file); }} className="cursor-pointer">
-                          {getFileIcon(file.file_name)}
-                          <span className="mr-2 truncate">{file.file_name}</span>
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )}
-
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={(e) => { 
-                    e.stopPropagation(); 
-                    setShowMover(true); 
-                  }}
-                  className="border-blue-300 text-blue-700 hover:bg-blue-50"
-                  title={`نقل: ${mainFile.file_name}`}
-                >
-                  <ArrowRight className="w-3 h-3 ml-1" />
-                  نقل
-                </Button>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePrint();
-                  }}
-                  title={`طباعة: ${mainFile.file_name}`}
-                >
-                  <Printer className="w-3 h-3 ml-1" />
-                  طباعة
-                </Button>
-
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="text-red-600 hover:bg-red-50 hover:text-red-700"
-                      onClick={(e) => e.stopPropagation()}
-                      title={`حذف: ${mainFile.file_name}`}
-                    >
-                      <Trash2 className="w-3 h-3 ml-1" />
-                      حذف
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>تأكيد الحذف</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        هل أنت متأكد من حذف هذا الملف؟ لا يمكن التراجع عن هذا الإجراء.
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel onClick={(e) => e.stopPropagation()}>إلغاء</AlertDialogCancel>
-                      <AlertDialogAction 
-                        className="bg-red-600 hover:bg-red-700"
-                        onClick={(e) => { 
-                          e.stopPropagation(); // Stop propagation here too
-                          onDelete && onDelete(mainFile.id); 
-                        }}
-                      >
-                        حذف
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                />
               </div>
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="h-8 w-8 text-gray-400 hover:text-red-600 hover:bg-red-50"
+                    onClick={(e) => e.stopPropagation()}
+                    title="حذف"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>تأكيد الحذف</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      هل أنت متأكد من حذف هذا الملف؟ لا يمكن التراجع عن هذا الإجراء.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel onClick={(e) => e.stopPropagation()}>إلغاء</AlertDialogCancel>
+                    <AlertDialogAction 
+                      className="bg-red-600 hover:bg-red-700"
+                      onClick={(e) => { 
+                        e.stopPropagation();
+                        onDelete && onDelete(mainFile.id); 
+                      }}
+                    >
+                      حذف
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </div>
         </CardContent>
