@@ -3,6 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { UploadFile } from '@/integrations/Core';
 import { Loader2, Printer, Save, Image as ImageIcon, Trash2, ShieldCheck, Upload, Settings, RotateCcw, Check } from 'lucide-react';
 import { toast } from 'sonner';
@@ -102,6 +103,8 @@ const PROOFS = [
   { id: 'proof_fire_hose', title: 'صناديق إطفاء الحريق:' }
 ];
 
+const TARGET_CENTERS = ["الحسو", "طلال", "بطحي", "الهميج", "بلغة", "الماوية", "هدبان", "صخيبرة"];
+
 export default function FillSafetyEvaluationForm() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -178,6 +181,24 @@ export default function FillSafetyEvaluationForm() {
     };
     fetchUserData();
   }, []);
+
+  const handleCenterChange = async (centerName) => {
+    setFormData(prev => ({ ...prev, health_center_name: centerName }));
+    try {
+      const allCenters = await base44.entities.HealthCenter.list(undefined, 200);
+      const selectedCenter = allCenters.find(c => c.اسم_المركز && c.اسم_المركز.includes(centerName));
+      
+      if (selectedCenter && selectedCenter.المدير) {
+        const manager = await base44.entities.Employee.get(selectedCenter.المدير);
+        if (manager) {
+          setFormData(prev => ({ ...prev, preparer_name: manager.full_name_arabic || '' }));
+          toast.success(`تم جلب اسم مدير مركز ${centerName}`);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching manager:", error);
+    }
+  };
 
   const handleAnswerChange = (questionId, value) => {
     setFormData(prev => ({
@@ -361,12 +382,19 @@ export default function FillSafetyEvaluationForm() {
                         <tr>
                           <td className="border border-gray-800 bg-gray-200 print:bg-gray-200 font-bold p-2 w-1/4">اسم المنشأة</td>
                           <td className="border border-gray-800 p-0 w-1/4">
-                            <Input 
-                              value={formData.health_center_name}
-                              onChange={(e) => setFormData({...formData, health_center_name: e.target.value})}
-                              className="border-0 rounded-none bg-transparent focus-visible:ring-0 text-center font-semibold h-full w-full"
-                              placeholder="أدخل اسم المركز الصحي"
-                            />
+                            <Select 
+                              value={formData.health_center_name} 
+                              onValueChange={handleCenterChange}
+                            >
+                              <SelectTrigger className="border-0 rounded-none bg-transparent focus:ring-0 text-center font-semibold h-full w-full shadow-none justify-center">
+                                <SelectValue placeholder="اختر المركز الصحي" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {TARGET_CENTERS.map(center => (
+                                  <SelectItem key={center} value={center}>{center}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
                           </td>
                           <td className="border border-gray-800 bg-gray-200 print:bg-gray-200 font-bold p-2 w-1/4">تاريخ التقرير</td>
                           <td className="border border-gray-800 p-0 w-1/4">
@@ -397,24 +425,9 @@ export default function FillSafetyEvaluationForm() {
                       )}
                       <th colSpan={section.hasNA ? 1 : 2} className="p-2 border border-gray-800 print:border-gray-800 font-bold w-64 text-md">ملاحظات</th>
                     </tr>
-                    {section.hasCount && (
-                      <tr>
-                        <td colSpan={6} className="p-2 border border-gray-800 print:border-gray-800 bg-gray-50/50">
-                          <div className="flex items-center justify-center gap-4 font-semibold text-blue-900">
-                            <span>عدد مخارج الطوارئ:</span>
-                            <Input 
-                              type="number" 
-                              value={formData.emergency_exits_count}
-                              onChange={(e) => setFormData({...formData, emergency_exits_count: e.target.value})}
-                              className="w-24 h-8 border-gray-400 text-center" 
-                            />
-                          </div>
-                        </td>
-                      </tr>
-                    )}
                     {section.questions.map((q, idx) => (
                       <tr key={q.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="p-2 border border-gray-800 print:border-gray-800 font-bold text-center w-12">
+                        <td className="p-2 border border-gray-800 print:border-gray-800 font-bold text-center w-8">
                           {idx + 1}
                         </td>
                         <td className="p-2 border border-gray-800 print:border-gray-800 font-medium">
@@ -467,6 +480,21 @@ export default function FillSafetyEvaluationForm() {
                         )}
                       </tr>
                     ))}
+                    {section.hasCount && (
+                      <tr className="bg-gray-300 print:bg-gray-300">
+                        <td colSpan={4} className="p-2 border border-gray-800 print:border-gray-800 font-bold text-left text-blue-900">
+                          عدد مخارج الطوارئ:
+                        </td>
+                        <td colSpan={2} className="p-2 border border-gray-800 print:border-gray-800">
+                          <Input 
+                            type="number" 
+                            value={formData.emergency_exits_count}
+                            onChange={(e) => setFormData({...formData, emergency_exits_count: e.target.value})}
+                            className="w-full h-8 border-gray-400 text-center bg-white" 
+                          />
+                        </td>
+                      </tr>
+                    )}
                   </React.Fragment>
                 ))}
               </tbody>
@@ -590,15 +618,6 @@ export default function FillSafetyEvaluationForm() {
           html, body, #root { height: auto !important; overflow: visible !important; }
           .responsive-shell { display: block !important; height: auto !important; overflow: visible !important; }
           main { overflow: visible !important; height: auto !important; }
-          input[type="text"], input[type="number"], input[type="date"] {
-            border: none !important;
-            background: transparent !important;
-            padding: 0 !important;
-            color: #000 !important;
-          }
-          input::placeholder { color: transparent !important; }
-          table { border-collapse: collapse !important; }
-          th, td { border: 1px solid #000 !important; }
           .bg-gray-100 { background-color: #f3f4f6 !important; -webkit-print-color-adjust: exact; color-adjust: exact; }
           .bg-gray-50 { background-color: #f9fafb !important; -webkit-print-color-adjust: exact; color-adjust: exact; }
           .bg-gray-200 { background-color: #e5e7eb !important; -webkit-print-color-adjust: exact; color-adjust: exact; }
