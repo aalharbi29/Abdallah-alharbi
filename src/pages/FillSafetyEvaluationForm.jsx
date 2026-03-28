@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { UploadFile } from '@/integrations/Core';
-import { Loader2, Printer, Save, Image as ImageIcon, Trash2, ShieldCheck, Upload } from 'lucide-react';
+import { Loader2, Printer, Save, Image as ImageIcon, Trash2, ShieldCheck, Upload, Settings, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
+import { motion } from 'framer-motion';
 
 const SECTIONS = [
   {
@@ -117,6 +118,41 @@ export default function FillSafetyEvaluationForm() {
 
   const fileInputRef = useRef(null);
   const [uploadingImageId, setUploadingImageId] = useState(null);
+
+  const [headerLayout, setHeaderLayout] = useState(() => {
+    const saved = localStorage.getItem('safetyFormLayout');
+    return saved ? JSON.parse(saved) : {};
+  });
+  const [customLogo, setCustomLogo] = useState(() => {
+    return localStorage.getItem('safetyFormLogo') || null;
+  });
+  const [isEditingLayout, setIsEditingLayout] = useState(false);
+
+  const updateLayout = (key, info) => {
+    setHeaderLayout(prev => {
+      const current = prev[key] || { x: 0, y: 0 };
+      const newLayout = {
+        ...prev,
+        [key]: { x: current.x + info.offset.x, y: current.y + info.offset.y }
+      };
+      localStorage.setItem('safetyFormLayout', JSON.stringify(newLayout));
+      return newLayout;
+    });
+  };
+
+  const handleLogoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      toast.loading('جاري رفع الشعار...', { id: 'logo' });
+      const res = await UploadFile({ file });
+      setCustomLogo(res.file_url);
+      localStorage.setItem('safetyFormLogo', res.file_url);
+      toast.success('تم تغيير الشعار', { id: 'logo' });
+    } catch (err) {
+      toast.error('فشل رفع الشعار', { id: 'logo' });
+    }
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -246,7 +282,17 @@ export default function FillSafetyEvaluationForm() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 print:px-0 print:max-w-none">
         
         {/* Action Buttons - Hidden in Print */}
-        <div className="flex justify-end gap-3 mb-6 print:hidden">
+        <div className="flex justify-end gap-3 mb-6 print:hidden flex-wrap">
+          {isEditingLayout && (
+            <Button variant="outline" onClick={() => { setHeaderLayout({}); setCustomLogo(null); localStorage.removeItem('safetyFormLayout'); localStorage.removeItem('safetyFormLogo'); }} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
+              <RotateCcw className="w-4 h-4" />
+              إعادة ضبط
+            </Button>
+          )}
+          <Button variant="outline" onClick={() => setIsEditingLayout(!isEditingLayout)} className={`gap-2 ${isEditingLayout ? 'bg-blue-50 text-blue-600 border-blue-200' : ''}`}>
+            <Settings className="w-4 h-4" />
+            {isEditingLayout ? 'إنهاء التعديل' : 'تعديل التخطيط'}
+          </Button>
           <Button variant="outline" onClick={handlePrint} className="gap-2">
             <Printer className="w-4 h-4" />
             طباعة التقرير
@@ -257,107 +303,141 @@ export default function FillSafetyEvaluationForm() {
           </Button>
         </div>
 
-        <Card className="shadow-lg border-0 print:shadow-none print:border-0 rounded-xl overflow-hidden bg-white">
+        <Card className="shadow-lg border-0 print:shadow-none print:border-0 rounded-xl overflow-hidden print:overflow-visible bg-white">
           <CardContent className="p-8 md:p-12 print:p-4">
             
-            {/* Header */}
-            <div className="flex justify-between items-start mb-10 pb-6">
-              <div className="text-right">
-                <h2 className="text-xl font-bold text-gray-900 mb-1">الإدارة التنفيذية للأمن والسلامة</h2>
-                <h3 className="text-lg font-semibold text-gray-800">بتجمع المدينة المنورة الصحي</h3>
-              </div>
-              <div className="w-32 h-32 flex items-center justify-center">
-                <ShieldCheck className="w-20 h-20 text-blue-600" />
-              </div>
-            </div>
-
-            <h1 className="text-2xl font-bold text-center text-gray-900 mb-10 underline underline-offset-8 decoration-2">
-              تقرير عن مدى توفر أنظمة ومتطلبات السلامة بالمراكز الصحية
-            </h1>
-
-            {/* General Info */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-              <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200 print:bg-transparent print:border-0 print:p-0">
-                <label className="font-bold text-blue-900 whitespace-nowrap text-lg">اسم المنشأة:</label>
-                <Input 
-                  value={formData.health_center_name}
-                  onChange={(e) => setFormData({...formData, health_center_name: e.target.value})}
-                  className="border-b-2 border-t-0 border-x-0 border-gray-400 rounded-none bg-transparent focus-visible:ring-0 px-2 text-lg font-semibold"
-                  placeholder="أدخل اسم المركز الصحي"
-                />
-              </div>
-              <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200 print:bg-transparent print:border-0 print:p-0">
-                <label className="font-bold text-blue-900 whitespace-nowrap text-lg">تاريخ التقرير:</label>
-                <Input 
-                  type="date"
-                  value={formData.report_date}
-                  onChange={(e) => setFormData({...formData, report_date: e.target.value})}
-                  className="border-b-2 border-t-0 border-x-0 border-gray-400 rounded-none bg-transparent focus-visible:ring-0 px-2 text-lg font-semibold"
-                />
-              </div>
-            </div>
-
-            {/* Tables */}
-            <div className="space-y-8">
-              {SECTIONS.map((section) => (
-                <div key={section.id} className="overflow-hidden border border-gray-800 print:border-gray-800">
-                  <table className="w-full text-right border-collapse">
-                    <thead>
-                      <tr className="bg-gray-100 print:bg-gray-100">
-                        <th className="p-3 border border-gray-800 print:border-gray-800 font-bold text-blue-900 text-lg w-1/2">
-                          {section.title}
-                        </th>
-                        <th className="p-3 border border-gray-800 print:border-gray-800 font-bold text-center w-16">نعم</th>
-                        <th className="p-3 border border-gray-800 print:border-gray-800 font-bold text-center w-16">لا</th>
-                        {section.hasNA && (
-                          <th className="p-3 border border-gray-800 print:border-gray-800 font-bold text-center w-24">لا ينطبق</th>
+            {/* Single Table with Thead for repeating header */}
+            <table className="w-full text-right border-collapse">
+              <thead className="print:table-header-group">
+                <tr>
+                  <td colSpan={5} className="border-0 pb-6 bg-white">
+                    {/* Header */}
+                    <div className="relative flex justify-between items-start mb-10">
+                      <motion.div
+                        drag={isEditingLayout}
+                        dragMomentum={false}
+                        onDragEnd={(e, info) => updateLayout('header_text', info)}
+                        animate={headerLayout['header_text'] || { x: 0, y: 0 }}
+                        className={`text-right z-10 ${isEditingLayout ? 'cursor-move ring-2 ring-blue-400 p-2 rounded border border-dashed border-blue-400 bg-white/50' : ''}`}
+                      >
+                        <h2 className="text-xl font-bold text-gray-900 mb-1">الإدارة التنفيذية للأمن والسلامة</h2>
+                        <h3 className="text-lg font-semibold text-gray-800">بتجمع المدينة المنورة الصحي</h3>
+                      </motion.div>
+                      
+                      <motion.div
+                        drag={isEditingLayout}
+                        dragMomentum={false}
+                        onDragEnd={(e, info) => updateLayout('header_logo', info)}
+                        animate={headerLayout['header_logo'] || { x: 0, y: 0 }}
+                        className={`w-32 h-32 flex flex-col items-center justify-center relative group z-10 ${isEditingLayout ? 'cursor-move ring-2 ring-blue-400 p-2 rounded border border-dashed border-blue-400 bg-white/50' : ''}`}
+                      >
+                        {customLogo ? (
+                          <img src={customLogo} alt="Logo" className="max-w-full max-h-full object-contain" />
+                        ) : (
+                          <ShieldCheck className="w-20 h-20 text-blue-600" />
                         )}
-                        <th className="p-3 border border-gray-800 print:border-gray-800 font-bold text-center">ملاحظات</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {section.hasCount && (
-                        <tr>
-                          <td colSpan={section.hasNA ? 5 : 4} className="p-3 border border-gray-800 print:border-gray-800 bg-gray-50/50">
-                            <div className="flex items-center gap-4 text-blue-800 font-semibold">
-                              <span>عدد مخارج الطوارئ:</span>
-                              <Input 
-                                type="number" 
-                                value={formData.emergency_exits_count}
-                                onChange={(e) => setFormData({...formData, emergency_exits_count: e.target.value})}
-                                className="w-24 h-8 border-gray-400" 
-                              />
-                            </div>
-                          </td>
-                        </tr>
+                        {isEditingLayout && (
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            className="absolute -bottom-12 whitespace-nowrap shadow-md"
+                            onClick={() => document.getElementById('logo-upload').click()}
+                          >
+                            تغيير الشعار
+                          </Button>
+                        )}
+                      </motion.div>
+                    </div>
+
+                    <h1 className="text-2xl font-bold text-center text-gray-900 mb-10 underline underline-offset-8 decoration-2">
+                      تقرير عن مدى توفر أنظمة ومتطلبات السلامة بالمراكز الصحية
+                    </h1>
+
+                    {/* General Info */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-4">
+                      <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200 print:bg-transparent print:border-0 print:p-0">
+                        <label className="font-bold text-blue-900 whitespace-nowrap text-lg">اسم المنشأة:</label>
+                        <Input 
+                          value={formData.health_center_name}
+                          onChange={(e) => setFormData({...formData, health_center_name: e.target.value})}
+                          className="border-b-2 border-t-0 border-x-0 border-gray-400 rounded-none bg-transparent focus-visible:ring-0 px-2 text-lg font-semibold"
+                          placeholder="أدخل اسم المركز الصحي"
+                        />
+                      </div>
+                      <div className="flex items-center gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200 print:bg-transparent print:border-0 print:p-0">
+                        <label className="font-bold text-blue-900 whitespace-nowrap text-lg">تاريخ التقرير:</label>
+                        <Input 
+                          type="date"
+                          value={formData.report_date}
+                          onChange={(e) => setFormData({...formData, report_date: e.target.value})}
+                          className="border-b-2 border-t-0 border-x-0 border-gray-400 rounded-none bg-transparent focus-visible:ring-0 px-2 text-lg font-semibold"
+                        />
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </thead>
+              <tbody>
+                {SECTIONS.map((section) => (
+                  <React.Fragment key={section.id}>
+                    <tr className="bg-gray-100 print:bg-gray-100">
+                      <th className="p-3 border border-gray-800 print:border-gray-800 font-bold text-blue-900 text-lg w-1/2">
+                        {section.title}
+                      </th>
+                      <th className="p-3 border border-gray-800 print:border-gray-800 font-bold text-center w-16">نعم</th>
+                      <th className="p-3 border border-gray-800 print:border-gray-800 font-bold text-center w-16">لا</th>
+                      {section.hasNA ? (
+                        <>
+                          <th className="p-3 border border-gray-800 print:border-gray-800 font-bold text-center w-24">لا ينطبق</th>
+                          <th className="p-3 border border-gray-800 print:border-gray-800 font-bold text-center">ملاحظات</th>
+                        </>
+                      ) : (
+                        <th colSpan={2} className="p-3 border border-gray-800 print:border-gray-800 font-bold text-center">ملاحظات</th>
                       )}
-                      {section.questions.map((q, idx) => (
-                        <tr key={q.id} className="hover:bg-gray-50 transition-colors">
-                          <td className="p-3 border border-gray-800 print:border-gray-800 font-medium text-gray-900">
-                            <div className="flex gap-2">
-                              <span className="font-bold">{idx + 1}.</span>
-                              <span>{q.text}</span>
-                            </div>
-                          </td>
-                          <td className="p-3 border border-gray-800 print:border-gray-800 text-center align-middle">
-                            <input 
-                              type="radio" 
-                              name={q.id} 
-                              checked={formData.answers[q.id] === 'yes'}
-                              onChange={() => handleAnswerChange(q.id, 'yes')}
-                              className="w-5 h-5 text-blue-600 cursor-pointer"
+                    </tr>
+                    {section.hasCount && (
+                      <tr>
+                        <td colSpan={5} className="p-3 border border-gray-800 print:border-gray-800 bg-gray-50/50">
+                          <div className="flex items-center gap-4 text-blue-800 font-semibold">
+                            <span>عدد مخارج الطوارئ:</span>
+                            <Input 
+                              type="number" 
+                              value={formData.emergency_exits_count}
+                              onChange={(e) => setFormData({...formData, emergency_exits_count: e.target.value})}
+                              className="w-24 h-8 border-gray-400" 
                             />
-                          </td>
-                          <td className="p-3 border border-gray-800 print:border-gray-800 text-center align-middle">
-                            <input 
-                              type="radio" 
-                              name={q.id} 
-                              checked={formData.answers[q.id] === 'no'}
-                              onChange={() => handleAnswerChange(q.id, 'no')}
-                              className="w-5 h-5 text-red-600 cursor-pointer"
-                            />
-                          </td>
-                          {section.hasNA && (
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                    {section.questions.map((q, idx) => (
+                      <tr key={q.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="p-3 border border-gray-800 print:border-gray-800 font-medium text-gray-900">
+                          <div className="flex gap-2">
+                            <span className="font-bold">{idx + 1}.</span>
+                            <span>{q.text}</span>
+                          </div>
+                        </td>
+                        <td className="p-3 border border-gray-800 print:border-gray-800 text-center align-middle">
+                          <input 
+                            type="radio" 
+                            name={q.id} 
+                            checked={formData.answers[q.id] === 'yes'}
+                            onChange={() => handleAnswerChange(q.id, 'yes')}
+                            className="w-5 h-5 text-blue-600 cursor-pointer"
+                          />
+                        </td>
+                        <td className="p-3 border border-gray-800 print:border-gray-800 text-center align-middle">
+                          <input 
+                            type="radio" 
+                            name={q.id} 
+                            checked={formData.answers[q.id] === 'no'}
+                            onChange={() => handleAnswerChange(q.id, 'no')}
+                            className="w-5 h-5 text-red-600 cursor-pointer"
+                          />
+                        </td>
+                        {section.hasNA ? (
+                          <>
                             <td className="p-3 border border-gray-800 print:border-gray-800 text-center align-middle">
                               <input 
                                 type="radio" 
@@ -367,8 +447,17 @@ export default function FillSafetyEvaluationForm() {
                                 className="w-5 h-5 text-gray-500 cursor-pointer"
                               />
                             </td>
-                          )}
-                          <td className="p-2 border border-gray-800 print:border-gray-800">
+                            <td className="p-2 border border-gray-800 print:border-gray-800">
+                              <Input 
+                                value={formData.notes[q.id] || ''}
+                                onChange={(e) => handleNoteChange(q.id, e.target.value)}
+                                className="border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-blue-200 h-full min-h-[40px] text-gray-900"
+                                placeholder="أضف ملاحظة..."
+                              />
+                            </td>
+                          </>
+                        ) : (
+                          <td colSpan={2} className="p-2 border border-gray-800 print:border-gray-800">
                             <Input 
                               value={formData.notes[q.id] || ''}
                               onChange={(e) => handleNoteChange(q.id, e.target.value)}
@@ -376,13 +465,13 @@ export default function FillSafetyEvaluationForm() {
                               placeholder="أضف ملاحظة..."
                             />
                           </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ))}
-            </div>
+                        )}
+                      </tr>
+                    ))}
+                  </React.Fragment>
+                ))}
+              </tbody>
+            </table>
 
             {/* Proofs Section */}
             <div className="mt-12 pt-8 break-before-page">
@@ -476,6 +565,13 @@ export default function FillSafetyEvaluationForm() {
           type="file" 
           ref={fileInputRef} 
           onChange={handleFileChange} 
+          accept="image/*" 
+          className="hidden" 
+        />
+        <input 
+          type="file" 
+          id="logo-upload"
+          onChange={handleLogoUpload} 
           accept="image/*" 
           className="hidden" 
         />
