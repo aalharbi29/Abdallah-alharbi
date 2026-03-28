@@ -475,29 +475,29 @@ export default function FillSafetyEvaluationForm() {
                 {SECTIONS.map((section) => (
                   <React.Fragment key={section.id}>
                     <tr className="bg-gray-300 print:bg-gray-300 text-center">
-                      <th colSpan={2} className="p-2 border border-gray-800 print:border-gray-800 font-bold text-lg text-blue-900 text-right">
+                      <th colSpan={2} className="p-1 border border-gray-800 print:border-gray-800 font-bold text-lg text-blue-900 text-right">
                         {section.title}
                       </th>
-                      <th className="p-2 border border-gray-800 print:border-gray-800 font-bold text-md">نعم</th>
-                      <th className="p-2 border border-gray-800 print:border-gray-800 font-bold text-md">لا</th>
+                      <th className="p-1 border border-gray-800 print:border-gray-800 font-bold text-md">نعم</th>
+                      <th className="p-1 border border-gray-800 print:border-gray-800 font-bold text-md">لا</th>
                       {section.hasNA && (
-                        <th className="p-2 border border-gray-800 print:border-gray-800 font-bold text-md">لا ينطبق</th>
+                        <th className="p-1 border border-gray-800 print:border-gray-800 font-bold text-md">لا ينطبق</th>
                       )}
-                      <th colSpan={section.hasNA ? 1 : 2} className="p-2 border border-gray-800 print:border-gray-800 font-bold text-md">ملاحظات</th>
+                      <th colSpan={section.hasNA ? 1 : 2} className="p-1 border border-gray-800 print:border-gray-800 font-bold text-md">ملاحظات</th>
                     </tr>
                     {section.questions.map((q, idx) => (
-                      <tr key={q.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="p-2 border border-gray-800 print:border-gray-800 font-bold text-center">
+                      <tr key={q.id} className="hover:bg-gray-50 transition-colors h-[30px]">
+                        <td className="p-1 border border-gray-800 print:border-gray-800 font-bold text-center">
                           {idx + 1}
                         </td>
-                        <td className="p-2 border border-gray-800 print:border-gray-800 font-medium">
+                        <td className="p-1 border border-gray-800 print:border-gray-800 font-medium">
                           {q.text}
                         </td>
                         <td 
                           className="p-0 border border-gray-800 print:border-gray-800 text-center align-middle cursor-pointer hover:bg-gray-100"
                           onClick={() => handleAnswerChange(q.id, 'yes')}
                         >
-                          <div className="w-full h-full min-h-[40px] flex items-center justify-center">
+                          <div className="w-full h-full min-h-[30px] flex items-center justify-center">
                             {formData.answers[q.id] === 'yes' && <Check className="w-6 h-6 text-green-600" strokeWidth={4} />}
                           </div>
                         </td>
@@ -505,7 +505,7 @@ export default function FillSafetyEvaluationForm() {
                           className="p-0 border border-gray-800 print:border-gray-800 text-center align-middle cursor-pointer hover:bg-gray-100"
                           onClick={() => handleAnswerChange(q.id, 'no')}
                         >
-                          <div className="w-full h-full min-h-[40px] flex items-center justify-center">
+                          <div className="w-full h-full min-h-[30px] flex items-center justify-center">
                             {formData.answers[q.id] === 'no' && <Check className="w-6 h-6 text-red-600" strokeWidth={4} />}
                           </div>
                         </td>
@@ -515,7 +515,7 @@ export default function FillSafetyEvaluationForm() {
                               className="p-0 border border-gray-800 print:border-gray-800 text-center align-middle cursor-pointer hover:bg-gray-100"
                               onClick={() => handleAnswerChange(q.id, 'na')}
                             >
-                              <div className="w-full h-full min-h-[40px] flex items-center justify-center">
+                              <div className="w-full h-full min-h-[30px] flex items-center justify-center">
                                 {formData.answers[q.id] === 'na' && <Check className="w-6 h-6 text-blue-600" strokeWidth={4} />}
                               </div>
                             </td>
@@ -523,7 +523,7 @@ export default function FillSafetyEvaluationForm() {
                               <Input 
                                 value={formData.notes[q.id] || ''}
                                 onChange={(e) => handleNoteChange(q.id, e.target.value)}
-                                className="border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-blue-200 h-full min-h-[40px] rounded-none"
+                                className="border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-blue-200 h-full min-h-[30px] rounded-none"
                                 placeholder="ملاحظات..."
                               />
                             </td>
@@ -533,7 +533,7 @@ export default function FillSafetyEvaluationForm() {
                             <Input 
                               value={formData.notes[q.id] || ''}
                               onChange={(e) => handleNoteChange(q.id, e.target.value)}
-                              className="border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-blue-200 h-full min-h-[40px] rounded-none"
+                              className="border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-blue-200 h-full min-h-[30px] rounded-none"
                               placeholder="ملاحظات..."
                             />
                           </td>
@@ -542,7 +542,7 @@ export default function FillSafetyEvaluationForm() {
                     ))}
                     {section.hasCount && (
                       <tr className="bg-gray-300 print:bg-gray-300">
-                        <td colSpan={6} className="p-2 border border-gray-800 print:border-gray-800">
+                        <td colSpan={6} className="p-1 border border-gray-800 print:border-gray-800">
                           <div className="flex items-center justify-center gap-4 w-full">
                             <span className="font-bold text-blue-900 text-lg">عدد مخارج الطوارئ:</span>
                             <div className="w-px h-8 bg-gray-500"></div>

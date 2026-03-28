@@ -653,7 +653,7 @@ export default function InventoryHandoverForm() {
                 </thead>
                 <tbody>
                   {attendees.map((att, i) => (
-                    <tr key={i} className="hover:bg-slate-50 transition-colors">
+                    <tr key={i} className="hover:bg-slate-50 transition-colors h-[30px]">
                       <td className="border border-slate-300 px-2 py-2 text-center text-slate-500 font-medium">{i + 1}</td>
                       <td className="border border-slate-300 px-2 py-2">
                         <EmployeeSelect
@@ -796,7 +796,7 @@ export default function InventoryHandoverForm() {
                 </thead>
                 <tbody>
                   {equipmentItems.map((item, i) => (
-                    <tr key={i} className="hover:bg-slate-50 transition-colors">
+                    <tr key={i} className="hover:bg-slate-50 transition-colors h-[30px]">
                       <td className="border border-slate-300 px-2 py-3 text-center text-slate-500 font-medium">{i + 1}</td>
                       <td className="border border-slate-300 px-2 py-3">
                         <select
