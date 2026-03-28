@@ -15,6 +15,10 @@ export default function useLayoutState({ currentPageName, navigationItems, locat
     checkMobile();
     window.addEventListener("resize", checkMobile);
 
+    return () => window.removeEventListener("resize", checkMobile);
+  }, [currentPageName]);
+
+  useEffect(() => {
     const activeSubItemParent = navigationItems.find((item) =>
       item.subItems?.some((sub) => {
         const subItemPath = sub.href.split("?")[0];
@@ -28,21 +32,20 @@ export default function useLayoutState({ currentPageName, navigationItems, locat
 
     if (activeSubItemParent) {
       setExpandedMenu(activeSubItemParent.name);
+    } else {
+      const activeTopLevelItem = navigationItems.find((item) => {
+        if (item.subItems) return false;
+        const itemPath = item.href?.split("?")[0];
+        const itemSearch = item.href?.split("?")[1] || "";
+        return location.pathname === itemPath && (itemSearch ? location.search.includes(itemSearch) : true);
+      });
+
+      if (activeTopLevelItem) {
+        setExpandedMenu(null);
+      }
     }
-
-    const activeTopLevelItem = navigationItems.find((item) => {
-      if (item.subItems) return false;
-      const itemPath = item.href?.split("?")[0];
-      const itemSearch = item.href?.split("?")[1] || "";
-      return location.pathname === itemPath && (itemSearch ? location.search.includes(itemSearch) : true);
-    });
-
-    if (activeTopLevelItem && !activeSubItemParent) {
-      setExpandedMenu(null);
-    }
-
-    return () => window.removeEventListener("resize", checkMobile);
-  }, [location, currentPageName, navigationItems]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname, location.search]);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen((value) => !value);
