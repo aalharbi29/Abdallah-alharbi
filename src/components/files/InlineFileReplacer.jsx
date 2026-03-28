@@ -38,7 +38,11 @@ export default function InlineFileReplacer({
   fileUrlField = "file_url",
   fileNameField = "file_name",
   buttonText = "استبدال الملف",
-  onReplaced
+  onReplaced,
+  variant = "outline",
+  size = "sm",
+  className = "gap-2",
+  iconOnly = false
 }) {
   const inputRef = useRef(null);
   const [loading, setLoading] = useState(false);
@@ -114,18 +118,19 @@ export default function InlineFileReplacer({
       <input ref={inputRef} type="file" className="hidden" onChange={onChange} />
       <Button 
         type="button" 
-        variant="outline" 
-        size="sm" 
+        variant={variant} 
+        size={size} 
         onClick={handlePick} 
         disabled={loading} 
-        className="gap-2"
+        className={className}
+        title={iconOnly ? buttonText : undefined}
       >
         {loading ? (
           <Loader2 className="w-4 h-4 animate-spin" />
         ) : (
           <RefreshCw className="w-4 h-4" />
         )}
-        {buttonText}
+        {!iconOnly ? buttonText : null}
       </Button>
     </>
   );
