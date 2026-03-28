@@ -219,65 +219,118 @@ export default function ArchivedFileItem({ fileGroup, onDelete, onRefresh, emplo
           </div>
 
           {/* أزرار الإجراءات - Footer */}
-          <div className="px-4 py-3 bg-gray-50/50 border-t border-gray-100 flex flex-wrap items-center justify-between gap-y-2 no-drag">
-            <div className="flex flex-wrap items-center gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm" onClick={(e) => e.stopPropagation()}>
-                    <Eye className="w-4 h-4 ml-1.5" />
-                    عرض
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuLabel className="text-xs truncate text-gray-500">{mainFile.file_name}</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {mainFile.file_name && /\.(doc|docx|xls|xlsx|ppt|pptx)$/i.test(mainFile.file_name) ? (
-                    <>
-                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openInGoogleViewer(mainFile); }} className="cursor-pointer py-2">
-                        <svg className="w-4 h-4 ml-2 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
-                        </svg>
-                        Google Viewer
+          <div className="px-4 py-3 bg-gray-50/50 border-t border-gray-100 flex flex-col gap-2 no-drag">
+            {/* الصف الأول: الإجراءات الأساسية */}
+            <div className="flex items-center justify-between w-full">
+              <div className="flex items-center gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm" onClick={(e) => e.stopPropagation()}>
+                      <Eye className="w-4 h-4 ml-1.5" />
+                      عرض
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuLabel className="text-xs truncate text-gray-500">{mainFile.file_name}</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {mainFile.file_name && /\.(doc|docx|xls|xlsx|ppt|pptx)$/i.test(mainFile.file_name) ? (
+                      <>
+                        <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openInGoogleViewer(mainFile); }} className="cursor-pointer py-2">
+                          <svg className="w-4 h-4 ml-2 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+                          </svg>
+                          Google Viewer
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openInOfficeViewer(mainFile); }} className="cursor-pointer py-2">
+                          <FileText className="w-4 h-4 ml-2 text-blue-600" />
+                          Office Viewer
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openInOffice365(mainFile); }} className="cursor-pointer py-2">
+                          <ExternalLink className="w-4 h-4 ml-2 text-orange-500" />
+                          Office 365
+                        </DropdownMenuItem>
+                      </>
+                    ) : (
+                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setViewingFile(mainFile); }} className="cursor-pointer py-2">
+                        <Eye className="w-4 h-4 ml-2 text-gray-500" />
+                        معاينة داخل التطبيق
                       </DropdownMenuItem>
-                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openInOfficeViewer(mainFile); }} className="cursor-pointer py-2">
-                        <FileText className="w-4 h-4 ml-2 text-blue-600" />
-                        Office Viewer
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openInOffice365(mainFile); }} className="cursor-pointer py-2">
-                        <ExternalLink className="w-4 h-4 ml-2 text-orange-500" />
-                        Office 365
-                      </DropdownMenuItem>
-                    </>
-                  ) : (
-                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); setViewingFile(mainFile); }} className="cursor-pointer py-2">
-                      <Eye className="w-4 h-4 ml-2 text-gray-500" />
-                      معاينة داخل التطبيق
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openDirect(mainFile); }} className="cursor-pointer py-2">
+                      <ExternalLink className="w-4 h-4 ml-2 text-gray-500" />
+                      فتح في نافذة جديدة
                     </DropdownMenuItem>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); openDirect(mainFile); }} className="cursor-pointer py-2">
-                    <ExternalLink className="w-4 h-4 ml-2 text-gray-500" />
-                    فتح في نافذة جديدة
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  </DropdownMenuContent>
+                </DropdownMenu>
 
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="text-gray-600 hover:text-blue-600 hover:bg-blue-50 border-gray-200"
-                onClick={(e) => { 
-                  e.stopPropagation(); 
-                  downloadFileWithName(mainFile.file_url, mainFile.file_name); 
-                }}
-                title={`تحميل: ${mainFile.file_name}`}
-              >
-                <Download className="w-4 h-4 ml-1.5" />
-                تحميل
-              </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-gray-600 hover:text-blue-600 hover:bg-blue-50 border-gray-200"
+                  onClick={(e) => { 
+                    e.stopPropagation(); 
+                    downloadFileWithName(mainFile.file_url, mainFile.file_name); 
+                  }}
+                  title={`تحميل: ${mainFile.file_name}`}
+                >
+                  <Download className="w-4 h-4 ml-1.5" />
+                  تحميل
+                </Button>
+              </div>
+
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-gray-400 hover:text-gray-700"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePrint();
+                  }}
+                  title="طباعة"
+                >
+                  <Printer className="w-4 h-4" />
+                </Button>
+
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="h-8 w-8 text-gray-400 hover:text-red-600 hover:bg-red-50"
+                      onClick={(e) => e.stopPropagation()}
+                      title="حذف"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>تأكيد الحذف</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        هل أنت متأكد من حذف هذا الملف؟ لا يمكن التراجع عن هذا الإجراء.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel onClick={(e) => e.stopPropagation()}>إلغاء</AlertDialogCancel>
+                      <AlertDialogAction 
+                        className="bg-red-600 hover:bg-red-700"
+                        onClick={(e) => { 
+                          e.stopPropagation();
+                          onDelete && onDelete(mainFile.id); 
+                        }}
+                      >
+                        حذف
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-1">
+            {/* الصف الثاني: الإجراءات الإضافية */}
+            <div className="flex items-center justify-end w-full border-t border-gray-100 pt-2 gap-1">
               {hasMultipleFiles && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -298,19 +351,6 @@ export default function ArchivedFileItem({ fileGroup, onDelete, onRefresh, emplo
                   </DropdownMenuContent>
                 </DropdownMenu>
               )}
-
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-gray-400 hover:text-gray-700"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePrint();
-                }}
-                title="طباعة"
-              >
-                <Printer className="w-4 h-4" />
-              </Button>
 
               <Button 
                 variant="ghost" 
@@ -337,40 +377,6 @@ export default function ArchivedFileItem({ fileGroup, onDelete, onRefresh, emplo
                   }}
                 />
               </div>
-
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="h-8 w-8 text-gray-400 hover:text-red-600 hover:bg-red-50"
-                    onClick={(e) => e.stopPropagation()}
-                    title="حذف"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>تأكيد الحذف</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      هل أنت متأكد من حذف هذا الملف؟ لا يمكن التراجع عن هذا الإجراء.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel onClick={(e) => e.stopPropagation()}>إلغاء</AlertDialogCancel>
-                    <AlertDialogAction 
-                      className="bg-red-600 hover:bg-red-700"
-                      onClick={(e) => { 
-                        e.stopPropagation();
-                        onDelete && onDelete(mainFile.id); 
-                      }}
-                    >
-                      حذف
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
             </div>
           </div>
         </CardContent>
