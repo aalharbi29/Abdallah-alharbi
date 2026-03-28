@@ -30,9 +30,12 @@ export default function useLayoutState({ currentPageName, navigationItems, locat
       setExpandedMenu(activeSubItemParent.name);
     }
 
-    const activeTopLevelItem = navigationItems.find(
-      (item) => !item.subItems && (location.pathname === item.href || item.href === "/")
-    );
+    const activeTopLevelItem = navigationItems.find((item) => {
+      if (item.subItems) return false;
+      const itemPath = item.href?.split("?")[0];
+      const itemSearch = item.href?.split("?")[1] || "";
+      return location.pathname === itemPath && (itemSearch ? location.search.includes(itemSearch) : true);
+    });
 
     if (activeTopLevelItem && !activeSubItemParent) {
       setExpandedMenu(null);

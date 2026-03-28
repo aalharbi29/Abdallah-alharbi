@@ -22,7 +22,10 @@ import {
   Eye,
 } from "lucide-react";
 
-const pageUrl = (pageName) => `/${pageName}`;
+const pageUrl = (pageName) => {
+  const [path, query] = pageName.split("?");
+  return query ? `/${path}?${query}` : `/${path}`;
+};
 
 export const getNavigationItems = (t) => [
   { name: t('nav.dashboard'), href: pageUrl("Dashboard"), icon: Home },
