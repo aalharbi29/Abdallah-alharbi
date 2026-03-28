@@ -328,7 +328,15 @@ export default function FillSafetyEvaluationForm() {
           <CardContent className="p-8 md:p-12 print:p-4">
             
             {/* Single Table with Thead for repeating header */}
-            <table className="w-full text-right border-collapse border border-gray-800 print:border-gray-800">
+            <table className="w-full text-right border-collapse" style={{ tableLayout: 'fixed' }}>
+              <colgroup>
+                <col style={{ width: '40px' }} />
+                <col style={{ width: 'auto' }} />
+                <col style={{ width: '50px' }} />
+                <col style={{ width: '50px' }} />
+                <col style={{ width: '70px' }} />
+                <col style={{ width: '200px' }} />
+              </colgroup>
               <thead className="print:table-header-group">
                 <tr>
                   <td colSpan={6} className="border-0 pb-6 bg-white">
@@ -370,7 +378,7 @@ export default function FillSafetyEvaluationForm() {
                       </motion.div>
                     </div>
 
-                    <div className="bg-gray-300 border border-gray-800 p-3 mb-6 text-center print:bg-gray-300">
+                    <div className="py-3 mb-6 text-center">
                       <h1 className="text-2xl font-bold text-gray-900">
                         تقرير عن مدى توفر أنظمة ومتطلبات السلامة بالمراكز الصحية
                       </h1>
@@ -418,16 +426,16 @@ export default function FillSafetyEvaluationForm() {
                       <th colSpan={2} className="p-2 border border-gray-800 print:border-gray-800 font-bold text-lg text-blue-900 text-right">
                         {section.title}
                       </th>
-                      <th className="p-2 border border-gray-800 print:border-gray-800 font-bold w-16 text-md">نعم</th>
-                      <th className="p-2 border border-gray-800 print:border-gray-800 font-bold w-16 text-md">لا</th>
+                      <th className="p-2 border border-gray-800 print:border-gray-800 font-bold text-md">نعم</th>
+                      <th className="p-2 border border-gray-800 print:border-gray-800 font-bold text-md">لا</th>
                       {section.hasNA && (
-                        <th className="p-2 border border-gray-800 print:border-gray-800 font-bold w-20 text-md">لا ينطبق</th>
+                        <th className="p-2 border border-gray-800 print:border-gray-800 font-bold text-md">لا ينطبق</th>
                       )}
-                      <th colSpan={section.hasNA ? 1 : 2} className="p-2 border border-gray-800 print:border-gray-800 font-bold w-64 text-md">ملاحظات</th>
+                      <th colSpan={section.hasNA ? 1 : 2} className="p-2 border border-gray-800 print:border-gray-800 font-bold text-md">ملاحظات</th>
                     </tr>
                     {section.questions.map((q, idx) => (
                       <tr key={q.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="p-2 border border-gray-800 print:border-gray-800 font-bold text-center w-8">
+                        <td className="p-2 border border-gray-800 print:border-gray-800 font-bold text-center">
                           {idx + 1}
                         </td>
                         <td className="p-2 border border-gray-800 print:border-gray-800 font-medium">
