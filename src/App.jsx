@@ -18,6 +18,8 @@ import HealthCentersMap from './pages/HealthCentersMap';
 import HealthCenterMapDetails from './pages/HealthCenterMapDetails';
 import HealthCenterMap3D from './pages/HealthCenterMap3D';
 import FillSafetyEvaluationForm from './pages/FillSafetyEvaluationForm';
+import SafetyEvaluations from './pages/SafetyEvaluations';
+import ViewSafetyEvaluation from './pages/ViewSafetyEvaluation';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -102,6 +104,16 @@ const AuthenticatedApp = () => {
       <Route path="/FillSafetyEvaluationForm" element={
         <LayoutWrapper currentPageName="FillSafetyEvaluationForm">
           <FillSafetyEvaluationForm />
+        </LayoutWrapper>
+      } />
+      <Route path="/SafetyEvaluations" element={
+        <LayoutWrapper currentPageName="SafetyEvaluations">
+          <SafetyEvaluations />
+        </LayoutWrapper>
+      } />
+      <Route path="/ViewSafetyEvaluation" element={
+        <LayoutWrapper currentPageName="ViewSafetyEvaluation">
+          <ViewSafetyEvaluation />
         </LayoutWrapper>
       } />
       <Route path="*" element={<PageNotFound />} />
