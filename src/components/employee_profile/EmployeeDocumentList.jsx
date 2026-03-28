@@ -25,8 +25,7 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
-import { EmployeeDocument } from '@/entities/EmployeeDocument';
-import { Employee } from '@/entities/Employee';
+import { base44 } from '@/api/base44Client';
 import PDFViewer from '@/components/files/PDFViewer';
 import { downloadFileWithName } from '@/components/files/InlineFileReplacer';
 import {
@@ -128,7 +127,7 @@ const CopyDocumentDialog = ({ open, onOpenChange, document: doc, currentEmployee
   const loadEmployees = async () => {
     setIsLoading(true);
     try {
-      const allEmployees = await Employee.list('-full_name_arabic', 500); // Fetch up to 500 employees, ordered by name
+      const allEmployees = await base44.entities.Employee.list('-full_name_arabic', 500); // Fetch up to 500 employees, ordered by name
       // استبعاد الموظف الحالي
       const otherEmployees = allEmployees.filter(emp => emp.id !== currentEmployeeId);
       setEmployees(otherEmployees);
@@ -204,7 +203,7 @@ const CopyDocumentDialog = ({ open, onOpenChange, document: doc, currentEmployee
 
       // Perform bulk creation
       // Assuming EmployeeDocument.bulkCreate takes an array of document objects and returns success/failure info
-      const results = await EmployeeDocument.bulkCreate(documentsToCreate);
+      const results = await base44.entities.EmployeeDocument.bulkCreate(documentsToCreate);
 
       // Process results to count successes and failures
       if (results && Array.isArray(results)) {
@@ -399,7 +398,7 @@ const DocumentCardHorizontal = ({ document: doc, onDelete, onRefresh, currentEmp
 
   const handleDelete = async () => {
     try {
-      await EmployeeDocument.delete(doc.id);
+      await base44.entities.EmployeeDocument.delete(doc.id);
       onDelete(doc.id);
       setShowDeleteDialog(false);
     } catch (error) {
@@ -412,7 +411,7 @@ const DocumentCardHorizontal = ({ document: doc, onDelete, onRefresh, currentEmp
     if (!newDocumentType) return;
     setIsMoving(true);
     try {
-      await EmployeeDocument.update(doc.id, { document_type: newDocumentType });
+      await base44.entities.EmployeeDocument.update(doc.id, { document_type: newDocumentType });
       setShowMoveDialog(false);
       onRefresh();
     } catch (error) {
@@ -502,7 +501,7 @@ const DocumentCardHorizontal = ({ document: doc, onDelete, onRefresh, currentEmp
         file={doc}
         open={isViewing}
         onOpenChange={setIsViewing}
-        entitySDK={EmployeeDocument}
+        entitySDK={base44.entities.EmployeeDocument}
         recordId={doc.id}
         fileUrlField="file_url"
         fileNameField="file_name"
@@ -523,7 +522,7 @@ const DocumentCardHorizontal = ({ document: doc, onDelete, onRefresh, currentEmp
         open={showEditDialog}
         onOpenChange={setShowEditDialog}
         document={doc}
-        entitySDK={EmployeeDocument}
+        entitySDK={base44.entities.EmployeeDocument}
         onSuccess={onRefresh}
       />
 
@@ -647,7 +646,7 @@ const DocumentCard = ({ document: doc, onDelete, onRefresh, currentEmployeeId })
 
   const handleDelete = async () => {
     try {
-      await EmployeeDocument.delete(doc.id);
+      await base44.entities.EmployeeDocument.delete(doc.id);
       onDelete(doc.id);
       setShowDeleteDialog(false);
     } catch (error) {
@@ -664,7 +663,7 @@ const DocumentCard = ({ document: doc, onDelete, onRefresh, currentEmployeeId })
 
     setIsMoving(true);
     try {
-      await EmployeeDocument.update(doc.id, {
+      await base44.entities.EmployeeDocument.update(doc.id, {
         document_type: newDocumentType
       });
       setShowMoveDialog(false);
@@ -960,7 +959,7 @@ ${doc.description ? `📝 ${doc.description}\n` : ''}
         file={doc}
         open={isViewing}
         onOpenChange={setIsViewing}
-        entitySDK={EmployeeDocument}
+        entitySDK={base44.entities.EmployeeDocument}
         recordId={doc.id}
         fileUrlField="file_url"
         fileNameField="file_name"
@@ -981,7 +980,7 @@ ${doc.description ? `📝 ${doc.description}\n` : ''}
         open={showEditDialog}
         onOpenChange={setShowEditDialog}
         document={doc}
-        entitySDK={EmployeeDocument}
+        entitySDK={base44.entities.EmployeeDocument}
         onSuccess={onRefresh}
       />
 
