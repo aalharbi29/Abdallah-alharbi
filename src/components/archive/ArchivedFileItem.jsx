@@ -219,8 +219,8 @@ export default function ArchivedFileItem({ fileGroup, onDelete, onRefresh, emplo
           </div>
 
           {/* أزرار الإجراءات - Footer */}
-          <div className="px-4 py-3 bg-gray-50/50 border-t border-gray-100 flex items-center justify-between no-drag">
-            <div className="flex items-center gap-2">
+          <div className="px-4 py-3 bg-gray-50/50 border-t border-gray-100 flex flex-wrap items-center justify-between gap-y-2 no-drag">
+            <div className="flex flex-wrap items-center gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="default" size="sm" className="bg-blue-600 hover:bg-blue-700 text-white shadow-sm" onClick={(e) => e.stopPropagation()}>
@@ -277,7 +277,7 @@ export default function ArchivedFileItem({ fileGroup, onDelete, onRefresh, emplo
               </Button>
             </div>
 
-            <div className="flex items-center gap-1">
+            <div className="flex flex-wrap items-center gap-1">
               {hasMultipleFiles && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
