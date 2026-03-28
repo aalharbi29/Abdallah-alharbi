@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle, Target, Stethoscope } from 'lucide-react';
+import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle, Target, Stethoscope, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 
@@ -109,6 +109,14 @@ const interactiveForms = [
     color: "from-teal-500 to-cyan-600",
     link: createPageUrl("FillOccupationalHealthForm"),
     category: "الصحة المهنية"
+  },
+  {
+    title: "تقييم الأمن والسلامة",
+    description: "تقييم توفر أنظمة ومتطلبات السلامة بالمراكز الصحية مع إثباتات بالصور",
+    icon: ShieldCheck,
+    color: "from-emerald-600 to-teal-600",
+    link: createPageUrl("FillSafetyEvaluationForm"),
+    category: "السلامة"
   }
 ];
 

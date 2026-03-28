@@ -17,6 +17,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import HealthCentersMap from './pages/HealthCentersMap';
 import HealthCenterMapDetails from './pages/HealthCenterMapDetails';
 import HealthCenterMap3D from './pages/HealthCenterMap3D';
+import FillSafetyEvaluationForm from './pages/FillSafetyEvaluationForm';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -96,6 +97,11 @@ const AuthenticatedApp = () => {
       <Route path="/HealthCenterMap3D" element={
         <LayoutWrapper currentPageName="HealthCenterMap3D">
           <HealthCenterMap3D />
+        </LayoutWrapper>
+      } />
+      <Route path="/FillSafetyEvaluationForm" element={
+        <LayoutWrapper currentPageName="FillSafetyEvaluationForm">
+          <FillSafetyEvaluationForm />
         </LayoutWrapper>
       } />
       <Route path="*" element={<PageNotFound />} />
