@@ -22,10 +22,12 @@ export default function EmployeeIntroductionPreview({
   return (
     <div
       ref={letterRef}
-      className="print-area bg-white p-8 md:p-12 min-h-[1000px] relative letter-content"
+      className="print-area bg-white p-8 md:p-12 min-h-[1000px] relative letter-content flex flex-col"
       style={{ direction: 'rtl' }}
     >
       <OfficialLetterHeader arabicDepartment="إدارة المراكز الصحية بالحناكية" englishDepartment="Al-Hanakiyah Health Centers" />
+
+      <div className="flex-1">
 
       <div className="flex justify-between mb-6 text-sm">
         <div>
@@ -102,8 +104,9 @@ export default function EmployeeIntroductionPreview({
       <div ref={signatureAreaRef} className="relative" style={{ height: '200px', cursor: dragging ? 'grabbing' : 'default' }}>
 ...
       </div>
+      </div>
 
-      <OfficialFooter compact />
+      <OfficialFooter compact className="mt-auto" />
     </div>
   );
 }
