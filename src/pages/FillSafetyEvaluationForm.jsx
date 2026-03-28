@@ -377,7 +377,7 @@ export default function FillSafetyEvaluationForm() {
         </div>
 
         <Card id="printable-form" className="shadow-lg border-0 print:shadow-none print:border-0 rounded-xl overflow-hidden print:overflow-visible bg-white">
-          <CardContent className="p-8 md:p-12 print:p-4">
+          <CardContent className="mt-1 mb-1 pt-8 pr-8 pb-8 pl-8 md:p-12 print:p-4">
             
             {/* Single Table with Thead for repeating header */}
             <table className="w-full text-right border-collapse" style={{ tableLayout: 'fixed' }}>
@@ -391,9 +391,9 @@ export default function FillSafetyEvaluationForm() {
               </colgroup>
               <thead className="print:table-header-group">
                 <tr>
-                  <td colSpan={6} className="border-0 pb-6 bg-white">
+                  <td colSpan={6} className="bg-white pb-2 border-0">
                     {/* Header */}
-                    <div className="relative flex justify-between items-start mb-6">
+                    <div className="mb-3 relative flex justify-between items-start">
                       <motion.div
                         drag={isEditingLayout}
                         dragMomentum={false}
@@ -430,7 +430,7 @@ export default function FillSafetyEvaluationForm() {
                       </motion.div>
                     </div>
 
-                    <div className="py-3 mb-6 text-center">
+                    <div className="mb-2 pt-2 pb-2 text-center">
                       <h1 className="text-gray-900 text-base font-bold">تقرير عن مدى توفر أنظمة ومتطلبات السلامة بالمراكز الصحية
 
                       </h1>
@@ -440,7 +440,7 @@ export default function FillSafetyEvaluationForm() {
                     <table className="w-full border-collapse border border-gray-800 mb-4 text-center">
                       <tbody>
                         <tr>
-                          <td className="border border-gray-800 bg-gray-200 print:bg-gray-200 font-bold p-2 w-1/4">اسم المنشأة</td>
+                          <td className="bg-gray-200 pt-2 pr-2 pb-2 pl-2 font-bold border border-gray-800 print:bg-gray-200 w-1/4">اسم المنشأة</td>
                           <td className="border border-gray-800 p-0 w-1/4">
                             <Select
                               value={formData.health_center_name}
