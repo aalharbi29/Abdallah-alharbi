@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Trash2, Calendar, Briefcase, Award, Eye, Pin, MessageCircle, CheckSquare, User, Sparkles, Phone, IdCard, CakeIcon, CalendarCheck, Building2 } from "lucide-react";
+import { Edit, Trash2, Calendar, Briefcase, Award, Eye, Pin, MessageCircle, CheckSquare, User, Sparkles, Phone, IdCard, CakeIcon, CalendarCheck, Building2, LayoutGrid, RotateCcw, Lock, Unlock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -22,6 +22,23 @@ export default function EmployeeList({
   selectedEmployees = new Set(),
   onToggleSelection
 }) {
+  const [isEditingLayout, setIsEditingLayout] = React.useState(false);
+  const [cardLayout, setCardLayout] = React.useState(() => {
+    const saved = localStorage.getItem('employeeCardLayout');
+    return saved ? JSON.parse(saved) : {};
+  });
+
+  const updateLayout = (key, info) => {
+    const newLayout = { ...cardLayout, [key]: { x: (cardLayout[key]?.x || 0) + info.offset.x, y: (cardLayout[key]?.y || 0) + info.offset.y } };
+    setCardLayout(newLayout);
+    localStorage.setItem('employeeCardLayout', JSON.stringify(newLayout));
+  };
+
+  const resetLayout = () => {
+    setCardLayout({});
+    localStorage.removeItem('employeeCardLayout');
+  };
+
   const normalizePhoneForWhatsApp = (raw) => {
     if (!raw) return "";
     const digits = String(raw).replace(/\D/g, "");
@@ -119,6 +136,18 @@ export default function EmployeeList({
 
   return (
     <motion.div className="overflow-x-hidden" variants={containerVariants} initial="hidden" animate="visible">
+      <div className="flex justify-end gap-2 mb-4">
+        <Button variant="outline" size="sm" onClick={() => setIsEditingLayout(!isEditingLayout)} className="bg-white/10 text-white border-white/20 hover:bg-white/20">
+          {isEditingLayout ? <Lock className="w-4 h-4 ml-2" /> : <Unlock className="w-4 h-4 ml-2" />}
+          {isEditingLayout ? 'إنهاء التعديل الحر' : 'تعديل حر للبطاقة'}
+        </Button>
+        {isEditingLayout && (
+          <Button variant="destructive" size="sm" onClick={resetLayout}>
+            <RotateCcw className="w-4 h-4 ml-2" />
+            إعادة ضبط
+          </Button>
+        )}
+      </div>
       <AnimatePresence mode="popLayout">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
           {employees.map((employee) => {
@@ -153,6 +182,9 @@ export default function EmployeeList({
                     onPinEmployee={onPinEmployee}
                     onToggleSelection={onToggleSelection}
                     normalizePhoneForWhatsApp={normalizePhoneForWhatsApp}
+                    isEditingLayout={isEditingLayout}
+                    cardLayout={cardLayout}
+                    updateLayout={updateLayout}
                   />
                 </div>
 
@@ -165,7 +197,13 @@ export default function EmployeeList({
                     <CardContent className="p-4 h-full">
                       <div className="flex flex-col gap-3 h-full">
                         <div className="flex items-start gap-3">
-                          <div className="flex flex-col items-center gap-1.5 w-[82px] shrink-0">
+                          <motion.div
+                            drag={isEditingLayout}
+                            dragMomentum={false}
+                            onDragEnd={(e, info) => updateLayout('tablet_right_col', info)}
+                            animate={cardLayout['tablet_right_col'] || { x: 0, y: 0 }}
+                            className={`flex flex-col items-center gap-1.5 w-[82px] shrink-0 ${isEditingLayout ? "cursor-move z-50 relative" : ""}`}
+                          >
                             {onToggleSelection && (
                               <button
                                 onClick={() => onToggleSelection(employee.id)}
@@ -186,21 +224,35 @@ export default function EmployeeList({
                                 {employee.contract_type}
                               </Badge>
                             )}
-                          </div>
+                          </motion.div>
 
-                          {employee.profile_image_url ? (
-                            <img
-                              src={employee.profile_image_url}
-                              alt={employee.full_name_arabic || "صورة الموظف"}
-                              className="w-18 h-18 rounded-xl object-cover border border-white/20 shrink-0"
-                            />
-                          ) : (
-                            <div className="w-18 h-18 rounded-xl bg-gradient-to-br from-indigo-600/40 to-purple-600/40 border border-white/20 flex items-center justify-center shrink-0">
-                              <User className="w-8 h-8 text-white/80" />
-                            </div>
-                          )}
+                          <motion.div
+                            drag={isEditingLayout}
+                            dragMomentum={false}
+                            onDragEnd={(e, info) => updateLayout('tablet_image', info)}
+                            animate={cardLayout['tablet_image'] || { x: 0, y: 0 }}
+                            className={isEditingLayout ? "cursor-move z-50 relative" : ""}
+                          >
+                            {employee.profile_image_url ? (
+                              <img
+                                src={employee.profile_image_url}
+                                alt={employee.full_name_arabic || "صورة الموظف"}
+                                className={`w-18 h-18 rounded-xl object-cover border border-white/20 shrink-0 ${isEditingLayout ? "pointer-events-none" : ""}`}
+                              />
+                            ) : (
+                              <div className="w-18 h-18 rounded-xl bg-gradient-to-br from-indigo-600/40 to-purple-600/40 border border-white/20 flex items-center justify-center shrink-0">
+                                <User className="w-8 h-8 text-white/80" />
+                              </div>
+                            )}
+                          </motion.div>
 
-                          <div className="flex-1 min-w-0 space-y-2">
+                          <motion.div
+                            drag={isEditingLayout}
+                            dragMomentum={false}
+                            onDragEnd={(e, info) => updateLayout('tablet_info', info)}
+                            animate={cardLayout['tablet_info'] || { x: 0, y: 0 }}
+                            className={`flex-1 min-w-0 space-y-2 ${isEditingLayout ? "cursor-move z-50 relative" : ""}`}
+                          >
                             <div className="flex items-start justify-between gap-2">
                               <div className="min-w-0 flex-1">
                                 <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="block text-base font-black text-white leading-6">
@@ -233,16 +285,28 @@ export default function EmployeeList({
                               {employee.رقم_الهوية && <div className="truncate"><span className="text-white/60">الهوية:</span> {employee.رقم_الهوية}</div>}
                               {employee.hire_date && <div className="truncate"><span className="text-white/60">التعيين:</span> {employee.hire_date}</div>}
                             </div>
-                          </div>
+                          </motion.div>
                         </div>
 
-                        <div className="flex flex-wrap gap-1.5">
+                        <motion.div
+                          drag={isEditingLayout}
+                          dragMomentum={false}
+                          onDragEnd={(e, info) => updateLayout('tablet_tags', info)}
+                          animate={cardLayout['tablet_tags'] || { x: 0, y: 0 }}
+                          className={`flex flex-wrap gap-1.5 ${isEditingLayout ? "cursor-move z-50 relative" : ""}`}
+                        >
                           {employee.is_externally_assigned && <Badge className="text-[10px] px-2 py-0.5 bg-amber-500 text-white">تكليف خارجي</Badge>}
                           {activeHolidayAssignments.length > 0 && <Badge className="text-[10px] px-2 py-0.5 bg-purple-500 text-white">{activeHolidayAssignments[0].holiday_name}</Badge>}
                           {employeeRoles.slice(0, 2).map((role, idx) => <Badge key={idx} className="text-[10px] px-2 py-0.5 bg-cyan-500 text-white">{role}</Badge>)}
-                        </div>
+                        </motion.div>
 
-                        <div className="grid grid-cols-3 gap-2 pt-2 border-t border-white/10 mt-auto">
+                        <motion.div
+                          drag={isEditingLayout}
+                          dragMomentum={false}
+                          onDragEnd={(e, info) => updateLayout('tablet_actions', info)}
+                          animate={cardLayout['tablet_actions'] || { x: 0, y: 0 }}
+                          className={`grid grid-cols-3 gap-2 pt-2 border-t border-white/10 mt-auto ${isEditingLayout ? "cursor-move z-50 relative" : ""}`}
+                        >
                           <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="col-span-3">
                             <Button size="sm" className="w-full h-8 text-xs bg-indigo-600 hover:bg-indigo-500 rounded-lg">
                               <Eye className="w-3.5 h-3.5 ml-1" />عرض الملف
@@ -251,7 +315,7 @@ export default function EmployeeList({
                           {onEdit && <Button size="sm" onClick={() => onEdit(employee)} className="h-8 text-xs bg-cyan-600 hover:bg-cyan-500 rounded-lg"><Edit className="w-3.5 h-3.5 ml-1" />تعديل</Button>}
                           {onAddLeave && <Button size="sm" onClick={() => onAddLeave(employee)} className="h-8 text-xs bg-amber-600 hover:bg-amber-500 rounded-lg"><Calendar className="w-3.5 h-3.5 ml-1" />إجازة</Button>}
                           {onAddAssignment && <Button size="sm" onClick={() => onAddAssignment(employee)} className="h-8 text-xs bg-purple-600 hover:bg-purple-500 rounded-lg"><Briefcase className="w-3.5 h-3.5 ml-1" />تكليف</Button>}
-                        </div>
+                        </motion.div>
                       </div>
                     </CardContent>
                   </Card>
@@ -273,7 +337,13 @@ export default function EmployeeList({
                       <div className="flex flex-col gap-4 h-full max-w-full overflow-hidden">
                         <div className="flex items-start gap-4 md:gap-5 max-w-full overflow-hidden">
                           <div className="flex items-start gap-3 shrink-0">
-                            <div className="flex flex-col items-center gap-2 w-[86px] md:w-[100px] shrink-0">
+                            <motion.div
+                              drag={isEditingLayout}
+                              dragMomentum={false}
+                              onDragEnd={(e, info) => updateLayout('desktop_right_col', info)}
+                              animate={cardLayout['desktop_right_col'] || { x: 0, y: 0 }}
+                              className={`flex flex-col items-center gap-2 w-[86px] md:w-[100px] shrink-0 ${isEditingLayout ? "cursor-move z-50 relative" : ""}`}
+                            >
                               {onToggleSelection && (
                                 <motion.div whileTap={{ scale: 0.9 }}>
                                   <div
@@ -303,11 +373,15 @@ export default function EmployeeList({
                                   {employee.contract_type}
                                 </Badge>
                               )}
-                            </div>
+                            </motion.div>
 
                             <motion.div
-                              className="relative"
-                              whileHover={{ scale: 1.05 }}
+                              drag={isEditingLayout}
+                              dragMomentum={false}
+                              onDragEnd={(e, info) => updateLayout('desktop_image', info)}
+                              animate={cardLayout['desktop_image'] || { x: 0, y: 0 }}
+                              className={`relative ${isEditingLayout ? "cursor-move z-50" : ""}`}
+                              whileHover={!isEditingLayout ? { scale: 1.05 } : {}}
                               transition={{ type: "spring", stiffness: 300 }}
                             >
                               {employee.profile_image_url ? (
@@ -340,7 +414,13 @@ export default function EmployeeList({
                             </motion.div>
                           </div>
 
-                          <div className="flex-1 min-w-0 overflow-hidden">
+                          <motion.div
+                            drag={isEditingLayout}
+                            dragMomentum={false}
+                            onDragEnd={(e, info) => updateLayout('desktop_name_actions', info)}
+                            animate={cardLayout['desktop_name_actions'] || { x: 0, y: 0 }}
+                            className={`flex-1 min-w-0 overflow-hidden ${isEditingLayout ? "cursor-move z-50 relative" : ""}`}
+                          >
                             <div className="flex items-start justify-between gap-3 max-w-full overflow-hidden">
                               <div className="flex-1">
                                 <Link
@@ -396,10 +476,16 @@ export default function EmployeeList({
                                 )}
                               </div>
                             </div>
-                          </div>
+                          </motion.div>
                         </div>
 
-                        <div className="flex flex-wrap gap-2">
+                        <motion.div
+                          drag={isEditingLayout}
+                          dragMomentum={false}
+                          onDragEnd={(e, info) => updateLayout('desktop_tags', info)}
+                          animate={cardLayout['desktop_tags'] || { x: 0, y: 0 }}
+                          className={`flex flex-wrap gap-2 ${isEditingLayout ? "cursor-move z-50 relative" : ""}`}
+                        >
                           {employee.is_externally_assigned && (
                             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }}>
                               <Badge className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white text-[11px] md:text-xs py-1 md:py-1.5 px-2.5 md:px-3 font-black shadow-xl shadow-orange-500/30 border border-orange-300/30 mobile-paragraph compact">
@@ -434,9 +520,15 @@ export default function EmployeeList({
                               +{employeeRoles.length - 2}
                             </Badge>
                           )}
-                        </div>
+                        </motion.div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs md:text-sm p-4 md:p-5 bg-black/10 rounded-2xl border border-white/15 backdrop-blur-sm max-w-full overflow-hidden">
+                        <motion.div
+                          drag={isEditingLayout}
+                          dragMomentum={false}
+                          onDragEnd={(e, info) => updateLayout('desktop_info_grid', info)}
+                          animate={cardLayout['desktop_info_grid'] || { x: 0, y: 0 }}
+                          className={`grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs md:text-sm p-4 md:p-5 bg-black/10 rounded-2xl border border-white/15 backdrop-blur-sm max-w-full overflow-hidden ${isEditingLayout ? "cursor-move z-50 relative" : ""}`}
+                        >
                           {employee.رقم_الموظف && (
                             <div className="flex items-center gap-2 text-white">
                               <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
@@ -496,9 +588,15 @@ export default function EmployeeList({
                               </div>
                             </div>
                           )}
-                        </div>
+                        </motion.div>
 
-                        <div className="grid grid-cols-2 gap-2 max-w-full mt-auto pt-2 border-t border-white/10">
+                        <motion.div
+                          drag={isEditingLayout}
+                          dragMomentum={false}
+                          onDragEnd={(e, info) => updateLayout('desktop_actions', info)}
+                          animate={cardLayout['desktop_actions'] || { x: 0, y: 0 }}
+                          className={`grid grid-cols-2 gap-2 max-w-full mt-auto pt-2 border-t border-white/10 ${isEditingLayout ? "cursor-move z-50 relative" : ""}`}
+                        >
                           <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="col-span-2 xl:col-span-1">
                             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                               <Button size="sm" className="w-full h-10 text-sm px-4 font-black bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 text-white rounded-xl shadow-lg shadow-indigo-500/30 border-0">
@@ -552,7 +650,7 @@ export default function EmployeeList({
                               </Button>
                             </motion.div>
                           )}
-                        </div>
+                        </motion.div>
                       </div>
                     </CardContent>
                   </Card>

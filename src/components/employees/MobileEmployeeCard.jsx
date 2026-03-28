@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Edit, Trash2, Calendar, Briefcase, Award, Eye, Pin, MessageCircle, User, Phone, IdCard, Building2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { motion } from "framer-motion";
 
 export default function MobileEmployeeCard({
   employee,
@@ -20,7 +21,13 @@ export default function MobileEmployeeCard({
   onPinEmployee,
   onToggleSelection,
   normalizePhoneForWhatsApp,
+  isEditingLayout,
+  cardLayout = {},
+  updateLayout,
 }) {
+  const getLayout = (key) => cardLayout[key] || { x: 0, y: 0 };
+  const handleDrag = (key) => (e, info) => updateLayout && updateLayout(key, info);
+
   const getShortCenterName = (centerName) => {
     if (!centerName) return '';
     return String(centerName)
@@ -33,19 +40,33 @@ export default function MobileEmployeeCard({
       <CardContent className="p-4">
         <div className="space-y-3">
           <div className="flex items-start gap-3">
-            {employee.profile_image_url ? (
-              <img
-                src={employee.profile_image_url}
-                alt={employee.full_name_arabic || 'صورة الموظف'}
-                className="w-14 h-14 rounded-xl object-cover border border-white/20 shrink-0"
-              />
-            ) : (
-              <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-600/40 to-purple-600/40 border border-white/20 flex items-center justify-center shrink-0">
-                <User className="w-6 h-6 text-white/80" />
-              </div>
-            )}
+            <motion.div
+              drag={isEditingLayout}
+              dragMomentum={false}
+              onDragEnd={handleDrag('mobile_image')}
+              animate={getLayout('mobile_image')}
+              className={isEditingLayout ? "cursor-move z-50 relative" : ""}
+            >
+              {employee.profile_image_url ? (
+                <img
+                  src={employee.profile_image_url}
+                  alt={employee.full_name_arabic || 'صورة الموظف'}
+                  className={`w-14 h-14 rounded-xl object-cover border border-white/20 shrink-0 ${isEditingLayout ? "pointer-events-none" : ""}`}
+                />
+              ) : (
+                <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-indigo-600/40 to-purple-600/40 border border-white/20 flex items-center justify-center shrink-0">
+                  <User className="w-6 h-6 text-white/80" />
+                </div>
+              )}
+            </motion.div>
 
-            <div className="flex-1 min-w-0 space-y-2">
+            <motion.div
+              drag={isEditingLayout}
+              dragMomentum={false}
+              onDragEnd={handleDrag('mobile_name')}
+              animate={getLayout('mobile_name')}
+              className={`flex-1 min-w-0 space-y-2 ${isEditingLayout ? "cursor-move z-50 relative" : ""}`}
+            >
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0 flex-1">
                   <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="block text-sm font-black text-white truncate">
@@ -88,10 +109,16 @@ export default function MobileEmployeeCard({
                   )}
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
 
-          <div className="grid grid-cols-1 gap-2 text-[11px] text-white/90 bg-black/10 rounded-2xl p-3 border border-white/10">
+          <motion.div
+            drag={isEditingLayout}
+            dragMomentum={false}
+            onDragEnd={handleDrag('mobile_info')}
+            animate={getLayout('mobile_info')}
+            className={`grid grid-cols-1 gap-2 text-[11px] text-white/90 bg-black/10 rounded-2xl p-3 border border-white/10 ${isEditingLayout ? "cursor-move z-50 relative" : ""}`}
+          >
             {employee.رقم_الموظف && (
               <div className="flex items-center gap-2 min-w-0">
                 <IdCard className="w-3.5 h-3.5 text-blue-300 shrink-0" />
@@ -113,15 +140,27 @@ export default function MobileEmployeeCard({
                 <span className="truncate">{employee.رقم_الهوية}</span>
               </div>
             )}
-          </div>
+          </motion.div>
 
-          <div className="flex flex-wrap gap-1.5">
+          <motion.div
+            drag={isEditingLayout}
+            dragMomentum={false}
+            onDragEnd={handleDrag('mobile_tags')}
+            animate={getLayout('mobile_tags')}
+            className={`flex flex-wrap gap-1.5 ${isEditingLayout ? "cursor-move z-50 relative" : ""}`}
+          >
             {employee.is_externally_assigned && <Badge className="text-[10px] px-2 py-0.5 bg-amber-500 text-white">تكليف خارجي</Badge>}
             {activeHolidayAssignments.length > 0 && <Badge className="text-[10px] px-2 py-0.5 bg-purple-500 text-white">{activeHolidayAssignments[0].holiday_name}</Badge>}
             {employeeRoles.slice(0, 2).map((role, idx) => <Badge key={idx} className="text-[10px] px-2 py-0.5 bg-cyan-500 text-white">{role}</Badge>)}
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/10">
+          <motion.div
+            drag={isEditingLayout}
+            dragMomentum={false}
+            onDragEnd={handleDrag('mobile_actions')}
+            animate={getLayout('mobile_actions')}
+            className={`grid grid-cols-2 gap-2 pt-2 border-t border-white/10 ${isEditingLayout ? "cursor-move z-50 relative" : ""}`}
+          >
             <Link to={createPageUrl(`EmployeeProfile?id=${employee.id}`)} className="col-span-2">
               <Button size="sm" className="w-full h-8 text-xs bg-indigo-600 hover:bg-indigo-500 rounded-lg">
                 <Eye className="w-3.5 h-3.5 ml-1" />عرض الملف
@@ -132,7 +171,7 @@ export default function MobileEmployeeCard({
             {onAddAssignment && <Button size="sm" onClick={() => onAddAssignment(employee)} className="h-8 text-xs bg-purple-600 hover:bg-purple-500 rounded-lg"><Briefcase className="w-3.5 h-3.5 ml-1" />تكليف</Button>}
             {onAddHolidayAssignment && <Button size="sm" onClick={() => onAddHolidayAssignment(employee)} className="h-8 text-xs bg-pink-600 hover:bg-pink-500 rounded-lg"><Award className="w-3.5 h-3.5 ml-1" />تكليف إجازة</Button>}
             {onDelete && <Button size="sm" onClick={() => onDelete(employee)} className="col-span-2 h-8 text-xs bg-red-600 hover:bg-red-500 rounded-lg"><Trash2 className="w-3.5 h-3.5 ml-1" />حذف</Button>}
-          </div>
+          </motion.div>
         </div>
       </CardContent>
     </Card>
