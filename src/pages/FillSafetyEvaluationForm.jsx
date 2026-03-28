@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { UploadFile } from '@/integrations/Core';
-import { Loader2, Printer, Save, Image as ImageIcon, Trash2, ShieldCheck, Upload, Settings, RotateCcw } from 'lucide-react';
+import { Loader2, Printer, Save, Image as ImageIcon, Trash2, ShieldCheck, Upload, Settings, RotateCcw, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 
@@ -382,26 +382,20 @@ export default function FillSafetyEvaluationForm() {
                     </table>
                   </td>
                 </tr>
-                {/* Table Column Headers */}
-                <tr className="bg-gray-300 print:bg-gray-300 text-center">
-                  <th rowSpan={2} className="p-2 border border-gray-800 print:border-gray-800 font-bold w-12 text-lg">م</th>
-                  <th rowSpan={2} className="p-2 border border-gray-800 print:border-gray-800 font-bold text-lg">المتطلبات</th>
-                  <th colSpan={3} className="p-2 border border-gray-800 print:border-gray-800 font-bold text-lg">التقييم</th>
-                  <th rowSpan={2} className="p-2 border border-gray-800 print:border-gray-800 font-bold w-48 text-lg">ملاحظات</th>
-                </tr>
-                <tr className="bg-gray-300 print:bg-gray-300 text-center">
-                  <th className="p-2 border border-gray-800 print:border-gray-800 font-bold w-16 text-md">نعم</th>
-                  <th className="p-2 border border-gray-800 print:border-gray-800 font-bold w-16 text-md">لا</th>
-                  <th className="p-2 border border-gray-800 print:border-gray-800 font-bold w-20 text-md">لا ينطبق</th>
-                </tr>
               </thead>
               <tbody>
                 {SECTIONS.map((section) => (
                   <React.Fragment key={section.id}>
-                    <tr className="bg-gray-200 print:bg-gray-200">
-                      <td colSpan={6} className="p-2 border border-gray-800 print:border-gray-800 font-bold text-center text-lg text-blue-900">
+                    <tr className="bg-gray-300 print:bg-gray-300 text-center">
+                      <th colSpan={2} className="p-2 border border-gray-800 print:border-gray-800 font-bold text-lg text-blue-900 text-right">
                         {section.title}
-                      </td>
+                      </th>
+                      <th className="p-2 border border-gray-800 print:border-gray-800 font-bold w-16 text-md">نعم</th>
+                      <th className="p-2 border border-gray-800 print:border-gray-800 font-bold w-16 text-md">لا</th>
+                      {section.hasNA && (
+                        <th className="p-2 border border-gray-800 print:border-gray-800 font-bold w-20 text-md">لا ينطبق</th>
+                      )}
+                      <th colSpan={section.hasNA ? 1 : 2} className="p-2 border border-gray-800 print:border-gray-800 font-bold w-64 text-md">ملاحظات</th>
                     </tr>
                     {section.hasCount && (
                       <tr>
@@ -420,51 +414,57 @@ export default function FillSafetyEvaluationForm() {
                     )}
                     {section.questions.map((q, idx) => (
                       <tr key={q.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="p-2 border border-gray-800 print:border-gray-800 font-bold text-center">
+                        <td className="p-2 border border-gray-800 print:border-gray-800 font-bold text-center w-12">
                           {idx + 1}
                         </td>
                         <td className="p-2 border border-gray-800 print:border-gray-800 font-medium">
                           {q.text}
                         </td>
-                        <td className="p-2 border border-gray-800 print:border-gray-800 text-center align-middle">
-                          <input 
-                            type="radio" 
-                            name={q.id} 
-                            checked={formData.answers[q.id] === 'yes'}
-                            onChange={() => handleAnswerChange(q.id, 'yes')}
-                            className="w-5 h-5 text-blue-600 cursor-pointer"
-                          />
+                        <td 
+                          className="p-0 border border-gray-800 print:border-gray-800 text-center align-middle cursor-pointer hover:bg-gray-100"
+                          onClick={() => handleAnswerChange(q.id, 'yes')}
+                        >
+                          <div className="w-full h-full min-h-[40px] flex items-center justify-center">
+                            {formData.answers[q.id] === 'yes' && <Check className="w-6 h-6 text-green-600" strokeWidth={4} />}
+                          </div>
                         </td>
-                        <td className="p-2 border border-gray-800 print:border-gray-800 text-center align-middle">
-                          <input 
-                            type="radio" 
-                            name={q.id} 
-                            checked={formData.answers[q.id] === 'no'}
-                            onChange={() => handleAnswerChange(q.id, 'no')}
-                            className="w-5 h-5 text-red-600 cursor-pointer"
-                          />
+                        <td 
+                          className="p-0 border border-gray-800 print:border-gray-800 text-center align-middle cursor-pointer hover:bg-gray-100"
+                          onClick={() => handleAnswerChange(q.id, 'no')}
+                        >
+                          <div className="w-full h-full min-h-[40px] flex items-center justify-center">
+                            {formData.answers[q.id] === 'no' && <Check className="w-6 h-6 text-red-600" strokeWidth={4} />}
+                          </div>
                         </td>
-                        <td className="p-2 border border-gray-800 print:border-gray-800 text-center align-middle">
-                          {section.hasNA ? (
-                            <input 
-                              type="radio" 
-                              name={q.id} 
-                              checked={formData.answers[q.id] === 'na'}
-                              onChange={() => handleAnswerChange(q.id, 'na')}
-                              className="w-5 h-5 text-gray-500 cursor-pointer"
+                        {section.hasNA ? (
+                          <>
+                            <td 
+                              className="p-0 border border-gray-800 print:border-gray-800 text-center align-middle cursor-pointer hover:bg-gray-100"
+                              onClick={() => handleAnswerChange(q.id, 'na')}
+                            >
+                              <div className="w-full h-full min-h-[40px] flex items-center justify-center">
+                                {formData.answers[q.id] === 'na' && <Check className="w-6 h-6 text-blue-600" strokeWidth={4} />}
+                              </div>
+                            </td>
+                            <td className="p-1 border border-gray-800 print:border-gray-800">
+                              <Input 
+                                value={formData.notes[q.id] || ''}
+                                onChange={(e) => handleNoteChange(q.id, e.target.value)}
+                                className="border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-blue-200 h-full min-h-[40px] rounded-none"
+                                placeholder="ملاحظات..."
+                              />
+                            </td>
+                          </>
+                        ) : (
+                          <td colSpan={2} className="p-1 border border-gray-800 print:border-gray-800">
+                            <Input 
+                              value={formData.notes[q.id] || ''}
+                              onChange={(e) => handleNoteChange(q.id, e.target.value)}
+                              className="border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-blue-200 h-full min-h-[40px] rounded-none"
+                              placeholder="ملاحظات..."
                             />
-                          ) : (
-                            <div className="bg-gray-200 print:bg-gray-200 w-full h-full min-h-[24px]"></div>
-                          )}
-                        </td>
-                        <td className="p-1 border border-gray-800 print:border-gray-800">
-                          <Input 
-                            value={formData.notes[q.id] || ''}
-                            onChange={(e) => handleNoteChange(q.id, e.target.value)}
-                            className="border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-blue-200 h-full min-h-[40px] rounded-none"
-                            placeholder="ملاحظات..."
-                          />
-                        </td>
+                          </td>
+                        )}
                       </tr>
                     ))}
                   </React.Fragment>
@@ -587,29 +587,9 @@ export default function FillSafetyEvaluationForm() {
           .print\\:px-0 { padding-left: 0 !important; padding-right: 0 !important; }
           .print\\:max-w-none { max-width: none !important; }
           .break-before-page { page-break-before: always; }
-          input[type="radio"] { 
-            appearance: none;
-            width: 16px;
-            height: 16px;
-            border: 2px solid #000;
-            border-radius: 50%;
-            display: inline-block;
-            position: relative;
-            -webkit-print-color-adjust: exact;
-            color-adjust: exact;
-          }
-          input[type="radio"]:checked::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 8px;
-            height: 8px;
-            background: #000;
-            border-radius: 50%;
-            -webkit-print-color-adjust: exact;
-            color-adjust: exact;
-          }
+          html, body, #root { height: auto !important; overflow: visible !important; }
+          .responsive-shell { display: block !important; height: auto !important; overflow: visible !important; }
+          main { overflow: visible !important; height: auto !important; }
           input[type="text"], input[type="number"], input[type="date"] {
             border: none !important;
             background: transparent !important;
