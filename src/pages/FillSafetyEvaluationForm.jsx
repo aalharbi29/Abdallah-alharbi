@@ -486,27 +486,27 @@ export default function FillSafetyEvaluationForm() {
                       <th colSpan={section.hasNA ? 1 : 2} className="p-1 border border-gray-800 print:border-gray-800 font-bold text-md">ملاحظات</th>
                     </tr>
                     {section.questions.map((q, idx) =>
-                  <tr key={q.id} className="hover:bg-gray-50 transition-colors h-[30px]">
-                        <td className="p-1 border border-gray-800 print:border-gray-800 font-bold text-center">
+                  <tr key={q.id} className="hover:bg-gray-50 transition-colors h-[20px]">
+                        <td className="px-1 py-0 border border-gray-800 print:border-gray-800 font-bold text-center text-sm">
                           {idx + 1}
                         </td>
-                        <td className="p-1 border border-gray-800 print:border-gray-800 font-medium">
+                        <td className="px-1 py-0 border border-gray-800 print:border-gray-800 font-medium text-sm">
                           {q.text}
                         </td>
                         <td
                       className="p-0 border border-gray-800 print:border-gray-800 text-center align-middle cursor-pointer hover:bg-gray-100"
                       onClick={() => handleAnswerChange(q.id, 'yes')}>
                       
-                          <div className="w-full h-full min-h-[30px] flex items-center justify-center">
-                            {formData.answers[q.id] === 'yes' && <Check className="w-6 h-6 text-green-600" strokeWidth={4} />}
+                          <div className="w-full h-full min-h-[20px] flex items-center justify-center">
+                            {formData.answers[q.id] === 'yes' && <Check className="w-4 h-4 text-green-600" strokeWidth={4} />}
                           </div>
                         </td>
                         <td
                       className="p-0 border border-gray-800 print:border-gray-800 text-center align-middle cursor-pointer hover:bg-gray-100"
                       onClick={() => handleAnswerChange(q.id, 'no')}>
                       
-                          <div className="w-full h-full min-h-[30px] flex items-center justify-center">
-                            {formData.answers[q.id] === 'no' && <Check className="w-6 h-6 text-red-600" strokeWidth={4} />}
+                          <div className="w-full h-full min-h-[20px] flex items-center justify-center">
+                            {formData.answers[q.id] === 'no' && <Check className="w-4 h-4 text-red-600" strokeWidth={4} />}
                           </div>
                         </td>
                         {section.hasNA ?
@@ -515,25 +515,25 @@ export default function FillSafetyEvaluationForm() {
                         className="p-0 border border-gray-800 print:border-gray-800 text-center align-middle cursor-pointer hover:bg-gray-100"
                         onClick={() => handleAnswerChange(q.id, 'na')}>
                         
-                              <div className="w-full h-full min-h-[30px] flex items-center justify-center">
-                                {formData.answers[q.id] === 'na' && <Check className="w-6 h-6 text-blue-600" strokeWidth={4} />}
+                              <div className="w-full h-full min-h-[20px] flex items-center justify-center">
+                                {formData.answers[q.id] === 'na' && <Check className="w-4 h-4 text-blue-600" strokeWidth={4} />}
                               </div>
                             </td>
-                            <td className="p-1 border border-gray-800 print:border-gray-800">
+                            <td className="p-0 border border-gray-800 print:border-gray-800">
                               <Input
                           value={formData.notes[q.id] || ''}
                           onChange={(e) => handleNoteChange(q.id, e.target.value)}
-                          className="border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-blue-200 h-full min-h-[30px] rounded-none"
+                          className="border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-blue-200 h-full min-h-[20px] rounded-none px-1 py-0 text-sm"
                           placeholder="ملاحظات..." />
                         
                             </td>
                           </> :
 
-                    <td colSpan={2} className="p-1 border border-gray-800 print:border-gray-800">
+                    <td colSpan={2} className="p-0 border border-gray-800 print:border-gray-800">
                             <Input
                         value={formData.notes[q.id] || ''}
                         onChange={(e) => handleNoteChange(q.id, e.target.value)}
-                        className="border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-blue-200 h-full min-h-[30px] rounded-none"
+                        className="border-0 bg-transparent focus-visible:ring-1 focus-visible:ring-blue-200 h-full min-h-[20px] rounded-none px-1 py-0 text-sm"
                         placeholder="ملاحظات..." />
                       
                           </td>
