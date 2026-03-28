@@ -5,9 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { UploadFile } from '@/integrations/Core';
-import { Loader2, Printer, Save, Image as ImageIcon, Trash2, ShieldCheck, Upload, Settings, RotateCcw, Check } from 'lucide-react';
+import { Loader2, Printer, Save, Image as ImageIcon, Trash2, ShieldCheck, Upload, Settings, RotateCcw, Check, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { motion } from 'framer-motion';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 const SECTIONS = [
   {
@@ -298,6 +300,52 @@ export default function FillSafetyEvaluationForm() {
     window.print();
   };
 
+  const handleExportPDF = async () => {
+    const printElement = document.getElementById('printable-form');
+    if (!printElement) return;
+    
+    try {
+      toast.loading('جاري تجهيز ملف PDF...', { id: 'pdf' });
+      
+      const canvas = await html2canvas(printElement, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        windowWidth: 1200
+      });
+      
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      
+      let heightLeft = pdfHeight;
+      let position = 0;
+      
+      pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, pdfHeight);
+      heightLeft -= pdf.internal.pageSize.getHeight();
+      
+      while (heightLeft >= 0) {
+        position = heightLeft - pdfHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, pdfHeight);
+        heightLeft -= pdf.internal.pageSize.getHeight();
+      }
+      
+      pdf.save(`تقييم_السلامة_${formData.health_center_name || 'المركز'}.pdf`);
+      toast.success('تم تحميل ملف PDF بنجاح', { id: 'pdf' });
+    } catch (error) {
+      console.error('PDF generation error:', error);
+      toast.error('حدث خطأ أثناء إنشاء ملف PDF', { id: 'pdf' });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-8 print:bg-white print:py-0" dir="rtl">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 print:px-0 print:max-w-none">
@@ -318,24 +366,28 @@ export default function FillSafetyEvaluationForm() {
             <Printer className="w-4 h-4" />
             طباعة التقرير
           </Button>
+          <Button variant="outline" onClick={handleExportPDF} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
+            <Download className="w-4 h-4" />
+            حفظ PDF
+          </Button>
           <Button onClick={handleSave} disabled={saving} className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
             {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
             حفظ التقرير
           </Button>
         </div>
 
-        <Card className="shadow-lg border-0 print:shadow-none print:border-0 rounded-xl overflow-hidden print:overflow-visible bg-white">
+        <Card id="printable-form" className="shadow-lg border-0 print:shadow-none print:border-0 rounded-xl overflow-hidden print:overflow-visible bg-white">
           <CardContent className="p-8 md:p-12 print:p-4">
             
             {/* Single Table with Thead for repeating header */}
             <table className="w-full text-right border-collapse" style={{ tableLayout: 'fixed' }}>
               <colgroup>
-                <col style={{ width: '40px' }} />
-                <col style={{ width: 'auto' }} />
-                <col style={{ width: '50px' }} />
-                <col style={{ width: '50px' }} />
-                <col style={{ width: '70px' }} />
-                <col style={{ width: '200px' }} />
+                <col style={{ width: '5%' }} />
+                <col style={{ width: '40%' }} />
+                <col style={{ width: '8%' }} />
+                <col style={{ width: '8%' }} />
+                <col style={{ width: '12%' }} />
+                <col style={{ width: '27%' }} />
               </colgroup>
               <thead className="print:table-header-group">
                 <tr>
@@ -615,7 +667,7 @@ export default function FillSafetyEvaluationForm() {
 
       <style>{`
         @media print {
-          @page { margin: 10mm; }
+          @page { size: A4 portrait; margin: 10mm; }
           * { box-sizing: border-box !important; }
           body { background-color: white !important; margin: 0 !important; padding: 0 !important; direction: rtl !important; }
           .print\\:hidden { display: none !important; }
