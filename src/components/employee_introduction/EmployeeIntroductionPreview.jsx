@@ -2,7 +2,6 @@ import React from 'react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Move } from 'lucide-react';
 import OfficialLetterHeader from '@/components/official/OfficialLetterHeader';
-import OfficialFooter from '@/components/common/OfficialFooter';
 
 export default function EmployeeIntroductionPreview({
   letterRef,
@@ -25,11 +24,10 @@ export default function EmployeeIntroductionPreview({
       className="print-area bg-white p-8 md:p-12 min-h-[1000px] letter-content"
       style={{ direction: 'rtl' }}
     >
-      <div className="min-h-[1000px] flex flex-col">
-        <OfficialLetterHeader arabicDepartment="إدارة المراكز الصحية بالحناكية" englishDepartment="Al-Hanakiyah Health Centers" />
+      <OfficialLetterHeader arabicDepartment="إدارة المراكز الصحية بالحناكية" englishDepartment="Al-Hanakiyah Health Centers" />
 
-        <div className="flex-1">
-          <div className="flex justify-between mb-6 text-sm">
+      <div>
+        <div className="flex justify-between mb-6 text-sm">
             <div>
               <p>الرقم: {letterSettings.letterNumber || '..................'}</p>
               <p>التاريخ: {new Date(letterSettings.letterDate).toLocaleDateString('ar-SA')}</p>
@@ -102,11 +100,60 @@ export default function EmployeeIntroductionPreview({
           </div>
 
           <div ref={signatureAreaRef} className="relative" style={{ height: '200px', cursor: dragging ? 'grabbing' : 'default' }}>
-...
+            <div
+              className="absolute cursor-move select-none"
+              style={{ right: `${directorPosition.x}px`, top: `${directorPosition.y}px` }}
+              onMouseDown={(e) => handleMouseDown(e, 'director')}
+            >
+              <div className="flex items-center gap-2 mb-2 text-blue-600 text-xs no-print">
+                <Move className="w-3 h-3" />
+                <span>اسحب لتحريك الاسم</span>
+              </div>
+              <div className="text-center">
+                <p className="font-bold">{letterSettings.directorName}</p>
+                <p>{letterSettings.directorTitle}</p>
+              </div>
+            </div>
+
+            {signatureSettings.showSignature && signatureSettings.selectedSignature && (
+              <div
+                className="absolute cursor-move select-none"
+                style={{ right: `${signatureSettings.signaturePosition.x}px`, top: `${signatureSettings.signaturePosition.y - 530}px` }}
+                onMouseDown={(e) => handleMouseDown(e, 'signature')}
+              >
+                <div className="flex items-center gap-2 mb-1 text-green-600 text-xs no-print">
+                  <Move className="w-3 h-3" />
+                  <span>اسحب التوقيع</span>
+                </div>
+                <img
+                  src={signatureSettings.selectedSignature.image_url}
+                  alt="التوقيع"
+                  style={{ width: `${signatureSettings.signatureSize}px`, height: 'auto', maxHeight: '80px' }}
+                  className="object-contain"
+                />
+              </div>
+            )}
+
+            {stampSettings.showStamp && stampSettings.selectedStamp && (
+              <div
+                className="absolute cursor-move select-none"
+                style={{ right: `${stampSettings.stampPosition.x}px`, top: `${stampSettings.stampPosition.y - 600}px` }}
+                onMouseDown={(e) => handleMouseDown(e, 'stamp')}
+              >
+                <div className="flex items-center gap-2 mb-1 text-red-600 text-xs no-print">
+                  <Move className="w-3 h-3" />
+                  <span>اسحب الختم</span>
+                </div>
+                <img
+                  src={stampSettings.selectedStamp.image_url}
+                  alt="الختم"
+                  style={{ width: `${stampSettings.stampSize}px`, height: `${stampSettings.stampSize}px` }}
+                  className="object-contain opacity-90"
+                />
+              </div>
+            )}
           </div>
         </div>
-
-        <OfficialFooter compact className="mt-8" />
       </div>
     </div>
   );
