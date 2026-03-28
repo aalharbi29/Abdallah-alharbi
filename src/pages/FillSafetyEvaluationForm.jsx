@@ -482,16 +482,17 @@ export default function FillSafetyEvaluationForm() {
                     ))}
                     {section.hasCount && (
                       <tr className="bg-gray-300 print:bg-gray-300">
-                        <td colSpan={4} className="p-2 border border-gray-800 print:border-gray-800 font-bold text-left text-blue-900">
-                          عدد مخارج الطوارئ:
-                        </td>
-                        <td colSpan={2} className="p-2 border border-gray-800 print:border-gray-800">
-                          <Input 
-                            type="number" 
-                            value={formData.emergency_exits_count}
-                            onChange={(e) => setFormData({...formData, emergency_exits_count: e.target.value})}
-                            className="w-full h-8 border-gray-400 text-center bg-white" 
-                          />
+                        <td colSpan={6} className="p-2 border border-gray-800 print:border-gray-800">
+                          <div className="flex items-center justify-center gap-4 w-full">
+                            <span className="font-bold text-blue-900 text-lg">عدد مخارج الطوارئ:</span>
+                            <div className="w-px h-8 bg-gray-500"></div>
+                            <Input 
+                              type="number" 
+                              value={formData.emergency_exits_count}
+                              onChange={(e) => setFormData({...formData, emergency_exits_count: e.target.value})}
+                              className="w-32 h-10 border-gray-400 text-center bg-white text-lg font-bold" 
+                            />
+                          </div>
                         </td>
                       </tr>
                     )}
