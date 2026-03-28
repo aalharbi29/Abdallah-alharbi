@@ -12,6 +12,7 @@ import FillOccupationalHealthForm from './pages/FillOccupationalHealthForm';
 import InventoryHandoverForm from './pages/InventoryHandoverForm';
 import MalariaStatisticForm from './pages/MalariaStatisticForm';
 import LeishmaniaStatisticForm from './pages/LeishmaniaStatisticForm';
+import FillSafetyEvaluationForm from './pages/FillSafetyEvaluationForm';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import HealthCentersMap from './pages/HealthCentersMap';
@@ -96,6 +97,11 @@ const AuthenticatedApp = () => {
       <Route path="/HealthCenterMap3D" element={
         <LayoutWrapper currentPageName="HealthCenterMap3D">
           <HealthCenterMap3D />
+        </LayoutWrapper>
+      } />
+      <Route path="/FillSafetyEvaluationForm" element={
+        <LayoutWrapper currentPageName="FillSafetyEvaluationForm">
+          <FillSafetyEvaluationForm />
         </LayoutWrapper>
       } />
       <Route path="*" element={<PageNotFound />} />
