@@ -137,11 +137,14 @@ export default function EmployeeFullDetails({ employee }) {
                         {LABELS[key]}
                       </div>
                       <div className="flex flex-wrap gap-2 pr-6">
-                        {items.length > 0 ? items.map((item, idx) => (
-                          <Badge key={idx} variant="secondary" className="text-xs md:text-sm">
-                            {item}
-                          </Badge>
-                        )) : (
+                        {items.length > 0 ? items.map((item, idx) => {
+                          const normalizedItem = item === 'مسؤول النفايات الطبية' ? 'مشرف النفايات الطبية' : item;
+                          return (
+                            <Badge key={idx} variant="secondary" className="text-xs md:text-sm">
+                              {normalizedItem}
+                            </Badge>
+                          );
+                        }) : (
                           <span className="text-sm text-gray-500">—</span>
                         )}
                       </div>
