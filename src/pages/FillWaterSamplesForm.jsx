@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Printer, Droplets, Save, Loader2 } from "lucide-react";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 export default function FillWaterSamplesForm() {
   const [senderCenter, setSenderCenter] = useState("");
@@ -39,31 +41,50 @@ export default function FillWaterSamplesForm() {
 
     setSaving(true);
     try {
-      const templateTitle = "نموذج عينات مياه - مسحات";
-      const submittedBy = examinerName || "مختبر الصحة العامة";
+      toast.loading('جاري تجهيز النموذج...', { id: 'save_process' });
+      
+      // 1. Fetch center ID
+      const allCenters = await base44.entities.HealthCenter.list(undefined, 200);
+      const cleanCenterName = senderCenter.replace('مركز صحي ', '').replace('مبنى شؤون المراكز ب', '');
+      const center = allCenters.find(c => c.اسم_المركز && c.اسم_المركز.includes(cleanCenterName));
+      const centerId = center ? center.id : senderCenter;
+      const centerName = center ? center.اسم_المركز : senderCenter;
 
-      const contentData = {
-        senderCenter,
-        incomingNumber,
-        examinerName,
-        sectionSupervisor,
-        labDirector,
-        selectedTypes,
-        selectedDate
-      };
-
-      await base44.entities.FormSubmission.create({
-        form_template_title: templateTitle,
-        submitted_by_employee_name: submittedBy,
-        submission_date: new Date().toISOString(),
-        content: JSON.stringify(contentData),
-        status: "مكتمل"
+      // 2. Generate PDF
+      const printElement = document.querySelector('.print-area');
+      if (!printElement) throw new Error('No print area found');
+      
+      const canvas = await html2canvas(printElement, { scale: 2, useCORS: true, logging: false });
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = canvas.height * pdfWidth / canvas.width;
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+      
+      const pdfBlob = pdf.output('blob');
+      const file = new File([pdfBlob], `عينات_مياه_${cleanCenterName}_${new Date().toISOString().split('T')[0]}.pdf`, { type: 'application/pdf' });
+      
+      // 3. Upload file
+      toast.loading('جاري رفع المستند...', { id: 'save_process' });
+      const uploadResult = await base44.integrations.Core.UploadFile({ file });
+      
+      // 4. Save to CenterDocument
+      toast.loading('جاري ربط المستند بالمركز...', { id: 'save_process' });
+      await base44.entities.CenterDocument.create({
+        center_id: centerId,
+        center_name: centerName,
+        document_title: `نموذج عينات مياه - ${selectedDate || new Date().toISOString().split('T')[0]}`,
+        document_type: 'عينات مياه',
+        description: `نتائج فحص عينات المياه للمركز (الأنواع: ${selectedTypes.length > 0 ? selectedTypes.join('، ') : 'غير محدد'})`,
+        file_url: uploadResult.file_url,
+        file_name: file.name,
+        document_date: selectedDate || new Date().toISOString().split('T')[0]
       });
 
-      toast.success('تم حفظ النموذج في سجلات المركز بنجاح');
+      toast.success('تم حفظ النموذج في مستندات المركز بنجاح', { id: 'save_process' });
     } catch (error) {
       console.error('Save error:', error);
-      toast.error('حدث خطأ أثناء الحفظ');
+      toast.error('حدث خطأ أثناء الحفظ', { id: 'save_process' });
     } finally {
       setSaving(false);
     }

@@ -113,7 +113,7 @@ export default function CenterDocuments({ centerId, centerName }) {
       const extractedData = await base44.integrations.Core.InvokeLLM({
         prompt: `قم بتحليل هذا المستند واستخراج المعلومات التالية بشكل دقيق ومختصر:
 - document_title: عنوان المستند (مختصر وواضح، 5-10 كلمات)
-- document_type: نوع المستند (اختر من: قرار إداري، تكليف مدير، تكليف نائب مدير، معاملة رسمية، عقد إيجار، صيانة، تجهيزات، تقرير، مراسلة، أخرى)
+- document_type: نوع المستند (اختر من: قرار إداري، تكليف مدير، تكليف نائب مدير، معاملة رسمية، عقد إيجار، صيانة، تجهيزات، تقرير، مراسلة، إحصائيات، عينات مياه، أخرى)
 - description: وصف مختصر للمستند (جملة أو جملتين)
 - document_date: تاريخ المستند بصيغة YYYY-MM-DD (إن وجد)
 - document_number: رقم المستند أو القرار (إن وجد)
@@ -243,6 +243,8 @@ export default function CenterDocuments({ centerId, centerName }) {
     'تجهيزات',
     'تقرير',
     'مراسلة',
+    'إحصائيات',
+    'عينات مياه',
     'أخرى'
   ];
 
