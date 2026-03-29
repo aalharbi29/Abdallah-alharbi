@@ -107,7 +107,15 @@ export default function HealthCenterDetails() {
           const safeEmployees = Array.isArray(allEmployees) ? allEmployees : [];
           setEmployees(safeEmployees);
 
-          const centerEmps = safeEmployees.filter(emp => emp.المركز_الصحي === centerData.اسم_المركز);
+          const cleanCenterName = (name) => {
+            if (!name) return "";
+            return name.replace("مركز صحي ", "").replace("مركز ", "").trim();
+          };
+          
+          const normalizedTargetName = cleanCenterName(centerData.اسم_المركز);
+          const centerEmps = safeEmployees.filter(emp => 
+            cleanCenterName(emp.المركز_الصحي) === normalizedTargetName || emp.المركز_الصحي === centerData.اسم_المركز
+          );
           setCenterEmployees(centerEmps);
 
           setManager(safeEmployees.find(emp => emp.id === centerData.المدير) || null);
@@ -1781,7 +1789,14 @@ export default function HealthCenterDetails() {
               setEmployees(safeEmployees);
               HealthCenter.get(id).then(centerData => {
                 if (centerData) {
-                  const centerEmps = safeEmployees.filter(emp => emp.المركز_الصحي === centerData.اسم_المركز);
+                  const cleanCenterName = (name) => {
+                    if (!name) return "";
+                    return name.replace("مركز صحي ", "").replace("مركز ", "").trim();
+                  };
+                  const normalizedTargetName = cleanCenterName(centerData.اسم_المركز);
+                  const centerEmps = safeEmployees.filter(emp => 
+                    cleanCenterName(emp.المركز_الصحي) === normalizedTargetName || emp.المركز_الصحي === centerData.اسم_المركز
+                  );
                   setCenterEmployees(centerEmps);
                 }
               });
