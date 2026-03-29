@@ -99,7 +99,7 @@ export default function FillWaterSamplesForm() {
         </div>
 
         {/* Checkboxes Box */}
-        <div className="border-2 border-black rounded-xl p-3 flex flex-row-reverse justify-between items-center mb-4 text-base">
+        <div className="border-2 border-black rounded-xl p-3 flex justify-between items-center mb-4 text-base">
           <label className="flex items-center gap-2 cursor-pointer">
             <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("مياه") ? "bg-black" : ""}`} onClick={() => toggleType("مياه")}></div>
             <span className="text-sm">مياه</span>
