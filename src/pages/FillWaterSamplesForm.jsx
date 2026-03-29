@@ -41,7 +41,7 @@ export default function FillWaterSamplesForm() {
     try {
       const templateTitle = "نموذج عينات مياه - مسحات";
       const submittedBy = examinerName || "مختبر الصحة العامة";
-      
+
       const contentData = {
         senderCenter,
         incomingNumber,
@@ -49,7 +49,7 @@ export default function FillWaterSamplesForm() {
         sectionSupervisor,
         labDirector,
         selectedTypes,
-        selectedDate,
+        selectedDate
       };
 
       await base44.entities.FormSubmission.create({
@@ -59,7 +59,7 @@ export default function FillWaterSamplesForm() {
         content: JSON.stringify(contentData),
         status: "مكتمل"
       });
-      
+
       toast.success('تم حفظ النموذج في سجلات المركز بنجاح');
     } catch (error) {
       console.error('Save error:', error);
@@ -285,10 +285,10 @@ export default function FillWaterSamplesForm() {
           <div className="w-1/2 flex flex-col items-center justify-start gap-8 text-center pt-2">
             <div className="text-lg whitespace-nowrap">مدير مختبر الصحة العامة</div>
             <div className="w-full px-12">
-              <input
-                className="bg-transparent focus:outline-none text-center font-bold text-xl w-full"
-                value={labDirector}
-                onChange={(e) => setLabDirector(e.target.value)} />
+              <input className="bg-transparent pt-1 pb-2 text-xl font-bold text-center focus:outline-none w-full"
+
+              value={labDirector}
+              onChange={(e) => setLabDirector(e.target.value)} />
               
             </div>
           </div>
