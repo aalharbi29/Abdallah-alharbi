@@ -120,50 +120,53 @@ export default function FillWaterSamplesForm() {
         </div>
 
         {/* Checkboxes Box */}
-        <div className="border-2 border-black rounded-xl p-3 flex flex-wrap justify-between items-center mb-4 text-[12px] gap-2">
-          <label className="flex items-center gap-2 cursor-pointer print:break-inside-avoid">
-            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("مياه") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("مياه")}></div>
-            <span className="text-[12px]">مياه</span>
+        <div className="border-2 border-black rounded-xl px-2 py-2 flex justify-between items-center mb-4 text-[12px] whitespace-nowrap overflow-hidden">
+          <label className="flex items-center gap-1 cursor-pointer print:break-inside-avoid">
+            <div className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("مياه") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("مياه")}></div>
+            <span className="text-[11px] sm:text-[12px]">مياه</span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer print:break-inside-avoid">
-            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("أغذية") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("أغذية")}></div>
-            <span className="text-[12px]">أغذية</span>
+          <label className="flex items-center gap-1 cursor-pointer print:break-inside-avoid">
+            <div className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("أغذية") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("أغذية")}></div>
+            <span className="text-[11px] sm:text-[12px]">أغذية</span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer print:break-inside-avoid">
-            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("مسحات") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("مسحات")}></div>
-            <span className="text-[12px]">مسحات</span>
+          <label className="flex items-center gap-1 cursor-pointer print:break-inside-avoid">
+            <div className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("مسحات") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("مسحات")}></div>
+            <span className="text-[11px] sm:text-[12px]">مسحات</span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer print:break-inside-avoid">
-            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("بكتيري") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("بكتيري")}></div>
-            <span className="text-[12px]">بكتيري</span>
+          <label className="flex items-center gap-1 cursor-pointer print:break-inside-avoid">
+            <div className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("بكتيري") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("بكتيري")}></div>
+            <span className="text-[11px] sm:text-[12px]">بكتيري</span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer print:break-inside-avoid">
-            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("ضمات") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("ضمات")}></div>
-            <span className="text-[12px]">ضمات</span>
+          <label className="flex items-center gap-1 cursor-pointer print:break-inside-avoid">
+            <div className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("ضمات") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("ضمات")}></div>
+            <span className="text-[11px] sm:text-[12px]">ضمات</span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer print:break-inside-avoid">
-            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("كيميائي") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("كيميائي")}></div>
-            <span className="text-[12px]">كيميائي</span>
+          <label className="flex items-center gap-1 cursor-pointer print:break-inside-avoid">
+            <div className={`w-4 h-4 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("كيميائي") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("كيميائي")}></div>
+            <span className="text-[11px] sm:text-[12px]">كيميائي</span>
           </label>
           
           <div className="flex items-center gap-1 print:break-inside-avoid">
-            <span className="text-[12px]">ليوم :</span>
+            <span className="text-[11px] sm:text-[12px]">ليوم:</span>
             <input
               value={dayName}
               readOnly
-              placeholder="....." className="bg-transparent text-[12px] text-sm font-bold text-center border-b-2 border-dotted border-black focus:outline-none w-14 sm:w-16" />
-
-            
+              placeholder="....." className="bg-transparent text-[11px] sm:text-sm font-bold text-center border-b-2 border-dotted border-black focus:outline-none w-10 sm:w-14" />
           </div>
 
           <div className="flex items-center gap-1 print:break-inside-avoid">
-            <span className="text-[12px]">الموافق :</span>
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)} className="bg-transparent text-[12px] text-sm font-extrabold text-center normal-case focus:outline-none w-28 cursor-pointer" />
-            
-            
+            <span className="text-[11px] sm:text-[12px]">الموافق:</span>
+            <div className="relative flex items-center">
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)} 
+                className="print:hidden bg-transparent text-[11px] sm:text-sm font-extrabold text-center normal-case focus:outline-none w-24 sm:w-28 cursor-pointer" 
+              />
+              <span className="hidden print:inline-block text-[11px] sm:text-sm font-extrabold text-center w-24 sm:w-28">
+                {selectedDate ? new Date(selectedDate).toLocaleDateString('en-GB') : "  /  / 144 هـ"}
+              </span>
+            </div>
           </div>
         </div>
 
