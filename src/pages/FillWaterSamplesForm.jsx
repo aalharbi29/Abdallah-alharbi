@@ -100,40 +100,40 @@ export default function FillWaterSamplesForm() {
         </div>
 
         {/* Checkboxes Box */}
-        <div className="border-2 border-black rounded-xl p-3 flex flex-row-reverse justify-between items-center mb-4 text-base">
+        <div className="border-2 border-black rounded-xl p-3 flex flex-row-reverse justify-between items-center mb-4 text-[12px]">
           <label className="flex items-center gap-2 cursor-pointer">
             <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("مياه") ? "bg-black" : ""}`} onClick={() => toggleType("مياه")}></div>
-            <span className="text-sm">مياه</span>
+            <span className="text-[12px]">مياه</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("أغذية") ? "bg-black" : ""}`} onClick={() => toggleType("أغذية")}></div>
-            <span className="text-sm">أغذية</span>
+            <span className="text-[12px]">أغذية</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("مسحات") ? "bg-black" : ""}`} onClick={() => toggleType("مسحات")}></div>
-            <span className="text-sm">مسحات</span>
+            <span className="text-[12px]">مسحات</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("بكتيري") ? "bg-black" : ""}`} onClick={() => toggleType("بكتيري")}></div>
-            <span className="text-sm">بكتيري</span>
+            <span className="text-[12px]">بكتيري</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("ضمات") ? "bg-black" : ""}`} onClick={() => toggleType("ضمات")}></div>
-            <span className="text-sm">ضمات</span>
+            <span className="text-[12px]">ضمات</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("كيميائي") ? "bg-black" : ""}`} onClick={() => toggleType("كيميائي")}></div>
-            <span className="text-sm">كيميائي</span>
+            <span className="text-[12px]">كيميائي</span>
           </label>
           
           <div className="flex items-center gap-2">
-            <span className="text-sm">ليوم :</span>
-            <input className="bg-transparent text-sm font-extralight text-center border-b-2 border-dotted border-black focus:outline-none w-32" />
+            <span className="text-[12px]">ليوم :</span>
+            <input className="bg-transparent text-[12px] font-extralight text-center border-b-2 border-dotted border-black focus:outline-none w-32" />
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-sm">الموافق :</span>
-            <input className="bg-transparent focus:outline-none w-32 text-center" defaultValue="  /  / 144 هـ" />
+            <span className="text-[12px]">الموافق :</span>
+            <input className="bg-transparent text-[12px] focus:outline-none w-32 text-center" defaultValue="  /  / 144 هـ" />
           </div>
         </div>
 
