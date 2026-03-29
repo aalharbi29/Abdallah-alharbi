@@ -57,105 +57,156 @@ export default function FillWaterSamplesForm() {
       </div>
 
       {/* Print Area */}
-      <div className="print-area max-w-5xl mx-auto bg-white shadow-xl min-h-[297mm] p-12 relative text-xl font-bold leading-loose">
+      <div className="print-area max-w-4xl mx-auto bg-white shadow-xl min-h-[297mm] p-8 relative font-bold text-black" style={{ fontFamily: 'Tajawal, Arial, sans-serif' }}>
         
-        {/* Meta Info Row */}
-        <div className="flex justify-between items-center mb-12">
-          <div className="flex items-center gap-2 w-1/2">
-            <span className="whitespace-nowrap">الجهة المرسلة:</span>
+        {/* Header Box */}
+        <div className="border-2 border-black rounded-2xl p-4 flex justify-between items-center mb-4">
+          <div className="text-right leading-tight">
+            <div className="text-lg">المملكة العربية السعودية</div>
+            <div className="text-lg">وزارة الصحـــــــــــة</div>
+            <div className="text-lg">التجمع الصحي بالمدينة المنورة</div>
+            <div className="text-lg">مختبر الصحة العامة</div>
+          </div>
+          <div className="flex-col items-center justify-center">
+            <img src="https://upload.wikimedia.org/wikipedia/ar/thumb/8/8b/Saudi_Ministry_of_Health_Logo.svg/1024px-Saudi_Ministry_of_Health_Logo.svg.png" alt="MOH" className="h-20 object-contain mix-blend-multiply" />
+          </div>
+          <div className="text-right leading-relaxed text-lg" dir="rtl">
+            <div className="flex gap-1"><span>صادر المختبر :</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40" /></div>
+            <div className="flex gap-1"><span>التاريــــــخ :</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40 text-center" defaultValue="    /    / 14 هـ" /></div>
+            <div className="flex gap-1"><span>المشفوعات :</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40" /></div>
+          </div>
+        </div>
+
+        {/* Sender Info */}
+        <div className="flex justify-between items-end mb-2 px-2 text-lg">
+          <div className="flex items-center gap-2">
+            <span>الجهة المرسلة:</span>
             <input
-              className="bg-transparent focus:outline-none px-2 flex-1 font-bold text-xl"
+              className="bg-transparent focus:outline-none font-bold text-xl min-w-[200px]"
               value={senderCenter}
               placeholder="مركز صحي بلغة"
               onChange={(e) => setSenderCenter(e.target.value)}
             />
           </div>
-          <div className="flex items-center gap-2 w-1/3">
-            <span className="whitespace-nowrap">رقم الوارد  :</span>
+          <div className="flex items-center gap-2">
+            <span>رقم الوارد :</span>
             <input
-              className="bg-transparent focus:outline-none px-2 flex-1 font-bold text-xl"
+              className="border-b-2 border-dotted border-black bg-transparent focus:outline-none text-center w-40"
               value={incomingNumber}
               onChange={(e) => setIncomingNumber(e.target.value)}
             />
           </div>
         </div>
 
-        {/* Sample Type Checkboxes */}
-        <div className="flex justify-between items-center mb-16 px-4">
+        {/* Checkboxes Box */}
+        <div className="border-2 border-black rounded-xl p-3 flex flex-row-reverse justify-between items-center mb-4 text-base">
           <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" className="w-5 h-5" checked={selectedTypes.includes("كيميائي")} onChange={() => toggleType("كيميائي")} />
+            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("مياه") ? "bg-black" : ""}`} onClick={() => toggleType("مياه")}></div>
+            <span>مياه</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("أغذية") ? "bg-black" : ""}`} onClick={() => toggleType("أغذية")}></div>
+            <span>أغذية</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("مسحات") ? "bg-black" : ""}`} onClick={() => toggleType("مسحات")}></div>
+            <span>مسحات</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("بكتيري") ? "bg-black" : ""}`} onClick={() => toggleType("بكتيري")}></div>
+            <span>بكتيري</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("ضمات") ? "bg-black" : ""}`} onClick={() => toggleType("ضمات")}></div>
+            <span>ضمات</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("كيميائي") ? "bg-black" : ""}`} onClick={() => toggleType("كيميائي")}></div>
             <span>كيميائي</span>
           </label>
           
           <div className="flex items-center gap-2">
-            <span className="whitespace-nowrap">ليوم :</span>
-            <input
-              className="bg-transparent focus:outline-none px-2 w-48 text-center font-bold text-xl"
-              placeholder="............................"
-            />
+            <span>ليوم :</span>
+            <input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-32 text-center" />
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="whitespace-nowrap">الموافق :</span>
-            <input
-              className="bg-transparent focus:outline-none px-2 w-48 text-center font-bold text-xl"
-              placeholder="04/   05  / 7 144هـ"
-            />
+            <span>الموافق :</span>
+            <input className="bg-transparent focus:outline-none w-32 text-center" defaultValue="  /  / 144 هـ" />
           </div>
-
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" className="w-5 h-5" checked={selectedTypes.includes("بكتيري")} onChange={() => toggleType("بكتيري")} />
-            <span>بكتيري</span>
-          </label>
-          
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" className="w-5 h-5" checked={selectedTypes.includes("ضمات")} onChange={() => toggleType("ضمات")} />
-            <span>ضمات</span>
-          </label>
-
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" className="w-5 h-5" checked={selectedTypes.includes("أغذية")} onChange={() => toggleType("أغذية")} />
-            <span>أغذية</span>
-          </label>
-
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" className="w-5 h-5" checked={selectedTypes.includes("مسحات")} onChange={() => toggleType("مسحات")} />
-            <span>مسحات</span>
-          </label>
-
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input type="checkbox" className="w-5 h-5" checked={selectedTypes.includes("مياه")} onChange={() => toggleType("مياه")} />
-            <span>مياه</span>
-          </label>
         </div>
 
-        {/* Signatures Area */}
-        <div className="mt-16 space-y-16 text-xl font-bold">
-          <div className="flex items-center gap-2">
-            <span className="whitespace-nowrap">الفاحص :</span>
-            <input
-              className="bg-transparent focus:outline-none px-2 w-64 font-bold text-xl"
-              value={examinerName}
-              onChange={(e) => setExaminerName(e.target.value)}
-            />
-          </div>
+        {/* Table */}
+        <table className="w-full border-collapse border-2 border-black mb-4 text-center">
+          <thead>
+            <tr>
+              <th className="border-2 border-black p-2 w-[10%] font-bold">تسلسل<br/>المختبر</th>
+              <th className="border-2 border-black p-2 w-[10%] font-bold">رقم<br/>العينة</th>
+              <th className="border-2 border-black p-2 w-[25%] font-bold">نوع العينة</th>
+              <th className="border-2 border-black p-2 w-[30%] font-bold">مكان اخذ العينة</th>
+              <th className="border-2 border-black p-2 w-[25%] font-bold">ملاحظات</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[...Array(9)].map((_, i) => (
+              <tr key={i} className="h-10">
+                <td className="border-2 border-black p-1"><input className="w-full h-full bg-transparent focus:outline-none text-center" /></td>
+                <td className="border-2 border-black p-1"><input className="w-full h-full bg-transparent focus:outline-none text-center" /></td>
+                <td className="border-2 border-black p-1"><input className="w-full h-full bg-transparent focus:outline-none text-center" /></td>
+                <td className="border-2 border-black p-1"><input className="w-full h-full bg-transparent focus:outline-none text-center" /></td>
+                <td className="border-2 border-black p-1"><input className="w-full h-full bg-transparent focus:outline-none text-center" /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-          <div className="flex justify-end">
-            <span className="whitespace-nowrap ml-32">مدير مختبر الصحة العامة</span>
+        {/* Middle Details Boxes */}
+        <div className="flex gap-4 mb-4">
+          <div className="border-2 border-black rounded-full px-6 py-2 flex items-center gap-2 w-[60%]">
+            <span className="whitespace-nowrap">أخذ العينة :</span>
+            <input className="bg-transparent focus:outline-none w-full font-bold" defaultValue="عبدالله الحربي" />
           </div>
+          <div className="border-2 border-black rounded-full px-6 py-2 flex items-center gap-2 w-[40%]">
+            <span className="whitespace-nowrap">المستلم :</span>
+            <input className="bg-transparent focus:outline-none w-full text-center font-bold" defaultValue="     /      /     14 هـ" />
+          </div>
+        </div>
 
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <span className="whitespace-nowrap">مشرف  القسم :</span>
-              <input
-                className="bg-transparent focus:outline-none px-2 w-64 font-bold text-xl"
+        {/* Results Box */}
+        <div className="border-2 border-black rounded-2xl p-6 mb-4 relative min-h-[160px]">
+          <div className="text-center mb-4"><span className="underline underline-offset-4 text-lg">مختبر الصحة العامة</span></div>
+          <div className="mb-4 text-lg">تم فحص العينات المدونة أعلاه ، وكانت النتيجة كالتالي :</div>
+          <div className="space-y-6 mt-4">
+            <div className="border-b-2 border-dotted border-black w-full"></div>
+            <div className="border-b-2 border-dotted border-black w-full"></div>
+            <div className="border-b-2 border-dotted border-black w-full"></div>
+          </div>
+        </div>
+
+        {/* Signatures Box */}
+        <div className="border-2 border-black rounded-2xl p-6 flex justify-between min-h-[160px]">
+          <div className="flex flex-col gap-8 w-1/2">
+            <div className="flex items-center gap-2 text-lg">
+              <span>الفاحص :</span>
+              <input className="bg-transparent focus:outline-none w-full font-bold" 
+                value={examinerName}
+                onChange={(e) => setExaminerName(e.target.value)}
+              />
+            </div>
+            <div className="flex items-center gap-2 text-lg">
+              <span>مشرف القسم :</span>
+              <input className="bg-transparent focus:outline-none w-full font-bold" 
                 value={sectionSupervisor}
                 onChange={(e) => setSectionSupervisor(e.target.value)}
               />
             </div>
-            <div className="flex items-center gap-2">
-              <input
-                className="bg-transparent focus:outline-none px-2 w-80 text-center ml-10 font-bold text-xl"
+          </div>
+          
+          <div className="w-1/2 flex flex-col items-center gap-4 text-center mt-2">
+            <div className="text-lg">مدير مختبر الصحة العامة</div>
+            <div>
+              <input 
+                className="bg-transparent focus:outline-none text-center font-bold text-xl" 
                 value={labDirector}
                 onChange={(e) => setLabDirector(e.target.value)}
               />
