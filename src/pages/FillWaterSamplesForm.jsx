@@ -11,7 +11,7 @@ export default function FillWaterSamplesForm() {
 
   const toggleType = (type) => {
     setSelectedTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+    prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
     );
   };
 
@@ -48,8 +48,8 @@ export default function FillWaterSamplesForm() {
           <div className="flex gap-2">
             <button
               onClick={handlePrint}
-              className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-sm font-semibold hover:bg-slate-50 transition-colors shadow-sm"
-            >
+              className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-sm font-semibold hover:bg-slate-50 transition-colors shadow-sm">
+              
               <Printer className="w-4 h-4" /> طباعة
             </button>
           </div>
@@ -71,9 +71,9 @@ export default function FillWaterSamplesForm() {
             <img src="https://upload.wikimedia.org/wikipedia/ar/thumb/8/8b/Saudi_Ministry_of_Health_Logo.svg/1024px-Saudi_Ministry_of_Health_Logo.svg.png" alt="MOH" className="h-20 object-contain mix-blend-multiply" />
           </div>
           <div className="text-right leading-relaxed text-lg" dir="rtl">
-            <div className="flex gap-1"><span>صادر المختبر :</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40" /></div>
-            <div className="flex gap-1"><span>التاريــــــخ :</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40 text-center" defaultValue="    /    / 14 هـ" /></div>
-            <div className="flex gap-1"><span>المشفوعات :</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40" /></div>
+            <div className="flex gap-1"><span className="text-sm">صادر المختبر :</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40" /></div>
+            <div className="flex gap-1"><span className="text-sm">التاريــــــخ :</span><input className="bg-transparent text-base text-center border-b-2 border-dotted border-black focus:outline-none w-40" defaultValue="    /    / 14 هـ" /></div>
+            <div className="flex gap-1"><span className="text-sm">المشفوعات :</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40" /></div>
           </div>
         </div>
 
@@ -85,16 +85,16 @@ export default function FillWaterSamplesForm() {
               className="bg-transparent focus:outline-none font-bold text-xl min-w-[200px]"
               value={senderCenter}
               placeholder="مركز صحي بلغة"
-              onChange={(e) => setSenderCenter(e.target.value)}
-            />
+              onChange={(e) => setSenderCenter(e.target.value)} />
+            
           </div>
           <div className="flex items-center gap-2">
             <span>رقم الوارد :</span>
             <input
               className="border-b-2 border-dotted border-black bg-transparent focus:outline-none text-center w-40"
               value={incomingNumber}
-              onChange={(e) => setIncomingNumber(e.target.value)}
-            />
+              onChange={(e) => setIncomingNumber(e.target.value)} />
+            
           </div>
         </div>
 
@@ -102,36 +102,36 @@ export default function FillWaterSamplesForm() {
         <div className="border-2 border-black rounded-xl p-3 flex flex-row-reverse justify-between items-center mb-4 text-base">
           <label className="flex items-center gap-2 cursor-pointer">
             <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("مياه") ? "bg-black" : ""}`} onClick={() => toggleType("مياه")}></div>
-            <span>مياه</span>
+            <span className="text-sm">مياه</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("أغذية") ? "bg-black" : ""}`} onClick={() => toggleType("أغذية")}></div>
-            <span>أغذية</span>
+            <span className="text-sm">أغذية</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("مسحات") ? "bg-black" : ""}`} onClick={() => toggleType("مسحات")}></div>
-            <span>مسحات</span>
+            <span className="text-sm">مسحات</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("بكتيري") ? "bg-black" : ""}`} onClick={() => toggleType("بكتيري")}></div>
-            <span>بكتيري</span>
+            <span className="text-sm">بكتيري</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("ضمات") ? "bg-black" : ""}`} onClick={() => toggleType("ضمات")}></div>
-            <span>ضمات</span>
+            <span className="text-sm">ضمات</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("كيميائي") ? "bg-black" : ""}`} onClick={() => toggleType("كيميائي")}></div>
-            <span>كيميائي</span>
+            <span className="text-sm">كيميائي</span>
           </label>
           
           <div className="flex items-center gap-2">
-            <span>ليوم :</span>
-            <input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-32 text-center" />
+            <span className="text-sm">ليوم :</span>
+            <input className="bg-transparent text-sm font-extralight text-center border-b-2 border-dotted border-black focus:outline-none w-32" />
           </div>
 
           <div className="flex items-center gap-2">
-            <span>الموافق :</span>
+            <span className="text-sm">الموافق :</span>
             <input className="bg-transparent focus:outline-none w-32 text-center" defaultValue="  /  / 144 هـ" />
           </div>
         </div>
@@ -140,23 +140,23 @@ export default function FillWaterSamplesForm() {
         <table className="w-full border-collapse border-2 border-black mb-4 text-center">
           <thead>
             <tr>
-              <th className="border-2 border-black p-2 w-[10%] font-bold">تسلسل<br/>المختبر</th>
-              <th className="border-2 border-black p-2 w-[10%] font-bold">رقم<br/>العينة</th>
+              <th className="border-2 border-black p-2 w-[10%] font-bold">تسلسل<br />المختبر</th>
+              <th className="border-2 border-black p-2 w-[10%] font-bold">رقم<br />العينة</th>
               <th className="border-2 border-black p-2 w-[25%] font-bold">نوع العينة</th>
               <th className="border-2 border-black p-2 w-[30%] font-bold">مكان اخذ العينة</th>
               <th className="border-2 border-black p-2 w-[25%] font-bold">ملاحظات</th>
             </tr>
           </thead>
           <tbody>
-            {[...Array(9)].map((_, i) => (
-              <tr key={i} className="h-10">
+            {[...Array(9)].map((_, i) =>
+            <tr key={i} className="h-10">
                 <td className="border-2 border-black p-1"><input className="w-full h-full bg-transparent focus:outline-none text-center" /></td>
                 <td className="border-2 border-black p-1"><input className="w-full h-full bg-transparent focus:outline-none text-center" /></td>
                 <td className="border-2 border-black p-1"><input className="w-full h-full bg-transparent focus:outline-none text-center" /></td>
                 <td className="border-2 border-black p-1"><input className="w-full h-full bg-transparent focus:outline-none text-center" /></td>
                 <td className="border-2 border-black p-1"><input className="w-full h-full bg-transparent focus:outline-none text-center" /></td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
 
@@ -188,32 +188,32 @@ export default function FillWaterSamplesForm() {
           <div className="flex flex-col gap-8 w-1/2">
             <div className="flex items-center gap-2 text-lg">
               <span>الفاحص :</span>
-              <input className="bg-transparent focus:outline-none w-full font-bold" 
-                value={examinerName}
-                onChange={(e) => setExaminerName(e.target.value)}
-              />
+              <input className="bg-transparent focus:outline-none w-full font-bold"
+              value={examinerName}
+              onChange={(e) => setExaminerName(e.target.value)} />
+              
             </div>
             <div className="flex items-center gap-2 text-lg">
               <span>مشرف القسم :</span>
-              <input className="bg-transparent focus:outline-none w-full font-bold" 
-                value={sectionSupervisor}
-                onChange={(e) => setSectionSupervisor(e.target.value)}
-              />
+              <input className="bg-transparent focus:outline-none w-full font-bold"
+              value={sectionSupervisor}
+              onChange={(e) => setSectionSupervisor(e.target.value)} />
+              
             </div>
           </div>
           
           <div className="w-1/2 flex flex-col items-center gap-4 text-center mt-2">
             <div className="text-lg">مدير مختبر الصحة العامة</div>
             <div>
-              <input 
-                className="bg-transparent focus:outline-none text-center font-bold text-xl" 
+              <input
+                className="bg-transparent focus:outline-none text-center font-bold text-xl"
                 value={labDirector}
-                onChange={(e) => setLabDirector(e.target.value)}
-              />
+                onChange={(e) => setLabDirector(e.target.value)} />
+              
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
