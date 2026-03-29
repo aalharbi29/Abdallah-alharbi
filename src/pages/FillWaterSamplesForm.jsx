@@ -24,12 +24,13 @@ export default function FillWaterSamplesForm() {
         * { font-family: 'Tajawal', Arial, sans-serif; }
         @media print {
           .no-print { display: none !important; }
-          body { background: white; }
+          body { background: white; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
           body * { visibility: hidden; }
           .print-area, .print-area * { visibility: visible !important; }
-          .print-area { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; }
-          @page { size: A4; margin: 12mm; }
-          input, select { border: none !important; background: transparent !important; }
+          .print-area { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 10mm 15mm !important; box-sizing: border-box; }
+          @page { size: A4; margin: 0; }
+          input { background: transparent !important; }
+          html, body, #root, .responsive-shell, main { height: auto !important; overflow: visible !important; width: 100% !important; display: block !important; position: static !important; }
         }
       `}</style>
 
@@ -68,12 +69,12 @@ export default function FillWaterSamplesForm() {
             <div className="text-lg">مختبر الصحة العامة</div>
           </div>
           <div className="flex-col items-center justify-center">
-            <img src="https://media.base44.com/images/public/68af5003813e47bd07947b30/06e0558a3_WhatsAppImage2026-03-29at72927PM.jpeg" alt="MOH" className="h-20 object-contain mix-blend-multiply" />
+            <img src="https://media.base44.com/images/public/68af5003813e47bd07947b30/05c242de2_image.png" alt="MOH" className="h-24 object-contain" />
           </div>
-          <div className="text-right leading-relaxed text-lg" dir="rtl">
-            <div className="flex gap-1"><span className="text-sm">صادر المختبر :</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40" /></div>
-            <div className="flex gap-1"><span className="text-sm">التاريــــــخ :</span><input className="bg-transparent text-base text-center border-b-2 border-dotted border-black focus:outline-none w-40" defaultValue="    /    / 14 هـ" /></div>
-            <div className="flex gap-1"><span className="text-sm">المشفوعات :</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40" /></div>
+          <div className="text-right leading-relaxed text-base font-bold" dir="rtl">
+            <div className="flex items-end gap-1 mb-1"><span className="whitespace-nowrap">صادر المختبر:</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40 text-center" /></div>
+            <div className="flex items-end gap-1 mb-1"><span className="whitespace-nowrap">التاريــــــخ:</span><input className="bg-transparent text-center border-b-2 border-dotted border-black focus:outline-none w-40" defaultValue="    /    / 14 هـ" /></div>
+            <div className="flex items-end gap-1"><span className="whitespace-nowrap">المشفوعات:</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40 text-center" /></div>
           </div>
         </div>
 
@@ -161,14 +162,14 @@ export default function FillWaterSamplesForm() {
         </table>
 
         {/* Middle Details Boxes */}
-        <div className="flex gap-4 mb-4">
-          <div className="border-2 border-black rounded-full px-6 py-2 flex items-center gap-2 w-[60%]">
-            <span className="whitespace-nowrap">أخذ العينة :</span>
-            <input className="bg-transparent focus:outline-none w-full font-bold" defaultValue="عبدالله الحربي" />
+        <div className="flex gap-4 mb-4 h-14">
+          <div className="border-2 border-black rounded-full px-6 flex items-center gap-2 w-[60%] h-full">
+            <span className="whitespace-nowrap font-bold text-lg">أخذ العينة :</span>
+            <input className="bg-transparent focus:outline-none w-full font-bold text-lg" defaultValue="عبدالله الحربي" />
           </div>
-          <div className="border-2 border-black rounded-full px-6 py-2 flex items-center gap-2 w-[40%]">
-            <span className="whitespace-nowrap">المستلم :</span>
-            <input className="bg-transparent focus:outline-none w-full text-center font-bold" defaultValue="     /      /     14 هـ" />
+          <div className="border-2 border-black rounded-full px-6 flex items-center gap-2 w-[40%] h-full">
+            <span className="whitespace-nowrap font-bold text-lg">المستلم :</span>
+            <input className="bg-transparent focus:outline-none w-full text-center font-bold text-lg" defaultValue="     /      /     14 هـ" />
           </div>
         </div>
 
@@ -185,28 +186,28 @@ export default function FillWaterSamplesForm() {
 
         {/* Signatures Box */}
         <div className="border-2 border-black rounded-2xl p-6 flex justify-between min-h-[160px]">
-          <div className="flex flex-col gap-8 w-1/2">
-            <div className="flex items-center gap-2 text-lg">
-              <span>الفاحص :</span>
-              <input className="bg-transparent focus:outline-none w-full font-bold"
+          <div className="flex flex-col justify-center gap-8 w-1/2">
+            <div className="flex items-end gap-2 text-lg">
+              <span className="whitespace-nowrap">الفاحص:</span>
+              <input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-full font-bold"
               value={examinerName}
               onChange={(e) => setExaminerName(e.target.value)} />
               
             </div>
-            <div className="flex items-center gap-2 text-lg">
-              <span>مشرف القسم :</span>
-              <input className="bg-transparent focus:outline-none w-full font-bold"
+            <div className="flex items-end gap-2 text-lg">
+              <span className="whitespace-nowrap">مشرف القسم:</span>
+              <input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-full font-bold"
               value={sectionSupervisor}
               onChange={(e) => setSectionSupervisor(e.target.value)} />
               
             </div>
           </div>
           
-          <div className="w-1/2 flex flex-col items-center gap-4 text-center mt-2">
-            <div className="text-lg">مدير مختبر الصحة العامة</div>
-            <div>
+          <div className="w-1/2 flex flex-col items-center justify-start gap-8 text-center pt-2">
+            <div className="text-lg whitespace-nowrap">مدير مختبر الصحة العامة</div>
+            <div className="w-full px-12">
               <input
-                className="bg-transparent focus:outline-none text-center font-bold text-xl"
+                className="border-b-2 border-dotted border-black bg-transparent focus:outline-none text-center font-bold text-xl w-full"
                 value={labDirector}
                 onChange={(e) => setLabDirector(e.target.value)} />
               
