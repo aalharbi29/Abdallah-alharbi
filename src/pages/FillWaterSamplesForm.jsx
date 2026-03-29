@@ -68,8 +68,8 @@ export default function FillWaterSamplesForm() {
             <div className="text-lg">التجمع الصحي بالمدينة المنورة</div>
             <div className="mr-10 text-lg">مختبر الصحة العامة</div>
           </div>
-          <div className="flex-col items-center justify-center">
-            <img src="https://media.base44.com/images/public/68af5003813e47bd07947b30/9d3c650ad_moh_logo_transparent.png" alt="MOH" className="h-24 object-contain" />
+          <div className="flex-col items-center justify-center resize-x overflow-hidden max-w-[500px] min-w-[50px] w-24 hover:ring-2 hover:ring-slate-200 rounded">
+            <img src="https://media.base44.com/images/public/68af5003813e47bd07947b30/9d3c650ad_moh_logo_transparent.png" alt="MOH" className="h-24 w-full object-fill pointer-events-none" />
           </div>
           <div className="text-right leading-relaxed text-base font-bold" dir="rtl">
             <div className="flex items-end gap-1 mb-1"><span className="whitespace-nowrap">صادر المختبر:</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40 text-center" /></div>
@@ -82,12 +82,22 @@ export default function FillWaterSamplesForm() {
         <div className="mb-2 ml-6 pr-3 pl-8 text-lg flex justify-between items-end">
           <div className="flex items-center gap-2">
             <span>الجهة المرسلة:</span>
-            <input
-              className="bg-transparent focus:outline-none font-bold text-xl min-w-[200px]"
+            <select
+              className="bg-transparent focus:outline-none font-bold text-xl min-w-[200px] cursor-pointer"
               value={senderCenter}
-              placeholder="مركز صحي بلغة"
-              onChange={(e) => setSenderCenter(e.target.value)} />
-            
+              onChange={(e) => setSenderCenter(e.target.value)}
+            >
+              <option value="" disabled>اختر المركز...</option>
+              <option value="مركز صحي الحسو">مركز صحي الحسو</option>
+              <option value="مركز صحي الهميج">مركز صحي الهميج</option>
+              <option value="مركز صحي بطحي">مركز صحي بطحي</option>
+              <option value="مركز صحي طلال">مركز صحي طلال</option>
+              <option value="مركز صحي الماوية">مركز صحي الماوية</option>
+              <option value="مركز صحي بلغة">مركز صحي بلغة</option>
+              <option value="مركز صحي هدبان">مركز صحي هدبان</option>
+              <option value="مركز صحي صخيبرة">مركز صحي صخيبرة</option>
+              <option value="مبنى شؤون المراكز بالحسو">مبنى شؤون المراكز بالحسو</option>
+            </select>
           </div>
           <div className="flex items-center gap-2">
             <span>رقم الوارد :</span>
@@ -100,7 +110,7 @@ export default function FillWaterSamplesForm() {
         </div>
 
         {/* Checkboxes Box */}
-        <div className="border-2 border-black rounded-xl p-3 flex flex-row-reverse justify-between items-center mb-4 text-[12px]">
+        <div className="border-2 border-black rounded-xl p-3 flex justify-between items-center mb-4 text-[12px]">
           <label className="flex items-center gap-2 cursor-pointer">
             <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("مياه") ? "bg-black" : ""}`} onClick={() => toggleType("مياه")}></div>
             <span className="text-[12px]">مياه</span>
@@ -163,11 +173,11 @@ export default function FillWaterSamplesForm() {
 
         {/* Middle Details Boxes */}
         <div className="flex gap-4 mb-4 h-14">
-          <div className="pr-8 pl-6 rounded-full border-2 border-black flex items-center gap-2 w-[60%] h-full">
+          <div className="pr-8 pl-6 rounded-full border-2 border-black flex items-center gap-2 flex-1 h-full">
             <span className="whitespace-nowrap font-bold text-lg">أخذ العينة :</span>
             <input className="bg-transparent focus:outline-none w-full font-bold text-lg" defaultValue="عبدالله الحربي" />
           </div>
-          <div className="border-2 border-black rounded-full px-6 flex items-center gap-2 w-[40%] h-full">
+          <div className="border-2 border-black rounded-full px-6 flex items-center gap-2 flex-1 h-full">
             <span className="whitespace-nowrap font-bold text-lg">المستلم :</span>
             <input className="bg-transparent focus:outline-none w-full text-center font-bold text-lg" defaultValue="     /      /     14 هـ" />
           </div>
@@ -207,7 +217,7 @@ export default function FillWaterSamplesForm() {
             <div className="text-lg whitespace-nowrap">مدير مختبر الصحة العامة</div>
             <div className="w-full px-12">
               <input
-                className="border-b-2 border-dotted border-black bg-transparent focus:outline-none text-center font-bold text-xl w-full"
+                className="bg-transparent focus:outline-none text-center font-bold text-xl w-full"
                 value={labDirector}
                 onChange={(e) => setLabDirector(e.target.value)} />
               
