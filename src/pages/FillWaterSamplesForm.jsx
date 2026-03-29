@@ -63,23 +63,23 @@ export default function FillWaterSamplesForm() {
         {/* Header Box */}
         <div className="border-2 border-black rounded-2xl p-4 flex justify-between items-center mb-4">
           <div className="text-right leading-tight">
-            <div className="text-lg">المملكة العربية السعودية</div>
-            <div className="text-lg">وزارة الصحـــــــــــة</div>
+            <div className="mr-6 text-lg">المملكة العربية السعودية</div>
+            <div className="mr-16 text-lg">وزارة الصحـــــــــــة</div>
             <div className="text-lg">التجمع الصحي بالمدينة المنورة</div>
-            <div className="text-lg">مختبر الصحة العامة</div>
+            <div className="mr-10 text-lg">مختبر الصحة العامة</div>
           </div>
           <div className="flex-col items-center justify-center">
-            <img src="https://media.base44.com/images/public/68af5003813e47bd07947b30/05c242de2_image.png" alt="MOH" className="h-24 object-contain" />
+            <img src="https://media.base44.com/images/public/68af5003813e47bd07947b30/9d3c650ad_moh_logo_transparent.png" alt="MOH" className="h-24 object-contain" />
           </div>
           <div className="text-right leading-relaxed text-base font-bold" dir="rtl">
             <div className="flex items-end gap-1 mb-1"><span className="whitespace-nowrap">صادر المختبر:</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40 text-center" /></div>
-            <div className="flex items-end gap-1 mb-1"><span className="whitespace-nowrap">التاريــــــخ:</span><input className="bg-transparent text-center border-b-2 border-dotted border-black focus:outline-none w-40" defaultValue="    /    / 14 هـ" /></div>
+            <div className="flex items-end gap-1 mb-1"><span className="whitespace-nowrap">التاريــــــخ:</span><input className="bg-transparent mr-2 text-center border-b-2 border-dotted border-black focus:outline-none w-40" defaultValue="    /    / 14 هـ" /></div>
             <div className="flex items-end gap-1"><span className="whitespace-nowrap">المشفوعات:</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40 text-center" /></div>
           </div>
         </div>
 
         {/* Sender Info */}
-        <div className="flex justify-between items-end mb-2 px-2 text-lg">
+        <div className="mb-2 ml-6 pr-3 pl-8 text-lg flex justify-between items-end">
           <div className="flex items-center gap-2">
             <span>الجهة المرسلة:</span>
             <input
@@ -163,7 +163,7 @@ export default function FillWaterSamplesForm() {
 
         {/* Middle Details Boxes */}
         <div className="flex gap-4 mb-4 h-14">
-          <div className="border-2 border-black rounded-full px-6 flex items-center gap-2 w-[60%] h-full">
+          <div className="pr-8 pl-6 rounded-full border-2 border-black flex items-center gap-2 w-[60%] h-full">
             <span className="whitespace-nowrap font-bold text-lg">أخذ العينة :</span>
             <input className="bg-transparent focus:outline-none w-full font-bold text-lg" defaultValue="عبدالله الحربي" />
           </div>
