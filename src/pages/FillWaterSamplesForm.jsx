@@ -68,7 +68,7 @@ export default function FillWaterSamplesForm() {
             <div className="text-lg">مختبر الصحة العامة</div>
           </div>
           <div className="flex-col items-center justify-center">
-            <img src="https://upload.wikimedia.org/wikipedia/ar/thumb/8/8b/Saudi_Ministry_of_Health_Logo.svg/1024px-Saudi_Ministry_of_Health_Logo.svg.png" alt="MOH" className="h-20 object-contain mix-blend-multiply" />
+            <img src="https://media.base44.com/images/public/68af5003813e47bd07947b30/06e0558a3_WhatsAppImage2026-03-29at72927PM.jpeg" alt="MOH" className="h-20 object-contain mix-blend-multiply" />
           </div>
           <div className="text-right leading-relaxed text-lg" dir="rtl">
             <div className="flex gap-1"><span className="text-sm">صادر المختبر :</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40" /></div>
@@ -99,7 +99,7 @@ export default function FillWaterSamplesForm() {
         </div>
 
         {/* Checkboxes Box */}
-        <div className="border-2 border-black rounded-xl p-3 flex justify-between items-center mb-4 text-base">
+        <div className="border-2 border-black rounded-xl p-3 flex flex-row-reverse justify-between items-center mb-4 text-base">
           <label className="flex items-center gap-2 cursor-pointer">
             <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("مياه") ? "bg-black" : ""}`} onClick={() => toggleType("مياه")}></div>
             <span className="text-sm">مياه</span>
