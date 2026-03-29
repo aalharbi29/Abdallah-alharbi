@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Printer, Droplets } from "lucide-react";
+import { Printer, Droplets, Save, Loader2 } from "lucide-react";
+import { base44 } from "@/api/base44Client";
+import { toast } from "sonner";
 
 export default function FillWaterSamplesForm() {
   const [senderCenter, setSenderCenter] = useState("");
@@ -8,6 +10,16 @@ export default function FillWaterSamplesForm() {
   const [sectionSupervisor, setSectionSupervisor] = useState("");
   const [labDirector, setLabDirector] = useState("أ/ سلطان عوده السيد");
   const [selectedTypes, setSelectedTypes] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
+
+  const getDayName = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "";
+    const days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+    return days[date.getDay()];
+  };
+  const dayName = getDayName(selectedDate);
 
   const toggleType = (type) => {
     setSelectedTypes((prev) =>
@@ -15,7 +27,47 @@ export default function FillWaterSamplesForm() {
     );
   };
 
+  const [saving, setSaving] = useState(false);
+
   const handlePrint = () => window.print();
+
+  const handleSave = async () => {
+    if (!senderCenter) {
+      toast.error('يرجى اختيار الجهة المرسلة (المركز الصحي)');
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const templateTitle = "نموذج عينات مياه - مسحات";
+      const submittedBy = examinerName || "مختبر الصحة العامة";
+      
+      const contentData = {
+        senderCenter,
+        incomingNumber,
+        examinerName,
+        sectionSupervisor,
+        labDirector,
+        selectedTypes,
+        selectedDate,
+      };
+
+      await base44.entities.FormSubmission.create({
+        form_template_title: templateTitle,
+        submitted_by_employee_name: submittedBy,
+        submission_date: new Date().toISOString(),
+        content: JSON.stringify(contentData),
+        status: "مكتمل"
+      });
+      
+      toast.success('تم حفظ النموذج في سجلات المركز بنجاح');
+    } catch (error) {
+      console.error('Save error:', error);
+      toast.error('حدث خطأ أثناء الحفظ');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 font-sans" dir="rtl">
@@ -50,15 +102,21 @@ export default function FillWaterSamplesForm() {
             <button
               onClick={handlePrint}
               className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-lg text-sm font-semibold hover:bg-slate-50 transition-colors shadow-sm">
-              
               <Printer className="w-4 h-4" /> طباعة
+            </button>
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors shadow-sm disabled:opacity-50">
+              {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />} 
+              حفظ في المركز
             </button>
           </div>
         </div>
       </div>
 
       {/* Print Area */}
-      <div className="print-area max-w-4xl mx-auto bg-white shadow-xl min-h-[297mm] p-8 relative font-bold text-black" style={{ fontFamily: 'Tajawal, Arial, sans-serif' }}>
+      <div className="print-area max-w-4xl mx-auto bg-white shadow-xl min-h-[297mm] p-8 relative font-bold text-black border-[1px] border-slate-300 print:border-black print:border-2" style={{ fontFamily: 'Tajawal, Arial, sans-serif' }}>
         
         {/* Header Box */}
         <div className="mb-1 p-4 rounded-2xl border-2 border-black flex justify-between items-center">
@@ -139,14 +197,23 @@ export default function FillWaterSamplesForm() {
           <div className="flex items-center gap-1 print:break-inside-avoid">
             <span className="text-[11px] sm:text-[12px]">ليوم:</span>
             <input
-              placeholder="..........." className="bg-transparent text-[11px] sm:text-sm font-bold text-center border-b-2 border-dotted border-black focus:outline-none w-12 sm:w-16" />
+              value={dayName}
+              readOnly
+              placeholder="....." className="bg-transparent text-[11px] sm:text-sm font-bold text-center border-b-2 border-dotted border-black focus:outline-none w-10 sm:w-14" />
           </div>
 
           <div className="flex items-center gap-1 print:break-inside-avoid">
             <span className="text-[11px] sm:text-[12px]">الموافق:</span>
-            <input
-              defaultValue="   /   / 14 هـ"
-              className="bg-transparent text-[11px] sm:text-sm font-extrabold text-center border-b-2 border-dotted border-black focus:outline-none w-24 sm:w-32" dir="rtl" />
+            <div className="relative flex items-center">
+              <input
+                type="date"
+                value={selectedDate}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="print:hidden bg-transparent text-[11px] sm:text-sm font-extrabold text-center normal-case focus:outline-none w-24 sm:w-28 cursor-pointer" />
+              <span className="hidden print:inline-block text-[11px] sm:text-sm font-extrabold text-center w-24 sm:w-28 border-b-2 border-dotted border-black">
+                {selectedDate ? new Date(selectedDate).toLocaleDateString('en-GB') : "   /   / 14 هـ"}
+              </span>
+            </div>
           </div>
         </div>
 
