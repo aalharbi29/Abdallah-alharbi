@@ -429,7 +429,19 @@ export default function FillSafetyEvaluationForm() {
                         }
                       </motion.div>
                     </div>
-
+                  </td>
+                </tr>
+              </thead>
+              <tfoot className="print:table-footer-group hidden print:table-row-group">
+                <tr>
+                  <td colSpan={6} className="border-0 pt-4 text-left text-xs text-gray-500 font-bold page-number-container">
+                    المركز: {formData.health_center_name || '....................'} <span className="page-number-counter"></span>
+                  </td>
+                </tr>
+              </tfoot>
+              <tbody>
+                <tr>
+                  <td colSpan={6} className="border-0 p-0">
                     <div className="mb-2 pt-2 pb-2 text-center">
                       <h1 className="text-gray-900 text-base font-bold">تقرير عن مدى توفر أنظمة ومتطلبات السلامة بالمراكز الصحية
 
@@ -440,13 +452,13 @@ export default function FillSafetyEvaluationForm() {
                     <table className="w-full border-collapse border border-gray-800 mb-4 text-center">
                       <tbody>
                         <tr>
-                          <td className="bg-gray-200 pt-2 pr-2 pb-2 pl-2 font-bold border border-gray-800 print:bg-gray-200 w-1/4">اسم المنشأة</td>
+                          <td className="bg-gray-200 pt-2 pr-2 pb-2 pl-2 font-bold border border-gray-800 print:bg-gray-200 w-1/4 text-sm">اسم المنشأة</td>
                           <td className="border border-gray-800 p-0 w-1/4">
                             <Select
                               value={formData.health_center_name}
                               onValueChange={handleCenterChange}>
                               
-                              <SelectTrigger className="border-0 rounded-none bg-transparent focus:ring-0 text-center font-semibold h-full w-full shadow-none justify-center">
+                              <SelectTrigger className="border-0 rounded-none bg-transparent focus:ring-0 text-center font-semibold h-full w-full shadow-none justify-center text-sm">
                                 <SelectValue placeholder="اختر المركز الصحي" />
                               </SelectTrigger>
                               <SelectContent>
@@ -456,13 +468,13 @@ export default function FillSafetyEvaluationForm() {
                               </SelectContent>
                             </Select>
                           </td>
-                          <td className="border border-gray-800 bg-gray-200 print:bg-gray-200 font-bold p-2 w-1/4">تاريخ التقرير</td>
+                          <td className="border border-gray-800 bg-gray-200 print:bg-gray-200 font-bold p-2 w-1/4 text-sm">تاريخ التقرير</td>
                           <td className="border border-gray-800 p-0 w-1/4">
                             <Input
                               type="date"
                               value={formData.report_date}
                               onChange={(e) => setFormData({ ...formData, report_date: e.target.value })}
-                              className="border-0 rounded-none bg-transparent focus-visible:ring-0 text-center font-semibold h-full w-full" />
+                              className="border-0 rounded-none bg-transparent focus-visible:ring-0 text-center font-semibold h-full w-full text-sm" />
                             
                           </td>
                         </tr>
@@ -470,27 +482,25 @@ export default function FillSafetyEvaluationForm() {
                     </table>
                   </td>
                 </tr>
-              </thead>
-              <tbody>
                 {SECTIONS.map((section) =>
                 <React.Fragment key={section.id}>
                     <tr className="bg-gray-300 print:bg-gray-300 text-center">
-                      <th colSpan={2} className="p-1 border border-gray-800 print:border-gray-800 font-bold text-base text-blue-900 text-right">
+                      <th colSpan={2} className="p-1 border border-gray-800 print:border-gray-800 font-bold text-sm text-blue-900 text-right">
                         {section.title}
                       </th>
-                      <th className="p-1 border border-gray-800 print:border-gray-800 font-bold text-sm">نعم</th>
-                      <th className="p-1 border border-gray-800 print:border-gray-800 font-bold text-sm">لا</th>
+                      <th className="p-1 border border-gray-800 print:border-gray-800 font-bold text-xs">نعم</th>
+                      <th className="p-1 border border-gray-800 print:border-gray-800 font-bold text-xs">لا</th>
                       {section.hasNA &&
-                    <th className="p-1 border border-gray-800 print:border-gray-800 font-bold text-sm">لا ينطبق</th>
+                    <th className="p-1 border border-gray-800 print:border-gray-800 font-bold text-xs">لا ينطبق</th>
                     }
-                      <th colSpan={section.hasNA ? 1 : 2} className="p-1 border border-gray-800 print:border-gray-800 font-bold text-sm">ملاحظات</th>
+                      <th colSpan={section.hasNA ? 1 : 2} className="p-1 border border-gray-800 print:border-gray-800 font-bold text-xs">ملاحظات</th>
                     </tr>
                     {section.questions.map((q, idx) =>
                   <tr key={q.id} className="hover:bg-gray-50 transition-colors h-[20px]">
-                        <td className="px-1 py-0 border border-gray-800 print:border-gray-800 font-bold text-center text-sm">
+                        <td className="px-1 py-0 border border-gray-800 print:border-gray-800 font-bold text-center text-xs">
                           {idx + 1}
                         </td>
-                        <td className="px-1 py-0 border border-gray-800 print:border-gray-800 font-medium text-sm">
+                        <td className="px-1 py-0 border border-gray-800 print:border-gray-800 font-medium text-xs">
                           {q.text}
                         </td>
                         <td
@@ -572,7 +582,7 @@ export default function FillSafetyEvaluationForm() {
                 {PROOFS.map((proof) =>
                 <div key={proof.id} className="bg-white border border-gray-800 print:border-gray-800">
                     <div className="bg-gray-200 print:bg-gray-200 p-2 border-b border-gray-800 flex justify-center items-center relative">
-                      <h3 className="font-bold text-sm text-red-600 text-center">{proof.title}</h3>
+                      <h3 className="font-bold text-xs text-red-600 text-center">{proof.title}</h3>
                       <Button
                       variant="outline"
                       size="sm"
@@ -586,7 +596,7 @@ export default function FillSafetyEvaluationForm() {
                     
                     <div className="p-4 flex flex-wrap gap-4 bg-white">
                       {formData.images[proof.id]?.map((url, idx) =>
-                    <div key={idx} className="relative group w-40 h-32 md:w-56 md:h-48 rounded-lg overflow-hidden border-2 border-gray-300 shadow-sm">
+                    <div key={idx} className="relative group w-48 h-32 md:w-72 md:h-48 rounded-lg overflow-hidden border-2 border-gray-300 shadow-sm">
                           <img src={url} alt="Proof" className="w-full h-full object-cover" />
                           <button
                         onClick={() => removeImage(proof.id, idx)}
