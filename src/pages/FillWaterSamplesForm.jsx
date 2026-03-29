@@ -54,7 +54,68 @@ export default function FillWaterSamplesForm() {
       const printElement = document.querySelector('.print-area');
       if (!printElement) throw new Error('No print area found');
       
+      // --- Fix html2canvas text clipping for inputs ---
+      const inputs = printElement.querySelectorAll('input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]), select, textarea');
+      const replacements = [];
+
+      inputs.forEach(input => {
+        const div = document.createElement('div');
+        const computedStyle = window.getComputedStyle(input);
+        
+        div.className = input.className;
+        div.textContent = input.tagName === 'SELECT' ? (input.options[input.selectedIndex]?.text || '') : input.value;
+        
+        // Copy essential styles
+        div.style.width = computedStyle.width;
+        div.style.minHeight = computedStyle.height;
+        div.style.display = 'flex';
+        div.style.boxSizing = 'border-box';
+        div.style.overflow = 'visible';
+        div.style.border = computedStyle.border;
+        div.style.borderBottom = computedStyle.borderBottom;
+        div.style.padding = computedStyle.padding;
+        div.style.margin = computedStyle.margin;
+        div.style.color = computedStyle.color;
+        div.style.fontFamily = computedStyle.fontFamily;
+        div.style.fontSize = computedStyle.fontSize;
+        div.style.fontWeight = computedStyle.fontWeight;
+        div.style.background = computedStyle.background;
+        div.style.backgroundColor = computedStyle.backgroundColor;
+        
+        if (input.tagName === 'TEXTAREA') {
+          div.style.alignItems = 'flex-start';
+          div.style.whiteSpace = 'pre-wrap';
+        } else {
+          div.style.alignItems = 'center';
+          div.style.whiteSpace = 'pre';
+        }
+
+        const textAlign = computedStyle.textAlign;
+        if (textAlign === 'center') {
+          div.style.justifyContent = 'center';
+        } else if (textAlign === 'left') {
+          div.style.justifyContent = computedStyle.direction === 'rtl' ? 'flex-end' : 'flex-start';
+        } else if (textAlign === 'right') {
+          div.style.justifyContent = computedStyle.direction === 'rtl' ? 'flex-start' : 'flex-end';
+        }
+
+        input.parentNode.insertBefore(div, input);
+        
+        const originalDisplay = input.style.display;
+        input.style.display = 'none';
+        
+        replacements.push({ input, div, originalDisplay });
+      });
+
       const canvas = await html2canvas(printElement, { scale: 2, useCORS: true, logging: false });
+
+      // Revert inputs
+      replacements.forEach(({ input, div, originalDisplay }) => {
+        input.style.display = originalDisplay;
+        div.remove();
+      });
+      // ------------------------------------------
+
       const imgData = canvas.toDataURL('image/jpeg', 1.0);
       const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       const pdfWidth = pdf.internal.pageSize.getWidth();
