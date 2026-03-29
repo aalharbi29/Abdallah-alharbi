@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle, Target, Stethoscope, ShieldCheck } from 'lucide-react';
+import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle, Target, Stethoscope, ShieldCheck, Droplets } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 
@@ -117,6 +117,14 @@ const interactiveForms = [
     color: "from-blue-500 to-indigo-600",
     link: createPageUrl("FillSafetyEvaluationForm"),
     category: "الأمن والسلامة"
+  },
+  {
+    title: "نموذج عينات مياه",
+    description: "نتائج فحص عينات المياه والمسحات",
+    icon: Droplets,
+    color: "from-cyan-500 to-blue-600",
+    link: createPageUrl("FillWaterSamplesForm"),
+    category: "الصحة العامة"
   }
 ];
 
