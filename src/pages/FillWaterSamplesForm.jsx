@@ -151,7 +151,7 @@ export default function FillWaterSamplesForm() {
             <input
               value={dayName}
               readOnly
-              placeholder="....." className="bg-transparent text-[12px] text-sm font-black text-center border-b-2 border-dotted border-black focus:outline-none w-14 sm:w-16" />
+              placeholder="....." className="bg-transparent text-[12px] text-sm font-bold text-center border-b-2 border-dotted border-black focus:outline-none w-14 sm:w-16" />
 
             
           </div>
@@ -161,7 +161,7 @@ export default function FillWaterSamplesForm() {
             <input
               type="date"
               value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)} className="bg-transparent text-[12px] text-sm font-bold text-center normal-case focus:outline-none w-28 cursor-pointer" />
+              onChange={(e) => setSelectedDate(e.target.value)} className="bg-transparent text-[12px] text-sm font-extrabold text-center normal-case focus:outline-none w-28 cursor-pointer" />
             
             
           </div>
