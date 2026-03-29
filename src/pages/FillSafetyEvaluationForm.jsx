@@ -475,15 +475,15 @@ export default function FillSafetyEvaluationForm() {
                 {SECTIONS.map((section) =>
                 <React.Fragment key={section.id}>
                     <tr className="bg-gray-300 print:bg-gray-300 text-center">
-                      <th colSpan={2} className="p-1 border border-gray-800 print:border-gray-800 font-bold text-lg text-blue-900 text-right">
+                      <th colSpan={2} className="p-1 border border-gray-800 print:border-gray-800 font-bold text-base text-blue-900 text-right">
                         {section.title}
                       </th>
-                      <th className="p-1 border border-gray-800 print:border-gray-800 font-bold text-md">نعم</th>
-                      <th className="p-1 border border-gray-800 print:border-gray-800 font-bold text-md">لا</th>
+                      <th className="p-1 border border-gray-800 print:border-gray-800 font-bold text-sm">نعم</th>
+                      <th className="p-1 border border-gray-800 print:border-gray-800 font-bold text-sm">لا</th>
                       {section.hasNA &&
-                    <th className="p-1 border border-gray-800 print:border-gray-800 font-bold text-md">لا ينطبق</th>
+                    <th className="p-1 border border-gray-800 print:border-gray-800 font-bold text-sm">لا ينطبق</th>
                     }
-                      <th colSpan={section.hasNA ? 1 : 2} className="p-1 border border-gray-800 print:border-gray-800 font-bold text-md">ملاحظات</th>
+                      <th colSpan={section.hasNA ? 1 : 2} className="p-1 border border-gray-800 print:border-gray-800 font-bold text-sm">ملاحظات</th>
                     </tr>
                     {section.questions.map((q, idx) =>
                   <tr key={q.id} className="hover:bg-gray-50 transition-colors h-[20px]">
@@ -544,13 +544,13 @@ export default function FillSafetyEvaluationForm() {
                   <tr className="bg-gray-300 print:bg-gray-300">
                         <td colSpan={6} className="p-1 border border-gray-800 print:border-gray-800">
                           <div className="flex items-center justify-center gap-4 w-full">
-                            <span className="font-bold text-blue-900 text-lg">عدد مخارج الطوارئ:</span>
-                            <div className="w-px h-8 bg-gray-500"></div>
+                            <span className="font-bold text-blue-900 text-base">عدد مخارج الطوارئ:</span>
+                            <div className="w-px h-6 bg-gray-500"></div>
                             <Input
                           type="number"
                           value={formData.emergency_exits_count}
                           onChange={(e) => setFormData({ ...formData, emergency_exits_count: e.target.value })}
-                          className="w-32 h-10 border-gray-400 text-center bg-white text-lg font-bold" />
+                          className="w-24 h-8 border-gray-400 text-center bg-white text-base font-bold" />
                         
                           </div>
                         </td>
@@ -558,11 +558,10 @@ export default function FillSafetyEvaluationForm() {
                   }
                   </React.Fragment>
                 )}
-              </tbody>
-            </table>
-
-            {/* Proofs Section */}
-            <div className="mt-12 pt-8 break-before-page">
+                <tr>
+                  <td colSpan={6} className="border-0 p-0">
+                    {/* Proofs Section */}
+                    <div className="mt-8 pt-4 break-before-page">
               <p className="text-red-600 font-bold text-center mb-8 text-lg">
                 *يرجى إرفاق الصور التوضيحية الخاصة بكل بند من بنود التقييم لدعم النتائج وتحسين دقة التقييم*
               </p>
@@ -571,23 +570,23 @@ export default function FillSafetyEvaluationForm() {
               
               <div className="space-y-6">
                 {PROOFS.map((proof) =>
-                <div key={proof.id} className="bg-gray-100 p-4 border border-gray-800 print:border-gray-800 print:bg-transparent">
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="font-bold text-lg text-red-600">{proof.title}</h3>
+                <div key={proof.id} className="bg-white border border-gray-800 print:border-gray-800">
+                    <div className="bg-gray-200 print:bg-gray-200 p-2 border-b border-gray-800 flex justify-center items-center relative">
+                      <h3 className="font-bold text-sm text-red-600 text-center">{proof.title}</h3>
                       <Button
                       variant="outline"
                       size="sm"
                       onClick={() => handleImageUploadClick(proof.id)}
-                      className="print:hidden gap-2 text-blue-600 border-blue-300 hover:bg-blue-50 bg-white">
+                      className="print:hidden gap-2 text-blue-600 border-blue-300 hover:bg-blue-50 bg-white absolute left-2">
                       
                         <Upload className="w-4 h-4" />
                         إرفاق صورة
                       </Button>
                     </div>
                     
-                    <div className="flex flex-wrap gap-4">
+                    <div className="p-4 flex flex-wrap gap-4 bg-white">
                       {formData.images[proof.id]?.map((url, idx) =>
-                    <div key={idx} className="relative group w-32 h-32 md:w-48 md:h-48 rounded-lg overflow-hidden border-2 border-gray-300 shadow-sm">
+                    <div key={idx} className="relative group w-40 h-32 md:w-56 md:h-48 rounded-lg overflow-hidden border-2 border-gray-300 shadow-sm">
                           <img src={url} alt="Proof" className="w-full h-full object-cover" />
                           <button
                         onClick={() => removeImage(proof.id, idx)}
@@ -644,6 +643,10 @@ export default function FillSafetyEvaluationForm() {
                 </div>
               </div>
             </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
           </CardContent>
         </Card>
