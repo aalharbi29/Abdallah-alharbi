@@ -71,7 +71,7 @@ export default function FillWaterSamplesForm() {
       <div className="print-area max-w-4xl mx-auto bg-white shadow-xl min-h-[297mm] p-8 relative font-bold text-black" style={{ fontFamily: 'Tajawal, Arial, sans-serif' }}>
         
         {/* Header Box */}
-        <div className="border-2 border-black rounded-2xl p-4 flex justify-between items-center mb-4">
+        <div className="mb-1 p-4 rounded-2xl border-2 border-black flex justify-between items-center">
           <div className="text-right leading-tight">
             <div className="mr-6 text-lg">المملكة العربية السعودية</div>
             <div className="mr-16 text-lg">وزارة الصحـــــــــــة</div>
@@ -160,9 +160,9 @@ export default function FillWaterSamplesForm() {
               <input
                 type="date"
                 value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)} 
-                className="print:hidden bg-transparent text-[11px] sm:text-sm font-extrabold text-center normal-case focus:outline-none w-24 sm:w-28 cursor-pointer" 
-              />
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="print:hidden bg-transparent text-[11px] sm:text-sm font-extrabold text-center normal-case focus:outline-none w-24 sm:w-28 cursor-pointer" />
+              
               <span className="hidden print:inline-block text-[11px] sm:text-sm font-extrabold text-center w-24 sm:w-28">
                 {selectedDate ? new Date(selectedDate).toLocaleDateString('en-GB') : "  /  / 144 هـ"}
               </span>
