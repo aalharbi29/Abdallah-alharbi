@@ -8,16 +8,6 @@ export default function FillWaterSamplesForm() {
   const [sectionSupervisor, setSectionSupervisor] = useState("");
   const [labDirector, setLabDirector] = useState("أ/ سلطان عوده السيد");
   const [selectedTypes, setSelectedTypes] = useState([]);
-  const [selectedDate, setSelectedDate] = useState("");
-
-  const getDayName = (dateString) => {
-    if (!dateString) return "";
-    const date = new Date(dateString);
-    if (isNaN(date)) return "";
-    const days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
-    return days[date.getDay()];
-  };
-  const dayName = getDayName(selectedDate);
 
   const toggleType = (type) => {
     setSelectedTypes((prev) =>
@@ -83,13 +73,7 @@ export default function FillWaterSamplesForm() {
           </div>
           <div className="text-right leading-relaxed text-base font-bold" dir="rtl">
             <div className="flex items-end gap-1 mb-1"><span className="whitespace-nowrap">صادر المختبر:</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40 text-center" /></div>
-            <div className="flex items-end gap-1 mb-1 relative">
-              <span className="whitespace-nowrap">التاريــــــخ:</span>
-              <input type="date" className="print:hidden bg-transparent mr-2 text-center border-b-2 border-dotted border-black focus:outline-none w-40 cursor-pointer" />
-              <span className="hidden print:inline-block text-center border-b-2 border-dotted border-black w-40 mr-2">
-                {"  /  / 144 هـ"}
-              </span>
-            </div>
+            <div className="flex items-end gap-1 mb-1"><span className="whitespace-nowrap">التاريــــــخ:</span><input className="bg-transparent mr-2 text-center border-b-2 border-dotted border-black focus:outline-none w-40" defaultValue="    /    / 14 هـ" dir="rtl" /></div>
             <div className="flex items-end gap-1"><span className="whitespace-nowrap">المشفوعات:</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40 text-center" /></div>
           </div>
         </div>
@@ -155,24 +139,14 @@ export default function FillWaterSamplesForm() {
           <div className="flex items-center gap-1 print:break-inside-avoid">
             <span className="text-[11px] sm:text-[12px]">ليوم:</span>
             <input
-              value={dayName}
-              readOnly
-              placeholder="....." className="bg-transparent text-[11px] sm:text-sm font-bold text-center border-b-2 border-dotted border-black focus:outline-none w-10 sm:w-14" />
+              placeholder="..........." className="bg-transparent text-[11px] sm:text-sm font-bold text-center border-b-2 border-dotted border-black focus:outline-none w-12 sm:w-16" />
           </div>
 
           <div className="flex items-center gap-1 print:break-inside-avoid">
             <span className="text-[11px] sm:text-[12px]">الموافق:</span>
-            <div className="relative flex items-center">
-              <input
-                type="date"
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="print:hidden bg-transparent text-[11px] sm:text-sm font-extrabold text-center normal-case focus:outline-none w-24 sm:w-28 cursor-pointer" />
-              
-              <span className="hidden print:inline-block text-[11px] sm:text-sm font-extrabold text-center w-24 sm:w-28">
-                {selectedDate ? new Date(selectedDate).toLocaleDateString('en-GB') : "  /  / 144 هـ"}
-              </span>
-            </div>
+            <input
+              defaultValue="   /   / 14 هـ"
+              className="bg-transparent text-[11px] sm:text-sm font-extrabold text-center border-b-2 border-dotted border-black focus:outline-none w-24 sm:w-32" dir="rtl" />
           </div>
         </div>
 
@@ -208,12 +182,7 @@ export default function FillWaterSamplesForm() {
           </div>
           <div className="border-2 border-black rounded-full px-6 flex items-center gap-2 flex-1 h-full">
             <span className="whitespace-nowrap font-bold text-base">المستلم :</span>
-            <div className="relative flex-1 h-full flex items-center">
-              <input type="date" className="print:hidden bg-transparent focus:outline-none w-full text-center font-bold text-base cursor-pointer" />
-              <span className="hidden print:flex items-center justify-center w-full text-center font-bold text-base">
-                {"  /  / 144 هـ"}
-              </span>
-            </div>
+            <input className="bg-transparent focus:outline-none w-full text-center font-bold text-base" defaultValue="     /      /     14 هـ" dir="rtl" />
           </div>
         </div>
 
