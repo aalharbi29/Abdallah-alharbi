@@ -199,7 +199,7 @@ export default function FillWaterSamplesForm() {
             <input
               value={dayName}
               readOnly
-              placeholder="....." className="bg-transparent text-[11px] sm:text-sm font-bold text-center border-b-2 border-dotted border-black focus:outline-none w-10 sm:w-14" />
+              placeholder="....." className="bg-transparent text-[11px] sm:text-sm font-bold text-center focus:outline-none w-10 sm:w-14" />
           </div>
 
           <div className="flex items-center gap-1 print:break-inside-avoid">
@@ -210,7 +210,7 @@ export default function FillWaterSamplesForm() {
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
                 className="print:hidden bg-transparent text-[11px] sm:text-sm font-extrabold text-center normal-case focus:outline-none w-24 sm:w-28 cursor-pointer" />
-              <span className="hidden print:inline-block text-[11px] sm:text-sm font-extrabold text-center w-24 sm:w-28 border-b-2 border-dotted border-black">
+              <span className="hidden print:inline-block text-[11px] sm:text-sm font-extrabold text-center w-24 sm:w-28">
                 {selectedDate ? new Date(selectedDate).toLocaleDateString('en-GB') : "   /   / 14 هـ"}
               </span>
             </div>
