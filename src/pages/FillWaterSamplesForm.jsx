@@ -8,6 +8,16 @@ export default function FillWaterSamplesForm() {
   const [sectionSupervisor, setSectionSupervisor] = useState("");
   const [labDirector, setLabDirector] = useState("أ/ سلطان عوده السيد");
   const [selectedTypes, setSelectedTypes] = useState([]);
+  const [selectedDate, setSelectedDate] = useState("");
+
+  const getDayName = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    if (isNaN(date)) return "";
+    const days = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+    return days[date.getDay()];
+  };
+  const dayName = getDayName(selectedDate);
 
   const toggleType = (type) => {
     setSelectedTypes((prev) =>
@@ -136,14 +146,24 @@ export default function FillWaterSamplesForm() {
             <span className="text-[12px]">كيميائي</span>
           </label>
           
-          <div className="flex items-center gap-2 print:break-inside-avoid">
+          <div className="flex items-center gap-1 print:break-inside-avoid">
             <span className="text-[12px]">ليوم :</span>
-            <input className="bg-transparent text-[12px] font-extralight text-center border-b-2 border-dotted border-black focus:outline-none w-24 sm:w-32" />
+            <input 
+              value={dayName}
+              readOnly
+              placeholder="....."
+              className="bg-transparent text-[12px] font-extralight text-center border-b-2 border-dotted border-black focus:outline-none w-14 sm:w-16" 
+            />
           </div>
 
-          <div className="flex items-center gap-2 print:break-inside-avoid">
+          <div className="flex items-center gap-1 print:break-inside-avoid">
             <span className="text-[12px]">الموافق :</span>
-            <input className="bg-transparent text-[12px] focus:outline-none w-24 sm:w-32 text-center" defaultValue="  /  / 144 هـ" />
+            <input 
+              type="date"
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              className="bg-transparent text-[12px] focus:outline-none w-28 text-center cursor-pointer" 
+            />
           </div>
         </div>
 
