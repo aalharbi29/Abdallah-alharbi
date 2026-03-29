@@ -29,7 +29,7 @@ export default function FillWaterSamplesForm() {
           .print-area, .print-area * { visibility: visible !important; }
           .print-area { position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 10mm 15mm !important; box-sizing: border-box; }
           @page { size: A4; margin: 0; }
-          input { background: transparent !important; }
+          input, select { background: transparent !important; }
           html, body, #root, .responsive-shell, main { height: auto !important; overflow: visible !important; width: 100% !important; display: block !important; position: static !important; }
         }
       `}</style>
@@ -79,11 +79,11 @@ export default function FillWaterSamplesForm() {
         </div>
 
         {/* Sender Info */}
-        <div className="mb-2 ml-6 pr-3 pl-8 text-lg flex justify-between items-end">
+        <div className="mb-2 ml-6 pr-3 pl-8 text-base flex justify-between items-end">
           <div className="flex items-center gap-2">
             <span>الجهة المرسلة:</span>
             <select
-              className="bg-transparent focus:outline-none font-bold text-xl min-w-[200px] cursor-pointer"
+              className="bg-transparent focus:outline-none font-bold text-base min-w-[200px] cursor-pointer print:appearance-none"
               value={senderCenter}
               onChange={(e) => setSenderCenter(e.target.value)}
             >
@@ -110,40 +110,40 @@ export default function FillWaterSamplesForm() {
         </div>
 
         {/* Checkboxes Box */}
-        <div className="border-2 border-black rounded-xl p-3 flex justify-between items-center mb-4 text-[12px]">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("مياه") ? "bg-black" : ""}`} onClick={() => toggleType("مياه")}></div>
+        <div className="border-2 border-black rounded-xl p-3 flex flex-wrap justify-between items-center mb-4 text-[12px] gap-2">
+          <label className="flex items-center gap-2 cursor-pointer print:break-inside-avoid">
+            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("مياه") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("مياه")}></div>
             <span className="text-[12px]">مياه</span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("أغذية") ? "bg-black" : ""}`} onClick={() => toggleType("أغذية")}></div>
+          <label className="flex items-center gap-2 cursor-pointer print:break-inside-avoid">
+            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("أغذية") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("أغذية")}></div>
             <span className="text-[12px]">أغذية</span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("مسحات") ? "bg-black" : ""}`} onClick={() => toggleType("مسحات")}></div>
+          <label className="flex items-center gap-2 cursor-pointer print:break-inside-avoid">
+            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("مسحات") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("مسحات")}></div>
             <span className="text-[12px]">مسحات</span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("بكتيري") ? "bg-black" : ""}`} onClick={() => toggleType("بكتيري")}></div>
+          <label className="flex items-center gap-2 cursor-pointer print:break-inside-avoid">
+            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("بكتيري") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("بكتيري")}></div>
             <span className="text-[12px]">بكتيري</span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("ضمات") ? "bg-black" : ""}`} onClick={() => toggleType("ضمات")}></div>
+          <label className="flex items-center gap-2 cursor-pointer print:break-inside-avoid">
+            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("ضمات") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("ضمات")}></div>
             <span className="text-[12px]">ضمات</span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center ${selectedTypes.includes("كيميائي") ? "bg-black" : ""}`} onClick={() => toggleType("كيميائي")}></div>
+          <label className="flex items-center gap-2 cursor-pointer print:break-inside-avoid">
+            <div className={`w-5 h-5 rounded-full border-2 border-black flex items-center justify-center print:border-black ${selectedTypes.includes("كيميائي") ? "bg-black print:bg-black" : "print:bg-white"}`} onClick={() => toggleType("كيميائي")}></div>
             <span className="text-[12px]">كيميائي</span>
           </label>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 print:break-inside-avoid">
             <span className="text-[12px]">ليوم :</span>
-            <input className="bg-transparent text-[12px] font-extralight text-center border-b-2 border-dotted border-black focus:outline-none w-32" />
+            <input className="bg-transparent text-[12px] font-extralight text-center border-b-2 border-dotted border-black focus:outline-none w-24 sm:w-32" />
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 print:break-inside-avoid">
             <span className="text-[12px]">الموافق :</span>
-            <input className="bg-transparent text-[12px] focus:outline-none w-32 text-center" defaultValue="  /  / 144 هـ" />
+            <input className="bg-transparent text-[12px] focus:outline-none w-24 sm:w-32 text-center" defaultValue="  /  / 144 هـ" />
           </div>
         </div>
 
@@ -172,14 +172,14 @@ export default function FillWaterSamplesForm() {
         </table>
 
         {/* Middle Details Boxes */}
-        <div className="flex gap-4 mb-4 h-14">
+        <div className="flex gap-4 mb-4 h-10">
           <div className="pr-8 pl-6 rounded-full border-2 border-black flex items-center gap-2 flex-1 h-full">
-            <span className="whitespace-nowrap font-bold text-lg">أخذ العينة :</span>
-            <input className="bg-transparent focus:outline-none w-full font-bold text-lg" defaultValue="عبدالله الحربي" />
+            <span className="whitespace-nowrap font-bold text-base">أخذ العينة :</span>
+            <input className="bg-transparent focus:outline-none w-full font-bold text-base" defaultValue="عبدالله الحربي" />
           </div>
           <div className="border-2 border-black rounded-full px-6 flex items-center gap-2 flex-1 h-full">
-            <span className="whitespace-nowrap font-bold text-lg">المستلم :</span>
-            <input className="bg-transparent focus:outline-none w-full text-center font-bold text-lg" defaultValue="     /      /     14 هـ" />
+            <span className="whitespace-nowrap font-bold text-base">المستلم :</span>
+            <input className="bg-transparent focus:outline-none w-full text-center font-bold text-base" defaultValue="     /      /     14 هـ" />
           </div>
         </div>
 
