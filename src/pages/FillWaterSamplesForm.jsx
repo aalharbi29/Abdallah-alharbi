@@ -83,7 +83,13 @@ export default function FillWaterSamplesForm() {
           </div>
           <div className="text-right leading-relaxed text-base font-bold" dir="rtl">
             <div className="flex items-end gap-1 mb-1"><span className="whitespace-nowrap">صادر المختبر:</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40 text-center" /></div>
-            <div className="flex items-end gap-1 mb-1"><span className="whitespace-nowrap">التاريــــــخ:</span><input className="bg-transparent mr-2 text-center border-b-2 border-dotted border-black focus:outline-none w-40" defaultValue="    /    / 14 هـ" /></div>
+            <div className="flex items-end gap-1 mb-1 relative">
+              <span className="whitespace-nowrap">التاريــــــخ:</span>
+              <input type="date" className="print:hidden bg-transparent mr-2 text-center border-b-2 border-dotted border-black focus:outline-none w-40 cursor-pointer" />
+              <span className="hidden print:inline-block text-center border-b-2 border-dotted border-black w-40 mr-2">
+                {"  /  / 144 هـ"}
+              </span>
+            </div>
             <div className="flex items-end gap-1"><span className="whitespace-nowrap">المشفوعات:</span><input className="border-b-2 border-dotted border-black bg-transparent focus:outline-none w-40 text-center" /></div>
           </div>
         </div>
@@ -202,23 +208,27 @@ export default function FillWaterSamplesForm() {
           </div>
           <div className="border-2 border-black rounded-full px-6 flex items-center gap-2 flex-1 h-full">
             <span className="whitespace-nowrap font-bold text-base">المستلم :</span>
-            <input className="bg-transparent focus:outline-none w-full text-center font-bold text-base" defaultValue="     /      /     14 هـ" />
+            <div className="relative flex-1 h-full flex items-center">
+              <input type="date" className="print:hidden bg-transparent focus:outline-none w-full text-center font-bold text-base cursor-pointer" />
+              <span className="hidden print:flex items-center justify-center w-full text-center font-bold text-base">
+                {"  /  / 144 هـ"}
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Results Box */}
-        <div className="border-2 border-black rounded-2xl p-6 mb-4 relative min-h-[160px]">
-          <div className="text-center mb-4"><span className="underline underline-offset-4 text-lg">مختبر الصحة العامة</span></div>
-          <div className="mb-4 text-lg">تم فحص العينات المدونة أعلاه ، وكانت النتيجة كالتالي :</div>
-          <div className="space-y-6 mt-4">
+        <div className="border-2 border-black rounded-2xl p-6 mb-4 relative min-h-[120px] print:min-h-[100px]">
+          <div className="text-center mb-2"><span className="underline underline-offset-4 text-lg">مختبر الصحة العامة</span></div>
+          <div className="mb-2 text-lg">تم فحص العينات المدونة أعلاه ، وكانت النتيجة كالتالي :</div>
+          <div className="space-y-8 mt-4">
             <div className="border-b-2 border-dotted border-black w-full"></div>
             <div className="border-b-2 border-dotted border-black w-full"></div>
-            
           </div>
         </div>
 
         {/* Signatures Box */}
-        <div className="border-2 border-black rounded-2xl p-6 flex justify-between min-h-[160px]">
+        <div className="border-2 border-black rounded-2xl p-4 flex justify-between min-h-[120px] print:break-inside-avoid print:min-h-[100px] print:mb-0">
           <div className="flex flex-col justify-center gap-8 w-1/2">
             <div className="flex items-end gap-2 text-lg">
               <span className="whitespace-nowrap">الفاحص:</span>
