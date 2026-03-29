@@ -219,9 +219,9 @@ export default function FillWaterSamplesForm() {
 
         {/* Results Box */}
         <div className="border-2 border-black rounded-2xl p-6 mb-4 relative min-h-[120px] print:min-h-[100px]">
-          <div className="text-center mb-2"><span className="underline underline-offset-4 text-lg">مختبر الصحة العامة</span></div>
-          <div className="mb-2 text-lg">تم فحص العينات المدونة أعلاه ، وكانت النتيجة كالتالي :</div>
-          <div className="space-y-8 mt-4">
+          <div className="text-center"><span className="underline underline-offset-4 text-lg">مختبر الصحة العامة</span></div>
+          <div className="text-lg">تم فحص العينات المدونة أعلاه ، وكانت النتيجة كالتالي :</div>
+          <div className="mt-2 space-y-8">
             <div className="border-b-2 border-dotted border-black w-full"></div>
             <div className="border-b-2 border-dotted border-black w-full"></div>
           </div>
