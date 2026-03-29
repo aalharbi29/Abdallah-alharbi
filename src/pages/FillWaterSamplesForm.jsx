@@ -95,8 +95,8 @@ export default function FillWaterSamplesForm() {
             <select
               className="bg-transparent focus:outline-none font-bold text-base min-w-[200px] cursor-pointer print:appearance-none"
               value={senderCenter}
-              onChange={(e) => setSenderCenter(e.target.value)}
-            >
+              onChange={(e) => setSenderCenter(e.target.value)}>
+              
               <option value="" disabled>اختر المركز...</option>
               <option value="مركز صحي الحسو">مركز صحي الحسو</option>
               <option value="مركز صحي الهميج">مركز صحي الهميج</option>
@@ -148,22 +148,22 @@ export default function FillWaterSamplesForm() {
           
           <div className="flex items-center gap-1 print:break-inside-avoid">
             <span className="text-[12px]">ليوم :</span>
-            <input 
+            <input
               value={dayName}
               readOnly
-              placeholder="....."
-              className="bg-transparent text-[12px] font-extralight text-center border-b-2 border-dotted border-black focus:outline-none w-14 sm:w-16" 
-            />
+              placeholder="....." className="bg-transparent text-[12px] text-sm font-black text-center border-b-2 border-dotted border-black focus:outline-none w-14 sm:w-16" />
+
+            
           </div>
 
           <div className="flex items-center gap-1 print:break-inside-avoid">
             <span className="text-[12px]">الموافق :</span>
-            <input 
+            <input
               type="date"
               value={selectedDate}
-              onChange={(e) => setSelectedDate(e.target.value)}
-              className="bg-transparent text-[12px] focus:outline-none w-28 text-center cursor-pointer" 
-            />
+              onChange={(e) => setSelectedDate(e.target.value)} className="bg-transparent text-[12px] text-sm font-bold text-center normal-case focus:outline-none w-28 cursor-pointer" />
+            
+            
           </div>
         </div>
 
