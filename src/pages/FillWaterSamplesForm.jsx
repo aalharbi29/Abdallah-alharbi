@@ -1,38 +1,13 @@
-import React, { useState, useRef } from "react";
-import { Printer, Download, Plus, Trash2, Droplets } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "sonner";
-import useLogoSettings from "@/components/settings/useLogoSettings";
-import DraggableLogo from "@/components/common/DraggableLogo";
-import OfficialFooter from "@/components/common/OfficialFooter";
-
-const SAMPLE_TYPES = ["بكتيري", "كيميائي", "ضمات", "أغذية", "مسحات", "مياه"];
-
-const RESULT_OPTIONS = ["مطابق", "غير مطابق", "قيد الفحص"];
-
-const emptyRow = () => ({
-  serial: "",
-  source: "",
-  sampleType: "",
-  collectionDate: "",
-  receivedDate: "",
-  result: "",
-  notes: "",
-});
+import React, { useState } from "react";
+import { Printer, Droplets } from "lucide-react";
 
 export default function FillWaterSamplesForm() {
-  const { logoSettings } = useLogoSettings();
-
   const [senderCenter, setSenderCenter] = useState("");
   const [incomingNumber, setIncomingNumber] = useState("");
   const [examinerName, setExaminerName] = useState("");
   const [sectionSupervisor, setSectionSupervisor] = useState("");
   const [labDirector, setLabDirector] = useState("أ/ سلطان عوده السيد");
-  const [reportDate, setReportDate] = useState("");
   const [selectedTypes, setSelectedTypes] = useState([]);
-  const [rows, setRows] = useState([emptyRow(), emptyRow(), emptyRow()]);
 
   const toggleType = (type) => {
     setSelectedTypes((prev) =>
@@ -40,18 +15,7 @@ export default function FillWaterSamplesForm() {
     );
   };
 
-  const addRow = () => setRows([...rows, emptyRow()]);
-  const removeRow = (i) => setRows(rows.filter((_, idx) => idx !== i));
-  const updateRow = (i, field, value) => {
-    const updated = [...rows];
-    updated[i][field] = value;
-    setRows(updated);
-  };
-
   const handlePrint = () => window.print();
-
-  const inputCls =
-    "border-0 border-b border-gray-500 rounded-none bg-transparent focus-visible:ring-0 focus-visible:border-blue-500 px-1 h-7 text-sm";
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 font-sans" dir="rtl">
@@ -93,209 +57,111 @@ export default function FillWaterSamplesForm() {
       </div>
 
       {/* Print Area */}
-      <div className="print-area max-w-5xl mx-auto bg-white shadow-xl min-h-[297mm] p-10 relative">
-        <DraggableLogo className="top-8 right-8" storageKey="water_samples" />
-
-        {/* Header */}
-        <div className="text-center mb-6 border-b-2 border-gray-800 pb-4 pt-16">
-          <h1 className="text-xl font-extrabold text-gray-900">مختبر الصحة العامة</h1>
-          <h2 className="text-base font-bold text-gray-700 mt-1">نتائج فحص عينات المياه والمسحات</h2>
-        </div>
-
+      <div className="print-area max-w-5xl mx-auto bg-white shadow-xl min-h-[297mm] p-12 relative text-xl font-bold leading-loose">
+        
         {/* Meta Info Row */}
-        <div className="flex flex-wrap gap-4 mb-4 text-sm">
-          <div className="flex items-center gap-2 flex-1 min-w-[200px]">
-            <span className="font-bold text-gray-700 whitespace-nowrap">الجهة المرسلة:</span>
-            <Input
-              className={`${inputCls} flex-1`}
-              placeholder="اسم المركز الصحي"
+        <div className="flex justify-between items-center mb-12">
+          <div className="flex items-center gap-2 w-1/2">
+            <span className="whitespace-nowrap">الجهة المرسلة:</span>
+            <input
+              className="bg-transparent focus:outline-none px-2 flex-1 font-bold text-xl"
               value={senderCenter}
+              placeholder="مركز صحي بلغة"
               onChange={(e) => setSenderCenter(e.target.value)}
             />
           </div>
-          <div className="flex items-center gap-2 flex-1 min-w-[160px]">
-            <span className="font-bold text-gray-700 whitespace-nowrap">رقم الوارد:</span>
-            <Input
-              className={`${inputCls} flex-1`}
-              placeholder="رقم الوارد"
+          <div className="flex items-center gap-2 w-1/3">
+            <span className="whitespace-nowrap">رقم الوارد  :</span>
+            <input
+              className="bg-transparent focus:outline-none px-2 flex-1 font-bold text-xl"
               value={incomingNumber}
               onChange={(e) => setIncomingNumber(e.target.value)}
-            />
-          </div>
-          <div className="flex items-center gap-2 flex-1 min-w-[160px]">
-            <span className="font-bold text-gray-700 whitespace-nowrap">التاريخ:</span>
-            <Input
-              type="date"
-              className={`${inputCls} flex-1`}
-              value={reportDate}
-              onChange={(e) => setReportDate(e.target.value)}
             />
           </div>
         </div>
 
         {/* Sample Type Checkboxes */}
-        <div className="flex flex-wrap gap-4 mb-6 border border-gray-300 rounded-lg p-3 bg-gray-50">
-          <span className="font-bold text-gray-700 text-sm self-center">نوع العينة:</span>
-          {SAMPLE_TYPES.map((type) => (
-            <label key={type} className="flex items-center gap-1.5 cursor-pointer text-sm font-medium text-gray-800">
-              <div
-                onClick={() => toggleType(type)}
-                className={`w-5 h-5 border-2 border-gray-600 rounded flex items-center justify-center cursor-pointer transition-colors ${
-                  selectedTypes.includes(type) ? "bg-blue-600 border-blue-600" : "bg-white"
-                }`}
-              >
-                {selectedTypes.includes(type) && (
-                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                )}
-              </div>
-              {type}
-            </label>
-          ))}
+        <div className="flex justify-between items-center mb-16 px-4">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" className="w-5 h-5" checked={selectedTypes.includes("كيميائي")} onChange={() => toggleType("كيميائي")} />
+            <span>كيميائي</span>
+          </label>
+          
+          <div className="flex items-center gap-2">
+            <span className="whitespace-nowrap">ليوم :</span>
+            <input
+              className="bg-transparent focus:outline-none px-2 w-48 text-center font-bold text-xl"
+              placeholder="............................"
+            />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="whitespace-nowrap">الموافق :</span>
+            <input
+              className="bg-transparent focus:outline-none px-2 w-48 text-center font-bold text-xl"
+              placeholder="04/   05  / 7 144هـ"
+            />
+          </div>
+
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" className="w-5 h-5" checked={selectedTypes.includes("بكتيري")} onChange={() => toggleType("بكتيري")} />
+            <span>بكتيري</span>
+          </label>
+          
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" className="w-5 h-5" checked={selectedTypes.includes("ضمات")} onChange={() => toggleType("ضمات")} />
+            <span>ضمات</span>
+          </label>
+
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" className="w-5 h-5" checked={selectedTypes.includes("أغذية")} onChange={() => toggleType("أغذية")} />
+            <span>أغذية</span>
+          </label>
+
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" className="w-5 h-5" checked={selectedTypes.includes("مسحات")} onChange={() => toggleType("مسحات")} />
+            <span>مسحات</span>
+          </label>
+
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" className="w-5 h-5" checked={selectedTypes.includes("مياه")} onChange={() => toggleType("مياه")} />
+            <span>مياه</span>
+          </label>
         </div>
 
-        {/* Table */}
-        <table className="w-full border-collapse border border-gray-800 text-sm mb-6" style={{ tableLayout: "fixed" }}>
-          <colgroup>
-            <col style={{ width: "5%" }} />
-            <col style={{ width: "20%" }} />
-            <col style={{ width: "13%" }} />
-            <col style={{ width: "13%" }} />
-            <col style={{ width: "13%" }} />
-            <col style={{ width: "13%" }} />
-            <col style={{ width: "23%" }} />
-          </colgroup>
-          <thead>
-            <tr className="bg-gray-200 print:bg-gray-200 text-center">
-              <th className="border border-gray-800 p-1.5 font-bold text-xs">#</th>
-              <th className="border border-gray-800 p-1.5 font-bold text-xs">مصدر العينة</th>
-              <th className="border border-gray-800 p-1.5 font-bold text-xs">نوع الفحص</th>
-              <th className="border border-gray-800 p-1.5 font-bold text-xs">تاريخ الأخذ</th>
-              <th className="border border-gray-800 p-1.5 font-bold text-xs">تاريخ الاستلام</th>
-              <th className="border border-gray-800 p-1.5 font-bold text-xs">النتيجة</th>
-              <th className="border border-gray-800 p-1.5 font-bold text-xs">ملاحظات</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, i) => (
-              <tr key={i} className="hover:bg-gray-50 h-[28px]">
-                <td className="border border-gray-800 text-center text-xs font-bold text-gray-500 p-0">
-                  <div className="flex items-center justify-center gap-1">
-                    <span>{i + 1}</span>
-                    <button
-                      onClick={() => removeRow(i)}
-                      className="no-print text-red-400 hover:text-red-600 p-0.5"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </button>
-                  </div>
-                </td>
-                <td className="border border-gray-800 p-0">
-                  <input
-                    className="w-full h-full px-1 py-0 bg-transparent focus:outline-none text-xs"
-                    placeholder="مصدر العينة"
-                    value={row.source}
-                    onChange={(e) => updateRow(i, "source", e.target.value)}
-                  />
-                </td>
-                <td className="border border-gray-800 p-0">
-                  <select
-                    className="w-full h-full px-1 py-0 bg-transparent focus:outline-none text-xs appearance-none"
-                    value={row.sampleType}
-                    onChange={(e) => updateRow(i, "sampleType", e.target.value)}
-                  >
-                    <option value="">--</option>
-                    {SAMPLE_TYPES.map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                </td>
-                <td className="border border-gray-800 p-0">
-                  <input
-                    type="date"
-                    className="w-full h-full px-1 py-0 bg-transparent focus:outline-none text-xs"
-                    value={row.collectionDate}
-                    onChange={(e) => updateRow(i, "collectionDate", e.target.value)}
-                  />
-                </td>
-                <td className="border border-gray-800 p-0">
-                  <input
-                    type="date"
-                    className="w-full h-full px-1 py-0 bg-transparent focus:outline-none text-xs"
-                    value={row.receivedDate}
-                    onChange={(e) => updateRow(i, "receivedDate", e.target.value)}
-                  />
-                </td>
-                <td className="border border-gray-800 p-0">
-                  <select
-                    className="w-full h-full px-1 py-0 bg-transparent focus:outline-none text-xs appearance-none"
-                    value={row.result}
-                    onChange={(e) => updateRow(i, "result", e.target.value)}
-                  >
-                    <option value="">--</option>
-                    {RESULT_OPTIONS.map((r) => (
-                      <option key={r} value={r}>{r}</option>
-                    ))}
-                  </select>
-                </td>
-                <td className="border border-gray-800 p-0">
-                  <input
-                    className="w-full h-full px-1 py-0 bg-transparent focus:outline-none text-xs"
-                    placeholder="ملاحظات"
-                    value={row.notes}
-                    onChange={(e) => updateRow(i, "notes", e.target.value)}
-                  />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <button
-          onClick={addRow}
-          className="no-print mb-8 text-sm bg-blue-50 text-blue-700 hover:bg-blue-100 px-4 py-2 rounded-lg flex items-center gap-2 font-bold transition-colors"
-        >
-          <Plus className="w-4 h-4" /> إضافة صف
-        </button>
-
-        {/* Signatures */}
-        <div className="mt-10 grid grid-cols-3 gap-6 text-center text-sm">
-          <div className="space-y-2">
-            <p className="font-bold text-gray-700">الفاحص</p>
+        {/* Signatures Area */}
+        <div className="mt-16 space-y-16 text-xl font-bold">
+          <div className="flex items-center gap-2">
+            <span className="whitespace-nowrap">الفاحص :</span>
             <input
-              className="w-full border-b border-gray-500 bg-transparent focus:outline-none text-center font-semibold text-gray-800 pb-1"
-              placeholder="اسم الفاحص"
+              className="bg-transparent focus:outline-none px-2 w-64 font-bold text-xl"
               value={examinerName}
               onChange={(e) => setExaminerName(e.target.value)}
             />
-            <div className="h-10 border-b border-gray-400"></div>
-            <p className="text-xs text-gray-500">التوقيع</p>
           </div>
-          <div className="space-y-2">
-            <p className="font-bold text-gray-700">مشرف القسم</p>
-            <input
-              className="w-full border-b border-gray-500 bg-transparent focus:outline-none text-center font-semibold text-gray-800 pb-1"
-              placeholder="اسم المشرف"
-              value={sectionSupervisor}
-              onChange={(e) => setSectionSupervisor(e.target.value)}
-            />
-            <div className="h-10 border-b border-gray-400"></div>
-            <p className="text-xs text-gray-500">التوقيع</p>
+
+          <div className="flex justify-end">
+            <span className="whitespace-nowrap ml-32">مدير مختبر الصحة العامة</span>
           </div>
-          <div className="space-y-2">
-            <p className="font-bold text-gray-700">مدير مختبر الصحة العامة</p>
-            <input
-              className="w-full border-b border-gray-500 bg-transparent focus:outline-none text-center font-semibold text-gray-800 pb-1"
-              value={labDirector}
-              onChange={(e) => setLabDirector(e.target.value)}
-            />
-            <div className="h-10 border-b border-gray-400"></div>
-            <p className="text-xs text-gray-500">التوقيع</p>
+
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-2">
+              <span className="whitespace-nowrap">مشرف  القسم :</span>
+              <input
+                className="bg-transparent focus:outline-none px-2 w-64 font-bold text-xl"
+                value={sectionSupervisor}
+                onChange={(e) => setSectionSupervisor(e.target.value)}
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                className="bg-transparent focus:outline-none px-2 w-80 text-center ml-10 font-bold text-xl"
+                value={labDirector}
+                onChange={(e) => setLabDirector(e.target.value)}
+              />
+            </div>
           </div>
         </div>
-
-        <OfficialFooter className="mt-10" />
       </div>
     </div>
   );
