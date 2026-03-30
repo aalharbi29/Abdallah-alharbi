@@ -34,7 +34,7 @@ export default function LeishmaniaStatisticForm() {
   const [headerText1, setHeaderText1] = useState(localStorage.getItem('stat_header1') || "تجمع المدينة المنورة الصحي");
   const [headerText2, setHeaderText2] = useState(localStorage.getItem('stat_header2') || "شؤون المراكز الصحية بالحسو");
   const [managerName, setManagerName] = useState(localStorage.getItem('stat_managerName') || "أ / عبدالمجيد سعود الربيقي");
-  const [managerTitle, setManagerTitle] = useState(localStorage.getItem('stat_managerTitle') || "المساعد لشؤون المراكز الصحية بالحسو");
+  const [managerTitle, setManagerTitle] = useState(localStorage.getItem('stat_managerTitle') || "مساعد مدير مستشفى الحسو لشؤون الرعاية");
 
   useEffect(() => {
     const fetchSignature = async () => {
