@@ -37,7 +37,7 @@ export default function MalariaStatisticForm() {
   const [year, setYear] = useState(new Date().getFullYear().toString());
   const [isSaving, setIsSaving] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const [signatureUrl, setSignatureUrl] = useState("https://upload.wikimedia.org/wikipedia/commons/f/f8/Stylized_signature_sample.svg");
+  const [signatureUrl, setSignatureUrl] = useState("https://media.base44.com/images/public/68af5003813e47bd07947b30/f7338a5cd_generated_image.png");
   
   const [headerText1, setHeaderText1] = useState(localStorage.getItem('stat_header1') || "تجمع المدينة المنورة الصحي");
   const [headerText2, setHeaderText2] = useState(localStorage.getItem('stat_header2') || "شؤون المراكز الصحية بالحسو");
