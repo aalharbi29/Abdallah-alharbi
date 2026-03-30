@@ -10,10 +10,10 @@ import { jsPDF } from "jspdf";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import DraggableLogo from "@/components/common/DraggableLogo";
+import DraggableFreeImage from "@/components/common/DraggableFreeImage";
 import DraggableWatermark from "@/components/common/DraggableWatermark";
 import OfficialFooter from "@/components/common/OfficialFooter";
 import { Settings } from "lucide-react";
-import { removeWhiteBackground } from "@/utils/imageProcessor";
 
 const months = [
   { value: 1, label: "يناير" }, { value: 2, label: "فبراير" }, { value: 3, label: "مارس" },
@@ -29,24 +29,19 @@ export default function LeishmaniaStatisticForm() {
   const [year, setYear] = useState(new Date().getFullYear().toString());
   const [isSaving, setIsSaving] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const [signatureUrl, setSignatureUrl] = useState("https://media.base44.com/images/public/68af5003813e47bd07947b30/341993f8d_.jpg");
+  const [signatureUrl, setSignatureUrl] = useState("https://upload.wikimedia.org/wikipedia/commons/f/f8/Stylized_signature_sample.svg");
   
   const [headerText1, setHeaderText1] = useState(localStorage.getItem('stat_header1') || "تجمع المدينة المنورة الصحي");
   const [headerText2, setHeaderText2] = useState(localStorage.getItem('stat_header2') || "شؤون المراكز الصحية بالحسو");
   const [managerName, setManagerName] = useState(localStorage.getItem('stat_managerName') || "أ / عبدالمجيد سعود الربيقي");
-  const [managerTitle, setManagerTitle] = useState(localStorage.getItem('stat_managerTitle') || "مساعد مدير مستشفى الحسو لشؤون الرعاية");
+  const [managerTitle, setManagerTitle] = useState(localStorage.getItem('stat_managerTitle') || "المساعد لشؤون المراكز الصحية بالحسو");
 
   useEffect(() => {
     const fetchSignature = async () => {
       try {
         const records = await base44.entities.StampSignature.filter({ type: 'signature', is_default: true, is_active: true });
         if (records && records.length > 0) {
-          try {
-            const transparentUrl = await removeWhiteBackground(records[0].image_url);
-            setSignatureUrl(transparentUrl);
-          } catch(e) {
-            setSignatureUrl(records[0].image_url);
-          }
+          setSignatureUrl(records[0].image_url);
           if (!localStorage.getItem('stat_managerName') && records[0].owner_name) setManagerName(records[0].owner_name);
           if (!localStorage.getItem('stat_managerTitle') && records[0].owner_title) setManagerTitle(records[0].owner_title);
         }
@@ -559,19 +554,6 @@ export default function LeishmaniaStatisticForm() {
             <ArrowRight className="w-4 h-4" />
             عودة
           </Button>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                const event = new CustomEvent('show-watermark-leishmania');
-                window.dispatchEvent(event);
-              }}
-              className="text-xs no-print"
-            >
-              إظهار العلامة المائية
-            </Button>
-          </div>
           <div className="flex gap-3">
             <Button 
               onClick={handleSaveSettings} 
@@ -609,8 +591,9 @@ export default function LeishmaniaStatisticForm() {
         </div>
 
         <div id="leishmania-print-container" ref={printRef} className="bg-white p-8 rounded-xl shadow-sm print-container border border-gray-200 relative overflow-hidden">
+          <DraggableWatermark storageKey="leishmania_watermark" />
+          <DraggableFreeImage storageKey="leishmania_free_logo" />
           <DraggableLogo className="top-8 right-8" storageKey="leishmania" />
-          <DraggableWatermark storageKey="leishmania" />
           {/* Header */}
           <div className="flex justify-between items-start mb-8 relative z-10">
             <motion.div style={{ x: headerX, y: headerY }} drag dragMomentum={false} className="text-right space-y-1 header-text text-blue-400 font-semibold cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50">
