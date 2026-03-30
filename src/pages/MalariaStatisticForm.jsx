@@ -13,6 +13,7 @@ import DraggableLogo from "@/components/common/DraggableLogo";
 import DraggableWatermark from "@/components/common/DraggableWatermark";
 import OfficialFooter from "@/components/common/OfficialFooter";
 import { Settings } from "lucide-react";
+import { removeWhiteBackground } from "@/utils/imageProcessor";
 
 const initialCenters = [
 "الحسو",
@@ -49,7 +50,12 @@ export default function MalariaStatisticForm() {
       try {
         const records = await base44.entities.StampSignature.filter({ type: 'signature', is_default: true, is_active: true });
         if (records && records.length > 0) {
-          setSignatureUrl(records[0].image_url);
+          try {
+            const transparentUrl = await removeWhiteBackground(records[0].image_url);
+            setSignatureUrl(transparentUrl);
+          } catch(e) {
+            setSignatureUrl(records[0].image_url);
+          }
           if (!localStorage.getItem('stat_managerName') && records[0].owner_name) setManagerName(records[0].owner_name);
           if (!localStorage.getItem('stat_managerTitle') && records[0].owner_title) setManagerTitle(records[0].owner_title);
         }

@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { motion } from 'framer-motion';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
+import { removeWhiteBackground } from "@/utils/imageProcessor";
 
 const SECTIONS = [
 {
@@ -230,7 +231,8 @@ export default function FillSafetyEvaluationForm() {
       const res = await UploadFile({ file });
 
       if (uploadingImageId === 'signature') {
-        setFormData((prev) => ({ ...prev, signature_url: res.file_url }));
+        const transparentUrl = await removeWhiteBackground(res.file_url);
+        setFormData((prev) => ({ ...prev, signature_url: transparentUrl }));
       } else {
         setFormData((prev) => {
           const currentImages = prev.images[uploadingImageId] || [];
