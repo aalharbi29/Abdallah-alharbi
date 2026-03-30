@@ -629,7 +629,7 @@ export default function FillSafetyEvaluationForm() {
                     <div className="flex-1 h-20 border-b-2 border-gray-800 flex items-end pb-1 relative">
                       {formData.signature_url ?
                       <div className="relative w-full h-full">
-                          <img src={formData.signature_url} alt="Signature" className="h-full object-contain" />
+                          <img src={formData.signature_url} alt="Signature" className="h-full object-contain mix-blend-multiply" />
                           <button
                           onClick={() => setFormData({ ...formData, signature_url: '' })}
                           className="absolute -top-2 -right-2 p-1 bg-red-100 text-red-600 rounded-full print:hidden">
