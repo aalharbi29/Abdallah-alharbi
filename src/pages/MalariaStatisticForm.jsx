@@ -10,6 +10,7 @@ import { jsPDF } from "jspdf";
 import { base44 } from "@/api/base44Client";
 import { toast } from "sonner";
 import DraggableLogo from "@/components/common/DraggableLogo";
+import DraggableWatermark from "@/components/common/DraggableWatermark";
 import OfficialFooter from "@/components/common/OfficialFooter";
 import { Settings } from "lucide-react";
 
@@ -519,6 +520,19 @@ export default function MalariaStatisticForm() {
             <ArrowRight className="w-4 h-4" />
             عودة
           </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const event = new CustomEvent('show-watermark-malaria');
+                window.dispatchEvent(event);
+              }}
+              className="text-xs no-print"
+            >
+              إظهار العلامة المائية
+            </Button>
+          </div>
           <div className="flex gap-3">
             <Button 
               onClick={handleSaveSettings} 
@@ -547,8 +561,9 @@ export default function MalariaStatisticForm() {
           </div>
         </div>
 
-        <div id="malaria-print-container" ref={printRef} className="bg-white p-8 rounded-xl shadow-sm print-container border border-gray-200 relative">
+        <div id="malaria-print-container" ref={printRef} className="bg-white p-8 rounded-xl shadow-sm print-container border border-gray-200 relative overflow-hidden">
           <DraggableLogo className="top-8 right-8" storageKey="malaria" />
+          <DraggableWatermark storageKey="malaria" />
           {/* Header */}
           <div className="flex justify-between items-start mb-8 relative z-10">
             <motion.div style={{ x: headerX, y: headerY }} drag dragMomentum={false} className="text-right space-y-1 header-text cursor-move hover:ring-2 hover:ring-blue-400 hover:ring-dashed rounded p-2 z-50">
