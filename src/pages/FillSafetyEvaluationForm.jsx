@@ -395,7 +395,7 @@ export default function FillSafetyEvaluationForm() {
                 <tr>
                   <td colSpan={6} className="bg-white pb-2 border-0">
                     {/* Header */}
-                    <div className="mb-3 relative flex justify-between items-start">
+                    <div className="relative flex justify-between items-start">
                       <motion.div
                         drag={isEditingLayout}
                         dragMomentum={false}
@@ -443,8 +443,8 @@ export default function FillSafetyEvaluationForm() {
               </tfoot>
               <tbody>
                 <tr>
-                  <td colSpan={6} className="border-0 p-0">
-                    <div className="mb-2 pt-2 pb-2 text-center">
+                  <td colSpan={6} className="mt-4 border-0">
+                    <div className="pt-2 text-center">
                       <h1 className="text-gray-900 text-base font-bold">تقرير عن مدى توفر أنظمة ومتطلبات السلامة بالمراكز الصحية
 
                       </h1>
@@ -582,14 +582,14 @@ export default function FillSafetyEvaluationForm() {
               
               <div className="space-y-6">
                 {PROOFS.map((proof) =>
-                <div key={proof.id} className="bg-white border border-gray-800 print:border-gray-800">
+                        <div key={proof.id} className="bg-white border border-gray-800 print:border-gray-800">
                     <div className="bg-gray-200 print:bg-gray-200 p-2 border-b border-gray-800 flex justify-center items-center relative">
                       <h3 className="font-bold text-xs text-red-600 text-center">{proof.title}</h3>
                       <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleImageUploadClick(proof.id)}
-                      className="print:hidden gap-2 text-blue-600 border-blue-300 hover:bg-blue-50 bg-white absolute left-2">
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleImageUploadClick(proof.id)}
+                              className="print:hidden gap-2 text-blue-600 border-blue-300 hover:bg-blue-50 bg-white absolute left-2">
                       
                         <Upload className="w-4 h-4" />
                         إرفاق صورة
@@ -598,19 +598,19 @@ export default function FillSafetyEvaluationForm() {
                     
                     <div className="p-4 flex flex-wrap gap-4 bg-white">
                       {formData.images[proof.id]?.map((url, idx) =>
-                    <div key={idx} className="relative group w-48 h-32 md:w-72 md:h-48 rounded-lg overflow-hidden border-2 border-gray-300 shadow-sm">
+                            <div key={idx} className="relative group w-48 h-32 md:w-72 md:h-48 rounded-lg overflow-hidden border-2 border-gray-300 shadow-sm">
                           <img src={url} alt="Proof" className="w-full h-full object-cover" />
                           <button
-                        onClick={() => removeImage(proof.id, idx)}
-                        className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity print:hidden">
+                                onClick={() => removeImage(proof.id, idx)}
+                                className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity print:hidden">
                         
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
-                    )}
+                            )}
                     </div>
                   </div>
-                )}
+                        )}
               </div>
             </div>
 
@@ -621,35 +621,35 @@ export default function FillSafetyEvaluationForm() {
                   <div className="flex items-center gap-3">
                     <label className="font-bold text-gray-900 text-xl whitespace-nowrap">معد التقرير:</label>
                     <Input
-                      value={formData.preparer_name}
-                      onChange={(e) => setFormData({ ...formData, preparer_name: e.target.value })}
-                      className="border-b-2 border-t-0 border-x-0 border-gray-800 rounded-none bg-transparent focus-visible:ring-0 px-2 text-xl font-bold" />
+                              value={formData.preparer_name}
+                              onChange={(e) => setFormData({ ...formData, preparer_name: e.target.value })}
+                              className="border-b-2 border-t-0 border-x-0 border-gray-800 rounded-none bg-transparent focus-visible:ring-0 px-2 text-xl font-bold" />
                     
                   </div>
                   <div className="flex items-center gap-3">
                     <label className="font-bold text-gray-900 text-xl whitespace-nowrap">التوقيع:</label>
                     <div className="flex-1 h-20 border-b-2 border-gray-800 flex items-end pb-1 relative">
                       {formData.signature_url ?
-                      <div className="relative w-full h-full">
+                              <div className="relative w-full h-full">
                           <img src={formData.signature_url} alt="Signature" className="h-full object-contain mix-blend-multiply" />
                           <button
-                          onClick={() => setFormData({ ...formData, signature_url: '' })}
-                          className="absolute -top-2 -right-2 p-1 bg-red-100 text-red-600 rounded-full print:hidden">
+                                  onClick={() => setFormData({ ...formData, signature_url: '' })}
+                                  className="absolute -top-2 -right-2 p-1 bg-red-100 text-red-600 rounded-full print:hidden">
                           
                             <Trash2 className="w-3 h-3" />
                           </button>
                         </div> :
 
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleImageUploadClick('signature')}
-                        className="w-full text-gray-500 hover:text-blue-600 print:hidden h-full">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleImageUploadClick('signature')}
+                                className="w-full text-gray-500 hover:text-blue-600 print:hidden h-full">
                         
                           <Upload className="w-5 h-5 ml-2" />
                           إرفاق توقيع
                         </Button>
-                      }
+                              }
                     </div>
                   </div>
                 </div>
