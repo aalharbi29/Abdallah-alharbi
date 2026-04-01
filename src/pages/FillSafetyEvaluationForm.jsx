@@ -445,7 +445,7 @@ export default function FillSafetyEvaluationForm() {
                 <tr>
                   <td colSpan={6} className="mt-4 border-0">
                     <div className="pt-2 text-center">
-                      <h1 className="text-gray-900 text-xl font-bold">تقرير عن مدى توفر أنظمة ومتطلبات السلامة بالمراكز الصحية
+                      <h1 className="text-gray-900 text-base font-bold">تقرير عن مدى توفر أنظمة ومتطلبات السلامة بالمراكز الصحية
 
                       </h1>
                     </div>
