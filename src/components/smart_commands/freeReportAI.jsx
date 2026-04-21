@@ -54,7 +54,9 @@ ${validEntities}
 - "الموظفين / الأطباء / المدراء" = Employee.
 - "الأجهزة الطبية / المعدات" = MedicalEquipment.
 - "الإجازات" = Leave. "التكاليف" = Assignment. "العجز / النقص" = DeficiencyReport.
-- إذا ذُكرت أسماء مراكز في الطلب (بطحي، الهميج، الدبان، صخيبرة...) ضعها في filters مع operator: "contains" وقيمة واحدة فقط لكل فلتر (أو اجعل operator: "in_list" إن دعا الأمر لعدة مراكز — استخدم contains لكل مركز بفلتر منفصل بمنطق or ضمني).
+- إذا ذُكرت أسماء مراكز في الطلب (بطحي، الهميج، الدبان، صخيبرة...) ضع **فلتراً منفصلاً لكل مركز** مع operator: "contains" وقيمة نصية واحدة فقط (لا تجمع الأسماء في قيمة واحدة بفواصل!). مثال صحيح: [{field:"اسم_المركز",operator:"contains",value:"بطحي"},{field:"اسم_المركز",operator:"contains",value:"الهميج"}] — سيُعاملان كـ OR تلقائياً.
+- اختر حقل المركز الصحيح حسب الكيان: HealthCenter=اسم_المركز، Employee=المركز_الصحي، MedicalEquipment=health_center_name، Leave=health_center، Assignment=assigned_to_health_center.
+- لا تستخدم filter على كائنات مركبة (مثل سيارة_اسعاف بدون .field داخلي).
 
 تفاصيل الحقول لكل كيان (field_key:field_label):
 ${schemaContext}
@@ -202,7 +204,7 @@ const enrichRowWithSecondary = (row, primaryEntity, secondaryData, requestedFiel
     }
   }
 
-  // ربط الموظف (لكيانات HealthCenter مع حقول المدير)
+  // ربط الموظف (لكيانات HealthCenter مع حقول المدير والحقول الحاسوبية المرتبطة)
   if (primaryEntity === 'HealthCenter' && secondaryData.Employee) {
     const findEmp = (val) => {
       if (!val) return null;
@@ -212,17 +214,37 @@ const enrichRowWithSecondary = (row, primaryEntity, secondaryData, requestedFiel
                String(e['رقم_الهوية']) === String(val)
       );
     };
+    const formatEmpName = (emp, rawVal) => {
+      if (!emp) return rawVal || '';
+      return `${emp.full_name_arabic || ''}${emp['رقم_الموظف'] ? ` (${emp['رقم_الموظف']})` : ''}`;
+    };
+
     const dirEmp = findEmp(row['المدير']);
     const vdirEmp = findEmp(row['نائب_المدير']);
     const supEmp = findEmp(row['المشرف_الفني']);
-    if (dirEmp) {
-      enriched['المدير'] = `${dirEmp.full_name_arabic}${dirEmp['رقم_الموظف'] ? ` (${dirEmp['رقم_الموظف']})` : ''}`;
-      enriched['_director_phone'] = dirEmp.phone;
-      enriched['_director_email'] = dirEmp.email;
-      enriched['_director_position'] = dirEmp.position;
-    }
-    if (vdirEmp) enriched['نائب_المدير'] = `${vdirEmp.full_name_arabic}`;
-    if (supEmp) enriched['المشرف_الفني'] = `${supEmp.full_name_arabic}`;
+
+    enriched['المدير'] = formatEmpName(dirEmp, row['المدير']);
+    enriched['نائب_المدير'] = formatEmpName(vdirEmp, row['نائب_المدير']);
+    enriched['المشرف_الفني'] = formatEmpName(supEmp, row['المشرف_الفني']);
+
+    // حقول حاسوبية للمدير
+    enriched['المدير_جوال'] = dirEmp?.phone || '';
+    enriched['المدير_ايميل'] = dirEmp?.email || '';
+    enriched['المدير_تخصص'] = dirEmp?.position || '';
+    enriched['المدير_رقم_الموظف'] = dirEmp?.['رقم_الموظف'] || '';
+    enriched['المدير_رقم_الهوية'] = dirEmp?.['رقم_الهوية'] || '';
+    // نائب المدير
+    enriched['نائب_المدير_جوال'] = vdirEmp?.phone || '';
+    enriched['نائب_المدير_ايميل'] = vdirEmp?.email || '';
+    enriched['نائب_المدير_تخصص'] = vdirEmp?.position || '';
+    enriched['نائب_المدير_رقم_الموظف'] = vdirEmp?.['رقم_الموظف'] || '';
+    enriched['نائب_المدير_رقم_الهوية'] = vdirEmp?.['رقم_الهوية'] || '';
+    // المشرف الفني
+    enriched['المشرف_الفني_جوال'] = supEmp?.phone || '';
+    enriched['المشرف_الفني_ايميل'] = supEmp?.email || '';
+    enriched['المشرف_الفني_تخصص'] = supEmp?.position || '';
+    enriched['المشرف_الفني_رقم_الموظف'] = supEmp?.['رقم_الموظف'] || '';
+    enriched['المشرف_الفني_رقم_الهوية'] = supEmp?.['رقم_الهوية'] || '';
   }
 
   return enriched;
@@ -277,7 +299,14 @@ export async function executeFreeReportPlan(plan) {
   );
 
   // تطبيق الفلاتر
+  const beforeCount = enrichedData.length;
   const filtered = applyAIFilters(enrichedData, plan.filters);
+
+  // تشخيص: إذا أزالت الفلاتر كل البيانات، اطبع معلومات للمطور
+  if (beforeCount > 0 && filtered.length === 0 && plan.filters?.length > 0) {
+    console.warn('⚠️ الفلاتر استبعدت كل الصفوف. الفلاتر المُطبّقة:', plan.filters);
+    console.warn('عيّنة من البيانات قبل الفلترة:', enrichedData.slice(0, 2));
+  }
 
   return filtered;
 }
