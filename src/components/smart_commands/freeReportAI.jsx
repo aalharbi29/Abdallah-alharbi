@@ -39,6 +39,17 @@ const normalizeArabic = (str) => {
     .toLowerCase();
 };
 
+// مطابقة مرنة لأسماء المراكز: تُزيل "ال" التعريف وتُقارن الجذور
+const stripAl = (s) => s.replace(/^ال/, '').replace(/\sال/g, ' ');
+const fuzzyCenterMatch = (centerValue, target) => {
+  if (!centerValue || !target) return false;
+  const v = stripAl(normalizeArabic(centerValue));
+  const t = stripAl(normalizeArabic(target));
+  if (!v || !t) return false;
+  // مطابقة ثنائية الاتجاه على الجذر (بدون ال)
+  return v.includes(t) || t.includes(v);
+};
+
 // heuristic: اختيار مسبق للكيان حسب كلمات مفتاحية واضحة
 const detectLikelyEntity = (prompt) => {
   const p = normalizeArabic(prompt);
@@ -194,9 +205,14 @@ const applyAIFilters = (rows, filters) => {
       if (val === null || val === undefined) return op === 'not_equals' || op === 'not_contains';
 
       const sv = normalizeArabic(String(val));
+      // حقول أسماء المراكز تستخدم مطابقة مرنة (تُزيل "ال" التعريف)
+      const isCenterField = /اسم_المركز|health_center|center_name|المركز_الصحي|assigned_to_health_center/i.test(g.field);
       // منطق OR بين القيم لنفس الحقل
       return g.values.some((target) => {
         const st = normalizeArabic(String(target ?? ''));
+        if (isCenterField && (op === 'contains' || op === 'equals')) {
+          return fuzzyCenterMatch(val, target);
+        }
         switch (op) {
           case 'equals': return sv === st;
           case 'not_equals': return sv !== st;
