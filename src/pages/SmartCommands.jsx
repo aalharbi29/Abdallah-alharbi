@@ -6,18 +6,20 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import {
   Loader2, Sparkles, FileText, FileSpreadsheet, Printer, Mail, MessageCircle,
-  Database, MapPin, Columns3, Wand2, Pencil, Save, X
+  Database, MapPin, Columns3, Wand2, Pencil, Save, X, ArrowDownUp
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { ENTITIES_CATALOG, getEntityByValue, getFieldLabel } from '@/components/smart_commands/entitiesCatalog';
 import { exportToExcel, getNestedValue, toLatinDigits, formatLatinDate } from '@/components/smart_commands/excelExporter';
 import { getCombinedRolesText } from '@/components/utils/combinedRoles';
+import { mergeMultipleEntities, applyValueFilters } from '@/components/smart_commands/multiEntityMerge';
 import CollapsibleSection from '@/components/smart_commands/CollapsibleSection';
-import RequestTypeSelector from '@/components/smart_commands/RequestTypeSelector';
+import MultiEntitySelector from '@/components/smart_commands/MultiEntitySelector';
 import CentersPicker from '@/components/smart_commands/CentersPicker';
-import FieldsPicker from '@/components/smart_commands/FieldsPicker';
+import FieldGroupPicker from '@/components/smart_commands/FieldGroupPicker';
+import SelectedFieldsReorder from '@/components/smart_commands/SelectedFieldsReorder';
+import FieldValueFilterDialog from '@/components/smart_commands/FieldValueFilterDialog';
 
-// توحيد النص العربي لتجاهل الفروقات الإملائية (أ، إ، آ → ا | ة → ه | ى → ي)
 const normalizeArabic = (str) => {
   if (!str) return '';
   return String(str)
@@ -29,7 +31,6 @@ const normalizeArabic = (str) => {
     .toLowerCase();
 };
 
-// اسم الحقل المستخدم للفلترة على المركز حسب الكيان
 const getCenterFieldForEntity = (entityValue) => {
   const map = {
     Employee: 'المركز_الصحي',
@@ -53,30 +54,36 @@ export default function SmartCommands() {
   const [queryInfo, setQueryInfo] = useState(null);
   const [exporting, setExporting] = useState(false);
 
-  const [selectedEntity, setSelectedEntity] = useState('');
+  // دعم كيانات متعددة — الأول هو الأساسي
+  const [selectedEntities, setSelectedEntities] = useState([]);
   const [selectedCenters, setSelectedCenters] = useState([]);
   const [selectedFields, setSelectedFields] = useState([]);
   const [centersList, setCentersList] = useState([]);
+  // فلاتر القيم: { fieldKey: [allowed values] }
+  const [valueFilters, setValueFilters] = useState({});
+  const [filterDialog, setFilterDialog] = useState({ open: false, fieldKey: null, fieldLabel: '' });
 
-  // إدارة التعديل المباشر على الجدول
+  // تخزين عينة من البيانات لاستخراج قيم الفلاتر الديناميكية
+  const [sampleData, setSampleData] = useState([]);
+
   const [editMode, setEditMode] = useState(false);
-  const [edits, setEdits] = useState({}); // { [rowId]: { [field]: newValue } }
+  const [edits, setEdits] = useState({});
   const [savingEdits, setSavingEdits] = useState(false);
 
-  // الحقول المحسوبة التي لا يمكن حفظها في قاعدة البيانات لأنها مستخرجة من كيان آخر
+  const primaryEntity = selectedEntities[0] || '';
+  const secondaryEntities = selectedEntities.slice(1);
+
   const UNSAVABLE_COMPUTED_FIELDS = [
     '__combined_roles',
     'المدير_جوال', 'المدير_ايميل', 'المدير_تخصص', 'المدير_رقم_الموظف', 'المدير_رقم_الهوية',
     'نائب_المدير_جوال', 'نائب_المدير_ايميل', 'نائب_المدير_تخصص', 'نائب_المدير_رقم_الموظف', 'نائب_المدير_رقم_الهوية',
     'المشرف_الفني_جوال', 'المشرف_الفني_ايميل', 'المشرف_الفني_تخصص', 'المشرف_الفني_رقم_الموظف', 'المشرف_الفني_رقم_الهوية',
   ];
-  // كل الحقول قابلة للتعديل الآن (بما فيها المتداخلة). الحقول المحسوبة قابلة للتعديل محلياً فقط للعرض والتصدير.
-  const isEditableField = () => true;
-  const isSavableField = (field) => !UNSAVABLE_COMPUTED_FIELDS.includes(field);
+  const isSavableField = (field) => !UNSAVABLE_COMPUTED_FIELDS.includes(field) && !field.startsWith('_');
 
   const currentEntity = useMemo(
-    () => (selectedEntity ? getEntityByValue(selectedEntity) : null),
-    [selectedEntity]
+    () => (primaryEntity ? getEntityByValue(primaryEntity) : null),
+    [primaryEntity]
   );
 
   useEffect(() => {
@@ -89,13 +96,48 @@ export default function SmartCommands() {
       .catch(() => {});
   }, []);
 
-  // إذا تغير الكيان، أعِد تعيين الحقول
+  // عند تغير الكيان الأساسي، نظّف الحقول والفلاتر
   useEffect(() => {
     setSelectedFields([]);
-  }, [selectedEntity]);
+    setValueFilters({});
+    setSampleData([]);
+  }, [primaryEntity]);
+
+  // جلب عينة بيانات عند تغير الكيان الأساسي — لاستخدامها في dialog فلتر القيم
+  useEffect(() => {
+    if (!primaryEntity || !base44.entities[primaryEntity]) return;
+    base44.entities[primaryEntity].filter({})
+      .then((data) => setSampleData(data || []))
+      .catch(() => setSampleData([]));
+  }, [primaryEntity]);
+
+  const openValueFilter = (fieldKey, fieldLabel) => {
+    setFilterDialog({ open: true, fieldKey, fieldLabel });
+  };
+
+  const applyValueFilter = (fieldKey, values) => {
+    setValueFilters((prev) => {
+      const next = { ...prev };
+      if (!values || values.length === 0) {
+        delete next[fieldKey];
+      } else {
+        next[fieldKey] = values;
+      }
+      return next;
+    });
+  };
+
+  const removeField = (fieldKey) => {
+    setSelectedFields((prev) => prev.filter((f) => f !== fieldKey));
+    setValueFilters((prev) => {
+      const next = { ...prev };
+      delete next[fieldKey];
+      return next;
+    });
+  };
 
   const handleExecute = async () => {
-    if (!selectedEntity && !prompt.trim()) {
+    if (!primaryEntity && !prompt.trim()) {
       toast.warning('اختر نوع البيانات المطلوبة أو اكتب وصفاً نصياً لطلبك.');
       return;
     }
@@ -105,37 +147,32 @@ export default function SmartCommands() {
     setQueryInfo(null);
 
     try {
-      let finalEntity = selectedEntity;
+      let finalEntity = primaryEntity;
       let finalFields = [...selectedFields];
       let finalTitle = '';
 
-      // إذا كان هناك نص، نطلب من الذكاء الاصطناعي تحليله لإكمال المفقود
       if (prompt.trim()) {
-        const entityDescriptions = ENTITIES_CATALOG.map((e) =>
-          `- ${e.value} (${e.label})`
-        ).join('\n');
-
+        const entityDescriptions = ENTITIES_CATALOG.map((e) => `- ${e.value} (${e.label})`).join('\n');
         const fieldsContext = currentEntity
-          ? `الحقول المتاحة في ${selectedEntity}: ${currentEntity.fields.map((f) => `${f.key} (${f.label})`).join('; ')}`
+          ? `الحقول المتاحة في ${primaryEntity}: ${currentEntity.fields.map((f) => `${f.key} (${f.label})`).join('; ')}`
           : '';
 
         const aiPrompt = `أنت مساعد لتحليل طلبات بالعربية وبناء تقارير من نظام إدارة صحي.
 الكيانات المتاحة:
 ${entityDescriptions}
 
-${selectedEntity ? `الكيان المختار مسبقاً: ${selectedEntity}` : 'اختر الكيان الأنسب من القائمة.'}
+${primaryEntity ? `الكيان الأساسي: ${primaryEntity}` : 'اختر الكيان الأنسب.'}
 ${fieldsContext}
 ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${selectedFields.join('، ')}` : ''}
 
 الطلب: "${prompt}"
 
-أرجع JSON فقط بهذا الشكل:
+أرجع JSON فقط:
 {
   "entity": "اسم الكيان",
   "fields": ["حقل1", "حقل2"],
   "title": "عنوان عربي مناسب للتقرير"
-}
-ملاحظة: أضف حقولاً إضافية مفيدة إذا اقتضى الطلب ذلك، لكن لا تُلغِ الحقول المختارة مسبقاً.`;
+}`;
 
         const response = await base44.integrations.Core.InvokeLLM({
           prompt: aiPrompt,
@@ -151,9 +188,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         });
 
         const parsed = typeof response === 'string' ? JSON.parse(response) : response;
-
         if (!finalEntity) finalEntity = parsed.entity;
-        // دمج حقول الذكاء الاصطناعي مع الحقول المختارة يدوياً
         finalFields = Array.from(new Set([...finalFields, ...(parsed.fields || [])]));
         finalTitle = parsed.title;
       }
@@ -165,12 +200,11 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
       }
 
       if (!base44.entities[finalEntity]) {
-        toast.error(`الكيان "${finalEntity}" غير موجود في النظام.`);
+        toast.error(`الكيان "${finalEntity}" غير موجود.`);
         setLoading(false);
         return;
       }
 
-      // إذا لم يحدد المستخدم حقولاً ولا وجدها الذكاء الاصطناعي، استخدم أول 6 حقول افتراضية
       if (finalFields.length === 0) {
         const entityCat = getEntityByValue(finalEntity);
         finalFields = entityCat ? entityCat.fields.slice(0, 6).map((f) => f.key) : [];
@@ -180,10 +214,9 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         finalTitle = `تقرير ${getEntityByValue(finalEntity)?.label || finalEntity}`;
       }
 
-      // جلب جميع السجلات ثم فلترة محلية ذكية للمراكز
       let allData = await base44.entities[finalEntity].filter({});
 
-      // 🧠 دمج "مهام إضافية" للموظفين (أدوار قيادية/إشرافية مستقاة من المراكز + special_roles)
+      // مهام إضافية للموظفين (قيادية/إشرافية)
       if (finalEntity === 'Employee' && finalFields.includes('__combined_roles')) {
         try {
           const allCenters = await base44.entities.HealthCenter.filter({});
@@ -192,12 +225,11 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
             __combined_roles: getCombinedRolesText(emp, allCenters),
           }));
         } catch (err) {
-          console.warn('تعذّر جلب المراكز لدمج المهام الإضافية:', err);
+          console.warn('تعذّر جلب المراكز:', err);
         }
       }
 
-      // 🔗 دمج ذكي: إذا كان الكيان HealthCenter واختار المستخدم حقول المدراء/المشرف،
-      // نستبدل معرّف الموظف ببياناته الفعلية (الاسم، الجوال، الإيميل، التخصص، الهوية)
+      // ربط بيانات المدراء للمراكز
       if (finalEntity === 'HealthCenter') {
         const managerFields = [
           'المدير', 'نائب_المدير', 'المشرف_الفني',
@@ -205,8 +237,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
           'نائب_المدير_جوال', 'نائب_المدير_ايميل', 'نائب_المدير_تخصص', 'نائب_المدير_رقم_الموظف', 'نائب_المدير_رقم_الهوية',
           'المشرف_الفني_جوال', 'المشرف_الفني_ايميل', 'المشرف_الفني_تخصص', 'المشرف_الفني_رقم_الموظف', 'المشرف_الفني_رقم_الهوية',
         ];
-        const needsLookup = managerFields.some((f) => finalFields.includes(f));
-        if (needsLookup) {
+        if (managerFields.some((f) => finalFields.includes(f))) {
           try {
             const allEmployees = await base44.entities.Employee.filter({});
             const empMap = new Map();
@@ -249,11 +280,17 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
               };
             });
           } catch (err) {
-            console.warn('تعذّر جلب بيانات الموظفين للدمج:', err);
+            console.warn('تعذّر دمج الموظفين:', err);
           }
         }
       }
 
+      // دمج كيانات إضافية
+      if (secondaryEntities.length > 0) {
+        allData = await mergeMultipleEntities(finalEntity, allData, secondaryEntities);
+      }
+
+      // فلترة المراكز
       let filtered = allData;
       if (selectedCenters.length > 0) {
         const centerField = getCenterFieldForEntity(finalEntity);
@@ -267,6 +304,9 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
           });
         }
       }
+
+      // تطبيق فلاتر القيم
+      filtered = applyValueFilters(filtered, valueFilters);
 
       setQueryInfo({ entity: finalEntity, fields: finalFields, title: finalTitle });
       setResults(filtered);
@@ -284,15 +324,10 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
     }
   };
 
-  // عند تغيير قيمة خلية
   const handleCellChange = (rowId, field, value) => {
-    setEdits((prev) => ({
-      ...prev,
-      [rowId]: { ...(prev[rowId] || {}), [field]: value },
-    }));
+    setEdits((prev) => ({ ...prev, [rowId]: { ...(prev[rowId] || {}), [field]: value } }));
   };
 
-  // حفظ كل التعديلات إلى قاعدة البيانات
   const handleSaveEdits = async () => {
     const editedRowIds = Object.keys(edits);
     if (editedRowIds.length === 0) {
@@ -310,7 +345,6 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         Object.entries(changes).forEach(([field, value]) => {
           if (!isSavableField(field)) { skippedComputed++; return; }
           if (field.includes('.')) {
-            // حقل متداخل: ادمج مع الكائن الأصلي للحفاظ على باقي المفاتيح
             const [parent, child] = field.split('.');
             if (!payload[parent]) payload[parent] = { ...(originalRow[parent] || {}) };
             payload[parent][child] = value;
@@ -322,16 +356,11 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         await base44.entities[queryInfo.entity].update(rowId, payload);
         successCount++;
       }
-      // تحديث البيانات المعروضة محلياً
-      setResults((prev) =>
-        prev.map((row) =>
-          edits[row.id] ? { ...row, ...edits[row.id] } : row
-        )
-      );
+      setResults((prev) => prev.map((row) => (edits[row.id] ? { ...row, ...edits[row.id] } : row)));
       setEdits({});
       setEditMode(false);
       if (skippedComputed > 0) {
-        toast.success(`تم حفظ ${successCount} سجل. (تم تجاهل ${skippedComputed} حقل محسوب لأنه تابع لسجل موظف ولا يُحفظ على المركز)`);
+        toast.success(`تم حفظ ${successCount} سجل. (تم تجاهل ${skippedComputed} حقل محسوب)`);
       } else {
         toast.success(`تم حفظ ${successCount} سجل بنجاح.`);
       }
@@ -343,10 +372,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
     }
   };
 
-  const cancelEdits = () => {
-    setEdits({});
-    setEditMode(false);
-  };
+  const cancelEdits = () => { setEdits({}); setEditMode(false); };
 
   const renderCellValue = (val) => {
     if (val === null || val === undefined || val === '') return '-';
@@ -364,48 +390,26 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
     if (!results || results.length === 0) return;
     setExporting(true);
     try {
-      await exportToExcel({
-        title: queryInfo.title,
-        entity: queryInfo.entity,
-        fields: queryInfo.fields,
-        results,
-      });
-      toast.success('تم تصدير ملف Excel بنجاح.');
-    } catch (e) {
-      console.error(e);
-      toast.error('فشل تصدير Excel.');
-    } finally {
-      setExporting(false);
-    }
+      await exportToExcel({ title: queryInfo.title, entity: queryInfo.entity, fields: queryInfo.fields, results });
+      toast.success('تم تصدير Excel.');
+    } catch (e) { console.error(e); toast.error('فشل تصدير Excel.'); }
+    finally { setExporting(false); }
   };
 
   const exportWord = () => {
     if (!results || results.length === 0) return;
     const headers = queryInfo.fields.map((f) => getFieldLabel(queryInfo.entity, f));
     const tableHtml = `
-      <table>
-        <thead><tr><th>م</th>${headers.map((h) => `<th>${h}</th>`).join('')}</tr></thead>
-        <tbody>
-          ${results
-            .map(
-              (row, i) => `
-            <tr><td>${i + 1}</td>${queryInfo.fields
-                .map((f) => `<td>${renderCellValue(getNestedValue(row, f))}</td>`)
-                .join('')}</tr>`
-            )
-            .join('')}
-        </tbody>
-      </table>`;
-    const html = `<html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>${queryInfo.title}</title>
-      <style>
-        * { font-variant-numeric: lining-nums tabular-nums; -moz-font-feature-settings: "lnum"; -webkit-font-feature-settings: "lnum"; font-feature-settings: "lnum"; }
+      <table><thead><tr><th>م</th>${headers.map((h) => `<th>${h}</th>`).join('')}</tr></thead>
+      <tbody>${results.map((row, i) => `<tr><td>${i + 1}</td>${queryInfo.fields.map((f) => `<td>${renderCellValue(getNestedValue(row, f))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+    const html = `<html dir="rtl"><head><meta charset="utf-8"><title>${queryInfo.title}</title>
+      <style>* { font-variant-numeric: lining-nums tabular-nums; font-feature-settings: "lnum" 1; }
         body { font-family: 'Cairo', Arial; direction: rtl; }
         h1 { text-align: center; color: #1E40AF; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #333; padding: 8px; text-align: right; }
+        th, td { border: 1px solid #333; padding: 8px; text-align: right; unicode-bidi: plaintext; }
         th { background-color: #3B82F6; color: white; }
         tr:nth-child(even) { background-color: #F8FAFC; }
-        td, th { unicode-bidi: plaintext; }
       </style></head><body><h1>${queryInfo.title}</h1>${tableHtml}</body></html>`;
     const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
     const link = document.createElement('a');
@@ -418,10 +422,8 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
     if (!results || results.length === 0) return;
     const headers = queryInfo.fields.map((f) => getFieldLabel(queryInfo.entity, f));
     const win = window.open('', '', 'width=1000,height=750');
-    win.document.write(`<html dir="rtl" lang="ar"><head><title>${queryInfo.title}</title>
-      <style>
-        * { font-variant-numeric: lining-nums tabular-nums; -moz-font-feature-settings: "lnum"; -webkit-font-feature-settings: "lnum"; font-feature-settings: "lnum"; }
-        td, th { unicode-bidi: plaintext; }
+    win.document.write(`<html dir="rtl"><head><title>${queryInfo.title}</title>
+      <style>* { font-variant-numeric: lining-nums tabular-nums; font-feature-settings: "lnum" 1; unicode-bidi: plaintext; }
         body { font-family: 'Cairo', Arial; padding: 25px; direction: rtl; }
         h1 { text-align: center; color: #1E40AF; border-bottom: 3px solid #3B82F6; padding-bottom: 10px; }
         .info { text-align: center; color: #64748B; margin-bottom: 20px; font-size: 13px; }
@@ -431,19 +433,10 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         tr:nth-child(even) { background-color: #F8FAFC; }
         @media print { @page { size: A4 landscape; margin: 15mm; } }
       </style></head><body>
-        <h1>${queryInfo.title}</h1>
-        <div class="info">عدد السجلات: ${results.length} | ${formatLatinDate()}</div>
-        <table><thead><tr><th>م</th>${headers.map((h) => `<th>${h}</th>`).join('')}</tr></thead>
-        <tbody>${results
-          .map(
-            (row, i) =>
-              `<tr><td>${i + 1}</td>${queryInfo.fields
-                .map((f) => `<td>${renderCellValue(getNestedValue(row, f))}</td>`)
-                .join('')}</tr>`
-          )
-          .join('')}</tbody></table>
-        <script>window.onload = () => { window.print(); window.close(); }</script>
-      </body></html>`);
+      <h1>${queryInfo.title}</h1><div class="info">عدد السجلات: ${results.length} | ${formatLatinDate()}</div>
+      <table><thead><tr><th>م</th>${headers.map((h) => `<th>${h}</th>`).join('')}</tr></thead>
+      <tbody>${results.map((row, i) => `<tr><td>${i + 1}</td>${queryInfo.fields.map((f) => `<td>${renderCellValue(getNestedValue(row, f))}</td>`).join('')}</tr>`).join('')}</tbody></table>
+      <script>window.onload=()=>{window.print();window.close();}</script></body></html>`);
     win.document.close();
   };
 
@@ -451,11 +444,9 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
     if (!results || results.length === 0) return;
     let text = `*${queryInfo.title}*\n\n`;
     results.slice(0, 20).forEach((row, i) => {
-      text += `*${i + 1}.* ` + queryInfo.fields
-        .map((f) => `${getFieldLabel(queryInfo.entity, f)}: ${renderCellValue(getNestedValue(row, f))}`)
-        .join('\n') + '\n\n';
+      text += `*${i + 1}.* ` + queryInfo.fields.map((f) => `${getFieldLabel(queryInfo.entity, f)}: ${renderCellValue(getNestedValue(row, f))}`).join('\n') + '\n\n';
     });
-    if (results.length > 20) text += `... وعدد ${results.length - 20} سجل إضافي.`;
+    if (results.length > 20) text += `... و${results.length - 20} سجل إضافي.`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
   };
 
@@ -463,14 +454,13 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
     if (!results || results.length === 0) return;
     let text = `${queryInfo.title}\n\n`;
     results.forEach((row, i) => {
-      text += `${i + 1}. ` + queryInfo.fields
-        .map((f) => `${getFieldLabel(queryInfo.entity, f)}: ${renderCellValue(getNestedValue(row, f))}`)
-        .join(' | ') + '\n';
+      text += `${i + 1}. ` + queryInfo.fields.map((f) => `${getFieldLabel(queryInfo.entity, f)}: ${renderCellValue(getNestedValue(row, f))}`).join(' | ') + '\n';
     });
     window.open(`mailto:?subject=${encodeURIComponent(queryInfo.title)}&body=${encodeURIComponent(text)}`);
   };
 
-  const canExecute = selectedEntity || prompt.trim();
+  const canExecute = primaryEntity || prompt.trim();
+  const activeFiltersCount = Object.values(valueFilters).filter((v) => v?.length > 0).length;
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-5 pb-24">
@@ -482,32 +472,35 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         <div>
           <h1 className="text-3xl font-bold text-slate-800">الأوامر الذكية</h1>
           <p className="text-slate-500 mt-1 text-sm">
-            اختر نوع البيانات ثم حدد المراكز والحقول، أو اكتب طلبك نصياً وسيتولى الذكاء الاصطناعي الباقي
+            اختر كيان أو أكثر، حدد الحقول والمراكز، وأضف فلاتر دقيقة لاستخراج تقارير احترافية مترابطة.
           </p>
         </div>
       </div>
 
-      {/* الخطوة 1: نوع البيانات المطلوبة */}
+      {/* الخطوة 1: الكيانات (متعدد) */}
       <CollapsibleSection
-        title="١. حدد نوع البيانات المطلوبة"
+        title="١. حدد نوع البيانات (يمكن اختيار أكثر من كيان)"
         icon={Database}
         iconColor="text-indigo-600"
-        badgeCount={selectedEntity ? 1 : 0}
+        badgeCount={selectedEntities.length}
         defaultOpen={true}
       >
-        <RequestTypeSelector selectedEntity={selectedEntity} onSelect={setSelectedEntity} />
+        <MultiEntitySelector selectedEntities={selectedEntities} onChange={setSelectedEntities} />
         {currentEntity && (
           <div className="mt-3 p-2 bg-white rounded-lg border border-indigo-200 text-sm text-slate-600">
-            <strong className="text-indigo-700">المختار:</strong> {currentEntity.icon} {currentEntity.label}
-            {' '}({currentEntity.fields.length} حقل متاح)
+            <strong className="text-indigo-700">الأساسي:</strong> {currentEntity.icon} {currentEntity.label}
+            {' '}({currentEntity.fields.length} حقل)
+            {secondaryEntities.length > 0 && (
+              <span className="mr-2">• <strong>كيانات مدمجة:</strong> {secondaryEntities.map((e) => getEntityByValue(e)?.label).join('، ')}</span>
+            )}
           </div>
         )}
       </CollapsibleSection>
 
-      {/* الخطوة 2 و 3: المراكز والحقول جنباً إلى جنب */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        {/* الخطوة 2: المراكز */}
         <CollapsibleSection
-          title="٢. حدد المراكز المطلوبة"
+          title="٢. حدد المراكز"
           icon={MapPin}
           iconColor="text-emerald-600"
           badgeCount={selectedCenters.length}
@@ -520,37 +513,62 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
           />
         </CollapsibleSection>
 
+        {/* الخطوة 3: الحقول (مجمعة) */}
         <CollapsibleSection
-          title="٣. حدد الحقول (الأعمدة) المطلوبة"
+          title="٣. الحقول (مُصنّفة بمجموعات)"
           icon={Columns3}
           iconColor="text-green-600"
           badgeCount={selectedFields.length}
           defaultOpen={false}
         >
-          <FieldsPicker
+          <FieldGroupPicker
             entity={currentEntity}
             selectedFields={selectedFields}
             onChange={setSelectedFields}
+            onFilterIconClick={openValueFilter}
+            activeValueFilters={valueFilters}
           />
         </CollapsibleSection>
       </div>
 
-      {/* الخطوة 4: نص ذكي اختياري */}
+      {/* الخطوة 4: ترتيب الحقول بالسحب */}
+      {selectedFields.length > 0 && currentEntity && (
+        <CollapsibleSection
+          title="٤. رتّب الأعمدة (اسحب وأفلت)"
+          icon={ArrowDownUp}
+          iconColor="text-blue-600"
+          badgeCount={selectedFields.length}
+          defaultOpen={true}
+        >
+          <SelectedFieldsReorder
+            entity={primaryEntity}
+            selectedFields={selectedFields}
+            onReorder={setSelectedFields}
+            onRemove={removeField}
+            activeValueFilters={valueFilters}
+            onFilterClick={openValueFilter}
+          />
+          {activeFiltersCount > 0 && (
+            <div className="mt-2 p-2 bg-indigo-50 border border-indigo-200 rounded-lg text-xs text-indigo-700">
+              🔍 فلاتر القيم النشطة: {activeFiltersCount} فلتر. ستُطبَّق على البيانات عند التنفيذ.
+            </div>
+          )}
+        </CollapsibleSection>
+      )}
+
+      {/* الخطوة 5: نص AI */}
       <CollapsibleSection
-        title="٤. وصف نصي إضافي للذكاء الاصطناعي (اختياري)"
+        title="٥. وصف نصي إضافي (اختياري)"
         icon={Wand2}
         iconColor="text-purple-600"
         defaultOpen={false}
       >
         <Textarea
-          placeholder="مثال: استخرج المراكز التي ينتهي عقد إيجارها خلال 3 أشهر مع بيانات المؤجر..."
+          placeholder="مثال: استخرج الموظفين الأطباء في المراكز النائية..."
           className="text-base p-4 min-h-[100px] resize-y bg-white"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
         />
-        <p className="text-xs text-slate-500 mt-2">
-          💡 الذكاء الاصطناعي سيكمل الحقول المفقودة ويولّد عنوان التقرير بناءً على وصفك.
-        </p>
       </CollapsibleSection>
 
       {/* زر التنفيذ */}
@@ -574,44 +592,34 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
                 <CardTitle className="text-xl text-slate-800">{queryInfo.title}</CardTitle>
                 <CardDescription className="mt-1 flex items-center gap-2 flex-wrap">
                   <Badge variant="outline" className="bg-white">
-                    {getEntityByValue(queryInfo.entity)?.icon}{' '}
-                    {getEntityByValue(queryInfo.entity)?.label || queryInfo.entity}
+                    {getEntityByValue(queryInfo.entity)?.icon} {getEntityByValue(queryInfo.entity)?.label || queryInfo.entity}
                   </Badge>
-                  <span><strong className="text-slate-700">{results.length}</strong> نتيجة</span>
+                  <span><strong>{results.length}</strong> نتيجة</span>
                   <span>•</span>
                   <span>{queryInfo.fields.length} عمود</span>
-                  {selectedCenters.length > 0 && (
-                    <>
-                      <span>•</span>
-                      <span>{selectedCenters.length} مركز</span>
-                    </>
-                  )}
+                  {selectedCenters.length > 0 && <><span>•</span><span>{selectedCenters.length} مركز</span></>}
+                  {activeFiltersCount > 0 && <><span>•</span><span>{activeFiltersCount} فلتر</span></>}
                 </CardDescription>
               </div>
 
               <div className="flex flex-wrap gap-2">
                 {!editMode ? (
-                  <Button variant="outline" size="sm" onClick={() => setEditMode(true)}
-                    className="border-amber-200 text-amber-700 hover:bg-amber-50">
+                  <Button variant="outline" size="sm" onClick={() => setEditMode(true)} className="border-amber-200 text-amber-700 hover:bg-amber-50">
                     <Pencil className="w-4 h-4 ml-1" /> تعديل مباشر
                   </Button>
                 ) : (
                   <>
-                    <Button variant="outline" size="sm" onClick={handleSaveEdits} disabled={savingEdits}
-                      className="border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100">
+                    <Button variant="outline" size="sm" onClick={handleSaveEdits} disabled={savingEdits} className="border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100">
                       {savingEdits ? <Loader2 className="w-4 h-4 ml-1 animate-spin" /> : <Save className="w-4 h-4 ml-1" />}
-                      حفظ التعديلات ({Object.keys(edits).length})
+                      حفظ ({Object.keys(edits).length})
                     </Button>
-                    <Button variant="outline" size="sm" onClick={cancelEdits} disabled={savingEdits}
-                      className="border-red-200 text-red-700 hover:bg-red-50">
+                    <Button variant="outline" size="sm" onClick={cancelEdits} disabled={savingEdits} className="border-red-200 text-red-700 hover:bg-red-50">
                       <X className="w-4 h-4 ml-1" /> إلغاء
                     </Button>
                   </>
                 )}
-                <Button variant="outline" size="sm" onClick={handleExportExcel} disabled={exporting}
-                  className="border-green-200 text-green-700 hover:bg-green-50">
-                  {exporting ? <Loader2 className="w-4 h-4 ml-1 animate-spin" /> : <FileSpreadsheet className="w-4 h-4 ml-1" />}
-                  Excel احترافي
+                <Button variant="outline" size="sm" onClick={handleExportExcel} disabled={exporting} className="border-green-200 text-green-700 hover:bg-green-50">
+                  {exporting ? <Loader2 className="w-4 h-4 ml-1 animate-spin" /> : <FileSpreadsheet className="w-4 h-4 ml-1" />} Excel
                 </Button>
                 <Button variant="outline" size="sm" onClick={exportWord} className="border-blue-200 text-blue-700 hover:bg-blue-50">
                   <FileText className="w-4 h-4 ml-1" /> وورد
@@ -647,13 +655,10 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
                       const rowEdits = edits[row.id] || {};
                       const isRowEdited = Object.keys(rowEdits).length > 0;
                       return (
-                        <tr key={row.id || rIdx}
-                          className={`hover:bg-indigo-50/40 transition-colors ${isRowEdited ? 'bg-amber-50/50' : ''}`}>
+                        <tr key={row.id || rIdx} className={`hover:bg-indigo-50/40 transition-colors ${isRowEdited ? 'bg-amber-50/50' : ''}`}>
                           <td className="p-3 text-slate-500 font-medium">{rIdx + 1}</td>
                           {queryInfo.fields.map((field, fIdx) => {
-                            const rawVal = rowEdits[field] !== undefined
-                              ? rowEdits[field]
-                              : getNestedValue(row, field);
+                            const rawVal = rowEdits[field] !== undefined ? rowEdits[field] : getNestedValue(row, field);
                             const canEdit = editMode && row.id;
                             const isComputed = !isSavableField(field);
                             return (
@@ -663,7 +668,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
                                     type="text"
                                     value={rawVal ?? ''}
                                     onChange={(e) => handleCellChange(row.id, field, e.target.value)}
-                                    title={isComputed ? 'حقل محسوب: التعديل محلي للعرض/التصدير فقط ولن يُحفظ' : ''}
+                                    title={isComputed ? 'حقل محسوب: التعديل محلي فقط' : ''}
                                     className={`w-full min-w-[120px] px-2 py-1 text-sm border rounded focus:ring-1 bg-white ${isComputed ? 'border-amber-200 focus:border-amber-400 focus:ring-amber-200 bg-amber-50/40' : 'border-slate-200 focus:border-indigo-400 focus:ring-indigo-200'}`}
                                   />
                                 ) : (
@@ -684,6 +689,18 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
           </CardContent>
         </Card>
       )}
+
+      {/* Dialog فلترة قيم */}
+      <FieldValueFilterDialog
+        open={filterDialog.open}
+        onClose={() => setFilterDialog({ open: false, fieldKey: null, fieldLabel: '' })}
+        entityValue={primaryEntity}
+        fieldKey={filterDialog.fieldKey}
+        fieldLabel={filterDialog.fieldLabel}
+        currentValues={filterDialog.fieldKey ? valueFilters[filterDialog.fieldKey] || [] : []}
+        onApply={applyValueFilter}
+        sampleData={sampleData}
+      />
     </div>
   );
 }
