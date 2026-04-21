@@ -6,13 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import {
   Loader2, Sparkles, FileText, FileSpreadsheet, Printer, Mail, MessageCircle,
-  Database, MapPin, Columns3, Wand2, Pencil, Save, X, ArrowDownUp
+  Database, MapPin, Columns3, Wand2, Pencil, Save, X, ArrowDownUp, Brain, Mic
 } from 'lucide-react';
 import { toast } from 'sonner';
+import VoiceInput from '@/components/ui/VoiceInput';
 import { ENTITIES_CATALOG, getEntityByValue, getFieldLabel } from '@/components/smart_commands/entitiesCatalog';
 import { exportToExcel, getNestedValue, toLatinDigits, formatLatinDate } from '@/components/smart_commands/excelExporter';
 import { getCombinedRolesText } from '@/components/utils/combinedRoles';
 import { mergeMultipleEntities, applyValueFilters } from '@/components/smart_commands/multiEntityMerge';
+import { planFreeReport, executeFreeReportPlan, resolveFieldLabelGlobal } from '@/components/smart_commands/freeReportAI';
 import CollapsibleSection from '@/components/smart_commands/CollapsibleSection';
 import MultiEntitySelector from '@/components/smart_commands/MultiEntitySelector';
 import CentersPicker from '@/components/smart_commands/CentersPicker';
@@ -53,6 +55,8 @@ export default function SmartCommands() {
   const [results, setResults] = useState(null);
   const [queryInfo, setQueryInfo] = useState(null);
   const [exporting, setExporting] = useState(false);
+  const [freeMode, setFreeMode] = useState(false);
+  const [freeReportNotes, setFreeReportNotes] = useState('');
 
   // دعم كيانات متعددة — الأول هو الأساسي
   const [selectedEntities, setSelectedEntities] = useState([]);
@@ -137,7 +141,11 @@ export default function SmartCommands() {
   };
 
   const handleExecute = async () => {
-    if (!primaryEntity && !prompt.trim()) {
+    if (freeMode && !prompt.trim()) {
+      toast.warning('اكتب وصف التقرير في الوضع الحر.');
+      return;
+    }
+    if (!freeMode && !primaryEntity && !prompt.trim()) {
       toast.warning('اختر نوع البيانات المطلوبة أو اكتب وصفاً نصياً لطلبك.');
       return;
     }
@@ -145,8 +153,32 @@ export default function SmartCommands() {
     setLoading(true);
     setResults(null);
     setQueryInfo(null);
+    setFreeReportNotes('');
 
     try {
+      // === الوضع الحر: AI يختار كل شيء من كامل النظام ===
+      if (freeMode) {
+        const plan = await planFreeReport(prompt);
+        if (!plan?.primary_entity) {
+          toast.error('لم يتمكن الذكاء الاصطناعي من تحديد بيانات مناسبة للطلب.');
+          setLoading(false);
+          return;
+        }
+        const freeData = await executeFreeReportPlan(plan);
+        setQueryInfo({
+          entity: plan.primary_entity,
+          fields: plan.fields,
+          title: plan.title || 'تقرير حر',
+          isFree: true,
+        });
+        setResults(freeData);
+        setFreeReportNotes(plan.notes || '');
+        if (freeData.length === 0) toast.info('تم التنفيذ، لكن لا توجد نتائج مطابقة.');
+        else toast.success(`تم استخراج ${freeData.length} سجل عبر التقرير الحر.`);
+        setLoading(false);
+        return;
+      }
+
       let finalEntity = primaryEntity;
       let finalFields = [...selectedFields];
       let finalTitle = '';
@@ -374,15 +406,17 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
 
   const cancelEdits = () => { setEdits({}); setEditMode(false); };
 
+  const NA = 'غير متاحة';
   const renderCellValue = (val) => {
-    if (val === null || val === undefined || val === '') return '-';
+    if (val === null || val === undefined || val === '') return NA;
     if (typeof val === 'boolean') return val ? '✓ نعم' : '✗ لا';
-    if (Array.isArray(val)) return toLatinDigits(val.join('، ')) || '-';
+    if (Array.isArray(val)) return val.length === 0 ? NA : (toLatinDigits(val.join('، ')) || NA);
     if (typeof val === 'object') {
-      if (val['رقم_اللوحة_عربي']) return toLatinDigits(`${val['رقم_اللوحة_عربي']} | ${val['حالة_السيارة'] || '-'}`);
+      if (val['رقم_اللوحة_عربي']) return toLatinDigits(`${val['رقم_اللوحة_عربي']} | ${val['حالة_السيارة'] || NA}`);
       if (val['متوفرة'] !== undefined) return val['متوفرة'] ? 'متوفرة' : 'غير متوفرة';
       return toLatinDigits(JSON.stringify(val));
     }
+    if (String(val).trim() === '-' || String(val).trim() === '') return NA;
     return toLatinDigits(val);
   };
 
@@ -398,7 +432,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
 
   const exportWord = () => {
     if (!results || results.length === 0) return;
-    const headers = queryInfo.fields.map((f) => getFieldLabel(queryInfo.entity, f));
+    const headers = queryInfo.fields.map((f) => labelFor(f));
     const tableHtml = `
       <table><thead><tr><th>م</th>${headers.map((h) => `<th>${h}</th>`).join('')}</tr></thead>
       <tbody>${results.map((row, i) => `<tr><td>${i + 1}</td>${queryInfo.fields.map((f) => `<td>${renderCellValue(getNestedValue(row, f))}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
@@ -420,7 +454,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
 
   const printTable = () => {
     if (!results || results.length === 0) return;
-    const headers = queryInfo.fields.map((f) => getFieldLabel(queryInfo.entity, f));
+    const headers = queryInfo.fields.map((f) => labelFor(f));
     const win = window.open('', '', 'width=1000,height=750');
     win.document.write(`<html dir="rtl"><head><title>${queryInfo.title}</title>
       <style>* { font-variant-numeric: lining-nums tabular-nums; font-feature-settings: "lnum" 1; unicode-bidi: plaintext; }
@@ -444,7 +478,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
     if (!results || results.length === 0) return;
     let text = `*${queryInfo.title}*\n\n`;
     results.slice(0, 20).forEach((row, i) => {
-      text += `*${i + 1}.* ` + queryInfo.fields.map((f) => `${getFieldLabel(queryInfo.entity, f)}: ${renderCellValue(getNestedValue(row, f))}`).join('\n') + '\n\n';
+      text += `*${i + 1}.* ` + queryInfo.fields.map((f) => `${labelFor(f)}: ${renderCellValue(getNestedValue(row, f))}`).join('\n') + '\n\n';
     });
     if (results.length > 20) text += `... و${results.length - 20} سجل إضافي.`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
@@ -454,13 +488,17 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
     if (!results || results.length === 0) return;
     let text = `${queryInfo.title}\n\n`;
     results.forEach((row, i) => {
-      text += `${i + 1}. ` + queryInfo.fields.map((f) => `${getFieldLabel(queryInfo.entity, f)}: ${renderCellValue(getNestedValue(row, f))}`).join(' | ') + '\n';
+      text += `${i + 1}. ` + queryInfo.fields.map((f) => `${labelFor(f)}: ${renderCellValue(getNestedValue(row, f))}`).join(' | ') + '\n';
     });
     window.open(`mailto:?subject=${encodeURIComponent(queryInfo.title)}&body=${encodeURIComponent(text)}`);
   };
 
-  const canExecute = primaryEntity || prompt.trim();
+  const canExecute = freeMode ? !!prompt.trim() : (primaryEntity || prompt.trim());
   const activeFiltersCount = Object.values(valueFilters).filter((v) => v?.length > 0).length;
+  const labelFor = (field) => {
+    if (queryInfo?.isFree) return resolveFieldLabelGlobal(field);
+    return getFieldLabel(queryInfo.entity, field);
+  };
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-5 pb-24">
@@ -556,19 +594,74 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         </CollapsibleSection>
       )}
 
-      {/* الخطوة 5: نص AI */}
+      {/* الخطوة 5: نص AI + الوضع الحر + إدخال صوتي */}
       <CollapsibleSection
-        title="٥. وصف نصي إضافي (اختياري)"
-        icon={Wand2}
-        iconColor="text-purple-600"
-        defaultOpen={false}
+        title={freeMode ? '٥. 🧠 الوضع الحر (AI يستخرج كل شيء من النظام)' : '٥. وصف نصي إضافي (اختياري)'}
+        icon={freeMode ? Brain : Wand2}
+        iconColor={freeMode ? 'text-fuchsia-600' : 'text-purple-600'}
+        defaultOpen={freeMode}
       >
-        <Textarea
-          placeholder="مثال: استخرج الموظفين الأطباء في المراكز النائية..."
-          className="text-base p-4 min-h-[100px] resize-y bg-white"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-        />
+        <div className="space-y-3">
+          {/* مفتاح تبديل الوضع الحر */}
+          <div className={`flex items-center justify-between p-3 rounded-lg border-2 transition-all ${freeMode ? 'bg-gradient-to-l from-fuchsia-50 to-purple-50 border-fuchsia-300' : 'bg-slate-50 border-slate-200'}`}>
+            <div className="flex items-center gap-2">
+              <Brain className={`w-5 h-5 ${freeMode ? 'text-fuchsia-600' : 'text-slate-400'}`} />
+              <div>
+                <p className={`text-sm font-semibold ${freeMode ? 'text-fuchsia-800' : 'text-slate-600'}`}>
+                  الوضع الحر (تقرير غير مقيّد)
+                </p>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  {freeMode
+                    ? 'الذكاء الاصطناعي سيحلّل الطلب ويختار الكيانات والحقول من كامل النظام. القيم الناقصة ستظهر كـ "غير متاحة".'
+                    : 'فعّل هذا الوضع لترك الذكاء الاصطناعي يستخرج كل شيء بناءً على الوصف النصي فقط.'}
+                </p>
+              </div>
+            </div>
+            <Button
+              type="button"
+              size="sm"
+              variant={freeMode ? 'default' : 'outline'}
+              onClick={() => setFreeMode((v) => !v)}
+              className={freeMode ? 'bg-fuchsia-600 hover:bg-fuchsia-700' : ''}
+            >
+              {freeMode ? 'مُفعّل' : 'تفعيل'}
+            </Button>
+          </div>
+
+          {/* مربع الوصف + زر الميكروفون */}
+          <div className="relative">
+            <Textarea
+              placeholder={freeMode
+                ? 'مثال: أريد قائمة بكل الأطباء ومراكزهم وأرقام تواصلهم، مع بيانات العقود السارية...'
+                : 'مثال: استخرج الموظفين الأطباء في المراكز النائية...'}
+              className="text-base p-4 pl-14 min-h-[110px] resize-y bg-white"
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+            />
+            <div className="absolute left-2 top-2 flex flex-col gap-1">
+              <VoiceInput
+                continuous={true}
+                onResult={(text) => setPrompt((prev) => (prev ? `${prev} ${text}` : text))}
+                className="h-9 w-9"
+              />
+              {prompt && (
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => setPrompt('')}
+                  className="h-7 w-7 text-slate-400 hover:text-red-500"
+                  title="مسح"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              )}
+            </div>
+          </div>
+          <p className="text-xs text-slate-500 flex items-center gap-1">
+            <Mic className="w-3 h-3" /> اضغط على الميكروفون وتحدّث بالعربية لإملاء طلبك صوتياً.
+          </p>
+        </div>
       </CollapsibleSection>
 
       {/* زر التنفيذ */}
@@ -576,10 +669,10 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         <Button
           onClick={handleExecute}
           disabled={loading || !canExecute}
-          className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white px-12 h-14 text-lg rounded-xl shadow-2xl"
+          className={`text-white px-12 h-14 text-lg rounded-xl shadow-2xl ${freeMode ? 'bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-700 hover:to-purple-700' : 'bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700'}`}
         >
-          {loading ? <Loader2 className="w-6 h-6 ml-2 animate-spin" /> : <Sparkles className="w-6 h-6 ml-2" />}
-          {loading ? 'جاري التنفيذ...' : 'تنفيذ الأمر واستخراج البيانات'}
+          {loading ? <Loader2 className="w-6 h-6 ml-2 animate-spin" /> : (freeMode ? <Brain className="w-6 h-6 ml-2" /> : <Sparkles className="w-6 h-6 ml-2" />)}
+          {loading ? 'جاري التنفيذ...' : (freeMode ? 'تنفيذ التقرير الحر بالذكاء الاصطناعي' : 'تنفيذ الأمر واستخراج البيانات')}
         </Button>
       </div>
 
@@ -599,7 +692,13 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
                   <span>{queryInfo.fields.length} عمود</span>
                   {selectedCenters.length > 0 && <><span>•</span><span>{selectedCenters.length} مركز</span></>}
                   {activeFiltersCount > 0 && <><span>•</span><span>{activeFiltersCount} فلتر</span></>}
+                  {queryInfo.isFree && <Badge className="bg-fuchsia-100 text-fuchsia-700 border-fuchsia-300">🧠 تقرير حر AI</Badge>}
                 </CardDescription>
+                {freeReportNotes && queryInfo.isFree && (
+                  <div className="mt-2 p-2 bg-fuchsia-50 border border-fuchsia-200 rounded-md text-xs text-fuchsia-800">
+                    <strong>منطق AI:</strong> {freeReportNotes}
+                  </div>
+                )}
               </div>
 
               <div className="flex flex-wrap gap-2">
@@ -645,7 +744,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
                       <th className="p-3 border-b text-slate-600 font-semibold w-12">#</th>
                       {queryInfo.fields.map((field, idx) => (
                         <th key={idx} className="p-3 border-b text-slate-600 font-semibold whitespace-nowrap">
-                          {getFieldLabel(queryInfo.entity, field)}
+                          {labelFor(field)}
                         </th>
                       ))}
                     </tr>
