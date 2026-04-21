@@ -55,6 +55,8 @@ const detectLikelyEntity = (prompt) => {
   const p = normalizeArabic(prompt);
   // سيارات / مركبات / إسعاف / خدمات = HealthCenter (دائماً)
   if (/سيار|مركب|اسعاف|عربي|عربيات/i.test(p)) return 'HealthCenter';
+  // "تقرير عن مركز/مركز صحي X" / "معلومات/بيانات/تفاصيل مركز" = HealthCenter
+  if (/تقرير|معلومات|بيانات|تفاصيل|حصر|حاله/i.test(p) && /مركز|مراكز|صحي/i.test(p)) return 'HealthCenter';
   // مدير / نائب / مشرف فني / معلومات المركز
   if (/مدير|نائب|مشرف فني|اعتماد|سباهي|ايجار|عقد/i.test(p) && /مركز|مراكز|صحي/i.test(p)) return 'HealthCenter';
   if (/اجاز|إجاز/i.test(p)) return 'Leave';
@@ -63,6 +65,42 @@ const detectLikelyEntity = (prompt) => {
   if (/طلب جهاز|طلب تجهيز|طلبات الاجهزه/i.test(p)) return 'EquipmentRequest';
   return null;
 };
+
+// استخراج أسماء مراكز من النص (كلمات بعد "مركز/مراكز" أو أسماء محتملة)
+const extractCenterNameHints = (prompt) => {
+  const p = String(prompt || '').trim();
+  const hints = new Set();
+  // نمط: "مركز [اسم]" أو "مركز صحي [اسم]"
+  const patterns = [
+    /مركز\s+صحي\s+([^\s،,.\n]+(?:\s+[^\s،,.\n]+){0,2})/g,
+    /مركز\s+([^\s،,.\n]+(?:\s+[^\s،,.\n]+){0,2})/g,
+    /المركز\s+الصحي\s+([^\s،,.\n]+(?:\s+[^\s،,.\n]+){0,2})/g,
+  ];
+  patterns.forEach((re) => {
+    let m;
+    while ((m = re.exec(p)) !== null) {
+      const name = m[1].replace(/^(ال)?صحي$/i, '').trim();
+      if (name && name.length >= 2 && !/^(الصحي|صحي|في|عن|على|من)$/i.test(name)) {
+        hints.add(name);
+      }
+    }
+  });
+  return Array.from(hints);
+};
+
+// حقول شاملة افتراضية للمركز الصحي عند طلب "تقرير عن مركز"
+const DEFAULT_HEALTH_CENTER_FULL_FIELDS = [
+  'اسم_المركز', 'seha_id', 'الموقع', 'حالة_المركز', 'حالة_التشغيل', 'ساعات_الدوام',
+  'هاتف_المركز', 'رقم_الجوال', 'ايميل_المركز', 'فاكس_المركز',
+  'المدير', 'المدير_جوال', 'المدير_ايميل', 'المدير_تخصص',
+  'نائب_المدير', 'نائب_المدير_جوال', 'نائب_المدير_تخصص',
+  'المشرف_الفني', 'المشرف_الفني_جوال', 'المشرف_الفني_تخصص',
+  'معتمد_سباهي', 'تاريخ_اعتماد_سباهي', 'مركز_نائي', 'بدل_نأي',
+  'اسم_المؤجر', 'هاتف_المؤجر', 'قيمة_عقد_الايجار', 'تاريخ_بداية_العقد', 'تاريخ_انتهاء_العقد', 'رقم_العقد',
+  'عدد_الموظفين_الكلي',
+  'سيارة_اسعاف.متوفرة', 'سيارة_اسعاف.رقم_اللوحة_عربي', 'سيارة_اسعاف.حالة_السيارة', 'سيارة_اسعاف.اسم_السائق',
+  'سيارة_خدمات.متوفرة', 'سيارة_خدمات.رقم_اللوحة_عربي', 'سيارة_خدمات.حالة_السيارة', 'سيارة_خدمات.اسم_السائق',
+];
 
 // اطلب من AI تحليل النص وإرجاع خطة تقرير
 export async function planFreeReport(userPrompt) {
@@ -86,10 +124,15 @@ ${validEntities}
 ✅ "الإجازات" → Leave. "التكاليف" → Assignment. "نواقص / عجز المراكز" → DeficiencyReport.
 
 ⚠️ تحذير: كلمة "سيارة" أو "مركبة" أو "إسعاف" لا تعني أبداً MedicalEquipment — بل HealthCenter.
-⚠️ إذا ذُكرت أسماء مراكز في الطلب + "حصر/حالة/بيانات" → الكيان هو HealthCenter افتراضياً.
-- إذا ذُكرت أسماء مراكز في الطلب (بطحي، الهميج، الدبان، صخيبرة...) ضع **فلتراً منفصلاً لكل مركز** مع operator: "contains" وقيمة نصية واحدة فقط (لا تجمع الأسماء في قيمة واحدة بفواصل!). مثال صحيح: [{field:"اسم_المركز",operator:"contains",value:"بطحي"},{field:"اسم_المركز",operator:"contains",value:"الهميج"}] — سيُعاملان كـ OR تلقائياً.
+⚠️ إذا ذُكرت أسماء مراكز في الطلب + "حصر/حالة/بيانات/تقرير/معلومات" → الكيان هو HealthCenter افتراضياً.
+
+🔴🔴 قاعدة إلزامية: إذا ذكر المستخدم اسم مركز محدد (مثل "مركز طلال"، "مركز بطحي"، "المركز الصحي بالهميج") **يجب** وضع فلتر {field:"اسم_المركز", operator:"contains", value:"طلال"} — استخرج اسم المركز من النص دون كلمة "مركز" أو "المركز الصحي". بدون هذا الفلتر سيرجع النظام 200 سجل وهذا خطأ فادح!
+
+- إذا ذُكرت عدة أسماء مراكز (بطحي، الهميج، الدبان، صخيبرة...) ضع **فلتراً منفصلاً لكل مركز** مع operator:"contains" وقيمة نصية واحدة فقط. مثال: [{field:"اسم_المركز",operator:"contains",value:"بطحي"},{field:"اسم_المركز",operator:"contains",value:"الهميج"}] — تُعامل كـ OR تلقائياً.
 - اختر حقل المركز الصحيح حسب الكيان: HealthCenter=اسم_المركز، Employee=المركز_الصحي، MedicalEquipment=health_center_name، Leave=health_center، Assignment=assigned_to_health_center.
 - لا تستخدم filter على كائنات مركبة (مثل سيارة_اسعاف بدون .field داخلي).
+
+📋 عند طلب "تقرير/معلومات/بيانات/تفاصيل" عن مركز معيّن، **اختر حقولاً شاملة** (على الأقل 20 حقل) تغطي: الاتصال، القيادة، الإيجار، الاعتمادات، سيارة الإسعاف، سيارة الخدمات. لا تكتفِ بحقلين أو ثلاثة.
 
 تفاصيل الحقول لكل كيان (field_key:field_label):
 ${schemaContext}
@@ -180,6 +223,31 @@ ${hintedEntity ? `\n💡 تلميح قوي جداً من النظام: primary_e
   // تحقق من الكيانات الثانوية
   if (Array.isArray(parsed.secondary_entities)) {
     parsed.secondary_entities = parsed.secondary_entities.filter((s) => validEntityKeys.includes(s));
+  }
+
+  // 🔧 إصلاح حاسم: إذا كان الكيان = HealthCenter والنص يذكر اسم مركز محدد،
+  // لكن AI لم يضع أي فلتر على اسم_المركز → نحقن الفلتر يدوياً
+  if (parsed.primary_entity === 'HealthCenter') {
+    const centerHints = extractCenterNameHints(userPrompt);
+    const hasCenterFilter = Array.isArray(parsed.filters) && parsed.filters.some(
+      (f) => /اسم_المركز/i.test(f.field || '')
+    );
+    if (centerHints.length > 0 && !hasCenterFilter) {
+      console.info(`🔧 حقن فلاتر تلقائية لأسماء المراكز: ${centerHints.join(', ')}`);
+      parsed.filters = parsed.filters || [];
+      centerHints.forEach((name) => {
+        parsed.filters.push({ field: 'اسم_المركز', operator: 'contains', value: name });
+      });
+    }
+
+    // 🔧 إذا كانت الحقول قليلة جداً (أقل من 5) ونص الطلب يطلب "تقرير/معلومات/بيانات"
+    // عن مركز → نستخدم الحقول الشاملة الافتراضية
+    const p = normalizeArabic(userPrompt);
+    const wantsFullReport = /تقرير|معلومات|بيانات|تفاصيل|كل شي|شامل/i.test(p);
+    if (wantsFullReport && (!parsed.fields || parsed.fields.length < 5)) {
+      console.info('🔧 استخدام الحقول الشاملة الافتراضية للمركز الصحي.');
+      parsed.fields = [...new Set([...(parsed.fields || []), ...DEFAULT_HEALTH_CENTER_FULL_FIELDS])];
+    }
   }
 
   return parsed;
