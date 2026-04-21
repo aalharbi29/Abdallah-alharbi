@@ -155,4 +155,12 @@ button:focus-visible {
   body {
     @apply bg-background text-foreground;
   }
+
+  /* فرض الأرقام اللاتينية (0-9) في كل موقع في النظام */
+  html, body, * {
+    font-variant-numeric: lining-nums tabular-nums;
+    -moz-font-feature-settings: "lnum" 1, "tnum" 1;
+    -webkit-font-feature-settings: "lnum" 1, "tnum" 1;
+    font-feature-settings: "lnum" 1, "tnum" 1;
+  }
 }

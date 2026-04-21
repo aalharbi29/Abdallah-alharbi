@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { ENTITIES_CATALOG, getEntityByValue, getFieldLabel } from '@/components/smart_commands/entitiesCatalog';
-import { exportToExcel, getNestedValue } from '@/components/smart_commands/excelExporter';
+import { exportToExcel, getNestedValue, toLatinDigits, formatLatinDate } from '@/components/smart_commands/excelExporter';
 import { getCombinedRolesText } from '@/components/utils/combinedRoles';
 import CollapsibleSection from '@/components/smart_commands/CollapsibleSection';
 import RequestTypeSelector from '@/components/smart_commands/RequestTypeSelector';
@@ -63,14 +63,16 @@ export default function SmartCommands() {
   const [edits, setEdits] = useState({}); // { [rowId]: { [field]: newValue } }
   const [savingEdits, setSavingEdits] = useState(false);
 
-  // الحقول المحسوبة (غير قابلة للحفظ في قاعدة البيانات)
-  const COMPUTED_FIELDS = [
+  // الحقول المحسوبة التي لا يمكن حفظها في قاعدة البيانات لأنها مستخرجة من كيان آخر
+  const UNSAVABLE_COMPUTED_FIELDS = [
     '__combined_roles',
     'المدير_جوال', 'المدير_ايميل', 'المدير_تخصص', 'المدير_رقم_الموظف', 'المدير_رقم_الهوية',
     'نائب_المدير_جوال', 'نائب_المدير_ايميل', 'نائب_المدير_تخصص', 'نائب_المدير_رقم_الموظف', 'نائب_المدير_رقم_الهوية',
     'المشرف_الفني_جوال', 'المشرف_الفني_ايميل', 'المشرف_الفني_تخصص', 'المشرف_الفني_رقم_الموظف', 'المشرف_الفني_رقم_الهوية',
   ];
-  const isEditableField = (field) => !COMPUTED_FIELDS.includes(field) && !field.includes('.');
+  // كل الحقول قابلة للتعديل الآن (بما فيها المتداخلة). الحقول المحسوبة قابلة للتعديل محلياً فقط للعرض والتصدير.
+  const isEditableField = () => true;
+  const isSavableField = (field) => !UNSAVABLE_COMPUTED_FIELDS.includes(field);
 
   const currentEntity = useMemo(
     () => (selectedEntity ? getEntityByValue(selectedEntity) : null),
@@ -300,14 +302,24 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
     setSavingEdits(true);
     try {
       let successCount = 0;
+      let skippedComputed = 0;
       for (const rowId of editedRowIds) {
         const changes = edits[rowId];
-        // استبعاد الحقول المحسوبة من الحفظ
-        const cleanChanges = Object.fromEntries(
-          Object.entries(changes).filter(([k]) => isEditableField(k))
-        );
-        if (Object.keys(cleanChanges).length === 0) continue;
-        await base44.entities[queryInfo.entity].update(rowId, cleanChanges);
+        const originalRow = results.find((r) => r.id === rowId) || {};
+        const payload = {};
+        Object.entries(changes).forEach(([field, value]) => {
+          if (!isSavableField(field)) { skippedComputed++; return; }
+          if (field.includes('.')) {
+            // حقل متداخل: ادمج مع الكائن الأصلي للحفاظ على باقي المفاتيح
+            const [parent, child] = field.split('.');
+            if (!payload[parent]) payload[parent] = { ...(originalRow[parent] || {}) };
+            payload[parent][child] = value;
+          } else {
+            payload[field] = value;
+          }
+        });
+        if (Object.keys(payload).length === 0) continue;
+        await base44.entities[queryInfo.entity].update(rowId, payload);
         successCount++;
       }
       // تحديث البيانات المعروضة محلياً
@@ -318,7 +330,11 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
       );
       setEdits({});
       setEditMode(false);
-      toast.success(`تم حفظ ${successCount} سجل بنجاح.`);
+      if (skippedComputed > 0) {
+        toast.success(`تم حفظ ${successCount} سجل. (تم تجاهل ${skippedComputed} حقل محسوب لأنه تابع لسجل موظف ولا يُحفظ على المركز)`);
+      } else {
+        toast.success(`تم حفظ ${successCount} سجل بنجاح.`);
+      }
     } catch (err) {
       console.error(err);
       toast.error('فشل حفظ بعض التعديلات.');
@@ -335,13 +351,13 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
   const renderCellValue = (val) => {
     if (val === null || val === undefined || val === '') return '-';
     if (typeof val === 'boolean') return val ? '✓ نعم' : '✗ لا';
-    if (Array.isArray(val)) return val.join('، ') || '-';
+    if (Array.isArray(val)) return toLatinDigits(val.join('، ')) || '-';
     if (typeof val === 'object') {
-      if (val['رقم_اللوحة_عربي']) return `${val['رقم_اللوحة_عربي']} | ${val['حالة_السيارة'] || '-'}`;
+      if (val['رقم_اللوحة_عربي']) return toLatinDigits(`${val['رقم_اللوحة_عربي']} | ${val['حالة_السيارة'] || '-'}`);
       if (val['متوفرة'] !== undefined) return val['متوفرة'] ? 'متوفرة' : 'غير متوفرة';
-      return JSON.stringify(val);
+      return toLatinDigits(JSON.stringify(val));
     }
-    return String(val);
+    return toLatinDigits(val);
   };
 
   const handleExportExcel = async () => {
@@ -380,14 +396,16 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
             .join('')}
         </tbody>
       </table>`;
-    const html = `<html dir="rtl"><head><meta charset="utf-8"><title>${queryInfo.title}</title>
+    const html = `<html dir="rtl" lang="ar"><head><meta charset="utf-8"><title>${queryInfo.title}</title>
       <style>
+        * { font-variant-numeric: lining-nums tabular-nums; -moz-font-feature-settings: "lnum"; -webkit-font-feature-settings: "lnum"; font-feature-settings: "lnum"; }
         body { font-family: 'Cairo', Arial; direction: rtl; }
         h1 { text-align: center; color: #1E40AF; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         th, td { border: 1px solid #333; padding: 8px; text-align: right; }
         th { background-color: #3B82F6; color: white; }
         tr:nth-child(even) { background-color: #F8FAFC; }
+        td, th { unicode-bidi: plaintext; }
       </style></head><body><h1>${queryInfo.title}</h1>${tableHtml}</body></html>`;
     const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
     const link = document.createElement('a');
@@ -400,8 +418,10 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
     if (!results || results.length === 0) return;
     const headers = queryInfo.fields.map((f) => getFieldLabel(queryInfo.entity, f));
     const win = window.open('', '', 'width=1000,height=750');
-    win.document.write(`<html dir="rtl"><head><title>${queryInfo.title}</title>
+    win.document.write(`<html dir="rtl" lang="ar"><head><title>${queryInfo.title}</title>
       <style>
+        * { font-variant-numeric: lining-nums tabular-nums; -moz-font-feature-settings: "lnum"; -webkit-font-feature-settings: "lnum"; font-feature-settings: "lnum"; }
+        td, th { unicode-bidi: plaintext; }
         body { font-family: 'Cairo', Arial; padding: 25px; direction: rtl; }
         h1 { text-align: center; color: #1E40AF; border-bottom: 3px solid #3B82F6; padding-bottom: 10px; }
         .info { text-align: center; color: #64748B; margin-bottom: 20px; font-size: 13px; }
@@ -412,7 +432,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         @media print { @page { size: A4 landscape; margin: 15mm; } }
       </style></head><body>
         <h1>${queryInfo.title}</h1>
-        <div class="info">عدد السجلات: ${results.length} | ${new Date().toLocaleDateString('ar-SA')}</div>
+        <div class="info">عدد السجلات: ${results.length} | ${formatLatinDate()}</div>
         <table><thead><tr><th>م</th>${headers.map((h) => `<th>${h}</th>`).join('')}</tr></thead>
         <tbody>${results
           .map(
@@ -634,7 +654,8 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
                             const rawVal = rowEdits[field] !== undefined
                               ? rowEdits[field]
                               : getNestedValue(row, field);
-                            const canEdit = editMode && row.id && isEditableField(field);
+                            const canEdit = editMode && row.id;
+                            const isComputed = !isSavableField(field);
                             return (
                               <td key={fIdx} className="p-2 text-slate-800">
                                 {canEdit ? (
@@ -642,12 +663,11 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
                                     type="text"
                                     value={rawVal ?? ''}
                                     onChange={(e) => handleCellChange(row.id, field, e.target.value)}
-                                    className="w-full min-w-[120px] px-2 py-1 text-sm border border-slate-200 rounded focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 bg-white"
+                                    title={isComputed ? 'حقل محسوب: التعديل محلي للعرض/التصدير فقط ولن يُحفظ' : ''}
+                                    className={`w-full min-w-[120px] px-2 py-1 text-sm border rounded focus:ring-1 bg-white ${isComputed ? 'border-amber-200 focus:border-amber-400 focus:ring-amber-200 bg-amber-50/40' : 'border-slate-200 focus:border-indigo-400 focus:ring-indigo-200'}`}
                                   />
                                 ) : (
-                                  <span className={editMode && !canEdit ? 'opacity-60' : ''}>
-                                    {renderCellValue(rawVal)}
-                                  </span>
+                                  <span>{renderCellValue(rawVal)}</span>
                                 )}
                               </td>
                             );
