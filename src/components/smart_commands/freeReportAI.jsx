@@ -44,23 +44,24 @@ export async function planFreeReport(userPrompt) {
   const schemaContext = buildFullSchemaContext();
   const validEntities = ENTITIES_CATALOG.map((e) => e.value).join(', ');
 
-  const aiPrompt = `أنت مساعد خبير في بناء التقارير من نظام إدارة صحي بالعربية.
-الكيانات المتاحة (استخدم مفاتيحها فقط): ${validEntities}
+  const aiPrompt = `أنت مساعد خبير في بناء التقارير من نظام إدارة صحي.
 
-تفاصيل الحقول (صيغة: [entity_key] label => field_key:field_label | ...):
+⚠️ قاعدة صارمة: primary_entity يجب أن تكون قيمة إنجليزية واحدة فقط من هذه القائمة — ممنوع اختراع أسماء كيانات:
+${validEntities}
+
+إرشادات مهمة:
+- "سيارات الإسعاف" و"سيارة الخدمات" و"البيانات المكانية" = حقول داخل HealthCenter (وليست كياناً).
+- "الموظفين / الأطباء / المدراء" = Employee.
+- "الأجهزة الطبية / المعدات" = MedicalEquipment.
+- "الإجازات" = Leave. "التكاليف" = Assignment. "العجز / النقص" = DeficiencyReport.
+- إذا ذُكرت أسماء مراكز في الطلب (بطحي، الهميج، الدبان، صخيبرة...) ضعها في filters مع operator: "contains" وقيمة واحدة فقط لكل فلتر (أو اجعل operator: "in_list" إن دعا الأمر لعدة مراكز — استخدم contains لكل مركز بفلتر منفصل بمنطق or ضمني).
+
+تفاصيل الحقول لكل كيان (field_key:field_label):
 ${schemaContext}
 
-الطلب من المستخدم: "${userPrompt}"
+الطلب: "${userPrompt}"
 
-اختر:
-1. primary_entity: اسم الكيان الأساسي (قيمة واحدة من القائمة أعلاه).
-2. secondary_entities: كيانات لدمجها (اختياري).
-3. fields: قائمة مفاتيح الحقول الأكثر صلة.
-4. filters: شروط تصفية اختيارية (قيم نصية فقط).
-5. title: عنوان عربي احترافي.
-6. notes: ملاحظات قصيرة.
-
-تنبيه مهم: اسماء المراكز (مثل: بطحي، الهميج، الدبان، صخيبرة...) إذا ذُكرت في الطلب، ضعها كـ filter بعملية contains على حقل المركز المناسب (اسم_المركز لـ HealthCenter، المركز_الصحي لـ Employee، إلخ). لا تخترع حقولاً غير موجودة.`;
+أرجع JSON بـ: primary_entity, secondary_entities, fields (مفاتيح إنجليزية/عربية كما في القائمة), filters, title, notes.`;
 
   let response;
   try {
@@ -105,32 +106,76 @@ ${schemaContext}
   if (!parsed?.primary_entity) {
     throw new Error('الذكاء الاصطناعي لم يحدّد الكيان الأساسي.');
   }
+
+  // تحقق من صحة الكيان الأساسي — إذا كان غير موجود، استبدله تلقائياً
+  const validEntityKeys = ENTITIES_CATALOG.map((e) => e.value);
+  if (!validEntityKeys.includes(parsed.primary_entity)) {
+    // حاول الاستدلال من كلمات الطلب
+    const promptLower = userPrompt.toLowerCase();
+    let guessed = null;
+    if (promptLower.includes('سيار') || promptLower.includes('اسعاف') || promptLower.includes('إسعاف') || promptLower.includes('مركز') || promptLower.includes('مرافق')) {
+      guessed = 'HealthCenter';
+    } else if (promptLower.includes('موظف') || promptLower.includes('طبيب') || promptLower.includes('ممرض')) {
+      guessed = 'Employee';
+    } else if (promptLower.includes('إجاز') || promptLower.includes('اجاز')) {
+      guessed = 'Leave';
+    } else if (promptLower.includes('تكليف')) {
+      guessed = 'Assignment';
+    } else if (promptLower.includes('جهاز') || promptLower.includes('اجهزه') || promptLower.includes('معدات')) {
+      guessed = 'MedicalEquipment';
+    }
+    if (guessed) {
+      console.warn(`AI أعاد كياناً غير صالح "${parsed.primary_entity}". تم استبداله بـ "${guessed}".`);
+      parsed.primary_entity = guessed;
+    } else {
+      throw new Error(`الكيان "${parsed.primary_entity}" غير موجود في النظام. جرّب إعادة صياغة الطلب.`);
+    }
+  }
+
+  // تحقق من الكيانات الثانوية
+  if (Array.isArray(parsed.secondary_entities)) {
+    parsed.secondary_entities = parsed.secondary_entities.filter((s) => validEntityKeys.includes(s));
+  }
+
   return parsed;
 }
 
-// تطبيق فلاتر AI على الصفوف
+// تطبيق فلاتر AI على الصفوف — مع تجميع الفلاتر على نفس الحقل بمنطق OR (أسماء مراكز متعددة)
 const applyAIFilters = (rows, filters) => {
   if (!filters || filters.length === 0) return rows;
+
+  // تجميع الفلاتر حسب field+operator
+  const grouped = {};
+  filters.forEach((f) => {
+    const key = `${f.field}__${(f.operator || 'equals').toLowerCase()}`;
+    if (!grouped[key]) grouped[key] = { field: f.field, operator: (f.operator || 'equals').toLowerCase(), values: [] };
+    grouped[key].values.push(f.value);
+  });
+
   return rows.filter((row) => {
-    return filters.every((f) => {
-      const val = getNestedValue(row, f.field);
-      const target = f.value;
-      const op = (f.operator || 'equals').toLowerCase();
+    return Object.values(grouped).every((g) => {
+      const val = getNestedValue(row, g.field);
+      const op = g.operator;
       if (op === 'exists') return val !== null && val !== undefined && val !== '';
-      if (val === null || val === undefined) return false;
-      const sv = String(val).toLowerCase();
-      const st = String(target ?? '').toLowerCase();
-      switch (op) {
-        case 'equals': return sv === st;
-        case 'not_equals': return sv !== st;
-        case 'contains': return sv.includes(st);
-        case 'not_contains': return !sv.includes(st);
-        case 'gt': return Number(val) > Number(target);
-        case 'gte': return Number(val) >= Number(target);
-        case 'lt': return Number(val) < Number(target);
-        case 'lte': return Number(val) <= Number(target);
-        default: return true;
-      }
+      if (val === null || val === undefined) return op === 'not_equals' || op === 'not_contains';
+
+      const sv = normalizeArabic(String(val));
+      // منطق OR بين القيم لنفس الحقل
+      return g.values.some((target) => {
+        const st = normalizeArabic(String(target ?? ''));
+        switch (op) {
+          case 'equals': return sv === st;
+          case 'not_equals': return sv !== st;
+          case 'contains': return sv.includes(st) || st.includes(sv);
+          case 'not_contains': return !sv.includes(st);
+          case 'gt': return Number(val) > Number(target);
+          case 'gte': return Number(val) >= Number(target);
+          case 'lt': return Number(val) < Number(target);
+          case 'lte': return Number(val) <= Number(target);
+          case 'in_list': return String(target).split(/[,،]/).map(normalizeArabic).some((x) => sv.includes(x));
+          default: return true;
+        }
+      });
     });
   });
 };
