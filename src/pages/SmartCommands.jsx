@@ -164,7 +164,41 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
       }
 
       // جلب جميع السجلات ثم فلترة محلية ذكية للمراكز
-      const allData = await base44.entities[finalEntity].filter({});
+      let allData = await base44.entities[finalEntity].filter({});
+
+      // 🔗 دمج ذكي: إذا كان الكيان HealthCenter واختار المستخدم حقول المدراء/المشرف،
+      // نستبدل معرّف الموظف باسمه الفعلي + رقمه لتسهيل القراءة
+      if (finalEntity === 'HealthCenter') {
+        const managerFields = ['المدير', 'نائب_المدير', 'المشرف_الفني'];
+        const needsLookup = managerFields.some((f) => finalFields.includes(f));
+        if (needsLookup) {
+          try {
+            const allEmployees = await base44.entities.Employee.filter({});
+            const empMap = new Map();
+            allEmployees.forEach((e) => {
+              // نخزن بالمعرف الداخلي id وأيضاً برقم الموظف لتغطية الحالتين
+              if (e.id) empMap.set(String(e.id), e);
+              if (e['رقم_الموظف']) empMap.set(String(e['رقم_الموظف']), e);
+            });
+            const resolveEmp = (val) => {
+              if (!val) return '-';
+              const emp = empMap.get(String(val));
+              if (!emp) return val; // إذا لم يُعثر عليه، نعرض المعرف الأصلي
+              const name = emp.full_name_arabic || '-';
+              const num = emp['رقم_الموظف'] ? ` (${emp['رقم_الموظف']})` : '';
+              return `${name}${num}`;
+            };
+            allData = allData.map((center) => ({
+              ...center,
+              المدير: resolveEmp(center['المدير']),
+              نائب_المدير: resolveEmp(center['نائب_المدير']),
+              المشرف_الفني: resolveEmp(center['المشرف_الفني']),
+            }));
+          } catch (err) {
+            console.warn('تعذّر جلب بيانات الموظفين للدمج:', err);
+          }
+        }
+      }
 
       let filtered = allData;
       if (selectedCenters.length > 0) {
