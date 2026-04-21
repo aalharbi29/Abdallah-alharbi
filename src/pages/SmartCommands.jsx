@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import {
   Loader2, Sparkles, FileText, FileSpreadsheet, Printer, Mail, MessageCircle,
-  Database, MapPin, Columns3, Wand2
+  Database, MapPin, Columns3, Wand2, Pencil, Save, X
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { ENTITIES_CATALOG, getEntityByValue, getFieldLabel } from '@/components/smart_commands/entitiesCatalog';
@@ -57,6 +57,20 @@ export default function SmartCommands() {
   const [selectedCenters, setSelectedCenters] = useState([]);
   const [selectedFields, setSelectedFields] = useState([]);
   const [centersList, setCentersList] = useState([]);
+
+  // إدارة التعديل المباشر على الجدول
+  const [editMode, setEditMode] = useState(false);
+  const [edits, setEdits] = useState({}); // { [rowId]: { [field]: newValue } }
+  const [savingEdits, setSavingEdits] = useState(false);
+
+  // الحقول المحسوبة (غير قابلة للحفظ في قاعدة البيانات)
+  const COMPUTED_FIELDS = [
+    '__combined_roles',
+    'المدير_جوال', 'المدير_تخصص',
+    'نائب_المدير_جوال', 'نائب_المدير_تخصص',
+    'المشرف_الفني_جوال', 'المشرف_الفني_تخصص',
+  ];
+  const isEditableField = (field) => !COMPUTED_FIELDS.includes(field) && !field.includes('.');
 
   const currentEntity = useMemo(
     () => (selectedEntity ? getEntityByValue(selectedEntity) : null),
@@ -258,6 +272,56 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
     } finally {
       setLoading(false);
     }
+  };
+
+  // عند تغيير قيمة خلية
+  const handleCellChange = (rowId, field, value) => {
+    setEdits((prev) => ({
+      ...prev,
+      [rowId]: { ...(prev[rowId] || {}), [field]: value },
+    }));
+  };
+
+  // حفظ كل التعديلات إلى قاعدة البيانات
+  const handleSaveEdits = async () => {
+    const editedRowIds = Object.keys(edits);
+    if (editedRowIds.length === 0) {
+      toast.info('لا توجد تعديلات للحفظ.');
+      return;
+    }
+    setSavingEdits(true);
+    try {
+      let successCount = 0;
+      for (const rowId of editedRowIds) {
+        const changes = edits[rowId];
+        // استبعاد الحقول المحسوبة من الحفظ
+        const cleanChanges = Object.fromEntries(
+          Object.entries(changes).filter(([k]) => isEditableField(k))
+        );
+        if (Object.keys(cleanChanges).length === 0) continue;
+        await base44.entities[queryInfo.entity].update(rowId, cleanChanges);
+        successCount++;
+      }
+      // تحديث البيانات المعروضة محلياً
+      setResults((prev) =>
+        prev.map((row) =>
+          edits[row.id] ? { ...row, ...edits[row.id] } : row
+        )
+      );
+      setEdits({});
+      setEditMode(false);
+      toast.success(`تم حفظ ${successCount} سجل بنجاح.`);
+    } catch (err) {
+      console.error(err);
+      toast.error('فشل حفظ بعض التعديلات.');
+    } finally {
+      setSavingEdits(false);
+    }
+  };
+
+  const cancelEdits = () => {
+    setEdits({});
+    setEditMode(false);
   };
 
   const renderCellValue = (val) => {
@@ -498,6 +562,24 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
               </div>
 
               <div className="flex flex-wrap gap-2">
+                {!editMode ? (
+                  <Button variant="outline" size="sm" onClick={() => setEditMode(true)}
+                    className="border-amber-200 text-amber-700 hover:bg-amber-50">
+                    <Pencil className="w-4 h-4 ml-1" /> تعديل مباشر
+                  </Button>
+                ) : (
+                  <>
+                    <Button variant="outline" size="sm" onClick={handleSaveEdits} disabled={savingEdits}
+                      className="border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100">
+                      {savingEdits ? <Loader2 className="w-4 h-4 ml-1 animate-spin" /> : <Save className="w-4 h-4 ml-1" />}
+                      حفظ التعديلات ({Object.keys(edits).length})
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={cancelEdits} disabled={savingEdits}
+                      className="border-red-200 text-red-700 hover:bg-red-50">
+                      <X className="w-4 h-4 ml-1" /> إلغاء
+                    </Button>
+                  </>
+                )}
                 <Button variant="outline" size="sm" onClick={handleExportExcel} disabled={exporting}
                   className="border-green-200 text-green-700 hover:bg-green-50">
                   {exporting ? <Loader2 className="w-4 h-4 ml-1 animate-spin" /> : <FileSpreadsheet className="w-4 h-4 ml-1" />}
@@ -533,16 +615,38 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
-                    {results.map((row, rIdx) => (
-                      <tr key={row.id || rIdx} className="hover:bg-indigo-50/40 transition-colors">
-                        <td className="p-3 text-slate-500 font-medium">{rIdx + 1}</td>
-                        {queryInfo.fields.map((field, fIdx) => (
-                          <td key={fIdx} className="p-3 text-slate-800">
-                            {renderCellValue(getNestedValue(row, field))}
-                          </td>
-                        ))}
-                      </tr>
-                    ))}
+                    {results.map((row, rIdx) => {
+                      const rowEdits = edits[row.id] || {};
+                      const isRowEdited = Object.keys(rowEdits).length > 0;
+                      return (
+                        <tr key={row.id || rIdx}
+                          className={`hover:bg-indigo-50/40 transition-colors ${isRowEdited ? 'bg-amber-50/50' : ''}`}>
+                          <td className="p-3 text-slate-500 font-medium">{rIdx + 1}</td>
+                          {queryInfo.fields.map((field, fIdx) => {
+                            const rawVal = rowEdits[field] !== undefined
+                              ? rowEdits[field]
+                              : getNestedValue(row, field);
+                            const canEdit = editMode && row.id && isEditableField(field);
+                            return (
+                              <td key={fIdx} className="p-2 text-slate-800">
+                                {canEdit ? (
+                                  <input
+                                    type="text"
+                                    value={rawVal ?? ''}
+                                    onChange={(e) => handleCellChange(row.id, field, e.target.value)}
+                                    className="w-full min-w-[120px] px-2 py-1 text-sm border border-slate-200 rounded focus:border-indigo-400 focus:ring-1 focus:ring-indigo-200 bg-white"
+                                  />
+                                ) : (
+                                  <span className={editMode && !canEdit ? 'opacity-60' : ''}>
+                                    {renderCellValue(rawVal)}
+                                  </span>
+                                )}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
