@@ -19,6 +19,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import HealthCentersMap from './pages/HealthCentersMap';
 import HealthCenterMapDetails from './pages/HealthCenterMapDetails';
 import HealthCenterMap3D from './pages/HealthCenterMap3D';
+import SmartCommands from './pages/SmartCommands';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -108,6 +109,11 @@ const AuthenticatedApp = () => {
       <Route path="/FillWaterSamplesForm" element={
         <LayoutWrapper currentPageName="FillWaterSamplesForm">
           <FillWaterSamplesForm />
+        </LayoutWrapper>
+      } />
+      <Route path="/SmartCommands" element={
+        <LayoutWrapper currentPageName="SmartCommands">
+          <SmartCommands />
         </LayoutWrapper>
       } />
       <Route path="*" element={<PageNotFound />} />

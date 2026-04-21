@@ -2397,7 +2397,6 @@ export default function CenterDeficiencyTool() {
                     </Button>
                   )}
                 </div>
-                }
               </CardContent>
             </Card>
           </div>
