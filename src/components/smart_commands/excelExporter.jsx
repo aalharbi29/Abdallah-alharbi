@@ -4,6 +4,12 @@
 import ExcelJS from 'exceljs';
 import { getFieldLabel } from './entitiesCatalog';
 
+// يدعم القراءة من حقول متداخلة مثل "سيارة_خدمات.رقم_اللوحة_عربي"
+export const getNestedValue = (obj, path) => {
+  if (!obj || !path) return undefined;
+  return path.split('.').reduce((acc, key) => (acc == null ? undefined : acc[key]), obj);
+};
+
 const formatCell = (val) => {
   if (val === null || val === undefined) return '';
   if (typeof val === 'boolean') return val ? 'نعم' : 'لا';
@@ -77,7 +83,7 @@ export async function exportToExcel({ title, entity, fields, results }) {
   // البيانات
   results.forEach((row, rIdx) => {
     const dataRow = sheet.getRow(rIdx + 4);
-    const rowValues = [rIdx + 1, ...fields.map((f) => formatCell(row[f]))];
+    const rowValues = [rIdx + 1, ...fields.map((f) => formatCell(getNestedValue(row, f)))];
     rowValues.forEach((v, idx) => {
       const cell = dataRow.getCell(idx + 1);
       cell.value = v;
@@ -114,7 +120,7 @@ export async function exportToExcel({ title, entity, fields, results }) {
     }
     let maxLength = headers[idx]?.length || 10;
     results.forEach((row) => {
-      const val = formatCell(row[fields[idx - 1]]);
+      const val = formatCell(getNestedValue(row, fields[idx - 1]));
       if (val && val.length > maxLength) maxLength = val.length;
     });
     col.width = Math.min(Math.max(maxLength + 4, 14), 45);
