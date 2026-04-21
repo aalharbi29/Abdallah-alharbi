@@ -181,33 +181,49 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
       }
 
       // 🔗 دمج ذكي: إذا كان الكيان HealthCenter واختار المستخدم حقول المدراء/المشرف،
-      // نستبدل معرّف الموظف باسمه الفعلي + رقمه لتسهيل القراءة
+      // نستبدل معرّف الموظف ببياناته الفعلية (الاسم، الجوال، التخصص)
       if (finalEntity === 'HealthCenter') {
-        const managerFields = ['المدير', 'نائب_المدير', 'المشرف_الفني'];
+        const managerFields = [
+          'المدير', 'نائب_المدير', 'المشرف_الفني',
+          'المدير_جوال', 'المدير_تخصص',
+          'نائب_المدير_جوال', 'نائب_المدير_تخصص',
+          'المشرف_الفني_جوال', 'المشرف_الفني_تخصص',
+        ];
         const needsLookup = managerFields.some((f) => finalFields.includes(f));
         if (needsLookup) {
           try {
             const allEmployees = await base44.entities.Employee.filter({});
             const empMap = new Map();
             allEmployees.forEach((e) => {
-              // نخزن بالمعرف الداخلي id وأيضاً برقم الموظف لتغطية الحالتين
+              // نخزن بالمعرف الداخلي id ورقم الموظف والهوية لتغطية كل الحالات
               if (e.id) empMap.set(String(e.id), e);
               if (e['رقم_الموظف']) empMap.set(String(e['رقم_الموظف']), e);
+              if (e['رقم_الهوية']) empMap.set(String(e['رقم_الهوية']), e);
             });
-            const resolveEmp = (val) => {
-              if (!val) return '-';
-              const emp = empMap.get(String(val));
-              if (!emp) return val; // إذا لم يُعثر عليه، نعرض المعرف الأصلي
-              const name = emp.full_name_arabic || '-';
+            const findEmp = (val) => (val ? empMap.get(String(val)) : null);
+            const nameOf = (emp, rawVal) => {
+              if (!rawVal) return '-';
+              if (!emp) return rawVal;
               const num = emp['رقم_الموظف'] ? ` (${emp['رقم_الموظف']})` : '';
-              return `${name}${num}`;
+              return `${emp.full_name_arabic || '-'}${num}`;
             };
-            allData = allData.map((center) => ({
-              ...center,
-              المدير: resolveEmp(center['المدير']),
-              نائب_المدير: resolveEmp(center['نائب_المدير']),
-              المشرف_الفني: resolveEmp(center['المشرف_الفني']),
-            }));
+            allData = allData.map((center) => {
+              const dirEmp = findEmp(center['المدير']);
+              const vdirEmp = findEmp(center['نائب_المدير']);
+              const supEmp = findEmp(center['المشرف_الفني']);
+              return {
+                ...center,
+                المدير: nameOf(dirEmp, center['المدير']),
+                نائب_المدير: nameOf(vdirEmp, center['نائب_المدير']),
+                المشرف_الفني: nameOf(supEmp, center['المشرف_الفني']),
+                المدير_جوال: dirEmp?.phone || '-',
+                المدير_تخصص: dirEmp?.position || '-',
+                نائب_المدير_جوال: vdirEmp?.phone || '-',
+                نائب_المدير_تخصص: vdirEmp?.position || '-',
+                المشرف_الفني_جوال: supEmp?.phone || '-',
+                المشرف_الفني_تخصص: supEmp?.position || '-',
+              };
+            });
           } catch (err) {
             console.warn('تعذّر جلب بيانات الموظفين للدمج:', err);
           }
