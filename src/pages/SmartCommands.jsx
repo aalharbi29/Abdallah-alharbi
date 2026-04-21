@@ -350,7 +350,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
       }
     } catch (error) {
       console.error(error);
-      toast.error('حدث خطأ أثناء معالجة الأمر.');
+      toast.error(error?.message || 'حدث خطأ أثناء معالجة الأمر.');
     } finally {
       setLoading(false);
     }

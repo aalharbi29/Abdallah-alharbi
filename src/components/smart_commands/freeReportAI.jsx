@@ -7,12 +7,12 @@ import { ENTITIES_CATALOG, getEntityByValue } from './entitiesCatalog';
 import { getNestedValue } from './excelExporter';
 import { getCombinedRolesText } from '@/components/utils/combinedRoles';
 
-// بناء خريطة شاملة لكل الكيانات والحقول لتزويد AI بها
+// بناء خريطة مختصرة لكل الكيانات والحقول لتزويد AI بها (مضغوطة لتوفير التوكنز)
 const buildFullSchemaContext = () => {
   return ENTITIES_CATALOG.map((ent) => {
-    const fields = ent.fields.map((f) => `    • ${f.key} (${f.label})`).join('\n');
-    return `▪ ${ent.value} — ${ent.label}:\n${fields}`;
-  }).join('\n\n');
+    const fields = ent.fields.map((f) => `${f.key}:${f.label}`).join(' | ');
+    return `[${ent.value}] ${ent.label} => ${fields}`;
+  }).join('\n');
 };
 
 // اختيار الحقل المناسب لدمج بيانات المركز
@@ -42,59 +42,70 @@ const normalizeArabic = (str) => {
 // اطلب من AI تحليل النص وإرجاع خطة تقرير
 export async function planFreeReport(userPrompt) {
   const schemaContext = buildFullSchemaContext();
-  const aiPrompt = `أنت مساعد خبير في بناء التقارير من نظام إدارة صحي بالعربية.
-لديك الوصول إلى هذه الكيانات والحقول:
+  const validEntities = ENTITIES_CATALOG.map((e) => e.value).join(', ');
 
+  const aiPrompt = `أنت مساعد خبير في بناء التقارير من نظام إدارة صحي بالعربية.
+الكيانات المتاحة (استخدم مفاتيحها فقط): ${validEntities}
+
+تفاصيل الحقول (صيغة: [entity_key] label => field_key:field_label | ...):
 ${schemaContext}
 
 الطلب من المستخدم: "${userPrompt}"
 
-حلّل الطلب بدقة واختر:
-1. الكيان الأساسي الأنسب.
-2. كيانات ثانوية (إن لزم الدمج).
-3. قائمة الحقول الأكثر صلة (من كل الكيانات، استخدم مفاتيح الحقول كما هي).
-4. معايير تصفية (إن وجدت) — في صيغة شروط بسيطة.
-5. عنوان تقرير عربي احترافي.
+اختر:
+1. primary_entity: اسم الكيان الأساسي (قيمة واحدة من القائمة أعلاه).
+2. secondary_entities: كيانات لدمجها (اختياري).
+3. fields: قائمة مفاتيح الحقول الأكثر صلة.
+4. filters: شروط تصفية اختيارية (قيم نصية فقط).
+5. title: عنوان عربي احترافي.
+6. notes: ملاحظات قصيرة.
 
-أرجع JSON فقط بهذا الشكل:
-{
-  "primary_entity": "اسم الكيان الأساسي",
-  "secondary_entities": ["كيان ثانوي 1", "كيان ثانوي 2"],
-  "fields": ["حقل1", "حقل2", ...],
-  "filters": [
-    { "field": "اسم_الحقل", "operator": "equals|contains|not_equals|gt|lt|exists", "value": "القيمة" }
-  ],
-  "title": "عنوان التقرير",
-  "notes": "ملاحظات قصيرة عن المنطق المتبع"
-}`;
+تنبيه مهم: اسماء المراكز (مثل: بطحي، الهميج، الدبان، صخيبرة...) إذا ذُكرت في الطلب، ضعها كـ filter بعملية contains على حقل المركز المناسب (اسم_المركز لـ HealthCenter، المركز_الصحي لـ Employee، إلخ). لا تخترع حقولاً غير موجودة.`;
 
-  const response = await base44.integrations.Core.InvokeLLM({
-    prompt: aiPrompt,
-    response_json_schema: {
-      type: 'object',
-      properties: {
-        primary_entity: { type: 'string' },
-        secondary_entities: { type: 'array', items: { type: 'string' } },
-        fields: { type: 'array', items: { type: 'string' } },
-        filters: {
-          type: 'array',
-          items: {
-            type: 'object',
-            properties: {
-              field: { type: 'string' },
-              operator: { type: 'string' },
-              value: {}
+  let response;
+  try {
+    response = await base44.integrations.Core.InvokeLLM({
+      prompt: aiPrompt,
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          primary_entity: { type: 'string' },
+          secondary_entities: { type: 'array', items: { type: 'string' } },
+          fields: { type: 'array', items: { type: 'string' } },
+          filters: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                field: { type: 'string' },
+                operator: { type: 'string' },
+                value: { type: 'string' }
+              }
             }
-          }
+          },
+          title: { type: 'string' },
+          notes: { type: 'string' },
         },
-        title: { type: 'string' },
-        notes: { type: 'string' },
+        required: ['primary_entity', 'fields', 'title'],
       },
-      required: ['primary_entity', 'fields', 'title'],
-    },
-  });
+    });
+  } catch (err) {
+    console.error('InvokeLLM failed:', err);
+    throw new Error(`فشل استدعاء الذكاء الاصطناعي: ${err?.message || 'خطأ غير معروف'}`);
+  }
 
-  return typeof response === 'string' ? JSON.parse(response) : response;
+  let parsed;
+  try {
+    parsed = typeof response === 'string' ? JSON.parse(response) : response;
+  } catch (err) {
+    console.error('JSON parse failed:', response);
+    throw new Error('تعذّر قراءة استجابة الذكاء الاصطناعي.');
+  }
+
+  if (!parsed?.primary_entity) {
+    throw new Error('الذكاء الاصطناعي لم يحدّد الكيان الأساسي.');
+  }
+  return parsed;
 }
 
 // تطبيق فلاتر AI على الصفوف
