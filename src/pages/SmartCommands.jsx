@@ -6,8 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import {
   Loader2, Sparkles, FileText, FileSpreadsheet, Printer, Mail, MessageCircle,
-  Database, MapPin, Columns3, Wand2, Pencil, Save, X, ArrowDownUp, Brain, Mic
+  Database, MapPin, Columns3, Wand2, Pencil, Save, X, ArrowDownUp, Brain, Mic,
+  LayoutGrid, Table as TableIcon
 } from 'lucide-react';
+import SingleRecordDetailCard from '@/components/smart_commands/SingleRecordDetailCard';
 import { toast } from 'sonner';
 import VoiceInput from '@/components/ui/VoiceInput';
 import { ENTITIES_CATALOG, getEntityByValue, getFieldLabel } from '@/components/smart_commands/entitiesCatalog';
@@ -73,6 +75,7 @@ export default function SmartCommands() {
   const [editMode, setEditMode] = useState(false);
   const [edits, setEdits] = useState({});
   const [savingEdits, setSavingEdits] = useState(false);
+  const [viewMode, setViewMode] = useState('auto'); // 'auto' | 'table' | 'detail'
 
   const primaryEntity = selectedEntities[0] || '';
   const secondaryEntities = selectedEntities.slice(1);
@@ -702,6 +705,28 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
               </div>
 
               <div className="flex flex-wrap gap-2">
+                {results.length === 1 && (
+                  <div className="flex gap-1 bg-slate-100 p-1 rounded-md">
+                    <Button
+                      variant={viewMode !== 'table' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setViewMode('detail')}
+                      className="h-7 px-2"
+                      title="عرض بطاقة تفصيلية"
+                    >
+                      <LayoutGrid className="w-4 h-4 ml-1" /> بطاقة
+                    </Button>
+                    <Button
+                      variant={viewMode === 'table' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setViewMode('table')}
+                      className="h-7 px-2"
+                      title="عرض جدولي"
+                    >
+                      <TableIcon className="w-4 h-4 ml-1" /> جدول
+                    </Button>
+                  </div>
+                )}
                 {!editMode ? (
                   <Button variant="outline" size="sm" onClick={() => setEditMode(true)} className="border-amber-200 text-amber-700 hover:bg-amber-50">
                     <Pencil className="w-4 h-4 ml-1" /> تعديل مباشر
@@ -736,7 +761,17 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            {results.length > 0 ? (
+            {results.length === 1 && viewMode !== 'table' ? (
+              <div className="p-4 bg-slate-50/50">
+                <SingleRecordDetailCard
+                  row={results[0]}
+                  fields={queryInfo.fields}
+                  entity={queryInfo.entity}
+                  title={queryInfo.title}
+                  isFree={queryInfo.isFree}
+                />
+              </div>
+            ) : results.length > 0 ? (
               <div className="overflow-x-auto max-h-[550px] overflow-y-auto">
                 <table className="w-full text-sm text-right">
                   <thead className="bg-gradient-to-b from-slate-100 to-slate-50 sticky top-0 z-10 shadow-sm">
