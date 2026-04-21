@@ -39,21 +39,43 @@ const normalizeArabic = (str) => {
     .toLowerCase();
 };
 
+// heuristic: اختيار مسبق للكيان حسب كلمات مفتاحية واضحة
+const detectLikelyEntity = (prompt) => {
+  const p = normalizeArabic(prompt);
+  // سيارات / مركبات / إسعاف / خدمات = HealthCenter (دائماً)
+  if (/سيار|مركب|اسعاف|عربي|عربيات/i.test(p)) return 'HealthCenter';
+  // مدير / نائب / مشرف فني / معلومات المركز
+  if (/مدير|نائب|مشرف فني|اعتماد|سباهي|ايجار|عقد/i.test(p) && /مركز|مراكز|صحي/i.test(p)) return 'HealthCenter';
+  if (/اجاز|إجاز/i.test(p)) return 'Leave';
+  if (/تكليف|مكلف/i.test(p)) return 'Assignment';
+  if (/نقص|عجز|ناقص/i.test(p)) return 'DeficiencyReport';
+  if (/طلب جهاز|طلب تجهيز|طلبات الاجهزه/i.test(p)) return 'EquipmentRequest';
+  return null;
+};
+
 // اطلب من AI تحليل النص وإرجاع خطة تقرير
 export async function planFreeReport(userPrompt) {
   const schemaContext = buildFullSchemaContext();
   const validEntities = ENTITIES_CATALOG.map((e) => e.value).join(', ');
+  const hintedEntity = detectLikelyEntity(userPrompt);
 
   const aiPrompt = `أنت مساعد خبير في بناء التقارير من نظام إدارة صحي.
 
 ⚠️ قاعدة صارمة: primary_entity يجب أن تكون قيمة إنجليزية واحدة فقط من هذه القائمة — ممنوع اختراع أسماء كيانات:
 ${validEntities}
 
-إرشادات مهمة:
-- "سيارات الإسعاف" و"سيارة الخدمات" و"البيانات المكانية" = حقول داخل HealthCenter (وليست كياناً).
-- "الموظفين / الأطباء / المدراء" = Employee.
-- "الأجهزة الطبية / المعدات" = MedicalEquipment.
-- "الإجازات" = Leave. "التكاليف" = Assignment. "العجز / النقص" = DeficiencyReport.
+🎯 قاعدة اختيار الكيان الأساسي (primary_entity):
+
+أمثلة واضحة لمطابقة الطلب بالكيان الصحيح — اتبع هذه الأمثلة حرفياً:
+
+✅ "حصر سيارات الإسعاف" / "سيارات الخدمات" / "مركبات المراكز" / "معلومات المراكز / المدراء / الإيجارات" → **HealthCenter** (سيارات الإسعاف حقل داخل المركز).
+✅ "بيانات الموظفين / الأطباء / الممرضين / المدراء بمعزل عن المراكز" → **Employee**.
+✅ "الأجهزة الطبية / السرائر / أجهزة الأشعة / المعدات الطبية داخل الأقسام" → **MedicalEquipment** (⚠️ لا تستخدمه للسيارات أبداً — السيارات ليست أجهزة طبية).
+✅ "طلبات شراء أجهزة / طلبات تجهيز" → EquipmentRequest.
+✅ "الإجازات" → Leave. "التكاليف" → Assignment. "نواقص / عجز المراكز" → DeficiencyReport.
+
+⚠️ تحذير: كلمة "سيارة" أو "مركبة" أو "إسعاف" لا تعني أبداً MedicalEquipment — بل HealthCenter.
+⚠️ إذا ذُكرت أسماء مراكز في الطلب + "حصر/حالة/بيانات" → الكيان هو HealthCenter افتراضياً.
 - إذا ذُكرت أسماء مراكز في الطلب (بطحي، الهميج، الدبان، صخيبرة...) ضع **فلتراً منفصلاً لكل مركز** مع operator: "contains" وقيمة نصية واحدة فقط (لا تجمع الأسماء في قيمة واحدة بفواصل!). مثال صحيح: [{field:"اسم_المركز",operator:"contains",value:"بطحي"},{field:"اسم_المركز",operator:"contains",value:"الهميج"}] — سيُعاملان كـ OR تلقائياً.
 - اختر حقل المركز الصحيح حسب الكيان: HealthCenter=اسم_المركز، Employee=المركز_الصحي، MedicalEquipment=health_center_name، Leave=health_center، Assignment=assigned_to_health_center.
 - لا تستخدم filter على كائنات مركبة (مثل سيارة_اسعاف بدون .field داخلي).
@@ -62,7 +84,7 @@ ${validEntities}
 ${schemaContext}
 
 الطلب: "${userPrompt}"
-
+${hintedEntity ? `\n💡 تلميح قوي جداً من النظام: primary_entity المتوقع هو "${hintedEntity}". استخدمه ما لم يكن الطلب يشير بوضوح إلى كيان آخر.\n` : ''}
 أرجع JSON بـ: primary_entity, secondary_entities, fields (مفاتيح إنجليزية/عربية كما في القائمة), filters, title, notes.`;
 
   let response;
@@ -107,6 +129,16 @@ ${schemaContext}
 
   if (!parsed?.primary_entity) {
     throw new Error('الذكاء الاصطناعي لم يحدّد الكيان الأساسي.');
+  }
+
+  // تصحيح قسري: إذا كان hint يشير لكيان محدد و AI اختار شيئاً مخالفاً بوضوح، صحّحه
+  if (hintedEntity && parsed.primary_entity !== hintedEntity) {
+    const pLower = normalizeArabic(userPrompt);
+    // حالة خاصة: سيارة/إسعاف تم تصنيفها خطأ كـ MedicalEquipment أو EquipmentRequest
+    if (/سيار|اسعاف|مركب/i.test(pLower) && ['MedicalEquipment', 'EquipmentRequest'].includes(parsed.primary_entity)) {
+      console.warn(`تصحيح قسري: AI اختار "${parsed.primary_entity}" لكن السياق يشير لـ "${hintedEntity}".`);
+      parsed.primary_entity = hintedEntity;
+    }
   }
 
   // تحقق من صحة الكيان الأساسي — إذا كان غير موجود، استبدله تلقائياً
