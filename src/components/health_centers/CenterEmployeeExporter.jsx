@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FileDown, Copy, FileText, FileSpreadsheet, CheckCircle2, Users, ChevronUp, ChevronDown, GripVertical, Building2 } from "lucide-react";
 import { toast } from "sonner";
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import { base44 } from '@/api/base44Client';
+import { getCombinedRolesText } from '@/components/utils/combinedRoles';
 
 export default function CenterEmployeeExporter({ 
   open, 
@@ -104,7 +106,16 @@ export default function CenterEmployeeExporter({
     { key: "hire_date", label: "تاريخ التوظيف" },
     { key: "contract_type", label: "نوع العقد" },
     { key: "contract_end_date", label: "تاريخ انتهاء العقد" },
+    { key: "__combined_roles", label: "مهام إضافية (قيادية/إشرافية)" },
   ];
+
+  const [allCenters, setAllCenters] = useState([]);
+  useEffect(() => {
+    if (!open) return;
+    base44.entities.HealthCenter.filter({})
+      .then((data) => setAllCenters(Array.isArray(data) ? data : []))
+      .catch(() => setAllCenters([]));
+  }, [open]);
 
   const handleToggleEmployee = (employeeId) => {
     const newSelected = new Set(selectedEmployeeIds);
@@ -371,7 +382,12 @@ export default function CenterEmployeeExporter({
         <tr>
           <td>${idx + 1}</td>
           ${fieldsArray.map(key => {
-            let val = emp[key] || 'غير محدد';
+            let val;
+            if (key === '__combined_roles') {
+              val = getCombinedRolesText(emp, allCenters) || 'غير محدد';
+            } else {
+              val = emp[key] || 'غير محدد';
+            }
             if (key === 'birth_date' || key === 'hire_date' || key === 'contract_end_date') {
               if (val && val !== 'غير محدد') {
                 try {
@@ -416,7 +432,12 @@ export default function CenterEmployeeExporter({
       const row = [
         idx + 1,
         ...fieldsArray.map(key => {
-          let val = emp[key] || '';
+          let val;
+          if (key === '__combined_roles') {
+            val = getCombinedRolesText(emp, allCenters);
+          } else {
+            val = emp[key] || '';
+          }
           if (key === 'birth_date' || key === 'hire_date' || key === 'contract_end_date') {
             if (val) {
               try {
@@ -452,7 +473,12 @@ export default function CenterEmployeeExporter({
       const row = [
         idx + 1,
         ...fieldsArray.map(key => {
-          let val = emp[key] || '';
+          let val;
+          if (key === '__combined_roles') {
+            val = getCombinedRolesText(emp, allCenters);
+          } else {
+            val = emp[key] || '';
+          }
           if (key === 'birth_date' || key === 'hire_date' || key === 'contract_end_date') {
             if (val) {
               try {

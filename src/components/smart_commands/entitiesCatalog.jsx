@@ -31,6 +31,7 @@ export const ENTITIES_CATALOG = [
       { key: 'المركز_الصحي', label: 'المركز الصحي' },
       { key: 'special_roles', label: 'الأدوار الخاصة' },
       { key: 'assigned_tasks', label: 'المهام المكلف بها' },
+      { key: '__combined_roles', label: 'مهام إضافية (قيادية/إشرافية)' },
       { key: 'scfhs_classification', label: 'تصنيف الهيئة' },
     ],
   },

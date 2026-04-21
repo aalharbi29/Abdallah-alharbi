@@ -11,6 +11,7 @@ import {
 import { toast } from 'sonner';
 import { ENTITIES_CATALOG, getEntityByValue, getFieldLabel } from '@/components/smart_commands/entitiesCatalog';
 import { exportToExcel, getNestedValue } from '@/components/smart_commands/excelExporter';
+import { getCombinedRolesText } from '@/components/utils/combinedRoles';
 import CollapsibleSection from '@/components/smart_commands/CollapsibleSection';
 import RequestTypeSelector from '@/components/smart_commands/RequestTypeSelector';
 import CentersPicker from '@/components/smart_commands/CentersPicker';
@@ -165,6 +166,19 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
 
       // جلب جميع السجلات ثم فلترة محلية ذكية للمراكز
       let allData = await base44.entities[finalEntity].filter({});
+
+      // 🧠 دمج "مهام إضافية" للموظفين (أدوار قيادية/إشرافية مستقاة من المراكز + special_roles)
+      if (finalEntity === 'Employee' && finalFields.includes('__combined_roles')) {
+        try {
+          const allCenters = await base44.entities.HealthCenter.filter({});
+          allData = allData.map((emp) => ({
+            ...emp,
+            __combined_roles: getCombinedRolesText(emp, allCenters),
+          }));
+        } catch (err) {
+          console.warn('تعذّر جلب المراكز لدمج المهام الإضافية:', err);
+        }
+      }
 
       // 🔗 دمج ذكي: إذا كان الكيان HealthCenter واختار المستخدم حقول المدراء/المشرف،
       // نستبدل معرّف الموظف باسمه الفعلي + رقمه لتسهيل القراءة

@@ -29,6 +29,7 @@ import ClinicsSummary from "@/components/health_centers/ClinicsSummary";
 import CenterEmployeeExporter from "@/components/health_centers/CenterEmployeeExporter";
 import CenterDocuments from "@/components/health_centers/CenterDocuments";
 import CenterMedicalEquipmentNew from "@/components/health_centers/CenterMedicalEquipmentNew";
+import { getCombinedEmployeeRoles } from "@/components/utils/combinedRoles";
 
 
 export default function HealthCenterDetails() {
@@ -38,6 +39,7 @@ export default function HealthCenterDetails() {
   const [center, setCenter] = useState(null);
   const [employees, setEmployees] = useState([]);
   const [centerEmployees, setCenterEmployees] = useState([]);
+  const [allCenters, setAllCenters] = useState([]);
   const [manager, setManager] = useState(null);
   const [deputyManager, setDeputyManager] = useState(null);
   const [technicalSupervisor, setTechnicalSupervisor] = useState(null);
@@ -103,9 +105,13 @@ export default function HealthCenterDetails() {
         if (centerData) {
           setCenter(centerData);
 
-          const allEmployees = await Employee.list();
+          const [allEmployees, centersAll] = await Promise.all([
+            Employee.list(),
+            HealthCenter.list(),
+          ]);
           const safeEmployees = Array.isArray(allEmployees) ? allEmployees : [];
           setEmployees(safeEmployees);
+          setAllCenters(Array.isArray(centersAll) ? centersAll : []);
 
           const cleanCenterName = (name) => {
             if (!name) return "";
@@ -1689,6 +1695,7 @@ export default function HealthCenterDetails() {
                       <th className="border p-3 text-right">الاسم</th>
                       <th className="border p-3 text-right">الرقم الوظيفي</th>
                       <th className="border p-3 text-right">التخصص</th>
+                      <th className="border p-3 text-right bg-amber-50">مهام إضافية</th>
                       <th className="border p-3 text-right">نوع العقد</th>
                       <th className="border p-3 text-right">الهاتف</th>
                       <th className="border p-3 text-right">المهام والأدوار</th>
@@ -1696,11 +1703,14 @@ export default function HealthCenterDetails() {
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredCenterEmployees.map((emp) => (
+                    {filteredCenterEmployees.map((emp) => {
+                      const combinedRoles = getCombinedEmployeeRoles(emp, allCenters);
+                      return (
                       <tr key={emp.id} className="hover:bg-gray-50">
                         <td className="border p-3 font-semibold">{emp.full_name_arabic}</td>
                         <td className="border p-3">{emp.رقم_الموظف || 'غير محدد'}</td>
                         <td className="border p-3">{emp.position || 'غير محدد'}</td>
+                        <td className="border p-3 bg-amber-50/40">{combinedRoles.length > 0 ? (<div className="flex flex-wrap gap-1">{combinedRoles.map((r) => (<Badge key={r} className="bg-amber-100 text-amber-800 text-xs font-semibold">{r}</Badge>))}</div>) : (<span className="text-gray-400 text-xs">—</span>)}</td>
                         <td className="border p-3">{emp.contract_type || 'غير محدد'}</td>
                         <td className="border p-3">{emp.phone || 'غير محدد'}</td>
                         <td className="border p-3">
@@ -1739,7 +1749,8 @@ export default function HealthCenterDetails() {
                           </div>
                         </td>
                       </tr>
-                    ))}
+                      );
+                    })}
                   </tbody>
                 </table>
               </div>
