@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, Sparkles, FileText, FileSpreadsheet, Printer, Mail, MessageCircle, FileDown } from 'lucide-react';
+import { Loader2, Sparkles, FileText, FileSpreadsheet, Printer, Mail, MessageCircle, FileDown, SlidersHorizontal, ChevronDown, ChevronUp } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 
 export default function SmartCommands() {
@@ -12,6 +14,35 @@ export default function SmartCommands() {
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState(null);
   const [queryInfo, setQueryInfo] = useState(null);
+  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
+  const [selectedEntity, setSelectedEntity] = useState('');
+  const [selectedFields, setSelectedFields] = useState([]);
+  const [centerFilter, setCenterFilter] = useState('');
+
+  const entitiesList = [
+    { value: 'Employee', label: 'الموظفين', fields: ['full_name_arabic', 'full_name_english', 'رقم_الهوية', 'birth_date', 'gender', 'nationality', 'phone', 'email', 'position', 'department', 'job_category', 'qualification', 'rank', 'level', 'hire_date', 'contract_type', 'المركز_الصحي'] },
+    { value: 'HealthCenter', label: 'المراكز الصحية', fields: ['اسم_المركز', 'المدير', 'نائب_المدير', 'المشرف_الفني', 'الموقع', 'ايميل_المركز', 'هاتف_المركز', 'فاكس_المركز', 'رقم_الشريحة', 'رقم_الجوال', 'حالة_المركز', 'قيمة_عقد_الايجار', 'اسم_المؤجر', 'معتمد_سباهي', 'مركز_نائي', 'ساعات_الدوام', 'عدد_الموظفين_الكلي', 'حالة_التشغيل', 'الخدمات_المقدمة', 'سيارة_خدمات', 'سيارة_اسعاف'] },
+    { value: 'MedicalEquipment', label: 'الأجهزة الطبية', fields: ['equipment_name', 'health_center_name', 'department', 'status'] },
+    { value: 'EquipmentRequest', label: 'طلبات الأجهزة', fields: ['device_name', 'health_center_name', 'requested_quantity', 'status'] },
+    { value: 'DeficiencyReport', label: 'نواقص المراكز', fields: ['health_center', 'deficiency_type', 'description'] },
+    { value: 'Leave', label: 'الإجازات', fields: ['employee_name', 'employee_id', 'health_center', 'leave_type', 'start_date', 'end_date', 'days_count', 'status'] }
+  ];
+
+  // Centers list for dropdown
+  const [centersList, setCentersList] = useState([
+    "بطحي", "حراء", "النفل", "الروابي", "الياسمين", "الصحافة", "المروج", "الربيع", "الندى", "الزهور", "التعاون",
+    "الخزامى", "المنصورة", "العزيزية", "الشفاء", "بدر", "المروة", "الدار البيضاء", "الحزم", "نمار", "ديراب", "الشعلان",
+    "اليمامة", "الفواز", "الشفا", "المصانع", "المنصورية"
+  ]);
+
+  React.useEffect(() => {
+    // حاولنا جلب المراكز بشكل ديناميكي إذا أمكن
+    base44.entities.HealthCenter.filter({}).then(data => {
+      if (data && data.length > 0) {
+        setCentersList(data.map(c => c["اسم_المركز"]).filter(Boolean));
+      }
+    }).catch(console.error);
+  }, []);
 
   const suggestions = [
     "استخراج المشرفين الفنيين بالمراكز الصحية مع الاسم ورقم الجوال والمركز",
@@ -23,13 +54,18 @@ export default function SmartCommands() {
 
   const handleExecute = async (overridePrompt = null) => {
     const textToExecute = overridePrompt || prompt;
-    if (!textToExecute.trim()) return;
+    if (!textToExecute.trim() && !selectedEntity && !centerFilter) return;
     
     setLoading(true);
     setResults(null);
     setQueryInfo(null);
     
     try {
+      let explicitContext = "";
+      if (selectedEntity && selectedEntity !== 'none') explicitContext += `الكيان المختار حصرياً هو: ${selectedEntity}. `;
+      if (selectedFields.length > 0) explicitContext += `الحقول المطلوبة إجبارياً كأعمدة هي: ${selectedFields.join('، ')}. `;
+      if (centerFilter) explicitContext += `المركز المطلوب البحث عنه: ${centerFilter}. `;
+
       const systemPrompt = `أنت مساعد ذكي لتحليل الأوامر النصية وبناء استعلامات قاعدة بيانات لنظام إدارة صحي.
 الكيانات المتاحة:
 1. Employee (الموظفين): حقوله الهامة (full_name_arabic, full_name_english, رقم_الهوية, phone, email, position, المركز_الصحي, department, special_roles).
@@ -38,13 +74,21 @@ export default function SmartCommands() {
 4. EquipmentRequest (طلبات الأجهزة): حقوله (device_name, health_center_name, requested_quantity, status).
 5. DeficiencyReport (نواقص المراكز): حقوله (health_center, deficiency_type, description).
 
+${explicitContext}
+
+ملاحظة هامة جداً للبحث والفلترة: إذا كان هناك فلتر بناءً على اسم موظف، أو مركز صحي، أو قسم، أو أي نص عربي، يجب عليك استخدام صيغة الـ regex المتقدمة التي تتجاهل الفروقات الإملائية الشائعة.
+مثلاً، استبدل الألف بمختلف أشكالها (أ، إ، آ، ا) والتاء المربوطة والهاء (ة، ه) والياء والألف المقصورة (ي، ى).
+مثال لفلترة مركز "بطحي": استخدم {"المركز_الصحي": {"$regex": "بطح[يى]", "$options": "i"}}
+مثال لفلترة موظف "أحمد": استخدم {"full_name_arabic": {"$regex": "[أإآا]حمد", "$options": "i"}}
+لا تجعل البحث حرفياً أبداً في حقول الأسماء والمراكز بل استخدم regex متسامح.
+
 بناءً على هذا الطلب: "${textToExecute}"
 
 أرجع كائن JSON فقط يحتوي على:
 {
-  "entity": "اسم الكيان الصحيح للبحث (يجب أن يكون واحدًا من القائمة)",
-  "filters": { "اسم الحقل": "القيمة" }, // يمكنك استخدام { "$regex": "كلمة", "$options": "i" } للبحث النصي الجزئي أو تركه {} لجلب الكل.
-  "fields": ["حقل1", "حقل2"], // الحقول التي يفضل المستخدم رؤيتها بالنتيجة كأعمدة. في حال طلب السيارات استخدم ["اسم_المركز", "سيارة_اسعاف", "سيارة_خدمات"].
+  "entity": "اسم الكيان الصحيح للبحث (يجب أن يكون واحدًا من القائمة أو الكيان المختار صراحة)",
+  "filters": { "اسم الحقل": { "$regex": "تعبير نمطي متسامح مع الفروقات الإملائية", "$options": "i" } }, // استخدم regex دائمًا للنصوص
+  "fields": ["حقل1", "حقل2"], // الحقول المطلوبة كأعمدة.
   "title": "عنوان ملائم للتقرير"
 }
 `;
@@ -65,6 +109,11 @@ export default function SmartCommands() {
 
       const parsed = typeof response === 'string' ? JSON.parse(response) : response;
       
+      // Merge selected fields if user manually selected them
+      if (selectedFields.length > 0 && parsed.fields) {
+        parsed.fields = Array.from(new Set([...selectedFields, ...parsed.fields]));
+      }
+
       if (!base44.entities[parsed.entity]) {
         toast.error(`الكيان المسمى ${parsed.entity} غير معرف في النظام.`);
         setLoading(false);
@@ -198,7 +247,7 @@ export default function SmartCommands() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
+    <div className="max-w-6xl mx-auto p-4 md:p-6 space-y-6 pb-24">
       <div className="flex items-center gap-3 mb-2">
         <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-3 rounded-xl shadow-lg">
           <Sparkles className="w-8 h-8 text-white" />
@@ -211,8 +260,79 @@ export default function SmartCommands() {
 
       <Card className="border-t-4 border-t-indigo-500 shadow-md">
         <CardContent className="pt-6">
+          <div className="mb-4">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowAdvancedOptions(!showAdvancedOptions)}
+              className="mb-4 w-full md:w-auto flex items-center gap-2 border-indigo-200 text-indigo-700 bg-indigo-50/50 hover:bg-indigo-100"
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+              خيارات الفلترة والتخصيص المتقدمة
+              {showAdvancedOptions ? <ChevronUp className="w-4 h-4 mr-2" /> : <ChevronDown className="w-4 h-4 mr-2" />}
+            </Button>
+            
+            {showAdvancedOptions && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 p-4 border rounded-xl bg-slate-50/50">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">تحديد الكيان (القائمة)</label>
+                  <Select value={selectedEntity} onValueChange={(val) => { setSelectedEntity(val); setSelectedFields([]); }}>
+                    <SelectTrigger className="bg-white">
+                      <SelectValue placeholder="اختر الكيان (اختياري)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">بدون تحديد (تلقائي)</SelectItem>
+                      {entitiesList.map(ent => (
+                        <SelectItem key={ent.value} value={ent.value}>{ent.label}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                {selectedEntity && selectedEntity !== 'none' && (
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-slate-700">الحقول المطلوبة (للأعمدة)</label>
+                    <div className="flex flex-wrap gap-2 max-h-[100px] overflow-y-auto p-2 bg-white border rounded-md">
+                      {entitiesList.find(e => e.value === selectedEntity)?.fields.map(field => (
+                        <Badge 
+                          key={field}
+                          variant={selectedFields.includes(field) ? "default" : "outline"}
+                          className="cursor-pointer"
+                          onClick={() => {
+                            if (selectedFields.includes(field)) {
+                              setSelectedFields(selectedFields.filter(f => f !== field));
+                            } else {
+                              setSelectedFields([...selectedFields, field]);
+                            }
+                          }}
+                        >
+                          {field}
+                        </Badge>
+                      ))}
+                      {selectedFields.length === 0 && <span className="text-xs text-slate-400 p-1">انقر على الحقول لتحديدها</span>}
+                    </div>
+                  </div>
+                )}
+                
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-slate-700">البحث في مركز معين (تلقائي التصحيح)</label>
+                  <Input 
+                    placeholder="مثال: بطحي، حراء، النفل..." 
+                    value={centerFilter} 
+                    onChange={(e) => setCenterFilter(e.target.value)}
+                    className="bg-white"
+                    list="centers-list"
+                  />
+                  <datalist id="centers-list">
+                    {centersList.map(c => <option key={c} value={c} />)}
+                  </datalist>
+                  <p className="text-xs text-slate-500">يكفي كتابة جزء من الاسم وسيتجاهل النظام الفروقات الإملائية.</p>
+                </div>
+              </div>
+            )}
+          </div>
+
           <Textarea 
-            placeholder="مثال: قم باستخراج المشرفين الفنيين بالمراكز الصحية وضع البيانات: الاسم عربي، المركز الصحي، رقم الجوال..."
+            placeholder="اكتب طلبك النصي هنا... (يمكن تركها فارغة إذا استخدمت الخيارات المتقدمة أعلاه للبحث الشامل)"
             className="text-lg p-4 min-h-[120px] resize-y bg-slate-50 border-slate-200 focus:bg-white transition-colors"
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
@@ -227,7 +347,7 @@ export default function SmartCommands() {
                   className="cursor-pointer hover:bg-indigo-100 text-xs py-1 px-2"
                   onClick={() => {
                     setPrompt(sug);
-                    handleExecute(sug);
+                    // Don't auto-execute if they just clicked a suggestion, let them edit or click execute.
                   }}
                 >
                   {sug}
@@ -237,7 +357,7 @@ export default function SmartCommands() {
             
             <Button 
               onClick={() => handleExecute()} 
-              disabled={loading || !prompt}
+              disabled={loading || (!prompt && !selectedEntity && !centerFilter)}
               className="w-full md:w-auto bg-indigo-600 hover:bg-indigo-700 text-white px-8 h-12 text-lg rounded-xl shadow-md flex-shrink-0"
             >
               {loading ? <Loader2 className="w-5 h-5 ml-2 animate-spin" /> : <Sparkles className="w-5 h-5 ml-2" />}
