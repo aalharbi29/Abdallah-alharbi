@@ -51,36 +51,56 @@ const fuzzyCenterMatch = (centerValue, target) => {
 };
 
 // heuristic: اختيار مسبق للكيان حسب كلمات مفتاحية واضحة
+// الأولوية دائماً لنوع "الكائن المطلوب" (موظفين/أجهزة/إجازات) قبل "الموقع" (مركز).
 const detectLikelyEntity = (prompt) => {
   const p = normalizeArabic(prompt);
-  // سيارات / مركبات / إسعاف / خدمات = HealthCenter (دائماً)
-  if (/سيار|مركب|اسعاف|عربي|عربيات/i.test(p)) return 'HealthCenter';
-  // "تقرير عن مركز/مركز صحي X" / "معلومات/بيانات/تفاصيل مركز" = HealthCenter
-  if (/تقرير|معلومات|بيانات|تفاصيل|حصر|حاله/i.test(p) && /مركز|مراكز|صحي/i.test(p)) return 'HealthCenter';
-  // مدير / نائب / مشرف فني / معلومات المركز
-  if (/مدير|نائب|مشرف فني|اعتماد|سباهي|ايجار|عقد/i.test(p) && /مركز|مراكز|صحي/i.test(p)) return 'HealthCenter';
+
+  // 1️⃣ الموظفون أولوية قصوى — حتى لو ذُكر "مركز" في الطلب
+  if (/موظف|موظفين|اطباء|طبيب|ممرض|صيدلي|فني|اداري|عمال|ممرضه|ممرضات/i.test(p)) return 'Employee';
+
+  // 2️⃣ الإجازات / التكاليف / النواقص قبل أي ذكر لمركز
   if (/اجاز|إجاز/i.test(p)) return 'Leave';
   if (/تكليف|مكلف/i.test(p)) return 'Assignment';
   if (/نقص|عجز|ناقص/i.test(p)) return 'DeficiencyReport';
   if (/طلب جهاز|طلب تجهيز|طلبات الاجهزه/i.test(p)) return 'EquipmentRequest';
+  if (/اجهزه طبيه|جهاز طبي|معدات طبيه/i.test(p)) return 'MedicalEquipment';
+
+  // 3️⃣ سيارات / مركبات / إسعاف = HealthCenter (لأنها حقول داخل المركز)
+  if (/سيار|مركب|اسعاف|عربي|عربيات/i.test(p)) return 'HealthCenter';
+
+  // 4️⃣ معلومات/بيانات/تقرير + مركز → HealthCenter (طلب معلومات المركز ذاته)
+  if (/تقرير|معلومات|بيانات|تفاصيل|حصر|حاله/i.test(p) && /مركز|مراكز|صحي/i.test(p)) return 'HealthCenter';
+
+  // 5️⃣ مدير / نائب / مشرف فني
+  if (/مدير|نائب|مشرف فني|اعتماد|سباهي|ايجار|عقد/i.test(p) && /مركز|مراكز|صحي/i.test(p)) return 'HealthCenter';
+
   return null;
 };
 
-// استخراج أسماء مراكز من النص (كلمات بعد "مركز/مراكز" أو أسماء محتملة)
+// استخراج أسماء مراكز من النص
+// ملاحظة مهمة: "مركز صحي طلال" → الاسم هو "طلال" (نتجاوز كلمتي "صحي" و "الصحي")
+const STOP_WORDS = new Set([
+  'صحي', 'الصحي', 'في', 'عن', 'على', 'من', 'الى', 'إلى', 'مع', 'و', 'أو', 'او',
+  'هذا', 'ذلك', 'جميع', 'كل', 'بعض', 'هو', 'هي', 'التابع', 'التابعه',
+]);
+
 const extractCenterNameHints = (prompt) => {
   const p = String(prompt || '').trim();
   const hints = new Set();
-  // نمط: "مركز [اسم]" أو "مركز صحي [اسم]"
+  // نمط مرن: بعد "مركز" أو "المركز" قد يأتي "صحي/الصحي" ثم الاسم الفعلي
   const patterns = [
-    /مركز\s+صحي\s+([^\s،,.\n]+(?:\s+[^\s،,.\n]+){0,2})/g,
-    /مركز\s+([^\s،,.\n]+(?:\s+[^\s،,.\n]+){0,2})/g,
-    /المركز\s+الصحي\s+([^\s،,.\n]+(?:\s+[^\s،,.\n]+){0,2})/g,
+    /(?:ال)?مركز(?:\s+(?:ال)?صحي)?\s+((?:(?!في|عن|على|من|و|أو|لل)[^\s،,.\n])+(?:\s+(?:(?!في|عن|على|من|و|أو|لل)[^\s،,.\n])+){0,2})/g,
   ];
   patterns.forEach((re) => {
     let m;
     while ((m = re.exec(p)) !== null) {
-      const name = m[1].replace(/^(ال)?صحي$/i, '').trim();
-      if (name && name.length >= 2 && !/^(الصحي|صحي|في|عن|على|من)$/i.test(name)) {
+      // نظّف: أزل stop words من البداية وخذ أول كلمة مفيدة (+ كلمتين بعدها إن وُجدتا)
+      const words = m[1].split(/\s+/).filter(Boolean);
+      // تخطَّ stop words في البداية
+      while (words.length > 0 && STOP_WORDS.has(words[0])) words.shift();
+      if (words.length === 0) continue;
+      const name = words.slice(0, 3).join(' ').trim();
+      if (name && name.length >= 2 && !STOP_WORDS.has(name)) {
         hints.add(name);
       }
     }
@@ -114,14 +134,20 @@ export async function planFreeReport(userPrompt) {
 ${validEntities}
 
 🎯 قاعدة اختيار الكيان الأساسي (primary_entity):
+**الكيان = "نوع السجلات المطلوبة"، وليس "الموقع الذي تنتمي إليه".**
 
 أمثلة واضحة لمطابقة الطلب بالكيان الصحيح — اتبع هذه الأمثلة حرفياً:
 
-✅ "حصر سيارات الإسعاف" / "سيارات الخدمات" / "مركبات المراكز" / "معلومات المراكز / المدراء / الإيجارات" → **HealthCenter** (سيارات الإسعاف حقل داخل المركز).
-✅ "بيانات الموظفين / الأطباء / الممرضين / المدراء بمعزل عن المراكز" → **Employee**.
-✅ "الأجهزة الطبية / السرائر / أجهزة الأشعة / المعدات الطبية داخل الأقسام" → **MedicalEquipment** (⚠️ لا تستخدمه للسيارات أبداً — السيارات ليست أجهزة طبية).
+✅ "تقرير عن الموظفين في مركز طلال" / "الأطباء في المراكز النائية" → **Employee** (المطلوب سجلات الموظفين، والمركز مجرد فلتر).
+✅ "تقرير عن مركز طلال" / "معلومات مركز صحي طلال" / "بيانات المركز" (بدون ذكر موظفين/أجهزة/إجازات) → **HealthCenter** (المطلوب سجل المركز نفسه).
+✅ "إجازات الموظفين في مركز X" → **Leave**.
+✅ "تكاليف في مركز X" → **Assignment**.
+✅ "نواقص مركز X" → **DeficiencyReport**.
+✅ "سيارات الإسعاف / الخدمات / المركبات" → **HealthCenter** (حقل داخل المركز).
+✅ "الأجهزة الطبية / السرائر / أجهزة الأشعة" → **MedicalEquipment** (⚠️ السيارات ليست أجهزة طبية).
 ✅ "طلبات شراء أجهزة / طلبات تجهيز" → EquipmentRequest.
-✅ "الإجازات" → Leave. "التكاليف" → Assignment. "نواقص / عجز المراكز" → DeficiencyReport.
+
+🔑 قاعدة ذهبية: إذا ذُكر في الطلب "موظفين/أطباء/ممرضين/فنيين" فالكيان = Employee حتى لو ذُكر اسم مركز معه.
 
 ⚠️ تحذير: كلمة "سيارة" أو "مركبة" أو "إسعاف" لا تعني أبداً MedicalEquipment — بل HealthCenter.
 ⚠️ إذا ذُكرت أسماء مراكز في الطلب + "حصر/حالة/بيانات/تقرير/معلومات" → الكيان هو HealthCenter افتراضياً.
@@ -225,29 +251,43 @@ ${hintedEntity ? `\n💡 تلميح قوي جداً من النظام: primary_e
     parsed.secondary_entities = parsed.secondary_entities.filter((s) => validEntityKeys.includes(s));
   }
 
-  // 🔧 إصلاح حاسم: إذا كان الكيان = HealthCenter والنص يذكر اسم مركز محدد،
-  // لكن AI لم يضع أي فلتر على اسم_المركز → نحقن الفلتر يدوياً
-  if (parsed.primary_entity === 'HealthCenter') {
-    const centerHints = extractCenterNameHints(userPrompt);
-    const hasCenterFilter = Array.isArray(parsed.filters) && parsed.filters.some(
-      (f) => /اسم_المركز/i.test(f.field || '')
-    );
-    if (centerHints.length > 0 && !hasCenterFilter) {
-      console.info(`🔧 حقن فلاتر تلقائية لأسماء المراكز: ${centerHints.join(', ')}`);
-      parsed.filters = parsed.filters || [];
-      centerHints.forEach((name) => {
-        parsed.filters.push({ field: 'اسم_المركز', operator: 'contains', value: name });
-      });
+  // 🔧 إصلاح حاسم: إذا ذكر المستخدم اسم مركز محدد، نحقن فلتر تلقائياً
+  // على الحقل الصحيح للكيان المختار (لأن AI كثيراً ما ينسى هذا الفلتر)
+  const centerHints = extractCenterNameHints(userPrompt);
+  if (centerHints.length > 0) {
+    const centerField = CENTER_KEY_PER_ENTITY[parsed.primary_entity];
+    if (centerField) {
+      const hasCenterFilter = Array.isArray(parsed.filters) && parsed.filters.some(
+        (f) => f.field === centerField
+      );
+      if (!hasCenterFilter) {
+        console.info(`🔧 حقن فلاتر تلقائية على "${centerField}" للمراكز: ${centerHints.join(', ')}`);
+        parsed.filters = parsed.filters || [];
+        centerHints.forEach((name) => {
+          parsed.filters.push({ field: centerField, operator: 'contains', value: name });
+        });
+      }
     }
+  }
 
-    // 🔧 إذا كانت الحقول قليلة جداً (أقل من 5) ونص الطلب يطلب "تقرير/معلومات/بيانات"
-    // عن مركز → نستخدم الحقول الشاملة الافتراضية
+  // 🔧 الحقول الشاملة الافتراضية عند طلب "تقرير/معلومات" عن مركز
+  if (parsed.primary_entity === 'HealthCenter') {
     const p = normalizeArabic(userPrompt);
     const wantsFullReport = /تقرير|معلومات|بيانات|تفاصيل|كل شي|شامل/i.test(p);
     if (wantsFullReport && (!parsed.fields || parsed.fields.length < 5)) {
       console.info('🔧 استخدام الحقول الشاملة الافتراضية للمركز الصحي.');
       parsed.fields = [...new Set([...(parsed.fields || []), ...DEFAULT_HEALTH_CENTER_FULL_FIELDS])];
     }
+  }
+
+  // 🔧 حقول افتراضية شاملة للموظفين عند عدم وجود حقول كافية
+  if (parsed.primary_entity === 'Employee' && (!parsed.fields || parsed.fields.length < 4)) {
+    console.info('🔧 استخدام الحقول الافتراضية للموظفين.');
+    parsed.fields = [...new Set([...(parsed.fields || []),
+      'full_name_arabic', 'رقم_الموظف', 'رقم_الهوية', 'position', 'department',
+      'المركز_الصحي', 'phone', 'email', 'gender', 'nationality', 'qualification',
+      'contract_type', 'hire_date', 'start_work_date', '__combined_roles'
+    ])];
   }
 
   return parsed;
