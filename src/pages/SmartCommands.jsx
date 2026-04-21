@@ -159,8 +159,11 @@ export default function SmartCommands() {
     setFreeReportNotes('');
 
     try {
-      // === الوضع الحر: AI يختار كل شيء من كامل النظام ===
-      if (freeMode) {
+      // === مسار التقرير الذكي بالـ AI ===
+      // يُفعَّل تلقائياً إذا: الوضع الحر مُفعّل، أو يوجد وصف نصي ولم يتم اختيار حقول يدوياً.
+      // هذا يضمن أن "الموظفين في مركز X" يفهم كـ Employee وليس HealthCenter.
+      const useAIPath = freeMode || (prompt.trim() && selectedFields.length === 0);
+      if (useAIPath) {
         const plan = await planFreeReport(prompt);
         if (!plan?.primary_entity) {
           toast.error('لم يتمكن الذكاء الاصطناعي من تحديد بيانات مناسبة للطلب.');
@@ -171,13 +174,13 @@ export default function SmartCommands() {
         setQueryInfo({
           entity: plan.primary_entity,
           fields: plan.fields,
-          title: plan.title || 'تقرير حر',
+          title: plan.title || 'تقرير ذكي',
           isFree: true,
         });
         setResults(freeData);
         setFreeReportNotes(plan.notes || '');
         if (freeData.length === 0) toast.info('تم التنفيذ، لكن لا توجد نتائج مطابقة.');
-        else toast.success(`تم استخراج ${freeData.length} سجل عبر التقرير الحر.`);
+        else toast.success(`تم استخراج ${freeData.length} سجل.`);
         setLoading(false);
         return;
       }
