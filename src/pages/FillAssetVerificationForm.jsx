@@ -180,23 +180,27 @@ export default function FillAssetVerificationForm() {
             <table className="w-full border border-gray-800 border-collapse text-sm border-b-0">
               <thead>
                 <tr className="bg-[#0099d8] text-white">
-                  <Th className="w-[70%]">الموقع الذي تم التحقق منه</Th>
-                  <Th>التاريخ</Th>
+                  <Th className="w-[45%]">الموقع الذي تم التحقق منه</Th>
+                  <Th className="w-[20%]">التاريخ</Th>
+                  <Th>ملاحظات</Th>
                 </tr>
               </thead>
               <tbody>
                 {form.locations.map((loc, i) => (
                   <tr key={i} className="hover:bg-sky-50/40">
-                    <Td>
+                    <Td className="py-0.5">
                       <div className="flex items-center gap-1">
-                        <Input value={loc.name} onChange={e => updateLocation(i, 'name', e.target.value)} className="border-0 shadow-none h-8 text-sm" />
-                        <Button type="button" size="icon" variant="ghost" onClick={() => removeLocation(i)} className="h-7 w-7 print:hidden text-red-500">
+                        <Input value={loc.name} onChange={e => updateLocation(i, 'name', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
+                        <Button type="button" size="icon" variant="ghost" onClick={() => removeLocation(i)} className="h-6 w-6 print:hidden text-red-500">
                           <Trash2 className="w-3.5 h-3.5" />
                         </Button>
                       </div>
                     </Td>
-                    <Td>
-                      <Input type="date" value={loc.date} onChange={e => updateLocation(i, 'date', e.target.value)} className="border-0 shadow-none h-8 text-sm" />
+                    <Td className="py-0.5">
+                      <Input type="date" value={loc.date} onChange={e => updateLocation(i, 'date', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
+                    </Td>
+                    <Td className="py-0.5">
+                      <Input value={loc.notes} onChange={e => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
                     </Td>
                   </tr>
                 ))}
@@ -215,10 +219,10 @@ export default function FillAssetVerificationForm() {
               <tbody>
                 {ASSET_CATEGORIES.map(cat => (
                   <tr key={cat} className="hover:bg-sky-50/40">
-                    <Td>{cat}</Td>
-                    <Td>
+                    <Td className="py-0.5">{cat}</Td>
+                    <Td className="py-0.5">
                       <Select value={form.asset_checks[cat]} onValueChange={v => updateAssetCheck(cat, v)}>
-                        <SelectTrigger className="border-0 shadow-none h-8 text-sm print:hidden">
+                        <SelectTrigger className="border-0 shadow-none h-6 text-sm print:hidden">
                           <SelectValue placeholder="—" />
                         </SelectTrigger>
                         <SelectContent>
@@ -247,16 +251,16 @@ export default function FillAssetVerificationForm() {
               <tbody>
                 {form.team.map((m, i) => (
                   <tr key={i} className="hover:bg-sky-50/40">
-                    <Td>
-                      <Input value={m.name} onChange={e => updateTeam(i, 'name', e.target.value)} className="border-0 shadow-none h-8 text-sm" />
+                    <Td className="py-0.5">
+                      <Input value={m.name} onChange={e => updateTeam(i, 'name', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
                     </Td>
-                    <Td>
-                      <Input value={m.title} onChange={e => updateTeam(i, 'title', e.target.value)} className="border-0 shadow-none h-8 text-sm" />
+                    <Td className="py-0.5">
+                      <Input value={m.title} onChange={e => updateTeam(i, 'title', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
                     </Td>
-                    <Td>
+                    <Td className="py-0.5">
                       <div className="flex items-center gap-1">
-                        <Input type="date" value={m.date} onChange={e => updateTeam(i, 'date', e.target.value)} className="border-0 shadow-none h-8 text-sm" />
-                        <Button type="button" size="icon" variant="ghost" onClick={() => removeTeam(i)} className="h-7 w-7 print:hidden text-red-500">
+                        <Input type="date" value={m.date} onChange={e => updateTeam(i, 'date', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
+                        <Button type="button" size="icon" variant="ghost" onClick={() => removeTeam(i)} className="h-6 w-6 print:hidden text-red-500">
                           <Trash2 className="w-3.5 h-3.5" />
                         </Button>
                       </div>
@@ -277,8 +281,8 @@ export default function FillAssetVerificationForm() {
               <tbody>
                 {form.locations.map((loc, i) => (
                   <tr key={i} className="hover:bg-sky-50/40">
-                    <Td>
-                      <Input value={loc.notes} onChange={e => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-8 text-sm" placeholder={`ملاحظات الموقع ${i + 1}...`} />
+                    <Td className="py-0.5">
+                      <Input value={loc.notes} onChange={e => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-6 text-sm" placeholder={`ملاحظات الموقع ${i + 1}...`} />
                     </Td>
                   </tr>
                 ))}
@@ -377,5 +381,5 @@ function Th({ children, className = '' }) {
 }
 
 function Td({ children, className = '' }) {
-  return <td className={`border border-gray-800 p-1.5 text-sm ${className}`}>{children}</td>;
+  return <td className={`border border-gray-800 px-1.5 py-0.5 text-sm ${className}`}>{children}</td>;
 }
