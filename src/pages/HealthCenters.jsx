@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { HealthCenter } from "@/entities/HealthCenter";
 import { Employee } from "@/entities/Employee";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Search, Printer, AlertTriangle, RefreshCw, Loader2, Building2, Filter, AlertCircle } from "lucide-react";
+import { Plus, Search, Printer, AlertTriangle, RefreshCw, Loader2, Building2, Filter, AlertCircle, ArrowRight, LayoutGrid } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,6 +13,9 @@ import HealthCenterForm from "../components/health_centers/HealthCenterForm";
 import HealthCentersQuickStats from "../components/health_centers/HealthCentersQuickStats";
 import ExportManager from "../components/export/ExportManager";
 import CustomExportManager from "../components/export/CustomExportManager";
+import GroupSelectorCard from "../components/health_centers/GroupSelectorCard";
+import SpecialEntityCard from "../components/health_centers/SpecialEntityCard";
+import { CENTER_GROUPS, filterCentersByGroup, getGroupStats } from "../components/health_centers/centerGroups";
 
 const retry = async (fn, retries = 3, delay = 1000) => {
   try {
@@ -41,6 +44,7 @@ export default function HealthCenters() {
     remote: "all"
   });
   const [debugInfo, setDebugInfo] = useState(null);
+  const [activeGroupId, setActiveGroupId] = useState(null); // null = عرض شاشة المجموعات
 
   useEffect(() => {
     loadData();
@@ -141,26 +145,35 @@ export default function HealthCenters() {
     setShowCenterForm(true);
   };
 
-  const filteredCenters = healthCenters.filter(center => {
+  // فلترة موحدة (تُستخدم داخل المجموعة أو على كامل المراكز عند البحث العام)
+  const applyFilters = (list) => list.filter(center => {
     if (!center) return false;
-    
-    // البحث النصي
     const searchLower = searchQuery.toLowerCase().trim();
     const matchesSearch = !searchQuery ||
       (center.اسم_المركز && center.اسم_المركز.toLowerCase().includes(searchLower)) ||
       (center.الموقع && center.الموقع.toLowerCase().includes(searchLower)) ||
       (center.center_code && center.center_code.includes(searchQuery)) ||
       (center.organization_code && center.organization_code.includes(searchQuery));
-
-    // الفلاتر
     const matchesStatus = filters.status === "all" || center.حالة_التشغيل === filters.status;
     const matchesOwnership = filters.ownership === "all" || center.حالة_المركز === filters.ownership;
-    const matchesRemote = filters.remote === "all" || 
+    const matchesRemote = filters.remote === "all" ||
       (filters.remote === "yes" && center.مركز_نائي === true) ||
       (filters.remote === "no" && center.مركز_نائي !== true);
-
     return matchesSearch && matchesStatus && matchesOwnership && matchesRemote;
   });
+
+  // مراكز المجموعة النشطة (قبل الفلترة)
+  const groupCenters = useMemo(() => {
+    if (!activeGroupId) return healthCenters;
+    return filterCentersByGroup(healthCenters, activeGroupId);
+  }, [healthCenters, activeGroupId]);
+
+  const filteredCenters = useMemo(() => applyFilters(groupCenters), [groupCenters, searchQuery, filters]);
+
+  const activeGroup = activeGroupId ? CENTER_GROUPS.find(g => g.id === activeGroupId) : null;
+  const hasActiveFilters = searchQuery || filters.status !== "all" || filters.ownership !== "all" || filters.remote !== "all";
+  // عند البحث من شاشة المجموعات، نفتح عرض "كل النتائج" تلقائياً
+  const showAllResultsMode = !activeGroupId && hasActiveFilters;
 
   // عرض رسالة خطأ مع إمكانية إعادة التحميل
   if (error && !healthCenters.length && !isLoading) {
@@ -218,18 +231,35 @@ export default function HealthCenters() {
       <div className="max-w-full mx-auto space-y-8">
         {/* Header Section */}
         <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-3">دليل المراكز الصحية</h1>
-            <p className="text-lg text-gray-600">دليل شامل لجميع المراكز الصحية ومعلوماتها التفصيلية</p>
-            
-            {/* معلومات تشخيص */}
-            {debugInfo && (
-              <div className="mt-2 text-sm text-gray-500">
-                📊 {healthCenters.length} مركز • {employees.length} موظف
-              </div>
+          <div className="flex items-start gap-4">
+            {activeGroupId && (
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => { setActiveGroupId(null); setSearchQuery(""); setFilters({status:"all",ownership:"all",remote:"all"}); }}
+                className="shrink-0 mt-1"
+                title="رجوع للشؤون"
+              >
+                <ArrowRight className="w-5 h-5" />
+              </Button>
             )}
+            <div>
+              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                {activeGroup ? activeGroup.title : "دليل المراكز الصحية"}
+              </h1>
+              <p className="text-base md:text-lg text-gray-600">
+                {activeGroup
+                  ? `مراكز ${activeGroup.shortName} والكيانات التابعة لها`
+                  : "اختر الشؤون لعرض المراكز التابعة لها"}
+              </p>
+              {debugInfo && (
+                <div className="mt-2 text-sm text-gray-500">
+                  📊 {healthCenters.length} مركز • {employees.length} موظف
+                </div>
+              )}
+            </div>
           </div>
-          
+
           <div className="flex gap-2 flex-wrap">
             <Button onClick={loadData} variant="outline" disabled={isLoading} title="تحديث البيانات">
               {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
@@ -258,18 +288,20 @@ export default function HealthCenters() {
           </Alert>
         )}
 
-        <HealthCentersQuickStats centers={filteredCenters} employees={employees} />
+        <HealthCentersQuickStats centers={activeGroupId ? filteredCenters : healthCenters} employees={employees} />
 
         {/* Search and Filters */}
-        <Card>
-          <CardHeader>
+        <Card className="border-2 border-emerald-100 shadow-lg">
+          <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2">
-              <Filter className="text-gray-600" />
-              البحث والفلترة
-              {searchQuery || filters.status !== "all" || filters.ownership !== "all" || filters.remote !== "all" ? (
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-md">
+                <Filter className="text-white w-5 h-5" />
+              </div>
+              <span>البحث والفلترة الذكية</span>
+              {hasActiveFilters ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => {
                     setSearchQuery("");
                     setFilters({ status: "all", ownership: "all", remote: "all" });
@@ -285,18 +317,16 @@ export default function HealthCenters() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="relative">
                 <Search className="w-5 h-5 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <Input 
-                  placeholder="🔎 ابحث بالاسم، الموقع، أو الأكواد..." 
-                  value={searchQuery} 
-                  onChange={(e) => setSearchQuery(e.target.value)} 
-                  className="pr-10" 
+                <Input
+                  placeholder={activeGroup ? `🔎 ابحث داخل ${activeGroup.shortName}...` : "🔎 ابحث في كل المراكز..."}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pr-10"
                 />
               </div>
 
               <Select value={filters.status} onValueChange={val => setFilters({...filters, status: val})}>
-                <SelectTrigger>
-                  <SelectValue placeholder="حالة التشغيل" />
-                </SelectTrigger>
+                <SelectTrigger><SelectValue placeholder="حالة التشغيل" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">كل الحالات</SelectItem>
                   <SelectItem value="نشط">نشط</SelectItem>
@@ -307,9 +337,7 @@ export default function HealthCenters() {
               </Select>
 
               <Select value={filters.ownership} onValueChange={val => setFilters({...filters, ownership: val})}>
-                <SelectTrigger>
-                  <SelectValue placeholder="نوع الملكية" />
-                </SelectTrigger>
+                <SelectTrigger><SelectValue placeholder="نوع الملكية" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">جميع الأنواع</SelectItem>
                   <SelectItem value="حكومي">حكومي</SelectItem>
@@ -319,9 +347,7 @@ export default function HealthCenters() {
               </Select>
 
               <Select value={filters.remote} onValueChange={val => setFilters({...filters, remote: val})}>
-                <SelectTrigger>
-                  <SelectValue placeholder="التصنيف" />
-                </SelectTrigger>
+                <SelectTrigger><SelectValue placeholder="التصنيف" /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">جميع المراكز</SelectItem>
                   <SelectItem value="yes">المراكز النائية</SelectItem>
@@ -329,26 +355,69 @@ export default function HealthCenters() {
                 </SelectContent>
               </Select>
             </div>
+
+            {showAllResultsMode && (
+              <div className="mt-3 text-sm text-emerald-700 bg-emerald-50 px-3 py-2 rounded-lg border border-emerald-200">
+                🔍 وضع البحث الشامل: يتم البحث في كل المراكز ({filteredCenters.length} نتيجة)
+              </div>
+            )}
           </CardContent>
         </Card>
 
-        {/* Centers Grid */}
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[...Array(8)].map((_, i) => (
-              <Card key={i} className="h-64">
-                <CardContent className="p-4">
-                  <Skeleton className="h-full w-full" />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        ) : (
+        {/* === الشاشة (1): اختيار المجموعات === */}
+        {!activeGroupId && !showAllResultsMode && (
+          <>
+            {isLoading ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {[...Array(2)].map((_, i) => (
+                  <Card key={i} className="h-80"><CardContent className="p-4"><Skeleton className="h-full w-full" /></CardContent></Card>
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {CENTER_GROUPS.map(group => (
+                  <GroupSelectorCard
+                    key={group.id}
+                    group={group}
+                    stats={getGroupStats(healthCenters, employees, group.id)}
+                    onSelect={setActiveGroupId}
+                  />
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* === الشاشة (2): داخل مجموعة — مراكز + بطاقات خاصة === */}
+        {activeGroupId && !isLoading && (
+          <>
+            {filteredCenters.length === 0 && !hasActiveFilters ? null : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {filteredCenters.map((center) => (
+                  <HealthCenterCard
+                    key={center.id}
+                    center={center}
+                    employees={employees}
+                    onEdit={handleEditCenter}
+                    onDataChange={loadData}
+                  />
+                ))}
+                {/* البطاقات الخاصة — لا تتأثر بالبحث/الفلاتر */}
+                {!hasActiveFilters && activeGroup?.specialCards?.map(card => (
+                  <SpecialEntityCard key={card.id} card={card} />
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        {/* === الشاشة (3): البحث الشامل من شاشة المجموعات === */}
+        {showAllResultsMode && !isLoading && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredCenters.map((center) => (
-              <HealthCenterCard 
-                key={center.id} 
-                center={center} 
+              <HealthCenterCard
+                key={center.id}
+                center={center}
                 employees={employees}
                 onEdit={handleEditCenter}
                 onDataChange={loadData}
@@ -357,25 +426,36 @@ export default function HealthCenters() {
           </div>
         )}
 
-        {/* Empty State */}
-        {!isLoading && filteredCenters.length === 0 && healthCenters.length === 0 && (
+        {/* Loading داخل مجموعة */}
+        {activeGroupId && isLoading && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[...Array(8)].map((_, i) => (
+              <Card key={i} className="h-64"><CardContent className="p-4"><Skeleton className="h-full w-full" /></CardContent></Card>
+            ))}
+          </div>
+        )}
+
+        {/* Empty State — لا مراكز بالكامل */}
+        {!isLoading && healthCenters.length === 0 && (
           <div className="text-center py-12">
             <Building2 className="w-24 h-24 mx-auto text-gray-300 mb-6" />
             <h3 className="text-xl font-semibold text-gray-600 mb-2">لا توجد مراكز صحية</h3>
             <p className="text-gray-400 mb-6">لم يتم إضافة أي مراكز صحية بعد</p>
             <Button onClick={() => { setEditingCenter(null); setShowCenterForm(true); }} className="bg-green-600 hover:bg-green-700">
-              <Plus className="w-4 h-4 ml-2" />
-              إضافة مركز جديد
+              <Plus className="w-4 h-4 ml-2" />إضافة مركز جديد
             </Button>
           </div>
         )}
 
-        {/* Filtered Empty State */}
-        {!isLoading && filteredCenters.length === 0 && healthCenters.length > 0 && (
+        {/* Empty State — لا نتائج للبحث */}
+        {!isLoading && healthCenters.length > 0 && (activeGroupId || showAllResultsMode) && filteredCenters.length === 0 && (
           <div className="text-center py-12">
             <Search className="w-24 h-24 mx-auto text-gray-300 mb-6" />
             <h3 className="text-xl font-semibold text-gray-600 mb-2">لا توجد نتائج</h3>
-            <p className="text-gray-400 mb-6">لم يتم العثور على مراكز تطابق معايير البحث ({healthCenters.length} مركز في النظام)</p>
+            <p className="text-gray-400 mb-6">
+              لم يتم العثور على مراكز تطابق معايير البحث
+              {activeGroup ? ` داخل ${activeGroup.shortName}` : ""}
+            </p>
             <Button onClick={() => { setSearchQuery(""); setFilters({status: "all", ownership: "all", remote: "all"}); }}>
               مسح الفلاتر
             </Button>
