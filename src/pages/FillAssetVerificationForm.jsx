@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
-import { Printer, Download, Plus, Trash2, Save, FileCheck2 } from 'lucide-react';
+import { Printer, Plus, Trash2, Save, FileCheck2 } from 'lucide-react';
 import { toast } from 'sonner';
-import useLogoSettings from '@/components/settings/useLogoSettings';
 import { base44 } from '@/api/base44Client';
+
+const HEALTH_HOLDING_LOGO = 'https://media.base44.com/images/public/68af5003813e47bd07947b30/5bb77883d_image.png';
 
 const ASSET_CATEGORIES = [
   'معدات طبية',
@@ -26,7 +26,6 @@ const emptyLocation = () => ({ name: '', date: '', notes: '' });
 const emptyTeamMember = () => ({ name: '', title: '', date: '' });
 
 export default function FillAssetVerificationForm() {
-  const { logoSettings, isLoaded } = useLogoSettings();
   const printRef = useRef(null);
 
   const [healthCenters, setHealthCenters] = useState([]);
@@ -41,7 +40,7 @@ export default function FillAssetVerificationForm() {
     team: [emptyTeamMember(), emptyTeamMember(), emptyTeamMember()],
     notes: '',
     project_manager_name: '',
-    hospital_manager_name: 'مستشفى الحسو العام',
+    center_manager_name: '',
     signature_date: new Date().toISOString().split('T')[0],
   });
 
@@ -85,27 +84,15 @@ export default function FillAssetVerificationForm() {
         facility_name: facilityName,
         city_region: center.الموقع || p.city_region,
       }));
-      // جلب المدير والنائب لتعبئة فريق التحقق تلقائياً
+      // تعبئة اسم مدير المركز الصحي فقط (لا نائب ولا مشرف فني)
       const manager = employees.find(e => e.id === center.المدير);
-      const deputy = employees.find(e => e.id === center.نائب_المدير);
-      const tech = employees.find(e => e.id === center.المشرف_الفني);
-      const autoTeam = [manager, deputy, tech]
-        .filter(Boolean)
-        .map(e => ({
-          name: e.full_name_arabic || '',
-          title: e.position || '',
-          date: new Date().toISOString().split('T')[0],
-        }));
-      if (autoTeam.length) {
+      if (manager) {
         setForm(p => ({
           ...p,
-          project_manager_name: manager?.full_name_arabic || p.project_manager_name,
-          team: [
-            ...autoTeam,
-            ...Array.from({ length: Math.max(0, 3 - autoTeam.length) }, () => emptyTeamMember()),
-          ],
+          center_manager_name: manager.full_name_arabic || '',
+          project_manager_name: manager.full_name_arabic || p.project_manager_name,
         }));
-        toast.success(`تم تعبئة ${autoTeam.length} من فريق المركز تلقائياً`);
+        toast.success('تم تعبئة اسم مدير المركز الصحي تلقائياً');
       }
     }
   };
@@ -143,28 +130,19 @@ export default function FillAssetVerificationForm() {
         {/* المستند - طبق الأصل */}
         <Card className="border-2 border-gray-200 shadow-xl print:shadow-none print:border-0" ref={printRef}>
           <CardContent className="p-6 md:p-10 print:p-8 bg-white" dir="rtl">
-            {/* الترويسة الرسمية + الشعار */}
-            <div className="flex items-center justify-between gap-4 pb-4 border-b-4 border-emerald-700">
-              <div className="text-right text-[11px] leading-5 text-gray-700">
-                <p>المملكة العربية السعودية</p>
-                <p>وزارة الصحة</p>
-                <p className="font-bold text-emerald-800">تجمع المدينة المنورة الصحي</p>
-              </div>
-              <div className="w-20 h-20 flex items-center justify-center shrink-0">
-                {isLoaded && logoSettings?.logo_url && (
-                  <img src={logoSettings.logo_url} alt="الشعار" className="max-w-full max-h-full object-contain" crossOrigin="anonymous" />
-                )}
-              </div>
-              <div className="text-left text-[11px] leading-5 text-gray-700" dir="ltr">
-                <p>Kingdom of Saudi Arabia</p>
-                <p>Ministry of Health</p>
-                <p className="font-bold text-emerald-800">Madinah Health Cluster</p>
-              </div>
+            {/* الترويسة — شعار الصحة القابضة فقط */}
+            <div className="flex justify-center pb-4 border-b-2 border-[#0099d8]">
+              <img
+                src={HEALTH_HOLDING_LOGO}
+                alt="الصحة القابضة"
+                className="h-24 md:h-28 object-contain"
+                crossOrigin="anonymous"
+              />
             </div>
 
             {/* عنوان المشروع */}
             <div className="text-center mt-5">
-              <p className="text-sm font-bold text-emerald-900">(مشروع التحقق ومراجعة سجلات الأصول بالتجمعات الصحية)</p>
+              <p className="text-sm font-bold text-[#0099d8]">(مشروع التحقق ومراجعة سجلات الأصول بالتجمعات الصحية)</p>
               <h2 className="mt-3 text-lg md:text-xl font-extrabold text-gray-900">نموذج رقم (5) — نموذج محضر التحقق من الأصول</h2>
             </div>
 
@@ -197,19 +175,19 @@ export default function FillAssetVerificationForm() {
             {/* قسم: نموذج محضر الجرد */}
             <SectionTitle>نموذج محضر الجرد</SectionTitle>
 
-            {/* المواقع التي تم التحقق منها */}
-            <SubHeader>المواقع التي تم التحقق منها</SubHeader>
+            {/* المواقع التي تم التحقق منها + الملاحظات المرتبطة (جدول مترابط) */}
+            <SubHeader>المواقع التي تم التحقق منها والملاحظات المرتبطة</SubHeader>
             <table className="w-full border border-gray-800 border-collapse text-sm">
               <thead>
-                <tr className="bg-emerald-700 text-white">
-                  <Th className="w-[50%]">المواقع التي تم التحقق منها</Th>
-                  <Th className="w-[25%]">التاريخ</Th>
-                  <Th>ملاحظات</Th>
+                <tr className="bg-[#0099d8] text-white">
+                  <Th className="w-[40%]">الموقع الذي تم التحقق منه</Th>
+                  <Th className="w-[20%]">التاريخ</Th>
+                  <Th>الملاحظات المرتبطة بعملية التحقق</Th>
                 </tr>
               </thead>
               <tbody>
                 {form.locations.map((loc, i) => (
-                  <tr key={i} className="hover:bg-emerald-50/40">
+                  <tr key={i} className="hover:bg-sky-50/40">
                     <Td>
                       <Input value={loc.name} onChange={e => updateLocation(i, 'name', e.target.value)} className="border-0 shadow-none h-8 text-sm" />
                     </Td>
@@ -218,7 +196,7 @@ export default function FillAssetVerificationForm() {
                     </Td>
                     <Td>
                       <div className="flex items-center gap-1">
-                        <Input value={loc.notes} onChange={e => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-8 text-sm" />
+                        <Input value={loc.notes} onChange={e => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-8 text-sm" placeholder="اكتب الملاحظات المرتبطة بهذا الموقع..." />
                         <Button type="button" size="icon" variant="ghost" onClick={() => removeLocation(i)} className="h-7 w-7 print:hidden text-red-500">
                           <Trash2 className="w-3.5 h-3.5" />
                         </Button>
@@ -236,14 +214,14 @@ export default function FillAssetVerificationForm() {
             <SubHeader className="mt-6">الأصول التي تم التحقق منها</SubHeader>
             <table className="w-full border border-gray-800 border-collapse text-sm">
               <thead>
-                <tr className="bg-emerald-700 text-white">
+                <tr className="bg-[#0099d8] text-white">
                   <Th className="w-[60%]">فئة الأصل</Th>
                   <Th>هل تم التحقق من هذه الأصول؟</Th>
                 </tr>
               </thead>
               <tbody>
                 {ASSET_CATEGORIES.map(cat => (
-                  <tr key={cat} className="hover:bg-emerald-50/40">
+                  <tr key={cat} className="hover:bg-sky-50/40">
                     <Td>{cat}</Td>
                     <Td>
                       <Select value={form.asset_checks[cat]} onValueChange={v => updateAssetCheck(cat, v)}>
@@ -267,7 +245,7 @@ export default function FillAssetVerificationForm() {
             <SubHeader className="mt-6">فريق التحقق من الأصول</SubHeader>
             <table className="w-full border border-gray-800 border-collapse text-sm">
               <thead>
-                <tr className="bg-emerald-700 text-white">
+                <tr className="bg-[#0099d8] text-white">
                   <Th>الاسم</Th>
                   <Th>المسمى الوظيفي</Th>
                   <Th className="w-[25%]">التاريخ</Th>
@@ -275,7 +253,7 @@ export default function FillAssetVerificationForm() {
               </thead>
               <tbody>
                 {form.team.map((m, i) => (
-                  <tr key={i} className="hover:bg-emerald-50/40">
+                  <tr key={i} className="hover:bg-sky-50/40">
                     <Td>
                       <Input value={m.name} onChange={e => updateTeam(i, 'name', e.target.value)} className="border-0 shadow-none h-8 text-sm" />
                     </Td>
@@ -298,18 +276,6 @@ export default function FillAssetVerificationForm() {
               <Plus className="w-3.5 h-3.5 ml-1" />إضافة عضو
             </Button>
 
-            {/* الملاحظات */}
-            <SubHeader className="mt-6">الملاحظات المرتبطة بعمليات التحقق من الأصول</SubHeader>
-            <div className="border border-gray-800 p-2">
-              <Textarea
-                rows={4}
-                value={form.notes}
-                onChange={e => updateField('notes', e.target.value)}
-                className="border-0 shadow-none resize-none text-sm min-h-[90px]"
-                placeholder="اكتب الملاحظات هنا..."
-              />
-            </div>
-
             {/* التوقيعات */}
             <table className="w-full border border-gray-800 border-collapse text-sm mt-8">
               <tbody>
@@ -322,8 +288,8 @@ export default function FillAssetVerificationForm() {
                   </Td>
                   <Td className="align-top">
                     <div className="space-y-1">
-                      <p className="font-bold">اسم مدير المستشفى:</p>
-                      <Input value={form.hospital_manager_name} onChange={e => updateField('hospital_manager_name', e.target.value)} className="border-0 border-b border-dashed rounded-none h-8 text-sm" />
+                      <p className="font-bold">اسم مدير المركز الصحي:</p>
+                      <Input value={form.center_manager_name} onChange={e => updateField('center_manager_name', e.target.value)} className="border-0 border-b border-dashed rounded-none h-8 text-sm" placeholder="يظهر تلقائياً عند اختيار المرفق" />
                     </div>
                   </Td>
                 </tr>
@@ -352,13 +318,6 @@ export default function FillAssetVerificationForm() {
               </tbody>
             </table>
 
-            {/* ذيل الصفحة */}
-            {logoSettings?.show_footer && (
-              <div className="mt-8 pt-3 border-t border-gray-300 text-center text-[11px] text-gray-500">
-                <p>{logoSettings.footer_text_1}</p>
-                <p>{logoSettings.footer_text_2}</p>
-              </div>
-            )}
           </CardContent>
         </Card>
       </div>
@@ -377,7 +336,7 @@ export default function FillAssetVerificationForm() {
 function SectionTitle({ children }) {
   return (
     <div className="mt-6 mb-2">
-      <div className="bg-gradient-to-l from-emerald-700 to-emerald-600 text-white px-4 py-2 rounded-md shadow-sm font-bold text-sm">
+      <div className="bg-gradient-to-l from-[#0099d8] to-[#33b1e0] text-white px-4 py-2 rounded-md shadow-sm font-bold text-sm">
         {children}
       </div>
     </div>
@@ -386,7 +345,7 @@ function SectionTitle({ children }) {
 
 function SubHeader({ children, className = '' }) {
   return (
-    <div className={`bg-emerald-100 border border-emerald-700 text-emerald-900 font-bold text-sm px-3 py-1.5 ${className}`}>
+    <div className={`bg-sky-100 border border-[#0099d8] text-[#006a99] font-bold text-sm px-3 py-1.5 ${className}`}>
       {children}
     </div>
   );
