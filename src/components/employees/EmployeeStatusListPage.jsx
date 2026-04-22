@@ -138,10 +138,16 @@ export default function EmployeeStatusListPage({
                           </div>
                         )}
                       </div>
-                      {mode === 'assigned' && emp.id && (
-                        <Link to={createPageUrl(`EmployeeProfile?id=${emp.id}`)}>
+                      {emp.id && (
+                        <Link
+                          to={createPageUrl(
+                            mode === 'archived'
+                              ? `EmployeeProfile?id=${emp.id}&archived=true`
+                              : `EmployeeProfile?id=${emp.id}`
+                          )}
+                        >
                           <Button variant="outline" size="sm" className="gap-1">
-                            <Eye className="w-4 h-4" /> عرض الملف
+                            <Eye className="w-4 h-4" /> عرض/تعديل الملف
                           </Button>
                         </Link>
                       )}

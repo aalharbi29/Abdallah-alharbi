@@ -21,6 +21,8 @@ import { motion } from "framer-motion";
 
 import SmartDateInput from "../components/ui/smart-date-input";
 import EmployeeFullDetails from "@/components/employee_profile/EmployeeFullDetails";
+import EmployeeForm from "@/components/employees/EmployeeForm";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import EmployeeProfileExporter from "@/components/export/EmployeeProfileExporter";
 import EmployeeProfileCustomExport from "@/components/export/EmployeeProfileCustomExport";
 import HolidayWorkManager from "@/components/employee_profile/HolidayWorkManager";
@@ -61,6 +63,22 @@ export default function EmployeeProfile() {
   const [employeeRoles, setEmployeeRoles] = useState([]);
   const [showIDCard, setShowIDCard] = useState(false);
   const [showMoveDialog, setShowMoveDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+
+  const handleUpdateProfile = async (data) => {
+    if (!employee?.id) return;
+    try {
+      if (employee.__isArchived) {
+        await base44.entities.ArchivedEmployee.update(employee.id, data);
+      } else {
+        await base44.entities.Employee.update(employee.id, data);
+      }
+      setShowEditDialog(false);
+      await loadEmployeeData(employee.id, employee.__isArchived);
+    } catch (e) {
+      alert(`فشل حفظ التعديلات: ${e.message || 'خطأ غير معروف'}`);
+    }
+  };
 
   // دالة مساعدة للإعادة مع تأخير متزايد
   const retryWithDelay = async (fn, maxRetries = 3, baseDelay = 1000) => {
@@ -102,15 +120,18 @@ export default function EmployeeProfile() {
     return digits;
   };
 
-  const loadEmployeeData = useCallback(async (employeeId) => {
+  const loadEmployeeData = useCallback(async (employeeId, archivedFlag = false) => {
     setIsLoading(true);
     setError(null);
     setLoadingStatus('جاري تحميل بيانات الموظف...');
     
     try {
-      // تحميل بيانات الموظف مع إعادة المحاولة
+      // تحميل بيانات الموظف مع إعادة المحاولة (من Employee أو ArchivedEmployee)
       setLoadingStatus('جاري تحميل بيانات الموظف الأساسية...');
       const employeeData = await retryWithDelay(async () => {
+        if (archivedFlag) {
+          return await base44.entities.ArchivedEmployee.get(employeeId);
+        }
         return await base44.entities.Employee.get(employeeId);
       }, 3, 1500);
       
@@ -120,6 +141,8 @@ export default function EmployeeProfile() {
         return;
       }
       
+      // علامة داخلية للتمييز
+      employeeData.__isArchived = archivedFlag;
       setEmployee(employeeData);
 
       // تحميل بيانات المراكز الصحية (list بدلاً من get)
@@ -207,18 +230,15 @@ export default function EmployeeProfile() {
 
   // Effect to load initial employee data on URL change
   useEffect(() => {
-    const getEmployeeId = () => {
-      const params = new URLSearchParams(location.search);
-      return params.get('id');
-    };
-
-    const employeeId = getEmployeeId();
+    const params = new URLSearchParams(location.search);
+    const employeeId = params.get('id');
+    const archivedFlag = params.get('archived') === 'true' || params.get('archived') === '1';
     if (!employeeId) {
       setError('معرف الموظف غير موجود في الرابط');
       setIsLoading(false);
       return;
     }
-    loadEmployeeData(employeeId);
+    loadEmployeeData(employeeId, archivedFlag);
   }, [location.search, loadEmployeeData]);
 
   // Effect to update external assignment state when employee data changes
@@ -288,6 +308,10 @@ export default function EmployeeProfile() {
           alert("خطأ: لا يمكن حفظ التكليف الخارجي. بيانات الموظف غير مكتملة.");
           return;
       }
+      if (employee.__isArchived) {
+          alert("لا يمكن تعديل التكليف الخارجي لموظف مؤرشف.");
+          return;
+      }
       setIsLoading(true);
       setLoadingStatus('جاري حفظ حالة التكليف الخارجي...');
       setError(null);
@@ -320,8 +344,7 @@ export default function EmployeeProfile() {
 
           await base44.entities.Employee.update(employee.id, payload);
           alert("تم تحديث حالة التكليف الخارجي بنجاح.");
-          // No need to get ID from search params, employee object already has it.
-          await loadEmployeeData(employee.id); // Reload employee data to reflect changes
+          await loadEmployeeData(employee.id, employee.__isArchived);
       } catch (err) {
           console.error("Failed to update external assignment:", err);
           setError(`فشل تحديث حالة التكليف الخارجي: ${err.message || 'خطأ غير معروف'}`);
@@ -562,16 +585,15 @@ export default function EmployeeProfile() {
                   <User className="w-5 h-5" />
                   البيانات التفصيلية
                 </h2>
-                <Link to={createPageUrl(`HumanResources?id=${employee.id}`)} className="w-full sm:w-auto">
-                  <Button 
-                    variant="secondary" 
-                    size="sm"
-                    className="rounded-xl w-full sm:w-auto h-9"
-                  >
-                    <Edit className="w-4 h-4 ml-1" />
-                    تعديل البيانات
-                  </Button>
-                </Link>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => setShowEditDialog(true)}
+                  className="rounded-xl w-full sm:w-auto h-9"
+                >
+                  <Edit className="w-4 h-4 ml-1" />
+                  تعديل البيانات
+                </Button>
               </div>
             </div>
             <CardContent className="p-3 sm:p-4 md:p-6">
@@ -860,6 +882,24 @@ export default function EmployeeProfile() {
               navigate(createPageUrl('HumanResources'));
             }}
           />
+        )}
+
+        {showEditDialog && (
+          <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>
+                  {employee.__isArchived ? 'تعديل ملف الموظف (مؤرشف)' : 'تعديل بيانات الموظف'}
+                </DialogTitle>
+              </DialogHeader>
+              <EmployeeForm
+                employee={employee}
+                onSubmit={handleUpdateProfile}
+                onCancel={() => setShowEditDialog(false)}
+                healthCenters={healthCenters}
+              />
+            </DialogContent>
+          </Dialog>
         )}
       </div>
     </div>

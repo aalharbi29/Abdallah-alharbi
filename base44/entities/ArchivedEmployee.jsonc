@@ -6,6 +6,10 @@
       "type": "string",
       "description": "\u0645\u0639\u0631\u0641 \u0627\u0644\u0645\u0648\u0638\u0641 \u0627\u0644\u0623\u0635\u0644\u064a"
     },
+    "profile_image_url": {
+      "type": "string",
+      "description": "\u0631\u0627\u0628\u0637 \u0627\u0644\u0635\u0648\u0631\u0629 \u0627\u0644\u0634\u062e\u0635\u064a\u0629 \u0644\u0644\u0645\u0648\u0638\u0641"
+    },
     "\u0627\u0644\u0645\u0631\u0643\u0632_\u0627\u0644\u0635\u062d\u064a": {
       "type": "string",
       "description": "\u0627\u0644\u0645\u0631\u0643\u0632 \u0627\u0644\u0635\u062d\u064a \u0627\u0644\u0630\u064a \u0643\u0627\u0646 \u064a\u0639\u0645\u0644 \u0628\u0647"
@@ -18,6 +22,10 @@
       "type": "string",
       "description": "\u0627\u0644\u0627\u0633\u0645 \u0627\u0644\u0643\u0627\u0645\u0644 \u0628\u0627\u0644\u0639\u0631\u0628\u064a\u0629"
     },
+    "full_name_english": {
+      "type": "string",
+      "description": "\u0627\u0644\u0627\u0633\u0645 \u0627\u0644\u0643\u0627\u0645\u0644 \u0628\u0627\u0644\u0625\u0646\u062c\u0644\u064a\u0632\u064a\u0629"
+    },
     "\u0631\u0642\u0645_\u0627\u0644\u0647\u0648\u064a\u0629": {
       "type": "string",
       "description": "\u0631\u0642\u0645 \u0627\u0644\u0647\u0648\u064a\u0629 \u0627\u0644\u0648\u0637\u0646\u064a\u0629"
@@ -25,7 +33,11 @@
     "birth_date": {
       "type": "string",
       "format": "date",
-      "description": "\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u0645\u064a\u0644\u0627\u062f"
+      "description": "\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u0645\u064a\u0644\u0627\u062f (\u0645\u064a\u0644\u0627\u062f\u064a)"
+    },
+    "birth_date_hijri": {
+      "type": "string",
+      "description": "\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u0645\u064a\u0644\u0627\u062f (\u0647\u062c\u0631\u064a)"
     },
     "gender": {
       "type": "string",
@@ -50,23 +62,134 @@
     },
     "position": {
       "type": "string",
-      "description": "\u0627\u0644\u0645\u0646\u0635\u0628"
+      "description": "\u0627\u0644\u062a\u062e\u0635\u0635"
+    },
+    "department": {
+      "type": "string",
+      "description": "\u0627\u0644\u0642\u0633\u0645"
+    },
+    "job_category": {
+      "type": "string",
+      "description": "\u0645\u0644\u0627\u0643 \u0627\u0644\u0648\u0638\u064a\u0641\u0629"
+    },
+    "job_category_type": {
+      "type": "string",
+      "description": "\u0641\u0626\u0629 \u0627\u0644\u0648\u0638\u064a\u0641\u0629"
+    },
+    "scfhs_classification": {
+      "type": "string",
+      "description": "\u062a\u0635\u0646\u064a\u0641 \u0627\u0644\u0647\u064a\u0626\u0629 \u0627\u0644\u0633\u0639\u0648\u062f\u064a\u0629 \u0644\u0644\u062a\u062e\u0635\u0635\u0627\u062a \u0627\u0644\u0635\u062d\u064a\u0629"
+    },
+    "qualification": {
+      "type": "string",
+      "description": "\u0627\u0644\u0645\u0624\u0647\u0644"
+    },
+    "rank": {
+      "type": "string",
+      "description": "\u0627\u0644\u0645\u0631\u062a\u0628\u0629 \u0627\u0644\u0648\u0638\u064a\u0641\u064a\u0629"
+    },
+    "sequence": {
+      "type": "string",
+      "description": "\u0627\u0644\u062a\u0633\u0644\u0633\u0644"
+    },
+    "level": {
+      "type": "string",
+      "description": "\u0627\u0644\u0645\u0633\u062a\u0648\u0649"
+    },
+    "grade": {
+      "type": "string",
+      "description": "\u0627\u0644\u062f\u0631\u062c\u0629"
     },
     "hire_date": {
       "type": "string",
       "format": "date",
-      "description": "\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u062a\u0648\u0638\u064a\u0641"
+      "description": "\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u062a\u0639\u064a\u064a\u0646 (\u0645\u064a\u0644\u0627\u062f\u064a)"
+    },
+    "hire_date_hijri": {
+      "type": "string",
+      "description": "\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u062a\u0639\u064a\u064a\u0646 (\u0647\u062c\u0631\u064a)"
+    },
+    "start_work_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u0645\u0628\u0627\u0634\u0631\u0629 (\u0645\u064a\u0644\u0627\u062f\u064a)"
+    },
+    "start_work_date_hijri": {
+      "type": "string",
+      "description": "\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u0645\u0628\u0627\u0634\u0631\u0629 (\u0647\u062c\u0631\u064a)"
     },
     "contract_type": {
       "type": "string",
       "description": "\u0646\u0648\u0639 \u0627\u0644\u0639\u0642\u062f"
+    },
+    "contract_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u062a\u0627\u0631\u064a\u062e \u0628\u062f\u0627\u064a\u0629 \u0627\u0644\u0639\u0642\u062f (\u0645\u064a\u0644\u0627\u062f\u064a)"
+    },
+    "contract_start_date_hijri": {
+      "type": "string",
+      "description": "\u062a\u0627\u0631\u064a\u062e \u0628\u062f\u0627\u064a\u0629 \u0627\u0644\u0639\u0642\u062f (\u0647\u062c\u0631\u064a)"
+    },
+    "contract_end_date": {
+      "type": "string",
+      "format": "date",
+      "description": "\u062a\u0627\u0631\u064a\u062e \u0627\u0646\u062a\u0647\u0627\u0621 \u0627\u0644\u0639\u0642\u062f (\u0645\u064a\u0644\u0627\u062f\u064a)"
+    },
+    "contract_end_date_hijri": {
+      "type": "string",
+      "description": "\u062a\u0627\u0631\u064a\u062e \u0627\u0646\u062a\u0647\u0627\u0621 \u0627\u0644\u0639\u0642\u062f (\u0647\u062c\u0631\u064a)"
     },
     "special_roles": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "description": "\u0627\u0644\u0623\u062f\u0648\u0627\u0631 \u0627\u0644\u062e\u0627\u0635\u0629"
+      "description": "\u0627\u0644\u0623\u062f\u0648\u0627\u0631 \u0627\u0644\u0625\u0634\u0631\u0627\u0641\u064a\u0629 \u0648\u0627\u0644\u0642\u064a\u0627\u062f\u064a\u0629",
+      "default": []
+    },
+    "assigned_tasks": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "\u0627\u0644\u0645\u0647\u0627\u0645 \u0627\u0644\u0645\u0643\u0644\u0641 \u0628\u0647\u0627",
+      "default": []
+    },
+    "is_externally_assigned": {
+      "type": "boolean",
+      "default": false
+    },
+    "external_assignment_center": {
+      "type": "string"
+    },
+    "external_assignment_end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "external_assignment_indefinite": {
+      "type": "boolean",
+      "default": false
+    },
+    "external_assignment_reason": {
+      "type": "string"
+    },
+    "external_assignment_reason_other": {
+      "type": "string"
+    },
+    "holiday_assignments": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "default": []
+    },
+    "holiday_work_records": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "default": []
     },
     "archive_type": {
       "type": "string",

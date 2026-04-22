@@ -143,8 +143,14 @@ export default function HRUnifiedSearch() {
                             {emp.nationality && <span>🌐 {emp.nationality}</span>}
                           </div>
                         </div>
-                        {profileId && (
-                          <Link to={createPageUrl(`EmployeeProfile?id=${profileId}`)}>
+                        {(emp._profileId || emp.id) && (
+                          <Link
+                            to={createPageUrl(
+                              emp._profileId
+                                ? `EmployeeProfile?id=${emp.id}&archived=true`
+                                : `EmployeeProfile?id=${emp.id}`
+                            )}
+                          >
                             <Button variant="outline" size="sm" className="gap-1">
                               <Eye className="w-4 h-4" /> الملف
                             </Button>
