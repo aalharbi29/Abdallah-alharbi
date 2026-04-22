@@ -130,12 +130,12 @@ export default function FillAssetVerificationForm() {
         {/* المستند - طبق الأصل */}
         <Card className="border-2 border-gray-200 shadow-xl print:shadow-none print:border-0" ref={printRef}>
           <CardContent className="p-6 md:p-10 print:p-8 bg-white" dir="rtl">
-            {/* الترويسة — شعار الصحة القابضة على اليسار */}
-            <div className="flex justify-start pb-1 border-b-2 border-[#0099d8]">
+            {/* الترويسة — شعار الصحة القابضة على اليمين */}
+            <div className="flex justify-end pb-1 border-b-2 border-[#0099d8]">
               <img
                 src={HEALTH_HOLDING_LOGO}
                 alt="الصحة القابضة"
-                className="h-20 md:h-24 object-contain"
+                className="h-24 md:h-28 object-contain"
                 crossOrigin="anonymous"
               />
             </div>
@@ -370,16 +370,16 @@ function SubHeader({ children, className = '' }) {
 function InfoRow({ label, children }) {
   return (
     <tr className="border border-gray-800">
-      <td className="border border-gray-800 bg-gray-50 p-2 font-bold w-[35%] text-sm align-middle">{label}</td>
-      <td className="border border-gray-800 p-1 align-middle text-center">{children}</td>
+      <td className="border border-gray-800 bg-gray-50 px-2 py-1 font-bold w-[35%] text-sm align-middle">{label}</td>
+      <td className="border border-gray-800 px-1 py-0 align-middle text-center">{children}</td>
     </tr>
   );
 }
 
 function Th({ children, className = '' }) {
-  return <th className={`border border-gray-800 p-2 text-center font-bold text-sm ${className}`}>{children}</th>;
+  return <th className={`border border-gray-800 px-2 py-1 text-center font-bold text-sm ${className}`}>{children}</th>;
 }
 
 function Td({ children, className = '' }) {
-  return <td className={`border border-gray-800 px-1.5 py-0.5 text-sm ${className}`}>{children}</td>;
+  return <td className={`border border-gray-800 px-1.5 py-0 text-sm leading-tight ${className}`}>{children}</td>;
 }
