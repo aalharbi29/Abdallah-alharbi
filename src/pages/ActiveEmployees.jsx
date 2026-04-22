@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
 import HumanResourcesDialogs from "@/components/hr/HumanResourcesDialogs";
+import { matchScore } from "@/components/utils/arabicSearch";
 
 /**
  * صفحة استعراض جميع الموظفين النشطين مع الفلاتر والإجراءات الكاملة.
@@ -161,31 +162,13 @@ export default function ActiveEmployees() {
 
   const filteredEmployees = useMemo(() => {
     let result = employees;
+    let scored = null;
 
     if (searchQuery && searchQuery.trim()) {
-      const query = searchQuery.trim().toLowerCase();
-      result = result.filter(emp => {
-        const haystack = [
-          emp.full_name_arabic,
-          emp.full_name_english,
-          emp['رقم_الموظف'],
-          emp['رقم_الهوية'],
-          emp.phone,
-          emp.email,
-          emp.position,
-          emp.department,
-          emp['المركز_الصحي'],
-          emp.nationality,
-          emp.qualification,
-          emp.contract_type,
-          emp.job_category,
-          emp.job_category_type,
-        ]
-          .filter(Boolean)
-          .map(v => String(v).toLowerCase())
-          .join(' | ');
-        return haystack.includes(query);
-      });
+      scored = result
+        .map(emp => ({ emp, score: matchScore(emp, searchQuery) }))
+        .filter(x => x.score > 0);
+      result = scored.map(x => x.emp);
     }
 
     if (filters.healthCenters?.length > 0) result = result.filter(emp => filters.healthCenters.includes(emp.المركز_الصحي));
@@ -228,10 +211,19 @@ export default function ActiveEmployees() {
       });
     }
 
+    // خريطة رتبة المطابقة للفرز حسب أولوية الاسم الأول ثم الثاني...
+    const scoreMap = new Map();
+    if (scored) scored.forEach(x => scoreMap.set(x.emp.id, x.score));
+
     result = [...result].sort((a, b) => {
       const aP = pinnedEmployees.has(a.id), bP = pinnedEmployees.has(b.id);
       if (aP && !bP) return -1;
       if (!aP && bP) return 1;
+      if (scoreMap.size > 0) {
+        const sa = scoreMap.get(a.id) ?? 99;
+        const sb = scoreMap.get(b.id) ?? 99;
+        if (sa !== sb) return sa - sb;
+      }
       return 0;
     });
 

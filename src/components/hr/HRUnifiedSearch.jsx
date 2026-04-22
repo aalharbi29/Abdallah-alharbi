@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Search, Loader2, Eye, Briefcase, Award, UserMinus, UserCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
+import { matchScore } from '@/components/utils/arabicSearch';
 
 /**
  * بحث موحّد في الموارد البشرية:
@@ -40,48 +41,24 @@ export default function HRUnifiedSearch() {
   }, []);
 
   const matches = useMemo(() => {
-    const q = query.trim().toLowerCase();
+    const q = query.trim();
     if (!q) return [];
 
-    const test = (emp, isArchived) => {
-      const hay = [
-        emp.full_name_arabic,
-        emp.full_name_english,
-        emp['رقم_الموظف'],
-        emp['رقم_الهوية'],
-        emp.phone,
-        emp.email,
-        emp.position,
-        emp.department,
-        emp['المركز_الصحي'],
-        emp.nationality,
-        emp.qualification,
-        emp.contract_type,
-        isArchived ? emp.archive_reason : emp.external_assignment_center,
-      ]
-        .filter(Boolean)
-        .map(v => String(v).toLowerCase())
-        .join(' | ');
-      return hay.includes(q);
-    };
+    const activeScored = activeEmployees
+      .map(e => ({ emp: e, score: matchScore(e, q), kind: e.is_externally_assigned ? 'assigned' : 'active' }))
+      .filter(x => x.score > 0);
 
-    const activeMatches = activeEmployees
-      .filter(e => test(e, false))
-      .map(e => ({
-        ...e,
-        _statusKind: e.is_externally_assigned ? 'assigned' : 'active',
-      }));
+    const archivedScored = archived
+      .map(e => ({ emp: e, score: matchScore(e, q), kind: e.archive_type || 'archived', profileId: e.original_employee_id }))
+      .filter(x => x.score > 0);
 
-    const archivedMatches = archived
-      .filter(e => test(e, true))
-      .map(e => ({
-        ...e,
-        _statusKind: e.archive_type || 'archived',
-        // نستخدم original_employee_id لفتح الملف إن وجد
-        _profileId: e.original_employee_id,
-      }));
+    const all = [...activeScored, ...archivedScored].sort((a, b) => {
+      if (a.score !== b.score) return a.score - b.score;
+      const na = (a.emp.full_name_arabic || '').localeCompare(b.emp.full_name_arabic || '', 'ar');
+      return na;
+    });
 
-    return [...activeMatches, ...archivedMatches];
+    return all.map(x => ({ ...x.emp, _statusKind: x.kind, _profileId: x.profileId }));
   }, [query, activeEmployees, archived]);
 
   const renderStatusBadge = (kind) => {
