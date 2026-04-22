@@ -35,10 +35,19 @@ const LABELS = {
   is_externally_assigned: "مكلف خارجياً",
   external_assignment_center: "المركز المكلف به خارجياً",
   external_assignment_end_date: "نهاية التكليف الخارجي",
+  __employee_status: "حالة الموظف",
 };
+
+function computeEmployeeStatus(employee) {
+  if (!employee) return "نشط";
+  if (employee.is_externally_assigned) return "مكلف";
+  return "نشط";
+}
 
 function toEntries(employee) {
   const list = Object.entries(employee || {}).filter(([k]) => !HIDDEN_KEYS.has(k));
+  // أضف حقل "حالة الموظف" المحسوب ليكون متاحاً للتحديد في التصدير
+  list.unshift(["__employee_status", computeEmployeeStatus(employee)]);
   return list;
 }
 
@@ -100,7 +109,7 @@ export default function EmployeeProfileCustomExport({ employee }) {
   const [customSubtitle, setCustomSubtitle] = useState("");
 
   const defaultKeys = useMemo(() => {
-    const basic = ["full_name_arabic","رقم_الموظف","gender","nationality","birth_date","position","المركز_الصحي","contract_type","hire_date","email","phone"];
+    const basic = ["full_name_arabic","رقم_الموظف","__employee_status","gender","nationality","birth_date","position","المركز_الصحي","contract_type","hire_date","email","phone"];
     const available = new Set(allEntries.map(([k]) => k));
     return basic.filter(k => available.has(k));
   }, [allEntries]);

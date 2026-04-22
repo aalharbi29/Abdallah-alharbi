@@ -6,7 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
-import { ArrowRight, User, FileText, Calendar, Briefcase, Plus, AlertCircle, RefreshCw, FileClock, Save, MessageCircle, Printer, Edit, Shield, CreditCard, Sparkles } from 'lucide-react';
+import { ArrowRight, User, FileText, Calendar, Briefcase, Plus, AlertCircle, RefreshCw, FileClock, Save, MessageCircle, Printer, Edit, Shield, CreditCard, Sparkles, ArrowRightLeft } from 'lucide-react';
+import EmployeeStatusBadge from "@/components/employees/EmployeeStatusBadge";
+import MoveEmployeeDialog from "@/components/employees/MoveEmployeeDialog";
 import { createPageUrl } from '@/utils';
 import { format } from 'date-fns';
 import { ar } from 'date-fns/locale';
@@ -58,6 +60,7 @@ export default function EmployeeProfile() {
   const [healthCenters, setHealthCenters] = useState([]);
   const [employeeRoles, setEmployeeRoles] = useState([]);
   const [showIDCard, setShowIDCard] = useState(false);
+  const [showMoveDialog, setShowMoveDialog] = useState(false);
 
   // دالة مساعدة للإعادة مع تأخير متزايد
   const retryWithDelay = async (fn, maxRetries = 3, baseDelay = 1000) => {
@@ -458,6 +461,14 @@ export default function EmployeeProfile() {
               </Button>
               <EmployeeProfileExporter employee={employee} />
               <EmployeeProfileCustomExport employee={employee} />
+              <Button
+                variant="ghost"
+                onClick={() => setShowMoveDialog(true)}
+                className="text-white hover:bg-white/20 rounded-xl justify-center h-9 px-3 text-sm"
+              >
+                <ArrowRightLeft className="w-4 h-4 ml-1" />
+                <span>نقل إلى...</span>
+              </Button>
               <Button 
                 variant="ghost" 
                 onClick={() => window.print()}
@@ -495,6 +506,16 @@ export default function EmployeeProfile() {
             </div>
           </motion.div>
           
+          {/* Employee Status Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="mt-3 flex justify-center md:justify-start"
+          >
+            <EmployeeStatusBadge employee={employee} size="lg" />
+          </motion.div>
+
           {/* Employee Roles */}
           {employeeRoles.length > 0 && (
             <motion.div
@@ -826,6 +847,19 @@ export default function EmployeeProfile() {
 
         {showIDCard && (
           <EmployeeIDCard employee={employee} onClose={() => setShowIDCard(false)} />
+        )}
+
+        {showMoveDialog && (
+          <MoveEmployeeDialog
+            employee={employee}
+            open={showMoveDialog}
+            onClose={() => setShowMoveDialog(false)}
+            onSuccess={() => {
+              setShowMoveDialog(false);
+              // إذا تم الأرشفة، الموظف لم يعد موجوداً؛ نعود للقائمة
+              navigate(createPageUrl('HumanResources'));
+            }}
+          />
         )}
       </div>
     </div>

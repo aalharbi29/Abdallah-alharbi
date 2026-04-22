@@ -30,7 +30,16 @@ const pageUrl = (pageName) => {
 export const getNavigationItems = (t) => [
   { name: "صفحة الأوامر", href: pageUrl("SmartCommands"), icon: Edit },
   { name: t('nav.dashboard'), href: pageUrl("Dashboard"), icon: Home },
-  { name: t('nav.humanResources'), href: pageUrl("HumanResources"), icon: Users },
+  {
+    name: t('nav.humanResources'),
+    icon: Users,
+    subItems: [
+      { name: "جميع الموظفين", href: pageUrl("HumanResources"), icon: Users },
+      { name: "الموظفون المكلفون", href: pageUrl("AssignedEmployees"), icon: Briefcase },
+      { name: "الموظفون المتقاعدون", href: pageUrl("RetiredEmployees"), icon: Archive },
+      { name: "الموظفون المستقيلون", href: pageUrl("ResignedEmployees"), icon: Archive },
+    ]
+  },
   { name: t('nav.hrAnalytics'), href: pageUrl("HRAnalytics"), icon: BarChart3 },
   { name: t('nav.healthCenters'), href: pageUrl("HealthCenters"), icon: Building2 },
   { name: "خريطة المراكز الصحية", href: pageUrl("HealthCentersMap"), icon: MapPinned },

@@ -1,10 +1,11 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Calendar, Plus, PlayCircle, Edit, Phone, Mail } from "lucide-react";
+import { Calendar, Plus, PlayCircle, Edit, Phone, Mail, ArrowRightLeft } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import EmployeeStatusBadge from "@/components/employees/EmployeeStatusBadge";
+import MoveEmployeeDialog from "@/components/employees/MoveEmployeeDialog";
 
 const roleLabels = {
     manager: "مدير مركز",
@@ -25,11 +26,13 @@ const EmployeeListForCenter = ({
     onAddLeave, 
     onMubashara, 
     onAddAssignment, 
-    onEdit
+    onEdit,
+    onRefresh
 }) => {
 
     const safeEmployees = Array.isArray(employees) ? employees : [];
     const safeLeaves = Array.isArray(leaves) ? leaves : [];
+    const [moveTarget, setMoveTarget] = useState(null);
 
     const isEmployeeOnLeave = (employeeId) => {
         if (!employeeId) return false;
@@ -101,9 +104,7 @@ const EmployeeListForCenter = ({
                                         )}
                                     </TableCell>
                                     <TableCell>
-                                        <Badge className={employee.status === 'نشط' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}>
-                                            {employee.status || "غير محدد"}
-                                        </Badge>
+                                        <EmployeeStatusBadge employee={employee} />
                                         {onLeave && (
                                             <Badge className="bg-red-500 text-white animate-pulse mt-1 block w-fit">
                                                 في إجازة
@@ -165,6 +166,18 @@ const EmployeeListForCenter = ({
                                                     <TooltipContent><p>مباشرة من الإجازة</p></TooltipContent>
                                                 </Tooltip>
                                             )}
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        onClick={() => setMoveTarget(employee)}
+                                                    >
+                                                        <ArrowRightLeft className="h-4 w-4 text-indigo-600" />
+                                                    </Button>
+                                                </TooltipTrigger>
+                                                <TooltipContent><p>نقل إلى (تكليف / تقاعد / استقالة / نقل)</p></TooltipContent>
+                                            </Tooltip>
                                         </div>
                                     </TableCell>
                                 </TableRow>
@@ -173,6 +186,14 @@ const EmployeeListForCenter = ({
                     </TableBody>
                 </Table>
             </div>
+            {moveTarget && (
+                <MoveEmployeeDialog
+                    employee={moveTarget}
+                    open={!!moveTarget}
+                    onClose={() => setMoveTarget(null)}
+                    onSuccess={() => { setMoveTarget(null); onRefresh && onRefresh(); }}
+                />
+            )}
         </TooltipProvider>
     );
 };

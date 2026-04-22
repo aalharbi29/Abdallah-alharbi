@@ -20,6 +20,9 @@ import HealthCentersMap from './pages/HealthCentersMap';
 import HealthCenterMapDetails from './pages/HealthCenterMapDetails';
 import HealthCenterMap3D from './pages/HealthCenterMap3D';
 import SmartCommands from './pages/SmartCommands';
+import RetiredEmployees from './pages/RetiredEmployees';
+import ResignedEmployees from './pages/ResignedEmployees';
+import AssignedEmployees from './pages/AssignedEmployees';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -114,6 +117,21 @@ const AuthenticatedApp = () => {
       <Route path="/SmartCommands" element={
         <LayoutWrapper currentPageName="SmartCommands">
           <SmartCommands />
+        </LayoutWrapper>
+      } />
+      <Route path="/RetiredEmployees" element={
+        <LayoutWrapper currentPageName="RetiredEmployees">
+          <RetiredEmployees />
+        </LayoutWrapper>
+      } />
+      <Route path="/ResignedEmployees" element={
+        <LayoutWrapper currentPageName="ResignedEmployees">
+          <ResignedEmployees />
+        </LayoutWrapper>
+      } />
+      <Route path="/AssignedEmployees" element={
+        <LayoutWrapper currentPageName="AssignedEmployees">
+          <AssignedEmployees />
         </LayoutWrapper>
       } />
       <Route path="*" element={<PageNotFound />} />
