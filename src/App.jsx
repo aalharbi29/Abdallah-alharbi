@@ -23,6 +23,7 @@ import SmartCommands from './pages/SmartCommands';
 import RetiredEmployees from './pages/RetiredEmployees';
 import ResignedEmployees from './pages/ResignedEmployees';
 import AssignedEmployees from './pages/AssignedEmployees';
+import ActiveEmployees from './pages/ActiveEmployees';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -132,6 +133,11 @@ const AuthenticatedApp = () => {
       <Route path="/AssignedEmployees" element={
         <LayoutWrapper currentPageName="AssignedEmployees">
           <AssignedEmployees />
+        </LayoutWrapper>
+      } />
+      <Route path="/ActiveEmployees" element={
+        <LayoutWrapper currentPageName="ActiveEmployees">
+          <ActiveEmployees />
         </LayoutWrapper>
       } />
       <Route path="*" element={<PageNotFound />} />
