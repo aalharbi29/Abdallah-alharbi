@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Trash2, Calendar, Briefcase, Award, Eye, Pin, MessageCircle, CheckSquare, User, Sparkles, Phone, IdCard, CakeIcon, CalendarCheck, Building2, LayoutGrid, RotateCcw, Lock, Unlock } from "lucide-react";
+import { Edit, Trash2, Calendar, Briefcase, Award, Eye, Pin, MessageCircle, CheckSquare, User, Sparkles, Phone, IdCard, CakeIcon, CalendarCheck, Building2, LayoutGrid, RotateCcw, Lock, Unlock, ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import MobileEmployeeCard from "./MobileEmployeeCard";
+
+const PAGE_SIZE = 24;
 
 export default function EmployeeList({
   employees,
@@ -96,6 +98,40 @@ export default function EmployeeList({
     return [...new Set(roles)];
   };
 
+  // Pagination: صفحات لتقليل الرسم الثقيل
+  const [currentPage, setCurrentPage] = useState(1);
+  const employeesCount = employees?.length || 0;
+  const totalPages = Math.max(1, Math.ceil(employeesCount / PAGE_SIZE));
+
+  // إعادة للصفحة الأولى عند تغيّر عدد النتائج (مثل تغيير الفلتر)
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [employeesCount]);
+
+  const pageEmployees = useMemo(
+    () => (employees || []).slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [employees, currentPage]
+  );
+
+  // فهرس التكاليف حسب الموظف لتفادي تكرار filter لكل بطاقة
+  const assignmentsByEmployee = useMemo(() => {
+    const map = new Map();
+    if (!Array.isArray(assignments)) return map;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    assignments.forEach((a) => {
+      if (!a?.employee_record_id || !a.holiday_name || a.status === 'cancelled') return;
+      const s = new Date(a.start_date); s.setHours(0,0,0,0);
+      const e = new Date(a.end_date); e.setHours(23,59,59,999);
+      if (today >= s && today <= e) {
+        const arr = map.get(a.employee_record_id) || [];
+        arr.push(a);
+        map.set(a.employee_record_id, arr);
+      }
+    });
+    return map;
+  }, [assignments]);
+
   if (!employees || employees.length === 0) {
     return (
       <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.3 }}>
@@ -112,59 +148,42 @@ export default function EmployeeList({
     );
   }
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.08 }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 30, scale: 0.95 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 15
-      }
-    }
-  };
-
   return (
-    <motion.div className="overflow-x-hidden" variants={containerVariants} initial="hidden" animate="visible">
-      <div className="flex justify-end gap-2 mb-4">
-        <Button variant="outline" size="sm" onClick={() => setIsEditingLayout(!isEditingLayout)} className="bg-white/10 text-white border-white/20 hover:bg-white/20">
-          {isEditingLayout ? <Lock className="w-4 h-4 ml-2" /> : <Unlock className="w-4 h-4 ml-2" />}
-          {isEditingLayout ? 'إنهاء التعديل الحر' : 'تعديل حر للبطاقة'}
-        </Button>
-        {isEditingLayout && (
-          <Button variant="destructive" size="sm" onClick={resetLayout}>
-            <RotateCcw className="w-4 h-4 ml-2" />
-            إعادة ضبط
+    <div className="overflow-x-hidden">
+      <div className="flex flex-wrap justify-between items-center gap-2 mb-4">
+        <div className="text-white/70 text-xs md:text-sm">
+          عرض <span className="font-bold text-white">{(currentPage - 1) * PAGE_SIZE + 1}</span>
+          {' - '}
+          <span className="font-bold text-white">{Math.min(currentPage * PAGE_SIZE, employees.length)}</span>
+          {' من '}
+          <span className="font-bold text-white">{employees.length}</span>
+        </div>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => setIsEditingLayout(!isEditingLayout)} className="bg-white/10 text-white border-white/20 hover:bg-white/20">
+            {isEditingLayout ? <Lock className="w-4 h-4 ml-2" /> : <Unlock className="w-4 h-4 ml-2" />}
+            {isEditingLayout ? 'إنهاء التعديل الحر' : 'تعديل حر للبطاقة'}
           </Button>
-        )}
+          {isEditingLayout && (
+            <Button variant="destructive" size="sm" onClick={resetLayout}>
+              <RotateCcw className="w-4 h-4 ml-2" />
+              إعادة ضبط
+            </Button>
+          )}
+        </div>
       </div>
-      <AnimatePresence mode="popLayout">
+      <div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
-          {employees.map((employee) => {
+          {pageEmployees.map((employee) => {
             if (!employee || !employee.id) return null;
 
             const isPinned = pinnedEmployees.has(employee.id);
             const isSelected = selectedEmployees.has(employee.id);
-            const activeHolidayAssignments = getEmployeeActiveHolidayAssignments(employee.id);
+            const activeHolidayAssignments = assignmentsByEmployee.get(employee.id) || [];
             const employeeRoles = getEmployeeRoles(employee);
 
             return (
-              <motion.div
+              <div
                 key={employee.id}
-                variants={itemVariants}
-                layout
-                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-                whileHover={{ scale: 1.01, transition: { duration: 0.2 } }}
                 className="group"
               >
                 <div className="block md:hidden">
@@ -321,7 +340,7 @@ export default function EmployeeList({
                   </Card>
                 </div>
 
-                <div className="hidden lg:block h-full">
+                <div className="hidden lg:block h-full lg:content-visibility-auto">
                   <Card
                     className={`relative h-full w-full max-w-full overflow-hidden bg-gradient-to-br from-slate-800/90 via-slate-800/80 to-indigo-900/60 backdrop-blur-2xl border transition-all duration-500 shadow-xl md:shadow-2xl hover:shadow-indigo-500/20 ${
                       isPinned
@@ -655,11 +674,37 @@ export default function EmployeeList({
                     </CardContent>
                   </Card>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>
-      </AnimatePresence>
-    </motion.div>
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 mt-6 flex-wrap">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+              className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+            >
+              <ChevronRight className="w-4 h-4 ml-1" /> السابق
+            </Button>
+            <div className="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-bold border border-white/20">
+              {currentPage} / {totalPages}
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+              className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+            >
+              التالي <ChevronLeft className="w-4 h-4 mr-1" />
+            </Button>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
