@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle, Target, Stethoscope, ShieldCheck, Droplets } from 'lucide-react';
+import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle, Target, Stethoscope, ShieldCheck, Droplets, FileCheck2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 
@@ -125,6 +125,14 @@ const interactiveForms = [
     color: "from-cyan-500 to-blue-600",
     link: createPageUrl("FillWaterSamplesForm"),
     category: "الصحة العامة"
+  },
+  {
+    title: "محضر التحقق من الأصول (نموذج 5)",
+    description: "نموذج محضر التحقق من الأصول — تعبئة تلقائية من النظام بالمرفق والفريق",
+    icon: FileCheck2,
+    color: "from-emerald-600 to-green-700",
+    link: createPageUrl("FillAssetVerificationForm"),
+    category: "الأصول والجرد"
   }
 ];
 

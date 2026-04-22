@@ -24,6 +24,7 @@ import RetiredEmployees from './pages/RetiredEmployees';
 import ResignedEmployees from './pages/ResignedEmployees';
 import AssignedEmployees from './pages/AssignedEmployees';
 import ActiveEmployees from './pages/ActiveEmployees';
+import FillAssetVerificationForm from './pages/FillAssetVerificationForm';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -138,6 +139,11 @@ const AuthenticatedApp = () => {
       <Route path="/ActiveEmployees" element={
         <LayoutWrapper currentPageName="ActiveEmployees">
           <ActiveEmployees />
+        </LayoutWrapper>
+      } />
+      <Route path="/FillAssetVerificationForm" element={
+        <LayoutWrapper currentPageName="FillAssetVerificationForm">
+          <FillAssetVerificationForm />
         </LayoutWrapper>
       } />
       <Route path="*" element={<PageNotFound />} />
