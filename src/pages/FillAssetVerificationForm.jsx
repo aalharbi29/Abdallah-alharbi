@@ -130,18 +130,18 @@ export default function FillAssetVerificationForm() {
         {/* المستند - طبق الأصل */}
         <Card className="border-2 border-gray-200 shadow-xl print:shadow-none print:border-0" ref={printRef}>
           <CardContent className="p-6 md:p-10 print:p-8 bg-white" dir="rtl">
-            {/* الترويسة — شعار الصحة القابضة على اليمين */}
-            <div className="flex justify-end pb-2 border-b-2 border-[#0099d8]">
+            {/* الترويسة — شعار الصحة القابضة على اليسار */}
+            <div className="flex justify-start pb-1 border-b-2 border-[#0099d8]">
               <img
                 src={HEALTH_HOLDING_LOGO}
                 alt="الصحة القابضة"
-                className="h-14 md:h-16 object-contain"
+                className="h-20 md:h-24 object-contain"
                 crossOrigin="anonymous"
               />
             </div>
 
             {/* عنوان المشروع */}
-            <div className="text-center mt-5">
+            <div className="text-center mt-2">
               <p className="text-sm font-bold text-[#0099d8]">(مشروع التحقق ومراجعة سجلات الأصول بالتجمعات الصحية)</p>
               <h2 className="mt-3 text-lg md:text-xl font-extrabold text-gray-900">نموذج رقم (5) — نموذج محضر التحقق من الأصول</h2>
             </div>
