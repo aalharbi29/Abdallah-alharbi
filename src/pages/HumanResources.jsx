@@ -4,7 +4,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 
 import { Button } from "@/components/ui/button";
-import { WifiOff, RefreshCw } from "lucide-react";
+import { WifiOff, RefreshCw, Search, Users, Sparkles } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -20,6 +21,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 
 import HumanResourcesDialogs from "@/components/hr/HumanResourcesDialogs";
+import HRWelcomeSearchPanel from "@/components/hr/HRWelcomeSearchPanel";
 
 
 
@@ -62,6 +64,7 @@ export default function HumanResources() {
   const [showBulkWhatsAppDialog, setShowBulkWhatsAppDialog] = useState(false); // جديد
 
   const [pinnedEmployees, setPinnedEmployees] = useState(new Set());
+  const [showAllEmployees, setShowAllEmployees] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -195,12 +198,17 @@ export default function HumanResources() {
       const query = searchQuery.toLowerCase();
       result = result.filter(emp =>
         emp.full_name_arabic?.toLowerCase().includes(query) ||
+        emp.full_name_english?.toLowerCase().includes(query) ||
         emp.رقم_الموظف?.includes(query) ||
         emp.رقم_الهوية?.includes(query) ||
         emp.phone?.includes(query) ||
         emp.email?.toLowerCase().includes(query) ||
         emp.position?.toLowerCase().includes(query) ||
-        emp.المركز_الصحي?.toLowerCase().includes(query)
+        emp.department?.toLowerCase().includes(query) ||
+        emp.المركز_الصحي?.toLowerCase().includes(query) ||
+        emp.nationality?.toLowerCase().includes(query) ||
+        emp.qualification?.toLowerCase().includes(query) ||
+        emp.contract_type?.toLowerCase().includes(query)
       );
     }
 
@@ -458,51 +466,78 @@ export default function HumanResources() {
           selectedCount={selectedEmployees.size}
         />
 
-        <HumanResourcesToolbar
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          selectedCount={selectedEmployees.size}
-          exportEmployees={exportEmployees}
-          onOpenWhatsApp={() => setShowBulkWhatsAppDialog(true)}
-          onOpenBulkAssignment={() => setShowBulkAssignmentDialog(true)}
-          onClearSelection={() => setSelectedEmployees(new Set())}
-          onPrint={() => window.print()}
-        />
-
-        {/* Filters */}
-        <EmployeeFilters
-          employees={employees}
-          filters={filters}
-          onFiltersChange={setFilters}
-          healthCenters={healthCenters}
-          departments={departments}
-          assignments={assignments}
-        />
-
-        {/* Employee List */}
-        <EmployeeList
-          employees={filteredEmployees}
-          assignments={assignments}
-          healthCenters={healthCenters}
-          onEdit={handleEditEmployee}
-          onDelete={handleDeleteEmployee}
-          onAddLeave={handleAddLeave}
-          onAddAssignment={handleAddAssignment}
-          onAddHolidayAssignment={handleAddHolidayAssignment}
-          pinnedEmployees={pinnedEmployees}
-          onPinEmployee={handlePinEmployee}
-          selectedEmployees={selectedEmployees}
-          onToggleSelection={handleToggleEmployeeSelection}
-        />
-
-        {filteredEmployees.length === 0 && !isLoading && (
-          <HumanResourcesEmptyState
-            hasFilters={!!searchQuery || Object.values(filters).some(f => f.length > 0)}
-            onClear={(emptyFilters) => {
-              setSearchQuery('');
-              setFilters(emptyFilters);
-            }}
+        {/* لوحة البحث الترحيبية: تظهر إذا لم يُطلب استعراض الكل ولا يوجد بحث */}
+        {!showAllEmployees && !searchQuery ? (
+          <HRWelcomeSearchPanel
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            onShowAll={() => setShowAllEmployees(true)}
+            totalEmployees={employees.length}
           />
+        ) : (
+          <>
+            <HumanResourcesToolbar
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              selectedCount={selectedEmployees.size}
+              exportEmployees={exportEmployees}
+              onOpenWhatsApp={() => setShowBulkWhatsAppDialog(true)}
+              onOpenBulkAssignment={() => setShowBulkAssignmentDialog(true)}
+              onClearSelection={() => setSelectedEmployees(new Set())}
+              onPrint={() => window.print()}
+            />
+
+            {/* زر العودة إلى لوحة البحث */}
+            {showAllEmployees && !searchQuery && (
+              <div className="flex justify-end">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowAllEmployees(false)}
+                  className="text-white hover:bg-white/10 gap-2"
+                >
+                  <Search className="w-4 h-4" />
+                  العودة إلى شاشة البحث
+                </Button>
+              </div>
+            )}
+
+            {/* Filters */}
+            <EmployeeFilters
+              employees={employees}
+              filters={filters}
+              onFiltersChange={setFilters}
+              healthCenters={healthCenters}
+              departments={departments}
+              assignments={assignments}
+            />
+
+            {/* Employee List */}
+            <EmployeeList
+              employees={filteredEmployees}
+              assignments={assignments}
+              healthCenters={healthCenters}
+              onEdit={handleEditEmployee}
+              onDelete={handleDeleteEmployee}
+              onAddLeave={handleAddLeave}
+              onAddAssignment={handleAddAssignment}
+              onAddHolidayAssignment={handleAddHolidayAssignment}
+              pinnedEmployees={pinnedEmployees}
+              onPinEmployee={handlePinEmployee}
+              selectedEmployees={selectedEmployees}
+              onToggleSelection={handleToggleEmployeeSelection}
+            />
+
+            {filteredEmployees.length === 0 && !isLoading && (
+              <HumanResourcesEmptyState
+                hasFilters={!!searchQuery || Object.values(filters).some(f => f.length > 0)}
+                onClear={(emptyFilters) => {
+                  setSearchQuery('');
+                  setFilters(emptyFilters);
+                }}
+              />
+            )}
+          </>
         )}
       </div>
 
