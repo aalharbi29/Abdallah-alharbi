@@ -130,12 +130,12 @@ export default function FillAssetVerificationForm() {
         {/* المستند - طبق الأصل */}
         <Card className="border-2 border-gray-200 shadow-xl print:shadow-none print:border-0" ref={printRef}>
           <CardContent className="p-6 md:p-10 print:p-8 bg-white" dir="rtl">
-            {/* الترويسة — شعار الصحة القابضة فقط */}
-            <div className="flex justify-center pb-4 border-b-2 border-[#0099d8]">
+            {/* الترويسة — شعار الصحة القابضة على اليمين */}
+            <div className="flex justify-end pb-2 border-b-2 border-[#0099d8]">
               <img
                 src={HEALTH_HOLDING_LOGO}
                 alt="الصحة القابضة"
-                className="h-24 md:h-28 object-contain"
+                className="h-14 md:h-16 object-contain"
                 crossOrigin="anonymous"
               />
             </div>
