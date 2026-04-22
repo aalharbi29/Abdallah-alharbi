@@ -175,32 +175,46 @@ export default function FillAssetVerificationForm() {
             {/* قسم: نموذج محضر الجرد */}
             <SectionTitle>نموذج محضر الجرد</SectionTitle>
 
-            {/* المواقع التي تم التحقق منها + الملاحظات المرتبطة (جدول مترابط) */}
-            <SubHeader>المواقع التي تم التحقق منها والملاحظات المرتبطة</SubHeader>
-            <table className="w-full border border-gray-800 border-collapse text-sm">
+            {/* المواقع التي تم التحقق منها */}
+            <SubHeader>المواقع التي تم التحقق منها</SubHeader>
+            <table className="w-full border border-gray-800 border-collapse text-sm border-b-0">
               <thead>
                 <tr className="bg-[#0099d8] text-white">
-                  <Th className="w-[40%]">الموقع الذي تم التحقق منه</Th>
-                  <Th className="w-[20%]">التاريخ</Th>
-                  <Th>الملاحظات المرتبطة بعملية التحقق</Th>
+                  <Th className="w-[70%]">الموقع الذي تم التحقق منه</Th>
+                  <Th>التاريخ</Th>
                 </tr>
               </thead>
               <tbody>
                 {form.locations.map((loc, i) => (
                   <tr key={i} className="hover:bg-sky-50/40">
                     <Td>
-                      <Input value={loc.name} onChange={e => updateLocation(i, 'name', e.target.value)} className="border-0 shadow-none h-8 text-sm" />
-                    </Td>
-                    <Td>
-                      <Input type="date" value={loc.date} onChange={e => updateLocation(i, 'date', e.target.value)} className="border-0 shadow-none h-8 text-sm" />
-                    </Td>
-                    <Td>
                       <div className="flex items-center gap-1">
-                        <Input value={loc.notes} onChange={e => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-8 text-sm" placeholder="اكتب الملاحظات المرتبطة بهذا الموقع..." />
+                        <Input value={loc.name} onChange={e => updateLocation(i, 'name', e.target.value)} className="border-0 shadow-none h-8 text-sm" />
                         <Button type="button" size="icon" variant="ghost" onClick={() => removeLocation(i)} className="h-7 w-7 print:hidden text-red-500">
                           <Trash2 className="w-3.5 h-3.5" />
                         </Button>
                       </div>
+                    </Td>
+                    <Td>
+                      <Input type="date" value={loc.date} onChange={e => updateLocation(i, 'date', e.target.value)} className="border-0 shadow-none h-8 text-sm" />
+                    </Td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* الملاحظات المرتبطة بعملية التحقق - جدول منفصل ملتصق بالجدول السابق */}
+            <table className="w-full border border-gray-800 border-collapse text-sm">
+              <thead>
+                <tr className="bg-[#0099d8] text-white">
+                  <Th>الملاحظات المرتبطة بعمليات التحقق من الأصول</Th>
+                </tr>
+              </thead>
+              <tbody>
+                {form.locations.map((loc, i) => (
+                  <tr key={i} className="hover:bg-sky-50/40">
+                    <Td>
+                      <Input value={loc.notes} onChange={e => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-8 text-sm" placeholder={`ملاحظات الموقع ${i + 1}...`} />
                     </Td>
                   </tr>
                 ))}
