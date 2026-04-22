@@ -152,7 +152,7 @@ export default function FillAssetVerificationForm() {
               <tbody>
                 <InfoRow label="اسم المرفق الصحي :">
                   <Select value={form.facility_name} onValueChange={handleFacilitySelect}>
-                    <SelectTrigger className="border-0 shadow-none h-8 text-sm print:hidden">
+                    <SelectTrigger className="border-0 shadow-none h-8 text-sm print:hidden justify-center text-center">
                       <SelectValue placeholder="اختر المركز..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -164,10 +164,10 @@ export default function FillAssetVerificationForm() {
                   <span className="hidden print:inline text-sm">{form.facility_name}</span>
                 </InfoRow>
                 <InfoRow label="اسم التجمع الصحي :">
-                  <Input value={form.cluster_name} onChange={e => updateField('cluster_name', e.target.value)} className="border-0 shadow-none h-8 text-sm" />
+                  <Input value={form.cluster_name} onChange={e => updateField('cluster_name', e.target.value)} className="border-0 shadow-none h-8 text-sm text-center" />
                 </InfoRow>
                 <InfoRow label="المدينة / المنطقة (مكان التواجد):">
-                  <Input value={form.city_region} onChange={e => updateField('city_region', e.target.value)} className="border-0 shadow-none h-8 text-sm" />
+                  <Input value={form.city_region} onChange={e => updateField('city_region', e.target.value)} className="border-0 shadow-none h-8 text-sm text-center" />
                 </InfoRow>
               </tbody>
             </table>
@@ -177,7 +177,7 @@ export default function FillAssetVerificationForm() {
 
             {/* المواقع التي تم التحقق منها */}
             <SubHeader>المواقع التي تم التحقق منها</SubHeader>
-            <table className="w-full border border-gray-800 border-collapse text-sm border-b-0">
+            <table className="w-full border border-gray-800 border-collapse text-sm">
               <thead>
                 <tr className="bg-[#0099d8] text-white">
                   <Th className="w-[70%]">الموقع الذي تم التحقق منه</Th>
@@ -202,30 +202,12 @@ export default function FillAssetVerificationForm() {
                 ))}
               </tbody>
             </table>
-
-            {/* الملاحظات المرتبطة بعملية التحقق - جدول منفصل ملتصق بالجدول السابق */}
-            <table className="w-full border border-gray-800 border-collapse text-sm">
-              <thead>
-                <tr className="bg-[#0099d8] text-white">
-                  <Th>الملاحظات المرتبطة بعمليات التحقق من الأصول</Th>
-                </tr>
-              </thead>
-              <tbody>
-                {form.locations.map((loc, i) => (
-                  <tr key={i} className="hover:bg-sky-50/40">
-                    <Td>
-                      <Input value={loc.notes} onChange={e => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-8 text-sm" placeholder={`ملاحظات الموقع ${i + 1}...`} />
-                    </Td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
             <Button type="button" variant="outline" size="sm" onClick={addLocation} className="mt-2 print:hidden">
               <Plus className="w-3.5 h-3.5 ml-1" />إضافة موقع
             </Button>
 
-            {/* الأصول التي تم التحقق منها */}
-            <SubHeader className="mt-6">الأصول التي تم التحقق منها</SubHeader>
+            {/* الأصول التي تم التحقق منها - ملاصقة للمواقع بدون فاصل */}
+            <SubHeader>الأصول التي تم التحقق منها</SubHeader>
             <table className="w-full border border-gray-800 border-collapse text-sm">
               <thead>
                 <tr className="bg-[#0099d8] text-white">
@@ -257,7 +239,7 @@ export default function FillAssetVerificationForm() {
 
             {/* فريق التحقق */}
             <SubHeader className="mt-6">فريق التحقق من الأصول</SubHeader>
-            <table className="w-full border border-gray-800 border-collapse text-sm">
+            <table className="w-full border border-gray-800 border-collapse text-sm border-b-0">
               <thead>
                 <tr className="bg-[#0099d8] text-white">
                   <Th>الاسم</Th>
@@ -281,6 +263,25 @@ export default function FillAssetVerificationForm() {
                           <Trash2 className="w-3.5 h-3.5" />
                         </Button>
                       </div>
+                    </Td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+
+            {/* الملاحظات المرتبطة - ملاصقة لجدول فريق التحقق */}
+            <table className="w-full border border-gray-800 border-collapse text-sm">
+              <thead>
+                <tr className="bg-[#0099d8] text-white">
+                  <Th>الملاحظات المرتبطة بعمليات التحقق من الأصول</Th>
+                </tr>
+              </thead>
+              <tbody>
+                {form.locations.map((loc, i) => (
+                  <tr key={i} className="hover:bg-sky-50/40">
+                    <Td>
+                      <Input value={loc.notes} onChange={e => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-8 text-sm" placeholder={`ملاحظات الموقع ${i + 1}...`} />
                     </Td>
                   </tr>
                 ))}
@@ -369,7 +370,7 @@ function InfoRow({ label, children }) {
   return (
     <tr className="border border-gray-800">
       <td className="border border-gray-800 bg-gray-50 p-2 font-bold w-[35%] text-sm align-middle">{label}</td>
-      <td className="border border-gray-800 p-1 align-middle">{children}</td>
+      <td className="border border-gray-800 p-1 align-middle text-center">{children}</td>
     </tr>
   );
 }
