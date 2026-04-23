@@ -254,13 +254,16 @@ export const generateReportHtml = ({
         let className = 'narrative-body';
         if (isGreeting) className = 'narrative-greeting';
         if (isBold) className = 'narrative-bold';
-        
+
         const lineKey = `${pi}_${i}`;
         const customStyle = lineStyles[lineKey] || {};
         const textAlign = customStyle.textAlign || 'right';
         const paddingRight = customStyle.indent ? `${customStyle.indent}px` : '0';
-        const marginBottom = customStyle.spacing ? `${customStyle.spacing}px` : '0';
-        
+        // زيادة المسافة السفلية بعد سطر "السلام عليكم" تلقائياً
+        const isSalamLine = line.includes('السلام عليكم');
+        const defaultSpacing = isSalamLine ? 22 : 0;
+        const marginBottom = customStyle.spacing ? `${customStyle.spacing}px` : `${defaultSpacing}px`;
+
         return `<div style="text-align: ${textAlign}; padding-right: ${paddingRight}; margin-bottom: ${marginBottom};"><span class="${className}">${line}</span></div>`;
       });
       return `<div class="paragraph">${processedLines.join('\n')}</div>`;

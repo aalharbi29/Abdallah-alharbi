@@ -29,6 +29,7 @@ import useLogoSettings from '@/components/settings/useLogoSettings';
 import ReportPreviewDialog from '@/components/employee_data/ReportPreviewDialog';
 import AITextEnhancer from '@/components/employee_data/AITextEnhancer';
 import AIAutoGenerate from '@/components/employee_data/AIAutoGenerate';
+import TemplatesManager from '@/components/employee_data/TemplatesManager';
 import EmployeeMultiSelect from '@/components/employee_data/EmployeeMultiSelect';
 import FontSettings from '@/components/employee_data/FontSettings';
 import HijriDatePicker from '@/components/ui/HijriDatePicker';
@@ -1488,18 +1489,66 @@ export default function EmployeeDataRequest() {
                 )}
               </div>
 
-              {/* حفظ / تحميل النموذج */}
-              <div className="flex flex-wrap gap-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
-                <Button size="sm" variant="outline" onClick={saveDefaultTemplate} className="gap-1">
-                  <Save className="w-4 h-4" /> حفظ كنموذج افتراضي
-                </Button>
-                <Button size="sm" variant="outline" onClick={loadDefaultTemplate} className="gap-1">
-                  <FolderOpen className="w-4 h-4" /> تحميل النموذج المحفوظ
-                </Button>
-                <Button size="sm" variant="destructive" onClick={resetDefaultTemplate} className="gap-1">
-                  <X className="w-4 h-4" /> تراجع ومسح الإعدادات
-                </Button>
-              </div>
+              {/* حفظ / تحميل عدة نماذج محفوظة */}
+              <TemplatesManager
+                buildCurrentTemplate={() => ({
+                  selected_employees_ids: selectedEmployees.map(e => e.id),
+                  employee_managers: employeeManagers,
+                  assignment_centers: assignmentCenters,
+                  report_title: reportTitle,
+                  report_narrative: reportNarrative,
+                  narrative_position: narrativePosition,
+                  selected_fields: selectedFields,
+                  display_mode: displayMode,
+                  logo_position: logoPosition,
+                  signature_position: signaturePosition,
+                  signer_name: signerName,
+                  signer_title: signerTitle,
+                  show_signature: showSignature,
+                  selected_signature_id: selectedSignatureId,
+                  split_pages: splitPages,
+                  font_settings: fontSettings,
+                  merge_workplace: mergeWorkplace,
+                  merge_workplace_orientation: mergeWorkplaceOrientation,
+                  merge_assignment: mergeAssignment,
+                  merge_assignment_orientation: mergeAssignmentOrientation,
+                  assignment_groups: assignmentGroups,
+                  line_styles: lineStyles,
+                  rows_per_first_page: rowsPerFirstPage,
+                  rows_per_next_page: rowsPerNextPage,
+                  page_break_after_rows: pageBreakAfterRows,
+                })}
+                applyTemplate={(t) => {
+                  if (t.selected_employees_ids && employees.length > 0) {
+                    const selected = employees.filter(e => t.selected_employees_ids.includes(e.id));
+                    setSelectedEmployees(selected);
+                  }
+                  if (t.employee_managers) setEmployeeManagers(t.employee_managers);
+                  if (t.assignment_centers) setAssignmentCenters(t.assignment_centers);
+                  if (t.report_title) setReportTitle(t.report_title);
+                  if (t.report_narrative) setReportNarrative(t.report_narrative);
+                  if (t.narrative_position) setNarrativePosition(t.narrative_position);
+                  if (t.selected_fields) setSelectedFields(t.selected_fields);
+                  if (t.display_mode) setDisplayMode(t.display_mode);
+                  if (t.logo_position) setLogoPosition(t.logo_position);
+                  if (t.signature_position) setSignaturePosition(t.signature_position);
+                  if (t.signer_name) setSignerName(t.signer_name);
+                  if (t.signer_title) setSignerTitle(t.signer_title);
+                  if (t.show_signature !== undefined) setShowSignature(t.show_signature);
+                  if (t.selected_signature_id) setSelectedSignatureId(t.selected_signature_id);
+                  if (t.split_pages !== undefined) setSplitPages(t.split_pages);
+                  if (t.font_settings) setFontSettings(t.font_settings);
+                  if (t.merge_workplace !== undefined) setMergeWorkplace(t.merge_workplace);
+                  if (t.merge_workplace_orientation) setMergeWorkplaceOrientation(t.merge_workplace_orientation);
+                  if (t.merge_assignment !== undefined) setMergeAssignment(t.merge_assignment);
+                  if (t.merge_assignment_orientation) setMergeAssignmentOrientation(t.merge_assignment_orientation);
+                  if (t.assignment_groups) setAssignmentGroups(t.assignment_groups);
+                  if (t.line_styles) setLineStyles(t.line_styles);
+                  if (t.rows_per_first_page) setRowsPerFirstPage(t.rows_per_first_page);
+                  if (t.rows_per_next_page) setRowsPerNextPage(t.rows_per_next_page);
+                  if (t.page_break_after_rows) setPageBreakAfterRows(t.page_break_after_rows);
+                }}
+              />
 
               {/* Actions */}
               <div className="flex flex-wrap gap-2">
