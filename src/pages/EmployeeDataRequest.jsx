@@ -28,6 +28,7 @@ import { getAllEmployeeRoles } from '@/components/utils/employeeRoles';
 import useLogoSettings from '@/components/settings/useLogoSettings';
 import ReportPreviewDialog from '@/components/employee_data/ReportPreviewDialog';
 import AITextEnhancer from '@/components/employee_data/AITextEnhancer';
+import AIAutoGenerate from '@/components/employee_data/AIAutoGenerate';
 import EmployeeMultiSelect from '@/components/employee_data/EmployeeMultiSelect';
 import FontSettings from '@/components/employee_data/FontSettings';
 import HijriDatePicker from '@/components/ui/HijriDatePicker';
@@ -1032,6 +1033,23 @@ export default function EmployeeDataRequest() {
                     </div>
                   ))}
                 </div>
+              </div>
+
+              {/* زر التوليد التلقائي بالذكاء الاصطناعي */}
+              <div className="p-3 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200 flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <p className="text-sm font-bold text-gray-800">توليد ذكي للعنوان والنص التعبيري</p>
+                  <p className="text-xs text-gray-600">بناءً على المكلفين وجهات التكليف والفترات والأيام المحددة</p>
+                </div>
+                <AIAutoGenerate
+                  selectedEmployees={selectedEmployees}
+                  assignmentCenters={assignmentCenters}
+                  assignmentGroups={assignmentGroups}
+                  onApply={({ title, narrative }) => {
+                    if (title) setReportTitle(title);
+                    if (narrative) setReportNarrative(narrative);
+                  }}
+                />
               </div>
 
               {/* عنوان التقرير */}
