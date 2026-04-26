@@ -32,7 +32,7 @@ function LayoutContent({ children, currentPageName }) {
 
   if (currentPageName === 'ViewAssignment') {
     return (
-      <div dir="rtl" className="font-cairo bg-gray-100 min-h-screen">
+      <div dir="rtl" className="font-cairo bg-gray-100 min-h-screen" style={{ fontFamily: "'Tajawal','Cairo','Segoe UI',sans-serif" }}>
         {children}
       </div>
     );
@@ -41,7 +41,7 @@ function LayoutContent({ children, currentPageName }) {
   const mainPadding = 'p-1 sm:p-1.5 md:p-2 lg:p-4';
 
   return (
-    <div dir="rtl" className="font-cairo">
+    <div dir="rtl" className="font-cairo" style={{ fontFamily: "'Tajawal','Cairo','Segoe UI',sans-serif" }}>
       <LayoutStyles />
 
       <div className="flex h-screen bg-gradient-to-br from-gray-50 to-green-50 overflow-hidden responsive-shell">

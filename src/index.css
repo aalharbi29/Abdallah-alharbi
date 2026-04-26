@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 🎨 خط الهوية البصرية الرسمي لتجمع المدينة المنورة الصحي (Tajawal كبديل لـ Janna LT) */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
+
+/* 🟦 ألوان الهوية البصرية الرسمية لتجمع المدينة المنورة الصحي */
+:root {
+  --mhc-sky-light: #3FA9F5;
+  --mhc-blue: #1E63D6;
+  --mhc-navy: #0B3D91;
+  --mhc-navy-dark: #0A2A5E;
+  --mhc-teal: #0F7884;
+  --mhc-teal-light: #5BC2C7;
+  --mhc-blue-accent: #1976D2;
+  --mhc-green: #2E9E4E;
+  --mhc-green-lime: #7DC242;
+  --mhc-row-alt: #F1F8FF;
+}
+
 
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;

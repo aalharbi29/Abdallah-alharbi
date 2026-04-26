@@ -5,6 +5,7 @@ import { User, Phone, Mail, Calendar, Hash, Briefcase, Download, Share2, Printer
 import { Button } from '@/components/ui/button';
 import QRCode from 'qrcode';
 import html2canvas from 'html2canvas';
+import { MHC_COLORS, MHC_GRADIENTS, MHC_ASSETS, MHC_TEXTS } from '@/components/branding/madinahCluster';
 
 export default function EmployeeIDCard({ employee, onClose }) {
   const cardRef = useRef(null);
@@ -20,7 +21,7 @@ export default function EmployeeIDCard({ employee, onClose }) {
       const qrData = await QRCode.toDataURL(profileUrl, {
         width: 300,
         margin: 2,
-        color: { dark: '#1e40af', light: '#ffffff' }
+        color: { dark: MHC_COLORS.navy, light: '#ffffff' }
       });
       setQrCodeDataUrl(qrData);
     } catch (error) {
@@ -181,30 +182,36 @@ ${employee.birth_date ? `🎂 *تاريخ الميلاد:* ${format(new Date(emp
             </Button>
           </div>
 
-          {/* البطاقة */}
-          <div ref={cardRef} className="id-card-print bg-white rounded-2xl shadow-2xl overflow-hidden w-full" style={{ width: '100mm', maxWidth: '380px' }}>
-            {/* Header with gradient */}
-            <div className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900 text-white p-5 relative overflow-hidden">
+          {/* البطاقة - بهوية تجمع المدينة المنورة الصحي */}
+          <div ref={cardRef} className="id-card-print bg-white rounded-2xl shadow-2xl overflow-hidden w-full" style={{ width: '100mm', maxWidth: '380px', fontFamily: "'Tajawal','Cairo',sans-serif" }}>
+            {/* Header مع تدرّج الهوية الرسمية + الشعار */}
+            <div className="text-white p-5 relative overflow-hidden" style={{ background: MHC_GRADIENTS.primary }}>
               <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full -mr-16 -mt-16"></div>
               <div className="absolute bottom-0 left-0 w-24 h-24 bg-white opacity-5 rounded-full -ml-12 -mb-12"></div>
-              
-              <div className="relative z-10 text-center">
-                <div className="text-xs opacity-90 mb-1">وزارة الصحة</div>
-                <div className="text-sm font-bold tracking-wide">بطاقة تعريف الموظف</div>
+
+              <div className="relative z-10 flex items-center gap-3">
+                <div className="bg-white/95 p-1.5 rounded-lg flex-shrink-0 shadow-md">
+                  <img src={MHC_ASSETS.logo} alt="شعار التجمع" className="w-12 h-12 object-contain" crossOrigin="anonymous" />
+                </div>
+                <div className="flex-1 text-right">
+                  <div className="text-[11px] opacity-90 leading-tight">{MHC_TEXTS.arabicName}</div>
+                  <div className="text-[10px] opacity-75 leading-tight">{MHC_TEXTS.englishName}</div>
+                  <div className="text-sm font-bold tracking-wide mt-1">بطاقة تعريف الموظف</div>
+                </div>
               </div>
             </div>
 
             {/* Employee Photo */}
             <div className="flex justify-center -mt-10 mb-4 relative z-20">
-              <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center shadow-xl border-4 border-white">
-                <User className="w-12 h-12 text-blue-700" />
+              <div className="w-20 h-20 rounded-full flex items-center justify-center shadow-xl border-4 border-white" style={{ background: 'linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%)' }}>
+                <User className="w-12 h-12" style={{ color: MHC_COLORS.navy }} />
               </div>
             </div>
 
             {/* Employee Name & Position */}
             <div className="text-center px-5 mb-5">
-              <h2 className="text-xl font-bold text-gray-900 mb-1">{employee.full_name_arabic}</h2>
-              <p className="text-sm text-blue-600 font-medium">{employee.position || 'غير محدد'}</p>
+              <h2 className="text-xl font-bold mb-1" style={{ color: MHC_COLORS.ink }}>{employee.full_name_arabic}</h2>
+              <p className="text-sm font-medium" style={{ color: MHC_COLORS.blueAccent }}>{employee.position || 'غير محدد'}</p>
             </div>
 
             {/* Information Grid */}
@@ -263,12 +270,12 @@ ${employee.birth_date ? `🎂 *تاريخ الميلاد:* ${format(new Date(emp
               )}
             </div>
 
-            {/* QR Code and Footer */}
-            <div className="bg-gradient-to-br from-gray-50 to-blue-50 px-5 py-4">
+            {/* QR Code and Footer - بألوان الهوية */}
+            <div className="px-5 py-4" style={{ background: 'linear-gradient(135deg, #F1F8FF 0%, #E0F2FE 100%)', borderTop: `2px solid ${MHC_COLORS.tealLight}` }}>
               <div className="flex items-center justify-between gap-4">
                 {/* QR Code */}
                 {qrCodeDataUrl && (
-                  <div className="bg-white p-2 rounded-lg border border-blue-200 shadow-sm">
+                  <div className="bg-white p-2 rounded-lg shadow-sm" style={{ border: `1px solid ${MHC_COLORS.skyLight}` }}>
                     <img src={qrCodeDataUrl} alt="QR" className="w-16 h-16" />
                   </div>
                 )}
@@ -276,11 +283,11 @@ ${employee.birth_date ? `🎂 *تاريخ الميلاد:* ${format(new Date(emp
                 {/* Center Info */}
                 <div className="flex-1 text-right">
                   <div className="flex items-center gap-2 justify-end mb-1">
-                    <span className="text-xs font-bold text-gray-900">{employee.المركز_الصحي || 'غير محدد'}</span>
-                    <Building2 className="w-4 h-4 text-blue-600" />
+                    <span className="text-xs font-bold" style={{ color: MHC_COLORS.ink }}>{employee.المركز_الصحي || 'غير محدد'}</span>
+                    <Building2 className="w-4 h-4" style={{ color: MHC_COLORS.blueAccent }} />
                   </div>
-                  <div className="text-xs text-gray-500">
-                    الإصدار: {new Date().toLocaleDateString('ar-SA')}
+                  <div className="text-[10px]" style={{ color: MHC_COLORS.inkSoft }}>
+                    {MHC_TEXTS.arabicName} • {new Date().toLocaleDateString('ar-SA')}
                   </div>
                 </div>
               </div>

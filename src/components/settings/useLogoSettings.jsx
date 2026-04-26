@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
+import { MHC_ASSETS, MHC_TEXTS } from '@/components/branding/madinahCluster';
 
-const DEFAULT_LOGO_URL = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/ebae7336b_1407.png";
+const DEFAULT_LOGO_URL = MHC_ASSETS.logo;
 
 const DEFAULT_SETTINGS = {
   logo_url: DEFAULT_LOGO_URL,
@@ -11,7 +12,7 @@ const DEFAULT_SETTINGS = {
   show_logo: true,
   show_footer: true,
   footer_text_1: "شؤون المراكز الصحية بالحسو - مستشفى الحسو العام",
-  footer_text_2: "تجمع المدينة المنورة الصحي",
+  footer_text_2: MHC_TEXTS.arabicName,
 };
 
 export default function useLogoSettings() {
