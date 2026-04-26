@@ -290,7 +290,69 @@ ${hintedEntity ? `\n💡 تلميح قوي جداً من النظام: primary_e
     ])];
   }
 
+  // 🔧 تطبيع أسماء الحقول: AI أحياناً يُرجع "key:label" أو الـ label العربي بدلاً من المفتاح الحقيقي
+  parsed.fields = normalizeFieldKeys(parsed.fields, parsed.primary_entity);
+
   return parsed;
+}
+
+// تحوّل قائمة حقول من AI إلى المفاتيح الفعلية في ENTITIES_CATALOG.
+// يدعم: "key:label" → "key" / label عربي → key / مرادفات شائعة (السجل المدني = رقم_الهوية)
+const FIELD_SYNONYMS = {
+  'السجل_المدني': 'رقم_الهوية', 'السجل المدني': 'رقم_الهوية', 'الهوية': 'رقم_الهوية',
+  'الهوية_الوطنية': 'رقم_الهوية', 'national_id': 'رقم_الهوية',
+  'الجوال': 'phone', 'رقم_الجوال': 'phone', 'الهاتف': 'phone', 'الموبايل': 'phone',
+  'البريد': 'email', 'البريد_الإلكتروني': 'email', 'الإيميل': 'email', 'الايميل': 'email',
+  'الاسم': 'full_name_arabic', 'الاسم_الكامل': 'full_name_arabic', 'اسم_الموظف': 'full_name_arabic',
+  'الوظيفه': 'position', 'الوظيفة': 'position', 'التخصص': 'position',
+  'القسم': 'department',
+};
+
+function normalizeFieldKeys(fields, entityValue) {
+  if (!Array.isArray(fields)) return fields;
+  const entity = ENTITIES_CATALOG.find((e) => e.value === entityValue);
+  const allowedKeys = new Set(entity ? entity.fields.map((f) => f.key) : []);
+  // فهرس عكسي: label العربي → key
+  const labelToKey = {};
+  if (entity) {
+    entity.fields.forEach((f) => {
+      labelToKey[normalizeArabic(f.label)] = f.key;
+    });
+  }
+
+  const normalized = [];
+  fields.forEach((raw) => {
+    if (!raw || typeof raw !== 'string') return;
+    let key = raw.trim();
+
+    // إن جاء بصيغة "key:label" خذ الجزء قبل ':' فقط
+    if (key.includes(':')) key = key.split(':')[0].trim();
+
+    // مفتاح صحيح موجود فعلاً
+    if (allowedKeys.has(key)) {
+      normalized.push(key);
+      return;
+    }
+
+    // مرادفات شائعة
+    const syn = FIELD_SYNONYMS[key] || FIELD_SYNONYMS[key.replace(/\s+/g, '_')];
+    if (syn && allowedKeys.has(syn)) {
+      normalized.push(syn);
+      return;
+    }
+
+    // مطابقة عبر label العربي
+    const viaLabel = labelToKey[normalizeArabic(key)];
+    if (viaLabel) {
+      normalized.push(viaLabel);
+      return;
+    }
+
+    // احتفظ به كما هو (قد يكون حقلاً مركباً مثل سيارة_اسعاف.متوفرة)
+    normalized.push(key);
+  });
+
+  return [...new Set(normalized)];
 }
 
 // تطبيق فلاتر AI على الصفوف — مع تجميع الفلاتر على نفس الحقل بمنطق OR (أسماء مراكز متعددة)
