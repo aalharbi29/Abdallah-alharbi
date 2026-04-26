@@ -59,6 +59,7 @@ export default function SmartCommands() {
   const [exporting, setExporting] = useState(false);
   const [freeMode, setFreeMode] = useState(false);
   const [freeReportNotes, setFreeReportNotes] = useState('');
+  const [customLabels, setCustomLabels] = useState(null);
 
   // دعم كيانات متعددة — الأول هو الأساسي
   const [selectedEntities, setSelectedEntities] = useState([]);
@@ -86,7 +87,7 @@ export default function SmartCommands() {
     'نائب_المدير_جوال', 'نائب_المدير_ايميل', 'نائب_المدير_تخصص', 'نائب_المدير_رقم_الموظف', 'نائب_المدير_رقم_الهوية',
     'المشرف_الفني_جوال', 'المشرف_الفني_ايميل', 'المشرف_الفني_تخصص', 'المشرف_الفني_رقم_الموظف', 'المشرف_الفني_رقم_الهوية',
   ];
-  const isSavableField = (field) => !UNSAVABLE_COMPUTED_FIELDS.includes(field) && !field.startsWith('_');
+  const isSavableField = (field) => !UNSAVABLE_COMPUTED_FIELDS.includes(field) && !field.startsWith('_') && !field.startsWith('__custom_');
 
   const currentEntity = useMemo(
     () => (primaryEntity ? getEntityByValue(primaryEntity) : null),
@@ -178,6 +179,7 @@ export default function SmartCommands() {
           isFree: true,
         });
         setResults(freeData);
+        setCustomLabels(plan.__customLabels || null);
         setFreeReportNotes(plan.notes || '');
         if (freeData.length === 0) toast.info('تم التنفيذ، لكن لا توجد نتائج مطابقة.');
         else toast.success(`تم استخراج ${freeData.length} سجل.`);
@@ -506,9 +508,10 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
   const canExecute = freeMode ? !!prompt.trim() : (primaryEntity || prompt.trim());
   const activeFiltersCount = Object.values(valueFilters).filter((v) => v?.length > 0).length;
   const labelFor = (field) => {
-    if (queryInfo?.isFree) return resolveFieldLabelGlobal(field);
+    if (queryInfo?.isFree) return resolveFieldLabelGlobal(field, customLabels);
     return getFieldLabel(queryInfo.entity, field);
   };
+  const isCustomColumn = (field) => typeof field === 'string' && field.startsWith('__custom_');
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-6 space-y-5 pb-24">

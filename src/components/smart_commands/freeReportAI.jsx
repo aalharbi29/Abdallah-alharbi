@@ -188,7 +188,7 @@ ${validEntities}
 🎯🎯 قاعدة حاسمة لاختيار الحقول (fields):
 - **اختر فقط الحقول التي طلبها المستخدم صراحةً.** ممنوع إضافة حقول لم يطلبها (مثل: الأدوار القيادية، المهام الإضافية، الأدوار الإشرافية، __combined_roles، ...) إلا إذا ذكرها المستخدم بنفسه.
 - إذا طلب المستخدم "اسم الموظف، رقمه الوظيفي، سجله المدني، تخصصه، جهة عمله" → الحقول هي بالضبط هذه الخمسة فقط، لا أكثر.
-- إذا طلب المستخدم عموداً نصياً ثابتاً (مثل: "عمود إضافي يكتب فيه: تقييم الأداء الوظيفي 2025") تجاهله — النظام لا يدعم إضافة أعمدة نصية ثابتة، اكتفِ بذكر ذلك في حقل notes.
+- إذا طلب المستخدم عموداً نصياً ثابتاً (مثل: "أضف عموداً بعنوان X يكتب فيه القيمة Y") **استخدم حقل custom_columns**: مصفوفة من { header, value } حيث header = العنوان الذي طلبه المستخدم، value = النص الثابت الذي يجب وضعه في كل صف. مثال: custom_columns: [{ "header": "خطة الأداء المتعثرة", "value": "تقييم الأداء الوظيفي لعام 2025 م" }].
 
 🔴 قاعدة حاسمة لفلترة الموظفين بأسماء محددة:
 - إذا ذكر المستخدم أسماء موظفين محددة (مثل: "شجاع صالح من مركز بطحي، محمد مطلق من مركز الماوية") **يجب** إنشاء فلتر OR لكل اسم على حقل full_name_arabic بـ operator:"contains".
@@ -223,6 +223,16 @@ ${hintedEntity ? `\n💡 تلميح قوي جداً من النظام: primary_e
               properties: {
                 field: { type: 'string' },
                 operator: { type: 'string' },
+                value: { type: 'string' }
+              }
+            }
+          },
+          custom_columns: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                header: { type: 'string' },
                 value: { type: 'string' }
               }
             }
@@ -524,6 +534,9 @@ const enrichRowWithSecondary = (row, primaryEntity, secondaryData, requestedFiel
   return enriched;
 };
 
+// إنشاء مفتاح آمن لعمود مخصص (يبدأ بـ __custom_ لتمييزه)
+const customColumnKey = (header, idx) => `__custom_${idx}_${String(header || '').replace(/\s+/g, '_').slice(0, 30)}`;
+
 // تنفيذ الخطة وإرجاع البيانات
 export async function executeFreeReportPlan(plan) {
   const primaryEntity = plan.primary_entity;
@@ -574,7 +587,7 @@ export async function executeFreeReportPlan(plan) {
 
   // تطبيق الفلاتر
   const beforeCount = enrichedData.length;
-  const filtered = applyAIFilters(enrichedData, plan.filters);
+  let filtered = applyAIFilters(enrichedData, plan.filters);
 
   // تشخيص: إذا أزالت الفلاتر كل البيانات، اطبع معلومات للمطور
   if (beforeCount > 0 && filtered.length === 0 && plan.filters?.length > 0) {
@@ -582,14 +595,37 @@ export async function executeFreeReportPlan(plan) {
     console.warn('عيّنة من البيانات قبل الفلترة:', enrichedData.slice(0, 2));
   }
 
+  // 🆕 حقن الأعمدة المخصصة (نص ثابت لكل صف) + إضافة مفاتيحها للحقول
+  if (Array.isArray(plan.custom_columns) && plan.custom_columns.length > 0) {
+    const customMap = plan.custom_columns.map((c, idx) => ({
+      key: customColumnKey(c.header, idx),
+      header: c.header,
+      value: c.value ?? '',
+    }));
+    filtered = filtered.map((row) => {
+      const out = { ...row };
+      customMap.forEach((c) => { out[c.key] = c.value; });
+      return out;
+    });
+    // أضف مفاتيح الأعمدة المخصصة لقائمة الحقول وخزّن العناوين على plan
+    plan.fields = [...plan.fields, ...customMap.map((c) => c.key)];
+    plan.__customLabels = Object.fromEntries(customMap.map((c) => [c.key, c.header]));
+  }
+
   return filtered;
 }
 
 // استخرج تسمية مناسبة لحقل حتى لو لم يكن في الكيان الأساسي
-export const resolveFieldLabelGlobal = (fieldKey) => {
+// يدعم خريطة عناوين مخصصة (للأعمدة الحرة المُولّدة من AI)
+export const resolveFieldLabelGlobal = (fieldKey, customLabels = null) => {
+  if (customLabels && customLabels[fieldKey]) return customLabels[fieldKey];
   for (const ent of ENTITIES_CATALOG) {
     const f = ent.fields.find((x) => x.key === fieldKey);
     if (f) return f.label;
+  }
+  // fallback لطيف لمفاتيح الأعمدة المخصصة
+  if (typeof fieldKey === 'string' && fieldKey.startsWith('__custom_')) {
+    return fieldKey.replace(/^__custom_\d+_/, '').replace(/_/g, ' ');
   }
   return fieldKey.replace(/_/g, ' ');
 };
