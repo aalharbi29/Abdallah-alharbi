@@ -71,7 +71,8 @@ export async function exportAsPoster({ title, results, fields, labelFor, entityL
   container.style.width = '1240px';
   container.style.background = '#ffffff';
   container.style.padding = '0';
-  container.style.fontFamily = MHC_FONT.family;
+  // 🔧 استخدام Cairo (محمَّل عالمياً في index.css) كخط أساسي لتفادي تكسر الحروف في html2canvas
+  container.style.fontFamily = "'Cairo', 'Tajawal', 'Segoe UI', Arial, sans-serif";
   container.dir = 'rtl';
 
   // 🏷️ عنوان أبيض رسمي بظلال (هوية تجمع المدينة المنورة)
@@ -121,7 +122,7 @@ export async function exportAsPoster({ title, results, fields, labelFor, entityL
         <!-- شريط إحصائيات -->
         <div style="position: relative; z-index: 2; display: flex; gap: 14px; margin-top: 20px; flex-wrap: wrap;">
           ${[
-            ['الكيان', entityLabel || '—'],
+            ['نوع التقرير', !entityLabel || entityLabel === '__standalone__' ? '🆓 تقرير حر' : entityLabel],
             ['عدد السجلات', toLatinDigits(results.length)],
             ['عدد الأعمدة', toLatinDigits(fields.length)],
             ['تاريخ الإصدار', today],
@@ -169,6 +170,15 @@ export async function exportAsPoster({ title, results, fields, labelFor, entityL
   document.body.appendChild(container);
 
   try {
+    // 🔧 انتظر تحميل الخطوط أولاً (Cairo + Tajawal) لتفادي تكسر الحروف العربية
+    if (document.fonts && document.fonts.ready) {
+      try {
+        await document.fonts.load("700 16px Cairo");
+        await document.fonts.load("900 42px Cairo");
+        await document.fonts.ready;
+      } catch (_) { /* ignore */ }
+    }
+
     // انتظر تحميل صورة الشعار قبل الالتقاط
     const imgs = container.querySelectorAll('img');
     await Promise.all(Array.from(imgs).map((img) => {
@@ -179,11 +189,15 @@ export async function exportAsPoster({ title, results, fields, labelFor, entityL
       });
     }));
 
+    // تأخير بسيط إضافي للتأكد من اكتمال الرسم
+    await new Promise((r) => setTimeout(r, 250));
+
     const canvas = await html2canvas(container, {
       scale: 2,
       backgroundColor: '#ffffff',
       useCORS: true,
       logging: false,
+      letterRendering: true,
     });
     const dataUrl = canvas.toDataURL('image/png');
     const link = document.createElement('a');
