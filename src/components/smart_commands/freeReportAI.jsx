@@ -84,6 +84,31 @@ const STOP_WORDS = new Set([
   'هذا', 'ذلك', 'جميع', 'كل', 'بعض', 'هو', 'هي', 'التابع', 'التابعه',
 ]);
 
+// استخراج أسماء موظفين من نص بصيغة: "اسم من مركز ..." أو "اسم و اسم من مركز ..."
+// نتجاهل أي أسماء تأتي بعد "الرؤساء المباشرين" أو ضمن مفردات إدارية.
+const extractEmployeeNameHints = (prompt) => {
+  const p = String(prompt || '');
+  const hints = new Set();
+  // نلتقط: اسم (كلمتان أو ثلاث) يسبق كلمة "من مركز"
+  // ومجموعات معطوفة بـ "و" قبل "من مركز"
+  const pattern = /([\u0600-\u06FF]+(?:\s+[\u0600-\u06FF]+){1,2})(?=\s+(?:و\s+[\u0600-\u06FF]+(?:\s+[\u0600-\u06FF]+){1,2}\s+)*من\s+مركز)/g;
+  let m;
+  while ((m = pattern.exec(p)) !== null) {
+    const candidate = m[1].trim();
+    // استبعاد عبارات إدارية شائعة
+    if (/الرؤساء|المباشرين|الأداء|الوظيفي|الإلكترونية|الالكترونيه|التقييمات|التقييم/.test(candidate)) continue;
+    if (candidate.split(/\s+/).length >= 2) hints.add(candidate);
+  }
+  // أيضاً نلتقط أسماء معطوفة بـ "و" بين "اسم من مركز X و اسم من مركز Y"
+  const pattern2 = /و\s+([\u0600-\u06FF]+(?:\s+[\u0600-\u06FF]+){1,2})(?=\s+من\s+مركز)/g;
+  while ((m = pattern2.exec(p)) !== null) {
+    const candidate = m[1].trim();
+    if (/الرؤساء|المباشرين|الأداء|الوظيفي|الإلكترونية|الالكترونيه|التقييمات|التقييم/.test(candidate)) continue;
+    if (candidate.split(/\s+/).length >= 2) hints.add(candidate);
+  }
+  return Array.from(hints);
+};
+
 const extractCenterNameHints = (prompt) => {
   const p = String(prompt || '').trim();
   const hints = new Set();
@@ -159,6 +184,20 @@ ${validEntities}
 - لا تستخدم filter على كائنات مركبة (مثل سيارة_اسعاف بدون .field داخلي).
 
 📋 عند طلب "تقرير/معلومات/بيانات/تفاصيل" عن مركز معيّن، **اختر حقولاً شاملة** (على الأقل 20 حقل) تغطي: الاتصال، القيادة، الإيجار، الاعتمادات، سيارة الإسعاف، سيارة الخدمات. لا تكتفِ بحقلين أو ثلاثة.
+
+🎯🎯 قاعدة حاسمة لاختيار الحقول (fields):
+- **اختر فقط الحقول التي طلبها المستخدم صراحةً.** ممنوع إضافة حقول لم يطلبها (مثل: الأدوار القيادية، المهام الإضافية، الأدوار الإشرافية، __combined_roles، ...) إلا إذا ذكرها المستخدم بنفسه.
+- إذا طلب المستخدم "اسم الموظف، رقمه الوظيفي، سجله المدني، تخصصه، جهة عمله" → الحقول هي بالضبط هذه الخمسة فقط، لا أكثر.
+- إذا طلب المستخدم عموداً نصياً ثابتاً (مثل: "عمود إضافي يكتب فيه: تقييم الأداء الوظيفي 2025") تجاهله — النظام لا يدعم إضافة أعمدة نصية ثابتة، اكتفِ بذكر ذلك في حقل notes.
+
+🔴 قاعدة حاسمة لفلترة الموظفين بأسماء محددة:
+- إذا ذكر المستخدم أسماء موظفين محددة (مثل: "شجاع صالح من مركز بطحي، محمد مطلق من مركز الماوية") **يجب** إنشاء فلتر OR لكل اسم على حقل full_name_arabic بـ operator:"contains".
+- مثال للطلب "شجاع صالح من بطحي و محمد مطلق من الماوية":
+  filters: [
+    {field:"full_name_arabic", operator:"contains", value:"شجاع صالح"},
+    {field:"full_name_arabic", operator:"contains", value:"محمد مطلق"}
+  ]
+- لا تضف فلاتر على المركز في هذه الحالة (الاسم وحده يكفي للتمييز). الفلاتر على نفس الحقل تُعامل OR تلقائياً.
 
 تفاصيل الحقول لكل كيان (field_key:field_label):
 ${schemaContext}
@@ -280,14 +319,31 @@ ${hintedEntity ? `\n💡 تلميح قوي جداً من النظام: primary_e
     }
   }
 
-  // 🔧 حقول افتراضية شاملة للموظفين عند عدم وجود حقول كافية
-  if (parsed.primary_entity === 'Employee' && (!parsed.fields || parsed.fields.length < 4)) {
-    console.info('🔧 استخدام الحقول الافتراضية للموظفين.');
-    parsed.fields = [...new Set([...(parsed.fields || []),
+  // 🔧 حقول افتراضية للموظفين فقط إذا لم يحدّد المستخدم/AI أي حقول
+  // (لا نُضيف افتراضياً عندما يكون عدد الحقول 1 أو أكثر — احترام تحديد المستخدم)
+  if (parsed.primary_entity === 'Employee' && (!parsed.fields || parsed.fields.length === 0)) {
+    console.info('🔧 استخدام الحقول الافتراضية للموظفين (لا توجد حقول محددة).');
+    parsed.fields = [
       'full_name_arabic', 'رقم_الموظف', 'رقم_الهوية', 'position', 'department',
-      'المركز_الصحي', 'phone', 'email', 'gender', 'nationality', 'qualification',
-      'contract_type', 'hire_date', 'start_work_date', '__combined_roles'
-    ])];
+      'المركز_الصحي', 'phone', 'email',
+    ];
+  }
+
+  // 🔴 إذا ذكر المستخدم أسماء موظفين بصيغة "X من مركز Y" والـ AI لم يضع فلاتر بالأسماء، نحقنها
+  const nameHints = extractEmployeeNameHints(userPrompt);
+  if (parsed.primary_entity === 'Employee' && nameHints.length > 0) {
+    const hasNameFilter = Array.isArray(parsed.filters) && parsed.filters.some(
+      (f) => f.field === 'full_name_arabic'
+    );
+    if (!hasNameFilter) {
+      console.info(`🔧 حقن فلاتر تلقائية على full_name_arabic للأسماء: ${nameHints.join(', ')}`);
+      parsed.filters = parsed.filters || [];
+      // أزل أي فلاتر مراكز سابقة (لأن الاسم وحده كافٍ للتمييز عند تحديد أسماء)
+      parsed.filters = parsed.filters.filter((f) => !/المركز_الصحي|اسم_المركز|health_center|center_name|assigned_to_health_center/i.test(f.field));
+      nameHints.forEach((name) => {
+        parsed.filters.push({ field: 'full_name_arabic', operator: 'contains', value: name });
+      });
+    }
   }
 
   // 🔧 تطبيع أسماء الحقول: AI أحياناً يُرجع "key:label" أو الـ label العربي بدلاً من المفتاح الحقيقي
