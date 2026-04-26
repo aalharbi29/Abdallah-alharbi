@@ -70,25 +70,22 @@ export async function exportAsPoster({ title, results, fields, labelFor, entityL
   container.style.fontFamily = "'Cairo', 'Segoe UI', Arial, sans-serif";
   container.dir = 'rtl';
 
-  // عنوان WordArt ذهبي محفور بظل (CSS-only — يتعامل بشكل ممتاز مع html2canvas)
+  // عنوان ذهبي محفور بظل — بدون background-clip (لتجنّب كسر النصوص العربية في html2canvas)
   const wordArtTitleStyle = `
     font-size: 44px;
     font-weight: 900;
-    line-height: 1.35;
-    letter-spacing: -0.5px;
+    line-height: 1.4;
+    letter-spacing: 0;
     color: ${PALETTE.gold1};
-    background: linear-gradient(180deg, #FFF4B0 0%, #FFD24A 35%, ${PALETTE.gold2} 70%, ${PALETTE.gold3} 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 1px ${PALETTE.gold3};
     text-shadow:
-      0 1px 0 rgba(255,255,255,0.25),
-      0 2px 0 rgba(0,0,0,0.35),
-      0 4px 6px rgba(0,0,0,0.45),
-      0 0 18px rgba(255, 215, 0, 0.25);
-    filter: drop-shadow(0 2px 1px rgba(0,0,0,0.4));
+      1px 1px 0 ${PALETTE.gold2},
+      2px 2px 0 ${PALETTE.gold3},
+      3px 3px 0 rgba(0,0,0,0.35),
+      4px 5px 8px rgba(0,0,0,0.55);
     margin: 0;
     padding: 6px 0 4px 0;
+    direction: rtl;
   `;
 
   container.innerHTML = `
