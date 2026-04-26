@@ -59,6 +59,8 @@ export const MHC_ASSETS = {
   designSystem: 'https://media.base44.com/images/public/68af5003813e47bd07947b30/6c09c5feb_10.png',          // ورقة الهوية الكاملة (مرجع)
   // 🆕 القالب الرسمي الموحّد للتقارير (خلفية أزرق متدرج بمنحنيات ناعمة) — مستوحى من Dark-Template-311
   officialReportTemplate: 'https://media.base44.com/images/public/68af5003813e47bd07947b30/a95e10e42_generated_image.png',
+  // 🆕 العلامة المائية الرسمية (نجمة التجمع) — تظهر خلف التقارير والخطابات
+  watermark: 'https://media.base44.com/images/public/68af5003813e47bd07947b30/8a3829c21_image.png',
 };
 
 // 📐 معايير وضع الشعار الرسمي في القالب الموحّد (الزاوية اليمنى العلوية)

@@ -25,6 +25,7 @@ import FieldGroupPicker from '@/components/smart_commands/FieldGroupPicker';
 import SelectedFieldsReorder from '@/components/smart_commands/SelectedFieldsReorder';
 import FieldValueFilterDialog from '@/components/smart_commands/FieldValueFilterDialog';
 import BackgroundToggle from '@/components/branding/BackgroundToggle';
+import WatermarkToggle from '@/components/branding/WatermarkToggle';
 
 const normalizeArabic = (str) => {
   if (!str) return '';
@@ -790,6 +791,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
                   {exporting ? <Loader2 className="w-4 h-4 ml-1 animate-spin" /> : <ImageIcon className="w-4 h-4 ml-1" />} بوستر / صورة
                 </Button>
                 <BackgroundToggle storageKey="poster" size="sm" />
+                <WatermarkToggle size="sm" />
                 <Button variant="outline" size="sm" onClick={shareWhatsApp} className="border-emerald-200 text-emerald-700 hover:bg-emerald-50">
                   <MessageCircle className="w-4 h-4 ml-1" /> واتساب
                 </Button>

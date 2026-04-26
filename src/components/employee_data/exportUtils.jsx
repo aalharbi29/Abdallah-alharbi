@@ -208,7 +208,8 @@ export const exportToHTML = ({
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
     body { font-family: 'Tajawal', 'Cairo', sans-serif; padding: 30px; background: #F1F8FF; color: #0F172A; }
-    .container { max-width: 900px; margin: 0 auto; background: white; padding: 0; border-radius: 16px; box-shadow: 0 8px 24px rgba(11, 61, 145, 0.15); overflow: hidden; }
+    .container { max-width: 900px; margin: 0 auto; background: white; padding: 0; border-radius: 16px; box-shadow: 0 8px 24px rgba(11, 61, 145, 0.15); overflow: hidden; position: relative; }
+    ${getBrandBackgroundPref('watermark', true) ? `.container::after { content: ''; position: absolute; inset: 0; background-image: url('${MHC_ASSETS.watermark}'); background-repeat: no-repeat; background-position: center center; background-size: 50% auto; opacity: 0.07; pointer-events: none; z-index: 0; } .container > * { position: relative; z-index: 1; }` : ''}
     .brand-header { background-image: url('${MHC_ASSETS.officialReportTemplate}'); background-size: cover; background-position: center; padding: 36px 44px; color: white; position: relative; overflow: hidden; min-height: 140px; }
     .brand-logo-tr { position: absolute; top: ${MHC_LOGO_SPEC.topPx}px; right: ${MHC_LOGO_SPEC.rightPx}px; z-index: 3; }
     .brand-logo-tr img { height: ${MHC_LOGO_SPEC.heightPx}px; width: auto; object-fit: contain; display: block; }
@@ -643,6 +644,7 @@ export const generateReportHtml = ({
   @page { size: A4; margin: 5mm 15mm 15mm 15mm; }
   .page-container { max-width: 210mm; margin: 0 auto; padding: 0 10px; min-height: 100vh; display: flex; flex-direction: column; position: relative; ${getBrandBackgroundPref('report', true) ? `background-image: url('${MHC_ASSETS.backgroundClean}'); background-size: cover; background-position: center; background-repeat: no-repeat;` : ''} }
   ${getBrandBackgroundPref('report', true) ? `.page-container::before { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.88); z-index: 0; pointer-events: none; } .page-container > * { position: relative; z-index: 1; }` : ''}
+  ${getBrandBackgroundPref('watermark', true) ? `.page-container::after { content: ''; position: absolute; inset: 0; background-image: url('${MHC_ASSETS.watermark}'); background-repeat: no-repeat; background-position: center center; background-size: 55% auto; opacity: 0.07; z-index: 0; pointer-events: none; } .page-container > * { position: relative; z-index: 1; }` : ''}
   .page-content { flex: 1; padding-top: 15px; }
   .header-banner-official { position: relative; background-image: url('${MHC_ASSETS.officialReportTemplate}'); background-size: cover; background-position: center; min-height: 110px; margin: 0 -10px 15px -10px; padding: 14px 20px; overflow: hidden; }
   .header-logo-tr { position: absolute; top: ${MHC_LOGO_SPEC.topPx}px; right: ${MHC_LOGO_SPEC.rightPx}px; height: ${MHC_LOGO_SPEC.heightPx}px; width: auto; object-fit: contain; display: block; z-index: 3; }

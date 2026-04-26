@@ -91,9 +91,15 @@ export async function exportAsPoster({ title, results, fields, labelFor, entityL
     direction: rtl;
   `;
 
+  const watermarkEnabled = getBrandBackgroundPref('watermark', true);
+  const watermarkLayer = watermarkEnabled
+    ? `<div style="position: absolute; inset: 0; background-image: url('${MHC_ASSETS.watermark}'); background-repeat: no-repeat; background-position: center center; background-size: 45% auto; opacity: 0.07; pointer-events: none; z-index: 1;"></div>`
+    : '';
+
   container.innerHTML = `
     <!-- 📐 القالب الرسمي الموحّد: خلفية بانورامية رسمية + شعار في الزاوية اليمنى العلوية -->
     <div style="position: relative; overflow: hidden;">
+      ${watermarkLayer}
       <!-- الترويسة: خلفية القالب الرسمي (تدرّج أزرق + منحنيات) -->
       <div style="position: relative; z-index: 1; background-image: url('${MHC_ASSETS.officialReportTemplate}'); background-size: cover; background-position: center; padding: 36px 44px 44px 44px; color: #fff; min-height: 240px;">
         <!-- شعار التجمع في الزاوية اليمنى العلوية بنفس الحجم والتموضع الرسمي -->

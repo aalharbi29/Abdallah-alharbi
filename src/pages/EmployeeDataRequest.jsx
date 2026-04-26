@@ -35,6 +35,7 @@ import FontSettings from '@/components/employee_data/FontSettings';
 import HijriDatePicker from '@/components/ui/HijriDatePicker';
 import { exportToCSV, exportToHTML, generateReportHtml } from '@/components/employee_data/exportUtils';
 import BackgroundToggle from '@/components/branding/BackgroundToggle';
+import WatermarkToggle from '@/components/branding/WatermarkToggle';
 import { toast } from 'sonner';
 
 const availableFields = [
@@ -1602,6 +1603,7 @@ export default function EmployeeDataRequest() {
                   طباعة
                 </Button>
                 <BackgroundToggle storageKey="report" size="sm" />
+                <WatermarkToggle size="sm" />
               </div>
             </CardContent>
           </Card>
