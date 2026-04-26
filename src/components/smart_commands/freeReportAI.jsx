@@ -443,11 +443,19 @@ const applyAIFilters = (rows, filters) => {
       const sv = normalizeArabic(String(val));
       // حقول أسماء المراكز تستخدم مطابقة مرنة (تُزيل "ال" التعريف)
       const isCenterField = /اسم_المركز|health_center|center_name|المركز_الصحي|assigned_to_health_center/i.test(g.field);
+      // حقول الأسماء البشرية: نطابق "كل الكلمات موجودة" (يتعامل مع "بنت" / "بن" بين الكلمات)
+      const isPersonNameField = /full_name_arabic|employee_name|اسم_الموظف/i.test(g.field);
       // منطق OR بين القيم لنفس الحقل
       return g.values.some((target) => {
         const st = normalizeArabic(String(target ?? ''));
         if (isCenterField && (op === 'contains' || op === 'equals')) {
           return fuzzyCenterMatch(val, target);
+        }
+        if (isPersonNameField && (op === 'contains' || op === 'equals')) {
+          // قسّم الاسم المطلوب إلى كلمات وتحقق أن كل كلمة موجودة في الاسم الكامل
+          const targetWords = st.split(/\s+/).filter((w) => w.length >= 2);
+          if (targetWords.length === 0) return false;
+          return targetWords.every((w) => sv.includes(w));
         }
         switch (op) {
           case 'equals': return sv === st;
