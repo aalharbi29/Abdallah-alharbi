@@ -7,8 +7,9 @@ import { Badge } from '@/components/ui/badge';
 import {
   Loader2, Sparkles, FileText, FileSpreadsheet, Printer, Mail, MessageCircle,
   Database, MapPin, Columns3, Wand2, Pencil, Save, X, ArrowDownUp, Brain, Mic,
-  LayoutGrid, Table as TableIcon
+  LayoutGrid, Table as TableIcon, Image as ImageIcon
 } from 'lucide-react';
+import { exportAsPoster } from '@/components/smart_commands/posterExporter';
 import SingleRecordDetailCard from '@/components/smart_commands/SingleRecordDetailCard';
 import { toast } from 'sonner';
 import VoiceInput from '@/components/ui/VoiceInput';
@@ -496,6 +497,27 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
   };
 
+  const exportPoster = async () => {
+    if (!results || results.length === 0) return;
+    setExporting(true);
+    try {
+      await exportAsPoster({
+        title: queryInfo.title,
+        results,
+        fields: queryInfo.fields,
+        labelFor,
+        entityLabel: getEntityByValue(queryInfo.entity)?.label || queryInfo.entity,
+        isFree: queryInfo.isFree,
+      });
+      toast.success('تم حفظ البوستر كصورة.');
+    } catch (e) {
+      console.error(e);
+      toast.error(e?.message || 'فشل إنشاء البوستر.');
+    } finally {
+      setExporting(false);
+    }
+  };
+
   const shareEmail = () => {
     if (!results || results.length === 0) return;
     let text = `${queryInfo.title}\n\n`;
@@ -760,6 +782,9 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
                 </Button>
                 <Button variant="outline" size="sm" onClick={printTable} className="border-slate-200 text-slate-700 hover:bg-slate-100">
                   <Printer className="w-4 h-4 ml-1" /> طباعة
+                </Button>
+                <Button variant="outline" size="sm" onClick={exportPoster} disabled={exporting} className="border-fuchsia-200 text-fuchsia-700 hover:bg-fuchsia-50">
+                  {exporting ? <Loader2 className="w-4 h-4 ml-1 animate-spin" /> : <ImageIcon className="w-4 h-4 ml-1" />} بوستر / صورة
                 </Button>
                 <Button variant="outline" size="sm" onClick={shareWhatsApp} className="border-emerald-200 text-emerald-700 hover:bg-emerald-50">
                   <MessageCircle className="w-4 h-4 ml-1" /> واتساب
