@@ -57,6 +57,19 @@ export const MHC_ASSETS = {
   backgroundSidebar: 'https://media.base44.com/images/public/68af5003813e47bd07947b30/850355196_9.png',       // خلفية بشريط جانبي
   backgroundSocial: 'https://media.base44.com/images/public/68af5003813e47bd07947b30/5a98f2ed0_11.png',       // خلفية ختامية بقنوات التواصل
   designSystem: 'https://media.base44.com/images/public/68af5003813e47bd07947b30/6c09c5feb_10.png',          // ورقة الهوية الكاملة (مرجع)
+  // 🆕 القالب الرسمي الموحّد للتقارير (خلفية أزرق متدرج بمنحنيات ناعمة) — مستوحى من Dark-Template-311
+  officialReportTemplate: 'https://media.base44.com/images/public/68af5003813e47bd07947b30/a95e10e42_generated_image.png',
+};
+
+// 📐 معايير وضع الشعار الرسمي في القالب الموحّد (الزاوية اليمنى العلوية)
+// مستخرجة بدقة من النموذج الرسمي PDF — يجب الالتزام بها في كل التقارير.
+export const MHC_LOGO_SPEC = {
+  // الموضع من الأعلى واليمين (نسبة من العرض) — مطابق للقالب
+  topPx: 28,
+  rightPx: 44,
+  // الحجم (الشعار بدون نص + النص العربي + الإنجليزي بجانبه)
+  heightPx: 70,           // ارتفاع كتلة الشعار في صفحة A4 أفقية
+  heightPxWide: 80,       // ارتفاع كتلة الشعار في تقرير عرضي (1240+)
 };
 
 // 🔤 الخط الرسمي البديل (Tajawal كبديل لـ Janna LT — متوفر مجاناً ومشابه شكلاً)

@@ -1,5 +1,5 @@
 import ExcelJS from 'exceljs';
-import { MHC_TEXTS, MHC_ASSETS } from '../branding/madinahCluster';
+import { MHC_TEXTS, MHC_ASSETS, MHC_LOGO_SPEC } from '../branding/madinahCluster';
 import { getBrandBackgroundPref } from '../branding/useBrandBackground';
 
 // 🎨 ألوان الهوية البصرية لتجمع المدينة المنورة (ARGB لـ ExcelJS)
@@ -209,15 +209,9 @@ export const exportToHTML = ({
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
     body { font-family: 'Tajawal', 'Cairo', sans-serif; padding: 30px; background: #F1F8FF; color: #0F172A; }
     .container { max-width: 900px; margin: 0 auto; background: white; padding: 0; border-radius: 16px; box-shadow: 0 8px 24px rgba(11, 61, 145, 0.15); overflow: hidden; }
-    .brand-header { background: linear-gradient(135deg, #0A2A5E 0%, #0B3D91 40%, #1E63D6 75%, #3FA9F5 100%); padding: 24px 40px; color: white; display: flex; align-items: center; gap: 18px; position: relative; overflow: hidden; }
-    .brand-header::before { content: ''; position: absolute; top: -60px; left: -40px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; }
-    .brand-header::after { content: ''; position: absolute; bottom: -80px; right: -30px; width: 260px; height: 260px; background: rgba(255,255,255,0.07); border-radius: 50%; }
-    .brand-logo { background: rgba(255,255,255,0.95); padding: 8px; border-radius: 14px; box-shadow: 0 4px 14px rgba(0,0,0,0.2); flex-shrink: 0; position: relative; z-index: 2; }
-    .brand-logo img { width: 80px; height: 80px; object-fit: contain; display: block; }
-    .brand-text { flex: 1; position: relative; z-index: 2; }
-    .brand-text .ar { font-size: 22px; font-weight: 900; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-    .brand-text .en { font-size: 13px; opacity: 0.92; margin-top: 4px; letter-spacing: 0.5px; }
-    .divider-bar { height: 4px; background: linear-gradient(90deg, #0F7884 0%, #5BC2C7 50%, #3FA9F5 100%); }
+    .brand-header { background-image: url('${MHC_ASSETS.officialReportTemplate}'); background-size: cover; background-position: center; padding: 36px 44px; color: white; position: relative; overflow: hidden; min-height: 140px; }
+    .brand-logo-tr { position: absolute; top: ${MHC_LOGO_SPEC.topPx}px; right: ${MHC_LOGO_SPEC.rightPx}px; z-index: 3; }
+    .brand-logo-tr img { height: ${MHC_LOGO_SPEC.heightPx}px; width: auto; object-fit: contain; display: block; }
     .body-content { padding: 30px 40px; }
     h2 { text-align: center; color: #0B3D91; margin-bottom: 20px; }
     table { width: 100%; border-collapse: collapse; margin: 20px 0; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(11, 61, 145, 0.08); }
@@ -233,13 +227,8 @@ export const exportToHTML = ({
 <body>
   <div class="container">
     <div class="brand-header">
-      <div class="brand-logo"><img src="${MHC_ASSETS.logo}" alt="شعار التجمع" crossorigin="anonymous" /></div>
-      <div class="brand-text">
-        <div class="ar">${MHC_TEXTS.arabicName}</div>
-        <div class="en">${MHC_TEXTS.englishName}</div>
-      </div>
+      <div class="brand-logo-tr"><img src="${MHC_ASSETS.logo}" alt="شعار التجمع" crossorigin="anonymous" /></div>
     </div>
-    <div class="divider-bar"></div>
 
     <div class="body-content">
       <p class="greeting">بعد التحية</p>
@@ -340,8 +329,9 @@ export const generateReportHtml = ({
     <p class="date-text">${dateStr}</p>
   </div>` : '';
 
-  const headerBlock = logoSettings.show_logo && logoSettings.logo_url ? `<div class="header-banner">
-    <img src="${logoSettings.logo_url}" alt="شعار المؤسسة" />
+  // 🆕 ترويسة موحّدة بالقالب الرسمي: خلفية + شعار في الزاوية اليمنى العلوية بنفس الحجم
+  const headerBlock = logoSettings.show_logo && logoSettings.logo_url ? `<div class="header-banner-official">
+    <img class="header-logo-tr" src="${logoSettings.logo_url}" alt="شعار المؤسسة" crossorigin="anonymous" />
   </div>` : '';
 
   const titleBlock = `<div class="report-title"><h1>${reportTitle}</h1></div>`;
@@ -654,8 +644,8 @@ export const generateReportHtml = ({
   .page-container { max-width: 210mm; margin: 0 auto; padding: 0 10px; min-height: 100vh; display: flex; flex-direction: column; position: relative; ${getBrandBackgroundPref('report', true) ? `background-image: url('${MHC_ASSETS.backgroundClean}'); background-size: cover; background-position: center; background-repeat: no-repeat;` : ''} }
   ${getBrandBackgroundPref('report', true) ? `.page-container::before { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.88); z-index: 0; pointer-events: none; } .page-container > * { position: relative; z-index: 1; }` : ''}
   .page-content { flex: 1; padding-top: 15px; }
-  .header-banner { border-bottom: 3px solid #0B3D91; padding: 0 0 8px; margin-bottom: 15px; overflow: hidden; display: flex; justify-content: ${logoJustify}; align-items: center; }
-  .header-banner img { max-height: ${logoSettings.max_height}px; margin: ${logoSettings.margin_top}px 0 ${logoSettings.margin_bottom}px 0; display: block; }
+  .header-banner-official { position: relative; background-image: url('${MHC_ASSETS.officialReportTemplate}'); background-size: cover; background-position: center; min-height: 110px; margin: 0 -10px 15px -10px; padding: 14px 20px; overflow: hidden; }
+  .header-logo-tr { position: absolute; top: ${MHC_LOGO_SPEC.topPx}px; right: ${MHC_LOGO_SPEC.rightPx}px; height: ${MHC_LOGO_SPEC.heightPx}px; width: auto; object-fit: contain; display: block; z-index: 3; }
   .report-title { text-align: center; margin-bottom: 20px; margin-top: 10px; }
   .report-title h1 { font-size: 22px; color: #0B3D91; font-weight: 800; margin-bottom: 6px; }
   .narrative-box { background: #fff; border: none; border-radius: 0; padding: 10px 0; margin-bottom: 20px; line-height: ${fontSettings.lineHeight || '2.0'}; white-space: pre-wrap; }

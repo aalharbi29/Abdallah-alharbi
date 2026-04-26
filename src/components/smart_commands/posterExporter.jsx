@@ -5,7 +5,7 @@
 import html2canvas from 'html2canvas';
 import { base44 } from '@/api/base44Client';
 import { getNestedValue, toLatinDigits, formatLatinDate } from './excelExporter';
-import { MHC_COLORS, MHC_GRADIENTS, MHC_ASSETS, MHC_FONT, MHC_TEXTS } from '../branding/madinahCluster';
+import { MHC_COLORS, MHC_GRADIENTS, MHC_ASSETS, MHC_FONT, MHC_TEXTS, MHC_LOGO_SPEC } from '../branding/madinahCluster';
 import { getBrandBackgroundPref } from '../branding/useBrandBackground';
 
 const DEFAULT_LOGO_URL = MHC_ASSETS.logo;
@@ -92,39 +92,24 @@ export async function exportAsPoster({ title, results, fields, labelFor, entityL
   `;
 
   container.innerHTML = `
-    <!-- خلفية مائية بشعار التجمع + خلفية بانورامية معتمدة (اختيارية) -->
+    <!-- 📐 القالب الرسمي الموحّد: خلفية بانورامية رسمية + شعار في الزاوية اليمنى العلوية -->
     <div style="position: relative; overflow: hidden;">
-      ${useBg ? `<div style="position: absolute; inset: 0; background-image: url('${MHC_ASSETS.backgroundHero}'); background-size: cover; background-position: center; opacity: 0.18; pointer-events: none; z-index: 0;"></div>
-      <div style="position: absolute; inset: 0; background: rgba(255,255,255,0.78); pointer-events: none; z-index: 0;"></div>` : ''}
-      <div style="position: absolute; inset: 0; background-image: url('${logo_url}'); background-repeat: no-repeat; background-position: center 380px; background-size: 620px auto; opacity: 0.05; pointer-events: none; z-index: 0;"></div>
+      <!-- الترويسة: خلفية القالب الرسمي (تدرّج أزرق + منحنيات) -->
+      <div style="position: relative; z-index: 1; background-image: url('${MHC_ASSETS.officialReportTemplate}'); background-size: cover; background-position: center; padding: 36px 44px 44px 44px; color: #fff; min-height: 240px;">
+        <!-- شعار التجمع في الزاوية اليمنى العلوية بنفس الحجم والتموضع الرسمي -->
+        <div style="position: absolute; top: ${MHC_LOGO_SPEC.topPx}px; right: ${MHC_LOGO_SPEC.rightPx}px; z-index: 3;">
+          <img src="${logo_url}" alt="شعار التجمع" style="height: ${MHC_LOGO_SPEC.heightPxWide}px; width: auto; object-fit: contain; display: block;" crossorigin="anonymous" />
+        </div>
 
-      <!-- شريط علوي: التدرّج الرسمي لتجمع المدينة المنورة -->
-      <div style="position: relative; z-index: 1; background: ${MHC_GRADIENTS.primary}; padding: 28px 44px; color: #fff; overflow: hidden;">
-        <div style="position: absolute; top: -70px; left: -70px; width: 240px; height: 240px; background: rgba(255,255,255,0.10); border-radius: 50%;"></div>
-        <div style="position: absolute; bottom: -90px; right: -50px; width: 320px; height: 320px; background: rgba(255,255,255,0.07); border-radius: 50%;"></div>
-        <div style="position: absolute; top: 30%; right: 35%; width: 140px; height: 140px; background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 70%);"></div>
-
-        <div style="position: relative; z-index: 2; display: flex; align-items: center; gap: 22px;">
-          <!-- شعار رسمي -->
-          <div style="background: rgba(255,255,255,0.95); padding: 10px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.25); flex-shrink: 0;">
-            <img src="${logo_url}" alt="شعار التجمع" style="width: 110px; height: 110px; object-fit: contain; display: block;" crossorigin="anonymous" />
-          </div>
-
-          <div style="flex: 1; min-width: 0;">
-            <div style="font-size: 13px; font-weight: 700; opacity: 0.95; letter-spacing: 0.6px; margin-bottom: 4px; font-family: 'Cairo', Arial, sans-serif;">
-              ${MHC_TEXTS.englishName}
-            </div>
-            <h1 style="${wordArtTitleStyle}">${title}</h1>
-            <div style="font-size: 13px; opacity: 0.92; margin-top: 6px;">${footer_text_1}</div>
-          </div>
+        <!-- العنوان والمعلومات الفرعية في وسط الترويسة -->
+        <div style="position: relative; z-index: 2; max-width: 70%; margin-top: 24px;">
+          <h1 style="${wordArtTitleStyle}">${title}</h1>
+          <div style="font-size: 14px; opacity: 0.92; margin-top: 8px; color: #fff;">${footer_text_1}</div>
         </div>
       </div>
 
-      <!-- شريط فيروزي رفيع فاصل (هوية التجمع) -->
-      <div style="height: 5px; background: linear-gradient(90deg, ${PALETTE.teal} 0%, ${PALETTE.tealLight} 50%, ${PALETTE.sky} 100%); position: relative; z-index: 1;"></div>
-
       <!-- جدول البيانات -->
-      <div style="position: relative; z-index: 1; padding: 28px 36px;">
+      <div style="position: relative; z-index: 1; padding: 28px 36px; background: #ffffff;">
         <table style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; background: ${PALETTE.paper}; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 24px rgba(11, 61, 145, 0.10); border: 1px solid ${PALETTE.border};">
           <thead>
             <tr style="background: linear-gradient(180deg, ${PALETTE.navy} 0%, ${PALETTE.blue} 100%);">
