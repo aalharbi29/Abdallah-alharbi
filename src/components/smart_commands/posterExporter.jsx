@@ -112,7 +112,7 @@ export async function exportAsPoster({ title, results, fields, labelFor, entityL
 
           <div style="flex: 1; min-width: 0;">
             <div style="font-size: 13px; font-weight: 700; opacity: 0.95; letter-spacing: 0.6px; margin-bottom: 4px;">
-              ${footer_text_2} • ${MHC_TEXTS.englishName} ${isFree ? '• 🧠 مولّد بالذكاء الاصطناعي' : ''}
+              ${MHC_TEXTS.englishName} ${isFree ? '• 🧠 مولّد بالذكاء الاصطناعي' : ''}
             </div>
             <h1 style="${wordArtTitleStyle}">${title}</h1>
             <div style="font-size: 13px; opacity: 0.92; margin-top: 6px;">${footer_text_1}</div>
