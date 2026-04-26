@@ -328,18 +328,22 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         allData = await mergeMultipleEntities(finalEntity, allData, secondaryEntities);
       }
 
-      // فلترة المراكز
+      // فلترة المراكز + الحفاظ على ترتيب اختيار المستخدم
       let filtered = allData;
       if (selectedCenters.length > 0) {
         const centerField = getCenterFieldForEntity(finalEntity);
         if (centerField) {
           const normalizedTargets = selectedCenters.map(normalizeArabic);
-          filtered = allData.filter((row) => {
+          // دالة تُرجع رقم ترتيب المركز حسب اختيار المستخدم (الأول = 0)
+          const getCenterOrder = (row) => {
             const centerVal = getNestedValue(row, centerField);
-            if (!centerVal) return false;
+            if (!centerVal) return -1;
             const normVal = normalizeArabic(centerVal);
-            return normalizedTargets.some((t) => normVal.includes(t) || t.includes(normVal));
-          });
+            return normalizedTargets.findIndex((t) => normVal.includes(t) || t.includes(normVal));
+          };
+          filtered = allData
+            .filter((row) => getCenterOrder(row) !== -1)
+            .sort((a, b) => getCenterOrder(a) - getCenterOrder(b));
         }
       }
 
