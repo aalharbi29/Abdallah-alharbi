@@ -1,6 +1,30 @@
 // تصدير نتائج التقرير الذكي كبوستر/صورة PNG احترافية
+// • هوية بصرية أزرق + سماوي مستوحاة من تجمع المدينة المنورة الصحي
+// • عنوان WordArt ذهبي محفور بظل
+// • شعار التجمع من إعدادات النظام (LogoSettings) + خلفية مائية
 import html2canvas from 'html2canvas';
+import { base44 } from '@/api/base44Client';
 import { getNestedValue, toLatinDigits, formatLatinDate } from './excelExporter';
+
+const DEFAULT_LOGO_URL = "https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/ebae7336b_1407.png";
+const DEFAULT_FOOTER_1 = "شؤون المراكز الصحية بالحسو - مستشفى الحسو العام";
+const DEFAULT_FOOTER_2 = "تجمع المدينة المنورة الصحي";
+
+// لوحة الألوان: أزرق ملكي + سماوي + ذهبي للنصوص الفنية
+const PALETTE = {
+  navy: '#0B3D91',
+  blue: '#1E63D6',
+  sky: '#3FA9F5',
+  skyLight: '#E0F2FE',
+  gold1: '#FFE27A',
+  gold2: '#D4A017',
+  gold3: '#8A5A00',
+  inkDark: '#0F172A',
+  inkSoft: '#475569',
+  paper: '#FFFFFF',
+  rowAlt: '#F1F8FF',
+  border: '#CBD5E1',
+};
 
 const renderCellForPoster = (val) => {
   if (val === null || val === undefined || val === '') return '—';
@@ -14,10 +38,28 @@ const renderCellForPoster = (val) => {
   return toLatinDigits(val);
 };
 
+// تحميل إعدادات الشعار من قاعدة البيانات (مرة واحدة عند الاستدعاء)
+async function loadLogoSettings() {
+  try {
+    const records = await base44.entities.LogoSettings.list('-updated_date', 1);
+    if (records.length > 0) {
+      return {
+        logo_url: records[0].logo_url || DEFAULT_LOGO_URL,
+        footer_text_1: records[0].footer_text_1 || DEFAULT_FOOTER_1,
+        footer_text_2: records[0].footer_text_2 || DEFAULT_FOOTER_2,
+      };
+    }
+  } catch (_) { /* ignore */ }
+  return { logo_url: DEFAULT_LOGO_URL, footer_text_1: DEFAULT_FOOTER_1, footer_text_2: DEFAULT_FOOTER_2 };
+}
+
 export async function exportAsPoster({ title, results, fields, labelFor, entityLabel, isFree }) {
   if (!results || results.length === 0) throw new Error('لا توجد بيانات للتصدير.');
 
-  // ابنِ عنصراً مؤقتاً خارج الشاشة بتنسيق بوستر A3 رأسي
+  const { logo_url, footer_text_1, footer_text_2 } = await loadLogoSettings();
+  const headers = fields.map((f) => labelFor(f));
+  const today = formatLatinDate();
+
   const container = document.createElement('div');
   container.style.position = 'fixed';
   container.style.top = '-99999px';
@@ -28,70 +70,114 @@ export async function exportAsPoster({ title, results, fields, labelFor, entityL
   container.style.fontFamily = "'Cairo', 'Segoe UI', Arial, sans-serif";
   container.dir = 'rtl';
 
-  const headers = fields.map((f) => labelFor(f));
-  const today = formatLatinDate();
-  const accent = isFree ? '#a21caf' : '#2563eb';
-  const accent2 = isFree ? '#7c3aed' : '#4338ca';
+  // عنوان WordArt ذهبي محفور بظل (CSS-only — يتعامل بشكل ممتاز مع html2canvas)
+  const wordArtTitleStyle = `
+    font-size: 44px;
+    font-weight: 900;
+    line-height: 1.35;
+    letter-spacing: -0.5px;
+    color: ${PALETTE.gold1};
+    background: linear-gradient(180deg, #FFF4B0 0%, #FFD24A 35%, ${PALETTE.gold2} 70%, ${PALETTE.gold3} 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow:
+      0 1px 0 rgba(255,255,255,0.25),
+      0 2px 0 rgba(0,0,0,0.35),
+      0 4px 6px rgba(0,0,0,0.45),
+      0 0 18px rgba(255, 215, 0, 0.25);
+    filter: drop-shadow(0 2px 1px rgba(0,0,0,0.4));
+    margin: 0;
+    padding: 6px 0 4px 0;
+  `;
 
   container.innerHTML = `
-    <div style="background: linear-gradient(135deg, ${accent} 0%, ${accent2} 100%); padding: 36px 48px; color: #fff; position: relative; overflow: hidden;">
-      <div style="position: absolute; top: -60px; left: -60px; width: 220px; height: 220px; background: rgba(255,255,255,0.08); border-radius: 50%;"></div>
-      <div style="position: absolute; bottom: -80px; right: -40px; width: 280px; height: 280px; background: rgba(255,255,255,0.06); border-radius: 50%;"></div>
-      <div style="position: relative; z-index: 2;">
-        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 14px;">
-          <div style="background: rgba(255,255,255,0.2); padding: 12px; border-radius: 14px; font-size: 28px; line-height: 1;">📊</div>
-          <div style="font-size: 14px; font-weight: 600; opacity: 0.9; letter-spacing: 0.5px;">تقرير احترافي${isFree ? ' • مولّد بالذكاء الاصطناعي 🧠' : ''}</div>
+    <!-- خلفية مائية بشعار التجمع -->
+    <div style="position: relative; overflow: hidden;">
+      <div style="position: absolute; inset: 0; background-image: url('${logo_url}'); background-repeat: no-repeat; background-position: center 380px; background-size: 620px auto; opacity: 0.05; pointer-events: none; z-index: 0;"></div>
+
+      <!-- شريط علوي: تدرّج أزرق ملكي → سماوي -->
+      <div style="position: relative; z-index: 1; background: linear-gradient(135deg, ${PALETTE.navy} 0%, ${PALETTE.blue} 55%, ${PALETTE.sky} 100%); padding: 28px 44px; color: #fff; overflow: hidden;">
+        <div style="position: absolute; top: -70px; left: -70px; width: 240px; height: 240px; background: rgba(255,255,255,0.10); border-radius: 50%;"></div>
+        <div style="position: absolute; bottom: -90px; right: -50px; width: 320px; height: 320px; background: rgba(255,255,255,0.07); border-radius: 50%;"></div>
+        <div style="position: absolute; top: 30%; right: 35%; width: 140px; height: 140px; background: radial-gradient(circle, rgba(255,255,255,0.18) 0%, transparent 70%);"></div>
+
+        <div style="position: relative; z-index: 2; display: flex; align-items: center; gap: 22px;">
+          <!-- شعار رسمي -->
+          <div style="background: rgba(255,255,255,0.95); padding: 10px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.25); flex-shrink: 0;">
+            <img src="${logo_url}" alt="شعار التجمع" style="width: 110px; height: 110px; object-fit: contain; display: block;" crossorigin="anonymous" />
+          </div>
+
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-size: 13px; font-weight: 600; opacity: 0.92; letter-spacing: 0.6px; margin-bottom: 4px;">
+              ${footer_text_2} ${isFree ? '• 🧠 مولّد بالذكاء الاصطناعي' : ''}
+            </div>
+            <h1 style="${wordArtTitleStyle}">${title}</h1>
+            <div style="font-size: 13px; opacity: 0.92; margin-top: 6px;">${footer_text_1}</div>
+          </div>
         </div>
-        <h1 style="font-size: 38px; font-weight: 800; margin: 0 0 12px 0; line-height: 1.3; text-shadow: 0 2px 4px rgba(0,0,0,0.15);">${title}</h1>
-        <div style="display: flex; gap: 24px; margin-top: 18px; flex-wrap: wrap;">
-          <div style="background: rgba(255,255,255,0.18); padding: 10px 18px; border-radius: 10px; backdrop-filter: blur(4px);">
-            <div style="font-size: 11px; opacity: 0.85;">الكيان</div>
-            <div style="font-size: 16px; font-weight: 700; margin-top: 2px;">${entityLabel || '—'}</div>
-          </div>
-          <div style="background: rgba(255,255,255,0.18); padding: 10px 18px; border-radius: 10px; backdrop-filter: blur(4px);">
-            <div style="font-size: 11px; opacity: 0.85;">عدد السجلات</div>
-            <div style="font-size: 16px; font-weight: 700; margin-top: 2px;">${toLatinDigits(results.length)}</div>
-          </div>
-          <div style="background: rgba(255,255,255,0.18); padding: 10px 18px; border-radius: 10px; backdrop-filter: blur(4px);">
-            <div style="font-size: 11px; opacity: 0.85;">عدد الأعمدة</div>
-            <div style="font-size: 16px; font-weight: 700; margin-top: 2px;">${toLatinDigits(fields.length)}</div>
-          </div>
-          <div style="background: rgba(255,255,255,0.18); padding: 10px 18px; border-radius: 10px; backdrop-filter: blur(4px);">
-            <div style="font-size: 11px; opacity: 0.85;">تاريخ الإصدار</div>
-            <div style="font-size: 16px; font-weight: 700; margin-top: 2px;">${today}</div>
-          </div>
+
+        <!-- شريط إحصائيات -->
+        <div style="position: relative; z-index: 2; display: flex; gap: 14px; margin-top: 20px; flex-wrap: wrap;">
+          ${[
+            ['الكيان', entityLabel || '—'],
+            ['عدد السجلات', toLatinDigits(results.length)],
+            ['عدد الأعمدة', toLatinDigits(fields.length)],
+            ['تاريخ الإصدار', today],
+          ].map(([k, v]) => `
+            <div style="background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.25); padding: 10px 18px; border-radius: 10px; min-width: 140px;">
+              <div style="font-size: 11px; opacity: 0.85;">${k}</div>
+              <div style="font-size: 16px; font-weight: 700; margin-top: 2px;">${v}</div>
+            </div>
+          `).join('')}
         </div>
       </div>
-    </div>
 
-    <div style="padding: 32px 40px;">
-      <table style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06); border: 1px solid #e2e8f0;">
-        <thead>
-          <tr style="background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);">
-            <th style="padding: 14px 10px; text-align: center; font-weight: 700; color: #334155; border-bottom: 2px solid ${accent}; width: 44px;">#</th>
-            ${headers.map((h) => `<th style="padding: 14px 12px; text-align: right; font-weight: 700; color: #334155; border-bottom: 2px solid ${accent}; white-space: nowrap;">${h}</th>`).join('')}
-          </tr>
-        </thead>
-        <tbody>
-          ${results.map((row, i) => `
-            <tr style="background: ${i % 2 === 0 ? '#ffffff' : '#f8fafc'};">
-              <td style="padding: 12px 10px; text-align: center; color: #64748b; font-weight: 600; border-bottom: 1px solid #f1f5f9;">${toLatinDigits(i + 1)}</td>
-              ${fields.map((f) => `<td style="padding: 12px; text-align: right; color: #0f172a; border-bottom: 1px solid #f1f5f9; unicode-bidi: plaintext;">${renderCellForPoster(getNestedValue(row, f))}</td>`).join('')}
+      <!-- شريط ذهبي رفيع فاصل -->
+      <div style="height: 6px; background: linear-gradient(90deg, ${PALETTE.gold3} 0%, ${PALETTE.gold2} 50%, ${PALETTE.gold1} 100%); position: relative; z-index: 1;"></div>
+
+      <!-- جدول البيانات -->
+      <div style="position: relative; z-index: 1; padding: 28px 36px;">
+        <table style="width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; background: ${PALETTE.paper}; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 24px rgba(11, 61, 145, 0.10); border: 1px solid ${PALETTE.border};">
+          <thead>
+            <tr style="background: linear-gradient(180deg, ${PALETTE.navy} 0%, ${PALETTE.blue} 100%);">
+              <th style="padding: 14px 10px; text-align: center; font-weight: 800; color: ${PALETTE.gold1}; border-bottom: 3px solid ${PALETTE.gold2}; width: 44px; text-shadow: 0 1px 2px rgba(0,0,0,0.4);">#</th>
+              ${headers.map((h) => `<th style="padding: 14px 12px; text-align: right; font-weight: 800; color: #fff; border-bottom: 3px solid ${PALETTE.gold2}; white-space: nowrap;">${h}</th>`).join('')}
             </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            ${results.map((row, i) => `
+              <tr style="background: ${i % 2 === 0 ? PALETTE.paper : PALETTE.rowAlt};">
+                <td style="padding: 12px 10px; text-align: center; color: ${PALETTE.blue}; font-weight: 700; border-bottom: 1px solid ${PALETTE.skyLight};">${toLatinDigits(i + 1)}</td>
+                ${fields.map((f) => `<td style="padding: 12px; text-align: right; color: ${PALETTE.inkDark}; border-bottom: 1px solid ${PALETTE.skyLight}; unicode-bidi: plaintext;">${renderCellForPoster(getNestedValue(row, f))}</td>`).join('')}
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
 
-    <div style="background: #f8fafc; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0;">
-      <div style="font-size: 12px; color: #64748b;">تم الإنشاء بواسطة نظام الأوامر الذكية • ${today}</div>
-      <div style="font-size: 12px; color: ${accent}; font-weight: 700;">صفحة 1 من 1</div>
+      <!-- تذييل: شريط أزرق-سماوي مع نصوص الإعدادات -->
+      <div style="position: relative; z-index: 1; background: linear-gradient(90deg, ${PALETTE.navy} 0%, ${PALETTE.blue} 50%, ${PALETTE.sky} 100%); padding: 18px 40px; display: flex; justify-content: space-between; align-items: center; color: #fff;">
+        <div style="font-size: 12px; opacity: 0.95;">${footer_text_1}</div>
+        <div style="font-size: 13px; font-weight: 800; color: ${PALETTE.gold1}; text-shadow: 0 1px 2px rgba(0,0,0,0.45);">${footer_text_2}</div>
+        <div style="font-size: 12px; opacity: 0.95;">${today}</div>
+      </div>
     </div>
   `;
 
   document.body.appendChild(container);
 
   try {
+    // انتظر تحميل صورة الشعار قبل الالتقاط
+    const imgs = container.querySelectorAll('img');
+    await Promise.all(Array.from(imgs).map((img) => {
+      if (img.complete) return Promise.resolve();
+      return new Promise((res) => {
+        img.onload = res;
+        img.onerror = res;
+      });
+    }));
+
     const canvas = await html2canvas(container, {
       scale: 2,
       backgroundColor: '#ffffff',
