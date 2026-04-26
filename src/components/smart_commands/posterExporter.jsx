@@ -111,27 +111,12 @@ export async function exportAsPoster({ title, results, fields, labelFor, entityL
           </div>
 
           <div style="flex: 1; min-width: 0;">
-            <div style="font-size: 13px; font-weight: 700; opacity: 0.95; letter-spacing: 0.6px; margin-bottom: 4px;">
-              ${MHC_TEXTS.englishName} ${isFree ? '• 🧠 مولّد بالذكاء الاصطناعي' : ''}
+            <div style="font-size: 13px; font-weight: 700; opacity: 0.95; letter-spacing: 0.6px; margin-bottom: 4px; font-family: 'Cairo', Arial, sans-serif;">
+              ${MHC_TEXTS.englishName}
             </div>
             <h1 style="${wordArtTitleStyle}">${title}</h1>
             <div style="font-size: 13px; opacity: 0.92; margin-top: 6px;">${footer_text_1}</div>
           </div>
-        </div>
-
-        <!-- شريط إحصائيات -->
-        <div style="position: relative; z-index: 2; display: flex; gap: 14px; margin-top: 20px; flex-wrap: wrap;">
-          ${[
-            ['نوع التقرير', !entityLabel || entityLabel === '__standalone__' ? '🆓 تقرير حر' : entityLabel],
-            ['عدد السجلات', toLatinDigits(results.length)],
-            ['عدد الأعمدة', toLatinDigits(fields.length)],
-            ['تاريخ الإصدار', today],
-          ].map(([k, v]) => `
-            <div style="background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.25); padding: 10px 18px; border-radius: 10px; min-width: 140px;">
-              <div style="font-size: 11px; opacity: 0.85;">${k}</div>
-              <div style="font-size: 16px; font-weight: 700; margin-top: 2px;">${v}</div>
-            </div>
-          `).join('')}
         </div>
       </div>
 
