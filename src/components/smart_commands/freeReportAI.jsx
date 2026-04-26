@@ -147,8 +147,96 @@ const DEFAULT_HEALTH_CENTER_FULL_FIELDS = [
   'سيارة_خدمات.متوفرة', 'سيارة_خدمات.رقم_اللوحة_عربي', 'سيارة_خدمات.حالة_السيارة', 'سيارة_خدمات.اسم_السائق',
 ];
 
+// 🆕 كشف الطلبات التي تتجاوز كيانات النظام تماماً (أدوية، مخزون، مستلزمات...)
+// عندما يطلب المستخدم تقريراً عن بيانات غير موجودة فعلياً في النظام،
+// نتحول إلى "وضع البناء الحر" — AI يُنشئ الجدول كاملاً من النص.
+const detectStandaloneTopic = (prompt) => {
+  const p = normalizeArabic(prompt);
+  // كلمات تدل على موضوع غير مُمَثّل بكيان في النظام
+  const standaloneKeywords = [
+    /دواء|ادويه|الادويه|مخدر|مخدره|عقار|عقاقير/,
+    /مستلزم|مستلزمات|مستهلك|مستهلكات|مخزون/,
+    /لقاح|لقاحات|تطعيم|تطعيمات/,
+    /كميه|الكميه|كميات|عبوه|عبوات|امبول|امبوله|قرص|اقراص/,
+    /انتهاء|صلاحيه|صلاحيات/,
+  ];
+  return standaloneKeywords.some((re) => re.test(p));
+};
+
+// 🆕 وضع البناء الحر: AI يُنشئ جدولاً كاملاً (صفوف + أعمدة + قيم) من النص
+async function planStandaloneReport(userPrompt) {
+  const aiPrompt = `أنت مساعد خبير في بناء جداول تقارير من نص حر بالعربية.
+
+📝 المستخدم طلب تقريراً عن موضوع غير مُمَثَّل ببيانات منظمة في النظام (مثل: أدوية، مخزون، لقاحات، تواريخ انتهاء صلاحية...). مهمتك أن تستخرج البيانات الموجودة في النص وتبني جدولاً كاملاً يطابق الطلب بدقة.
+
+🎯 قواعد صارمة:
+1. **اختر الأعمدة من النص فقط** — ممنوع إضافة أي عمود لم يطلبه المستخدم صراحةً (لا هاتف، لا فاكس، لا مدير، لا إيجار، لا أي شيء غير مذكور في الطلب).
+2. **أنشئ صفاً واحداً لكل وحدة** يطلبها المستخدم (مثلاً: صف لكل مركز، صف لكل دواء، أو حسب ما يقتضيه الطلب).
+3. **املأ القيم من النص** — إذا كان النص يقول "ينتهي في شهر 6 لعام 2026" فاكتب "2026/06" أو "يونيو 2026". إذا قال "اسماء الأدوية بالإنجليزي" فاستخدم Morphine, Diazepam وهكذا.
+4. **القيم المختلفة بين الصفوف** — إذا قال المستخدم "صخيبرة يحتاج أمبولة إضافية" فضع هذه المعلومة في صف صخيبرة فقط، وليس في باقي الصفوف.
+5. **عناوين الأعمدة** بالعربية واضحة ومختصرة.
+6. القيم الفارغة اجعلها "—".
+
+الطلب: "${userPrompt}"
+
+أرجع JSON بهذا الشكل بالضبط:
+{
+  "title": "عنوان التقرير المناسب",
+  "columns": ["العمود 1", "العمود 2", ...],
+  "rows": [
+    { "العمود 1": "قيمة", "العمود 2": "قيمة", ... },
+    ...
+  ],
+  "notes": "ملاحظة قصيرة عن منطق البناء"
+}`;
+
+  let response;
+  try {
+    response = await base44.integrations.Core.InvokeLLM({
+      prompt: aiPrompt,
+      response_json_schema: {
+        type: 'object',
+        properties: {
+          title: { type: 'string' },
+          columns: { type: 'array', items: { type: 'string' } },
+          rows: { type: 'array', items: { type: 'object' } },
+          notes: { type: 'string' },
+        },
+        required: ['title', 'columns', 'rows'],
+      },
+    });
+  } catch (err) {
+    throw new Error(`فشل بناء التقرير الحر: ${err?.message || 'خطأ'}`);
+  }
+
+  const parsed = typeof response === 'string' ? JSON.parse(response) : response;
+  if (!parsed?.columns?.length || !parsed?.rows?.length) {
+    throw new Error('الذكاء الاصطناعي لم يتمكن من بناء جدول من الطلب.');
+  }
+
+  // ابنِ خطة افتراضية بصيغة موحدة: standalone = true → executeFreeReportPlan يعالجها مباشرة
+  return {
+    standalone: true,
+    primary_entity: '__standalone__',
+    title: parsed.title || 'تقرير حر',
+    notes: parsed.notes || '',
+    __standaloneColumns: parsed.columns,
+    __standaloneRows: parsed.rows,
+    fields: parsed.columns.map((c, i) => `__col_${i}_${c.replace(/\s+/g, '_').slice(0, 30)}`),
+    __customLabels: Object.fromEntries(
+      parsed.columns.map((c, i) => [`__col_${i}_${c.replace(/\s+/g, '_').slice(0, 30)}`, c])
+    ),
+  };
+}
+
 // اطلب من AI تحليل النص وإرجاع خطة تقرير
 export async function planFreeReport(userPrompt) {
+  // 🆕 إذا كان الطلب عن موضوع غير مُمَثَّل بكيان في النظام → وضع البناء الحر
+  if (detectStandaloneTopic(userPrompt)) {
+    console.info('🆓 الطلب يخص موضوعاً خارج كيانات النظام — التحول إلى وضع البناء الحر.');
+    return await planStandaloneReport(userPrompt);
+  }
+
   const schemaContext = buildFullSchemaContext();
   const validEntities = ENTITIES_CATALOG.map((e) => e.value).join(', ');
   const hintedEntity = detectLikelyEntity(userPrompt);
@@ -547,6 +635,19 @@ const customColumnKey = (header, idx) => `__custom_${idx}_${String(header || '')
 
 // تنفيذ الخطة وإرجاع البيانات
 export async function executeFreeReportPlan(plan) {
+  // 🆕 وضع البناء الحر: لا نحتاج جلب بيانات، فقط نحوّل الصفوف لمفاتيح آمنة
+  if (plan.standalone && Array.isArray(plan.__standaloneRows) && Array.isArray(plan.__standaloneColumns)) {
+    const cols = plan.__standaloneColumns;
+    const safeKeys = plan.fields; // أصلاً مولّدة بصيغة __col_N_xxx
+    return plan.__standaloneRows.map((row) => {
+      const out = {};
+      cols.forEach((colLabel, i) => {
+        out[safeKeys[i]] = row[colLabel] ?? row[colLabel.trim()] ?? '—';
+      });
+      return out;
+    });
+  }
+
   const primaryEntity = plan.primary_entity;
   if (!primaryEntity || !base44.entities[primaryEntity]) {
     throw new Error(`الكيان "${primaryEntity}" غير متاح في النظام.`);

@@ -721,7 +721,9 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
                 <CardTitle className="text-xl text-slate-800">{queryInfo.title}</CardTitle>
                 <CardDescription className="mt-1 flex items-center gap-2 flex-wrap">
                   <Badge variant="outline" className="bg-white">
-                    {getEntityByValue(queryInfo.entity)?.icon} {getEntityByValue(queryInfo.entity)?.label || queryInfo.entity}
+                    {queryInfo.entity === '__standalone__'
+                      ? '🆓 تقرير مُركَّب حر'
+                      : `${getEntityByValue(queryInfo.entity)?.icon || ''} ${getEntityByValue(queryInfo.entity)?.label || queryInfo.entity}`}
                   </Badge>
                   <span><strong>{results.length}</strong> نتيجة</span>
                   <span>•</span>
