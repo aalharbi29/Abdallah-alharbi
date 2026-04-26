@@ -1,5 +1,6 @@
 import ExcelJS from 'exceljs';
 import { MHC_TEXTS, MHC_ASSETS } from '../branding/madinahCluster';
+import { getBrandBackgroundPref } from '../branding/useBrandBackground';
 
 // 🎨 ألوان الهوية البصرية لتجمع المدينة المنورة (ARGB لـ ExcelJS)
 const MHC_XL = {
@@ -650,7 +651,8 @@ export const generateReportHtml = ({
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Cairo', sans-serif; background: #fff; color: #000; }
   @page { size: A4; margin: 5mm 15mm 15mm 15mm; }
-  .page-container { max-width: 210mm; margin: 0 auto; padding: 0 10px; min-height: 100vh; display: flex; flex-direction: column; }
+  .page-container { max-width: 210mm; margin: 0 auto; padding: 0 10px; min-height: 100vh; display: flex; flex-direction: column; position: relative; ${getBrandBackgroundPref('report', true) ? `background-image: url('${MHC_ASSETS.backgroundClean}'); background-size: cover; background-position: center; background-repeat: no-repeat;` : ''} }
+  ${getBrandBackgroundPref('report', true) ? `.page-container::before { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.88); z-index: 0; pointer-events: none; } .page-container > * { position: relative; z-index: 1; }` : ''}
   .page-content { flex: 1; padding-top: 15px; }
   .header-banner { border-bottom: 3px solid #0B3D91; padding: 0 0 8px; margin-bottom: 15px; overflow: hidden; display: flex; justify-content: ${logoJustify}; align-items: center; }
   .header-banner img { max-height: ${logoSettings.max_height}px; margin: ${logoSettings.margin_top}px 0 ${logoSettings.margin_bottom}px 0; display: block; }

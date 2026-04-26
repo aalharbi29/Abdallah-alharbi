@@ -6,10 +6,13 @@ import { Button } from '@/components/ui/button';
 import QRCode from 'qrcode';
 import html2canvas from 'html2canvas';
 import { MHC_COLORS, MHC_GRADIENTS, MHC_ASSETS, MHC_TEXTS } from '@/components/branding/madinahCluster';
+import BackgroundToggle from '@/components/branding/BackgroundToggle';
+import { useBrandBackground } from '@/components/branding/useBrandBackground';
 
 export default function EmployeeIDCard({ employee, onClose }) {
   const cardRef = useRef(null);
   const [qrCodeDataUrl, setQrCodeDataUrl] = useState('');
+  const { enabled: bgEnabled } = useBrandBackground('id_card', true);
 
   useEffect(() => {
     generateQRCode();
@@ -141,6 +144,7 @@ ${employee.birth_date ? `🎂 *تاريخ الميلاد:* ${format(new Date(emp
         <div className="relative w-full max-w-[420px]" onClick={(e) => e.stopPropagation()}>
           {/* أزرار الإجراءات */}
           <div className="print-actions flex gap-2 mb-4 justify-center flex-wrap">
+            <BackgroundToggle storageKey="id_card" size="sm" />
             <Button
               onClick={handlePrint}
               className="bg-blue-600 hover:bg-blue-700 text-white"
@@ -183,7 +187,23 @@ ${employee.birth_date ? `🎂 *تاريخ الميلاد:* ${format(new Date(emp
           </div>
 
           {/* البطاقة - بهوية تجمع المدينة المنورة الصحي */}
-          <div ref={cardRef} className="id-card-print bg-white rounded-2xl shadow-2xl overflow-hidden w-full" style={{ width: '100mm', maxWidth: '380px', fontFamily: "'Tajawal','Cairo',sans-serif" }}>
+          <div
+            ref={cardRef}
+            className="id-card-print rounded-2xl shadow-2xl overflow-hidden w-full relative"
+            style={{
+              width: '100mm',
+              maxWidth: '380px',
+              fontFamily: "'Tajawal','Cairo',sans-serif",
+              backgroundColor: '#ffffff',
+              backgroundImage: bgEnabled ? `url('${MHC_ASSETS.backgroundCardSlide}')` : undefined,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          >
+            {bgEnabled && (
+              <div className="absolute inset-0 bg-white/80 pointer-events-none" aria-hidden="true" />
+            )}
+            <div className="relative z-10">
             {/* Header مع تدرّج الهوية الرسمية + الشعار */}
             <div className="text-white p-5 relative overflow-hidden" style={{ background: MHC_GRADIENTS.primary }}>
               <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-5 rounded-full -mr-16 -mt-16"></div>
@@ -291,6 +311,7 @@ ${employee.birth_date ? `🎂 *تاريخ الميلاد:* ${format(new Date(emp
                   </div>
                 </div>
               </div>
+            </div>
             </div>
           </div>
         </div>

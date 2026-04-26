@@ -34,6 +34,7 @@ import EmployeeMultiSelect from '@/components/employee_data/EmployeeMultiSelect'
 import FontSettings from '@/components/employee_data/FontSettings';
 import HijriDatePicker from '@/components/ui/HijriDatePicker';
 import { exportToCSV, exportToHTML, generateReportHtml } from '@/components/employee_data/exportUtils';
+import BackgroundToggle from '@/components/branding/BackgroundToggle';
 import { toast } from 'sonner';
 
 const availableFields = [
@@ -1600,6 +1601,7 @@ export default function EmployeeDataRequest() {
                   <Printer className="w-4 h-4 ml-2" />
                   طباعة
                 </Button>
+                <BackgroundToggle storageKey="report" size="sm" />
               </div>
             </CardContent>
           </Card>

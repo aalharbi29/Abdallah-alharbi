@@ -6,6 +6,7 @@ import html2canvas from 'html2canvas';
 import { base44 } from '@/api/base44Client';
 import { getNestedValue, toLatinDigits, formatLatinDate } from './excelExporter';
 import { MHC_COLORS, MHC_GRADIENTS, MHC_ASSETS, MHC_FONT, MHC_TEXTS } from '../branding/madinahCluster';
+import { getBrandBackgroundPref } from '../branding/useBrandBackground';
 
 const DEFAULT_LOGO_URL = MHC_ASSETS.logo;
 const DEFAULT_FOOTER_1 = "شؤون المراكز الصحية بالحسو - مستشفى الحسو العام";
@@ -61,6 +62,8 @@ export async function exportAsPoster({ title, results, fields, labelFor, entityL
   const headers = fields.map((f) => labelFor(f));
   const today = formatLatinDate();
 
+  const useBg = getBrandBackgroundPref('poster', true);
+
   const container = document.createElement('div');
   container.style.position = 'fixed';
   container.style.top = '-99999px';
@@ -88,8 +91,10 @@ export async function exportAsPoster({ title, results, fields, labelFor, entityL
   `;
 
   container.innerHTML = `
-    <!-- خلفية مائية بشعار التجمع -->
+    <!-- خلفية مائية بشعار التجمع + خلفية بانورامية معتمدة (اختيارية) -->
     <div style="position: relative; overflow: hidden;">
+      ${useBg ? `<div style="position: absolute; inset: 0; background-image: url('${MHC_ASSETS.backgroundHero}'); background-size: cover; background-position: center; opacity: 0.18; pointer-events: none; z-index: 0;"></div>
+      <div style="position: absolute; inset: 0; background: rgba(255,255,255,0.78); pointer-events: none; z-index: 0;"></div>` : ''}
       <div style="position: absolute; inset: 0; background-image: url('${logo_url}'); background-repeat: no-repeat; background-position: center 380px; background-size: 620px auto; opacity: 0.05; pointer-events: none; z-index: 0;"></div>
 
       <!-- شريط علوي: التدرّج الرسمي لتجمع المدينة المنورة -->

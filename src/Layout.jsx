@@ -11,6 +11,8 @@ import MobileMenuDrawer from "./components/layout/MobileMenuDrawer";
 import LayoutStyles from "./components/layout/LayoutStyles";
 import useLayoutState from "./components/layout/useLayoutState";
 import useMainScrollKeyboard from "./components/layout/useMainScrollKeyboard";
+import { useBrandBackground } from "./components/branding/useBrandBackground";
+import { MHC_ASSETS } from "./components/branding/madinahCluster";
 
 
 
@@ -29,6 +31,7 @@ function LayoutContent({ children, currentPageName }) {
   } = useLayoutState({ currentPageName, navigationItems, location });
 
   useMainScrollKeyboard(mainRef);
+  const { enabled: bgEnabled } = useBrandBackground('layout', true);
 
   if (currentPageName === 'ViewAssignment') {
     return (
@@ -44,20 +47,33 @@ function LayoutContent({ children, currentPageName }) {
     <div dir="rtl" className="font-cairo" style={{ fontFamily: "'Tajawal','Cairo','Segoe UI',sans-serif" }}>
       <LayoutStyles />
 
-      <div className="flex h-screen bg-gradient-to-br from-gray-50 to-green-50 overflow-hidden responsive-shell">
-        <InstallPrompt />
-
-        {!isMobile && (
-          <SidebarNav
-            navigationItems={navigationItems}
-            expandedMenu={expandedMenu}
-            toggleSubmenu={toggleSubmenu}
-            location={location}
-            t={t}
-          />
+      <div
+        className="flex h-screen bg-gradient-to-br from-gray-50 to-green-50 overflow-hidden responsive-shell relative"
+        style={bgEnabled ? {
+          backgroundImage: `url('${MHC_ASSETS.backgroundClean}')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
+        } : undefined}
+      >
+        {bgEnabled && (
+          <div className="absolute inset-0 bg-white/85 backdrop-blur-[1px] pointer-events-none z-0" aria-hidden="true" />
         )}
+        <div className="relative z-10 contents">
+          <InstallPrompt />
 
-        <div className="flex-1 flex flex-col">
+          {!isMobile && (
+            <SidebarNav
+              navigationItems={navigationItems}
+              expandedMenu={expandedMenu}
+              toggleSubmenu={toggleSubmenu}
+              location={location}
+              t={t}
+            />
+          )}
+        </div>
+
+        <div className="relative z-10 flex-1 flex flex-col">
           <AppHeader onMenuClick={toggleMobileMenu} />
 
           <MobileMenuDrawer

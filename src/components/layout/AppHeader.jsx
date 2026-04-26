@@ -4,6 +4,7 @@ import { Hospital, Menu } from "lucide-react";
 import ThemeSwitcher from "../theme/ThemeSwitcher";
 import LanguageSwitcher from "../language/LanguageSwitcher";
 import Notifications from "../notifications/Notifications";
+import BackgroundToggle from "../branding/BackgroundToggle";
 
 export default function AppHeader({ onMenuClick }) {
   return (
@@ -26,6 +27,9 @@ export default function AppHeader({ onMenuClick }) {
       </div>
 
       <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 responsive-toolbar">
+        <div className="hidden md:block">
+          <BackgroundToggle storageKey="layout" size="xs" />
+        </div>
         <LanguageSwitcher variant="ghost" size="sm" />
         <ThemeSwitcher variant="compact" />
         <Notifications />
