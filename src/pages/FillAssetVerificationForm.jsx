@@ -3,9 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent } from '@/components/ui/card';
-import { Printer, Plus, Trash2, Save, FileCheck2 } from 'lucide-react';
+import { Printer, Plus, Trash2, Save, FileCheck2, Loader2, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 
 const HEALTH_HOLDING_LOGO = 'https://media.base44.com/images/public/68af5003813e47bd07947b30/5bb77883d_image.png';
 
@@ -30,6 +32,8 @@ export default function FillAssetVerificationForm() {
 
   const [healthCenters, setHealthCenters] = useState([]);
   const [employees, setEmployees] = useState([]);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const [form, setForm] = useState({
     facility_name: '',
@@ -96,12 +100,78 @@ export default function FillAssetVerificationForm() {
     }
   };
 
+  const generatePDFBlob = async () => {
+    if (!printRef.current) return null;
+    const canvas = await html2canvas(printRef.current, { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    return pdf.output('blob');
+  };
+
+  const handleExportPDF = async () => {
+    try {
+      setIsExporting(true);
+      if (!printRef.current) return;
+      const canvas = await html2canvas(printRef.current, { scale: 2, useCORS: true });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`محضر_تحقق_أصول_${form.facility_name || 'نموذج'}.pdf`);
+      toast.success('تم تصدير النموذج كملف PDF');
+    } catch (error) {
+      toast.error('حدث خطأ أثناء تصدير PDF');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   const handlePrint = () => {
     window.print();
   };
 
   const handleSave = async () => {
-    toast.success('تم حفظ النموذج محلياً');
+    if (!form.facility_name) {
+      toast.error('يرجى اختيار المرفق الصحي أولاً');
+      return;
+    }
+    
+    try {
+      setIsSaving(true);
+      const center = healthCenters.find(c => c.اسم_المركز === form.facility_name);
+      
+      toast.info('جاري إعداد وحفظ المستند...');
+      const blob = await generatePDFBlob();
+      
+      if (!blob) throw new Error('فشل إنشاء PDF');
+      
+      const file = new File([blob], `محضر_أصول_${form.facility_name}.pdf`, { type: 'application/pdf' });
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      
+      await base44.entities.CenterDocument.create({
+        center_id: center ? center.id : '',
+        center_name: form.facility_name,
+        document_title: 'محضر التحقق من الأصول',
+        document_type: 'تقرير',
+        description: 'تم إنشاء النموذج تلقائياً من نظام التحقق والمراجعة للأصول',
+        file_url,
+        file_name: `محضر_أصول_${form.facility_name}.pdf`,
+        document_date: new Date().toISOString().split('T')[0],
+        document_number: `ASSET-${Date.now().toString().slice(-6)}`,
+        is_active: true
+      });
+      
+      toast.success('تم حفظ النموذج بنجاح في مستندات المركز');
+    } catch (error) {
+      console.error(error);
+      toast.error('حدث خطأ أثناء الحفظ');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -118,10 +188,17 @@ export default function FillAssetVerificationForm() {
               <p className="text-xs text-gray-500">نموذج رقم (5) — مشروع التحقق ومراجعة سجلات الأصول</p>
             </div>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={handleSave}><Save className="w-4 h-4 ml-1" />حفظ</Button>
-            <Button onClick={handlePrint} className="bg-emerald-600 hover:bg-emerald-700">
-              <Printer className="w-4 h-4 ml-1" />طباعة / PDF
+          <div className="flex flex-wrap gap-2">
+            <Button onClick={handleExportPDF} disabled={isExporting} variant="outline" className="text-emerald-700 border-emerald-600 hover:bg-emerald-50">
+              {isExporting ? <Loader2 className="w-4 h-4 ml-1 animate-spin" /> : <Download className="w-4 h-4 ml-1" />}
+              تصدير PDF
+            </Button>
+            <Button onClick={handlePrint} className="bg-slate-600 hover:bg-slate-700">
+              <Printer className="w-4 h-4 ml-1" />طباعة
+            </Button>
+            <Button onClick={handleSave} disabled={isSaving} className="bg-emerald-600 hover:bg-emerald-700">
+              {isSaving ? <Loader2 className="w-4 h-4 ml-1 animate-spin" /> : <Save className="w-4 h-4 ml-1" />}
+              حفظ في المركز
             </Button>
           </div>
         </div>
