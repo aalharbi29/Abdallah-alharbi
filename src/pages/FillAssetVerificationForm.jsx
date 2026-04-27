@@ -284,13 +284,13 @@ export default function FillAssetVerificationForm() {
                 {form.locations.map((loc, i) =>
                 <tr key={i} className="hover:bg-sky-50/40">
                     <Td className="py-0.5">
-                      <input value={loc.name} onChange={(e) => updateLocation(i, 'name', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
+                      <input value={loc.name} onChange={(e) => updateLocation(i, 'name', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center py-1" />
                     </Td>
                     <Td className="py-0.5">
-                      <input type="date" value={loc.date} onChange={(e) => updateLocation(i, 'date', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
+                      <input type="date" value={loc.date} onChange={(e) => updateLocation(i, 'date', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center py-1" />
                     </Td>
                     <Td className="py-0.5">
-                      <input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
+                      <input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center py-1" />
                     </Td>
                   </tr>
                 )}
@@ -344,13 +344,13 @@ export default function FillAssetVerificationForm() {
                 {form.team.map((m, i) =>
                 <tr key={i} className="hover:bg-sky-50/40">
                     <Td className="py-0.5">
-                      <input value={m.name} onChange={(e) => updateTeam(i, 'name', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
+                      <input value={m.name} onChange={(e) => updateTeam(i, 'name', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center py-1" />
                     </Td>
                     <Td className="py-0.5">
-                      <input value={m.title} onChange={(e) => updateTeam(i, 'title', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
+                      <input value={m.title} onChange={(e) => updateTeam(i, 'title', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center py-1" />
                     </Td>
                     <Td className="py-0.5">
-                      <input value={m.date} onChange={(e) => updateTeam(i, 'date', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
+                      <input value={m.date} onChange={(e) => updateTeam(i, 'date', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center py-1" />
                     </Td>
                   </tr>
                 )}
@@ -369,7 +369,7 @@ export default function FillAssetVerificationForm() {
                 {form.locations.map((loc, i) =>
                 <tr key={i} className="hover:bg-sky-50/40">
                     <Td className="py-0.5">
-                      <input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" placeholder={`ملاحظات الموقع ${i + 1}...`} />
+                      <input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center py-1" placeholder={`ملاحظات الموقع ${i + 1}...`} />
                     </Td>
                   </tr>
                 )}
@@ -451,5 +451,5 @@ function Th({ children, className = '' }) {
 }
 
 function Td({ children, className = '' }) {
-  return <td className={`border border-gray-800 px-1.5 py-1 text-sm leading-normal text-center align-middle ${className}`}>{children}</td>;
+  return <td className={`border border-gray-800 px-1.5 py-2 text-sm leading-relaxed text-center align-middle ${className}`}>{children}</td>;
 }
