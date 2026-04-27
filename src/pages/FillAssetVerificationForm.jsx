@@ -39,7 +39,7 @@ export default function FillAssetVerificationForm() {
     asset_checks: ASSET_CATEGORIES.reduce((acc, c) => ({ ...acc, [c]: '' }), {}),
     team: [emptyTeamMember(), emptyTeamMember(), emptyTeamMember()],
     notes: '',
-    project_manager_name: '',
+    project_manager_name: 'ماهر الينبعاوي',
     center_manager_name: '',
     signature_date: new Date().toISOString().split('T')[0]
   });
@@ -89,8 +89,7 @@ export default function FillAssetVerificationForm() {
       if (manager) {
         setForm((p) => ({
           ...p,
-          center_manager_name: manager.full_name_arabic || '',
-          project_manager_name: manager.full_name_arabic || p.project_manager_name
+          center_manager_name: manager.full_name_arabic || ''
         }));
         toast.success('تم تعبئة اسم مدير المركز الصحي تلقائياً');
       }
