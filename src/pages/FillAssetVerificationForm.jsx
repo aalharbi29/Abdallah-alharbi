@@ -361,7 +361,7 @@ function SectionTitle({ children }) {
 
 function SubHeader({ children, className = '' }) {
   return (
-    <div className="bg-gray-300 text-[#006a99] px-3 py-1.5 text-sm font-bold border border-[#0099d8]">
+    <div className="bg-stone-400 text-[#03141c] px-3 py-1.5 text-sm font-bold border border-[#0099d8]">
       {children}
     </div>);
 
