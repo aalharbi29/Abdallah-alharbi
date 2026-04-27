@@ -147,12 +147,12 @@ export default function FillAssetVerificationForm() {
 
             {/* قسم: معلومات عامة */}
             <SectionTitle>معلومات عامة</SectionTitle>
-            <div className="text-sm space-y-2 text-center">
+            <div className="text-sm space-y-0.5 text-center">
               <div className="flex items-center justify-center gap-2 flex-wrap">
                 <span className="font-bold">اسم المرفق الصحي :</span>
                 <div className="min-w-[260px]">
                   <Select value={form.facility_name} onValueChange={handleFacilitySelect}>
-                    <SelectTrigger className="border-0 border-b border-dashed rounded-none shadow-none h-8 text-sm print:hidden justify-center text-center">
+                    <SelectTrigger className="border-0 border-b border-dashed rounded-none shadow-none h-6 text-sm print:hidden justify-center text-center">
                       <SelectValue placeholder="اختر المركز..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -166,11 +166,11 @@ export default function FillAssetVerificationForm() {
               </div>
               <div className="flex items-center justify-center gap-2 flex-wrap">
                 <span className="font-bold">اسم التجمع الصحي :</span>
-                <Input value={form.cluster_name} onChange={(e) => updateField('cluster_name', e.target.value)} className="border-0 border-b border-dashed rounded-none shadow-none h-8 text-sm text-center max-w-[320px]" />
+                <Input value={form.cluster_name} onChange={(e) => updateField('cluster_name', e.target.value)} className="border-0 border-b border-dashed rounded-none shadow-none h-6 text-sm text-center max-w-[320px]" />
               </div>
               <div className="flex items-center justify-center gap-2 flex-wrap">
                 <span className="font-bold">المدينة / المنطقة (مكان التواجد):</span>
-                <Input value={form.city_region} onChange={(e) => updateField('city_region', e.target.value)} className="border-0 border-b border-dashed rounded-none shadow-none h-8 text-sm text-center max-w-[320px]" />
+                <Input value={form.city_region} onChange={(e) => updateField('city_region', e.target.value)} className="border-0 border-b border-dashed rounded-none shadow-none h-6 text-sm text-center max-w-[320px]" />
               </div>
             </div>
 
@@ -190,19 +190,19 @@ export default function FillAssetVerificationForm() {
               <tbody>
                 {form.locations.map((loc, i) =>
                 <tr key={i} className="hover:bg-sky-50/40">
-                    <Td className="py-0.5">
+                    <Td className="py-0 leading-none">
                       <div className="flex items-center justify-center gap-1">
-                        <input value={loc.name} onChange={(e) => updateLocation(i, 'name', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
+                        <input value={loc.name} onChange={(e) => updateLocation(i, 'name', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0 h-5 leading-none" />
                         <Button type="button" size="icon" variant="ghost" onClick={() => removeLocation(i)} className="h-4 w-4 print:hidden text-red-500 shrink-0">
                           <Trash2 className="w-3 h-3" />
                         </Button>
                       </div>
                     </Td>
-                    <Td className="py-0.5">
-                      <input type="date" value={loc.date} onChange={(e) => updateLocation(i, 'date', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
+                    <Td className="py-0 leading-none">
+                      <input type="date" value={loc.date} onChange={(e) => updateLocation(i, 'date', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0 h-5 leading-none" />
                     </Td>
-                    <Td className="py-0.5">
-                      <input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
+                    <Td className="py-0 leading-none">
+                      <input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0 h-5 leading-none" />
                     </Td>
                   </tr>
                 )}
@@ -219,16 +219,26 @@ export default function FillAssetVerificationForm() {
                 </tr>
               </thead>
               <tbody>
-                {ASSET_CATEGORIES.map((cat) =>
-                <tr key={cat} className="hover:bg-sky-50/40">
-                    <Td className="py-0.5">{cat}</Td>
-                    <Td className="py-1">
-                      <div className="flex justify-center items-center">
-                        <span className="inline-block w-4 h-4 border border-gray-800 rounded-sm" aria-hidden="true" />
-                      </div>
-                    </Td>
-                  </tr>
-                )}
+                {ASSET_CATEGORIES.map((cat) => {
+                  const val = form.asset_checks[cat];
+                  const next = val === '' ? '✓' : val === '✓' ? '✗' : '';
+                  return (
+                    <tr key={cat} className="hover:bg-sky-50/40">
+                      <Td className="py-0.5">{cat}</Td>
+                      <Td className="py-1">
+                        <div className="flex justify-center items-center">
+                          <button
+                            type="button"
+                            onClick={() => updateAssetCheck(cat, next)}
+                            className={`inline-flex items-center justify-center w-4 h-4 border border-gray-800 rounded-sm text-[12px] font-bold leading-none cursor-pointer ${val === '✓' ? 'text-green-700' : val === '✗' ? 'text-red-600' : 'text-transparent'}`}
+                            title="انقر للتبديل بين صح / خطأ / فارغ"
+                            aria-label={`تبديل حالة ${cat}`}>
+                            {val || '·'}
+                          </button>
+                        </div>
+                      </Td>
+                    </tr>);
+                })}
               </tbody>
             </table>
 
@@ -245,15 +255,15 @@ export default function FillAssetVerificationForm() {
               <tbody>
                 {form.team.map((m, i) =>
                 <tr key={i} className="hover:bg-sky-50/40">
-                    <Td className="py-0.5">
-                      <input value={m.name} onChange={(e) => updateTeam(i, 'name', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
+                    <Td className="py-0 leading-none">
+                      <input value={m.name} onChange={(e) => updateTeam(i, 'name', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0 h-5 leading-none" />
                     </Td>
-                    <Td className="py-0.5">
-                      <input value={m.title} onChange={(e) => updateTeam(i, 'title', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
+                    <Td className="py-0 leading-none">
+                      <input value={m.title} onChange={(e) => updateTeam(i, 'title', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0 h-5 leading-none" />
                     </Td>
-                    <Td className="py-0.5">
+                    <Td className="py-0 leading-none">
                       <div className="flex items-center justify-center gap-1">
-                        <input type="date" value={m.date} onChange={(e) => updateTeam(i, 'date', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
+                        <input type="date" value={m.date} onChange={(e) => updateTeam(i, 'date', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0 h-5 leading-none" />
                         <Button type="button" size="icon" variant="ghost" onClick={() => removeTeam(i)} className="h-4 w-4 print:hidden text-red-500 shrink-0">
                           <Trash2 className="w-3 h-3" />
                         </Button>
