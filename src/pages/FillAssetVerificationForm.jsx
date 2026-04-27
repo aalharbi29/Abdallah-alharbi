@@ -377,7 +377,7 @@ function InfoRow({ label, children }) {
 }
 
 function Th({ children, className = '' }) {
-  return <th className={`border border-gray-800 px-2 py-1 text-center font-bold text-sm ${className}`}>{children}</th>;
+  return <th className={`border border-gray-800 px-2 py-1 text-center font-bold text-sm bg-gray-100 ${className}`}>{children}</th>;
 }
 
 function Td({ children, className = '' }) {
