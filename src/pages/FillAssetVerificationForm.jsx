@@ -148,11 +148,12 @@ export default function FillAssetVerificationForm() {
 
             {/* قسم: معلومات عامة */}
             <SectionTitle>معلومات عامة</SectionTitle>
-            <table className="w-full border-collapse text-sm">
-              <tbody>
-                <InfoRow label="اسم المرفق الصحي :">
+            <div className="text-sm space-y-2 text-center">
+              <div className="flex items-center justify-center gap-2 flex-wrap">
+                <span className="font-bold">اسم المرفق الصحي :</span>
+                <div className="min-w-[260px]">
                   <Select value={form.facility_name} onValueChange={handleFacilitySelect}>
-                    <SelectTrigger className="border-0 shadow-none h-8 text-sm print:hidden justify-center text-center">
+                    <SelectTrigger className="border-0 border-b border-dashed rounded-none shadow-none h-8 text-sm print:hidden justify-center text-center">
                       <SelectValue placeholder="اختر المركز..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -162,15 +163,17 @@ export default function FillAssetVerificationForm() {
                     </SelectContent>
                   </Select>
                   <span className="hidden print:inline text-sm">{form.facility_name}</span>
-                </InfoRow>
-                <InfoRow label="اسم التجمع الصحي :">
-                  <Input value={form.cluster_name} onChange={(e) => updateField('cluster_name', e.target.value)} className="border-0 shadow-none h-8 text-sm text-center" />
-                </InfoRow>
-                <InfoRow label="المدينة / المنطقة (مكان التواجد):">
-                  <Input value={form.city_region} onChange={(e) => updateField('city_region', e.target.value)} className="border-0 shadow-none h-8 text-sm text-center" />
-                </InfoRow>
-              </tbody>
-            </table>
+                </div>
+              </div>
+              <div className="flex items-center justify-center gap-2 flex-wrap">
+                <span className="font-bold">اسم التجمع الصحي :</span>
+                <Input value={form.cluster_name} onChange={(e) => updateField('cluster_name', e.target.value)} className="border-0 border-b border-dashed rounded-none shadow-none h-8 text-sm text-center max-w-[320px]" />
+              </div>
+              <div className="flex items-center justify-center gap-2 flex-wrap">
+                <span className="font-bold">المدينة / المنطقة (مكان التواجد):</span>
+                <Input value={form.city_region} onChange={(e) => updateField('city_region', e.target.value)} className="border-0 border-b border-dashed rounded-none shadow-none h-8 text-sm text-center max-w-[320px]" />
+              </div>
+            </div>
 
             {/* قسم: نموذج محضر الجرد */}
             <SectionTitle>نموذج محضر الجرد</SectionTitle>
@@ -285,46 +288,32 @@ export default function FillAssetVerificationForm() {
             </Button>
 
             {/* التوقيعات */}
-            <table className="w-full border border-gray-800 border-collapse text-sm mt-8">
-              <tbody>
-                <tr>
-                  <Td className="w-1/2 align-top">
-                    <div className="space-y-1">
-                      <p className="font-bold">اسم مدير المشروع في المرفق الصحي:</p>
-                      <Input value={form.project_manager_name} onChange={(e) => updateField('project_manager_name', e.target.value)} className="border-0 border-b border-dashed rounded-none h-8 text-sm" />
-                    </div>
-                  </Td>
-                  <Td className="align-top">
-                    <div className="space-y-1">
-                      <p className="font-bold">اسم مدير المركز الصحي:</p>
-                      <Input value={form.center_manager_name} onChange={(e) => updateField('center_manager_name', e.target.value)} className="border-0 border-b border-dashed rounded-none h-8 text-sm" placeholder="يظهر تلقائياً عند اختيار المرفق" />
-                    </div>
-                  </Td>
-                </tr>
-                <tr>
-                  <Td>
-                    <div className="space-y-1">
-                      <p className="font-bold">التاريخ:</p>
-                      <Input type="date" value={form.signature_date} onChange={(e) => updateField('signature_date', e.target.value)} className="border-0 border-b border-dashed rounded-none h-8 text-sm" />
-                    </div>
-                  </Td>
-                  <Td>
-                    <p className="font-bold">التوقيع:</p>
-                    <div className="h-10 border-b border-dashed border-gray-500" />
-                  </Td>
-                </tr>
-                <tr>
-                  <Td>
-                    <p className="font-bold">التوقيع:</p>
-                    <div className="h-10 border-b border-dashed border-gray-500" />
-                  </Td>
-                  <Td>
-                    <p className="font-bold">ختم المرفق:</p>
-                    <div className="h-10 border-b border-dashed border-gray-500" />
-                  </Td>
-                </tr>
-              </tbody>
-            </table>
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-5 text-sm">
+              <div className="space-y-1 text-center">
+                <p className="font-bold">اسم مدير المشروع في المرفق الصحي:</p>
+                <Input value={form.project_manager_name} onChange={(e) => updateField('project_manager_name', e.target.value)} className="border-0 border-b border-dashed rounded-none h-8 text-sm text-center" />
+              </div>
+              <div className="space-y-1 text-center">
+                <p className="font-bold">اسم مدير المركز الصحي:</p>
+                <Input value={form.center_manager_name} onChange={(e) => updateField('center_manager_name', e.target.value)} className="border-0 border-b border-dashed rounded-none h-8 text-sm text-center" placeholder="يظهر تلقائياً عند اختيار المرفق" />
+              </div>
+              <div className="space-y-1 text-center">
+                <p className="font-bold">التاريخ:</p>
+                <Input type="date" value={form.signature_date} onChange={(e) => updateField('signature_date', e.target.value)} className="border-0 border-b border-dashed rounded-none h-8 text-sm text-center" />
+              </div>
+              <div className="space-y-1 text-center">
+                <p className="font-bold">التوقيع:</p>
+                <div className="h-10 border-b border-dashed border-gray-500" />
+              </div>
+              <div className="space-y-1 text-center">
+                <p className="font-bold">التوقيع:</p>
+                <div className="h-10 border-b border-dashed border-gray-500" />
+              </div>
+              <div className="space-y-1 text-center">
+                <p className="font-bold">ختم المرفق:</p>
+                <div className="h-10 border-b border-dashed border-gray-500" />
+              </div>
+            </div>
 
           </CardContent>
         </Card>
