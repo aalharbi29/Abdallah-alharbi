@@ -35,7 +35,7 @@ export default function FillAssetVerificationForm() {
     facility_name: '',
     cluster_name: 'تجمع المدينة المنورة الصحي',
     city_region: 'المدينة المنورة',
-    locations: [emptyLocation(), emptyLocation()],
+    locations: [{ name: '', date: '', notes: 'لا يوجد' }],
     asset_checks: ASSET_CATEGORIES.reduce((acc, c) => ({ ...acc, [c]: '' }), {}),
     team: [emptyTeamMember(), emptyTeamMember(), emptyTeamMember()],
     notes: '',
@@ -77,14 +77,14 @@ export default function FillAssetVerificationForm() {
   // التعبئة التلقائية عند اختيار المرفق
   const handleFacilitySelect = (facilityName) => {
     const center = healthCenters.find((c) => c.اسم_المركز === facilityName);
-    updateField('facility_name', facilityName);
+    setForm((p) => ({
+      ...p,
+      facility_name: facilityName,
+      city_region: center?.الموقع || p.city_region,
+      // الموقع الذي تم التحقق منه = اسم المرفق الصحي، والملاحظات = لا يوجد
+      locations: [{ name: facilityName, date: p.locations?.[0]?.date || '', notes: 'لا يوجد' }]
+    }));
     if (center) {
-      setForm((p) => ({
-        ...p,
-        facility_name: facilityName,
-        city_region: center.الموقع || p.city_region
-      }));
-      // تعبئة اسم مدير المركز الصحي فقط (لا نائب ولا مشرف فني)
       const manager = employees.find((e) => e.id === center.المدير);
       if (manager) {
         setForm((p) => ({
@@ -106,7 +106,7 @@ export default function FillAssetVerificationForm() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-emerald-50 p-4 md:p-6 print:bg-white print:p-0">
-      <div className="max-w-5xl mx-auto space-y-4 print:max-w-none">
+      <div className="max-w-5xl mx-auto space-y-4 print:max-w-none" data-print-area>
         {/* شريط الأدوات - يُخفى في الطباعة */}
         <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
           <div className="flex items-center gap-3">
@@ -263,7 +263,7 @@ export default function FillAssetVerificationForm() {
                     </Td>
                     <Td className="py-0 leading-none">
                       <div className="flex items-center justify-center gap-1">
-                        <input type="date" value={m.date} onChange={(e) => updateTeam(i, 'date', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0 h-5 leading-none" />
+                        <input value={m.date} onChange={(e) => updateTeam(i, 'date', e.target.value)} placeholder="أدخل التاريخ يدوياً" className="w-full bg-transparent border-0 outline-none text-sm text-center p-0 h-5 leading-none" />
                         <Button type="button" size="icon" variant="ghost" onClick={() => removeTeam(i)} className="h-4 w-4 print:hidden text-red-500 shrink-0">
                           <Trash2 className="w-3 h-3" />
                         </Button>
@@ -320,7 +320,14 @@ export default function FillAssetVerificationForm() {
       <style>{`
         @media print {
           @page { size: A4; margin: 12mm; }
+          html, body { background: #fff !important; }
           body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+          /* إخفاء كل عناصر الصفحة الخارجية (الشريط الجانبي/الترويسة العامة) عدا منطقة النموذج */
+          body * { visibility: hidden !important; }
+          [data-print-area], [data-print-area] * { visibility: visible !important; }
+          [data-print-area] { position: absolute; inset: 0; margin: 0 !important; padding: 0 !important; box-shadow: none !important; border: 0 !important; }
+          /* تأكيد طباعة ألوان الترويسة والجداول */
+          .bg-\\[\\#0099d8\\], .bg-stone-400, .bg-gradient-to-l { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
       `}</style>
     </div>);
