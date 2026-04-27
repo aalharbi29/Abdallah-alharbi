@@ -220,18 +220,10 @@ export default function FillAssetVerificationForm() {
                 {ASSET_CATEGORIES.map((cat) =>
                 <tr key={cat} className="hover:bg-sky-50/40">
                     <Td className="py-0.5">{cat}</Td>
-                    <Td className="py-0.5">
-                      <Select value={form.asset_checks[cat]} onValueChange={(v) => updateAssetCheck(cat, v)}>
-                        <SelectTrigger className="border-0 shadow-none h-6 text-sm print:hidden">
-                          <SelectValue placeholder="—" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="نعم">نعم</SelectItem>
-                          <SelectItem value="لا">لا</SelectItem>
-                          <SelectItem value="لا ينطبق">لا ينطبق</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <span className="hidden print:inline text-sm">{form.asset_checks[cat]}</span>
+                    <Td className="py-1">
+                      <div className="flex justify-center items-center">
+                        <span className="inline-block w-4 h-4 border border-gray-800 rounded-sm" aria-hidden="true" />
+                      </div>
                     </Td>
                   </tr>
                 )}
@@ -381,5 +373,5 @@ function Th({ children, className = '' }) {
 }
 
 function Td({ children, className = '' }) {
-  return <td className={`border border-gray-800 px-1.5 py-0 text-sm leading-tight ${className}`}>{children}</td>;
+  return <td className={`border border-gray-800 px-1.5 py-0 text-sm leading-tight text-center align-middle ${className}`}>{children}</td>;
 }
