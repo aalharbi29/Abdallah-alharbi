@@ -190,19 +190,19 @@ export default function FillAssetVerificationForm() {
               <tbody>
                 {form.locations.map((loc, i) =>
                 <tr key={i} className="hover:bg-sky-50/40">
-                    <Td className="py-0.5">
-                      <div className="flex items-center gap-1">
-                        <Input value={loc.name} onChange={(e) => updateLocation(i, 'name', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
-                        <Button type="button" size="icon" variant="ghost" onClick={() => removeLocation(i)} className="h-6 w-6 print:hidden text-red-500">
-                          <Trash2 className="w-3.5 h-3.5" />
+                    <Td className="p-0">
+                      <div className="flex items-center justify-center gap-1">
+                        <Input value={loc.name} onChange={(e) => updateLocation(i, 'name', e.target.value)} className="border-0 shadow-none h-5 text-sm text-center" />
+                        <Button type="button" size="icon" variant="ghost" onClick={() => removeLocation(i)} className="h-5 w-5 print:hidden text-red-500">
+                          <Trash2 className="w-3 h-3" />
                         </Button>
                       </div>
                     </Td>
-                    <Td className="py-0.5">
-                      <Input type="date" value={loc.date} onChange={(e) => updateLocation(i, 'date', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
+                    <Td className="p-0">
+                      <Input type="date" value={loc.date} onChange={(e) => updateLocation(i, 'date', e.target.value)} className="border-0 shadow-none h-5 text-sm text-center" />
                     </Td>
-                    <Td className="py-0.5">
-                      <Input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
+                    <Td className="p-0">
+                      <Input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-5 text-sm text-center" />
                     </Td>
                   </tr>
                 )}
@@ -245,17 +245,17 @@ export default function FillAssetVerificationForm() {
               <tbody>
                 {form.team.map((m, i) =>
                 <tr key={i} className="hover:bg-sky-50/40">
-                    <Td className="py-0.5">
-                      <Input value={m.name} onChange={(e) => updateTeam(i, 'name', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
+                    <Td className="p-0">
+                      <Input value={m.name} onChange={(e) => updateTeam(i, 'name', e.target.value)} className="border-0 shadow-none h-5 text-sm text-center" />
                     </Td>
-                    <Td className="py-0.5">
-                      <Input value={m.title} onChange={(e) => updateTeam(i, 'title', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
+                    <Td className="p-0">
+                      <Input value={m.title} onChange={(e) => updateTeam(i, 'title', e.target.value)} className="border-0 shadow-none h-5 text-sm text-center" />
                     </Td>
-                    <Td className="py-0.5">
-                      <div className="flex items-center gap-1">
-                        <Input type="date" value={m.date} onChange={(e) => updateTeam(i, 'date', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
-                        <Button type="button" size="icon" variant="ghost" onClick={() => removeTeam(i)} className="h-6 w-6 print:hidden text-red-500">
-                          <Trash2 className="w-3.5 h-3.5" />
+                    <Td className="p-0">
+                      <div className="flex items-center justify-center gap-1">
+                        <Input type="date" value={m.date} onChange={(e) => updateTeam(i, 'date', e.target.value)} className="border-0 shadow-none h-5 text-sm text-center" />
+                        <Button type="button" size="icon" variant="ghost" onClick={() => removeTeam(i)} className="h-5 w-5 print:hidden text-red-500">
+                          <Trash2 className="w-3 h-3" />
                         </Button>
                       </div>
                     </Td>
@@ -275,42 +275,31 @@ export default function FillAssetVerificationForm() {
               <tbody>
                 {form.locations.map((loc, i) =>
                 <tr key={i} className="hover:bg-sky-50/40">
-                    <Td className="py-0.5">
-                      <Input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-6 text-sm" placeholder={`ملاحظات الموقع ${i + 1}...`} />
+                    <Td className="p-0">
+                      <Input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-5 text-sm text-center" placeholder={`ملاحظات الموقع ${i + 1}...`} />
                     </Td>
                   </tr>
                 )}
               </tbody>
             </table>
-            <Button type="button" variant="outline" size="sm" onClick={addTeam} className="mt-2 print:hidden">
-              <Plus className="w-3.5 h-3.5 ml-1" />إضافة عضو
-            </Button>
 
             {/* التوقيعات */}
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-5 text-sm">
-              <div className="space-y-1 text-center">
+            <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-2 text-sm">
+              <div className="text-center">
                 <p className="font-bold">اسم مدير المشروع في المرفق الصحي:</p>
-                <Input value={form.project_manager_name} onChange={(e) => updateField('project_manager_name', e.target.value)} className="border-0 border-b border-dashed rounded-none h-8 text-sm text-center" />
+                <Input value={form.project_manager_name} onChange={(e) => updateField('project_manager_name', e.target.value)} className="border-0 border-b border-dashed rounded-none h-7 text-sm text-center" />
               </div>
-              <div className="space-y-1 text-center">
+              <div className="text-center">
                 <p className="font-bold">اسم مدير المركز الصحي:</p>
-                <Input value={form.center_manager_name} onChange={(e) => updateField('center_manager_name', e.target.value)} className="border-0 border-b border-dashed rounded-none h-8 text-sm text-center" placeholder="يظهر تلقائياً عند اختيار المرفق" />
+                <Input value={form.center_manager_name} onChange={(e) => updateField('center_manager_name', e.target.value)} className="border-0 border-b border-dashed rounded-none h-7 text-sm text-center" placeholder="يظهر تلقائياً عند اختيار المرفق" />
               </div>
-              <div className="space-y-1 text-center">
-                <p className="font-bold">التاريخ:</p>
-                <Input type="date" value={form.signature_date} onChange={(e) => updateField('signature_date', e.target.value)} className="border-0 border-b border-dashed rounded-none h-8 text-sm text-center" />
-              </div>
-              <div className="space-y-1 text-center">
+              <div className="text-center">
                 <p className="font-bold">التوقيع:</p>
-                <div className="h-10 border-b border-dashed border-gray-500" />
+                <div className="h-8 border-b border-dashed border-gray-500" />
               </div>
-              <div className="space-y-1 text-center">
-                <p className="font-bold">التوقيع:</p>
-                <div className="h-10 border-b border-dashed border-gray-500" />
-              </div>
-              <div className="space-y-1 text-center">
+              <div className="text-center">
                 <p className="font-bold">ختم المرفق:</p>
-                <div className="h-10 border-b border-dashed border-gray-500" />
+                <div className="h-8 border-b border-dashed border-gray-500" />
               </div>
             </div>
 
