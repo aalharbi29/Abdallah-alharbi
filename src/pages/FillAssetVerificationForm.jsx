@@ -190,19 +190,19 @@ export default function FillAssetVerificationForm() {
               <tbody>
                 {form.locations.map((loc, i) =>
                 <tr key={i} className="hover:bg-sky-50/40">
-                    <Td className="p-0">
+                    <Td className="py-0.5">
                       <div className="flex items-center justify-center gap-1">
-                        <Input value={loc.name} onChange={(e) => updateLocation(i, 'name', e.target.value)} className="border-0 shadow-none h-5 text-sm text-center" />
-                        <Button type="button" size="icon" variant="ghost" onClick={() => removeLocation(i)} className="h-5 w-5 print:hidden text-red-500">
+                        <input value={loc.name} onChange={(e) => updateLocation(i, 'name', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
+                        <Button type="button" size="icon" variant="ghost" onClick={() => removeLocation(i)} className="h-4 w-4 print:hidden text-red-500 shrink-0">
                           <Trash2 className="w-3 h-3" />
                         </Button>
                       </div>
                     </Td>
-                    <Td className="p-0">
-                      <Input type="date" value={loc.date} onChange={(e) => updateLocation(i, 'date', e.target.value)} className="border-0 shadow-none h-5 text-sm text-center" />
+                    <Td className="py-0.5">
+                      <input type="date" value={loc.date} onChange={(e) => updateLocation(i, 'date', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
                     </Td>
-                    <Td className="p-0">
-                      <Input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-5 text-sm text-center" />
+                    <Td className="py-0.5">
+                      <input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
                     </Td>
                   </tr>
                 )}
@@ -245,16 +245,16 @@ export default function FillAssetVerificationForm() {
               <tbody>
                 {form.team.map((m, i) =>
                 <tr key={i} className="hover:bg-sky-50/40">
-                    <Td className="p-0">
-                      <Input value={m.name} onChange={(e) => updateTeam(i, 'name', e.target.value)} className="border-0 shadow-none h-5 text-sm text-center" />
+                    <Td className="py-0.5">
+                      <input value={m.name} onChange={(e) => updateTeam(i, 'name', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
                     </Td>
-                    <Td className="p-0">
-                      <Input value={m.title} onChange={(e) => updateTeam(i, 'title', e.target.value)} className="border-0 shadow-none h-5 text-sm text-center" />
+                    <Td className="py-0.5">
+                      <input value={m.title} onChange={(e) => updateTeam(i, 'title', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
                     </Td>
-                    <Td className="p-0">
+                    <Td className="py-0.5">
                       <div className="flex items-center justify-center gap-1">
-                        <Input type="date" value={m.date} onChange={(e) => updateTeam(i, 'date', e.target.value)} className="border-0 shadow-none h-5 text-sm text-center" />
-                        <Button type="button" size="icon" variant="ghost" onClick={() => removeTeam(i)} className="h-5 w-5 print:hidden text-red-500">
+                        <input type="date" value={m.date} onChange={(e) => updateTeam(i, 'date', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
+                        <Button type="button" size="icon" variant="ghost" onClick={() => removeTeam(i)} className="h-4 w-4 print:hidden text-red-500 shrink-0">
                           <Trash2 className="w-3 h-3" />
                         </Button>
                       </div>
@@ -275,8 +275,8 @@ export default function FillAssetVerificationForm() {
               <tbody>
                 {form.locations.map((loc, i) =>
                 <tr key={i} className="hover:bg-sky-50/40">
-                    <Td className="p-0">
-                      <Input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-5 text-sm text-center" placeholder={`ملاحظات الموقع ${i + 1}...`} />
+                    <Td className="py-0.5">
+                      <input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" placeholder={`ملاحظات الموقع ${i + 1}...`} />
                     </Td>
                   </tr>
                 )}
