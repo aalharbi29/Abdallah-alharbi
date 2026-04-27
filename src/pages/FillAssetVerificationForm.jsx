@@ -84,7 +84,7 @@ export default function FillAssetVerificationForm() {
     setForm((p) => ({
       ...p,
       facility_name: facilityName,
-      city_region: center?.الموقع || p.city_region,
+      city_region: 'المدينة المنورة - الحسو',
       // الموقع الذي تم التحقق منه = اسم المرفق الصحي، والملاحظات = لا يوجد
       locations: [{ name: facilityName, date: p.locations?.[0]?.date || '', notes: 'لا يوجد' }]
     }));
@@ -263,7 +263,7 @@ export default function FillAssetVerificationForm() {
               </div>
               <div className="flex items-center justify-center gap-2 flex-wrap">
                 <span className="font-bold">المدينة / المنطقة (مكان التواجد):</span>
-                <Input value={form.city_region} onChange={(e) => updateField('city_region', e.target.value)} className="border-0 border-b border-dashed rounded-none shadow-none h-6 text-sm text-center max-w-[320px]" />
+                <Input value="المدينة المنورة - الحسو" readOnly className="border-0 border-b border-dashed rounded-none shadow-none h-6 text-sm text-center max-w-[320px] pointer-events-none" />
               </div>
             </div>
 
@@ -284,12 +284,7 @@ export default function FillAssetVerificationForm() {
                 {form.locations.map((loc, i) =>
                 <tr key={i} className="hover:bg-sky-50/40">
                     <Td className="py-0.5">
-                      <div className="flex items-center justify-center gap-1">
-                        <input value={loc.name} onChange={(e) => updateLocation(i, 'name', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
-                        <Button type="button" size="icon" variant="ghost" onClick={() => removeLocation(i)} className={`h-4 w-4 text-red-500 shrink-0 ${isExporting ? 'hidden' : 'print:hidden'}`}>
-                          <Trash2 className="w-3 h-3" />
-                        </Button>
-                      </div>
+                      <input value={loc.name} onChange={(e) => updateLocation(i, 'name', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
                     </Td>
                     <Td className="py-0.5">
                       <input type="date" value={loc.date} onChange={(e) => updateLocation(i, 'date', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
