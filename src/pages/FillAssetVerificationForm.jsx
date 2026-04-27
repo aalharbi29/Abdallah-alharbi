@@ -102,12 +102,19 @@ export default function FillAssetVerificationForm() {
 
   const generatePDFBlob = async () => {
     if (!printRef.current) return null;
-    const canvas = await html2canvas(printRef.current, { scale: 2, useCORS: true });
-    const imgData = canvas.toDataURL('image/png');
+    // إضافة مهلة صغيرة لضمان تحديث UI لإخفاء الأزرار قبل أخذ اللقطة
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    const canvas = await html2canvas(printRef.current, { 
+      scale: 2, 
+      useCORS: true,
+      windowWidth: printRef.current.scrollWidth,
+      windowHeight: printRef.current.scrollHeight
+    });
+    const imgData = canvas.toDataURL('image/jpeg', 1.0);
     const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
     return pdf.output('blob');
   };
 
@@ -115,12 +122,21 @@ export default function FillAssetVerificationForm() {
     try {
       setIsExporting(true);
       if (!printRef.current) return;
-      const canvas = await html2canvas(printRef.current, { scale: 2, useCORS: true });
-      const imgData = canvas.toDataURL('image/png');
+      
+      // إضافة مهلة صغيرة لضمان تحديث UI لإخفاء الأزرار قبل أخذ اللقطة
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      
+      const canvas = await html2canvas(printRef.current, { 
+        scale: 2, 
+        useCORS: true,
+        windowWidth: printRef.current.scrollWidth,
+        windowHeight: printRef.current.scrollHeight
+      });
+      const imgData = canvas.toDataURL('image/jpeg', 1.0);
       const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(`محضر_تحقق_أصول_${form.facility_name || 'نموذج'}.pdf`);
       toast.success('تم تصدير النموذج كملف PDF');
     } catch (error) {
@@ -270,11 +286,9 @@ export default function FillAssetVerificationForm() {
                     <Td className="py-0.5">
                       <div className="flex items-center justify-center gap-1">
                         <input value={loc.name} onChange={(e) => updateLocation(i, 'name', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
-                        {!isExporting && (
-                          <Button type="button" size="icon" variant="ghost" onClick={() => removeLocation(i)} className="h-4 w-4 print:hidden text-red-500 shrink-0">
-                            <Trash2 className="w-3 h-3" />
-                          </Button>
-                        )}
+                        <Button type="button" size="icon" variant="ghost" onClick={() => removeLocation(i)} className={`h-4 w-4 text-red-500 shrink-0 ${isExporting ? 'hidden' : 'print:hidden'}`}>
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
                       </div>
                     </Td>
                     <Td className="py-0.5">
@@ -341,14 +355,7 @@ export default function FillAssetVerificationForm() {
                       <input value={m.title} onChange={(e) => updateTeam(i, 'title', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
                     </Td>
                     <Td className="py-0.5">
-                      <div className="flex items-center justify-center gap-1">
-                        <input value={m.date} onChange={(e) => updateTeam(i, 'date', e.target.value)} placeholder="أدخل التاريخ يدوياً" className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
-                        {!isExporting && (
-                          <Button type="button" size="icon" variant="ghost" onClick={() => removeTeam(i)} className="h-4 w-4 print:hidden text-red-500 shrink-0">
-                            <Trash2 className="w-3 h-3" />
-                          </Button>
-                        )}
-                      </div>
+                      <input value={m.date} onChange={(e) => updateTeam(i, 'date', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
                     </Td>
                   </tr>
                 )}
