@@ -10,17 +10,17 @@ import { base44 } from '@/api/base44Client';
 const HEALTH_HOLDING_LOGO = 'https://media.base44.com/images/public/68af5003813e47bd07947b30/5bb77883d_image.png';
 
 const ASSET_CATEGORIES = [
-  'معدات طبية',
-  'معدات المختبرات والأجهزة',
-  'البنية التحتية',
-  'معدات التوزيع والتكييف',
-  'المعدات الكهربائية ومعدات توليد/نقل الطاقة',
-  'معدات التصنيع والإنتاج والآلات الثقيلة',
-  'معدات الدفاع والسلامة',
-  'أصول تقنية المعلومات',
-  'معدات النقل البري',
-  'الأثاث والتجهيزات',
-];
+'معدات طبية',
+'معدات المختبرات والأجهزة',
+'البنية التحتية',
+'معدات التوزيع والتكييف',
+'المعدات الكهربائية ومعدات توليد/نقل الطاقة',
+'معدات التصنيع والإنتاج والآلات الثقيلة',
+'معدات الدفاع والسلامة',
+'أصول تقنية المعلومات',
+'معدات النقل البري',
+'الأثاث والتجهيزات'];
+
 
 const emptyLocation = () => ({ name: '', date: '', notes: '' });
 const emptyTeamMember = () => ({ name: '', title: '', date: '' });
@@ -41,56 +41,56 @@ export default function FillAssetVerificationForm() {
     notes: '',
     project_manager_name: '',
     center_manager_name: '',
-    signature_date: new Date().toISOString().split('T')[0],
+    signature_date: new Date().toISOString().split('T')[0]
   });
 
   useEffect(() => {
     (async () => {
       const [hc, emps] = await Promise.all([
-        base44.entities.HealthCenter.list('-created_date', 500),
-        base44.entities.Employee.list('-created_date', 500),
-      ]);
+      base44.entities.HealthCenter.list('-created_date', 500),
+      base44.entities.Employee.list('-created_date', 500)]
+      );
       setHealthCenters(hc || []);
       setEmployees(emps || []);
     })();
   }, []);
 
-  const updateField = (key, value) => setForm(p => ({ ...p, [key]: value }));
-  const updateLocation = (i, key, value) => setForm(p => {
+  const updateField = (key, value) => setForm((p) => ({ ...p, [key]: value }));
+  const updateLocation = (i, key, value) => setForm((p) => {
     const locations = [...p.locations];
     locations[i] = { ...locations[i], [key]: value };
     return { ...p, locations };
   });
-  const updateTeam = (i, key, value) => setForm(p => {
+  const updateTeam = (i, key, value) => setForm((p) => {
     const team = [...p.team];
     team[i] = { ...team[i], [key]: value };
     return { ...p, team };
   });
   const updateAssetCheck = (cat, value) =>
-    setForm(p => ({ ...p, asset_checks: { ...p.asset_checks, [cat]: value } }));
+  setForm((p) => ({ ...p, asset_checks: { ...p.asset_checks, [cat]: value } }));
 
-  const addLocation = () => setForm(p => ({ ...p, locations: [...p.locations, emptyLocation()] }));
-  const removeLocation = (i) => setForm(p => ({ ...p, locations: p.locations.filter((_, idx) => idx !== i) }));
-  const addTeam = () => setForm(p => ({ ...p, team: [...p.team, emptyTeamMember()] }));
-  const removeTeam = (i) => setForm(p => ({ ...p, team: p.team.filter((_, idx) => idx !== i) }));
+  const addLocation = () => setForm((p) => ({ ...p, locations: [...p.locations, emptyLocation()] }));
+  const removeLocation = (i) => setForm((p) => ({ ...p, locations: p.locations.filter((_, idx) => idx !== i) }));
+  const addTeam = () => setForm((p) => ({ ...p, team: [...p.team, emptyTeamMember()] }));
+  const removeTeam = (i) => setForm((p) => ({ ...p, team: p.team.filter((_, idx) => idx !== i) }));
 
   // التعبئة التلقائية عند اختيار المرفق
   const handleFacilitySelect = (facilityName) => {
-    const center = healthCenters.find(c => c.اسم_المركز === facilityName);
+    const center = healthCenters.find((c) => c.اسم_المركز === facilityName);
     updateField('facility_name', facilityName);
     if (center) {
-      setForm(p => ({
+      setForm((p) => ({
         ...p,
         facility_name: facilityName,
-        city_region: center.الموقع || p.city_region,
+        city_region: center.الموقع || p.city_region
       }));
       // تعبئة اسم مدير المركز الصحي فقط (لا نائب ولا مشرف فني)
-      const manager = employees.find(e => e.id === center.المدير);
+      const manager = employees.find((e) => e.id === center.المدير);
       if (manager) {
-        setForm(p => ({
+        setForm((p) => ({
           ...p,
           center_manager_name: manager.full_name_arabic || '',
-          project_manager_name: manager.full_name_arabic || p.project_manager_name,
+          project_manager_name: manager.full_name_arabic || p.project_manager_name
         }));
         toast.success('تم تعبئة اسم مدير المركز الصحي تلقائياً');
       }
@@ -136,8 +136,8 @@ export default function FillAssetVerificationForm() {
                 src={HEALTH_HOLDING_LOGO}
                 alt="الصحة القابضة"
                 className="h-24 md:h-28 object-contain"
-                crossOrigin="anonymous"
-              />
+                crossOrigin="anonymous" />
+              
             </div>
 
             {/* عنوان المشروع */}
@@ -156,18 +156,18 @@ export default function FillAssetVerificationForm() {
                       <SelectValue placeholder="اختر المركز..." />
                     </SelectTrigger>
                     <SelectContent>
-                      {healthCenters.map(c => (
-                        <SelectItem key={c.id} value={c.اسم_المركز}>{c.اسم_المركز}</SelectItem>
-                      ))}
+                      {healthCenters.map((c) =>
+                      <SelectItem key={c.id} value={c.اسم_المركز}>{c.اسم_المركز}</SelectItem>
+                      )}
                     </SelectContent>
                   </Select>
                   <span className="hidden print:inline text-sm">{form.facility_name}</span>
                 </InfoRow>
                 <InfoRow label="اسم التجمع الصحي :">
-                  <Input value={form.cluster_name} onChange={e => updateField('cluster_name', e.target.value)} className="border-0 shadow-none h-8 text-sm text-center" />
+                  <Input value={form.cluster_name} onChange={(e) => updateField('cluster_name', e.target.value)} className="border-0 shadow-none h-8 text-sm text-center" />
                 </InfoRow>
                 <InfoRow label="المدينة / المنطقة (مكان التواجد):">
-                  <Input value={form.city_region} onChange={e => updateField('city_region', e.target.value)} className="border-0 shadow-none h-8 text-sm text-center" />
+                  <Input value={form.city_region} onChange={(e) => updateField('city_region', e.target.value)} className="border-0 shadow-none h-8 text-sm text-center" />
                 </InfoRow>
               </tbody>
             </table>
@@ -186,24 +186,24 @@ export default function FillAssetVerificationForm() {
                 </tr>
               </thead>
               <tbody>
-                {form.locations.map((loc, i) => (
-                  <tr key={i} className="hover:bg-sky-50/40">
+                {form.locations.map((loc, i) =>
+                <tr key={i} className="hover:bg-sky-50/40">
                     <Td className="py-0.5">
                       <div className="flex items-center gap-1">
-                        <Input value={loc.name} onChange={e => updateLocation(i, 'name', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
+                        <Input value={loc.name} onChange={(e) => updateLocation(i, 'name', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
                         <Button type="button" size="icon" variant="ghost" onClick={() => removeLocation(i)} className="h-6 w-6 print:hidden text-red-500">
                           <Trash2 className="w-3.5 h-3.5" />
                         </Button>
                       </div>
                     </Td>
                     <Td className="py-0.5">
-                      <Input type="date" value={loc.date} onChange={e => updateLocation(i, 'date', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
+                      <Input type="date" value={loc.date} onChange={(e) => updateLocation(i, 'date', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
                     </Td>
                     <Td className="py-0.5">
-                      <Input value={loc.notes} onChange={e => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
+                      <Input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
                     </Td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
 
@@ -217,11 +217,11 @@ export default function FillAssetVerificationForm() {
                 </tr>
               </thead>
               <tbody>
-                {ASSET_CATEGORIES.map(cat => (
-                  <tr key={cat} className="hover:bg-sky-50/40">
+                {ASSET_CATEGORIES.map((cat) =>
+                <tr key={cat} className="hover:bg-sky-50/40">
                     <Td className="py-0.5">{cat}</Td>
                     <Td className="py-0.5">
-                      <Select value={form.asset_checks[cat]} onValueChange={v => updateAssetCheck(cat, v)}>
+                      <Select value={form.asset_checks[cat]} onValueChange={(v) => updateAssetCheck(cat, v)}>
                         <SelectTrigger className="border-0 shadow-none h-6 text-sm print:hidden">
                           <SelectValue placeholder="—" />
                         </SelectTrigger>
@@ -234,7 +234,7 @@ export default function FillAssetVerificationForm() {
                       <span className="hidden print:inline text-sm">{form.asset_checks[cat]}</span>
                     </Td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
 
@@ -249,24 +249,24 @@ export default function FillAssetVerificationForm() {
                 </tr>
               </thead>
               <tbody>
-                {form.team.map((m, i) => (
-                  <tr key={i} className="hover:bg-sky-50/40">
+                {form.team.map((m, i) =>
+                <tr key={i} className="hover:bg-sky-50/40">
                     <Td className="py-0.5">
-                      <Input value={m.name} onChange={e => updateTeam(i, 'name', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
+                      <Input value={m.name} onChange={(e) => updateTeam(i, 'name', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
                     </Td>
                     <Td className="py-0.5">
-                      <Input value={m.title} onChange={e => updateTeam(i, 'title', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
+                      <Input value={m.title} onChange={(e) => updateTeam(i, 'title', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
                     </Td>
                     <Td className="py-0.5">
                       <div className="flex items-center gap-1">
-                        <Input type="date" value={m.date} onChange={e => updateTeam(i, 'date', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
+                        <Input type="date" value={m.date} onChange={(e) => updateTeam(i, 'date', e.target.value)} className="border-0 shadow-none h-6 text-sm" />
                         <Button type="button" size="icon" variant="ghost" onClick={() => removeTeam(i)} className="h-6 w-6 print:hidden text-red-500">
                           <Trash2 className="w-3.5 h-3.5" />
                         </Button>
                       </div>
                     </Td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
 
@@ -279,13 +279,13 @@ export default function FillAssetVerificationForm() {
                 </tr>
               </thead>
               <tbody>
-                {form.locations.map((loc, i) => (
-                  <tr key={i} className="hover:bg-sky-50/40">
+                {form.locations.map((loc, i) =>
+                <tr key={i} className="hover:bg-sky-50/40">
                     <Td className="py-0.5">
-                      <Input value={loc.notes} onChange={e => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-6 text-sm" placeholder={`ملاحظات الموقع ${i + 1}...`} />
+                      <Input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="border-0 shadow-none h-6 text-sm" placeholder={`ملاحظات الموقع ${i + 1}...`} />
                     </Td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
             <Button type="button" variant="outline" size="sm" onClick={addTeam} className="mt-2 print:hidden">
@@ -299,13 +299,13 @@ export default function FillAssetVerificationForm() {
                   <Td className="w-1/2 align-top">
                     <div className="space-y-1">
                       <p className="font-bold">اسم مدير المشروع في المرفق الصحي:</p>
-                      <Input value={form.project_manager_name} onChange={e => updateField('project_manager_name', e.target.value)} className="border-0 border-b border-dashed rounded-none h-8 text-sm" />
+                      <Input value={form.project_manager_name} onChange={(e) => updateField('project_manager_name', e.target.value)} className="border-0 border-b border-dashed rounded-none h-8 text-sm" />
                     </div>
                   </Td>
                   <Td className="align-top">
                     <div className="space-y-1">
                       <p className="font-bold">اسم مدير المركز الصحي:</p>
-                      <Input value={form.center_manager_name} onChange={e => updateField('center_manager_name', e.target.value)} className="border-0 border-b border-dashed rounded-none h-8 text-sm" placeholder="يظهر تلقائياً عند اختيار المرفق" />
+                      <Input value={form.center_manager_name} onChange={(e) => updateField('center_manager_name', e.target.value)} className="border-0 border-b border-dashed rounded-none h-8 text-sm" placeholder="يظهر تلقائياً عند اختيار المرفق" />
                     </div>
                   </Td>
                 </tr>
@@ -313,7 +313,7 @@ export default function FillAssetVerificationForm() {
                   <Td>
                     <div className="space-y-1">
                       <p className="font-bold">التاريخ:</p>
-                      <Input type="date" value={form.signature_date} onChange={e => updateField('signature_date', e.target.value)} className="border-0 border-b border-dashed rounded-none h-8 text-sm" />
+                      <Input type="date" value={form.signature_date} onChange={(e) => updateField('signature_date', e.target.value)} className="border-0 border-b border-dashed rounded-none h-8 text-sm" />
                     </div>
                   </Td>
                   <Td>
@@ -344,8 +344,8 @@ export default function FillAssetVerificationForm() {
           body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
         }
       `}</style>
-    </div>
-  );
+    </div>);
+
 }
 
 /* ========== Sub components ========== */
@@ -355,16 +355,16 @@ function SectionTitle({ children }) {
       <div className="bg-gradient-to-l from-[#0099d8] to-[#33b1e0] text-white px-4 py-2 rounded-md shadow-sm font-bold text-sm">
         {children}
       </div>
-    </div>
-  );
+    </div>);
+
 }
 
 function SubHeader({ children, className = '' }) {
   return (
-    <div className={`bg-sky-100 border border-[#0099d8] text-[#006a99] font-bold text-sm px-3 py-1.5 ${className}`}>
+    <div className="bg-gray-300 text-[#006a99] px-3 py-1.5 text-sm font-bold border border-[#0099d8]">
       {children}
-    </div>
-  );
+    </div>);
+
 }
 
 function InfoRow({ label, children }) {
@@ -372,12 +372,12 @@ function InfoRow({ label, children }) {
     <tr className="border border-gray-800">
       <td className="border border-gray-800 bg-gray-50 px-2 py-1 font-bold w-[35%] text-sm align-middle">{label}</td>
       <td className="border border-gray-800 px-1 py-0 align-middle text-center">{children}</td>
-    </tr>
-  );
+    </tr>);
+
 }
 
 function Th({ children, className = '' }) {
-  return <th className={`border border-gray-800 px-2 py-1 text-center font-bold text-sm bg-white ${className}`}>{children}</th>;
+  return <th className={`border border-gray-800 px-2 py-1 text-center font-bold text-sm ${className}`}>{children}</th>;
 }
 
 function Td({ children, className = '' }) {
