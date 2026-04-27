@@ -38,7 +38,7 @@ export default function FillAssetVerificationForm() {
   const [form, setForm] = useState({
     facility_name: '',
     cluster_name: 'تجمع المدينة المنورة الصحي',
-    city_region: 'المدينة المنورة',
+    city_region: 'المدينة المنورة - الحسو',
     locations: [{ name: '', date: '', notes: 'لا يوجد' }],
     asset_checks: ASSET_CATEGORIES.reduce((acc, c) => ({ ...acc, [c]: '' }), {}),
     team: [emptyTeamMember(), emptyTeamMember(), emptyTeamMember()],
@@ -176,7 +176,7 @@ export default function FillAssetVerificationForm() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-emerald-50 p-4 md:p-6 print:bg-white print:p-0">
-      <div className="max-w-5xl mx-auto space-y-4 print:max-w-none" data-print-area>
+      <div className={`max-w-5xl mx-auto space-y-4 print:max-w-none ${isExporting ? 'pdf-exporting' : ''}`} data-print-area>
         {/* شريط الأدوات - يُخفى في الطباعة */}
         <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
           <div className="flex items-center gap-3">
@@ -267,19 +267,21 @@ export default function FillAssetVerificationForm() {
               <tbody>
                 {form.locations.map((loc, i) =>
                 <tr key={i} className="hover:bg-sky-50/40">
-                    <Td className="py-0 leading-none">
+                    <Td className="py-0.5">
                       <div className="flex items-center justify-center gap-1">
-                        <input value={loc.name} onChange={(e) => updateLocation(i, 'name', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0 h-5 leading-none" />
-                        <Button type="button" size="icon" variant="ghost" onClick={() => removeLocation(i)} className="h-4 w-4 print:hidden text-red-500 shrink-0">
-                          <Trash2 className="w-3 h-3" />
-                        </Button>
+                        <input value={loc.name} onChange={(e) => updateLocation(i, 'name', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
+                        {!isExporting && (
+                          <Button type="button" size="icon" variant="ghost" onClick={() => removeLocation(i)} className="h-4 w-4 print:hidden text-red-500 shrink-0">
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        )}
                       </div>
                     </Td>
-                    <Td className="py-0 leading-none">
-                      <input type="date" value={loc.date} onChange={(e) => updateLocation(i, 'date', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0 h-5 leading-none" />
+                    <Td className="py-0.5">
+                      <input type="date" value={loc.date} onChange={(e) => updateLocation(i, 'date', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
                     </Td>
-                    <Td className="py-0 leading-none">
-                      <input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0 h-5 leading-none" />
+                    <Td className="py-0.5">
+                      <input value={loc.notes} onChange={(e) => updateLocation(i, 'notes', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
                     </Td>
                   </tr>
                 )}
@@ -332,18 +334,20 @@ export default function FillAssetVerificationForm() {
               <tbody>
                 {form.team.map((m, i) =>
                 <tr key={i} className="hover:bg-sky-50/40">
-                    <Td className="py-0 leading-none">
-                      <input value={m.name} onChange={(e) => updateTeam(i, 'name', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0 h-5 leading-none" />
+                    <Td className="py-0.5">
+                      <input value={m.name} onChange={(e) => updateTeam(i, 'name', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
                     </Td>
-                    <Td className="py-0 leading-none">
-                      <input value={m.title} onChange={(e) => updateTeam(i, 'title', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0 h-5 leading-none" />
+                    <Td className="py-0.5">
+                      <input value={m.title} onChange={(e) => updateTeam(i, 'title', e.target.value)} className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
                     </Td>
-                    <Td className="py-0 leading-none">
+                    <Td className="py-0.5">
                       <div className="flex items-center justify-center gap-1">
-                        <input value={m.date} onChange={(e) => updateTeam(i, 'date', e.target.value)} placeholder="أدخل التاريخ يدوياً" className="w-full bg-transparent border-0 outline-none text-sm text-center p-0 h-5 leading-none" />
-                        <Button type="button" size="icon" variant="ghost" onClick={() => removeTeam(i)} className="h-4 w-4 print:hidden text-red-500 shrink-0">
-                          <Trash2 className="w-3 h-3" />
-                        </Button>
+                        <input value={m.date} onChange={(e) => updateTeam(i, 'date', e.target.value)} placeholder="أدخل التاريخ يدوياً" className="w-full bg-transparent border-0 outline-none text-sm text-center p-0" />
+                        {!isExporting && (
+                          <Button type="button" size="icon" variant="ghost" onClick={() => removeTeam(i)} className="h-4 w-4 print:hidden text-red-500 shrink-0">
+                            <Trash2 className="w-3 h-3" />
+                          </Button>
+                        )}
                       </div>
                     </Td>
                   </tr>
@@ -395,6 +399,7 @@ export default function FillAssetVerificationForm() {
       </div>
 
       <style>{`
+        .pdf-exporting button.print\\:hidden { display: none !important; }
         @media print {
           @page { size: A4; margin: 12mm; }
           html, body { background: #fff !important; }
@@ -444,5 +449,5 @@ function Th({ children, className = '' }) {
 }
 
 function Td({ children, className = '' }) {
-  return <td className={`border border-gray-800 px-1.5 py-0 text-sm leading-tight text-center align-middle ${className}`}>{children}</td>;
+  return <td className={`border border-gray-800 px-1.5 py-1 text-sm leading-normal text-center align-middle ${className}`}>{children}</td>;
 }
