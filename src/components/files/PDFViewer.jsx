@@ -29,12 +29,18 @@ export default function PDFViewer({ file, open, onOpenChange, entitySDK, recordI
   if (!file) return null;
 
   const fileUrl = file.file_url || file.url;
-  const fileName = file.file_name || file.title || file.name || "ملف";
+  const rawFileName = file.file_name || file.title || file.name || "ملف";
+  const extensionSource = `${rawFileName} ${fileUrl || ''}`;
+  const inferredExtension = extensionSource.match(/\.(pdf|docx?|xlsx?|jpg|jpeg|png|gif|bmp|webp|svg)(?=$|[\s?#])/i)?.[1];
+  const fileName = inferredExtension && !/\.[a-z0-9]{2,5}$/i.test(rawFileName)
+    ? `${rawFileName}.${inferredExtension.toLowerCase()}`
+    : rawFileName;
+  const typeSource = `${fileName} ${fileUrl || ''}`;
   
-  const isPDF = /\.pdf$/i.test(fileName);
-  const isImage = /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(fileName);
-  const isWord = /\.(doc|docx)$/i.test(fileName);
-  const isExcel = /\.(xls|xlsx)$/i.test(fileName);
+  const isPDF = /\.pdf(?=$|[\s?#])/i.test(typeSource);
+  const isImage = /\.(jpg|jpeg|png|gif|bmp|webp|svg)(?=$|[\s?#])/i.test(typeSource);
+  const isWord = /\.(doc|docx)(?=$|[\s?#])/i.test(typeSource);
+  const isExcel = /\.(xls|xlsx)(?=$|[\s?#])/i.test(typeSource);
 
   const handleZoomIn = () => setZoom(prev => Math.min(prev + 25, 200));
   const handleZoomOut = () => setZoom(prev => Math.max(prev - 25, 50));
@@ -119,7 +125,13 @@ export default function PDFViewer({ file, open, onOpenChange, entitySDK, recordI
     }
   };
   
-  const handleDownload = () => downloadFileWithName(fileUrl, fileName);
+  const handleDownload = () => {
+    if (!fileUrl) {
+      alert('لا يوجد ملف مرفق لهذا النموذج');
+      return;
+    }
+    downloadFileWithName(fileUrl, fileName);
+  };
   const toggleFullscreen = () => setIsFullscreen(!isFullscreen);
 
   // فتح في Google Sheets (للقراءة فقط)

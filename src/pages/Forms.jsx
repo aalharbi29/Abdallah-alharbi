@@ -189,13 +189,23 @@ export default function Forms() {
   };
 
   const downloadFile = async (url, name) => {
+    if (!url) {
+      alert('لا يوجد ملف مرفق لهذا النموذج');
+      return;
+    }
+
+    const inferredExtension = `${name || ''} ${url}`.match(/\.(pdf|docx?|xlsx?|jpg|jpeg|png|gif|bmp|webp|svg)(?=$|[\s?#])/i)?.[1];
+    const safeName = inferredExtension && name && !/\.[a-z0-9]{2,5}$/i.test(name)
+      ? `${name}.${inferredExtension.toLowerCase()}`
+      : (name || `form${inferredExtension ? `.${inferredExtension.toLowerCase()}` : ''}`);
+
     try {
       const response = await fetch(url);
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = blobUrl;
-      link.download = name || 'form';
+      link.download = safeName || 'form';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
