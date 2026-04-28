@@ -163,6 +163,19 @@ const detectStandaloneTopic = (prompt) => {
   return standaloneKeywords.some((re) => re.test(p));
 };
 
+const hasExplicitColumnRequest = (prompt) => /أعمدة|اعمدة|الأعمدة|الاعمدة|عمود|حقل/i.test(String(prompt || ''));
+
+const extractRequestedColumnHeaders = (prompt) => {
+  const text = String(prompt || '').replace(/\n+/g, ' ').trim();
+  const match = text.match(/(?:تضيف|أضف|اضف|إضافة|اضافة)?\s*(?:الأعمدة|الاعمدة|أعمدة|اعمدة)\s*(?:التالية|التاليه)?\s*[:：]?\s*([\s\S]+)/i);
+  if (!match?.[1]) return [];
+  return match[1]
+    .split(/،|,|\s+و(?=\S)/g)
+    .map((part) => part.replace(/^(?:عمود|حقل)\s+/i, '').trim())
+    .filter((part) => part.length > 1)
+    .filter((part) => !/^(?:فيه|في|عن|لمركز|مركز)$/i.test(part));
+};
+
 // 🆕 وضع البناء الحر: AI يُنشئ جدولاً كاملاً (صفوف + أعمدة + قيم) من النص
 async function planStandaloneReport(userPrompt) {
   const aiPrompt = `أنت مساعد خبير في بناء جداول تقارير من نص حر بالعربية.
@@ -276,6 +289,7 @@ ${validEntities}
 🎯🎯 قاعدة حاسمة لاختيار الحقول (fields):
 - **اختر فقط الحقول التي طلبها المستخدم صراحةً.** ممنوع إضافة حقول لم يطلبها (مثل: الأدوار القيادية، المهام الإضافية، الأدوار الإشرافية، __combined_roles، ...) إلا إذا ذكرها المستخدم بنفسه.
 - إذا طلب المستخدم "اسم الموظف، رقمه الوظيفي، سجله المدني، تخصصه، جهة عمله" → الحقول هي بالضبط هذه الخمسة فقط، لا أكثر.
+- إذا طلب المستخدم أعمدة غير موجودة في قائمة حقول النظام، لا تتجاهلها أبداً: ضعها في custom_columns بنفس عنوان العمود المطلوب، واجعل value = "" إذا لم يحدد المستخدم قيمة ثابتة.
 - إذا طلب المستخدم عموداً نصياً ثابتاً (مثل: "أضف عموداً بعنوان X يكتب فيه القيمة Y") **استخدم حقل custom_columns**: مصفوفة من { header, value } حيث header = العنوان الذي طلبه المستخدم، value = النص الثابت الذي يجب وضعه في كل صف. مثال: custom_columns: [{ "header": "خطة الأداء المتعثرة", "value": "تقييم الأداء الوظيفي لعام 2025 م" }].
 
 🔴 قاعدة حاسمة لفلترة الموظفين بأسماء محددة:
@@ -411,7 +425,7 @@ ${hintedEntity ? `\n💡 تلميح قوي جداً من النظام: primary_e
   if (parsed.primary_entity === 'HealthCenter') {
     const p = normalizeArabic(userPrompt);
     const wantsFullReport = /تقرير|معلومات|بيانات|تفاصيل|كل شي|شامل/i.test(p);
-    if (wantsFullReport && (!parsed.fields || parsed.fields.length < 5)) {
+    if (wantsFullReport && !hasExplicitColumnRequest(userPrompt) && (!parsed.fields || parsed.fields.length < 5)) {
       console.info('🔧 استخدام الحقول الشاملة الافتراضية للمركز الصحي.');
       parsed.fields = [...new Set([...(parsed.fields || []), ...DEFAULT_HEALTH_CENTER_FULL_FIELDS])];
     }
@@ -447,6 +461,24 @@ ${hintedEntity ? `\n💡 تلميح قوي جداً من النظام: primary_e
   // 🔧 تطبيع أسماء الحقول: AI أحياناً يُرجع "key:label" أو الـ label العربي بدلاً من المفتاح الحقيقي
   parsed.fields = normalizeFieldKeys(parsed.fields, parsed.primary_entity);
 
+  // 🔧 ضمان احترام الأعمدة الحرة التي يطلبها المستخدم صراحةً
+  const requestedHeaders = extractRequestedColumnHeaders(userPrompt);
+  if (requestedHeaders.length > 0) {
+    const entity = ENTITIES_CATALOG.find((e) => e.value === parsed.primary_entity);
+    const allowedKeys = new Set(entity ? entity.fields.map((f) => f.key) : []);
+    parsed.custom_columns = Array.isArray(parsed.custom_columns) ? parsed.custom_columns : [];
+
+    requestedHeaders.forEach((header) => {
+      const resolvedKey = normalizeFieldKeys([header], parsed.primary_entity)?.[0];
+      if (resolvedKey && allowedKeys.has(resolvedKey)) {
+        if (!parsed.fields.includes(resolvedKey)) parsed.fields.push(resolvedKey);
+        return;
+      }
+      const alreadyCustom = parsed.custom_columns.some((c) => normalizeArabic(c.header) === normalizeArabic(header));
+      if (!alreadyCustom) parsed.custom_columns.push({ header, value: '' });
+    });
+  }
+
   return parsed;
 }
 
@@ -460,6 +492,8 @@ const FIELD_SYNONYMS = {
   'الاسم': 'full_name_arabic', 'الاسم_الكامل': 'full_name_arabic', 'اسم_الموظف': 'full_name_arabic',
   'الوظيفه': 'position', 'الوظيفة': 'position', 'التخصص': 'position',
   'القسم': 'department',
+  'ساعات عمل المركز الصحي': 'ساعات_الدوام', 'ساعات_عمل_المركز_الصحي': 'ساعات_الدوام',
+  'ساعات عمل المركز': 'ساعات_الدوام', 'ساعات_عمل_المركز': 'ساعات_الدوام',
 };
 
 function normalizeFieldKeys(fields, entityValue) {
