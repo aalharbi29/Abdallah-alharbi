@@ -612,6 +612,39 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         </div>
       </div>
 
+      {/* 🆕 رفع صورة أو PDF — ظاهر دائماً في أعلى الصفحة */}
+      <div className="p-3 rounded-lg border-2 border-dashed border-fuchsia-300 bg-gradient-to-l from-fuchsia-50 to-purple-50 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-start gap-2">
+            <ScanLine className="w-6 h-6 text-fuchsia-600 mt-0.5 flex-shrink-0" />
+            <div>
+              <p className="text-sm font-bold text-fuchsia-800">رفع طلب من صورة أو PDF</p>
+              <p className="text-xs text-slate-600 mt-0.5">
+                ارفع صورة (JPG/PNG) أو ملف PDF، وسيقرأه النظام بالذكاء الاصطناعي ويُحوّله إلى نص داخل الوضع الحر تلقائياً.
+              </p>
+            </div>
+          </div>
+          <input
+            type="file"
+            accept="image/*,application/pdf,.pdf"
+            ref={fileInputRef}
+            onChange={handleImageUpload}
+            className="hidden"
+          />
+          <Button
+            type="button"
+            size="sm"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={imageScanLoading}
+            className="bg-fuchsia-600 hover:bg-fuchsia-700 text-white"
+          >
+            {imageScanLoading
+              ? <><Loader2 className="w-4 h-4 ml-1 animate-spin" /> جاري القراءة...</>
+              : <><Upload className="w-4 h-4 ml-1" /> اختر صورة أو PDF</>}
+          </Button>
+        </div>
+      </div>
+
       {/* الخطوة 1: الكيانات (متعدد) */}
       <CollapsibleSection
         title="١. حدد نوع البيانات (يمكن اختيار أكثر من كيان)"
@@ -758,39 +791,6 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
           <p className="text-xs text-slate-500 flex items-center gap-1">
             <Mic className="w-3 h-3" /> اضغط على الميكروفون وتحدّث بالعربية لإملاء طلبك صوتياً.
           </p>
-
-          {/* 🆕 رفع صورة الطلب وقراءتها بالـ AI */}
-          <div className="mt-3 p-3 rounded-lg border-2 border-dashed border-fuchsia-300 bg-gradient-to-l from-fuchsia-50 to-purple-50">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="flex items-start gap-2">
-                <ScanLine className="w-5 h-5 text-fuchsia-600 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p className="text-sm font-semibold text-fuchsia-800">رفع صورة أو PDF للطلب</p>
-                  <p className="text-xs text-slate-600 mt-0.5">
-                    ارفع صورة (JPG/PNG) أو ملف PDF وسيقرأه النظام تلقائياً ويُحوّله إلى طلب.
-                  </p>
-                </div>
-              </div>
-              <input
-                type="file"
-                accept="image/*,application/pdf,.pdf"
-                ref={fileInputRef}
-                onChange={handleImageUpload}
-                className="hidden"
-              />
-              <Button
-                type="button"
-                size="sm"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={imageScanLoading}
-                className="bg-fuchsia-600 hover:bg-fuchsia-700 text-white"
-              >
-                {imageScanLoading
-                  ? <><Loader2 className="w-4 h-4 ml-1 animate-spin" /> جاري القراءة...</>
-                  : <><Upload className="w-4 h-4 ml-1" /> اختر صورة أو PDF</>}
-              </Button>
-            </div>
-          </div>
         </div>
       </CollapsibleSection>
 
