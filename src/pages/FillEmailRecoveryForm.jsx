@@ -33,6 +33,41 @@ export default function FillEmailRecoveryForm() {
   // صفوف إضافية قابلة للتعديل
   const [additionalRows, setAdditionalRows] = useState([]);
 
+  // تحريك الهيدر
+  const [headerOffset, setHeaderOffset] = useState({ x: 0, y: 0 });
+  const [isDraggingHeader, setIsDraggingHeader] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+
+  const handleHeaderDragStart = (e) => {
+    // Prevent drag if clicking on editable text
+    if (e.target.isContentEditable) return;
+    setIsDraggingHeader(true);
+    setDragStart({
+      x: e.clientX - headerOffset.x,
+      y: e.clientY - headerOffset.y
+    });
+  };
+
+  useEffect(() => {
+    if (!isDraggingHeader) return;
+
+    const handleMouseMove = (e) => {
+      setHeaderOffset({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      });
+    };
+
+    const handleMouseUp = () => setIsDraggingHeader(false);
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDraggingHeader, dragStart]);
+
   useEffect(() => {
     loadData();
   }, []);
@@ -283,7 +318,16 @@ export default function FillEmailRecoveryForm() {
         }}>
         
         {/* الشعار والعنوان - بجانب شعار التجمع */}
-        <div className="flex justify-start items-start w-full" style={{ marginTop: '40px', paddingRight: '20px' }}>
+        <div 
+          className="flex justify-start items-start w-full relative cursor-move hover:bg-slate-50/50 transition-colors rounded-lg p-2 -m-2" 
+          style={{ 
+            marginTop: '40px', 
+            paddingRight: '20px',
+            transform: `translate(${headerOffset.x}px, ${headerOffset.y}px)`,
+            zIndex: 50
+          }}
+          onMouseDown={handleHeaderDragStart}
+        >
           <div className="text-right">
             <h1
               className="text-lg font-bold"
