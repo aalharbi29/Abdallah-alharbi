@@ -168,7 +168,8 @@ export default function SmartCommands() {
       // هذا يضمن أن "الموظفين في مركز X" يفهم كـ Employee وليس HealthCenter.
       const useAIPath = freeMode || (prompt.trim() && selectedFields.length === 0);
       if (useAIPath) {
-        const plan = await planFreeReport(prompt);
+        // عند تفعيل الوضع الحر يدوياً → نُجبر بناء التقرير مباشرة من النص دون أي فلترة كلمات
+        const plan = await planFreeReport(prompt, freeMode);
         if (!plan?.primary_entity) {
           toast.error('لم يتمكن الذكاء الاصطناعي من تحديد بيانات مناسبة للطلب.');
           setLoading(false);

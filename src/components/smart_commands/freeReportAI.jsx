@@ -248,7 +248,13 @@ async function planStandaloneReport(userPrompt) {
 }
 
 // اطلب من AI تحليل النص وإرجاع خطة تقرير
-export async function planFreeReport(userPrompt) {
+// forceFreeMode: عند true → نذهب مباشرة لوضع البناء الحر بدون أي فلترة كلمات
+export async function planFreeReport(userPrompt, forceFreeMode = false) {
+  // 🆕 الوضع الحر اليدوي (المفعّل من المستخدم) → بناء حر مباشر دون أي فلترة
+  if (forceFreeMode) {
+    console.info('🆓 الوضع الحر مُفعّل يدوياً — بناء التقرير مباشرة من النص.');
+    return await planStandaloneReport(userPrompt);
+  }
   // 🆕 إذا كان الطلب عن موضوع غير مُمَثَّل بكيان في النظام → وضع البناء الحر
   if (detectStandaloneTopic(userPrompt)) {
     console.info('🆓 الطلب يخص موضوعاً خارج كيانات النظام — التحول إلى وضع البناء الحر.');
