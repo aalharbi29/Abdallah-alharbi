@@ -57,7 +57,6 @@ export const getNavigationItems = (t) => [
       { name: "إخلاء طرف", href: pageUrl("FillReleaseForm"), icon: FileText },
     ]
   },
-  { name: "نموذج جرد عهدة", href: pageUrl("InventoryHandoverForm"), icon: FileText },
   { name: t('nav.reports'), href: pageUrl("Reports"), icon: BarChart3 },
   {
     name: t('nav.assignments'),

@@ -96,7 +96,6 @@ import HolidayAssignments from './pages/HolidayAssignments';
 import Home from './pages/Home';
 import HumanResources from './pages/HumanResources';
 import InteractiveForms from './pages/InteractiveForms';
-import InventoryHandoverForm from './pages/InventoryHandoverForm';
 import Leaves from './pages/Leaves';
 import LeishmaniaStatisticForm from './pages/LeishmaniaStatisticForm';
 import MalariaStatisticForm from './pages/MalariaStatisticForm';
@@ -168,7 +167,6 @@ export const PAGES = {
     "Home": Home,
     "HumanResources": HumanResources,
     "InteractiveForms": InteractiveForms,
-    "InventoryHandoverForm": InventoryHandoverForm,
     "Leaves": Leaves,
     "LeishmaniaStatisticForm": LeishmaniaStatisticForm,
     "MalariaStatisticForm": MalariaStatisticForm,
@@ -190,7 +188,7 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "InventoryHandoverForm",
+    mainPage: "Home",
     Pages: PAGES,
     Layout: __Layout,
 };
