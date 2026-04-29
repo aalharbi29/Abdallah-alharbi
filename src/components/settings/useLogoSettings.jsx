@@ -21,11 +21,17 @@ export default function useLogoSettings() {
 
   useEffect(() => {
     const load = async () => {
-      const records = await base44.entities.LogoSettings.list('-updated_date', 1);
-      if (records.length > 0) {
-        setLogoSettings({ ...DEFAULT_SETTINGS, ...records[0] });
+      try {
+        const records = await base44.entities.LogoSettings.list('-updated_date', 1);
+        if (records.length > 0) {
+          setLogoSettings({ ...DEFAULT_SETTINGS, ...records[0] });
+        }
+      } catch (err) {
+        // فشل الشبكة المؤقت — نستخدم الإعدادات الافتراضية بدون كسر التطبيق
+        console.warn('تعذّر تحميل إعدادات الشعار، سيتم استخدام الإعدادات الافتراضية.');
+      } finally {
+        setIsLoaded(true);
       }
-      setIsLoaded(true);
     };
     load();
   }, []);
