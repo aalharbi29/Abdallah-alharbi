@@ -319,7 +319,7 @@ export default function FillEmailRecoveryForm() {
           <tbody>
             <tr>
               <td
-                colSpan="2" className="mr-5 p-3 font-bold text-center"
+                colSpan="2" className="px-5 py-3 font-bold text-center"
 
                 contentEditable
                 suppressContentEditableWarning
