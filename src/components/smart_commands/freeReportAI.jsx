@@ -183,30 +183,51 @@ const extractRequestedColumnHeaders = (prompt) => {
 
 // 🆕 وضع البناء الحر: AI يُنشئ جدولاً كاملاً (صفوف + أعمدة + قيم) من النص
 async function planStandaloneReport(userPrompt) {
-  const aiPrompt = `أنت مساعد خبير في بناء جداول تقارير من نص حر بالعربية.
+  const aiPrompt = `أنت مساعد خبير في بناء جداول تقارير من نص حر بالعربية، مع إمكانية ربط القيم ببيانات حقيقية من نظام إدارة صحي.
 
-📝 المستخدم طلب تقريراً عن موضوع غير مُمَثَّل ببيانات منظمة في النظام (مثل: أدوية، مخزون، لقاحات، تواريخ انتهاء صلاحية...). مهمتك أن تستخرج البيانات الموجودة في النص وتبني جدولاً كاملاً يطابق الطلب بدقة.
+📝 المستخدم طلب تقريراً قد يحتاج لبيانات إحصائية حقيقية من النظام (مثل: عدد الموظفين لكل مركز، عدد الإجازات، عدد الأجهزة...). مهمتك:
+1. تبني الجدول بالأعمدة المطلوبة.
+2. تملأ القيم النصية المباشرة من نص المستخدم.
+3. **عندما يطلب قيمة محسوبة من بيانات النظام** (مثل "عدد الموظفين") تضع في الخلية معرّفاً خاصاً بصيغة:
+   {{COMPUTE:entity:operation:filterField:filterValue}}
+   مثال: {{COMPUTE:Employee:count:المركز_الصحي:الحسو}} → سيُحسب فعلياً عدد الموظفين في مركز الحسو.
+
+📋 الكيانات المتاحة وحقول الفلترة:
+- Employee (الموظفون) → فلتر: المركز_الصحي | position | department | gender
+- HealthCenter (المراكز) → فلتر: اسم_المركز | حالة_التشغيل
+- Leave (الإجازات) → فلتر: health_center | leave_type | status
+- Assignment (التكاليف) → فلتر: assigned_to_health_center | status
+- MedicalEquipment (الأجهزة الطبية) → فلتر: health_center_name
+- DeficiencyReport (النواقص) → فلتر: health_center
+- ArchivedEmployee (الموظفون المؤرشفون) → فلتر: المركز_الصحي | archive_type
+
+🎯 العمليات المتاحة (operation):
+- count: عدد السجلات المطابقة
+- count_active: عدد السجلات ذات الحالة النشطة (للإجازات/التكاليف فقط)
 
 🎯 قواعد صارمة:
-1. **اختر الأعمدة من النص فقط** — ممنوع إضافة أي عمود لم يطلبه المستخدم صراحةً (لا هاتف، لا فاكس، لا مدير، لا إيجار، لا أي شيء غير مذكور في الطلب).
-2. **أنشئ صفاً واحداً لكل وحدة** يطلبها المستخدم (مثلاً: صف لكل مركز، صف لكل دواء، أو حسب ما يقتضيه الطلب).
-3. **املأ القيم من النص** — إذا كان النص يقول "ينتهي في شهر 6 لعام 2026" فاكتب "2026/06" أو "يونيو 2026". إذا قال "اسماء الأدوية بالإنجليزي" فاستخدم Morphine, Diazepam وهكذا.
-4. **القيم المختلفة بين الصفوف** — إذا قال المستخدم "صخيبرة يحتاج أمبولة إضافية" فضع هذه المعلومة في صف صخيبرة فقط، وليس في باقي الصفوف.
+1. **اختر الأعمدة من النص فقط** — ممنوع إضافة أي عمود لم يطلبه المستخدم صراحةً.
+2. **أنشئ صفاً واحداً لكل وحدة** يطلبها المستخدم.
+3. **القيم النصية** املأها من النص مباشرة.
+4. **القيم الإحصائية** ضع رمز {{COMPUTE:...}} كقيمة الخلية، وسيتم حسابها فعلياً.
 5. **عناوين الأعمدة** بالعربية واضحة ومختصرة.
 6. القيم الفارغة اجعلها "—".
 
+مثال شامل: للطلب "جدول مراكز الحسو وبطحي وطلال مع عدد موظفي كل مركز":
+{
+  "title": "حصر الموظفين لكل مركز",
+  "columns": ["اسم المركز", "عدد الموظفين"],
+  "rows": [
+    { "اسم المركز": "الحسو", "عدد الموظفين": "{{COMPUTE:Employee:count:المركز_الصحي:الحسو}}" },
+    { "اسم المركز": "بطحي", "عدد الموظفين": "{{COMPUTE:Employee:count:المركز_الصحي:بطحي}}" },
+    { "اسم المركز": "طلال", "عدد الموظفين": "{{COMPUTE:Employee:count:المركز_الصحي:طلال}}" }
+  ],
+  "notes": "تم استخراج عدد الموظفين فعلياً من قاعدة البيانات"
+}
+
 الطلب: "${userPrompt}"
 
-أرجع JSON بهذا الشكل بالضبط:
-{
-  "title": "عنوان التقرير المناسب",
-  "columns": ["العمود 1", "العمود 2", ...],
-  "rows": [
-    { "العمود 1": "قيمة", "العمود 2": "قيمة", ... },
-    ...
-  ],
-  "notes": "ملاحظة قصيرة عن منطق البناء"
-}`;
+أرجع JSON بنفس البنية أعلاه.`;
 
   let response;
   try {
@@ -232,6 +253,9 @@ async function planStandaloneReport(userPrompt) {
     throw new Error('الذكاء الاصطناعي لم يتمكن من بناء جدول من الطلب.');
   }
 
+  // 🆕 معالجة رموز {{COMPUTE:...}} وحساب القيم فعلياً من قاعدة البيانات
+  const computedRows = await resolveComputeTokens(parsed.rows);
+
   // ابنِ خطة افتراضية بصيغة موحدة: standalone = true → executeFreeReportPlan يعالجها مباشرة
   return {
     standalone: true,
@@ -239,12 +263,74 @@ async function planStandaloneReport(userPrompt) {
     title: parsed.title || 'تقرير حر',
     notes: parsed.notes || '',
     __standaloneColumns: parsed.columns,
-    __standaloneRows: parsed.rows,
+    __standaloneRows: computedRows,
     fields: parsed.columns.map((c, i) => `__col_${i}_${c.replace(/\s+/g, '_').slice(0, 30)}`),
     __customLabels: Object.fromEntries(
       parsed.columns.map((c, i) => [`__col_${i}_${c.replace(/\s+/g, '_').slice(0, 30)}`, c])
     ),
   };
+}
+
+// 🆕 يستبدل رموز {{COMPUTE:entity:operation:filterField:filterValue}} بالقيم الفعلية من قاعدة البيانات
+async function resolveComputeTokens(rows) {
+  const tokenRegex = /\{\{COMPUTE:([^}]+)\}\}/g;
+  const entityCache = {};
+
+  // اجمع الكيانات المطلوبة في كل التوكنز
+  const neededEntities = new Set();
+  const allTokens = [];
+  rows.forEach((row) => {
+    Object.values(row).forEach((val) => {
+      if (typeof val !== 'string') return;
+      const matches = [...val.matchAll(tokenRegex)];
+      matches.forEach((m) => {
+        const [entity] = m[1].split(':');
+        if (entity && base44.entities[entity]) {
+          neededEntities.add(entity);
+          allTokens.push(m[1]);
+        }
+      });
+    });
+  });
+
+  // اجلب البيانات مرة واحدة فقط لكل كيان
+  for (const ent of neededEntities) {
+    try {
+      entityCache[ent] = await base44.entities[ent].filter({});
+    } catch (_) {
+      entityCache[ent] = [];
+    }
+  }
+
+  // الآن استبدل التوكنز بالقيم
+  const computed = rows.map((row) => {
+    const out = { ...row };
+    Object.entries(out).forEach(([key, val]) => {
+      if (typeof val !== 'string') return;
+      out[key] = val.replace(tokenRegex, (_, payload) => {
+        const [entity, operation, filterField, filterValue] = payload.split(':');
+        const data = entityCache[entity];
+        if (!data) return '—';
+        let filtered = data;
+        if (filterField && filterValue) {
+          filtered = data.filter((item) => {
+            const v = getNestedValue(item, filterField);
+            if (v === null || v === undefined) return false;
+            return fuzzyCenterMatch(String(v), filterValue) ||
+                   normalizeArabic(String(v)).includes(normalizeArabic(filterValue));
+          });
+        }
+        if (operation === 'count') return String(filtered.length);
+        if (operation === 'count_active') {
+          return String(filtered.filter((i) => i.status === 'active' || !i.status).length);
+        }
+        return String(filtered.length);
+      });
+    });
+    return out;
+  });
+
+  return computed;
 }
 
 // اطلب من AI تحليل النص وإرجاع خطة تقرير
