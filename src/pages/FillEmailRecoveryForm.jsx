@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Printer, Download, Plus, Trash2, Loader2, GripVertical } from "lucide-react";
 import { toast } from "sonner";
+import { MHC_ASSETS } from "@/components/branding/madinahCluster";
 
 export default function FillEmailRecoveryForm() {
   const [healthCenters, setHealthCenters] = useState([]);
@@ -290,15 +291,15 @@ export default function FillEmailRecoveryForm() {
         }}>
         
         {/* الشعار والعنوان - بجانب شعار التجمع */}
-        <div className="flex justify-end items-start" style={{ marginTop: '40px', marginLeft: '360px' }}>
-          {/* خط فاصل أزرق */}
-          <div style={{ width: '1px', backgroundColor: '#0ea5e9', height: '50px', marginLeft: '15px' }}></div>
-          <div className="text-right">
+        <div
+          className="flex items-center justify-end gap-3"
+          style={{ marginTop: '40px', marginBottom: '34px', paddingLeft: '44px' }}>
+          <div className="text-right" style={{ backgroundColor: '#ffffff', padding: '2px 0 2px 10px' }}>
             <h1
               className="text-lg font-bold"
               contentEditable
               suppressContentEditableWarning
-              style={{ outline: 'none', color: '#0ea5e9' }}>
+              style={{ outline: 'none', color: '#0ea5e9', whiteSpace: 'nowrap' }}>
               
               الخدمات المشتركة للصحة الرقمية والتقنية
             </h1>
@@ -306,11 +307,18 @@ export default function FillEmailRecoveryForm() {
               className="text-sm"
               contentEditable
               suppressContentEditableWarning
-              style={{ outline: 'none', color: '#6b7280' }}>
+              style={{ outline: 'none', color: '#6b7280', whiteSpace: 'nowrap' }}>
               
                               Shared Services for Digital Health & Technology
                             </p>
           </div>
+          <div style={{ width: '1px', backgroundColor: '#0ea5e9', height: '50px', flexShrink: 0 }}></div>
+          <img
+            src={MHC_ASSETS.watermark}
+            alt="شعار تجمع المدينة المنورة الصحي"
+            crossOrigin="anonymous"
+            style={{ width: '72px', height: '72px', objectFit: 'contain', flexShrink: 0, backgroundColor: '#ffffff' }}
+          />
         </div>
         
         {/* عنوان النموذج */}
