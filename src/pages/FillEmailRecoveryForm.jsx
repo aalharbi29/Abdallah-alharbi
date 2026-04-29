@@ -203,7 +203,9 @@ export default function FillEmailRecoveryForm() {
           .print-header-title {
             transform: none !important;
             margin-top: 40px !important;
-            margin-left: 360px !important;
+            margin-left: 0 !important;
+            padding-left: 95px !important;
+            justify-content: flex-start !important;
           }
         }
         .editable-cell {
