@@ -200,6 +200,11 @@ export default function FillEmailRecoveryForm() {
           .no-print { display: none !important; }
           @page { size: A4 portrait; margin: 0; }
           .resize-handle { display: none !important; }
+          .print-header-title {
+            transform: none !important;
+            margin-top: 40px !important;
+            margin-left: 360px !important;
+          }
         }
         .editable-cell {
           min-height: 35px;
@@ -282,7 +287,7 @@ export default function FillEmailRecoveryForm() {
         }}>
         
         {/* الشعار والعنوان - بجانب شعار التجمع */}
-        <div className="flex justify-end items-start" style={{ marginTop: '40px', marginLeft: '360px' }}>
+        <div className="print-header-title flex justify-end items-start" style={{ marginTop: '40px', marginLeft: '360px' }}>
           {/* خط فاصل أزرق */}
           <div style={{ width: '1px', backgroundColor: '#0ea5e9', height: '50px', marginLeft: '15px' }}></div>
           <div className="text-right">
