@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   Loader2, Sparkles, FileText, FileSpreadsheet, Printer, Mail, MessageCircle,
   Database, MapPin, Columns3, Wand2, Pencil, Save, X, ArrowDownUp, Brain, Mic,
-  LayoutGrid, Table as TableIcon, Image as ImageIcon
+  LayoutGrid, Table as TableIcon, Image as ImageIcon, Upload, ScanLine
 } from 'lucide-react';
 import { exportAsPoster } from '@/components/smart_commands/posterExporter';
 import SingleRecordDetailCard from '@/components/smart_commands/SingleRecordDetailCard';
@@ -80,6 +80,42 @@ export default function SmartCommands() {
   const [edits, setEdits] = useState({});
   const [savingEdits, setSavingEdits] = useState(false);
   const [viewMode, setViewMode] = useState('auto'); // 'auto' | 'table' | 'detail'
+
+  // 🆕 رفع صورة الطلب وقراءتها بالـ AI
+  const [imageScanLoading, setImageScanLoading] = useState(false);
+  const fileInputRef = React.useRef(null);
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      toast.error('يرجى رفع ملف صورة صالح.');
+      return;
+    }
+    setImageScanLoading(true);
+    try {
+      toast.info('جاري رفع الصورة وقراءتها...');
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt: 'هذه صورة لطلب أو ملاحظة مكتوبة بالعربية. استخرج النص المكتوب فيها بالكامل بدقة عالية، وأعده كنص واحد منسق وواضح. اذكر كل تفاصيل الطلب (مثل: أسماء المراكز، أسماء الموظفين، الحقول المطلوبة، العمليات الإحصائية المطلوبة...). لا تضف أي شرح أو تعليق، فقط النص المستخرج.',
+        file_urls: [file_url],
+      });
+      const extractedText = typeof result === 'string' ? result : (result?.text || '');
+      if (!extractedText.trim()) {
+        toast.error('لم يتم العثور على نص في الصورة.');
+        return;
+      }
+      setPrompt((prev) => (prev ? `${prev}\n${extractedText}` : extractedText));
+      setFreeMode(true);
+      toast.success('تم استخراج النص من الصورة بنجاح. يمكنك الآن تنفيذ الطلب.');
+    } catch (err) {
+      console.error(err);
+      toast.error('فشل قراءة الصورة. حاول مرة أخرى.');
+    } finally {
+      setImageScanLoading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
 
   const primaryEntity = selectedEntities[0] || '';
   const secondaryEntities = selectedEntities.slice(1);
@@ -699,6 +735,39 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
           <p className="text-xs text-slate-500 flex items-center gap-1">
             <Mic className="w-3 h-3" /> اضغط على الميكروفون وتحدّث بالعربية لإملاء طلبك صوتياً.
           </p>
+
+          {/* 🆕 رفع صورة الطلب وقراءتها بالـ AI */}
+          <div className="mt-3 p-3 rounded-lg border-2 border-dashed border-fuchsia-300 bg-gradient-to-l from-fuchsia-50 to-purple-50">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-start gap-2">
+                <ScanLine className="w-5 h-5 text-fuchsia-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="text-sm font-semibold text-fuchsia-800">رفع صورة الطلب</p>
+                  <p className="text-xs text-slate-600 mt-0.5">
+                    ارفع صورة (مكتوبة أو مطبوعة) وسيقرأها النظام تلقائياً ويُحوّلها إلى طلب.
+                  </p>
+                </div>
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+              <Button
+                type="button"
+                size="sm"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={imageScanLoading}
+                className="bg-fuchsia-600 hover:bg-fuchsia-700 text-white"
+              >
+                {imageScanLoading
+                  ? <><Loader2 className="w-4 h-4 ml-1 animate-spin" /> جاري القراءة...</>
+                  : <><Upload className="w-4 h-4 ml-1" /> اختر صورة</>}
+              </Button>
+            </div>
+          </div>
         </div>
       </CollapsibleSection>
 
