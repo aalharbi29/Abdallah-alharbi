@@ -18,8 +18,6 @@ export default function FillEmailRecoveryForm() {
   const [resizing, setResizing] = useState(null);
   const [startX, setStartX] = useState(0);
   const [startWidth, setStartWidth] = useState(0);
-  const [headerOffset, setHeaderOffset] = useState({ x: 0, y: 0 });
-  const [headerDrag, setHeaderDrag] = useState(null);
 
   // بيانات النموذج
   const [formData, setFormData] = useState({
@@ -39,19 +37,11 @@ export default function FillEmailRecoveryForm() {
     loadData();
   }, []);
 
-  // معالجة تغيير حجم الأعمدة وتحريك الهيدر
+  // معالجة تغيير حجم الأعمدة
   useEffect(() => {
-    if (!resizing && !headerDrag) return;
+    if (!resizing) return;
 
     const handleMouseMove = (e) => {
-      if (headerDrag) {
-        setHeaderOffset({
-          x: headerDrag.startOffset.x + (e.clientX - headerDrag.startMouse.x),
-          y: headerDrag.startOffset.y + (e.clientY - headerDrag.startMouse.y)
-        });
-        return;
-      }
-
       const diff = startX - e.clientX;
       const newWidth = Math.max(100, startWidth + diff);
 
@@ -62,10 +52,7 @@ export default function FillEmailRecoveryForm() {
       }
     };
 
-    const handleMouseUp = () => {
-      setResizing(null);
-      setHeaderDrag(null);
-    };
+    const handleMouseUp = () => setResizing(null);
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
@@ -73,21 +60,13 @@ export default function FillEmailRecoveryForm() {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [resizing, headerDrag, startX, startWidth]);
+  }, [resizing, startX, startWidth]);
 
   const handleResizeStart = (e, table, col, currentWidth) => {
     e.preventDefault();
     setResizing({ table, col });
     setStartX(e.clientX);
     setStartWidth(currentWidth);
-  };
-
-  const handleHeaderDragStart = (e) => {
-    e.preventDefault();
-    setHeaderDrag({
-      startMouse: { x: e.clientX, y: e.clientY },
-      startOffset: headerOffset
-    });
   };
 
   const loadData = async () => {
@@ -192,31 +171,16 @@ export default function FillEmailRecoveryForm() {
     <div className="min-h-screen bg-gray-100 p-4" dir="rtl">
       <style>{`
         @media print {
-          @page { size: A4 portrait; margin: 0; }
-          html, body {
-            width: 210mm;
-            height: 297mm;
-            margin: 0 !important;
-            padding: 0 !important;
-            overflow: hidden !important;
-            background: #ffffff !important;
-          }
           body * { visibility: hidden; }
           .print-area, .print-area * { visibility: visible; }
           .print-area {
-            position: fixed !important;
-            inset: 0 !important;
-            width: 210mm !important;
-            height: 297mm !important;
-            min-height: 297mm !important;
-            max-width: none !important;
-            margin: 0 !important;
-            padding: 12mm 16mm !important;
-            box-sizing: border-box !important;
-            overflow: hidden !important;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm 20mm;
             direction: rtl;
-            box-shadow: none !important;
-            background-color: #ffffff !important;
             background-image: url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/a3b5521d7_image.png) !important;
             background-size: 100% 100% !important;
             background-position: center !important;
@@ -224,8 +188,8 @@ export default function FillEmailRecoveryForm() {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
-          .print-area table { page-break-inside: avoid; }
           .no-print { display: none !important; }
+          @page { size: A4 portrait; margin: 0; }
           .resize-handle { display: none !important; }
         }
         .editable-cell {
@@ -300,27 +264,16 @@ export default function FillEmailRecoveryForm() {
         className="print-area max-w-4xl mx-auto bg-white shadow-lg"
         style={{
           fontFamily: 'Arial, sans-serif',
-          width: '210mm',
-          minHeight: '297mm',
-          boxSizing: 'border-box',
           padding: '40px 50px',
           backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/a3b5521d7_image.png)',
           backgroundSize: '100% 100%',
           backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
+          backgroundRepeat: 'no-repeat',
+          minHeight: '297mm'
         }}>
         
         {/* الشعار والعنوان - بجانب شعار التجمع */}
-        <div
-          className="flex justify-end items-start relative"
-          style={{ marginTop: '40px', marginLeft: '360px', transform: `translate(${headerOffset.x}px, ${headerOffset.y}px)` }}>
-          <button
-            type="button"
-            onMouseDown={handleHeaderDragStart}
-            className="no-print absolute -right-8 top-1 rounded-md border border-blue-200 bg-white p-1 text-blue-600 shadow-sm cursor-move hover:bg-blue-50"
-            title="اسحب لتحريك نص الهيدر">
-            <GripVertical className="w-4 h-4" />
-          </button>
+        <div className="flex justify-end items-start" style={{ marginTop: '40px', marginLeft: '360px' }}>
           {/* خط فاصل أزرق */}
           <div style={{ width: '1px', backgroundColor: '#0ea5e9', height: '50px', marginLeft: '15px' }}></div>
           <div className="text-right">
