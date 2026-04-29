@@ -171,16 +171,25 @@ export default function FillEmailRecoveryForm() {
     <div className="min-h-screen bg-gray-100 p-4" dir="rtl">
       <style>{`
         @media print {
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: #ffffff !important;
+          }
           body * { visibility: hidden; }
           .print-area, .print-area * { visibility: visible; }
           .print-area {
             position: absolute;
             left: 0;
             top: 0;
+            right: 0;
             width: 210mm;
             min-height: 297mm;
-            padding: 15mm 20mm;
+            margin: 0 auto !important;
+            padding: 40px 50px !important;
+            box-sizing: border-box !important;
             direction: rtl;
+            box-shadow: none !important;
             background-image: url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/a3b5521d7_image.png) !important;
             background-size: 100% 100% !important;
             background-position: center !important;
