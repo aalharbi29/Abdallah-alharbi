@@ -33,41 +33,6 @@ export default function FillEmailRecoveryForm() {
   // صفوف إضافية قابلة للتعديل
   const [additionalRows, setAdditionalRows] = useState([]);
 
-  // تحريك الهيدر
-  const [headerOffset, setHeaderOffset] = useState({ x: 0, y: 0 });
-  const [isDraggingHeader, setIsDraggingHeader] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-
-  const handleHeaderDragStart = (e) => {
-    // Prevent drag if clicking on editable text
-    if (e.target.isContentEditable) return;
-    setIsDraggingHeader(true);
-    setDragStart({
-      x: e.clientX - headerOffset.x,
-      y: e.clientY - headerOffset.y
-    });
-  };
-
-  useEffect(() => {
-    if (!isDraggingHeader) return;
-
-    const handleMouseMove = (e) => {
-      setHeaderOffset({
-        x: e.clientX - dragStart.x,
-        y: e.clientY - dragStart.y
-      });
-    };
-
-    const handleMouseUp = () => setIsDraggingHeader(false);
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDraggingHeader, dragStart]);
-
   useEffect(() => {
     loadData();
   }, []);
@@ -206,25 +171,16 @@ export default function FillEmailRecoveryForm() {
     <div className="min-h-screen bg-gray-100 p-4" dir="rtl">
       <style>{`
         @media print {
-          html, body {
-            margin: 0 !important;
-            padding: 0 !important;
-            background: #ffffff !important;
-          }
           body * { visibility: hidden; }
           .print-area, .print-area * { visibility: visible; }
           .print-area {
             position: absolute;
             left: 0;
             top: 0;
-            right: 0;
             width: 210mm;
             min-height: 297mm;
-            margin: 0 auto !important;
-            padding: 40px 50px !important;
-            box-sizing: border-box !important;
+            padding: 15mm 20mm;
             direction: rtl;
-            box-shadow: none !important;
             background-image: url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/a3b5521d7_image.png) !important;
             background-size: 100% 100% !important;
             background-position: center !important;
@@ -235,7 +191,6 @@ export default function FillEmailRecoveryForm() {
           .no-print { display: none !important; }
           @page { size: A4 portrait; margin: 0; }
           .resize-handle { display: none !important; }
-
         }
         .editable-cell {
           min-height: 35px;
@@ -318,22 +273,16 @@ export default function FillEmailRecoveryForm() {
         }}>
         
         {/* الشعار والعنوان - بجانب شعار التجمع */}
-        <div 
-          className="flex justify-start items-start w-full relative cursor-move hover:bg-slate-50/50 transition-colors rounded-lg p-2 -m-2" 
-          style={{ 
-            marginTop: '40px', 
-            paddingRight: '20px',
-            transform: `translate(${headerOffset.x}px, ${headerOffset.y}px)`,
-            zIndex: 50
-          }}
-          onMouseDown={handleHeaderDragStart}
-        >
+        <div className="flex justify-end items-start" style={{ marginTop: '40px', marginLeft: '360px' }}>
+          {/* خط فاصل أزرق */}
+          <div style={{ width: '1px', backgroundColor: '#0ea5e9', height: '50px', marginLeft: '15px' }}></div>
           <div className="text-right">
             <h1
               className="text-lg font-bold"
               contentEditable
               suppressContentEditableWarning
               style={{ outline: 'none', color: '#0ea5e9' }}>
+              
               الخدمات المشتركة للصحة الرقمية والتقنية
             </h1>
             <p
@@ -341,11 +290,10 @@ export default function FillEmailRecoveryForm() {
               contentEditable
               suppressContentEditableWarning
               style={{ outline: 'none', color: '#6b7280' }}>
-              Shared Services for Digital Health & Technology
-            </p>
+              
+                              Shared Services for Digital Health & Technology
+                            </p>
           </div>
-          {/* خط فاصل أزرق */}
-          <div style={{ width: '1px', backgroundColor: '#0ea5e9', height: '45px', marginRight: '15px' }}></div>
         </div>
         
         {/* عنوان النموذج */}
