@@ -200,13 +200,7 @@ export default function FillEmailRecoveryForm() {
           .no-print { display: none !important; }
           @page { size: A4 portrait; margin: 0; }
           .resize-handle { display: none !important; }
-          .print-header-title {
-            transform: none !important;
-            margin-top: 40px !important;
-            margin-left: 0 !important;
-            padding-left: 95px !important;
-            justify-content: flex-start !important;
-          }
+
         }
         .editable-cell {
           min-height: 35px;
@@ -289,16 +283,13 @@ export default function FillEmailRecoveryForm() {
         }}>
         
         {/* الشعار والعنوان - بجانب شعار التجمع */}
-        <div className="print-header-title flex justify-end items-start" style={{ marginTop: '40px', marginLeft: '360px' }}>
-          {/* خط فاصل أزرق */}
-          <div style={{ width: '1px', backgroundColor: '#0ea5e9', height: '50px', marginLeft: '15px' }}></div>
+        <div className="flex justify-start items-start w-full" style={{ marginTop: '40px', paddingRight: '20px' }}>
           <div className="text-right">
             <h1
               className="text-lg font-bold"
               contentEditable
               suppressContentEditableWarning
               style={{ outline: 'none', color: '#0ea5e9' }}>
-              
               الخدمات المشتركة للصحة الرقمية والتقنية
             </h1>
             <p
@@ -306,10 +297,11 @@ export default function FillEmailRecoveryForm() {
               contentEditable
               suppressContentEditableWarning
               style={{ outline: 'none', color: '#6b7280' }}>
-              
-                              Shared Services for Digital Health & Technology
-                            </p>
+              Shared Services for Digital Health & Technology
+            </p>
           </div>
+          {/* خط فاصل أزرق */}
+          <div style={{ width: '1px', backgroundColor: '#0ea5e9', height: '45px', marginRight: '15px' }}></div>
         </div>
         
         {/* عنوان النموذج */}
