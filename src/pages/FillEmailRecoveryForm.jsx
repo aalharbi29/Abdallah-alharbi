@@ -27,7 +27,7 @@ export default function FillEmailRecoveryForm() {
     recipientName: "",
     recipientEmail: "",
     recipientPhone: "",
-    adminEmail: "",
+    adminEmail: ""
   });
 
   // صفوف إضافية قابلة للتعديل
@@ -44,11 +44,11 @@ export default function FillEmailRecoveryForm() {
     const handleMouseMove = (e) => {
       const diff = startX - e.clientX;
       const newWidth = Math.max(100, startWidth + diff);
-      
+
       if (resizing.table === 1) {
-        setTable1ColWidths(prev => ({ ...prev, [resizing.col]: newWidth }));
+        setTable1ColWidths((prev) => ({ ...prev, [resizing.col]: newWidth }));
       } else {
-        setTable2ColWidths(prev => ({ ...prev, [resizing.col]: newWidth }));
+        setTable2ColWidths((prev) => ({ ...prev, [resizing.col]: newWidth }));
       }
     };
 
@@ -73,9 +73,9 @@ export default function FillEmailRecoveryForm() {
     try {
       setIsLoading(true);
       const [centersData, employeesData] = await Promise.all([
-        base44.entities.HealthCenter.list(),
-        base44.entities.Employee.list()
-      ]);
+      base44.entities.HealthCenter.list(),
+      base44.entities.Employee.list()]
+      );
       setHealthCenters(centersData || []);
       setEmployees(employeesData || []);
     } catch (error) {
@@ -87,13 +87,13 @@ export default function FillEmailRecoveryForm() {
   };
 
   const handleCenterChange = (centerId) => {
-    const center = healthCenters.find(c => c.id === centerId);
+    const center = healthCenters.find((c) => c.id === centerId);
     setSelectedCenter(center);
 
     if (center) {
-      const manager = employees.find(e => e.id === center.المدير);
-      
-      setFormData(prev => ({
+      const manager = employees.find((e) => e.id === center.المدير);
+
+      setFormData((prev) => ({
         ...prev,
         entityName: center.اسم_المركز || "",
         managerName: manager?.full_name_arabic || "",
@@ -108,19 +108,19 @@ export default function FillEmailRecoveryForm() {
   };
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const addRow = () => {
-    setAdditionalRows(prev => [...prev, { label: "", value: "" }]);
+    setAdditionalRows((prev) => [...prev, { label: "", value: "" }]);
   };
 
   const removeRow = (index) => {
-    setAdditionalRows(prev => prev.filter((_, i) => i !== index));
+    setAdditionalRows((prev) => prev.filter((_, i) => i !== index));
   };
 
   const updateRow = (index, field, value) => {
-    setAdditionalRows(prev => {
+    setAdditionalRows((prev) => {
       const newRows = [...prev];
       newRows[index] = { ...newRows[index], [field]: value };
       return newRows;
@@ -134,7 +134,7 @@ export default function FillEmailRecoveryForm() {
   const handleExportPDF = async () => {
     const html2canvas = (await import('html2canvas')).default;
     const { jsPDF } = await import('jspdf');
-    
+
     const element = printRef.current;
     const canvas = await html2canvas(element, {
       scale: 2,
@@ -144,12 +144,12 @@ export default function FillEmailRecoveryForm() {
       height: element.scrollHeight,
       windowHeight: element.scrollHeight
     });
-    
+
     const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF('p', 'mm', 'a4');
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = pdf.internal.pageSize.getHeight();
-    
+
     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
     pdf.save(`طلب_استعادة_بريد_${formData.entityName || 'مركز'}.pdf`);
     toast.success("تم تصدير الملف بنجاح");
@@ -160,8 +160,8 @@ export default function FillEmailRecoveryForm() {
       <div className="flex items-center justify-center min-h-screen">
         <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
         <span className="mr-2">جاري تحميل البيانات...</span>
-      </div>
-    );
+      </div>);
+
   }
 
   const borderColor = "#1e5f8a"; // أزرق غامق للحدود الخارجية
@@ -233,11 +233,11 @@ export default function FillEmailRecoveryForm() {
               <SelectValue placeholder="اختر المركز الصحي..." />
             </SelectTrigger>
             <SelectContent>
-              {healthCenters.map(center => (
-                <SelectItem key={center.id} value={center.id}>
+              {healthCenters.map((center) =>
+              <SelectItem key={center.id} value={center.id}>
                   {center.اسم_المركز}
                 </SelectItem>
-              ))}
+              )}
             </SelectContent>
           </Select>
         </div>
@@ -259,38 +259,38 @@ export default function FillEmailRecoveryForm() {
       </div>
 
       {/* النموذج القابل للطباعة */}
-      <div 
+      <div
         ref={printRef}
         className="print-area max-w-4xl mx-auto bg-white shadow-lg"
-        style={{ 
-          fontFamily: 'Arial, sans-serif', 
+        style={{
+          fontFamily: 'Arial, sans-serif',
           padding: '40px 50px',
           backgroundImage: 'url(https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/a3b5521d7_image.png)',
           backgroundSize: '100% 100%',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
           minHeight: '297mm'
-        }}
-      >
+        }}>
+        
         {/* الشعار والعنوان - بجانب شعار التجمع */}
         <div className="flex justify-end items-start" style={{ marginTop: '40px', marginLeft: '360px' }}>
           {/* خط فاصل أزرق */}
           <div style={{ width: '1px', backgroundColor: '#0ea5e9', height: '50px', marginLeft: '15px' }}></div>
           <div className="text-right">
-            <h1 
+            <h1
               className="text-lg font-bold"
               contentEditable
               suppressContentEditableWarning
-              style={{ outline: 'none', color: '#0ea5e9' }}
-            >
+              style={{ outline: 'none', color: '#0ea5e9' }}>
+              
               الخدمات المشتركة للصحة الرقمية والتقنية
             </h1>
-            <p 
-                              className="text-sm"
-                              contentEditable
-                              suppressContentEditableWarning
-                              style={{ outline: 'none', color: '#6b7280' }}
-                            >
+            <p
+              className="text-sm"
+              contentEditable
+              suppressContentEditableWarning
+              style={{ outline: 'none', color: '#6b7280' }}>
+              
                               Shared Services for Digital Health & Technology
                             </p>
           </div>
@@ -298,120 +298,120 @@ export default function FillEmailRecoveryForm() {
         
         {/* عنوان النموذج */}
         <div className="text-center" style={{ marginTop: '40px', marginBottom: '30px' }}>
-          <h2 
+          <h2
             className="text-xl font-bold"
             contentEditable
             suppressContentEditableWarning
-            style={{ outline: 'none', color: '#dc2626', borderBottom: '2px solid #dc2626', display: 'inline-block', paddingBottom: '4px' }}
-          >
+            style={{ outline: 'none', color: '#dc2626', borderBottom: '2px solid #dc2626', display: 'inline-block', paddingBottom: '4px' }}>
+            
             طلب إنشاء أو استعادة بريد إلكتروني
           </h2>
         </div>
 
         {/* الجدول الأول - بيانات الجهة الطالبة */}
-        <table 
-          className="w-full mb-1" 
-          style={{ 
+        <table
+          className="w-full mb-1"
+          style={{
             borderCollapse: 'collapse',
             border: `2px solid ${borderColor}`
-          }}
-        >
+          }}>
+          
           <tbody>
             <tr>
-              <td 
-                colSpan="2" 
-                className="p-3 text-center font-bold"
+              <td
+                colSpan="2" className="mr-5 p-3 font-bold text-center"
+
                 contentEditable
                 suppressContentEditableWarning
-                style={{ 
+                style={{
                   outline: 'none',
                   borderBottom: `1px solid ${innerBorderColor}`,
                   fontSize: '16px'
-                }}
-              >
+                }}>
+                
                 بيانات الجهة الطالبة
               </td>
             </tr>
             <tr>
-              <td 
+              <td
                 className="p-3 text-center font-semibold"
                 contentEditable
                 suppressContentEditableWarning
-                style={{ 
+                style={{
                   outline: 'none',
                   borderBottom: `1px solid ${innerBorderColor}`,
                   width: `${table1ColWidths.label}px`,
                   position: 'relative'
-                }}
-              >
+                }}>
+                
                 الجهة
-                <div 
+                <div
                   className="resize-handle no-print"
-                  onMouseDown={(e) => handleResizeStart(e, 1, 'label', table1ColWidths.label)}
-                />
+                  onMouseDown={(e) => handleResizeStart(e, 1, 'label', table1ColWidths.label)} />
+                
               </td>
-              <td 
+              <td
                 className="editable-cell text-center"
                 contentEditable
                 suppressContentEditableWarning
                 onBlur={(e) => handleInputChange('entityName', e.currentTarget.textContent)}
-                style={{ 
+                style={{
                   borderBottom: `1px solid ${innerBorderColor}`,
                   borderRight: `1px solid ${innerBorderColor}`,
                   width: `${table1ColWidths.value}px`,
                   position: 'relative'
-                }}
-              >
+                }}>
+                
                 {formData.entityName}
-                <div 
+                <div
                   className="resize-handle no-print"
-                  onMouseDown={(e) => handleResizeStart(e, 1, 'value', table1ColWidths.value)}
-                />
+                  onMouseDown={(e) => handleResizeStart(e, 1, 'value', table1ColWidths.value)} />
+                
               </td>
             </tr>
             <tr>
-              <td 
+              <td
                 className="p-3 text-center font-semibold"
                 contentEditable
                 suppressContentEditableWarning
-                style={{ 
+                style={{
                   outline: 'none',
                   borderBottom: `1px solid ${innerBorderColor}`
-                }}
-              >
+                }}>
+                
                 مدير الادارة
               </td>
-              <td 
+              <td
                 className="editable-cell text-center"
                 contentEditable
                 suppressContentEditableWarning
                 onBlur={(e) => handleInputChange('managerName', e.currentTarget.textContent)}
-                style={{ 
+                style={{
                   borderBottom: `1px solid ${innerBorderColor}`,
                   borderRight: `1px solid ${innerBorderColor}`
-                }}
-              >
+                }}>
+                
                 {formData.managerName}
               </td>
             </tr>
             <tr>
-              <td 
+              <td
                 className="p-3 text-center font-semibold"
                 contentEditable
                 suppressContentEditableWarning
-                style={{ outline: 'none' }}
-              >
+                style={{ outline: 'none' }}>
+                
                 (بريد / رقم) مدير الادارة
               </td>
-              <td 
+              <td
                 className="editable-cell text-center"
                 contentEditable
                 suppressContentEditableWarning
                 onBlur={(e) => handleInputChange('managerEmailPhone', e.currentTarget.textContent)}
-                style={{ 
+                style={{
                   borderRight: `1px solid ${innerBorderColor}`
-                }}
-              >
+                }}>
+                
                 {formData.managerEmailPhone}
               </td>
             </tr>
@@ -424,125 +424,125 @@ export default function FillEmailRecoveryForm() {
         </div>
 
         {/* الجدول الثاني - بيانات مستلم البريد */}
-        <table 
-          className="w-full" 
-          style={{ 
+        <table
+          className="w-full"
+          style={{
             borderCollapse: 'collapse',
             border: `2px solid ${borderColor}`
-          }}
-        >
+          }}>
+          
           <tbody>
             {/* عنوان الجدول الثاني داخل الجدول */}
             <tr>
-              <td 
-                colSpan="2" 
+              <td
+                colSpan="2"
                 className="p-3 text-center font-bold"
                 contentEditable
                 suppressContentEditableWarning
-                style={{ 
+                style={{
                   outline: 'none',
                   borderBottom: `1px solid ${innerBorderColor}`,
                   fontSize: '16px',
                   textAlign: 'center'
-                }}
-              >
+                }}>
+                
                 بيانات مستلم البريد الالكتروني
               </td>
             </tr>
             <tr>
-              <td 
+              <td
                 className="p-3 text-center font-semibold"
                 contentEditable
                 suppressContentEditableWarning
-                style={{ 
+                style={{
                   outline: 'none',
                   borderBottom: `1px solid ${innerBorderColor}`,
                   width: `${table2ColWidths.label}px`,
                   position: 'relative'
-                }}
-              >
+                }}>
+                
                 اسم المستلم
-                <div 
+                <div
                   className="resize-handle no-print"
-                  onMouseDown={(e) => handleResizeStart(e, 2, 'label', table2ColWidths.label)}
-                />
+                  onMouseDown={(e) => handleResizeStart(e, 2, 'label', table2ColWidths.label)} />
+                
               </td>
-              <td 
+              <td
                 className="editable-cell text-center"
                 contentEditable
                 suppressContentEditableWarning
                 onBlur={(e) => handleInputChange('recipientName', e.currentTarget.textContent)}
-                style={{ 
+                style={{
                   borderBottom: `1px solid ${innerBorderColor}`,
                   borderRight: `1px solid ${innerBorderColor}`,
                   width: `${table2ColWidths.value}px`,
                   position: 'relative'
-                }}
-              >
+                }}>
+                
                 {formData.recipientName}
-                <div 
+                <div
                   className="resize-handle no-print"
-                  onMouseDown={(e) => handleResizeStart(e, 2, 'value', table2ColWidths.value)}
-                />
+                  onMouseDown={(e) => handleResizeStart(e, 2, 'value', table2ColWidths.value)} />
+                
               </td>
             </tr>
             <tr>
-              <td 
+              <td
                 className="p-3 text-center font-semibold"
                 contentEditable
                 suppressContentEditableWarning
-                style={{ 
+                style={{
                   outline: 'none',
                   borderBottom: `1px solid ${innerBorderColor}`
-                }}
-              >
+                }}>
+                
                 بريد المستلم
               </td>
-              <td 
+              <td
                 className="editable-cell text-center"
                 contentEditable
                 suppressContentEditableWarning
                 onBlur={(e) => handleInputChange('recipientEmail', e.currentTarget.textContent)}
-                style={{ 
+                style={{
                   borderBottom: `1px solid ${innerBorderColor}`,
                   borderRight: `1px solid ${innerBorderColor}`
-                }}
-              >
+                }}>
+                
                 {formData.recipientEmail}
               </td>
             </tr>
             {/* خانة رقم الجوال مع نمط مختلف */}
             <tr>
-              <td 
+              <td
                 colSpan="2"
-                style={{ 
+                style={{
                   borderBottom: `1px solid ${innerBorderColor}`,
                   padding: 0
-                }}
-              >
+                }}>
+                
                 <div className="flex flex-row-reverse">
-                  <div 
+                  <div
                     className="editable-cell flex-1 text-center"
                     contentEditable
                     suppressContentEditableWarning
                     onBlur={(e) => handleInputChange('recipientPhone', e.currentTarget.textContent)}
-                    style={{ 
+                    style={{
                       borderRight: `1px solid ${innerBorderColor}`,
                       minWidth: '200px'
-                    }}
-                  >
+                    }}>
+                    
                     {formData.recipientPhone}
                   </div>
-                  <div 
+                  <div
                     className="p-3 text-center font-semibold"
                     contentEditable
                     suppressContentEditableWarning
-                    style={{ 
+                    style={{
                       outline: 'none',
                       width: '120px',
                       flexShrink: 0
-                    }}
-                  >
+                    }}>
+                    
                     رقم الجوال
                   </div>
                 </div>
@@ -550,92 +550,92 @@ export default function FillEmailRecoveryForm() {
             </tr>
             {/* بريد الادارة فوق الايميل في خلية واحدة */}
             <tr>
-              <td 
+              <td
                 colSpan="2"
                 className="editable-cell text-center"
-                style={{ 
+                style={{
                   fontSize: '16px',
                   direction: 'rtl',
                   padding: '12px'
-                }}
-              >
+                }}>
+                
                 <div className="font-semibold mb-1">بريد الادارة</div>
-                <div 
+                <div
                   contentEditable
                   suppressContentEditableWarning
                   onBlur={(e) => handleInputChange('adminEmail', e.currentTarget.textContent)}
-                  style={{ outline: 'none' }}
-                >
+                  style={{ outline: 'none' }}>
+                  
                   ( {formData.adminEmail || '                                        '} )
                 </div>
               </td>
             </tr>
 
             {/* الصفوف الإضافية */}
-            {additionalRows.map((row, index) => (
-              <tr key={index} className="relative group">
-                <td 
-                  className="p-3 text-center font-semibold relative"
-                  style={{ 
-                    borderTop: `1px solid ${innerBorderColor}`
-                  }}
-                >
+            {additionalRows.map((row, index) =>
+            <tr key={index} className="relative group">
+                <td
+                className="p-3 text-center font-semibold relative"
+                style={{
+                  borderTop: `1px solid ${innerBorderColor}`
+                }}>
+                
                   <span
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={(e) => updateRow(index, 'label', e.currentTarget.textContent)}
-                    style={{ outline: 'none' }}
-                  >
+                  contentEditable
+                  suppressContentEditableWarning
+                  onBlur={(e) => updateRow(index, 'label', e.currentTarget.textContent)}
+                  style={{ outline: 'none' }}>
+                  
                     {row.label || "عنوان جديد"}
                   </span>
                   <button
-                    onClick={() => removeRow(index)}
-                    className="no-print absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 transition-opacity"
-                  >
+                  onClick={() => removeRow(index)}
+                  className="no-print absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 transition-opacity">
+                  
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </td>
-                <td 
-                  className="editable-cell text-center"
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) => updateRow(index, 'value', e.currentTarget.textContent)}
-                  style={{ 
-                    borderTop: `1px solid ${innerBorderColor}`,
-                    borderRight: `1px solid ${innerBorderColor}`
-                  }}
-                >
+                <td
+                className="editable-cell text-center"
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => updateRow(index, 'value', e.currentTarget.textContent)}
+                style={{
+                  borderTop: `1px solid ${innerBorderColor}`,
+                  borderRight: `1px solid ${innerBorderColor}`
+                }}>
+                
                   {row.value}
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
 
         {/* ملاحظات */}
         <div className="mt-8 text-sm space-y-3">
-          <p 
+          <p
             contentEditable
             suppressContentEditableWarning
-            style={{ outline: 'none' }}
-          >
+            style={{ outline: 'none' }}>
+            
             - يتم رفع النموذج عن طريق بريد الإدارة أو بريد مدير الإدارة.
           </p>
-          <p 
+          <p
             contentEditable
             suppressContentEditableWarning
-            style={{ outline: 'none', fontWeight: 'bold', color: '#0ea5e9' }}
-          >
+            style={{ outline: 'none', fontWeight: 'bold', color: '#0ea5e9' }}>
+            
             مع إضافة المستلم في نسخة البريد
           </p>
-          <p 
+          <p
             contentEditable
             suppressContentEditableWarning
-            style={{ outline: 'none' }}
-          >
+            style={{ outline: 'none' }}>
+            
             - يتم رفع الطلب على{" "}
                               <a href="mailto:Med-hc-dt-op@moh.gov.sa" style={{ color: '#2563eb', textDecoration: 'underline', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></svg>
                                 Med-hc-dt-op@moh.gov.sa
                               </a>
           </p>
@@ -643,6 +643,6 @@ export default function FillEmailRecoveryForm() {
 
 
       </div>
-    </div>
-  );
+    </div>);
+
 }
