@@ -18,6 +18,8 @@ export default function FillEmailRecoveryForm() {
   const [resizing, setResizing] = useState(null);
   const [startX, setStartX] = useState(0);
   const [startWidth, setStartWidth] = useState(0);
+  const [headerOffset, setHeaderOffset] = useState({ x: 0, y: 0 });
+  const [headerDrag, setHeaderDrag] = useState(null);
 
   // بيانات النموذج
   const [formData, setFormData] = useState({
@@ -37,11 +39,19 @@ export default function FillEmailRecoveryForm() {
     loadData();
   }, []);
 
-  // معالجة تغيير حجم الأعمدة
+  // معالجة تغيير حجم الأعمدة وتحريك الهيدر
   useEffect(() => {
-    if (!resizing) return;
+    if (!resizing && !headerDrag) return;
 
     const handleMouseMove = (e) => {
+      if (headerDrag) {
+        setHeaderOffset({
+          x: headerDrag.startOffset.x + (e.clientX - headerDrag.startMouse.x),
+          y: headerDrag.startOffset.y + (e.clientY - headerDrag.startMouse.y)
+        });
+        return;
+      }
+
       const diff = startX - e.clientX;
       const newWidth = Math.max(100, startWidth + diff);
 
@@ -52,7 +62,10 @@ export default function FillEmailRecoveryForm() {
       }
     };
 
-    const handleMouseUp = () => setResizing(null);
+    const handleMouseUp = () => {
+      setResizing(null);
+      setHeaderDrag(null);
+    };
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
@@ -60,13 +73,21 @@ export default function FillEmailRecoveryForm() {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [resizing, startX, startWidth]);
+  }, [resizing, headerDrag, startX, startWidth]);
 
   const handleResizeStart = (e, table, col, currentWidth) => {
     e.preventDefault();
     setResizing({ table, col });
     setStartX(e.clientX);
     setStartWidth(currentWidth);
+  };
+
+  const handleHeaderDragStart = (e) => {
+    e.preventDefault();
+    setHeaderDrag({
+      startMouse: { x: e.clientX, y: e.clientY },
+      startOffset: headerOffset
+    });
   };
 
   const loadData = async () => {
@@ -290,7 +311,16 @@ export default function FillEmailRecoveryForm() {
         }}>
         
         {/* الشعار والعنوان - بجانب شعار التجمع */}
-        <div className="flex justify-end items-start" style={{ marginTop: '40px', marginLeft: '360px' }}>
+        <div
+          className="flex justify-end items-start relative"
+          style={{ marginTop: '40px', marginLeft: '360px', transform: `translate(${headerOffset.x}px, ${headerOffset.y}px)` }}>
+          <button
+            type="button"
+            onMouseDown={handleHeaderDragStart}
+            className="no-print absolute -right-8 top-1 rounded-md border border-blue-200 bg-white p-1 text-blue-600 shadow-sm cursor-move hover:bg-blue-50"
+            title="اسحب لتحريك نص الهيدر">
+            <GripVertical className="w-4 h-4" />
+          </button>
           {/* خط فاصل أزرق */}
           <div style={{ width: '1px', backgroundColor: '#0ea5e9', height: '50px', marginLeft: '15px' }}></div>
           <div className="text-right">
