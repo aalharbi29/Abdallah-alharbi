@@ -30,6 +30,7 @@ import CenterEmployeeExporter from "@/components/health_centers/CenterEmployeeEx
 import CenterDocuments from "@/components/health_centers/CenterDocuments";
 import CenterMedicalEquipmentNew from "@/components/health_centers/CenterMedicalEquipmentNew";
 import { getCombinedEmployeeRoles } from "@/components/utils/combinedRoles";
+import CopyableValue from "@/components/common/CopyableValue";
 
 
 export default function HealthCenterDetails() {
@@ -1077,17 +1078,17 @@ export default function HealthCenterDetails() {
                 {center.seha_id && (
                   <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg border-2 border-green-300">
                     <Hash className="w-5 h-5 text-green-600" />
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm text-green-600 font-semibold">SEHA ID</p>
-                      <p className="font-bold text-green-700 text-lg">{center.seha_id}</p>
+                      <CopyableValue value={center.seha_id} label="SEHA ID"><p className="font-bold text-green-700 text-lg">{center.seha_id}</p></CopyableValue>
                     </div>
                   </div>
                 )}
                 <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                   <MapPin className="w-5 h-5 text-gray-500" />
-                  <div>
+                  <div className="flex-1 min-w-0">
                     <p className="text-sm text-gray-500">الموقع</p>
-                    <p className="font-semibold">{center.الموقع || "غير محدد"}</p>
+                    <CopyableValue value={center.الموقع || ""} label="الموقع"><p className="font-semibold">{center.الموقع || "غير محدد"}</p></CopyableValue>
                   </div>
                 </div>
                 {center.موقع_الخريطة && (
@@ -1164,9 +1165,9 @@ export default function HealthCenterDetails() {
                 {center.هاتف_المركز && (
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                     <Phone className="w-5 h-5 text-gray-500" />
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm text-gray-500">الهاتف الأرضي</p>
-                      <p className="font-semibold">{center.هاتف_المركز}</p>
+                      <CopyableValue value={center.هاتف_المركز} label="الهاتف"><p className="font-semibold">{center.هاتف_المركز}</p></CopyableValue>
                     </div>
                   </div>
                 )}
@@ -1174,9 +1175,9 @@ export default function HealthCenterDetails() {
                 {center.رقم_الشريحة && (
                   <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
                     <Phone className="w-5 h-5 text-green-600" />
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm text-green-600 font-medium">رقم الشريحة</p>
-                      <p className="font-semibold text-green-700">{center.رقم_الشريحة}</p>
+                      <CopyableValue value={center.رقم_الشريحة} label="رقم الشريحة"><p className="font-semibold text-green-700">{center.رقم_الشريحة}</p></CopyableValue>
                     </div>
                   </div>
                 )}
@@ -1184,13 +1185,9 @@ export default function HealthCenterDetails() {
                 {center.رقم_الجوال && (
                   <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
                     <Phone className="w-5 h-5 text-blue-600" />
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm text-blue-600 font-medium">رقم الجوال</p>
-                      <p className="font-semibold text-blue-700">
-                        <a href={`tel:${center.رقم_الجوال}`} className="hover:underline">
-                          {center.رقم_الجوال}
-                        </a>
-                      </p>
+                      <CopyableValue value={center.رقم_الجوال} label="رقم الجوال"><p className="font-semibold text-blue-700"><a href={`tel:${center.رقم_الجوال}`} className="hover:underline">{center.رقم_الجوال}</a></p></CopyableValue>
                     </div>
                   </div>
                 )}
@@ -1221,9 +1218,9 @@ export default function HealthCenterDetails() {
                 {center.ايميل_المركز && (
                   <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                     <Mail className="w-5 h-5 text-gray-500" />
-                    <div>
+                    <div className="flex-1 min-w-0">
                       <p className="text-sm text-gray-500">الإيميل الرسمي</p>
-                      <p className="font-semibold text-blue-600">{center.ايميل_المركز}</p>
+                      <CopyableValue value={center.ايميل_المركز} label="الإيميل"><p className="font-semibold text-blue-600 break-all">{center.ايميل_المركز}</p></CopyableValue>
                     </div>
                   </div>
                 )}
@@ -1550,17 +1547,17 @@ export default function HealthCenterDetails() {
                 {/* المدير */}
                 <div className="p-3 bg-green-50 rounded-lg">
                   <p className="text-sm text-green-600 font-medium mb-1">مدير المركز</p>
-                  <p className="font-bold text-gray-900">{manager?.full_name_arabic || 'غير محدد'}</p>
-                  {manager?.phone && <p className="text-sm text-gray-600">📱 {manager.phone}</p>}
-                  {manager?.email && <p className="text-sm text-blue-600">✉️ {manager.email}</p>}
+                  <CopyableValue value={manager?.full_name_arabic || ''} label="اسم المدير"><p className="font-bold text-gray-900">{manager?.full_name_arabic || 'غير محدد'}</p></CopyableValue>
+                  {manager?.phone && <CopyableValue value={manager.phone} label="جوال المدير"><p className="text-sm text-gray-600">📱 {manager.phone}</p></CopyableValue>}
+                  {manager?.email && <CopyableValue value={manager.email} label="إيميل المدير"><p className="text-sm text-blue-600 break-all">✉️ {manager.email}</p></CopyableValue>}
                 </div>
 
                 {/* نائب المدير */}
                 {deputyManager && (
                   <div className="p-3 bg-blue-50 rounded-lg">
                     <p className="text-sm text-blue-600 font-medium mb-1">نائب المدير</p>
-                    <p className="font-bold text-gray-900">{deputyManager.full_name_arabic}</p>
-                    {deputyManager.phone && <p className="text-sm text-gray-600">📱 {deputyManager.phone}</p>}
+                    <CopyableValue value={deputyManager.full_name_arabic} label="اسم نائب المدير"><p className="font-bold text-gray-900">{deputyManager.full_name_arabic}</p></CopyableValue>
+                    {deputyManager.phone && <CopyableValue value={deputyManager.phone} label="جوال نائب المدير"><p className="text-sm text-gray-600">📱 {deputyManager.phone}</p></CopyableValue>}
                   </div>
                 )}
 
@@ -1568,8 +1565,8 @@ export default function HealthCenterDetails() {
                 {technicalSupervisor && (
                   <div className="p-3 bg-purple-50 rounded-lg">
                     <p className="text-sm text-purple-600 font-medium mb-1">المشرف الفني</p>
-                    <p className="font-bold text-gray-900">{technicalSupervisor.full_name_arabic}</p>
-                    {technicalSupervisor.phone && <p className="text-sm text-gray-600">📱 {technicalSupervisor.phone}</p>}
+                    <CopyableValue value={technicalSupervisor.full_name_arabic} label="اسم المشرف الفني"><p className="font-bold text-gray-900">{technicalSupervisor.full_name_arabic}</p></CopyableValue>
+                    {technicalSupervisor.phone && <CopyableValue value={technicalSupervisor.phone} label="جوال المشرف الفني"><p className="text-sm text-gray-600">📱 {technicalSupervisor.phone}</p></CopyableValue>}
                   </div>
                 )}
               </CardContent>

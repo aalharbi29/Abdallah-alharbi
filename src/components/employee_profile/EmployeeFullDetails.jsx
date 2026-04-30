@@ -17,6 +17,7 @@ import {
   ShieldCheck,
   ClipboardCheck
 } from "lucide-react";
+import CopyableValue from "@/components/common/CopyableValue";
 
 const FIELD_ICONS = {
   "full_name_arabic": User,
@@ -152,12 +153,15 @@ export default function EmployeeFullDetails({ employee }) {
                   );
                 }
 
+                const formattedValue = formatValue(key, value);
                 return (
-                  <div key={key} className="flex items-start gap-2 p-2.5 md:p-3 bg-white rounded-lg border min-w-0 overflow-hidden">
+                  <div key={key} className="flex items-start gap-2 p-2.5 md:p-3 bg-white rounded-lg border min-w-0 overflow-hidden group">
                     <FieldIcon className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-[11px] md:text-xs text-gray-500">{LABELS[key] || key}</p>
-                      <p className="text-sm md:text-base font-medium text-gray-900 break-words">{formatValue(key, value)}</p>
+                      <CopyableValue value={formattedValue} label={LABELS[key] || key}>
+                        <p className="text-sm md:text-base font-medium text-gray-900 break-words">{formattedValue}</p>
+                      </CopyableValue>
                     </div>
                   </div>
                 );
