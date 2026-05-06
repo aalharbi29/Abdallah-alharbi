@@ -329,7 +329,7 @@ export default function FillEidAchievementForm() {
                   backgroundImage: "url('https://media.base44.com/images/public/68af5003813e47bd07947b30/ec052b844_image.jpg')",
                   backgroundSize: '100% 100%',
                   backgroundRepeat: 'no-repeat',
-                  padding: '140px 50px 120px 50px',
+                  padding: '110px 30px 100px 30px',
                 }}>
                   {/* العنوان - مطابق للنموذج الأصلي (شريط رمادي مع خط سفلي أخضر) */}
                   <div className="mb-6" style={{ background: '#E8E8E8', borderBottom: '4px solid #8FA88F', padding: '10px 20px' }}>
