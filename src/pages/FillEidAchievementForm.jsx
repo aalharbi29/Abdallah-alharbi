@@ -329,8 +329,11 @@ export default function FillEidAchievementForm() {
                   backgroundImage: "url('https://media.base44.com/images/public/68af5003813e47bd07947b30/ec052b844_image.jpg')",
                   backgroundSize: '100% 100%',
                   backgroundRepeat: 'no-repeat',
-                  padding: '110px 30px 100px 30px',
+                  backgroundPosition: 'center',
+                  overflow: 'hidden',
                 }}>
+                  {/* طبقة المحتوى مع الهوامش - الخلفية تبقى مغطية كامل النموذج */}
+                  <div style={{ position: 'absolute', inset: 0, padding: '110px 30px 100px 30px' }}>
                   {/* العنوان - مطابق للنموذج الأصلي (شريط رمادي مع خط سفلي أخضر) */}
                   <div className="mb-6" style={{ background: '#E8E8E8', borderBottom: '4px solid #8FA88F', padding: '10px 20px' }}>
                     <h2 className="text-base md:text-lg font-bold text-gray-800 text-center">{text.title}</h2>
@@ -388,6 +391,7 @@ export default function FillEidAchievementForm() {
                     </div>
                   </div>
 
+                  </div>
                 </div>
               </div>
             </CardContent>
