@@ -157,25 +157,32 @@ export default function FillEidAchievementForm() {
       <style>{`
         @media print {
           @page { size: A4 portrait; margin: 0; }
-          html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; }
+          html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; width: 210mm; height: 297mm; }
           body * { visibility: hidden; }
           .print-area, .print-area * { visibility: visible; }
           .print-area {
-            position: absolute !important;
+            position: fixed !important;
             left: 0 !important;
             top: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
             width: 210mm !important;
             height: 297mm !important;
             margin: 0 !important;
             padding: 0 !important;
+            overflow: hidden !important;
           }
           .print-area > div {
             width: 210mm !important;
             height: 297mm !important;
             aspect-ratio: auto !important;
             box-shadow: none !important;
+            background-size: 100% 100% !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+          }
+          .print-area > div > div {
+            padding: 130px 40px 110px 40px !important;
           }
           .no-print { display: none !important; }
         }
