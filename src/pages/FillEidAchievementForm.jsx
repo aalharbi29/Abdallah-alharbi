@@ -22,6 +22,32 @@ const EID_OPTIONS = [
   'إجازة أخرى',
 ];
 
+// تحويل الأرقام اللاتينية إلى عربية هندية (مطابقة للـ PDF الأصلي)
+const toArabicDigits = (str) => {
+  if (str === null || str === undefined || str === '') return '';
+  const map = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+  return String(str).replace(/[0-9]/g, (d) => map[+d]);
+};
+
+const thStyle = {
+  border: '1px solid #000',
+  padding: '10px 8px',
+  fontSize: '12pt',
+  fontWeight: 700,
+  textAlign: 'center',
+  background: '#FFFFFF',
+  color: '#000',
+};
+const tdStyle = {
+  border: '1px solid #000',
+  padding: '14px 8px',
+  fontSize: '11pt',
+  textAlign: 'center',
+  background: '#FFFFFF',
+  color: '#000',
+  height: '40px',
+};
+
 export default function FillEidAchievementForm() {
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
@@ -379,7 +405,7 @@ export default function FillEidAchievementForm() {
               <div className="print-area" style={{ display: 'flex', justifyContent: 'center' }}>
                 <div className="preview-scaler" ref={scalerRef} style={{ width: '100%', aspectRatio: '210 / 297', position: 'relative', overflow: 'hidden' }}>
                 <div ref={printRef} className="bg-white shadow-sm preview-page" style={{
-                  fontFamily: "'Tajawal', 'Cairo', sans-serif",
+                  fontFamily: "'Tajawal', 'Cairo', 'Arial', sans-serif",
                   direction: 'rtl',
                   width: '210mm',
                   height: '297mm',
@@ -393,65 +419,82 @@ export default function FillEidAchievementForm() {
                   backgroundRepeat: 'no-repeat',
                   backgroundPosition: 'center',
                   overflow: 'hidden',
+                  color: '#000',
                 }}>
-                  {/* طبقة المحتوى مع الهوامش - الخلفية تبقى مغطية كامل النموذج */}
-                  <div style={{ position: 'absolute', inset: 0, padding: '110px 30px 100px 30px' }}>
-                  {/* العنوان - مطابق للنموذج الأصلي (شريط رمادي مع خط سفلي أخضر) */}
-                  <div className="mb-6" style={{ background: '#E8E8E8', borderBottom: '4px solid #8FA88F', padding: '10px 20px' }}>
-                    <h2 className="text-base md:text-lg font-bold text-gray-800 text-center">{text.title}</h2>
-                  </div>
+                  {/* طبقة المحتوى - مع هوامش مطابقة للأصل */}
+                  <div style={{ position: 'absolute', top: '170px', right: '70px', left: '70px', bottom: '180px' }}>
 
-                  {/* جدول البيانات */}
-                  <table className="w-full border-collapse mb-6" style={{ border: '1px solid #000' }}>
-                    <thead>
-                      <tr className="bg-gray-50">
-                        <th className="border border-black p-2 text-sm font-bold">الاسم</th>
-                        <th className="border border-black p-2 text-sm font-bold">الرقم الوظيفي</th>
-                        <th className="border border-black p-2 text-sm font-bold">السجل</th>
-                        <th className="border border-black p-2 text-sm font-bold">خدمة/تشغيل</th>
-                        <th className="border border-black p-2 text-sm font-bold">الجنسية</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td className="border border-black p-2 text-sm text-center">{selectedEmployee?.full_name_arabic || '-'}</td>
-                        <td className="border border-black p-2 text-sm text-center">{selectedEmployee?.['رقم_الموظف'] || '-'}</td>
-                        <td className="border border-black p-2 text-sm text-center">{selectedEmployee?.['رقم_الهوية'] || '-'}</td>
-                        <td className="border border-black p-2 text-sm text-center">{selectedEmployee?.contract_type || '-'}</td>
-                        <td className="border border-black p-2 text-sm text-center">{selectedEmployee?.nationality || '-'}</td>
-                      </tr>
-                    </tbody>
-                  </table>
+                    {/* 1) العنوان في إطار رمادي بحدود وشريط أخضر سفلي - عرض ~70% ومتوسّط */}
+                    <div style={{
+                      width: '75%',
+                      margin: '0 auto',
+                      border: '1px solid #BFBFBF',
+                      background: '#FFFFFF',
+                    }}>
+                      <div style={{ padding: '14px 20px', textAlign: 'center' }}>
+                        <span style={{ fontSize: '15pt', fontWeight: 700, color: '#000' }}>
+                          مشهد إنجاز {text.eidName} لعام {toArabicDigits(year)}هـ
+                        </span>
+                      </div>
+                      <div style={{ height: '14px', background: '#9DB99D' }} />
+                    </div>
 
-                  {/* النص */}
-                  <div className="space-y-4 text-sm md:text-base leading-loose text-gray-900">
-                    <p className="font-semibold">{text.body}</p>
+                    {/* 2) الجدول - 5 أعمدة بحدود سوداء رفيعة */}
+                    <table style={{
+                      width: '100%',
+                      borderCollapse: 'collapse',
+                      marginTop: '50px',
+                    }}>
+                      <thead>
+                        <tr>
+                          <th style={thStyle}>الاسم</th>
+                          <th style={thStyle}>الرقم الوظيفي</th>
+                          <th style={thStyle}>السجل</th>
+                          <th style={thStyle}>خدمة/تشغيل</th>
+                          <th style={thStyle}>الجنسية</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style={tdStyle}>{selectedEmployee?.full_name_arabic || ''}</td>
+                          <td style={tdStyle}>{toArabicDigits(selectedEmployee?.['رقم_الموظف']) || ''}</td>
+                          <td style={tdStyle}>{toArabicDigits(selectedEmployee?.['رقم_الهوية']) || ''}</td>
+                          <td style={tdStyle}>{selectedEmployee?.contract_type || ''}</td>
+                          <td style={tdStyle}>{selectedEmployee?.nationality || ''}</td>
+                        </tr>
+                      </tbody>
+                    </table>
 
-                    <ul className="list-disc pr-6 space-y-1">
-                      <li>
-                        للفترة من تاريخ <strong>{fromDate || '...'}</strong>هـ وحتى تاريخ <strong>{toDate || '...'}</strong>هـ.
-                        بما مجموعه عدد <strong>({workDays || '...'})</strong> أيام عمل ومجموع <strong>({compensationDays || '...'})</strong> أيام تعويضية.
-                      </li>
-                    </ul>
+                    {/* 3) النص الرئيسي - bold كامل */}
+                    <div style={{ marginTop: '32px', fontSize: '12pt', fontWeight: 700, lineHeight: 2, color: '#000' }}>
+                      <p style={{ margin: 0 }}>{text.body}</p>
 
-                    <p className="pt-2">وبناءً عليه نصادق على ما هو مذكور أعلاه من معلومات ونتحمل مسؤولية خلاف ما هو مذكور.</p>
-                  </div>
+                      <ul style={{ marginTop: '16px', marginBottom: '16px', paddingRight: '24px', listStyleType: 'disc' }}>
+                        <li>
+                          للفترة من تاريخ {toArabicDigits(fromDate) || '...'}هـ وحتى تاريخ {toArabicDigits(toDate) || '...'}هـ. بما مجموعه عدد ({toArabicDigits(workDays) || '...'}) أيام عمل ومجموع ({toArabicDigits(compensationDays) || '...'}) أيام تعويضية.
+                        </li>
+                      </ul>
 
-                  {/* المعتمد - الاسم/التوقيع يمين والختم يسار */}
-                  <div className="mt-12 flex items-start justify-between gap-8">
-                    <div className="flex-1 space-y-2">
-                      <p className="font-bold text-base">{managerTitle}</p>
-                      <p className="font-bold">الاسم: <span className="font-normal">{managerName}</span></p>
-                      <div>
-                        <p className="font-bold mb-1">التوقيع:</p>
-                        {signatureUrl && <img src={signatureUrl} alt="توقيع" style={{ maxHeight: '70px', maxWidth: '180px' }} crossOrigin="anonymous" />}
+                      <p style={{ margin: 0, marginTop: '20px' }}>
+                        وبنا<span style={{ fontFamily: 'inherit' }}>ً</span>ء عليه نصادق على ما هو مذكور أعلاه من معلومات ونتحمل مسؤولية خلاف ما هو مذكور.
+                      </p>
+                    </div>
+
+                    {/* 4) قسم الاعتماد - الاسم/التوقيع يمين-وسط، والختم في أقصى اليسار */}
+                    <div style={{ marginTop: '60px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div style={{ flex: 1, fontSize: '14pt', fontWeight: 700, color: '#000', lineHeight: 1.9 }}>
+                        <p style={{ margin: 0, marginBottom: '24px' }}>{managerTitle}</p>
+                        <p style={{ margin: 0, marginRight: '20px' }}>الاسم:{managerName}</p>
+                        <p style={{ margin: 0, marginTop: '8px', marginRight: '20px', display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
+                          <span>التوقيع:</span>
+                          {signatureUrl && <img src={signatureUrl} alt="توقيع" style={{ maxHeight: '50px', maxWidth: '150px' }} crossOrigin="anonymous" />}
+                        </p>
+                      </div>
+                      <div style={{ minWidth: '120px', textAlign: 'center', fontSize: '12pt', fontWeight: 700, marginTop: '40px' }}>
+                        <p style={{ margin: 0, marginBottom: '8px' }}>الختم</p>
+                        {stampUrl && <img src={stampUrl} alt="ختم" style={{ maxHeight: '90px', maxWidth: '120px', display: 'inline-block' }} crossOrigin="anonymous" />}
                       </div>
                     </div>
-                    <div className="text-center" style={{ minWidth: '160px' }}>
-                      <p className="font-bold mb-1">الختم</p>
-                      {stampUrl && <img src={stampUrl} alt="ختم" style={{ maxHeight: '90px', maxWidth: '150px', display: 'inline-block' }} crossOrigin="anonymous" />}
-                    </div>
-                  </div>
 
                   </div>
                 </div>
