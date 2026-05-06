@@ -183,7 +183,13 @@ export default function FillEidAchievementForm() {
           }
           .print-area > div > div {
             padding: 130px 40px 110px 40px !important;
+            font-size: 14pt !important;
           }
+          .print-area h2 { font-size: 16pt !important; }
+          .print-area table th, .print-area table td { font-size: 12pt !important; padding: 8px !important; }
+          .print-area p, .print-area li { font-size: 13pt !important; line-height: 2.2 !important; }
+          .print-area .mt-12 { margin-top: 80px !important; }
+          .print-area ul { margin-top: 20px !important; margin-bottom: 20px !important; }
           .no-print { display: none !important; }
         }
       `}</style>
