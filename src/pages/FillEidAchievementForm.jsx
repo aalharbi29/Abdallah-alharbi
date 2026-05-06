@@ -350,18 +350,19 @@ export default function FillEidAchievementForm() {
               <CardTitle className="text-base">معاينة المشهد</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="print-area">
+              <div className="print-area" style={{ display: 'flex', justifyContent: 'center', overflow: 'auto' }}>
                 <div ref={printRef} className="bg-white shadow-sm" style={{
                   fontFamily: "'Tajawal', 'Cairo', sans-serif",
                   direction: 'rtl',
-                  width: '100%',
-                  aspectRatio: '725 / 1024',
+                  width: '210mm',
+                  height: '297mm',
                   position: 'relative',
                   backgroundImage: "url('https://media.base44.com/images/public/68af5003813e47bd07947b30/ec052b844_image.jpg')",
                   backgroundSize: '100% 100%',
                   backgroundRepeat: 'no-repeat',
                   backgroundPosition: 'center',
                   overflow: 'hidden',
+                  flexShrink: 0,
                 }}>
                   {/* طبقة المحتوى مع الهوامش - الخلفية تبقى مغطية كامل النموذج */}
                   <div style={{ position: 'absolute', inset: 0, padding: '110px 30px 100px 30px' }}>
