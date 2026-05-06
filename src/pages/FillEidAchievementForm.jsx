@@ -331,9 +331,9 @@ export default function FillEidAchievementForm() {
                   backgroundRepeat: 'no-repeat',
                   padding: '140px 50px 120px 50px',
                 }}>
-                  {/* العنوان */}
-                  <div className="bg-gradient-to-l from-emerald-100 to-emerald-50 border border-emerald-300 px-4 py-2 mb-6 text-center">
-                    <h2 className="text-base md:text-lg font-bold text-gray-800">{text.title}</h2>
+                  {/* العنوان - مطابق للنموذج الأصلي (شريط رمادي مع خط سفلي أخضر) */}
+                  <div className="mb-6" style={{ background: '#E8E8E8', borderBottom: '4px solid #8FA88F', padding: '10px 20px' }}>
+                    <h2 className="text-base md:text-lg font-bold text-gray-800 text-center">{text.title}</h2>
                   </div>
 
                   {/* جدول البيانات */}
@@ -372,19 +372,19 @@ export default function FillEidAchievementForm() {
                     <p className="pt-2">وبناءً عليه نصادق على ما هو مذكور أعلاه من معلومات ونتحمل مسؤولية خلاف ما هو مذكور.</p>
                   </div>
 
-                  {/* المعتمد */}
-                  <div className="mt-12 space-y-2">
-                    <p className="font-bold text-base">{managerTitle}</p>
-                    <p className="font-bold">الاسم: <span className="font-normal">{managerName}</span></p>
-                    <div className="flex items-start gap-8 mt-2">
-                      <div className="flex-1">
+                  {/* المعتمد - الاسم/التوقيع يمين والختم يسار */}
+                  <div className="mt-12 flex items-start justify-between gap-8">
+                    <div className="flex-1 space-y-2">
+                      <p className="font-bold text-base">{managerTitle}</p>
+                      <p className="font-bold">الاسم: <span className="font-normal">{managerName}</span></p>
+                      <div>
                         <p className="font-bold mb-1">التوقيع:</p>
                         {signatureUrl && <img src={signatureUrl} alt="توقيع" style={{ maxHeight: '70px', maxWidth: '180px' }} crossOrigin="anonymous" />}
                       </div>
-                      <div className="flex-1 text-center">
-                        <p className="font-bold mb-1">الختم</p>
-                        {stampUrl && <img src={stampUrl} alt="ختم" style={{ maxHeight: '90px', maxWidth: '150px', display: 'inline-block' }} crossOrigin="anonymous" />}
-                      </div>
+                    </div>
+                    <div className="text-center" style={{ minWidth: '160px' }}>
+                      <p className="font-bold mb-1">الختم</p>
+                      {stampUrl && <img src={stampUrl} alt="ختم" style={{ maxHeight: '90px', maxWidth: '150px', display: 'inline-block' }} crossOrigin="anonymous" />}
                     </div>
                   </div>
 
