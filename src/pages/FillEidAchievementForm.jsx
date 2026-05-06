@@ -42,11 +42,26 @@ export default function FillEidAchievementForm() {
   const [stampUrl, setStampUrl] = useState('');
 
   const printRef = useRef(null);
+  const scalerRef = useRef(null);
   const sigInputRef = useRef(null);
   const stampInputRef = useRef(null);
 
   useEffect(() => {
     loadEmployees();
+  }, []);
+
+  // حساب scale تلقائياً ليتسع A4 داخل حاوية المعاينة
+  useEffect(() => {
+    const updateScale = () => {
+      if (!scalerRef.current || !printRef.current) return;
+      const containerWidth = scalerRef.current.offsetWidth;
+      const A4_WIDTH_PX = 794; // 210mm ≈ 794px @ 96dpi
+      const scale = containerWidth / A4_WIDTH_PX;
+      printRef.current.style.transform = `scale(${scale})`;
+    };
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
   }, []);
 
   const loadEmployees = async () => {
@@ -172,16 +187,25 @@ export default function FillEidAchievementForm() {
             padding: 0 !important;
             overflow: hidden !important;
           }
-          .print-area > div {
+          .preview-scaler {
+            aspect-ratio: auto !important;
             width: 210mm !important;
             height: 297mm !important;
-            aspect-ratio: auto !important;
+            overflow: visible !important;
+          }
+          .preview-page {
+            transform: none !important;
+            position: absolute !important;
+            top: 0 !important;
+            right: 0 !important;
+            width: 210mm !important;
+            height: 297mm !important;
             box-shadow: none !important;
             background-size: 100% 100% !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
-          .print-area > div > div {
+          .preview-page > div {
             padding: 130px 40px 110px 40px !important;
             font-size: 14pt !important;
           }
@@ -350,19 +374,22 @@ export default function FillEidAchievementForm() {
               <CardTitle className="text-base">معاينة المشهد</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="print-area" style={{ display: 'flex', justifyContent: 'center', overflow: 'auto' }}>
-                <div ref={printRef} className="bg-white shadow-sm" style={{
+              <div className="print-area" style={{ display: 'flex', justifyContent: 'center' }}>
+                <div className="preview-scaler" ref={scalerRef} style={{ width: '100%', aspectRatio: '210 / 297', position: 'relative', overflow: 'hidden' }}>
+                <div ref={printRef} className="bg-white shadow-sm preview-page" style={{
                   fontFamily: "'Tajawal', 'Cairo', sans-serif",
                   direction: 'rtl',
                   width: '210mm',
                   height: '297mm',
-                  position: 'relative',
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  transformOrigin: 'top right',
                   backgroundImage: "url('https://media.base44.com/images/public/68af5003813e47bd07947b30/ec052b844_image.jpg')",
                   backgroundSize: '100% 100%',
                   backgroundRepeat: 'no-repeat',
                   backgroundPosition: 'center',
                   overflow: 'hidden',
-                  flexShrink: 0,
                 }}>
                   {/* طبقة المحتوى مع الهوامش - الخلفية تبقى مغطية كامل النموذج */}
                   <div style={{ position: 'absolute', inset: 0, padding: '110px 30px 100px 30px' }}>
@@ -424,6 +451,7 @@ export default function FillEidAchievementForm() {
                   </div>
 
                   </div>
+                </div>
                 </div>
               </div>
             </CardContent>
