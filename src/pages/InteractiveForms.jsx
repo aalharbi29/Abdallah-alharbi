@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle, Target, Stethoscope, ShieldCheck, Droplets, FileCheck2 } from 'lucide-react';
+import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle, Target, Stethoscope, ShieldCheck, Droplets, FileCheck2, PartyPopper } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 
@@ -133,6 +133,14 @@ const interactiveForms = [
     color: "from-emerald-600 to-green-700",
     link: createPageUrl("FillAssetVerificationForm"),
     category: "الأصول والجرد"
+  },
+  {
+    title: "مشهد إنجاز - الأعياد",
+    description: "إصدار مشهد إنجاز تكليف عيد الفطر / الأضحى — تعبئة تلقائية بالموظف وضبط التذكير والتأنيث",
+    icon: PartyPopper,
+    color: "from-pink-500 to-rose-600",
+    link: createPageUrl("FillEidAchievementForm"),
+    category: "الموارد البشرية"
   }
 ];
 
