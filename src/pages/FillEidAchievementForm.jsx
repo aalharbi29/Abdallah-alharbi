@@ -422,7 +422,7 @@ export default function FillEidAchievementForm() {
                   color: '#000',
                 }}>
                   {/* طبقة المحتوى - مع هوامش مطابقة للأصل */}
-                  <div style={{ position: 'absolute', top: '170px', right: '70px', left: '70px', bottom: '180px' }}>
+                  <div style={{ position: 'absolute', top: '170px', right: '90px', left: '90px', bottom: '180px' }}>
 
                     {/* 1) العنوان في إطار رمادي بحدود وشريط أخضر سفلي - عرض ~70% ومتوسّط */}
                     <div style={{
