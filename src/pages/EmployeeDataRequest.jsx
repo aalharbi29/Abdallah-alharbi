@@ -104,6 +104,7 @@ export default function EmployeeDataRequest() {
   const [rowsPerFirstPage, setRowsPerFirstPage] = useState(15);
   const [rowsPerNextPage, setRowsPerNextPage] = useState(25);
   const [pageBreakAfterRows, setPageBreakAfterRows] = useState([]);
+  const [copyTableWidth, setCopyTableWidth] = useState('80'); // عرض الجدول المنسوخ (نسبة مئوية أو 'auto')
   const [mergeWorkplace, setMergeWorkplace] = useState(false);
   const [mergeWorkplaceOrientation, setMergeWorkplaceOrientation] = useState('vertical');
   const [mergeAssignment, setMergeAssignment] = useState(false);
@@ -550,11 +551,18 @@ export default function EmployeeDataRequest() {
       availableFields.find(f => f.key === key)?.label || key
     );
 
+    // إعدادات عرض الجدول حسب اختيار المستخدم
+    const widthStyle = copyTableWidth === 'auto'
+      ? 'width: auto; table-layout: auto;'
+      : `width: ${copyTableWidth}%; table-layout: fixed;`;
+    const cellPadding = '4px 6px';
+    const fontSize = '12px';
+
     // إنشاء الجدول كـ HTML للنسخ بشكل أفضل
-    let htmlTable = '<table dir="rtl" style="border-collapse: collapse; width: 100%; font-family: Arial, sans-serif;">';
+    let htmlTable = `<table dir="rtl" style="border-collapse: collapse; ${widthStyle} margin: 0 auto; font-family: Arial, sans-serif; font-size: ${fontSize};">`;
     htmlTable += '<thead><tr style="background-color: #f3f4f6;">';
     headers.forEach(header => {
-      htmlTable += `<th style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">${header}</th>`;
+      htmlTable += `<th style="border: 1px solid #000; padding: ${cellPadding}; text-align: center; font-weight: bold; word-wrap: break-word;">${header}</th>`;
     });
     htmlTable += '</tr></thead><tbody>';
 
@@ -563,7 +571,7 @@ export default function EmployeeDataRequest() {
         const bgColor = idx % 2 === 0 ? '#fff' : '#f9fafb';
         htmlTable += `<tr style="background-color: ${bgColor};">`;
         selectedFields.forEach(key => {
-          htmlTable += `<td style="border: 1px solid #000; padding: 8px; text-align: center; white-space: pre-wrap;">${getFieldValue(emp, key)}</td>`;
+          htmlTable += `<td style="border: 1px solid #000; padding: ${cellPadding}; text-align: center; white-space: pre-wrap; word-wrap: break-word;">${getFieldValue(emp, key)}</td>`;
         });
         htmlTable += '</tr>';
       });
@@ -571,7 +579,7 @@ export default function EmployeeDataRequest() {
       selectedEmployees.forEach(emp => {
         htmlTable += '<tr style="background-color: #dbeafe;">';
         selectedFields.forEach(key => {
-          htmlTable += `<td style="border: 1px solid #000; padding: 8px; text-align: center; white-space: pre-wrap;">${getFieldValue(emp, key)}</td>`;
+          htmlTable += `<td style="border: 1px solid #000; padding: ${cellPadding}; text-align: center; white-space: pre-wrap; word-wrap: break-word;">${getFieldValue(emp, key)}</td>`;
         });
         htmlTable += '</tr>';
       });
@@ -581,10 +589,10 @@ export default function EmployeeDataRequest() {
         if (!processedManagers.has(managerId)) {
           const manager = getManagerWithCenters(managerId, employeeIds);
           if (manager) {
-            htmlTable += `<tr style="background-color: #d1fae5;"><td colspan="${selectedFields.length}" style="border: 1px solid #000; padding: 8px; text-align: center; font-weight: bold;">بيانات المدير المباشر</td></tr>`;
+            htmlTable += `<tr style="background-color: #d1fae5;"><td colspan="${selectedFields.length}" style="border: 1px solid #000; padding: ${cellPadding}; text-align: center; font-weight: bold;">بيانات المدير المباشر</td></tr>`;
             htmlTable += '<tr style="background-color: #ecfdf5;">';
             selectedFields.forEach(key => {
-              htmlTable += `<td style="border: 1px solid #000; padding: 8px; text-align: center; white-space: pre-wrap;">${getFieldValue(manager, key)}</td>`;
+              htmlTable += `<td style="border: 1px solid #000; padding: ${cellPadding}; text-align: center; white-space: pre-wrap; word-wrap: break-word;">${getFieldValue(manager, key)}</td>`;
             });
             htmlTable += '</tr>';
             processedManagers.add(managerId);
@@ -1570,14 +1578,31 @@ export default function EmployeeDataRequest() {
                   <FileOutput className="w-4 h-4 ml-2" />
                   تصدير PDF
                 </Button>
-                <Button
-                  onClick={copyTableToClipboard}
-                  disabled={selectedEmployees.length === 0 || selectedFields.length === 0}
-                  className="bg-blue-600 hover:bg-blue-700"
-                >
-                  <Copy className="w-4 h-4 ml-2" />
-                  نسخ الطلب والجدول
-                </Button>
+                <div className="flex items-center gap-1 bg-blue-50 border border-blue-200 rounded-md p-1">
+                  <Button
+                    onClick={copyTableToClipboard}
+                    disabled={selectedEmployees.length === 0 || selectedFields.length === 0}
+                    className="bg-blue-600 hover:bg-blue-700"
+                    size="sm"
+                  >
+                    <Copy className="w-4 h-4 ml-2" />
+                    نسخ الطلب والجدول
+                  </Button>
+                  <Select value={copyTableWidth} onValueChange={setCopyTableWidth}>
+                    <SelectTrigger className="w-[110px] h-8 text-xs bg-white" title="عرض الجدول عند النسخ">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="auto">تلقائي</SelectItem>
+                      <SelectItem value="50">عرض 50%</SelectItem>
+                      <SelectItem value="60">عرض 60%</SelectItem>
+                      <SelectItem value="70">عرض 70%</SelectItem>
+                      <SelectItem value="80">عرض 80%</SelectItem>
+                      <SelectItem value="90">عرض 90%</SelectItem>
+                      <SelectItem value="100">عرض 100%</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <Button
                   onClick={handleExportToCSV}
                   disabled={selectedEmployees.length === 0 || selectedFields.length === 0}
