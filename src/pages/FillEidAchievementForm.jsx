@@ -76,14 +76,62 @@ export default function FillEidAchievementForm() {
     loadEmployees();
   }, []);
 
+  // موقع اسم التجمع - قابل للسحب اليدوي ومحفوظ في localStorage
+  const CLUSTER_POS_KEY = 'eid_form_cluster_name_pos_v1';
+  const [clusterPos, setClusterPos] = useState(() => {
+    try {
+      const saved = localStorage.getItem(CLUSTER_POS_KEY);
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return { top: 60, right: 160 };
+  });
+  const dragStateRef = useRef(null);
+  const handleClusterDragStart = (e) => {
+    e.preventDefault();
+    dragStateRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      startTop: clusterPos.top,
+      startRight: clusterPos.right,
+    };
+    const onMove = (ev) => {
+      if (!dragStateRef.current) return;
+      const scale = previewScaleRef.current || 1;
+      const dx = (ev.clientX - dragStateRef.current.startX) / scale;
+      const dy = (ev.clientY - dragStateRef.current.startY) / scale;
+      // لأن المحاذاة من اليمين، تحريك يميناً (dx موجب) يعني تقليل right
+      setClusterPos({
+        top: dragStateRef.current.startTop + dy,
+        right: dragStateRef.current.startRight - dx,
+      });
+    };
+    const onUp = () => {
+      dragStateRef.current = null;
+      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mouseup', onUp);
+      try {
+        // حفظ آخر موقع
+        setClusterPos((p) => {
+          localStorage.setItem(CLUSTER_POS_KEY, JSON.stringify(p));
+          return p;
+        });
+      } catch {}
+    };
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onUp);
+  };
+
   // حساب scale تلقائياً ليتسع A4 داخل حاوية المعاينة (للعرض فقط)
   const [previewScale, setPreviewScale] = useState(1);
+  const previewScaleRef = useRef(1);
   useEffect(() => {
     const updateScale = () => {
       if (!scalerRef.current) return;
       const containerWidth = scalerRef.current.offsetWidth;
       const A4_WIDTH_PX = 794; // 210mm ≈ 794px @ 96dpi
-      setPreviewScale(containerWidth / A4_WIDTH_PX);
+      const s = containerWidth / A4_WIDTH_PX;
+      setPreviewScale(s);
+      previewScaleRef.current = s;
     };
     updateScale();
     window.addEventListener('resize', updateScale);
@@ -243,6 +291,7 @@ export default function FillEidAchievementForm() {
             overflow: hidden !important;
           }
           .no-print { display: none !important; }
+          .cluster-name-block { cursor: default !important; }
         }
       `}</style>
 
@@ -421,17 +470,26 @@ export default function FillEidAchievementForm() {
                   overflow: 'hidden',
                   color: '#000',
                 }}>
-                  {/* اسم التجمع بجانب الشعار - عربي/إنجليزي */}
-                  <div style={{
-                    position: 'absolute',
-                    top: '60px',
-                    right: '160px',
-                    textAlign: 'right',
-                    lineHeight: 1.3,
-                    color: '#0B3D91',
-                  }}>
-                    <div style={{ fontSize: '14pt', fontWeight: 800 }}>تجمع المدينة المنورة الصحي</div>
-                    <div style={{ fontSize: '11pt', fontWeight: 600, color: '#1976D2' }}>Madinah Health Cluster</div>
+                  {/* اسم التجمع بجانب الشعار - قابل للسحب اليدوي */}
+                  <div
+                    onMouseDown={handleClusterDragStart}
+                    className="cluster-name-block"
+                    style={{
+                      position: 'absolute',
+                      top: `${clusterPos.top}px`,
+                      right: `${clusterPos.right}px`,
+                      textAlign: 'right',
+                      lineHeight: 1.3,
+                      color: '#000',
+                      cursor: 'move',
+                      userSelect: 'none',
+                      padding: '4px 6px',
+                      fontFamily: "'Tajawal', 'Cairo', 'Amiri', 'Traditional Arabic', serif",
+                    }}
+                    title="اسحب لتغيير الموقع"
+                  >
+                    <div style={{ fontSize: '14pt', fontWeight: 800, letterSpacing: '0.5px' }}>تجمع المدينة المنورة الصحي</div>
+                    <div style={{ fontSize: '10pt', fontWeight: 600, color: '#000', fontFamily: "'Tajawal', 'Arial', sans-serif" }}>Madinah Health Cluster</div>
                   </div>
 
                   {/* طبقة المحتوى - مع هوامش مطابقة للأصل */}
@@ -499,7 +557,7 @@ export default function FillEidAchievementForm() {
                         <p style={{ margin: 0, marginBottom: '8px' }}>الختم</p>
                         {stampUrl && <img src={stampUrl} alt="ختم" style={{ maxHeight: '90px', maxWidth: '120px', display: 'inline-block' }} crossOrigin="anonymous" />}
                       </div>
-                      <div style={{ flex: 1, fontSize: '14pt', fontWeight: 700, color: '#000', lineHeight: 1.9, textAlign: 'right', paddingRight: '20px' }}>
+                      <div style={{ flex: 1, fontSize: '14pt', fontWeight: 700, color: '#000', lineHeight: 1.9, textAlign: 'right', paddingRight: '0', marginRight: '-40px' }}>
                         <p style={{ margin: 0, marginBottom: '24px' }}>{managerTitle}</p>
                         <p style={{ margin: 0 }}>الاسم: {managerName}</p>
                         <p style={{ margin: 0, marginTop: '8px', display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
