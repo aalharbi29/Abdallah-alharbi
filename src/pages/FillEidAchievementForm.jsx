@@ -42,6 +42,7 @@ const tdStyle = {
   border: '1px solid #000',
   padding: '14px 8px',
   fontSize: '11pt',
+  fontWeight: 600,
   textAlign: 'center',
   background: '#FFFFFF',
   color: '#000',
@@ -497,13 +498,13 @@ export default function FillEidAchievementForm() {
 
                     {/* 1) العنوان في إطار رمادي بحدود وشريط أخضر سفلي - عرض ~70% ومتوسّط */}
                     <div style={{
-                      width: '75%',
+                      width: '85%',
                       margin: '0 auto',
                       border: '1px solid #BFBFBF',
                       background: '#FFFFFF',
                     }}>
                       <div style={{ padding: '14px 20px', textAlign: 'center' }}>
-                        <span style={{ fontSize: '15pt', fontWeight: 700, color: '#000' }}>
+                        <span style={{ fontSize: '15pt', fontWeight: 500, color: '#000' }}>
                           مشهد إنجاز {text.eidName} لعام {toArabicDigits(year)}هـ
                         </span>
                       </div>
