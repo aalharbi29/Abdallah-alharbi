@@ -557,7 +557,7 @@ export default function FillEidAchievementForm() {
                         <p style={{ margin: 0, marginBottom: '8px' }}>الختم</p>
                         {stampUrl && <img src={stampUrl} alt="ختم" style={{ maxHeight: '90px', maxWidth: '120px', display: 'inline-block' }} crossOrigin="anonymous" />}
                       </div>
-                      <div style={{ flex: 1, fontSize: '14pt', fontWeight: 700, color: '#000', lineHeight: 1.9, textAlign: 'right', paddingRight: '60px' }}>
+                      <div style={{ flex: 1, fontSize: '14pt', fontWeight: 700, color: '#000', lineHeight: 1.9, textAlign: 'right', paddingRight: '120px' }}>
                         <p style={{ margin: 0, marginBottom: '24px' }}>{managerTitle}</p>
                         <p style={{ margin: 0 }}>الاسم: {managerName}</p>
                         <p style={{ margin: 0, marginTop: '8px', display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
