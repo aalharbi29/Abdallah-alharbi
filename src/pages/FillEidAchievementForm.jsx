@@ -421,6 +421,19 @@ export default function FillEidAchievementForm() {
                   overflow: 'hidden',
                   color: '#000',
                 }}>
+                  {/* اسم التجمع بجانب الشعار - عربي/إنجليزي */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '60px',
+                    right: '160px',
+                    textAlign: 'right',
+                    lineHeight: 1.3,
+                    color: '#0B3D91',
+                  }}>
+                    <div style={{ fontSize: '14pt', fontWeight: 800 }}>تجمع المدينة المنورة الصحي</div>
+                    <div style={{ fontSize: '11pt', fontWeight: 600, color: '#1976D2' }}>Madinah Health Cluster</div>
+                  </div>
+
                   {/* طبقة المحتوى - مع هوامش مطابقة للأصل */}
                   <div style={{ position: 'absolute', top: '170px', right: '90px', left: '90px', bottom: '180px' }}>
 
@@ -443,7 +456,7 @@ export default function FillEidAchievementForm() {
                     <table style={{
                       width: '100%',
                       borderCollapse: 'collapse',
-                      marginTop: '50px',
+                      marginTop: '90px',
                     }}>
                       <thead>
                         <tr>
@@ -466,7 +479,7 @@ export default function FillEidAchievementForm() {
                     </table>
 
                     {/* 3) النص الرئيسي - bold كامل */}
-                    <div style={{ marginTop: '32px', fontSize: '12pt', fontWeight: 700, lineHeight: 2, color: '#000' }}>
+                    <div style={{ marginTop: '70px', fontSize: '12pt', fontWeight: 700, lineHeight: 2, color: '#000' }}>
                       <p style={{ margin: 0 }}>{text.body}</p>
 
                       <ul style={{ marginTop: '16px', marginBottom: '16px', paddingRight: '24px', listStyleType: 'disc' }}>
@@ -480,19 +493,19 @@ export default function FillEidAchievementForm() {
                       </p>
                     </div>
 
-                    {/* 4) قسم الاعتماد - الاسم/التوقيع يمين-وسط، والختم في أقصى اليسار */}
+                    {/* 4) قسم الاعتماد - الختم يمين، والاسم/التوقيع في اليسار */}
                     <div style={{ marginTop: '60px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div style={{ flex: 1, fontSize: '14pt', fontWeight: 700, color: '#000', lineHeight: 1.9 }}>
-                        <p style={{ margin: 0, marginBottom: '24px' }}>{managerTitle}</p>
-                        <p style={{ margin: 0, marginRight: '20px' }}>الاسم:{managerName}</p>
-                        <p style={{ margin: 0, marginTop: '8px', marginRight: '20px', display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
-                          <span>التوقيع:</span>
-                          {signatureUrl && <img src={signatureUrl} alt="توقيع" style={{ maxHeight: '50px', maxWidth: '150px' }} crossOrigin="anonymous" />}
-                        </p>
-                      </div>
                       <div style={{ minWidth: '120px', textAlign: 'center', fontSize: '12pt', fontWeight: 700, marginTop: '40px' }}>
                         <p style={{ margin: 0, marginBottom: '8px' }}>الختم</p>
                         {stampUrl && <img src={stampUrl} alt="ختم" style={{ maxHeight: '90px', maxWidth: '120px', display: 'inline-block' }} crossOrigin="anonymous" />}
+                      </div>
+                      <div style={{ flex: 1, fontSize: '14pt', fontWeight: 700, color: '#000', lineHeight: 1.9, textAlign: 'right', paddingRight: '20px' }}>
+                        <p style={{ margin: 0, marginBottom: '24px' }}>{managerTitle}</p>
+                        <p style={{ margin: 0 }}>الاسم: {managerName}</p>
+                        <p style={{ margin: 0, marginTop: '8px', display: 'flex', alignItems: 'flex-end', gap: '8px' }}>
+                          <span>التوقيع:</span>
+                          {signatureUrl && <img src={signatureUrl} alt="توقيع" style={{ maxHeight: '50px', maxWidth: '150px' }} crossOrigin="anonymous" />}
+                        </p>
                       </div>
                     </div>
 
