@@ -50,14 +50,14 @@ export default function FillEidAchievementForm() {
     loadEmployees();
   }, []);
 
-  // حساب scale تلقائياً ليتسع A4 داخل حاوية المعاينة
+  // حساب scale تلقائياً ليتسع A4 داخل حاوية المعاينة (للعرض فقط)
+  const [previewScale, setPreviewScale] = useState(1);
   useEffect(() => {
     const updateScale = () => {
-      if (!scalerRef.current || !printRef.current) return;
+      if (!scalerRef.current) return;
       const containerWidth = scalerRef.current.offsetWidth;
       const A4_WIDTH_PX = 794; // 210mm ≈ 794px @ 96dpi
-      const scale = containerWidth / A4_WIDTH_PX;
-      printRef.current.style.transform = `scale(${scale})`;
+      setPreviewScale(containerWidth / A4_WIDTH_PX);
     };
     updateScale();
     window.addEventListener('resize', updateScale);
@@ -172,48 +172,50 @@ export default function FillEidAchievementForm() {
       <style>{`
         @media print {
           @page { size: A4 portrait; margin: 0; }
-          html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; width: 210mm; height: 297mm; }
-          body * { visibility: hidden; }
-          .print-area, .print-area * { visibility: visible; }
-          .print-area {
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: #fff !important;
+            width: 210mm !important;
+            height: 297mm !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          body * { visibility: hidden !important; }
+          .print-area, .print-area * { visibility: visible !important; }
+
+          /* إخفاء كل الـ wrappers بحيث صفحة A4 وحدها هي اللي تطبع */
+          .print-area,
+          .preview-scaler {
+            position: static !important;
+            width: auto !important;
+            height: auto !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: visible !important;
+            display: block !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            aspect-ratio: auto !important;
+          }
+          /* صفحة A4 الفعلية - تصبح هي الأساس */
+          .preview-page {
+            transform: none !important;
             position: fixed !important;
-            left: 0 !important;
             top: 0 !important;
+            left: 0 !important;
             right: 0 !important;
             bottom: 0 !important;
             width: 210mm !important;
             height: 297mm !important;
             margin: 0 !important;
-            padding: 0 !important;
-            overflow: hidden !important;
-          }
-          .preview-scaler {
-            aspect-ratio: auto !important;
-            width: 210mm !important;
-            height: 297mm !important;
-            overflow: visible !important;
-          }
-          .preview-page {
-            transform: none !important;
-            position: absolute !important;
-            top: 0 !important;
-            right: 0 !important;
-            width: 210mm !important;
-            height: 297mm !important;
             box-shadow: none !important;
             background-size: 100% 100% !important;
+            background-repeat: no-repeat !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+            overflow: hidden !important;
           }
-          .preview-page > div {
-            padding: 130px 40px 110px 40px !important;
-            font-size: 14pt !important;
-          }
-          .print-area h2 { font-size: 16pt !important; }
-          .print-area table th, .print-area table td { font-size: 12pt !important; padding: 8px !important; }
-          .print-area p, .print-area li { font-size: 13pt !important; line-height: 2.2 !important; }
-          .print-area .mt-12 { margin-top: 80px !important; }
-          .print-area ul { margin-top: 20px !important; margin-bottom: 20px !important; }
           .no-print { display: none !important; }
         }
       `}</style>
@@ -384,6 +386,7 @@ export default function FillEidAchievementForm() {
                   position: 'absolute',
                   top: 0,
                   right: 0,
+                  transform: `scale(${previewScale})`,
                   transformOrigin: 'top right',
                   backgroundImage: "url('https://media.base44.com/images/public/68af5003813e47bd07947b30/ec052b844_image.jpg')",
                   backgroundSize: '100% 100%',
