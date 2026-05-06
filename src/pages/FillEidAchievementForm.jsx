@@ -320,18 +320,17 @@ export default function FillEidAchievementForm() {
             </CardHeader>
             <CardContent>
               <div className="print-area">
-                <div ref={printRef} className="bg-white p-8 shadow-sm" style={{ fontFamily: "'Tajawal', 'Cairo', sans-serif", direction: 'rtl', minHeight: '1000px', position: 'relative' }}>
-                  {/* الشعار */}
-                  <div className="flex items-start justify-end mb-6">
-                    <div className="text-left flex items-center gap-3">
-                      <div className="text-right">
-                        <div className="text-sm font-bold text-gray-700">تجمع المدينة المنورة الصحي</div>
-                        <div className="text-sm font-bold text-gray-900">Madinah Health Cluster</div>
-                      </div>
-                      <img src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68af5003813e47bd07947b30/ebae7336b_1407.png" alt="logo" className="w-16 h-16 object-contain" crossOrigin="anonymous" />
-                    </div>
-                  </div>
-
+                <div ref={printRef} className="bg-white shadow-sm" style={{
+                  fontFamily: "'Tajawal', 'Cairo', sans-serif",
+                  direction: 'rtl',
+                  width: '100%',
+                  aspectRatio: '725 / 1024',
+                  position: 'relative',
+                  backgroundImage: "url('https://media.base44.com/images/public/68af5003813e47bd07947b30/ec052b844_image.jpg')",
+                  backgroundSize: '100% 100%',
+                  backgroundRepeat: 'no-repeat',
+                  padding: '140px 50px 120px 50px',
+                }}>
                   {/* العنوان */}
                   <div className="bg-gradient-to-l from-emerald-100 to-emerald-50 border border-emerald-300 px-4 py-2 mb-6 text-center">
                     <h2 className="text-base md:text-lg font-bold text-gray-800">{text.title}</h2>
@@ -389,11 +388,6 @@ export default function FillEidAchievementForm() {
                     </div>
                   </div>
 
-                  {/* فوتر */}
-                  <div className="absolute bottom-4 left-0 right-0 text-center">
-                    <div className="text-sm font-bold text-blue-700">تجمع المدينة المنورة الصحي</div>
-                    <div className="text-sm font-bold text-blue-700">Madinah Health Cluster</div>
-                  </div>
                 </div>
               </div>
             </CardContent>
