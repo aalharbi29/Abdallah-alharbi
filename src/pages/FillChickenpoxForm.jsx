@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Printer, Download, ArrowRight, FileText, Save } from 'lucide-react';
@@ -8,10 +8,9 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { base44 } from '@/api/base44Client';
 
-import FillablePdfTemplatePage from '@/components/chickenpox/FillablePdfTemplatePage';
-import { convertPDFToImages } from '@/functions/convertPDFToImages';
-
-const CHICKENPOX_TEMPLATE_URL = 'https://media.base44.com/files/public/68af5003813e47bd07947b30/8e484cbb7_1.pdf';
+import ChickenpoxInvestigationPage from '@/components/chickenpox/ChickenpoxInvestigationPage';
+import ChickenpoxVaccinationPage from '@/components/chickenpox/ChickenpoxVaccinationPage';
+import ChickenpoxContactsPage from '@/components/chickenpox/ChickenpoxContactsPage';
 
 export default function FillChickenpoxForm() {
   // بيانات الفقرة الأولى - الاستقصاء الوبائي
@@ -140,35 +139,11 @@ export default function FillChickenpoxForm() {
   });
 
   const printRef = useRef(null);
-  const [templateImages, setTemplateImages] = useState([]);
-  const [isLoadingTemplate, setIsLoadingTemplate] = useState(true);
-  const [activeTool, setActiveTool] = useState(null);
-  const [pageOverlays, setPageOverlays] = useState([[], [], []]);
-
-  useEffect(() => {
-    const loadTemplate = async () => {
-      setIsLoadingTemplate(true);
-      try {
-        const response = await convertPDFToImages({ fileUrl: CHICKENPOX_TEMPLATE_URL, format: 'png', quality: 100 });
-        const images = response?.data?.images || [];
-        setTemplateImages(images.map((img) => img.imageDataUrl).filter(Boolean));
-      } catch (error) {
-        console.error(error);
-        toast.error('تعذر تحميل قالب PDF الأصلي، حاول تحديث الصفحة');
-      }
-      setIsLoadingTemplate(false);
-    };
-    loadTemplate();
-  }, []);
 
   const updateContactRow = (index, field, value) => {
     const newRows = [...contacts.rows];
     newRows[index] = { ...newRows[index], [field]: value };
     setContacts({ ...contacts, rows: newRows });
-  };
-
-  const updatePageOverlay = (pageIndex, items) => {
-    setPageOverlays((prev) => prev.map((pageItems, index) => index === pageIndex ? items : pageItems));
   };
 
   const handlePrint = () => {
@@ -276,20 +251,7 @@ export default function FillChickenpoxForm() {
                 العودة
               </Button>
             </Link>
-            <Button
-              onClick={() => setActiveTool(activeTool === 'text' ? null : 'text')}
-              variant={activeTool === 'text' ? 'default' : 'outline'}
-              size="sm"
-            >
-              إضافة نص
-            </Button>
-            <Button
-              onClick={() => setActiveTool(activeTool === 'check' ? null : 'check')}
-              variant={activeTool === 'check' ? 'default' : 'outline'}
-              size="sm"
-            >
-              إضافة علامة صح
-            </Button>
+
             <Button onClick={handlePrint} className="bg-blue-600 hover:bg-blue-700" size="sm">
               <Printer className="w-4 h-4 ml-1" /> طباعة
             </Button>
@@ -305,55 +267,24 @@ export default function FillChickenpoxForm() {
         {/* Preview / Print area */}
         <Card>
           <CardHeader className="no-print pb-3">
-            <CardTitle className="text-base">معاينة النموذج المطابق للملف الأصلي 100%</CardTitle>
+            <CardTitle className="text-base">نموذج تفاعلي كامل ونظيف للتعبئة المباشرة</CardTitle>
           </CardHeader>
           <CardContent className="p-2 md:p-4">
             <div ref={printRef} className="print-area flex flex-col items-center gap-6 bg-gray-100 p-4 rounded">
 
-              {isLoadingTemplate ? (
-                <div className="no-print flex items-center justify-center p-10 text-gray-600">
-                  جاري تحميل النموذج الأصلي...
-                </div>
-              ) : (
-                <>
-                  {templateImages.slice(0, 3).map((imageUrl, index) => (
-                    <FillablePdfTemplatePage
-                      key={index}
-                      imageUrl={imageUrl}
-                      pageNumber={index + 1}
-                      printable
-                      items={pageOverlays[index] || []}
-                      onItemsChange={(items) => updatePageOverlay(index, items)}
-                      activeTool={activeTool}
-                      onToolUsed={() => setActiveTool(null)}
-                    />
-                  ))}
-
-                  {templateImages[3] && (
-                    <div className="no-print" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-                      <div style={{ position: 'relative' }}>
-                        <div style={{
-                          position: 'absolute',
-                          top: '-30px',
-                          right: 0,
-                          left: 0,
-                          textAlign: 'center',
-                          fontSize: '12px',
-                          color: '#666',
-                          fontWeight: 600,
-                        }}>
-                          صفحة إرشادات للعرض فقط - لا تُطبع ولا تُصدّر ولا تُحفظ
-                        </div>
-                        <FillablePdfTemplatePage
-                          imageUrl={templateImages[3]}
-                          pageNumber={4}
-                          printable={false}
-                        />
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
+              <ChickenpoxInvestigationPage
+                data={investigation}
+                onChange={setInvestigation}
+              />
+              <ChickenpoxVaccinationPage
+                data={vaccination}
+                onChange={setVaccination}
+              />
+              <ChickenpoxContactsPage
+                data={contacts}
+                onChange={setContacts}
+                onUpdateRow={updateContactRow}
+              />
 
             </div>
           </CardContent>
