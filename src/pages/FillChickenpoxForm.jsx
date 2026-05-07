@@ -8,7 +8,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { base44 } from '@/api/base44Client';
 
-import ChickenpoxPdfTemplatePage from '@/components/chickenpox/ChickenpoxPdfTemplatePage';
+import FillablePdfTemplatePage from '@/components/chickenpox/FillablePdfTemplatePage';
 import { convertPDFToImages } from '@/functions/convertPDFToImages';
 
 const CHICKENPOX_TEMPLATE_URL = 'https://media.base44.com/files/public/68af5003813e47bd07947b30/8e484cbb7_1.pdf';
@@ -142,6 +142,8 @@ export default function FillChickenpoxForm() {
   const printRef = useRef(null);
   const [templateImages, setTemplateImages] = useState([]);
   const [isLoadingTemplate, setIsLoadingTemplate] = useState(true);
+  const [activeTool, setActiveTool] = useState(null);
+  const [pageOverlays, setPageOverlays] = useState([[], [], []]);
 
   useEffect(() => {
     const loadTemplate = async () => {
@@ -158,6 +160,10 @@ export default function FillChickenpoxForm() {
     const newRows = [...contacts.rows];
     newRows[index] = { ...newRows[index], [field]: value };
     setContacts({ ...contacts, rows: newRows });
+  };
+
+  const updatePageOverlay = (pageIndex, items) => {
+    setPageOverlays((prev) => prev.map((pageItems, index) => index === pageIndex ? items : pageItems));
   };
 
   const handlePrint = () => {
@@ -265,6 +271,20 @@ export default function FillChickenpoxForm() {
                 العودة
               </Button>
             </Link>
+            <Button
+              onClick={() => setActiveTool(activeTool === 'text' ? null : 'text')}
+              variant={activeTool === 'text' ? 'default' : 'outline'}
+              size="sm"
+            >
+              إضافة نص
+            </Button>
+            <Button
+              onClick={() => setActiveTool(activeTool === 'check' ? null : 'check')}
+              variant={activeTool === 'check' ? 'default' : 'outline'}
+              size="sm"
+            >
+              إضافة علامة صح
+            </Button>
             <Button onClick={handlePrint} className="bg-blue-600 hover:bg-blue-700" size="sm">
               <Printer className="w-4 h-4 ml-1" /> طباعة
             </Button>
@@ -292,11 +312,15 @@ export default function FillChickenpoxForm() {
               ) : (
                 <>
                   {templateImages.slice(0, 3).map((imageUrl, index) => (
-                    <ChickenpoxPdfTemplatePage
+                    <FillablePdfTemplatePage
                       key={index}
                       imageUrl={imageUrl}
                       pageNumber={index + 1}
                       printable
+                      items={pageOverlays[index] || []}
+                      onItemsChange={(items) => updatePageOverlay(index, items)}
+                      activeTool={activeTool}
+                      onToolUsed={() => setActiveTool(null)}
                     />
                   ))}
 
@@ -315,7 +339,7 @@ export default function FillChickenpoxForm() {
                         }}>
                           صفحة إرشادات للعرض فقط - لا تُطبع ولا تُصدّر ولا تُحفظ
                         </div>
-                        <ChickenpoxPdfTemplatePage
+                        <FillablePdfTemplatePage
                           imageUrl={templateImages[3]}
                           pageNumber={4}
                           printable={false}
