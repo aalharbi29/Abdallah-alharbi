@@ -148,9 +148,14 @@ export default function FillChickenpoxForm() {
   useEffect(() => {
     const loadTemplate = async () => {
       setIsLoadingTemplate(true);
-      const response = await convertPDFToImages({ fileUrl: CHICKENPOX_TEMPLATE_URL, format: 'png', quality: 100 });
-      const images = response?.data?.images || [];
-      setTemplateImages(images.map((img) => img.downloadUrl || img.imageDataUrl));
+      try {
+        const response = await convertPDFToImages({ fileUrl: CHICKENPOX_TEMPLATE_URL, format: 'png', quality: 100 });
+        const images = response?.data?.images || [];
+        setTemplateImages(images.map((img) => img.imageDataUrl).filter(Boolean));
+      } catch (error) {
+        console.error(error);
+        toast.error('تعذر تحميل قالب PDF الأصلي، حاول تحديث الصفحة');
+      }
       setIsLoadingTemplate(false);
     };
     loadTemplate();

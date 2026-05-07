@@ -1,4 +1,4 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.4';
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 Deno.serve(async (req) => {
     try {
@@ -142,11 +142,6 @@ Deno.serve(async (req) => {
             const ext = format === 'png' ? 'png' : format === 'webp' ? 'webp' : 'jpg';
             const mimeType = `image/${ext === 'jpg' ? 'jpeg' : ext}`;
             
-            const imageBlob = new Blob([zipBytes], { type: mimeType });
-            const imageFile = new File([imageBlob], `page_1.${ext}`, { type: mimeType });
-            
-            const uploadResult = await base44.integrations.Core.UploadFile({ file: imageFile });
-            
             return Response.json({
                 success: true,
                 images: [{
@@ -154,7 +149,6 @@ Deno.serve(async (req) => {
                     imageDataUrl: `data:${mimeType};base64,${base64}`,
                     base64: base64,
                     filename: `page_1.${ext}`,
-                    downloadUrl: uploadResult.file_url,
                     format: ext
                 }],
                 totalPages: 1,
@@ -182,17 +176,11 @@ Deno.serve(async (req) => {
                 const ext = format === 'png' ? 'png' : format === 'webp' ? 'webp' : 'jpg';
                 const mimeType = `image/${ext === 'jpg' ? 'jpeg' : ext}`;
                 
-                const imageBlob = new Blob([imageBytes], { type: mimeType });
-                const imageFile = new File([imageBlob], `page_${images.length + 1}.${ext}`, { type: mimeType });
-                
-                const uploadResult = await base44.integrations.Core.UploadFile({ file: imageFile });
-                
                 images.push({
                     pageNumber: images.length + 1,
                     imageDataUrl: `data:${mimeType};base64,${base64}`,
                     base64: base64,
                     filename: `page_${images.length + 1}.${ext}`,
-                    downloadUrl: uploadResult.file_url,
                     format: ext
                 });
             }
