@@ -11,6 +11,7 @@ import { base44 } from '@/api/base44Client';
 import ChickenpoxInvestigationPage from '@/components/chickenpox/ChickenpoxInvestigationPage';
 import ChickenpoxVaccinationPage from '@/components/chickenpox/ChickenpoxVaccinationPage';
 import ChickenpoxContactsPage from '@/components/chickenpox/ChickenpoxContactsPage';
+import ChickenpoxGuidelinesPage from '@/components/chickenpox/ChickenpoxGuidelinesPage';
 
 export default function FillChickenpoxForm() {
   // بيانات الفقرة الأولى - الاستقصاء الوبائي
@@ -154,6 +155,7 @@ export default function FillChickenpoxForm() {
     if (!printRef.current) return;
     toast.info('جاري إنشاء ملف PDF...');
     try {
+      // .a4-page فقط - يستثني .guidelines-page
       const pages = printRef.current.querySelectorAll('.a4-page');
       const pdf = new jsPDF('p', 'mm', 'a4');
       for (let i = 0; i < pages.length; i++) {
@@ -176,6 +178,7 @@ export default function FillChickenpoxForm() {
     if (!printRef.current) return;
     toast.info('جاري الحفظ في الأرشيف...');
     try {
+      // .a4-page فقط - يستثني .guidelines-page
       const pages = printRef.current.querySelectorAll('.a4-page');
       const pdf = new jsPDF('p', 'mm', 'a4');
       for (let i = 0; i < pages.length; i++) {
@@ -227,6 +230,7 @@ export default function FillChickenpoxForm() {
             box-shadow: none !important;
           }
           .a4-page:last-child { page-break-after: auto !important; }
+          .guidelines-page { display: none !important; }
           .no-print { display: none !important; }
         }
       `}</style>
@@ -286,6 +290,25 @@ export default function FillChickenpoxForm() {
                 onChange={setContacts}
                 onUpdateRow={updateContactRow}
               />
+
+              {/* الصفحة 4: الإرشادات الوقائية - للعرض فقط (لا تطبع/لا تصدر/لا تحفظ) */}
+              <div className="no-print" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                <div style={{ position: 'relative' }}>
+                  <div style={{
+                    position: 'absolute',
+                    top: '-30px',
+                    right: 0,
+                    left: 0,
+                    textAlign: 'center',
+                    fontSize: '12px',
+                    color: '#666',
+                    fontWeight: 600,
+                  }}>
+                    📖 صفحة إرشادات للعرض فقط - لا تُطبع ولا تُصدّر ولا تُحفظ
+                  </div>
+                  <ChickenpoxGuidelinesPage />
+                </div>
+              </div>
 
             </div>
           </CardContent>
