@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle, Target, Stethoscope, ShieldCheck, Droplets, FileCheck2, PartyPopper } from 'lucide-react';
+import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle, Target, Stethoscope, ShieldCheck, Droplets, FileCheck2, PartyPopper, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 
@@ -141,6 +141,14 @@ const interactiveForms = [
     color: "from-pink-500 to-rose-600",
     link: createPageUrl("FillEidAchievementForm"),
     category: "الموارد البشرية"
+  },
+  {
+    title: "استمارة الجديري المائي",
+    description: "استمارة استقصاء وبائي + حصر المخالطين لحالة الجديري المائي",
+    icon: Activity,
+    color: "from-sky-500 to-blue-600",
+    link: createPageUrl("FillChickenpoxForm"),
+    category: "الصحة العامة"
   }
 ];
 

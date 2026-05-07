@@ -25,6 +25,7 @@ import AssignedEmployees from './pages/AssignedEmployees';
 import ActiveEmployees from './pages/ActiveEmployees';
 import FillAssetVerificationForm from './pages/FillAssetVerificationForm';
 import FillEidAchievementForm from './pages/FillEidAchievementForm';
+import FillChickenpoxForm from './pages/FillChickenpoxForm';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -149,6 +150,11 @@ const AuthenticatedApp = () => {
       <Route path="/FillEidAchievementForm" element={
         <LayoutWrapper currentPageName="FillEidAchievementForm">
           <FillEidAchievementForm />
+        </LayoutWrapper>
+      } />
+      <Route path="/FillChickenpoxForm" element={
+        <LayoutWrapper currentPageName="FillChickenpoxForm">
+          <FillChickenpoxForm />
         </LayoutWrapper>
       } />
       <Route path="*" element={<PageNotFound />} />
