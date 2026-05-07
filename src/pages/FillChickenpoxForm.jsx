@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Printer, Download, ArrowRight, FileText, Save } from 'lucide-react';
@@ -8,9 +8,10 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { base44 } from '@/api/base44Client';
 
-import ChickenpoxInvestigationPage from '@/components/chickenpox/ChickenpoxInvestigationPage';
-import ChickenpoxVaccinationPage from '@/components/chickenpox/ChickenpoxVaccinationPage';
-import ChickenpoxContactsPage from '@/components/chickenpox/ChickenpoxContactsPage';
+import ChickenpoxTemplateFillPage from '@/components/chickenpox/ChickenpoxTemplateFillPage';
+import { convertPDFToImages } from '@/functions/convertPDFToImages';
+
+const CHICKENPOX_TEMPLATE_URL = 'https://media.base44.com/files/public/68af5003813e47bd07947b30/8e484cbb7_1.pdf';
 
 export default function FillChickenpoxForm() {
   // بيانات الفقرة الأولى - الاستقصاء الوبائي
@@ -139,6 +140,24 @@ export default function FillChickenpoxForm() {
   });
 
   const printRef = useRef(null);
+  const [templateImages, setTemplateImages] = useState([]);
+  const [isLoadingTemplate, setIsLoadingTemplate] = useState(true);
+
+  useEffect(() => {
+    const loadTemplate = async () => {
+      setIsLoadingTemplate(true);
+      try {
+        const response = await convertPDFToImages({ fileUrl: CHICKENPOX_TEMPLATE_URL, format: 'png', quality: 100 });
+        const images = response?.data?.images || [];
+        setTemplateImages(images.map((img) => img.imageDataUrl).filter(Boolean));
+      } catch (error) {
+        console.error(error);
+        toast.error('تعذر تحميل قالب PDF الأصلي، حاول تحديث الصفحة');
+      }
+      setIsLoadingTemplate(false);
+    };
+    loadTemplate();
+  }, []);
 
   const updateContactRow = (index, field, value) => {
     const newRows = [...contacts.rows];
@@ -267,24 +286,42 @@ export default function FillChickenpoxForm() {
         {/* Preview / Print area */}
         <Card>
           <CardHeader className="no-print pb-3">
-            <CardTitle className="text-base">نموذج تفاعلي كامل ونظيف للتعبئة المباشرة</CardTitle>
+            <CardTitle className="text-base">النموذج الأصلي المطابق بصرياً مع حقول تفاعلية جاهزة</CardTitle>
           </CardHeader>
           <CardContent className="p-2 md:p-4">
             <div ref={printRef} className="print-area flex flex-col items-center gap-6 bg-gray-100 p-4 rounded">
 
-              <ChickenpoxInvestigationPage
-                data={investigation}
-                onChange={setInvestigation}
-              />
-              <ChickenpoxVaccinationPage
-                data={vaccination}
-                onChange={setVaccination}
-              />
-              <ChickenpoxContactsPage
-                data={contacts}
-                onChange={setContacts}
-                onUpdateRow={updateContactRow}
-              />
+              {isLoadingTemplate ? (
+                <div className="no-print flex items-center justify-center p-10 text-gray-600">
+                  جاري تحميل النموذج الأصلي...
+                </div>
+              ) : (
+                <>
+                  {templateImages.slice(0, 3).map((imageUrl, index) => (
+                    <ChickenpoxTemplateFillPage
+                      key={index}
+                      imageUrl={imageUrl}
+                      pageIndex={index}
+                      investigation={investigation}
+                      setInvestigation={setInvestigation}
+                      vaccination={vaccination}
+                      setVaccination={setVaccination}
+                      contacts={contacts}
+                      setContacts={setContacts}
+                      updateContactRow={updateContactRow}
+                    />
+                  ))}
+                  {templateImages[3] && (
+                    <div className="no-print" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                      <ChickenpoxTemplateFillPage
+                        imageUrl={templateImages[3]}
+                        pageIndex={3}
+                        printable={false}
+                      />
+                    </div>
+                  )}
+                </>
+              )}
 
             </div>
           </CardContent>
