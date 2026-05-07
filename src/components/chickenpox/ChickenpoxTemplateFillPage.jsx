@@ -3,8 +3,7 @@ import React from 'react';
 const inputBase = {
   position: 'absolute',
   border: 'none',
-  borderBottom: '1px dotted rgba(0,0,0,0.45)',
-  background: 'rgba(255,255,255,0.08)',
+  background: 'transparent',
   color: '#000',
   fontFamily: "'Tajawal','Cairo',Arial,sans-serif",
   fontSize: '9pt',
