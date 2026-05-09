@@ -223,9 +223,10 @@ export default function SmartCommands() {
 
     try {
       // === مسار التقرير الذكي بالـ AI ===
-      // يُفعَّل تلقائياً إذا: الوضع الحر مُفعّل، أو يوجد وصف نصي ولم يتم اختيار حقول يدوياً.
-      // هذا يضمن أن "الموظفين في مركز X" يفهم كـ Employee وليس HealthCenter.
-      const useAIPath = freeMode || (prompt.trim() && selectedFields.length === 0);
+      // يُفعَّل تلقائياً إذا: الوضع الحر مُفعّل، أو يوجد وصف نصي ولم يتم اختيار حقول يدوياً، أو طلب المستخدم تقريراً تجميعياً/بدون أسماء.
+      // هذا يضمن أن "الموظفين في مركز X" يفهم كـ Employee وليس HealthCenter، وأن التجميع لا يعرض أسماء موظفين.
+      const aggregateRequested = /تجميعي|تجميعية|اجمالي|إجمالي|العدد|عدد|احصائي|إحصائي|احصائية|إحصائية|بدون اسماء|بدون أسماء|لا تظهر اسماء|لا تظهر أسماء/i.test(prompt);
+      const useAIPath = freeMode || aggregateRequested || (prompt.trim() && selectedFields.length === 0);
       if (useAIPath) {
         // عند تفعيل الوضع الحر يدوياً → نُجبر بناء التقرير مباشرة من النص دون أي فلترة كلمات
         const plan = await planFreeReport(prompt, freeMode);
@@ -607,7 +608,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         <div>
           <h1 className="text-3xl font-bold text-slate-800">الأوامر الذكية</h1>
           <p className="text-slate-500 mt-1 text-sm">
-            اختر كيان أو أكثر، حدد الحقول والمراكز، وأضف فلاتر دقيقة لاستخراج تقارير احترافية مترابطة.
+            اختر بيانات مفصلة أو اكتب طلباً تجميعياً مثل: إجمالي التخصصات بدون أسماء موظفين، ثم صدّر النتيجة.
           </p>
         </div>
       </div>
@@ -762,8 +763,8 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
           <div className="relative">
             <Textarea
               placeholder={freeMode
-                ? 'مثال: أريد قائمة بكل الأطباء ومراكزهم وأرقام تواصلهم، مع بيانات العقود السارية...'
-                : 'مثال: استخرج الموظفين الأطباء في المراكز النائية...'}
+                ? 'مثال: استخرج إجمالي التخصصات بدون أسماء موظفين حسب شؤون الحسو وشؤون الحناكية...'
+                : 'مثال: استخرج إجمالي التمريض والصيادلة بدون أسماء موظفين حسب المراكز...'}
               className="text-base p-4 pl-14 min-h-[110px] resize-y bg-white"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}

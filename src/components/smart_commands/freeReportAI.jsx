@@ -213,6 +213,7 @@ const detectStandaloneTopic = (prompt) => {
 };
 
 const hasExplicitColumnRequest = (prompt) => /أعمدة|اعمدة|الأعمدة|الاعمدة|عمود|حقل/i.test(String(prompt || ''));
+const wantsAggregateReport = (prompt) => /تجميعي|تجميعية|اجمالي|إجمالي|العدد|عدد|احصائي|إحصائي|احصائية|إحصائية|بدون اسماء|بدون أسماء|لا تظهر اسماء|لا تظهر أسماء/i.test(String(prompt || ''));
 
 const extractRequestedColumnHeaders = (prompt) => {
   const text = String(prompt || '').replace(/\n+/g, ' ').trim();
@@ -261,7 +262,8 @@ async function planStandaloneReport(userPrompt) {
 4. **القيم الإحصائية** ضع رمز {{COMPUTE:...}} كقيمة الخلية، وسيتم حسابها فعلياً.
 5. **عناوين الأعمدة** بالعربية واضحة ومختصرة.
 6. عند طلب إجمالي تخصصات لمجموعات مراكز: اجعل كل تخصص صفاً، وكل مجموعة مراكز عموداً، واستخدم count_specialty.
-7. القيم الفارغة اجعلها "—".
+7. إذا قال المستخدم "تجميعي" أو "بدون أسماء" أو طلب أعداد/إجماليات: ممنوع نهائياً وضع أسماء موظفين أو سجلات موظفين؛ أخرج فقط صفوف إحصائية مجمعة قابلة للتصدير.
+8. القيم الفارغة اجعلها "—".
 
 مثال شامل: للطلب "جدول مراكز الحسو وبطحي وطلال مع عدد موظفي كل مركز":
 {
@@ -410,6 +412,12 @@ async function resolveComputeTokens(rows) {
 // اطلب من AI تحليل النص وإرجاع خطة تقرير
 // forceFreeMode: عند true → نذهب مباشرة لوضع البناء الحر بدون أي فلترة كلمات
 export async function planFreeReport(userPrompt, forceFreeMode = false) {
+  // 🆕 التقارير التجميعية أو "بدون أسماء" تُبنى كجدول إحصائي فقط وليس كسجلات موظفين
+  if (wantsAggregateReport(userPrompt)) {
+    console.info('📊 طلب تجميعي/بدون أسماء — بناء تقرير إحصائي قابل للتصدير.');
+    return await planStandaloneReport(userPrompt);
+  }
+
   // 🆕 الوضع الحر اليدوي (المفعّل من المستخدم) → بناء حر مباشر دون أي فلترة
   if (forceFreeMode) {
     console.info('🆓 الوضع الحر مُفعّل يدوياً — بناء التقرير مباشرة من النص.');
