@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Loader2, FileSpreadsheet, Printer, Sparkles, Scale } from 'lucide-react';
+import { Loader2, FileSpreadsheet, Printer, Sparkles, Scale, Copy } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
@@ -110,6 +110,51 @@ export default function WorkforceStatistics() {
     });
   };
 
+  const handleCopyTable = async () => {
+    try {
+      const headers = ['التخصص', labelA, labelB, 'الفرق'];
+      if (showTotal) headers.push('الإجمالي');
+
+      const rows = activeSpecs.map((sp) => {
+        const a = statsA[sp] || 0;
+        const b = statsB[sp] || 0;
+        const row = [sp, a, b, a - b];
+        if (showTotal) row.push(a + b);
+        return row;
+      });
+
+      const totalRow = ['الإجمالي', totalA, totalB, totalA - totalB];
+      if (showTotal) totalRow.push(totalA + totalB);
+      rows.push(totalRow);
+
+      const tsv = [headers, ...rows].map((r) => r.join('\t')).join('\n');
+
+      const htmlRows = [headers, ...rows].map((r, i) => {
+        const tag = i === 0 ? 'th' : 'td';
+        const style = i === 0
+          ? 'background:#1e40af;color:#fff;padding:8px;border:1px solid #ccc;font-weight:bold;'
+          : 'padding:8px;border:1px solid #ccc;text-align:center;';
+        return `<tr>${r.map((c) => `<${tag} style="${style}">${c}</${tag}>`).join('')}</tr>`;
+      }).join('');
+      const html = `<table dir="rtl" style="border-collapse:collapse;font-family:Tajawal,Arial;">${htmlRows}</table>`;
+
+      if (navigator.clipboard && window.ClipboardItem) {
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            'text/html': new Blob([html], { type: 'text/html' }),
+            'text/plain': new Blob([tsv], { type: 'text/plain' }),
+          }),
+        ]);
+      } else {
+        await navigator.clipboard.writeText(tsv);
+      }
+      toast.success('تم نسخ الجدول — يمكنك لصقه في Excel أو Word.');
+    } catch (e) {
+      console.error(e);
+      toast.error('فشل نسخ الجدول.');
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
@@ -182,6 +227,9 @@ export default function WorkforceStatistics() {
                   <Switch id="include-managers" checked={includeManagers} onCheckedChange={setIncludeManagers} />
                   <Label htmlFor="include-managers" className="text-xs cursor-pointer">ضم مدراء المراكز لإحصائيات تخصصاتهم</Label>
                 </div>
+                <Button variant="outline" size="sm" onClick={handleCopyTable} className="border-blue-300 text-blue-700 hover:bg-blue-50">
+                  <Copy className="w-4 h-4 ml-1" /> نسخ الجدول
+                </Button>
                 <Button variant="outline" size="sm" onClick={handleExportExcel} className="border-green-300 text-green-700 hover:bg-green-50">
                   <FileSpreadsheet className="w-4 h-4 ml-1" /> Excel
                 </Button>
