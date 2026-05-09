@@ -22,12 +22,14 @@ export default function WorkforceStatistics() {
   const [loading, setLoading] = useState(true);
   const [employees, setEmployees] = useState([]);
   const [centers, setCenters] = useState([]);
+  const [managerIds, setManagerIds] = useState(new Set());
   const [groupA, setGroupA] = useState([]);
   const [groupB, setGroupB] = useState([]);
   const [specialties, setSpecialties] = useState([]);
   const [labelA, setLabelA] = useState('شؤون المراكز بالحناكية');
   const [labelB, setLabelB] = useState('شؤون المراكز بالحسو');
   const [showTotal, setShowTotal] = useState(true);
+  const [includeManagers, setIncludeManagers] = useState(true);
 
   useEffect(() => {
     Promise.all([
@@ -36,6 +38,9 @@ export default function WorkforceStatistics() {
     ]).then(([emps, cnts]) => {
       setEmployees(emps || []);
       setCenters((cnts || []).map((c) => c['اسم_المركز']).filter(Boolean).sort());
+      const mIds = new Set();
+      (cnts || []).forEach((c) => { if (c['المدير']) mIds.add(c['المدير']); });
+      setManagerIds(mIds);
     }).finally(() => setLoading(false));
   }, []);
 
@@ -44,16 +49,21 @@ export default function WorkforceStatistics() {
     [employees]
   );
 
+  const countableEmployees = useMemo(
+    () => includeManagers ? internalEmployees : internalEmployees.filter((e) => !managerIds.has(e.id)),
+    [internalEmployees, managerIds, includeManagers]
+  );
+
   const availableSpecialties = useMemo(() => {
     const set = new Set();
-    internalEmployees.forEach((e) => set.add(inferMainSpecialty(e)));
+    countableEmployees.forEach((e) => set.add(inferMainSpecialty(e)));
     return MAIN_SPECIALTIES.filter((s) => set.has(s));
-  }, [internalEmployees]);
+  }, [countableEmployees]);
 
   const computeStats = (centerNames) => {
     if (centerNames.length === 0) return { stats: {}, total: 0 };
     const normTargets = centerNames.map(normalize);
-    const filtered = internalEmployees.filter((e) => {
+    const filtered = countableEmployees.filter((e) => {
       const ec = normalize(e['المركز_الصحي']);
       return ec && normTargets.some((t) => t === ec || ec.includes(t) || t.includes(ec));
     });
@@ -72,13 +82,13 @@ export default function WorkforceStatistics() {
     const r = computeStats(groupA);
     return { statsA: r.stats, totalA: r.total };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [groupA, specialties, internalEmployees, availableSpecialties]);
+  }, [groupA, specialties, countableEmployees, availableSpecialties]);
 
   const { statsB, totalB } = useMemo(() => {
     const r = computeStats(groupB);
     return { statsB: r.stats, totalB: r.total };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [groupB, specialties, internalEmployees, availableSpecialties]);
+  }, [groupB, specialties, countableEmployees, availableSpecialties]);
 
   const activeSpecs = specialties.length > 0 ? specialties : availableSpecialties;
   const ready = groupA.length > 0 && groupB.length > 0;
@@ -168,6 +178,10 @@ export default function WorkforceStatistics() {
                   <Switch id="show-total" checked={showTotal} onCheckedChange={setShowTotal} />
                   <Label htmlFor="show-total" className="text-xs cursor-pointer">إظهار عمود الإجمالي</Label>
                 </div>
+                <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-md px-3 py-1.5">
+                  <Switch id="include-managers" checked={includeManagers} onCheckedChange={setIncludeManagers} />
+                  <Label htmlFor="include-managers" className="text-xs cursor-pointer">ضم مدراء المراكز لإحصائيات تخصصاتهم</Label>
+                </div>
                 <Button variant="outline" size="sm" onClick={handleExportExcel} className="border-green-300 text-green-700 hover:bg-green-50">
                   <FileSpreadsheet className="w-4 h-4 ml-1" /> Excel
                 </Button>
@@ -195,7 +209,7 @@ export default function WorkforceStatistics() {
           <DetailedBreakdown
             groupA={groupA} groupB={groupB}
             labelA={labelA} labelB={labelB}
-            employees={internalEmployees}
+            employees={countableEmployees}
             activeSpecs={activeSpecs}
           />
         </>
