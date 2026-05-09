@@ -60,7 +60,7 @@ export default function SmartCommands() {
   const [results, setResults] = useState(null);
   const [queryInfo, setQueryInfo] = useState(null);
   const [exporting, setExporting] = useState(false);
-  const [freeMode, setFreeMode] = useState(true);
+  const [freeMode, setFreeMode] = useState(false);
   const [freeReportNotes, setFreeReportNotes] = useState('');
   const [customLabels, setCustomLabels] = useState(null);
 
@@ -607,7 +607,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         <div>
           <h1 className="text-3xl font-bold text-slate-800">الأوامر الذكية</h1>
           <p className="text-slate-500 mt-1 text-sm">
-            اكتب طلبك باللغة الطبيعية، وسيقرأه الذكاء الاصطناعي ويستخرج المطلوب من النظام تلقائياً دون اختيار مسبق.
+            اختر كيان أو أكثر، حدد الحقول والمراكز، وأضف فلاتر دقيقة لاستخراج تقارير احترافية مترابطة.
           </p>
         </div>
       </div>
@@ -645,9 +645,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         </div>
       </div>
 
-      {!freeMode && (
-        <>
-          {/* الخطوة 1: الكيانات (متعدد) */}
+      {/* الخطوة 1: الكيانات (متعدد) */}
           <CollapsibleSection
             title="١. حدد نوع البيانات (يمكن اختيار أكثر من كيان)"
             icon={Database}
@@ -725,12 +723,10 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
               )}
             </CollapsibleSection>
           )}
-        </>
-      )}
 
       {/* الخطوة 5: نص AI + الوضع الحر + إدخال صوتي */}
       <CollapsibleSection
-        title={freeMode ? '🧠 اكتب طلبك وسيتم تنفيذه بالذكاء الاصطناعي' : '٥. وصف نصي إضافي (اختياري)'}
+        title={freeMode ? '٥. 🧠 الوضع الحر (AI يستخرج كل شيء من النظام)' : '٥. وصف نصي إضافي (اختياري)'}
         icon={freeMode ? Brain : Wand2}
         iconColor={freeMode ? 'text-fuchsia-600' : 'text-purple-600'}
         defaultOpen={freeMode}
@@ -742,12 +738,12 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
               <Brain className={`w-5 h-5 ${freeMode ? 'text-fuchsia-600' : 'text-slate-400'}`} />
               <div>
                 <p className={`text-sm font-semibold ${freeMode ? 'text-fuchsia-800' : 'text-slate-600'}`}>
-                  القراءة الذكية الحرة للطلب
+                  الوضع الحر (تقرير غير مقيّد)
                 </p>
                 <p className="text-xs text-slate-500 mt-0.5">
                   {freeMode
-                    ? 'اكتب أي طلب بدون تحديد نوع البيانات أو الحقول؛ الذكاء الاصطناعي سيحدد المطلوب ويستخرجه من النظام.'
-                    : 'يمكنك تعطيله لاستخدام الاختيار اليدوي القديم للكيانات والحقول.'}
+                    ? 'الذكاء الاصطناعي سيحلّل الطلب ويختار الكيانات والحقول من كامل النظام. القيم الناقصة ستظهر كـ "غير متاحة".'
+                    : 'فعّل هذا الوضع لترك الذكاء الاصطناعي يستخرج كل شيء بناءً على الوصف النصي فقط.'}
                 </p>
               </div>
             </div>
@@ -766,7 +762,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
           <div className="relative">
             <Textarea
               placeholder={freeMode
-                ? 'اكتب طلبك هنا بحرية، مثال: اعرض الموظفين المنتهية عقودهم قريباً مع أرقامهم ومراكزهم، أو احسب عدد الموظفين في كل مركز...'
+                ? 'مثال: أريد قائمة بكل الأطباء ومراكزهم وأرقام تواصلهم، مع بيانات العقود السارية...'
                 : 'مثال: استخرج الموظفين الأطباء في المراكز النائية...'}
               className="text-base p-4 pl-14 min-h-[110px] resize-y bg-white"
               value={prompt}
@@ -962,18 +958,17 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         </Card>
       )}
 
-      {!freeMode && (
-        <FieldValueFilterDialog
-          open={filterDialog.open}
-          onClose={() => setFilterDialog({ open: false, fieldKey: null, fieldLabel: '' })}
-          entityValue={primaryEntity}
-          fieldKey={filterDialog.fieldKey}
-          fieldLabel={filterDialog.fieldLabel}
-          currentValues={filterDialog.fieldKey ? valueFilters[filterDialog.fieldKey] || [] : []}
-          onApply={applyValueFilter}
-          sampleData={sampleData}
-        />
-      )}
+      {/* Dialog فلترة قيم */}
+      <FieldValueFilterDialog
+        open={filterDialog.open}
+        onClose={() => setFilterDialog({ open: false, fieldKey: null, fieldLabel: '' })}
+        entityValue={primaryEntity}
+        fieldKey={filterDialog.fieldKey}
+        fieldLabel={filterDialog.fieldLabel}
+        currentValues={filterDialog.fieldKey ? valueFilters[filterDialog.fieldKey] || [] : []}
+        onApply={applyValueFilter}
+        sampleData={sampleData}
+      />
     </div>
   );
 }
