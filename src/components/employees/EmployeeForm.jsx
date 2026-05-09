@@ -11,7 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import SmartDateInput from "@/components/ui/smart-date-input";
 import HijriDateInput from "@/components/ui/hijri-date-input";
 import { base44 } from "@/api/base44Client";
-import { MAIN_SPECIALTIES, getJobTitleOptions, inferMainSpecialty } from "@/components/utils/employeeSpecialties";
+import { MAIN_SPECIALTIES, getJobTitleOptions, inferMainSpecialty, canonicalizeJobTitle } from "@/components/utils/employeeSpecialties";
 
 const specialRolesOptions = [
     { key: "مدير مركز", label: "مدير مركز" },
@@ -156,7 +156,8 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ ...formData, department: inferMainSpecialty(formData) });
+    const cleanPosition = canonicalizeJobTitle(formData.position);
+    onSubmit({ ...formData, position: cleanPosition, department: inferMainSpecialty({ ...formData, position: cleanPosition }) });
   };
 
   const handleChange = (field, value) => {
