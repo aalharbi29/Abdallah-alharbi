@@ -1,16 +1,17 @@
 import ExcelJS from 'exceljs';
 
-export const exportComparisonExcel = async ({ specialties, statsA, statsB, totalA, totalB, labelA, labelB, centersA, centersB }) => {
+export const exportComparisonExcel = async ({ specialties, statsA, statsB, totalA, totalB, labelA, labelB, centersA, centersB, showTotal = true }) => {
   const wb = new ExcelJS.Workbook();
   const ws = wb.addWorksheet('مقارنة الكوادر', { views: [{ rightToLeft: true }] });
 
-  ws.mergeCells('A1:F1');
+  const lastCol = showTotal ? 'E' : 'D';
+  ws.mergeCells(`A1:${lastCol}1`);
   ws.getCell('A1').value = `مقارنة الكوادر — ${labelA} مقابل ${labelB}`;
   ws.getCell('A1').font = { bold: true, size: 16, color: { argb: 'FF1E40AF' } };
   ws.getCell('A1').alignment = { horizontal: 'center', vertical: 'middle' };
   ws.getRow(1).height = 28;
 
-  ws.mergeCells('A2:F2');
+  ws.mergeCells(`A2:${lastCol}2`);
   ws.getCell('A2').value = `تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA')}`;
   ws.getCell('A2').alignment = { horizontal: 'center' };
   ws.getCell('A2').font = { size: 10, color: { argb: 'FF64748B' } };
@@ -19,14 +20,16 @@ export const exportComparisonExcel = async ({ specialties, statsA, statsB, total
   ws.addRow([]);
   const infoRowA = ws.addRow([`${labelA} (${centersA.length} مركز):`, centersA.join('، ')]);
   infoRowA.getCell(1).font = { bold: true, color: { argb: 'FF1E40AF' } };
-  ws.mergeCells(`B${infoRowA.number}:F${infoRowA.number}`);
+  ws.mergeCells(`B${infoRowA.number}:${lastCol}${infoRowA.number}`);
   const infoRowB = ws.addRow([`${labelB} (${centersB.length} مركز):`, centersB.join('، ')]);
   infoRowB.getCell(1).font = { bold: true, color: { argb: 'FF047857' } };
-  ws.mergeCells(`B${infoRowB.number}:F${infoRowB.number}`);
+  ws.mergeCells(`B${infoRowB.number}:${lastCol}${infoRowB.number}`);
   ws.addRow([]);
 
   // رؤوس
-  const headerRow = ws.addRow(['م', 'التخصص', labelA, labelB, 'الفارق', 'الإجمالي']);
+  const headers = ['م', 'التخصص', labelA, labelB];
+  if (showTotal) headers.push('الإجمالي');
+  const headerRow = ws.addRow(headers);
   headerRow.eachCell((cell) => {
     cell.font = { bold: true, color: { argb: 'FFFFFFFF' }, size: 12 };
     cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF3B82F6' } };
@@ -37,7 +40,9 @@ export const exportComparisonExcel = async ({ specialties, statsA, statsB, total
   specialties.forEach((sp, i) => {
     const a = statsA[sp] || 0;
     const b = statsB[sp] || 0;
-    const row = ws.addRow([i + 1, sp, a, b, a - b, a + b]);
+    const rowData = [i + 1, sp, a, b];
+    if (showTotal) rowData.push(a + b);
+    const row = ws.addRow(rowData);
     row.eachCell((cell, col) => {
       cell.alignment = { horizontal: 'center' };
       cell.border = { top: { style: 'thin' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
@@ -46,7 +51,9 @@ export const exportComparisonExcel = async ({ specialties, statsA, statsB, total
     });
   });
 
-  const totalRow = ws.addRow(['', 'الإجمالي', totalA, totalB, totalA - totalB, totalA + totalB]);
+  const totalRowData = ['', 'الإجمالي', totalA, totalB];
+  if (showTotal) totalRowData.push(totalA + totalB);
+  const totalRow = ws.addRow(totalRowData);
   totalRow.eachCell((cell) => {
     cell.font = { bold: true };
     cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE2E8F0' } };
@@ -54,9 +61,9 @@ export const exportComparisonExcel = async ({ specialties, statsA, statsB, total
     cell.border = { top: { style: 'medium' }, bottom: { style: 'thin' }, left: { style: 'thin' }, right: { style: 'thin' } };
   });
 
-  ws.columns = [
-    { width: 6 }, { width: 28 }, { width: 18 }, { width: 18 }, { width: 12 }, { width: 14 },
-  ];
+  ws.columns = showTotal
+    ? [{ width: 6 }, { width: 28 }, { width: 18 }, { width: 18 }, { width: 14 }]
+    : [{ width: 6 }, { width: 28 }, { width: 18 }, { width: 18 }];
 
   const buffer = await wb.xlsx.writeBuffer();
   const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
@@ -66,12 +73,12 @@ export const exportComparisonExcel = async ({ specialties, statsA, statsB, total
   link.click();
 };
 
-export const printComparison = ({ specialties, statsA, statsB, totalA, totalB, labelA, labelB, centersA, centersB }) => {
+export const printComparison = ({ specialties, statsA, statsB, totalA, totalB, labelA, labelB, centersA, centersB, showTotal = true }) => {
   const win = window.open('', '', 'width=1000,height=750');
   const rows = specialties.map((sp, i) => {
     const a = statsA[sp] || 0;
     const b = statsB[sp] || 0;
-    return `<tr><td>${i + 1}</td><td>${sp}</td><td>${a}</td><td>${b}</td><td>${a - b}</td><td>${a + b}</td></tr>`;
+    return `<tr><td>${i + 1}</td><td>${sp}</td><td>${a}</td><td>${b}</td>${showTotal ? `<td>${a + b}</td>` : ''}</tr>`;
   }).join('');
 
   win.document.write(`<html dir="rtl"><head><title>مقارنة الكوادر</title>
@@ -92,9 +99,9 @@ export const printComparison = ({ specialties, statsA, statsB, totalA, totalB, l
     <div class="info"><b>${labelB}:</b> ${centersB.join('، ')}</div>
     <div class="info">تاريخ التقرير: ${new Date().toLocaleDateString('ar-SA')}</div>
     <table>
-      <thead><tr><th>م</th><th>التخصص</th><th>${labelA}</th><th>${labelB}</th><th>الفارق</th><th>الإجمالي</th></tr></thead>
+      <thead><tr><th>م</th><th>التخصص</th><th>${labelA}</th><th>${labelB}</th>${showTotal ? '<th>الإجمالي</th>' : ''}</tr></thead>
       <tbody>${rows}</tbody>
-      <tfoot><tr><td colspan="2">الإجمالي</td><td>${totalA}</td><td>${totalB}</td><td>${totalA - totalB}</td><td>${totalA + totalB}</td></tr></tfoot>
+      <tfoot><tr><td colspan="2">الإجمالي</td><td>${totalA}</td><td>${totalB}</td>${showTotal ? `<td>${totalA + totalB}</td>` : ''}</tr></tfoot>
     </table>
     <script>window.onload=()=>{window.print();};</script>
     </body></html>`);

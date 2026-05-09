@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2, FileSpreadsheet, Printer, Sparkles, Scale } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { inferMainSpecialty, MAIN_SPECIALTIES } from '@/components/utils/employeeSpecialties';
 import CenterGroupPicker from '@/components/workforce_stats/CenterGroupPicker';
@@ -11,6 +13,7 @@ import SpecialtyPicker from '@/components/workforce_stats/SpecialtyPicker';
 import ComparisonTable from '@/components/workforce_stats/ComparisonTable';
 import ComparisonChart from '@/components/workforce_stats/ComparisonChart';
 import SummaryCards from '@/components/workforce_stats/SummaryCards';
+import DetailedBreakdown from '@/components/workforce_stats/DetailedBreakdown';
 import { exportComparisonExcel, printComparison } from '@/components/workforce_stats/exportComparison';
 
 const normalize = (s) => String(s || '').replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').toLowerCase().trim();
@@ -24,6 +27,7 @@ export default function WorkforceStatistics() {
   const [specialties, setSpecialties] = useState([]);
   const [labelA, setLabelA] = useState('شؤون المراكز بالحناكية');
   const [labelB, setLabelB] = useState('شؤون المراكز بالحسو');
+  const [showTotal, setShowTotal] = useState(true);
 
   useEffect(() => {
     Promise.all([
@@ -78,7 +82,7 @@ export default function WorkforceStatistics() {
     try {
       await exportComparisonExcel({
         specialties: activeSpecs, statsA, statsB, totalA, totalB,
-        labelA, labelB, centersA: groupA, centersB: groupB,
+        labelA, labelB, centersA: groupA, centersB: groupB, showTotal,
       });
       toast.success('تم تصدير ملف Excel بنجاح.');
     } catch (e) { console.error(e); toast.error('فشل تصدير Excel.'); }
@@ -87,7 +91,7 @@ export default function WorkforceStatistics() {
   const handlePrint = () => {
     printComparison({
       specialties: activeSpecs, statsA, statsB, totalA, totalB,
-      labelA, labelB, centersA: groupA, centersB: groupB,
+      labelA, labelB, centersA: groupA, centersB: groupB, showTotal,
     });
   };
 
@@ -149,12 +153,16 @@ export default function WorkforceStatistics() {
           />
 
           <Card className="shadow-md">
-            <CardHeader className="bg-gradient-to-l from-slate-50 to-white border-b py-3 flex-row items-center justify-between">
+            <CardHeader className="bg-gradient-to-l from-slate-50 to-white border-b py-3 flex-row items-center justify-between flex-wrap gap-2">
               <div>
-                <CardTitle className="text-base">📋 خيارات التصدير</CardTitle>
-                <CardDescription className="text-xs mt-0.5">صدّر المقارنة كملف Excel أو اطبعها مباشرة.</CardDescription>
+                <CardTitle className="text-base">📋 الخيارات والتصدير</CardTitle>
+                <CardDescription className="text-xs mt-0.5">تحكّم في عرض الإجمالي وصدّر المقارنة.</CardDescription>
               </div>
-              <div className="flex gap-2">
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-md px-3 py-1.5">
+                  <Switch id="show-total" checked={showTotal} onCheckedChange={setShowTotal} />
+                  <Label htmlFor="show-total" className="text-xs cursor-pointer">إظهار عمود الإجمالي</Label>
+                </div>
                 <Button variant="outline" size="sm" onClick={handleExportExcel} className="border-green-300 text-green-700 hover:bg-green-50">
                   <FileSpreadsheet className="w-4 h-4 ml-1" /> Excel
                 </Button>
@@ -170,12 +178,20 @@ export default function WorkforceStatistics() {
             statsA={statsA} statsB={statsB}
             totalA={totalA} totalB={totalB}
             labelA={labelA} labelB={labelB}
+            showTotal={showTotal}
           />
 
           <ComparisonChart
             specialties={activeSpecs}
             statsA={statsA} statsB={statsB}
             labelA={labelA} labelB={labelB}
+          />
+
+          <DetailedBreakdown
+            groupA={groupA} groupB={groupB}
+            labelA={labelA} labelB={labelB}
+            employees={employees}
+            activeSpecs={activeSpecs}
           />
         </>
       )}
