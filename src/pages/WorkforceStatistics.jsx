@@ -39,16 +39,21 @@ export default function WorkforceStatistics() {
     }).finally(() => setLoading(false));
   }, []);
 
+  const internalEmployees = useMemo(
+    () => employees.filter((e) => !e.is_externally_assigned),
+    [employees]
+  );
+
   const availableSpecialties = useMemo(() => {
     const set = new Set();
-    employees.forEach((e) => set.add(inferMainSpecialty(e)));
+    internalEmployees.forEach((e) => set.add(inferMainSpecialty(e)));
     return MAIN_SPECIALTIES.filter((s) => set.has(s));
-  }, [employees]);
+  }, [internalEmployees]);
 
   const computeStats = (centerNames) => {
     if (centerNames.length === 0) return { stats: {}, total: 0 };
     const normTargets = centerNames.map(normalize);
-    const filtered = employees.filter((e) => {
+    const filtered = internalEmployees.filter((e) => {
       const ec = normalize(e['المركز_الصحي']);
       return ec && normTargets.some((t) => t === ec || ec.includes(t) || t.includes(ec));
     });
@@ -67,13 +72,13 @@ export default function WorkforceStatistics() {
     const r = computeStats(groupA);
     return { statsA: r.stats, totalA: r.total };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [groupA, specialties, employees, availableSpecialties]);
+  }, [groupA, specialties, internalEmployees, availableSpecialties]);
 
   const { statsB, totalB } = useMemo(() => {
     const r = computeStats(groupB);
     return { statsB: r.stats, totalB: r.total };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [groupB, specialties, employees, availableSpecialties]);
+  }, [groupB, specialties, internalEmployees, availableSpecialties]);
 
   const activeSpecs = specialties.length > 0 ? specialties : availableSpecialties;
   const ready = groupA.length > 0 && groupB.length > 0;
@@ -190,7 +195,7 @@ export default function WorkforceStatistics() {
           <DetailedBreakdown
             groupA={groupA} groupB={groupB}
             labelA={labelA} labelB={labelB}
-            employees={employees}
+            employees={internalEmployees}
             activeSpecs={activeSpecs}
           />
         </>
