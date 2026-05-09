@@ -334,15 +334,11 @@ async function resolveComputeTokens(rows) {
 }
 
 // اطلب من AI تحليل النص وإرجاع خطة تقرير
-// forceFreeMode: عند true → نذهب مباشرة لوضع البناء الحر بدون أي فلترة كلمات
+// forceFreeMode: يجعل الذكاء الاصطناعي يعتمد على نص الطلب فقط دون اختيارات المستخدم اليدوية
 export async function planFreeReport(userPrompt, forceFreeMode = false) {
-  // 🆕 الوضع الحر اليدوي (المفعّل من المستخدم) → بناء حر مباشر دون أي فلترة
-  if (forceFreeMode) {
-    console.info('🆓 الوضع الحر مُفعّل يدوياً — بناء التقرير مباشرة من النص.');
-    return await planStandaloneReport(userPrompt);
-  }
-  // 🆕 إذا كان الطلب عن موضوع غير مُمَثَّل بكيان في النظام → وضع البناء الحر
-  if (detectStandaloneTopic(userPrompt)) {
+  // إذا كان الطلب عن موضوع غير مُمَثَّل بكيان في النظام → وضع البناء الحر
+  // أما طلبات بيانات النظام فيتم تحليلها واستخراجها فعلياً من الكيانات المناسبة تلقائياً.
+  if (detectStandaloneTopic(userPrompt) && !/(موظف|موظفين|مركز|مراكز|اجاز|إجاز|تكليف|جهاز|اجهزه|أجهزة|نواقص|بدلات|اعتماد)/i.test(normalizeArabic(userPrompt))) {
     console.info('🆓 الطلب يخص موضوعاً خارج كيانات النظام — التحول إلى وضع البناء الحر.');
     return await planStandaloneReport(userPrompt);
   }

@@ -60,7 +60,7 @@ export default function SmartCommands() {
   const [results, setResults] = useState(null);
   const [queryInfo, setQueryInfo] = useState(null);
   const [exporting, setExporting] = useState(false);
-  const [freeMode, setFreeMode] = useState(false);
+  const [freeMode, setFreeMode] = useState(true);
   const [freeReportNotes, setFreeReportNotes] = useState('');
   const [customLabels, setCustomLabels] = useState(null);
 
@@ -607,7 +607,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         <div>
           <h1 className="text-3xl font-bold text-slate-800">الأوامر الذكية</h1>
           <p className="text-slate-500 mt-1 text-sm">
-            اختر كيان أو أكثر، حدد الحقول والمراكز، وأضف فلاتر دقيقة لاستخراج تقارير احترافية مترابطة.
+            اكتب طلبك باللغة الطبيعية، وسيقرأه الذكاء الاصطناعي ويستخرج المطلوب من النظام تلقائياً دون اختيار مسبق.
           </p>
         </div>
       </div>
@@ -645,88 +645,92 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         </div>
       </div>
 
-      {/* الخطوة 1: الكيانات (متعدد) */}
-      <CollapsibleSection
-        title="١. حدد نوع البيانات (يمكن اختيار أكثر من كيان)"
-        icon={Database}
-        iconColor="text-indigo-600"
-        badgeCount={selectedEntities.length}
-        defaultOpen={true}
-      >
-        <MultiEntitySelector selectedEntities={selectedEntities} onChange={setSelectedEntities} />
-        {currentEntity && (
-          <div className="mt-3 p-2 bg-white rounded-lg border border-indigo-200 text-sm text-slate-600">
-            <strong className="text-indigo-700">الأساسي:</strong> {currentEntity.icon} {currentEntity.label}
-            {' '}({currentEntity.fields.length} حقل)
-            {secondaryEntities.length > 0 && (
-              <span className="mr-2">• <strong>كيانات مدمجة:</strong> {secondaryEntities.map((e) => getEntityByValue(e)?.label).join('، ')}</span>
+      {!freeMode && (
+        <>
+          {/* الخطوة 1: الكيانات (متعدد) */}
+          <CollapsibleSection
+            title="١. حدد نوع البيانات (يمكن اختيار أكثر من كيان)"
+            icon={Database}
+            iconColor="text-indigo-600"
+            badgeCount={selectedEntities.length}
+            defaultOpen={true}
+          >
+            <MultiEntitySelector selectedEntities={selectedEntities} onChange={setSelectedEntities} />
+            {currentEntity && (
+              <div className="mt-3 p-2 bg-white rounded-lg border border-indigo-200 text-sm text-slate-600">
+                <strong className="text-indigo-700">الأساسي:</strong> {currentEntity.icon} {currentEntity.label}
+                {' '}({currentEntity.fields.length} حقل)
+                {secondaryEntities.length > 0 && (
+                  <span className="mr-2">• <strong>كيانات مدمجة:</strong> {secondaryEntities.map((e) => getEntityByValue(e)?.label).join('، ')}</span>
+                )}
+              </div>
             )}
+          </CollapsibleSection>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {/* الخطوة 2: المراكز */}
+            <CollapsibleSection
+              title="٢. حدد المراكز"
+              icon={MapPin}
+              iconColor="text-emerald-600"
+              badgeCount={selectedCenters.length}
+              defaultOpen={false}
+            >
+              <CentersPicker
+                centersList={centersList}
+                selectedCenters={selectedCenters}
+                onChange={setSelectedCenters}
+              />
+            </CollapsibleSection>
+
+            {/* الخطوة 3: الحقول (مجمعة) */}
+            <CollapsibleSection
+              title="٣. الحقول (مُصنّفة بمجموعات)"
+              icon={Columns3}
+              iconColor="text-green-600"
+              badgeCount={selectedFields.length}
+              defaultOpen={false}
+            >
+              <FieldGroupPicker
+                entity={currentEntity}
+                selectedFields={selectedFields}
+                onChange={setSelectedFields}
+                onFilterIconClick={openValueFilter}
+                activeValueFilters={valueFilters}
+              />
+            </CollapsibleSection>
           </div>
-        )}
-      </CollapsibleSection>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        {/* الخطوة 2: المراكز */}
-        <CollapsibleSection
-          title="٢. حدد المراكز"
-          icon={MapPin}
-          iconColor="text-emerald-600"
-          badgeCount={selectedCenters.length}
-          defaultOpen={false}
-        >
-          <CentersPicker
-            centersList={centersList}
-            selectedCenters={selectedCenters}
-            onChange={setSelectedCenters}
-          />
-        </CollapsibleSection>
-
-        {/* الخطوة 3: الحقول (مجمعة) */}
-        <CollapsibleSection
-          title="٣. الحقول (مُصنّفة بمجموعات)"
-          icon={Columns3}
-          iconColor="text-green-600"
-          badgeCount={selectedFields.length}
-          defaultOpen={false}
-        >
-          <FieldGroupPicker
-            entity={currentEntity}
-            selectedFields={selectedFields}
-            onChange={setSelectedFields}
-            onFilterIconClick={openValueFilter}
-            activeValueFilters={valueFilters}
-          />
-        </CollapsibleSection>
-      </div>
-
-      {/* الخطوة 4: ترتيب الحقول بالسحب */}
-      {selectedFields.length > 0 && currentEntity && (
-        <CollapsibleSection
-          title="٤. رتّب الأعمدة (اسحب وأفلت)"
-          icon={ArrowDownUp}
-          iconColor="text-blue-600"
-          badgeCount={selectedFields.length}
-          defaultOpen={true}
-        >
-          <SelectedFieldsReorder
-            entity={primaryEntity}
-            selectedFields={selectedFields}
-            onReorder={setSelectedFields}
-            onRemove={removeField}
-            activeValueFilters={valueFilters}
-            onFilterClick={openValueFilter}
-          />
-          {activeFiltersCount > 0 && (
-            <div className="mt-2 p-2 bg-indigo-50 border border-indigo-200 rounded-lg text-xs text-indigo-700">
-              🔍 فلاتر القيم النشطة: {activeFiltersCount} فلتر. ستُطبَّق على البيانات عند التنفيذ.
-            </div>
+          {/* الخطوة 4: ترتيب الحقول بالسحب */}
+          {selectedFields.length > 0 && currentEntity && (
+            <CollapsibleSection
+              title="٤. رتّب الأعمدة (اسحب وأفلت)"
+              icon={ArrowDownUp}
+              iconColor="text-blue-600"
+              badgeCount={selectedFields.length}
+              defaultOpen={true}
+            >
+              <SelectedFieldsReorder
+                entity={primaryEntity}
+                selectedFields={selectedFields}
+                onReorder={setSelectedFields}
+                onRemove={removeField}
+                activeValueFilters={valueFilters}
+                onFilterClick={openValueFilter}
+              />
+              {activeFiltersCount > 0 && (
+                <div className="mt-2 p-2 bg-indigo-50 border border-indigo-200 rounded-lg text-xs text-indigo-700">
+                  🔍 فلاتر القيم النشطة: {activeFiltersCount} فلتر. ستُطبَّق على البيانات عند التنفيذ.
+                </div>
+              )}
+            </CollapsibleSection>
           )}
-        </CollapsibleSection>
+        </>
       )}
 
       {/* الخطوة 5: نص AI + الوضع الحر + إدخال صوتي */}
       <CollapsibleSection
-        title={freeMode ? '٥. 🧠 الوضع الحر (AI يستخرج كل شيء من النظام)' : '٥. وصف نصي إضافي (اختياري)'}
+        title={freeMode ? '🧠 اكتب طلبك وسيتم تنفيذه بالذكاء الاصطناعي' : '٥. وصف نصي إضافي (اختياري)'}
         icon={freeMode ? Brain : Wand2}
         iconColor={freeMode ? 'text-fuchsia-600' : 'text-purple-600'}
         defaultOpen={freeMode}
@@ -738,12 +742,12 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
               <Brain className={`w-5 h-5 ${freeMode ? 'text-fuchsia-600' : 'text-slate-400'}`} />
               <div>
                 <p className={`text-sm font-semibold ${freeMode ? 'text-fuchsia-800' : 'text-slate-600'}`}>
-                  الوضع الحر (تقرير غير مقيّد)
+                  القراءة الذكية الحرة للطلب
                 </p>
                 <p className="text-xs text-slate-500 mt-0.5">
                   {freeMode
-                    ? 'الذكاء الاصطناعي سيحلّل الطلب ويختار الكيانات والحقول من كامل النظام. القيم الناقصة ستظهر كـ "غير متاحة".'
-                    : 'فعّل هذا الوضع لترك الذكاء الاصطناعي يستخرج كل شيء بناءً على الوصف النصي فقط.'}
+                    ? 'اكتب أي طلب بدون تحديد نوع البيانات أو الحقول؛ الذكاء الاصطناعي سيحدد المطلوب ويستخرجه من النظام.'
+                    : 'يمكنك تعطيله لاستخدام الاختيار اليدوي القديم للكيانات والحقول.'}
                 </p>
               </div>
             </div>
@@ -762,7 +766,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
           <div className="relative">
             <Textarea
               placeholder={freeMode
-                ? 'مثال: أريد قائمة بكل الأطباء ومراكزهم وأرقام تواصلهم، مع بيانات العقود السارية...'
+                ? 'اكتب طلبك هنا بحرية، مثال: اعرض الموظفين المنتهية عقودهم قريباً مع أرقامهم ومراكزهم، أو احسب عدد الموظفين في كل مركز...'
                 : 'مثال: استخرج الموظفين الأطباء في المراكز النائية...'}
               className="text-base p-4 pl-14 min-h-[110px] resize-y bg-white"
               value={prompt}
@@ -958,17 +962,18 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         </Card>
       )}
 
-      {/* Dialog فلترة قيم */}
-      <FieldValueFilterDialog
-        open={filterDialog.open}
-        onClose={() => setFilterDialog({ open: false, fieldKey: null, fieldLabel: '' })}
-        entityValue={primaryEntity}
-        fieldKey={filterDialog.fieldKey}
-        fieldLabel={filterDialog.fieldLabel}
-        currentValues={filterDialog.fieldKey ? valueFilters[filterDialog.fieldKey] || [] : []}
-        onApply={applyValueFilter}
-        sampleData={sampleData}
-      />
+      {!freeMode && (
+        <FieldValueFilterDialog
+          open={filterDialog.open}
+          onClose={() => setFilterDialog({ open: false, fieldKey: null, fieldLabel: '' })}
+          entityValue={primaryEntity}
+          fieldKey={filterDialog.fieldKey}
+          fieldLabel={filterDialog.fieldLabel}
+          currentValues={filterDialog.fieldKey ? valueFilters[filterDialog.fieldKey] || [] : []}
+          onApply={applyValueFilter}
+          sampleData={sampleData}
+        />
+      )}
     </div>
   );
 }
