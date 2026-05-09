@@ -50,6 +50,20 @@ const fuzzyCenterMatch = (centerValue, target) => {
   return v.includes(t) || t.includes(v);
 };
 
+const CENTER_GROUPS = {
+  hasu: ['الحسو', 'هدبان', 'بلغة', 'طلال', 'بطحي', 'الهميج', 'الماوية', 'صخيبرة'],
+  hanakia: ['الحناكية', 'العقدة', 'الشقرة', 'الشقران', 'المحفر', 'عرجاء'],
+};
+
+const expandCenterGroups = (centers) => {
+  return [...new Set((centers || []).flatMap((center) => {
+    const normalized = normalizeArabic(center);
+    if (/شؤون.*حسو|اداره.*حسو|ادارة.*حسو/.test(normalized)) return CENTER_GROUPS.hasu;
+    if (/شؤون.*حناكي|اداره.*حناكي|ادارة.*حناكي/.test(normalized)) return CENTER_GROUPS.hanakia;
+    return center;
+  }))];
+};
+
 // تصنيف التخصصات بدون التأثر باختلاف المسميات الوظيفية
 const SPECIALTY_ALIASES = {
   'طب بشري': [/طبيب عام/, /طبيب اسره/, /طبيب/, /استشاري/, /اخصائي طب/, /طبيبه/],
@@ -224,6 +238,7 @@ async function planStandaloneReport(userPrompt) {
    ولحساب تخصص داخل مجموعة مراكز استخدم:
    {{COMPUTE:Employee:count_specialty:centers:الحسو|هدبان|بلغة:specialty:تمريض}}
    حيث يتم اعتبار اختلاف المسميات ضمن نفس الفئة، مثل: ممرض/فني تمريض/أخصائي تمريض = تمريض، وطبيب أسرة/طبيب عام = طب بشري.
+   تقسيم الشؤون المعتمد: شؤون الحسو = الحسو، هدبان، بلغة، طلال، بطحي، الهميج، الماوية، صخيبرة. شؤون الحناكية = الحناكية، العقدة، الشقرة، الشقران، المحفر، عرجاء.
 
 📋 الكيانات المتاحة وحقول الفلترة:
 - Employee (الموظفون) → فلتر: المركز_الصحي | position | department | gender
@@ -361,7 +376,7 @@ async function resolveComputeTokens(rows) {
         if (operation === 'count_specialty') {
           const centersIndex = parts.indexOf('centers');
           const specialtyIndex = parts.indexOf('specialty');
-          const centers = centersIndex !== -1 ? String(parts[centersIndex + 1] || '').split('|').filter(Boolean) : [];
+          const centers = centersIndex !== -1 ? expandCenterGroups(String(parts[centersIndex + 1] || '').split('|').filter(Boolean)) : [];
           const specialty = specialtyIndex !== -1 ? parts[specialtyIndex + 1] : filterValue;
           const centerField = CENTER_KEY_PER_ENTITY[entity] || 'المركز_الصحي';
           const filteredByCenters = centers.length > 0
