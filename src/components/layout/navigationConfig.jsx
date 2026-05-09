@@ -29,6 +29,7 @@ const pageUrl = (pageName) => {
 
 export const getNavigationItems = (t) => [
   { name: "صفحة الأوامر", href: pageUrl("SmartCommands"), icon: Edit },
+  { name: "إحصائيات الكوادر (مقارنة)", href: pageUrl("WorkforceStatistics"), icon: BarChart3 },
   { name: t('nav.dashboard'), href: pageUrl("Dashboard"), icon: Home },
   { name: t('nav.humanResources'), href: pageUrl("HumanResources"), icon: Users },
   { name: t('nav.hrAnalytics'), href: pageUrl("HRAnalytics"), icon: BarChart3 },

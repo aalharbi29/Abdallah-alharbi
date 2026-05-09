@@ -22,8 +22,8 @@ export default function WorkforceStatistics() {
   const [groupA, setGroupA] = useState([]);
   const [groupB, setGroupB] = useState([]);
   const [specialties, setSpecialties] = useState([]);
-  const [labelA, setLabelA] = useState('المجموعة أ');
-  const [labelB, setLabelB] = useState('المجموعة ب');
+  const [labelA, setLabelA] = useState('شؤون المراكز بالحناكية');
+  const [labelB, setLabelB] = useState('شؤون المراكز بالحسو');
 
   useEffect(() => {
     Promise.all([
@@ -107,7 +107,7 @@ export default function WorkforceStatistics() {
         </div>
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-slate-800">إحصائيات الكوادر — مقارنة المجموعات</h1>
-          <p className="text-slate-500 text-sm mt-0.5">قارن بين مجموعتين من المراكز الصحية حسب التخصصات.</p>
+          <p className="text-slate-500 text-sm mt-0.5">قارن بين مجموعتين من المراكز الصحية حسب التخصصات. استخدم أزرار الاختصار لتحديد شؤون المراكز بضغطة واحدة.</p>
         </div>
       </div>
 
@@ -137,7 +137,7 @@ export default function WorkforceStatistics() {
           <CardContent className="p-8 text-center">
             <Sparkles className="w-12 h-12 text-slate-300 mx-auto mb-3" />
             <p className="text-slate-600 font-medium">اختر مراكز للمجموعتين لرؤية المقارنة</p>
-            <p className="text-xs text-slate-400 mt-1">يجب اختيار مركز واحد على الأقل في كل مجموعة.</p>
+            <p className="text-xs text-slate-400 mt-1">يمكنك استخدام أزرار شؤون المراكز للاختيار السريع.</p>
           </CardContent>
         </Card>
       ) : (
