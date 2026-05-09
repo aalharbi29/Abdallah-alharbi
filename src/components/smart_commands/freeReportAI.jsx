@@ -50,6 +50,36 @@ const fuzzyCenterMatch = (centerValue, target) => {
   return v.includes(t) || t.includes(v);
 };
 
+// تصنيف التخصصات بدون التأثر باختلاف المسميات الوظيفية
+const SPECIALTY_ALIASES = {
+  'طب بشري': [/طبيب عام/, /طبيب اسره/, /طبيب/, /استشاري/, /اخصائي طب/, /طبيبه/],
+  'تمريض': [/تمريض/, /ممرض/, /ممرضه/, /فني تمريض/, /اخصائي تمريض/, /اخصائيه تمريض/],
+  'صيدلة': [/صيدل/, /صيدلي/, /صيدليه/, /صيدله/],
+  'أسنان': [/اسنان/, /طبيب اسنان/, /فني اسنان/],
+  'مختبر': [/مختبر/, /مختبرات/, /اخصائي مختبر/, /فني مختبر/],
+  'أشعة': [/اشعه/, /اشعة/, /اخصائي اشعه/, /فني اشعه/],
+  'علاج طبيعي': [/علاج طبيعي/, /طبيعي/],
+  'إدارة': [/اداري/, /اداريه/, /كاتب/, /سكرتير/, /مدير/],
+};
+
+const getSpecialtyPatterns = (category) => {
+  const normalized = normalizeArabic(category);
+  const directKey = Object.keys(SPECIALTY_ALIASES).find((key) => normalizeArabic(key) === normalized || normalized.includes(normalizeArabic(key)) || normalizeArabic(key).includes(normalized));
+  if (directKey) return SPECIALTY_ALIASES[directKey];
+  return [new RegExp(normalized.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))];
+};
+
+const employeeMatchesSpecialty = (employee, category) => {
+  const text = normalizeArabic([
+    employee?.position,
+    employee?.department,
+    employee?.scfhs_classification,
+    employee?.job_category,
+    employee?.job_category_type,
+  ].filter(Boolean).join(' '));
+  return getSpecialtyPatterns(category).some((pattern) => pattern.test(text));
+};
+
 // heuristic: اختيار مسبق للكيان حسب كلمات مفتاحية واضحة
 // الأولوية دائماً لنوع "الكائن المطلوب" (موظفين/أجهزة/إجازات) قبل "الموقع" (مركز).
 const detectLikelyEntity = (prompt) => {
@@ -191,6 +221,9 @@ async function planStandaloneReport(userPrompt) {
 3. **عندما يطلب قيمة محسوبة من بيانات النظام** (مثل "عدد الموظفين") تضع في الخلية معرّفاً خاصاً بصيغة:
    {{COMPUTE:entity:operation:filterField:filterValue}}
    مثال: {{COMPUTE:Employee:count:المركز_الصحي:الحسو}} → سيُحسب فعلياً عدد الموظفين في مركز الحسو.
+   ولحساب تخصص داخل مجموعة مراكز استخدم:
+   {{COMPUTE:Employee:count_specialty:centers:الحسو|هدبان|بلغة:specialty:تمريض}}
+   حيث يتم اعتبار اختلاف المسميات ضمن نفس الفئة، مثل: ممرض/فني تمريض/أخصائي تمريض = تمريض، وطبيب أسرة/طبيب عام = طب بشري.
 
 📋 الكيانات المتاحة وحقول الفلترة:
 - Employee (الموظفون) → فلتر: المركز_الصحي | position | department | gender
@@ -204,6 +237,7 @@ async function planStandaloneReport(userPrompt) {
 🎯 العمليات المتاحة (operation):
 - count: عدد السجلات المطابقة
 - count_active: عدد السجلات ذات الحالة النشطة (للإجازات/التكاليف فقط)
+- count_specialty: عدد الموظفين حسب فئة تخصص موحدة مع تجاهل اختلاف المسميات
 
 🎯 قواعد صارمة:
 1. **اختر الأعمدة من النص فقط** — ممنوع إضافة أي عمود لم يطلبه المستخدم صراحةً.
@@ -211,7 +245,8 @@ async function planStandaloneReport(userPrompt) {
 3. **القيم النصية** املأها من النص مباشرة.
 4. **القيم الإحصائية** ضع رمز {{COMPUTE:...}} كقيمة الخلية، وسيتم حسابها فعلياً.
 5. **عناوين الأعمدة** بالعربية واضحة ومختصرة.
-6. القيم الفارغة اجعلها "—".
+6. عند طلب إجمالي تخصصات لمجموعات مراكز: اجعل كل تخصص صفاً، وكل مجموعة مراكز عموداً، واستخدم count_specialty.
+7. القيم الفارغة اجعلها "—".
 
 مثال شامل: للطلب "جدول مراكز الحسو وبطحي وطلال مع عدد موظفي كل مركز":
 {
@@ -223,6 +258,16 @@ async function planStandaloneReport(userPrompt) {
     { "اسم المركز": "طلال", "عدد الموظفين": "{{COMPUTE:Employee:count:المركز_الصحي:طلال}}" }
   ],
   "notes": "تم استخراج عدد الموظفين فعلياً من قاعدة البيانات"
+}
+
+مثال للتخصصات حسب مجموعات مراكز:
+{
+  "title": "إجمالي التخصصات حسب مجموعات المراكز",
+  "columns": ["التخصص", "الحسو/هدبان/بلغة", "النخيل/العقدة/الحناكية"],
+  "rows": [
+    { "التخصص": "صيدلة", "الحسو/هدبان/بلغة": "{{COMPUTE:Employee:count_specialty:centers:الحسو|هدبان|بلغة:specialty:صيدلة}}", "النخيل/العقدة/الحناكية": "{{COMPUTE:Employee:count_specialty:centers:النخيل|العقدة|الحناكية:specialty:صيدلة}}" },
+    { "التخصص": "تمريض", "الحسو/هدبان/بلغة": "{{COMPUTE:Employee:count_specialty:centers:الحسو|هدبان|بلغة:specialty:تمريض}}", "النخيل/العقدة/الحناكية": "{{COMPUTE:Employee:count_specialty:centers:النخيل|العقدة|الحناكية:specialty:تمريض}}" }
+  ]
 }
 
 الطلب: "${userPrompt}"
@@ -308,9 +353,23 @@ async function resolveComputeTokens(rows) {
     Object.entries(out).forEach(([key, val]) => {
       if (typeof val !== 'string') return;
       out[key] = val.replace(tokenRegex, (_, payload) => {
-        const [entity, operation, filterField, filterValue] = payload.split(':');
+        const parts = payload.split(':');
+        const [entity, operation, filterField, filterValue] = parts;
         const data = entityCache[entity];
         if (!data) return '—';
+
+        if (operation === 'count_specialty') {
+          const centersIndex = parts.indexOf('centers');
+          const specialtyIndex = parts.indexOf('specialty');
+          const centers = centersIndex !== -1 ? String(parts[centersIndex + 1] || '').split('|').filter(Boolean) : [];
+          const specialty = specialtyIndex !== -1 ? parts[specialtyIndex + 1] : filterValue;
+          const centerField = CENTER_KEY_PER_ENTITY[entity] || 'المركز_الصحي';
+          const filteredByCenters = centers.length > 0
+            ? data.filter((item) => centers.some((center) => fuzzyCenterMatch(getNestedValue(item, centerField), center)))
+            : data;
+          return String(filteredByCenters.filter((item) => employeeMatchesSpecialty(item, specialty)).length);
+        }
+
         let filtered = data;
         if (filterField && filterValue) {
           filtered = data.filter((item) => {
