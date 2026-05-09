@@ -31,7 +31,6 @@ import CenterDocuments from "@/components/health_centers/CenterDocuments";
 import CenterMedicalEquipmentNew from "@/components/health_centers/CenterMedicalEquipmentNew";
 import { getCombinedEmployeeRoles } from "@/components/utils/combinedRoles";
 import CopyableValue from "@/components/common/CopyableValue";
-import { isSameCenter } from "@/components/utils/centerNameMatch";
 
 
 export default function HealthCenterDetails() {
@@ -115,8 +114,14 @@ export default function HealthCenterDetails() {
           setEmployees(safeEmployees);
           setAllCenters(Array.isArray(centersAll) ? centersAll : []);
 
-          const centerEmps = safeEmployees.filter(emp =>
-            isSameCenter(emp.المركز_الصحي, centerData.اسم_المركز)
+          const cleanCenterName = (name) => {
+            if (!name) return "";
+            return name.replace("مركز صحي ", "").replace("مركز ", "").trim();
+          };
+          
+          const normalizedTargetName = cleanCenterName(centerData.اسم_المركز);
+          const centerEmps = safeEmployees.filter(emp => 
+            cleanCenterName(emp.المركز_الصحي) === normalizedTargetName || emp.المركز_الصحي === centerData.اسم_المركز
           );
           setCenterEmployees(centerEmps);
 
@@ -1792,8 +1797,13 @@ export default function HealthCenterDetails() {
               setEmployees(safeEmployees);
               HealthCenter.get(id).then(centerData => {
                 if (centerData) {
-                  const centerEmps = safeEmployees.filter(emp =>
-                    isSameCenter(emp.المركز_الصحي, centerData.اسم_المركز)
+                  const cleanCenterName = (name) => {
+                    if (!name) return "";
+                    return name.replace("مركز صحي ", "").replace("مركز ", "").trim();
+                  };
+                  const normalizedTargetName = cleanCenterName(centerData.اسم_المركز);
+                  const centerEmps = safeEmployees.filter(emp => 
+                    cleanCenterName(emp.المركز_الصحي) === normalizedTargetName || emp.المركز_الصحي === centerData.اسم_المركز
                   );
                   setCenterEmployees(centerEmps);
                 }
