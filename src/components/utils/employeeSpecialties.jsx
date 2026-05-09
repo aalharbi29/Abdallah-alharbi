@@ -74,10 +74,10 @@ export const canonicalizeJobTitle = (value = '') => {
 };
 
 const SPECIALTY_PATTERNS = [
-  { specialty: 'تمريض', patterns: [/تمريض/, /ممرض/] },
-  { specialty: 'طبيب بشري', patterns: [/طبيب/, /طب اسره/, /طب اسرة/, /استشاري/, /اخصائي طب/] },
-  { specialty: 'صيدلة', patterns: [/صيدل/, /صيدله/, /صيدلة/] },
   { specialty: 'أسنان', patterns: [/اسنان/, /أسنان/] },
+  { specialty: 'تمريض', patterns: [/تمريض/, /ممرض/] },
+  { specialty: 'طبيب بشري', patterns: [/طب اسره/, /طب اسرة/, /طبيب عام/, /طبيب مقيم/, /اخصائي طب/, /استشاري طب/, /طبيب بشري/] },
+  { specialty: 'صيدلة', patterns: [/صيدل/, /صيدله/, /صيدلة/] },
   { specialty: 'مختبر', patterns: [/مختبر/] },
   { specialty: 'أشعة', patterns: [/اشعه/, /اشعة/, /أشعة/] },
   { specialty: 'علاج طبيعي', patterns: [/علاج طبيعي/] },
