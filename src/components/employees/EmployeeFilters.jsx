@@ -10,6 +10,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { getEmployeeMainSpecialty } from "@/components/utils/employeeSpecialties";
 
 export default function EmployeeFilters({ onFiltersChange, healthCenters, employees, assignments }) {
   const [showMobileFilters, setShowMobileFilters] = useState(false);
@@ -35,7 +36,7 @@ export default function EmployeeFilters({ onFiltersChange, healthCenters, employ
   const safeAssignments = useMemo(() => Array.isArray(assignments) ? assignments.filter(Boolean) : [], [assignments]);
 
   const positions = useMemo(() => [...new Set(safeEmployees.map(e => e.position).filter(Boolean))].sort(), [safeEmployees]);
-  const departments = useMemo(() => [...new Set(safeEmployees.map(e => e.department).filter(Boolean))].sort(), [safeEmployees]);
+  const departments = useMemo(() => [...new Set(safeEmployees.map(e => getEmployeeMainSpecialty(e)).filter(Boolean))].sort(), [safeEmployees]);
   const jobCategories = useMemo(() => [...new Set(safeEmployees.map(e => e.job_category).filter(Boolean))].sort(), [safeEmployees]);
   const jobCategoryTypes = useMemo(() => [...new Set(safeEmployees.map(e => e.job_category_type).filter(Boolean))].sort(), [safeEmployees]);
   const qualifications = useMemo(() => [...new Set(safeEmployees.map(e => e.qualification).filter(Boolean))].sort(), [safeEmployees]);
@@ -248,15 +249,15 @@ export default function EmployeeFilters({ onFiltersChange, healthCenters, employ
         />
 
         <FilterPopover
-          title="التخصص"
-          items={positions}
-          category="positions"
+          title="التخصص الرئيسي"
+          items={departments}
+          category="departments"
         />
 
         <FilterPopover
-          title="القسم"
-          items={departments}
-          category="departments"
+          title="المسمى الوظيفي"
+          items={positions}
+          category="positions"
         />
 
         <FilterPopover

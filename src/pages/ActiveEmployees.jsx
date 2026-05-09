@@ -18,6 +18,7 @@ import { createPageUrl } from "@/utils";
 
 import HumanResourcesDialogs from "@/components/hr/HumanResourcesDialogs";
 import { matchScore } from "@/components/utils/arabicSearch";
+import { getEmployeeMainSpecialty } from "@/components/utils/employeeSpecialties";
 
 /**
  * صفحة استعراض جميع الموظفين النشطين مع الفلاتر والإجراءات الكاملة.
@@ -173,7 +174,7 @@ export default function ActiveEmployees() {
 
     if (filters.healthCenters?.length > 0) result = result.filter(emp => filters.healthCenters.includes(emp.المركز_الصحي));
     if (filters.positions?.length > 0) result = result.filter(emp => filters.positions.includes(emp.position));
-    if (filters.departments?.length > 0) result = result.filter(emp => filters.departments.includes(emp.department));
+    if (filters.departments?.length > 0) result = result.filter(emp => filters.departments.includes(getEmployeeMainSpecialty(emp)));
     if (filters.jobCategories?.length > 0) result = result.filter(emp => filters.jobCategories.includes(emp.job_category));
     if (filters.jobCategoryTypes?.length > 0) result = result.filter(emp => filters.jobCategoryTypes.includes(emp.job_category_type));
     if (filters.qualifications?.length > 0) result = result.filter(emp => filters.qualifications.includes(emp.qualification));

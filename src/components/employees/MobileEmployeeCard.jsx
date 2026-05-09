@@ -6,6 +6,7 @@ import { Edit, Trash2, Calendar, Briefcase, Award, Eye, Pin, MessageCircle, User
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
+import { getEmployeeMainSpecialty, getEmployeeJobTitle } from "@/components/utils/employeeSpecialties";
 
 export default function MobileEmployeeCard({
   employee,
@@ -26,6 +27,8 @@ export default function MobileEmployeeCard({
   updateLayout,
 }) {
   const getLayout = (key) => cardLayout[key] || { x: 0, y: 0 };
+  const mainSpecialty = getEmployeeMainSpecialty(employee);
+  const jobTitle = getEmployeeJobTitle(employee);
   const handleDrag = (key) => (e, info) => updateLayout && updateLayout(key, info);
 
   const getShortCenterName = (centerName) => {
@@ -73,7 +76,8 @@ export default function MobileEmployeeCard({
                     {employee.full_name_arabic || 'غير محدد'}
                   </Link>
                   <div className="flex flex-wrap gap-1 mt-1.5">
-                    {employee.position && <Badge className="text-[10px] px-2 py-0.5 bg-indigo-500/20 text-indigo-200">{employee.position}</Badge>}
+                    {mainSpecialty && <Badge className="text-[10px] px-2 py-0.5 bg-emerald-500/20 text-emerald-200">{mainSpecialty}</Badge>}
+                    {jobTitle && <Badge className="text-[10px] px-2 py-0.5 bg-indigo-500/20 text-indigo-200">{jobTitle}</Badge>}
                     {employee.المركز_الصحي && (
                       <Badge className="text-[10px] px-2 py-0.5 bg-emerald-500/20 text-emerald-200 max-w-full">
                         <span className="flex items-center gap-1 min-w-0">

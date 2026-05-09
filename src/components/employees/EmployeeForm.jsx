@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import SmartDateInput from "@/components/ui/smart-date-input";
 import HijriDateInput from "@/components/ui/hijri-date-input";
 import { base44 } from "@/api/base44Client";
+import { MAIN_SPECIALTIES, getJobTitleOptions, inferMainSpecialty } from "@/components/utils/employeeSpecialties";
 
 const specialRolesOptions = [
     { key: "مدير مركز", label: "مدير مركز" },
@@ -72,38 +73,6 @@ const assignedTasksOptions = [
     { key: "الطوارئ", label: "الطوارئ", category: "أخرى" },
 ];
 
-const departmentsOptions = [
-    "التمريض",
-    "التمريض - إشرافي",
-    "الصيدلة",
-    "الصيدلة - إشرافي",
-    "الأطباء",
-    "الأطباء - إشرافي",
-    "المختبر",
-    "المختبر - إشرافي",
-    "الأسنان",
-    "الأسنان - إشرافي",
-    "الإدارة",
-    "الإدارة - إشرافي",
-    "الأشعة",
-    "الأشعة - إشرافي",
-    "الطوارئ",
-    "الطوارئ - إشرافي",
-    "العيادات الخارجية",
-    "العيادات الخارجية - إشرافي",
-    "الاستقبال والتسجيل",
-    "الاستقبال والتسجيل - إشرافي",
-    "الخدمات المساندة",
-    "الخدمات المساندة - إشرافي",
-    "الصحة العامة",
-    "الصحة العامة - إشرافي",
-    "الطب الوقائي",
-    "الطب الوقائي - إشرافي",
-    "الجودة",
-    "الجودة - إشرافي",
-    "أخرى"
-];
-
 const jobCategoryTypeOptions = [
     "المستخدمين",
     "الاداريين",
@@ -132,7 +101,7 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
     email: "",
     المركز_الصحي: "",
     position: "",
-    department: "",
+    department: "أخرى",
     job_category: "",
     job_category_type: "",
     scfhs_classification: "",
@@ -187,12 +156,15 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit({ ...formData, department: inferMainSpecialty(formData) });
   };
 
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
+
+  const currentMainSpecialty = inferMainSpecialty(formData);
+  const jobTitleOptions = getJobTitleOptions(currentMainSpecialty, formData.position);
   
   const handleAddRole = (role) => {
     const currentRoles = formData.special_roles || [];
@@ -434,20 +406,33 @@ export default function EmployeeForm({ employee, onSubmit, onCancel }) {
             </CardHeader>
             <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-1"><Label htmlFor="health_center">المركز الصحي *</Label><Select value={formData.المركز_الصحي} onValueChange={(v) => handleChange("المركز_الصحي", v)} required><SelectTrigger><SelectValue placeholder="اختر المركز الصحي" /></SelectTrigger><SelectContent>{(healthCenters || []).map(center => (<SelectItem key={center.id} value={center.اسم_المركز}>{center.اسم_المركز}</SelectItem>))}</SelectContent></Select></div>
-                <div><Label htmlFor="position">التخصص *</Label><Input id="position" value={formData.position} onChange={(e) => handleChange("position", e.target.value)} required placeholder="مثال: فني تمريض، طبيب عام" /></div>
                 <div>
-                  <Label htmlFor="department">القسم الذي يعمل به</Label>
-                  <Select value={formData.department} onValueChange={(v) => handleChange("department", v)}>
+                  <Label htmlFor="department">التخصص الرئيسي</Label>
+                  <Select value={currentMainSpecialty} onValueChange={(v) => handleChange("department", v)}>
                     <SelectTrigger>
-                      <SelectValue placeholder="اختر القسم" />
+                      <SelectValue placeholder="اختر التخصص الرئيسي" />
                     </SelectTrigger>
                     <SelectContent>
-                      {departmentsOptions.map(dept => (
-                        <SelectItem key={dept} value={dept}>{dept}</SelectItem>
+                      {MAIN_SPECIALTIES.map(specialty => (
+                        <SelectItem key={specialty} value={specialty}>{specialty}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  <p className="text-xs text-gray-500 mt-1">اختر "إشرافي" إذا كان الموظف مشرفاً في القسم</p>
+                  <p className="text-xs text-gray-500 mt-1">تصنيف عام لاستخدامه في التجميع والتقارير.</p>
+                </div>
+                <div>
+                  <Label htmlFor="position">المسمى الوظيفي *</Label>
+                  <Select value={formData.position} onValueChange={(v) => handleChange("position", v)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="اختر المسمى الوظيفي" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {jobTitleOptions.map(title => (
+                        <SelectItem key={title} value={title}>{title}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Input className="mt-2" value={formData.position} onChange={(e) => handleChange("position", e.target.value)} required placeholder="أو اكتب مسمى وظيفي مخصص" />
                 </div>
 
                 <div><Label htmlFor="job_category">ملاك الوظيفة</Label><Input id="job_category" value={formData.job_category} onChange={(e) => handleChange("job_category", e.target.value)} placeholder="أدخل ملاك الوظيفة" /></div>

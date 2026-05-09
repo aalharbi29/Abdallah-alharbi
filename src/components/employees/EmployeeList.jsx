@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
 import MobileEmployeeCard from "./MobileEmployeeCard";
+import { getEmployeeMainSpecialty, getEmployeeJobTitle } from "@/components/utils/employeeSpecialties";
 
 const PAGE_SIZE = 24;
 
@@ -180,6 +181,8 @@ export default function EmployeeList({
             const isSelected = selectedEmployees.has(employee.id);
             const activeHolidayAssignments = assignmentsByEmployee.get(employee.id) || [];
             const employeeRoles = getEmployeeRoles(employee);
+            const mainSpecialty = getEmployeeMainSpecialty(employee);
+            const jobTitle = getEmployeeJobTitle(employee);
 
             return (
               <div
@@ -278,7 +281,8 @@ export default function EmployeeList({
                                   {employee.full_name_arabic || "غير محدد"}
                                 </Link>
                                 <div className="flex flex-wrap gap-1 mt-1.5">
-                                  {employee.position && <Badge className="text-[10px] px-2 py-0.5 bg-indigo-500/20 text-indigo-200">{employee.position}</Badge>}
+                                  {mainSpecialty && <Badge className="text-[10px] px-2 py-0.5 bg-emerald-500/20 text-emerald-200">{mainSpecialty}</Badge>}
+                                  {jobTitle && <Badge className="text-[10px] px-2 py-0.5 bg-indigo-500/20 text-indigo-200">{jobTitle}</Badge>}
                                 </div>
                               </div>
 
@@ -455,9 +459,14 @@ export default function EmployeeList({
                                 </Link>
 
                                 <div className="flex flex-wrap items-center gap-1.5 md:gap-2 mt-2 max-w-full overflow-hidden">
-                                  {employee.position && (
+                                  {mainSpecialty && (
+                                    <span className="text-[11px] md:text-xs font-bold text-emerald-300 bg-emerald-500/20 px-2.5 md:px-3 py-1 rounded-lg mobile-paragraph compact">
+                                      {mainSpecialty}
+                                    </span>
+                                  )}
+                                  {jobTitle && (
                                     <span className="text-[11px] md:text-xs font-bold text-indigo-300 bg-indigo-500/20 px-2.5 md:px-3 py-1 rounded-lg mobile-paragraph compact">
-                                      {employee.position}
+                                      {jobTitle}
                                     </span>
                                   )}
                                 </div>
