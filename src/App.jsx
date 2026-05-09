@@ -151,7 +151,6 @@ const AuthenticatedApp = () => {
           <FillEidAchievementForm />
         </LayoutWrapper>
       } />
-
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
