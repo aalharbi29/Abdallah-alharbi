@@ -458,11 +458,11 @@ export default function EmployeeProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 mobile-page-shell overflow-x-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 mobile-page-shell w-full max-w-full overflow-x-hidden">
       {/* Hero Section مع بيانات الموظف */}
-      <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 relative overflow-hidden">
+      <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 relative overflow-hidden w-full max-w-full">
         
-        <div className="relative max-w-7xl mx-auto px-3 md:px-6 py-4 md:py-10">
+        <div className="relative w-full max-w-7xl mx-auto px-3 md:px-6 py-4 md:py-10">
           {/* Navigation Bar */}
           <div className="flex flex-col gap-2 mb-4 md:mb-6 lg:flex-row lg:items-center lg:justify-between">
             <Button 
@@ -507,56 +507,58 @@ export default function EmployeeProfile() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col md:flex-row items-center md:items-start gap-3 md:gap-6"
+            className="w-full max-w-full"
           >
-            {/* Avatar */}
-            <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl bg-white/20 border-2 border-white/30 flex items-center justify-center shadow-xl flex-shrink-0 overflow-hidden">
-              {employee.profile_image_url ? (
-                <img
-                  src={employee.profile_image_url}
-                  alt={employee.full_name_arabic}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <User className="w-10 h-10 md:w-14 md:h-14 text-white" />
-              )}
+            {/* صف الصورة + الاسم */}
+            <div className="flex items-center gap-3 md:gap-5 w-full min-w-0">
+              <div className="w-16 h-16 md:w-24 md:h-24 rounded-2xl bg-white/20 border-2 border-white/30 flex items-center justify-center shadow-xl flex-shrink-0 overflow-hidden">
+                {employee.profile_image_url ? (
+                  <img
+                    src={employee.profile_image_url}
+                    alt={employee.full_name_arabic}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <User className="w-8 h-8 md:w-12 md:h-12 text-white" />
+                )}
+              </div>
+
+              <div className="flex-1 min-w-0 text-right">
+                <h1 className="text-base md:text-2xl font-bold text-white leading-tight break-words">
+                  {employee.full_name_arabic || 'موظف'}
+                </h1>
+                {employee.full_name_english && (
+                  <p className="text-xs md:text-sm text-white/80 mt-0.5 break-words leading-snug">
+                    {employee.full_name_english}
+                  </p>
+                )}
+                <p className="text-xs md:text-sm text-white/90 mt-0.5 font-medium break-words leading-snug">
+                  {employee.position || 'غير محدد'}
+                </p>
+                {employee.المركز_الصحي && (
+                  <p className="text-[11px] md:text-xs text-white/70 mt-0.5 break-words leading-snug">
+                    {employee.المركز_الصحي}
+                  </p>
+                )}
+              </div>
             </div>
 
-            {/* Name & Position */}
-            <div className="flex-1 min-w-0 text-center md:text-right">
-              <h1 className="text-xl md:text-3xl font-bold text-white leading-tight break-words">
-                {employee.full_name_arabic || 'موظف'}
-              </h1>
-              {employee.full_name_english && (
-                <p className="text-sm md:text-base text-white/80 mt-0.5 break-words">
-                  {employee.full_name_english}
-                </p>
-              )}
-              <p className="text-sm md:text-base text-white/90 mt-1 font-medium break-words">
-                {employee.position || 'غير محدد'}
-              </p>
-              {employee.المركز_الصحي && (
-                <p className="text-xs md:text-sm text-white/75 mt-0.5 break-words">
-                  {employee.المركز_الصحي}
-                </p>
-              )}
-            </div>
-
-            <div className="grid grid-cols-3 gap-1 mt-1 md:mt-0 w-full md:w-auto max-w-[260px] md:max-w-none mx-auto md:mx-0">
-              <div className="bg-white/15 rounded-lg p-1.5 text-center border border-white/15 min-w-0">
-                <FileText className="w-3.5 h-3.5 md:w-6 md:h-6 text-white mx-auto mb-1" />
-                <p className="text-base sm:text-2xl font-bold text-white leading-none">{documents.length}</p>
-                <p className="text-[10px] text-white/70">مستند</p>
+            {/* الإحصائيات */}
+            <div className="grid grid-cols-3 gap-1.5 mt-3 w-full min-w-0">
+              <div className="bg-white/15 rounded-lg p-1.5 md:p-2 text-center border border-white/15 min-w-0">
+                <FileText className="w-3.5 h-3.5 md:w-5 md:h-5 text-white mx-auto mb-0.5" />
+                <p className="text-base md:text-xl font-bold text-white leading-none">{documents.length}</p>
+                <p className="text-[10px] md:text-xs text-white/70 mt-0.5">مستند</p>
               </div>
-              <div className="bg-white/15 rounded-lg p-1.5 text-center border border-white/15 min-w-0">
-                <Calendar className="w-3.5 h-3.5 md:w-6 md:h-6 text-white mx-auto mb-1" />
-                <p className="text-base sm:text-2xl font-bold text-white leading-none">{leaves.length}</p>
-                <p className="text-[10px] text-white/70">إجازة</p>
+              <div className="bg-white/15 rounded-lg p-1.5 md:p-2 text-center border border-white/15 min-w-0">
+                <Calendar className="w-3.5 h-3.5 md:w-5 md:h-5 text-white mx-auto mb-0.5" />
+                <p className="text-base md:text-xl font-bold text-white leading-none">{leaves.length}</p>
+                <p className="text-[10px] md:text-xs text-white/70 mt-0.5">إجازة</p>
               </div>
-              <div className="bg-white/15 rounded-lg p-1.5 text-center border border-white/15 min-w-0">
-                <Briefcase className="w-3.5 h-3.5 md:w-6 md:h-6 text-white mx-auto mb-1" />
-                <p className="text-base sm:text-2xl font-bold text-white leading-none">{assignments.length}</p>
-                <p className="text-[10px] text-white/70">تكليف</p>
+              <div className="bg-white/15 rounded-lg p-1.5 md:p-2 text-center border border-white/15 min-w-0">
+                <Briefcase className="w-3.5 h-3.5 md:w-5 md:h-5 text-white mx-auto mb-0.5" />
+                <p className="text-base md:text-xl font-bold text-white leading-none">{assignments.length}</p>
+                <p className="text-[10px] md:text-xs text-white/70 mt-0.5">تكليف</p>
               </div>
             </div>
           </motion.div>
@@ -602,7 +604,7 @@ export default function EmployeeProfile() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-3 md:px-6 py-4 md:py-6 space-y-3 md:space-y-6">
+      <div className="w-full max-w-7xl mx-auto px-3 md:px-6 py-4 md:py-6 space-y-3 md:space-y-6">
 
         {/* البيانات التفصيلية */}
         <motion.div
