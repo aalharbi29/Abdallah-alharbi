@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from '@/components/ui/button';
 import { FileOutput, X, AlignRight, AlignCenter, AlignLeft, Indent, Outdent, ArrowUp, ArrowDown } from 'lucide-react';
+import { MHC_ASSETS } from '@/components/branding/madinahCluster';
 
 export default function ReportPreviewDialog({
   open,
@@ -34,6 +35,7 @@ export default function ReportPreviewDialog({
   mergeAssignmentOrientation,
   lineStyles = {},
   setLineStyles,
+  headerSideText = '',
 }) {
   const updateLineStyle = (pi, i, updates) => {
     if (!setLineStyles) return;
@@ -344,21 +346,30 @@ export default function ReportPreviewDialog({
           </div>
         </DialogHeader>
 
-        <div className="p-6 bg-white" style={{ fontFamily: "'Cairo', sans-serif" }}>
-          {/* شعار */}
-          {logoSettings.show_logo && logoSettings.logo_url && (
-            <div className={`flex ${logoJustifyClass} items-center border-b-2 pb-2 mb-4`} style={{ borderColor: '#0284c7' }}>
-              <img 
-                src={logoSettings.logo_url} 
-                alt="شعار"
-                style={{ 
-                  maxHeight: `${Math.min(logoSettings.max_height, 200)}px`,
-                  marginTop: `${logoSettings.margin_top}px`,
-                  marginBottom: `${logoSettings.margin_bottom}px`
-                }}
-              />
-            </div>
-          )}
+        <div
+          className="bg-white relative"
+          style={{
+            fontFamily: "'Cairo', sans-serif",
+            backgroundImage: `url('${MHC_ASSETS.officialLetterhead}')`,
+            backgroundSize: '100% 100%',
+            backgroundPosition: 'top center',
+            backgroundRepeat: 'no-repeat',
+            padding: '0 22mm 110px 22mm',
+            minHeight: '297mm',
+          }}
+        >
+          {/* مساحة الترويسة (الشعار جزء من الخلفية) + النص بجانب الشعار */}
+          <div style={{ height: 130, position: 'relative' }}>
+            {headerSideText && (
+              <div style={{
+                position: 'absolute', top: 35, right: 130, maxWidth: 380,
+                textAlign: 'right', color: '#0B3D91', fontWeight: 700,
+                fontSize: 13, lineHeight: 1.7, whiteSpace: 'pre-wrap',
+              }}>
+                {headerSideText}
+              </div>
+            )}
+          </div>
 
           {/* عنوان */}
           <div className="text-center mb-5">
@@ -385,24 +396,8 @@ export default function ReportPreviewDialog({
                 </div>
               )}
 
-              {/* تذييل صفحة 1 */}
-              {logoSettings.show_footer && (
-                <div className="mt-8 pt-3 border-t-2 text-center" style={{ borderColor: '#0284c7' }}>
-                  {logoSettings.footer_text_1 && <p className="font-bold text-sm" style={{ color: '#0284c7' }}>{logoSettings.footer_text_1}</p>}
-                  {logoSettings.footer_text_2 && <p className="text-sm" style={{ color: '#0284c7' }}>{logoSettings.footer_text_2}</p>}
-                  <p className="text-xs mt-2" style={{ color: '#0284c7' }}>{dateStr}</p>
-                </div>
-              )}
-
               {/* فاصل صفحات */}
               <div className="my-6 border-t-4 border-dashed border-sky-300 py-2 text-center text-xs text-sky-500 font-bold">— صفحة 2: الجدول —</div>
-
-              {/* شعار صفحة 2 */}
-              {logoSettings.show_logo && logoSettings.logo_url && (
-                <div className={`flex ${logoJustifyClass} items-center border-b-2 pb-2 mb-4`} style={{ borderColor: '#0284c7' }}>
-                  <img src={logoSettings.logo_url} alt="شعار" style={{ maxHeight: `${Math.min(logoSettings.max_height, 200)}px`, marginTop: `${logoSettings.margin_top}px`, marginBottom: `${logoSettings.margin_bottom}px` }} />
-                </div>
-              )}
 
               <div className="text-center mb-5">
                 <h1 className="text-lg font-bold" style={{ color: '#0284c7' }}>{reportTitle}</h1>
@@ -431,14 +426,6 @@ export default function ReportPreviewDialog({
                 </div>
               )}
 
-              {/* تذييل صفحة 2 */}
-              {logoSettings.show_footer && (
-                <div className="mt-8 pt-3 border-t-2 text-center" style={{ borderColor: '#0284c7' }}>
-                  {logoSettings.footer_text_1 && <p className="font-bold text-sm" style={{ color: '#0284c7' }}>{logoSettings.footer_text_1}</p>}
-                  {logoSettings.footer_text_2 && <p className="text-sm" style={{ color: '#0284c7' }}>{logoSettings.footer_text_2}</p>}
-                  <p className="text-xs mt-2" style={{ color: '#0284c7' }}>{dateStr}</p>
-                </div>
-              )}
             </>
           ) : (
             <>
@@ -478,14 +465,6 @@ export default function ReportPreviewDialog({
                 </div>
               )}
 
-              {/* تذييل */}
-              {logoSettings.show_footer && (
-                <div className="mt-8 pt-3 border-t-2 text-center" style={{ borderColor: '#0284c7' }}>
-                  {logoSettings.footer_text_1 && <p className="font-bold text-sm" style={{ color: '#0284c7' }}>{logoSettings.footer_text_1}</p>}
-                  {logoSettings.footer_text_2 && <p className="text-sm" style={{ color: '#0284c7' }}>{logoSettings.footer_text_2}</p>}
-                  <p className="text-xs mt-2" style={{ color: '#0284c7' }}>{dateStr}</p>
-                </div>
-              )}
             </>
           )}
         </div>

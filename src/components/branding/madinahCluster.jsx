@@ -61,6 +61,8 @@ export const MHC_ASSETS = {
   officialReportTemplate: 'https://media.base44.com/images/public/68af5003813e47bd07947b30/a95e10e42_generated_image.png',
   // 🆕 العلامة المائية الرسمية (نجمة التجمع) — تظهر خلف التقارير والخطابات
   watermark: 'https://media.base44.com/images/public/68af5003813e47bd07947b30/8a3829c21_image.png',
+  // ✨ الخلفية الرسمية الموحّدة لنماذج الخطابات (A4 كاملة بشعار في الأعلى وموجات في الأسفل)
+  officialLetterhead: 'https://media.base44.com/images/public/68af5003813e47bd07947b30/8652da7cb_.png',
 };
 
 // 📐 معايير وضع الشعار الرسمي في القالب الموحّد (الزاوية اليمنى العلوية)

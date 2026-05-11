@@ -119,7 +119,9 @@ export default function EmployeeDataRequest() {
     lineHeight: '2.0',
   });
   const [lineStyles, setLineStyles] = useState({});
+  const [headerSideText, setHeaderSideText] = useState('');
   const { logoSettings } = useLogoSettings();
+  const effectiveLogoSettings = useMemo(() => ({ ...logoSettings, header_side_text: headerSideText }), [logoSettings, headerSideText]);
 
   // حفظ وتحميل النموذج الافتراضي
   const saveDefaultTemplate = async () => {
@@ -670,7 +672,7 @@ export default function EmployeeDataRequest() {
   const handleExportToHTML = () => {
     const html = generateReportHtml({
       selectedFields, availableFields, reportTitle, reportNarrative, narrativePosition, lineStyles, fontSettings,
-      logoSettings, logoPosition, showSignature, selectedSignatureId, signatures,
+      logoSettings: effectiveLogoSettings, logoPosition, showSignature, selectedSignatureId, signatures,
       signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees,
       displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
       mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, splitPages, rowsPerFirstPage, rowsPerNextPage,
@@ -690,7 +692,7 @@ export default function EmployeeDataRequest() {
   const exportAsReport = () => {
     const html = generateReportHtml({
       selectedFields, availableFields, reportTitle, reportNarrative, narrativePosition, lineStyles, fontSettings,
-      logoSettings, logoPosition, showSignature, selectedSignatureId, signatures,
+      logoSettings: effectiveLogoSettings, logoPosition, showSignature, selectedSignatureId, signatures,
       signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees,
       displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
       mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, splitPages, rowsPerFirstPage, rowsPerNextPage,
@@ -1417,23 +1419,17 @@ export default function EmployeeDataRequest() {
                 )}
               </div>
 
-              {/* إعدادات الشعار */}
-              <div>
-                <Label className="text-xs text-gray-500">موقع الشعار:</Label>
-                <RadioGroup value={logoPosition} onValueChange={setLogoPosition} className="flex gap-4 mt-1">
-                  <div className="flex items-center gap-1">
-                    <RadioGroupItem value="right" id="logo-right" />
-                    <Label htmlFor="logo-right" className="cursor-pointer text-xs">يمين</Label>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <RadioGroupItem value="center" id="logo-center" />
-                    <Label htmlFor="logo-center" className="cursor-pointer text-xs">وسط</Label>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <RadioGroupItem value="left" id="logo-left" />
-                    <Label htmlFor="logo-left" className="cursor-pointer text-xs">يسار</Label>
-                  </div>
-                </RadioGroup>
+              {/* نص بجانب الشعار (يظهر فوق الخلفية الرسمية في الزاوية اليمنى العلوية) */}
+              <div className="p-3 bg-sky-50 rounded-lg border border-sky-200">
+                <Label className="text-sm font-bold text-sky-900">نص بجانب الشعار (اختياري)</Label>
+                <p className="text-xs text-sky-700 mb-2">يظهر في أعلى الخطاب بجوار شعار التجمع — مثال: المرجع، التاريخ، الجهة الموجَّه إليها.</p>
+                <Textarea
+                  value={headerSideText}
+                  onChange={(e) => setHeaderSideText(e.target.value)}
+                  placeholder={"الرقم: ..........\nالتاريخ: ..........\nالمشفوعات: ........."}
+                  rows={3}
+                  className="bg-white text-sm"
+                />
               </div>
 
               {/* التوقيع الرسمي */}
@@ -1858,7 +1854,8 @@ export default function EmployeeDataRequest() {
           open={showPreview}
           onClose={() => setShowPreview(false)}
           onExport={() => { setShowPreview(false); exportAsReport(); }}
-          logoSettings={logoSettings}
+          logoSettings={effectiveLogoSettings}
+          headerSideText={headerSideText}
           logoPosition={logoPosition}
           reportTitle={reportTitle}
           reportNarrative={reportNarrative}

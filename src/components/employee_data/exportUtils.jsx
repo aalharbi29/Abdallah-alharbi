@@ -1,6 +1,5 @@
 import ExcelJS from 'exceljs';
-import { MHC_TEXTS, MHC_ASSETS, MHC_LOGO_SPEC } from '../branding/madinahCluster';
-import { getBrandBackgroundPref } from '../branding/useBrandBackground';
+import { MHC_TEXTS, MHC_ASSETS } from '../branding/madinahCluster';
 
 // 🎨 ألوان الهوية البصرية لتجمع المدينة المنورة (ARGB لـ ExcelJS)
 const MHC_XL = {
@@ -207,13 +206,10 @@ export const exportToHTML = ({
   <title>طلب بيانات الموظفين - ${MHC_TEXTS.arabicName}</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
-    body { font-family: 'Tajawal', 'Cairo', sans-serif; padding: 30px; background: #F1F8FF; color: #0F172A; }
-    .container { max-width: 900px; margin: 0 auto; background: white; padding: 0; border-radius: 16px; box-shadow: 0 8px 24px rgba(11, 61, 145, 0.15); overflow: hidden; position: relative; }
-    ${getBrandBackgroundPref('watermark', true) ? `.container::after { content: ''; position: absolute; inset: 0; background-image: url('${MHC_ASSETS.watermark}'); background-repeat: no-repeat; background-position: center center; background-size: 50% auto; opacity: 0.07; pointer-events: none; z-index: 0; } .container > * { position: relative; z-index: 1; }` : ''}
-    .brand-header { background-image: url('${MHC_ASSETS.officialReportTemplate}'); background-size: cover; background-position: center; padding: 36px 44px; color: white; position: relative; overflow: hidden; min-height: 140px; }
-    .brand-logo-tr { position: absolute; top: ${MHC_LOGO_SPEC.topPx}px; right: ${MHC_LOGO_SPEC.rightPx}px; z-index: 3; }
-    .brand-logo-tr img { height: ${MHC_LOGO_SPEC.heightPx}px; width: auto; object-fit: contain; display: block; }
-    .body-content { padding: 30px 40px; }
+    body { font-family: 'Tajawal', 'Cairo', sans-serif; padding: 0; background: #fff; color: #0F172A; }
+    .container { max-width: 210mm; min-height: 297mm; margin: 0 auto; background: #fff; padding: 22mm; background-image: url('${MHC_ASSETS.officialLetterhead}'); background-size: 100% 100%; background-position: top center; background-repeat: no-repeat; position: relative; }
+    .header-spacer { height: 130px; }
+    .body-content { padding: 0; padding-bottom: 110px; }
     h2 { text-align: center; color: #0B3D91; margin-bottom: 20px; }
     table { width: 100%; border-collapse: collapse; margin: 20px 0; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(11, 61, 145, 0.08); }
     th { background: linear-gradient(180deg, #0B3D91 0%, #1E63D6 100%); color: #FFFFFF; border: 1px solid #0B3D91; padding: 12px 16px; text-align: center; font-weight: 800; }
@@ -221,16 +217,12 @@ export const exportToHTML = ({
     .greeting { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: #0B3D91; }
     .request-text { background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%); border-right: 4px solid #1E63D6; padding: 16px 20px; border-radius: 8px; margin: 20px 0; white-space: pre-wrap; color: #0F172A; }
     .closing { margin-top: 30px; }
-    .brand-footer { background: linear-gradient(90deg, #0B3D91 0%, #1E63D6 50%, #3FA9F5 100%); padding: 14px 40px; color: white; text-align: center; font-size: 12px; }
-    @media print { body { background: white; padding: 0; } .container { box-shadow: none; border-radius: 0; } }
+    @media print { body { background: white; padding: 0; } .container { box-shadow: none; border-radius: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="brand-header">
-      <div class="brand-logo-tr"><img src="${MHC_ASSETS.logo}" alt="شعار التجمع" crossorigin="anonymous" /></div>
-    </div>
-
+    <div class="header-spacer"></div>
     <div class="body-content">
       <p class="greeting">بعد التحية</p>
 
@@ -249,8 +241,6 @@ export const exportToHTML = ({
 
       <div class="closing"></div>
     </div>
-
-    <div class="brand-footer">${MHC_TEXTS.arabicName} • ${MHC_TEXTS.englishName} • ${MHC_TEXTS.socialHandle}</div>
   </div>
 </body>
 </html>`;
@@ -324,16 +314,13 @@ export const generateReportHtml = ({
       ${selectedSig ? `<img src="${selectedSig.image_url}" alt="${selectedSig.name}" />` : ''}
     </div>` : '';
 
-  const footerBlock = logoSettings.show_footer ? `<div class="footer-banner">
-    ${logoSettings.footer_text_1 ? `<p class="main-text">${logoSettings.footer_text_1}</p>` : ''}
-    ${logoSettings.footer_text_2 ? `<p>${logoSettings.footer_text_2}</p>` : ''}
-    <p class="date-text">${dateStr}</p>
-  </div>` : '';
+  // الفوتر مدمج ضمن الخلفية الرسمية (شعار التجمع في الأسفل)، لذا لا نضيف فوتر خارجي
+  const footerBlock = '';
 
-  // 🆕 ترويسة موحّدة بالقالب الرسمي: خلفية + شعار في الزاوية اليمنى العلوية بنفس الحجم
-  const headerBlock = logoSettings.show_logo && logoSettings.logo_url ? `<div class="header-banner-official">
-    <img class="header-logo-tr" src="${logoSettings.logo_url}" alt="شعار المؤسسة" crossorigin="anonymous" />
-  </div>` : '';
+  // 🆕 خلفية A4 رسمية موحّدة (الشعار + الموجات السفلية + اسم التجمع مدمج فيها)
+  // النص بجانب الشعار يُعرض فوق الخلفية في الزاوية اليمنى العلوية
+  const headerTextBlock = logoSettings.header_side_text ? `<div class="header-side-text">${logoSettings.header_side_text}</div>` : '';
+  const headerBlock = `<div class="header-spacer">${headerTextBlock}</div>`;
 
   const titleBlock = `<div class="report-title"><h1>${reportTitle}</h1></div>`;
 
@@ -642,12 +629,10 @@ export const generateReportHtml = ({
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Cairo', sans-serif; background: #fff; color: #000; }
   @page { size: A4; margin: 5mm 15mm 15mm 15mm; }
-  .page-container { max-width: 210mm; margin: 0 auto; padding: 0 10px; min-height: 100vh; display: flex; flex-direction: column; position: relative; ${getBrandBackgroundPref('report', true) ? `background-image: url('${MHC_ASSETS.backgroundClean}'); background-size: cover; background-position: center; background-repeat: no-repeat;` : ''} }
-  ${getBrandBackgroundPref('report', true) ? `.page-container::before { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.88); z-index: 0; pointer-events: none; } .page-container > * { position: relative; z-index: 1; }` : ''}
-  ${getBrandBackgroundPref('watermark', true) ? `.page-container::after { content: ''; position: absolute; inset: 0; background-image: url('${MHC_ASSETS.watermark}'); background-repeat: no-repeat; background-position: center center; background-size: 55% auto; opacity: 0.07; z-index: 0; pointer-events: none; } .page-container > * { position: relative; z-index: 1; }` : ''}
-  .page-content { flex: 1; padding-top: 15px; }
-  .header-banner-official { position: relative; background-image: url('${MHC_ASSETS.officialReportTemplate}'); background-size: cover; background-position: center; min-height: 110px; margin: 0 -10px 15px -10px; padding: 14px 20px; overflow: hidden; }
-  .header-logo-tr { position: absolute; top: ${MHC_LOGO_SPEC.topPx}px; right: ${MHC_LOGO_SPEC.rightPx}px; height: ${MHC_LOGO_SPEC.heightPx}px; width: auto; object-fit: contain; display: block; z-index: 3; }
+  .page-container { max-width: 210mm; margin: 0 auto; padding: 0 22mm; min-height: 297mm; display: flex; flex-direction: column; position: relative; background-image: url('${MHC_ASSETS.officialLetterhead}'); background-size: 100% 100%; background-position: top center; background-repeat: no-repeat; }
+  .page-content { flex: 1; padding-top: 0; padding-bottom: 110px; position: relative; z-index: 1; }
+  .header-spacer { height: 130px; position: relative; }
+  .header-side-text { position: absolute; top: 35px; right: 130px; max-width: 380px; text-align: right; font-family: 'Tajawal','Cairo',sans-serif; color: #0B3D91; font-weight: 700; font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
   .report-title { text-align: center; margin-bottom: 20px; margin-top: 10px; }
   .report-title h1 { font-size: 22px; color: #0B3D91; font-weight: 800; margin-bottom: 6px; }
   .narrative-box { background: #fff; border: none; border-radius: 0; padding: 10px 0; margin-bottom: 20px; line-height: ${fontSettings.lineHeight || '2.0'}; white-space: pre-wrap; }
