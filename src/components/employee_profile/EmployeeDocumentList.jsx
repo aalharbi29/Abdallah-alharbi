@@ -423,33 +423,31 @@ const DocumentCardHorizontal = ({ document: doc, onDelete, onRefresh, currentEmp
 
   return (
     <>
-      <Card className={`hover:shadow-md transition-all ${isExpired ? 'border-red-200 bg-red-50' : 'hover:border-blue-300'}`}>
-        <CardContent className="p-3">
-          <div className="flex items-center gap-3">
-            {/* أيقونة الملف */}
+      <Card className={`hover:shadow-md transition-all w-full max-w-full overflow-hidden ${isExpired ? 'border-red-200 bg-red-50' : 'hover:border-blue-300'}`}>
+        <CardContent className="p-2 sm:p-3">
+          {/* الصف الأول: أيقونة + معلومات */}
+          <div className="flex items-start gap-2 sm:gap-3 min-w-0">
             <div className="flex-shrink-0">
               {getFileIcon(doc.file_name)}
             </div>
-            
-            {/* معلومات المستند */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <h4 className="font-semibold text-sm truncate" title={doc.document_title}>
+
+            <div className="flex-1 min-w-0 overflow-hidden">
+              <div className="flex items-center gap-1.5 mb-1 min-w-0">
+                <h4 className="font-semibold text-xs sm:text-sm truncate min-w-0" title={doc.document_title}>
                   {doc.document_title}
                 </h4>
                 {doc.is_confidential && <Lock className="w-3 h-3 text-red-500 flex-shrink-0" />}
-                {isExpired && <Badge variant="destructive" className="text-xs px-1 py-0">منتهي</Badge>}
+                {isExpired && <Badge variant="destructive" className="text-[10px] px-1 py-0 flex-shrink-0">منتهي</Badge>}
               </div>
-              
-              <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500">
+
+              <div className="flex flex-wrap items-center gap-1.5 text-[10px] sm:text-xs text-gray-500">
                 <span className="flex items-center gap-1">
                   <Calendar className="w-3 h-3" />
                   {format(new Date(doc.created_date), 'dd/MM/yyyy', { locale: ar })}
                 </span>
-                
-                {/* فترة التكليف */}
+
                 {doc.document_type === 'contract' && (doc.start_date || doc.end_date) && (
-                  <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded">
+                  <span className="bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded truncate max-w-full">
                     {doc.start_date && doc.end_date ? (
                       `${format(new Date(doc.start_date), 'dd/MM/yyyy')} - ${format(new Date(doc.end_date), 'dd/MM/yyyy')}`
                     ) : doc.start_date ? (
@@ -459,9 +457,9 @@ const DocumentCardHorizontal = ({ document: doc, onDelete, onRefresh, currentEmp
                     )}
                   </span>
                 )}
-                
+
                 {doc.expiry_date && doc.expiry_date !== 'حتى إشعار آخر' && (
-                  <span className={isExpired ? 'text-red-600' : ''}>
+                  <span className={`truncate ${isExpired ? 'text-red-600' : ''}`}>
                     صالح حتى: {format(new Date(doc.expiry_date), 'dd/MM/yyyy')}
                   </span>
                 )}
@@ -470,28 +468,28 @@ const DocumentCardHorizontal = ({ document: doc, onDelete, onRefresh, currentEmp
                 )}
               </div>
             </div>
-            
-            {/* أزرار الإجراءات */}
-            <div className="flex items-center gap-1 flex-shrink-0">
-              <Button variant="ghost" size="sm" onClick={() => setIsViewing(true)} className="h-8 w-8 p-0" title="استعراض">
-                <Eye className="w-4 h-4" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => downloadFileWithName(doc.file_url, doc.file_name)} className="h-8 w-8 p-0" title="تحميل">
-                <Download className="w-4 h-4" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => setShowEditDialog(true)} className="h-8 w-8 p-0" title="تعديل">
-                <Edit className="w-4 h-4" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => setShowCopyDialog(true)} className="h-8 w-8 p-0 text-blue-600" title="نسخ">
-                <Copy className="w-4 h-4" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => { setNewDocumentType(doc.document_type); setShowMoveDialog(true); }} className="h-8 w-8 p-0" title="نقل">
-                <Move className="w-4 h-4" />
-              </Button>
-              <Button variant="ghost" size="sm" onClick={() => setShowDeleteDialog(true)} className="h-8 w-8 p-0 text-red-600" title="حذف">
-                <Trash2 className="w-4 h-4" />
-              </Button>
-            </div>
+          </div>
+
+          {/* الصف الثاني: أزرار الإجراءات - تتوزع على عرض الكارت بدون تجاوز */}
+          <div className="grid grid-cols-6 gap-0.5 sm:gap-1 mt-2 pt-2 border-t border-gray-100">
+            <Button variant="ghost" size="sm" onClick={() => setIsViewing(true)} className="h-7 w-full p-0" title="استعراض">
+              <Eye className="w-3.5 h-3.5" />
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => downloadFileWithName(doc.file_url, doc.file_name)} className="h-7 w-full p-0" title="تحميل">
+              <Download className="w-3.5 h-3.5" />
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => setShowEditDialog(true)} className="h-7 w-full p-0" title="تعديل">
+              <Edit className="w-3.5 h-3.5" />
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => setShowCopyDialog(true)} className="h-7 w-full p-0 text-blue-600" title="نسخ">
+              <Copy className="w-3.5 h-3.5" />
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => { setNewDocumentType(doc.document_type); setShowMoveDialog(true); }} className="h-7 w-full p-0" title="نقل">
+              <Move className="w-3.5 h-3.5" />
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => setShowDeleteDialog(true)} className="h-7 w-full p-0 text-red-600" title="حذف">
+              <Trash2 className="w-3.5 h-3.5" />
+            </Button>
           </div>
         </CardContent>
       </Card>
