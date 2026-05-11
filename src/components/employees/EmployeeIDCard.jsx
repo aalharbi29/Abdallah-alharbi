@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import QRCode from 'qrcode';
 import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { MHC_COLORS, MHC_GRADIENTS, MHC_ASSETS, MHC_TEXTS } from '@/components/branding/madinahCluster';
 import BackgroundToggle from '@/components/branding/BackgroundToggle';
 import { useBrandBackground } from '@/components/branding/useBrandBackground';
@@ -108,10 +109,34 @@ export default function EmployeeIDCard({ employee, onClose }) {
         logging: false
       });
 
-      const link = document.createElement('a');
-      link.download = `بطاقة_تعريف_${employee.full_name_arabic || 'موظف'}.png`;
-      link.href = canvas.toDataURL('image/png', 1.0);
-      link.click();
+      // إنشاء PDF بحجم البطاقة مع طبقة نص خفية قابلة للنسخ
+      const imgWidth = 85; // mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [imgWidth, imgHeight] });
+
+      // 1) خلفية البطاقة كصورة (للمظهر البصري)
+      pdf.addImage(canvas.toDataURL('image/png', 1.0), 'PNG', 0, 0, imgWidth, imgHeight);
+
+      // 2) طبقة نص شفافة فوق الصورة — قابلة للتحديد والنسخ من قارئ PDF
+      pdf.setTextColor(255, 255, 255);
+      pdf.setFontSize(0.1);
+      const lines = [
+        `الاسم: ${employee.full_name_arabic || ''}`,
+        `التخصص: ${employee.position || ''}`,
+        `رقم الهوية: ${employee.رقم_الهوية || ''}`,
+        `رقم الموظف: ${employee.رقم_الموظف || ''}`,
+        employee.birth_date ? `تاريخ الميلاد: ${format(new Date(employee.birth_date), 'dd/MM/yyyy')}` : '',
+        employee.phone ? `الجوال: ${employee.phone}` : '',
+        employee.email ? `البريد: ${employee.email}` : '',
+        `المركز: ${employee.المركز_الصحي || ''}`,
+      ].filter(Boolean);
+      let y = 5;
+      lines.forEach((line) => {
+        pdf.text(line, 2, y);
+        y += 3;
+      });
+
+      pdf.save(`بطاقة_تعريف_${employee.full_name_arabic || 'موظف'}.pdf`);
     } catch (error) {
       console.error('خطأ في حفظ البطاقة:', error);
       alert('حدث خطأ في حفظ البطاقة');
@@ -201,7 +226,7 @@ ${employee.birth_date ? `🎂 *تاريخ الميلاد:* ${format(new Date(emp
               size="sm"
             >
               <Download className="w-4 h-4 ml-2" />
-              حفظ كصورة
+              حفظ PDF
             </Button>
             <Button
               onClick={handleSystemShare}
