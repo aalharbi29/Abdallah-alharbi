@@ -38,16 +38,21 @@ const InfoRow = ({ icon: Icon, iconColor, label, labelColor, value, valueColor, 
   if (!value) return null;
   return (
     <div
-      className="flex items-start gap-2 py-1.5 border-b border-gray-100 cursor-pointer hover:bg-blue-50/60 rounded px-1 -mx-1 transition-colors group"
+      className="flex items-center gap-2 py-1 border-b border-gray-100 cursor-pointer hover:bg-blue-50/60 rounded px-1 -mx-1 transition-colors group"
       onClick={() => copyToClipboard(value, label)}
       title={`نسخ ${label}`}
     >
-      <Icon className={`w-3.5 h-3.5 ${iconColor} mt-0.5 flex-shrink-0`} />
-      <div className="flex-1 min-w-0">
-        <div className={`text-[10px] ${labelColor}`}>{label}</div>
-        <div className={`text-xs font-bold ${valueColor} ${valueClass}`}>{value}</div>
+      <Icon className={`w-3.5 h-3.5 ${iconColor} flex-shrink-0`} />
+      <div className="flex-1 min-w-0 overflow-hidden">
+        <div className={`text-[10px] leading-tight ${labelColor}`}>{label}</div>
+        <div
+          className={`text-xs font-bold ${valueColor} ${valueClass}`}
+          style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '100%' }}
+        >
+          {value}
+        </div>
       </div>
-      <Copy className="w-3 h-3 text-gray-300 group-hover:text-blue-600 mt-1 flex-shrink-0 transition-colors print-hide" />
+      <Copy className="w-3 h-3 text-gray-300 group-hover:text-blue-600 flex-shrink-0 transition-colors print-hide" />
     </div>
   );
 };
@@ -75,28 +80,50 @@ export default function EmployeeIDCard({ employee, onClose }) {
     }
   };
 
-  const handlePrint = () => {
-    const printContent = cardRef.current;
-    const printWindow = window.open('', '', 'width=600,height=800');
-    printWindow.document.write(`
-      <html dir="rtl">
-        <head>
-          <title>بطاقة تعريف - ${employee.full_name_arabic}</title>
-          <style>
-            * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-            body { padding: 20px; }
-            @page { size: A5; margin: 0; }
-          </style>
-        </head>
-        <body>${printContent.innerHTML}</body>
-      </html>
-    `);
-    printWindow.document.close();
-    printWindow.focus();
-    setTimeout(() => {
-      printWindow.print();
-      printWindow.close();
-    }, 250);
+  const handlePrint = async () => {
+    try {
+      // نلتقط البطاقة كصورة بنفس الأبعاد المعروضة، ثم نطبعها بحجم محدد
+      const canvas = await html2canvas(cardRef.current, {
+        scale: 3,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false
+      });
+      const imgData = canvas.toDataURL('image/png', 1.0);
+      const printWindow = window.open('', '', 'width=600,height=800');
+      printWindow.document.write(`
+        <html dir="rtl">
+          <head>
+            <title>بطاقة تعريف - ${employee.full_name_arabic || ''}</title>
+            <style>
+              * { margin: 0; padding: 0; box-sizing: border-box; }
+              html, body { background: #fff; }
+              .wrap { display: flex; justify-content: center; align-items: flex-start; padding: 10mm; }
+              img { width: 85mm; height: auto; display: block; }
+              @page { size: A4; margin: 10mm; }
+            </style>
+          </head>
+          <body>
+            <div class="wrap"><img src="${imgData}" alt="ID Card" /></div>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.focus();
+      const img = printWindow.document.querySelector('img');
+      const triggerPrint = () => {
+        printWindow.print();
+        printWindow.close();
+      };
+      if (img && !img.complete) {
+        img.onload = () => setTimeout(triggerPrint, 100);
+      } else {
+        setTimeout(triggerPrint, 300);
+      }
+    } catch (error) {
+      console.error('خطأ في الطباعة:', error);
+      toast.error('تعذّر تجهيز البطاقة للطباعة');
+    }
   };
 
   const handleDownload = async () => {
@@ -361,7 +388,7 @@ ${employee.birth_date ? `🎂 *تاريخ الميلاد:* ${format(new Date(emp
                 labelColor="text-gray-500"
                 value={employee.email}
                 valueColor="text-gray-900"
-                valueClass="break-all text-[10px]"
+                valueClass="text-[10px]"
               />
             </div>
 
