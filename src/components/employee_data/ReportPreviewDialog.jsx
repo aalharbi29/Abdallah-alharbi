@@ -354,7 +354,7 @@ export default function ReportPreviewDialog({
             backgroundSize: '100% 100%',
             backgroundPosition: 'top center',
             backgroundRepeat: 'no-repeat',
-            padding: '0 22mm 110px 22mm',
+            padding: '0 15mm 110px 15mm',
             minHeight: '297mm',
           }}
         >
