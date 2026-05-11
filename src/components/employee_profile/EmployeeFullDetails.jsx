@@ -124,48 +124,52 @@ export default function EmployeeFullDetails({ employee }) {
                 {category.title}
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-2 px-2.5 md:px-6 pb-3 md:pb-6">
-              {categoryFields.map(key => {
-                const FieldIcon = FIELD_ICONS[key] || FileText;
-                const value = employee[key];
+            <CardContent className="px-2 md:px-6 pb-3 md:pb-6">
+              <div className="grid grid-cols-2 gap-1.5 md:gap-2">
+                {categoryFields.map(key => {
+                  const FieldIcon = FIELD_ICONS[key] || FileText;
+                  const value = employee[key];
 
-                if (key === "special_roles" || key === "assigned_tasks") {
-                  const items = Array.isArray(value) ? value : [];
-                  return (
-                    <div key={key} className="space-y-2">
-                      <div className="flex items-center gap-2 text-xs md:text-sm font-medium text-gray-600">
-                        <FieldIcon className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                        {LABELS[key]}
+                  if (key === "special_roles" || key === "assigned_tasks") {
+                    const items = Array.isArray(value) ? value : [];
+                    return (
+                      <div key={key} className="col-span-2 p-2 bg-white rounded-lg border">
+                        <div className="flex items-center gap-1.5 text-[11px] md:text-xs font-medium text-gray-500 mb-1.5">
+                          <FieldIcon className="w-3.5 h-3.5" />
+                          {LABELS[key]}
+                        </div>
+                        <div className="flex flex-wrap gap-1">
+                          {items.length > 0 ? items.map((item, idx) => {
+                            const normalizedItem = item === 'مسؤول النفايات الطبية' ? 'مشرف النفايات الطبية' : item;
+                            return (
+                              <Badge key={idx} variant="secondary" className="text-[10px] md:text-xs">
+                                {normalizedItem}
+                              </Badge>
+                            );
+                          }) : (
+                            <span className="text-xs text-gray-500">—</span>
+                          )}
+                        </div>
                       </div>
-                      <div className="flex flex-wrap gap-2 pr-6">
-                        {items.length > 0 ? items.map((item, idx) => {
-                          const normalizedItem = item === 'مسؤول النفايات الطبية' ? 'مشرف النفايات الطبية' : item;
-                          return (
-                            <Badge key={idx} variant="secondary" className="text-xs md:text-sm">
-                              {normalizedItem}
-                            </Badge>
-                          );
-                        }) : (
-                          <span className="text-sm text-gray-500">—</span>
-                        )}
+                    );
+                  }
+
+                  const formattedValue = formatValue(key, value);
+                  // الحقول الطويلة (إيميل، أسماء طويلة) تأخذ عمودين
+                  const isLongField = key === "email" || key === "full_name_arabic" || key === "external_assignment_center" || key === "external_assignment_reason_other";
+                  return (
+                    <div key={key} className={`${isLongField ? 'col-span-2' : ''} flex items-start gap-1.5 p-2 bg-white rounded-lg border min-w-0 overflow-hidden`}>
+                      <FieldIcon className="w-3.5 h-3.5 text-gray-400 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[10px] md:text-xs text-gray-500 leading-tight">{LABELS[key] || key}</p>
+                        <CopyableValue value={formattedValue} label={LABELS[key] || key}>
+                          <p className="text-xs md:text-sm font-semibold text-gray-900 break-words leading-snug mt-0.5">{formattedValue}</p>
+                        </CopyableValue>
                       </div>
                     </div>
                   );
-                }
-
-                const formattedValue = formatValue(key, value);
-                return (
-                  <div key={key} className="flex items-start gap-2 p-2.5 md:p-3 bg-white rounded-lg border min-w-0 overflow-hidden group">
-                    <FieldIcon className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[11px] md:text-xs text-gray-500">{LABELS[key] || key}</p>
-                      <CopyableValue value={formattedValue} label={LABELS[key] || key}>
-                        <p className="text-sm md:text-base font-medium text-gray-900 break-words">{formattedValue}</p>
-                      </CopyableValue>
-                    </div>
-                  </div>
-                );
-              })}
+                })}
+              </div>
             </CardContent>
           </Card>
         );
