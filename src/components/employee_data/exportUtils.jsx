@@ -207,7 +207,7 @@ export const exportToHTML = ({
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
     body { font-family: 'Tajawal', 'Cairo', sans-serif; padding: 0; background: #fff; color: #0F172A; }
-    .container { max-width: 210mm; min-height: 297mm; margin: 0 auto; background: #fff; padding: 22mm; background-image: url('${MHC_ASSETS.officialLetterhead}'); background-size: 100% 100%; background-position: top center; background-repeat: no-repeat; position: relative; }
+    .container { max-width: 210mm; min-height: 297mm; margin: 0 auto; background: #fff; padding: 0 10mm; background-image: url('${MHC_ASSETS.officialLetterhead}'); background-size: 100% 100%; background-position: top center; background-repeat: no-repeat; position: relative; }
     .header-spacer { height: 130px; }
     .body-content { padding: 0; padding-bottom: 110px; }
     h2 { text-align: center; color: #0B3D91; margin-bottom: 20px; }
@@ -628,8 +628,8 @@ export const generateReportHtml = ({
   @import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Cairo', sans-serif; background: #fff; color: #000; }
-  @page { size: A4; margin: 5mm 15mm 15mm 15mm; }
-  .page-container { max-width: 210mm; margin: 0 auto; padding: 0 22mm; min-height: 297mm; display: flex; flex-direction: column; position: relative; background-image: url('${MHC_ASSETS.officialLetterhead}'); background-size: 100% 100%; background-position: top center; background-repeat: no-repeat; }
+  @page { size: A4; margin: 5mm 10mm 15mm 10mm; }
+  .page-container { max-width: 210mm; margin: 0 auto; padding: 0 10mm; min-height: 297mm; display: flex; flex-direction: column; position: relative; background-image: url('${MHC_ASSETS.officialLetterhead}'); background-size: 100% 100%; background-position: top center; background-repeat: no-repeat; }
   .page-content { flex: 1; padding-top: 0; padding-bottom: 110px; position: relative; z-index: 1; }
   .header-spacer { height: 130px; position: relative; }
   .header-side-text { position: absolute; top: 35px; right: 130px; max-width: 380px; text-align: right; font-family: 'Tajawal','Cairo',sans-serif; color: #0B3D91; font-weight: 700; font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
