@@ -458,47 +458,47 @@ export default function EmployeeProfile() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 mobile-page-shell">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 mobile-page-shell overflow-x-hidden">
       {/* Hero Section مع بيانات الموظف */}
       <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-600 relative overflow-hidden">
         
-        <div className="relative max-w-7xl mx-auto px-3 md:px-6 py-3 md:py-10">
+        <div className="relative max-w-7xl mx-auto px-3 md:px-6 py-4 md:py-10">
           {/* Navigation Bar */}
-          <div className="flex flex-col gap-2 mb-3 md:mb-6 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-col gap-2 mb-4 md:mb-6 lg:flex-row lg:items-center lg:justify-between">
             <Button 
               variant="ghost" 
               onClick={() => navigate(createPageUrl('HumanResources'))} 
               className="text-white hover:bg-white/20 rounded-xl gap-2 h-9 px-3 self-start"
             >
               <ArrowRight className="w-4 h-4" />
-              <span className="text-sm sm:inline">العودة</span>
+              <span className="text-sm">العودة</span>
             </Button>
-            <div className="grid grid-cols-2 gap-2 no-print w-full sm:flex sm:flex-wrap sm:w-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 no-print w-full lg:flex lg:flex-wrap lg:w-auto">
               <Button 
                 variant="ghost" 
                 onClick={() => setShowIDCard(true)}
-                className="text-white hover:bg-white/20 rounded-xl justify-center h-9 px-3 text-sm"
+                className="text-white hover:bg-white/20 rounded-xl justify-center h-9 px-2 text-xs sm:text-sm min-w-0"
               >
-                <CreditCard className="w-4 h-4 ml-1" />
-                <span>البطاقة</span>
+                <CreditCard className="w-4 h-4 ml-1 flex-shrink-0" />
+                <span className="truncate">البطاقة</span>
               </Button>
               <EmployeeProfileExporter employee={employee} />
               <EmployeeProfileCustomExport employee={employee} />
               <Button
                 variant="ghost"
                 onClick={() => setShowMoveDialog(true)}
-                className="text-white hover:bg-white/20 rounded-xl justify-center h-9 px-3 text-sm"
+                className="text-white hover:bg-white/20 rounded-xl justify-center h-9 px-2 text-xs sm:text-sm min-w-0"
               >
-                <ArrowRightLeft className="w-4 h-4 ml-1" />
-                <span>نقل إلى...</span>
+                <ArrowRightLeft className="w-4 h-4 ml-1 flex-shrink-0" />
+                <span className="truncate">نقل</span>
               </Button>
               <Button 
                 variant="ghost" 
                 onClick={() => window.print()}
-                className="text-white hover:bg-white/20 rounded-xl justify-center h-9 px-3 text-sm"
+                className="text-white hover:bg-white/20 rounded-xl justify-center h-9 px-2 text-xs sm:text-sm min-w-0"
               >
-                <Printer className="w-4 h-4 ml-1" />
-                <span>طباعة</span>
+                <Printer className="w-4 h-4 ml-1 flex-shrink-0" />
+                <span className="truncate">طباعة</span>
               </Button>
             </div>
           </div>
@@ -509,8 +509,40 @@ export default function EmployeeProfile() {
             animate={{ opacity: 1, y: 0 }}
             className="flex flex-col md:flex-row items-center md:items-start gap-3 md:gap-6"
           >
-...
-            <div className="grid grid-cols-3 gap-1 mt-1 md:mt-0 w-full md:w-auto max-w-[230px] md:max-w-none mx-auto md:mx-0">
+            {/* Avatar */}
+            <div className="w-20 h-20 md:w-28 md:h-28 rounded-2xl bg-white/20 border-2 border-white/30 flex items-center justify-center shadow-xl flex-shrink-0 overflow-hidden">
+              {employee.profile_image_url ? (
+                <img
+                  src={employee.profile_image_url}
+                  alt={employee.full_name_arabic}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <User className="w-10 h-10 md:w-14 md:h-14 text-white" />
+              )}
+            </div>
+
+            {/* Name & Position */}
+            <div className="flex-1 min-w-0 text-center md:text-right">
+              <h1 className="text-xl md:text-3xl font-bold text-white leading-tight break-words">
+                {employee.full_name_arabic || 'موظف'}
+              </h1>
+              {employee.full_name_english && (
+                <p className="text-sm md:text-base text-white/80 mt-0.5 break-words">
+                  {employee.full_name_english}
+                </p>
+              )}
+              <p className="text-sm md:text-base text-white/90 mt-1 font-medium break-words">
+                {employee.position || 'غير محدد'}
+              </p>
+              {employee.المركز_الصحي && (
+                <p className="text-xs md:text-sm text-white/75 mt-0.5 break-words">
+                  {employee.المركز_الصحي}
+                </p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-3 gap-1 mt-1 md:mt-0 w-full md:w-auto max-w-[260px] md:max-w-none mx-auto md:mx-0">
               <div className="bg-white/15 rounded-lg p-1.5 text-center border border-white/15 min-w-0">
                 <FileText className="w-3.5 h-3.5 md:w-6 md:h-6 text-white mx-auto mb-1" />
                 <p className="text-base sm:text-2xl font-bold text-white leading-none">{documents.length}</p>
