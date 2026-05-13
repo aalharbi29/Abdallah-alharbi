@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle, Target, Stethoscope, ShieldCheck, Droplets, FileCheck2, PartyPopper } from 'lucide-react';
+import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle, Target, Stethoscope, ShieldCheck, Droplets, FileCheck2, PartyPopper, ClipboardSignature } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 
@@ -140,6 +140,14 @@ const interactiveForms = [
     icon: PartyPopper,
     color: "from-pink-500 to-rose-600",
     link: createPageUrl("FillEidAchievementForm"),
+    category: "الموارد البشرية"
+  },
+  {
+    title: "نموذج انتداب (تكليف مهمة رسمية)",
+    description: "نموذج تكليف مهمة رسمية طبق الأصل بالخلفية المؤسسية — تعبئة تلقائية وتوقيع وختم",
+    icon: ClipboardSignature,
+    color: "from-amber-500 to-orange-600",
+    link: createPageUrl("FillAssignmentForm"),
     category: "الموارد البشرية"
   }
 ];
