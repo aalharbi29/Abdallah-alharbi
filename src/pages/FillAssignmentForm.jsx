@@ -12,13 +12,7 @@ import HijriDatePicker from '@/components/ui/HijriDatePicker';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Link } from 'react-router-dom';
-
-// تحويل الأرقام اللاتينية إلى عربية هندية (مطابقة للـ PDF الأصلي)
-const toArabicDigits = (str) => {
-  if (str === null || str === undefined || str === '') return '';
-  const map = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-  return String(str).replace(/[0-9]/g, (d) => map[+d]);
-};
+import AssignmentFormPreview from '@/components/assignment_form/AssignmentFormPreview';
 
 export default function FillAssignmentForm() {
   const [employees, setEmployees] = useState([]);
@@ -395,95 +389,28 @@ export default function FillAssignmentForm() {
               <CardTitle className="text-base">معاينة النموذج</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="print-area" style={{ display: 'flex', justifyContent: 'center' }}>
-                <div className="preview-scaler" ref={scalerRef} style={{ width: '100%', aspectRatio: '210 / 297', position: 'relative', overflow: 'hidden' }}>
-                  <div ref={printRef} className="bg-white shadow-sm preview-page" style={{
-                    fontFamily: "'Tajawal', 'Cairo', 'Arial', sans-serif",
-                    direction: 'rtl',
-                    width: '210mm',
-                    height: '297mm',
-                    position: 'absolute',
-                    top: 0,
-                    right: 0,
-                    transform: `scale(${previewScale})`,
-                    transformOrigin: 'top right',
-                    backgroundImage: "url('https://base44.app/api/apps/68af5003813e47bd07947b30/files/mp/public/68af5003813e47bd07947b30/8868c6f2c_assignment_form_bg.jpg')",
-                    backgroundSize: '100% 100%',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundPosition: 'center',
-                    overflow: 'hidden',
-                    color: '#000',
-                  }}>
-                    {/*
-                      الخلفية الآن هي PDF الأصلي - نضع البيانات فقط فوق الحقول الفارغة.
-                      الإحداثيات بناءً على صفحة A4 = 794×1123 px @ 96dpi.
-                    */}
-
-                    {/* صف بيانات الجدول - تحت رؤوس الأعمدة المرسومة في الخلفية */}
-                    {/* الجدول في الخلفية: من ~y=295 إلى y=365، 6 أعمدة بعرض متفاوت من x=85 إلى x=720 */}
-                    <div style={{ position: 'absolute', top: '320px', right: '92px', left: '92px', height: '40px', display: 'flex', fontSize: '10pt', fontWeight: 600, color: '#000', textAlign: 'center' }}>
-                      {/* العمود 1: تاريخ الانتداب (أقصى اليسار في RTL = آخر عمود) */}
-                      <div style={{ flex: '1.4', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: 'none' }}>{toArabicDigits(assignmentDate)}</div>
-                      <div style={{ flex: '0.9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{toArabicDigits(duration)}</div>
-                      <div style={{ flex: '0.9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{toArabicDigits(assignmentValue)}</div>
-                      <div style={{ flex: '1.2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{assignmentEntity}</div>
-                      <div style={{ flex: '0.8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{toArabicDigits(grade)}</div>
-                      <div style={{ flex: '1.6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{selectedEmployee?.full_name_arabic || ''}</div>
-                      <div style={{ flex: '0.9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{toArabicDigits(selectedEmployee?.['رقم_الموظف']) || ''}</div>
-                    </div>
-
-                    {/* شرح أسباب التكليف - 3 أسطر فوق الخطوط المنقطة */}
-                    <div style={{ position: 'absolute', top: '430px', right: '92px', left: '92px', fontSize: '10.5pt', fontWeight: 500, color: '#000', lineHeight: 1.6 }}>
-                      <div style={{ minHeight: '26px', paddingTop: '2px', textAlign: 'right' }}>{reasons.split('\n')[0] || ''}</div>
-                      <div style={{ minHeight: '26px', paddingTop: '4px', textAlign: 'right' }}>{reasons.split('\n')[1] || ''}</div>
-                      <div style={{ minHeight: '26px', paddingTop: '4px', textAlign: 'right' }}>{reasons.split('\n')[2] || ''}</div>
-                    </div>
-
-                    {/* توقيع الرئيس المباشر - فوق منطقة "التوقيع :" */}
-                    {supervisorSignatureUrl && (
-                      <div style={{ position: 'absolute', top: '620px', right: '300px', width: '160px', height: '60px' }}>
-                        <img src={supervisorSignatureUrl} alt="توقيع" style={{ maxHeight: '60px', maxWidth: '160px' }} crossOrigin="anonymous" />
-                      </div>
-                    )}
-
-                    {/* شهادة جهة التكليف - السطر الأول: اسم الإدارة + اسم الموظف */}
-                    <div style={{ position: 'absolute', top: '795px', right: '92px', left: '92px', fontSize: '10pt', fontWeight: 600, color: '#000' }}>
-                      {/* اسم الإدارة - بعد كلمة "تشهد إدارة" */}
-                      <div style={{ position: 'absolute', top: '0', right: '95px', minWidth: '110px', textAlign: 'center' }}>{certifyingAdministration}</div>
-                      {/* اسم الموظف - في المنتصف بعد "بأن الموضح أسمه" */}
-                      <div style={{ position: 'absolute', top: '0', right: '320px', minWidth: '160px', textAlign: 'center' }}>{employeeNameInCertificate}</div>
-                    </div>
-
-                    {/* السطر الثاني: التواريخ */}
-                    <div style={{ position: 'absolute', top: '825px', right: '92px', left: '92px', fontSize: '10pt', fontWeight: 600, color: '#000', height: '24px' }}>
-                      {/* من تاريخ */}
-                      <span style={{ position: 'absolute', top: '0', right: '230px', minWidth: '20px', textAlign: 'center' }}>{toArabicDigits(fromDay)}</span>
-                      <span style={{ position: 'absolute', top: '0', right: '267px', minWidth: '20px', textAlign: 'center' }}>{toArabicDigits(fromMonth)}</span>
-                      {/* وغادر بتاريخ */}
-                      <span style={{ position: 'absolute', top: '0', right: '422px', minWidth: '20px', textAlign: 'center' }}>{toArabicDigits(toDay)}</span>
-                      <span style={{ position: 'absolute', top: '0', right: '460px', minWidth: '20px', textAlign: 'center' }}>{toArabicDigits(toMonth)}</span>
-                    </div>
-
-                    {/* السطر الأخير: الاسم + التوقيع + الختم */}
-                    <div style={{ position: 'absolute', top: '880px', right: '92px', left: '92px', fontSize: '10pt', fontWeight: 600, color: '#000', height: '80px' }}>
-                      {/* الاسم - أقصى اليمين */}
-                      <div style={{ position: 'absolute', top: '0', right: '50px', minWidth: '140px', textAlign: 'center' }}>{certifierName}</div>
-                      {/* التوقيع - في المنتصف */}
-                      {certifierSignatureUrl && (
-                        <div style={{ position: 'absolute', top: '-10px', right: '290px', width: '120px', height: '60px' }}>
-                          <img src={certifierSignatureUrl} alt="توقيع" style={{ maxHeight: '60px', maxWidth: '120px' }} crossOrigin="anonymous" />
-                        </div>
-                      )}
-                      {/* الختم - أقصى اليسار */}
-                      {stampUrl && (
-                        <div style={{ position: 'absolute', top: '-20px', left: '60px', width: '100px', height: '80px' }}>
-                          <img src={stampUrl} alt="ختم" style={{ maxHeight: '80px', maxWidth: '100px' }} crossOrigin="anonymous" />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <AssignmentFormPreview
+                printRef={printRef}
+                scalerRef={scalerRef}
+                previewScale={previewScale}
+                data={{
+                  selectedEmployee,
+                  grade,
+                  assignmentEntity,
+                  assignmentValue,
+                  duration,
+                  assignmentDate,
+                  reasons,
+                  supervisorSignatureUrl,
+                  certifyingAdministration,
+                  employeeNameInCertificate,
+                  fromDay, fromMonth, fromYear,
+                  toDay, toMonth, toYear,
+                  certifierName,
+                  certifierSignatureUrl,
+                  stampUrl,
+                }}
+              />
             </CardContent>
           </Card>
         </div>
