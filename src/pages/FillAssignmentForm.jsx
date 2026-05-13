@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -18,26 +18,6 @@ const toArabicDigits = (str) => {
   if (str === null || str === undefined || str === '') return '';
   const map = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
   return String(str).replace(/[0-9]/g, (d) => map[+d]);
-};
-
-const thStyle = {
-  border: '1px solid #000',
-  padding: '8px 6px',
-  fontSize: '11pt',
-  fontWeight: 700,
-  textAlign: 'center',
-  background: '#FFFFFF',
-  color: '#000',
-};
-const tdStyle = {
-  border: '1px solid #000',
-  padding: '12px 6px',
-  fontSize: '10pt',
-  fontWeight: 600,
-  textAlign: 'center',
-  background: '#FFFFFF',
-  color: '#000',
-  height: '40px',
 };
 
 export default function FillAssignmentForm() {
@@ -79,49 +59,6 @@ export default function FillAssignmentForm() {
   useEffect(() => {
     loadEmployees();
   }, []);
-
-  // موقع اسم التجمع - قابل للسحب اليدوي ومحفوظ في localStorage
-  const CLUSTER_POS_KEY = 'assignment_form_cluster_name_pos_v1';
-  const [clusterPos, setClusterPos] = useState(() => {
-    try {
-      const saved = localStorage.getItem(CLUSTER_POS_KEY);
-      if (saved) return JSON.parse(saved);
-    } catch {}
-    return { top: 60, right: 160 };
-  });
-  const dragStateRef = useRef(null);
-  const handleClusterDragStart = (e) => {
-    e.preventDefault();
-    dragStateRef.current = {
-      startX: e.clientX,
-      startY: e.clientY,
-      startTop: clusterPos.top,
-      startRight: clusterPos.right,
-    };
-    const onMove = (ev) => {
-      if (!dragStateRef.current) return;
-      const scale = previewScaleRef.current || 1;
-      const dx = (ev.clientX - dragStateRef.current.startX) / scale;
-      const dy = (ev.clientY - dragStateRef.current.startY) / scale;
-      setClusterPos({
-        top: dragStateRef.current.startTop + dy,
-        right: dragStateRef.current.startRight - dx,
-      });
-    };
-    const onUp = () => {
-      dragStateRef.current = null;
-      window.removeEventListener('mousemove', onMove);
-      window.removeEventListener('mouseup', onUp);
-      try {
-        setClusterPos((p) => {
-          localStorage.setItem(CLUSTER_POS_KEY, JSON.stringify(p));
-          return p;
-        });
-      } catch {}
-    };
-    window.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onUp);
-  };
 
   // حساب scale تلقائياً ليتسع A4 داخل حاوية المعاينة
   const [previewScale, setPreviewScale] = useState(1);
@@ -470,176 +407,79 @@ export default function FillAssignmentForm() {
                     right: 0,
                     transform: `scale(${previewScale})`,
                     transformOrigin: 'top right',
-                    backgroundImage: "url('https://media.base44.com/images/public/68af5003813e47bd07947b30/ec052b844_image.jpg')",
+                    backgroundImage: "url('https://base44.app/api/apps/68af5003813e47bd07947b30/files/mp/public/68af5003813e47bd07947b30/8868c6f2c_assignment_form_bg.jpg')",
                     backgroundSize: '100% 100%',
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'center',
                     overflow: 'hidden',
                     color: '#000',
                   }}>
-                    {/* اسم التجمع بجانب الشعار - قابل للسحب اليدوي */}
-                    <div
-                      onMouseDown={handleClusterDragStart}
-                      className="cluster-name-block"
-                      style={{
-                        position: 'absolute',
-                        top: `${clusterPos.top}px`,
-                        right: `${clusterPos.right}px`,
-                        textAlign: 'right',
-                        lineHeight: 1.3,
-                        color: '#000',
-                        cursor: 'move',
-                        userSelect: 'none',
-                        padding: '4px 6px',
-                        fontFamily: "'Tajawal', 'Cairo', 'Amiri', 'Traditional Arabic', serif",
-                      }}
-                      title="اسحب لتغيير الموقع"
-                    >
-                      <div style={{ fontSize: '14pt', fontWeight: 800, letterSpacing: '0.5px' }}>تجمع المدينة المنورة الصحي</div>
-                      <div style={{ fontSize: '10pt', fontWeight: 600, color: '#000', fontFamily: "'Tajawal', 'Arial', sans-serif" }}>Madinah Health Cluster</div>
+                    {/*
+                      الخلفية الآن هي PDF الأصلي - نضع البيانات فقط فوق الحقول الفارغة.
+                      الإحداثيات بناءً على صفحة A4 = 794×1123 px @ 96dpi.
+                    */}
+
+                    {/* صف بيانات الجدول - تحت رؤوس الأعمدة المرسومة في الخلفية */}
+                    {/* الجدول في الخلفية: من ~y=295 إلى y=365، 6 أعمدة بعرض متفاوت من x=85 إلى x=720 */}
+                    <div style={{ position: 'absolute', top: '320px', right: '92px', left: '92px', height: '40px', display: 'flex', fontSize: '10pt', fontWeight: 600, color: '#000', textAlign: 'center' }}>
+                      {/* العمود 1: تاريخ الانتداب (أقصى اليسار في RTL = آخر عمود) */}
+                      <div style={{ flex: '1.4', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRight: 'none' }}>{toArabicDigits(assignmentDate)}</div>
+                      <div style={{ flex: '0.9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{toArabicDigits(duration)}</div>
+                      <div style={{ flex: '0.9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{toArabicDigits(assignmentValue)}</div>
+                      <div style={{ flex: '1.2', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{assignmentEntity}</div>
+                      <div style={{ flex: '0.8', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{toArabicDigits(grade)}</div>
+                      <div style={{ flex: '1.6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{selectedEmployee?.full_name_arabic || ''}</div>
+                      <div style={{ flex: '0.9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{toArabicDigits(selectedEmployee?.['رقم_الموظف']) || ''}</div>
                     </div>
 
-                    {/* طبقة المحتوى */}
-                    <div style={{ position: 'absolute', top: '210px', right: '90px', left: '90px', bottom: '180px' }}>
+                    {/* شرح أسباب التكليف - 3 أسطر فوق الخطوط المنقطة */}
+                    <div style={{ position: 'absolute', top: '430px', right: '92px', left: '92px', fontSize: '10.5pt', fontWeight: 500, color: '#000', lineHeight: 1.6 }}>
+                      <div style={{ minHeight: '26px', paddingTop: '2px', textAlign: 'right' }}>{reasons.split('\n')[0] || ''}</div>
+                      <div style={{ minHeight: '26px', paddingTop: '4px', textAlign: 'right' }}>{reasons.split('\n')[1] || ''}</div>
+                      <div style={{ minHeight: '26px', paddingTop: '4px', textAlign: 'right' }}>{reasons.split('\n')[2] || ''}</div>
+                    </div>
 
-                      {/* 1) العنوان */}
-                      <div style={{ textAlign: 'center', marginBottom: '18px' }}>
-                        <span style={{ fontSize: '15pt', fontWeight: 800, color: '#000' }}>
-                          نموذج تكليف مهمة رسمية
-                        </span>
+                    {/* توقيع الرئيس المباشر - فوق منطقة "التوقيع :" */}
+                    {supervisorSignatureUrl && (
+                      <div style={{ position: 'absolute', top: '620px', right: '300px', width: '160px', height: '60px' }}>
+                        <img src={supervisorSignatureUrl} alt="توقيع" style={{ maxHeight: '60px', maxWidth: '160px' }} crossOrigin="anonymous" />
                       </div>
+                    )}
 
-                      {/* 2) الجدول - 6 أعمدة */}
-                      <table style={{
-                        width: '100%',
-                        borderCollapse: 'collapse',
-                      }}>
-                        <thead>
-                          <tr>
-                            <th style={thStyle}>رقم الموظف</th>
-                            <th style={thStyle}>الاســـــم</th>
-                            <th style={thStyle}>م/ت الدرجة</th>
-                            <th style={thStyle}>جهة الانتداب</th>
-                            <th style={thStyle}>قيمة الانتداب</th>
-                            <th style={thStyle}>مدة الانتداب</th>
-                            <th style={thStyle}>تاريخ الانتداب</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td style={tdStyle}>{toArabicDigits(selectedEmployee?.['رقم_الموظف']) || ''}</td>
-                            <td style={tdStyle}>{selectedEmployee?.full_name_arabic || ''}</td>
-                            <td style={tdStyle}>{toArabicDigits(grade)}</td>
-                            <td style={tdStyle}>{assignmentEntity}</td>
-                            <td style={tdStyle}>{toArabicDigits(assignmentValue)}</td>
-                            <td style={tdStyle}>{toArabicDigits(duration)}</td>
-                            <td style={tdStyle}>{toArabicDigits(assignmentDate)}</td>
-                          </tr>
-                        </tbody>
-                      </table>
+                    {/* شهادة جهة التكليف - السطر الأول: اسم الإدارة + اسم الموظف */}
+                    <div style={{ position: 'absolute', top: '795px', right: '92px', left: '92px', fontSize: '10pt', fontWeight: 600, color: '#000' }}>
+                      {/* اسم الإدارة - بعد كلمة "تشهد إدارة" */}
+                      <div style={{ position: 'absolute', top: '0', right: '95px', minWidth: '110px', textAlign: 'center' }}>{certifyingAdministration}</div>
+                      {/* اسم الموظف - في المنتصف بعد "بأن الموضح أسمه" */}
+                      <div style={{ position: 'absolute', top: '0', right: '320px', minWidth: '160px', textAlign: 'center' }}>{employeeNameInCertificate}</div>
+                    </div>
 
-                      {/* 3) شرح أسباب التكليف */}
-                      <div style={{ marginTop: '24px', fontSize: '11pt', fontWeight: 700, color: '#000' }}>
-                        <div style={{ marginBottom: '8px' }}>شرح أسباب التكليف :</div>
-                        <div style={{
-                          borderBottom: '1px dotted #000',
-                          minHeight: '22px',
-                          paddingBottom: '2px',
-                          marginBottom: '6px',
-                          whiteSpace: 'pre-wrap',
-                          fontWeight: 500,
-                        }}>
-                          {reasons.split('\n')[0] || ''}
-                        </div>
-                        <div style={{
-                          borderBottom: '1px dotted #000',
-                          minHeight: '22px',
-                          paddingBottom: '2px',
-                          marginBottom: '6px',
-                          fontWeight: 500,
-                        }}>
-                          {reasons.split('\n')[1] || ''}
-                        </div>
-                        <div style={{
-                          borderBottom: '1px dotted #000',
-                          minHeight: '22px',
-                          paddingBottom: '2px',
-                          fontWeight: 500,
-                        }}>
-                          {reasons.split('\n')[2] || ''}
-                        </div>
-                      </div>
+                    {/* السطر الثاني: التواريخ */}
+                    <div style={{ position: 'absolute', top: '825px', right: '92px', left: '92px', fontSize: '10pt', fontWeight: 600, color: '#000', height: '24px' }}>
+                      {/* من تاريخ */}
+                      <span style={{ position: 'absolute', top: '0', right: '230px', minWidth: '20px', textAlign: 'center' }}>{toArabicDigits(fromDay)}</span>
+                      <span style={{ position: 'absolute', top: '0', right: '267px', minWidth: '20px', textAlign: 'center' }}>{toArabicDigits(fromMonth)}</span>
+                      {/* وغادر بتاريخ */}
+                      <span style={{ position: 'absolute', top: '0', right: '422px', minWidth: '20px', textAlign: 'center' }}>{toArabicDigits(toDay)}</span>
+                      <span style={{ position: 'absolute', top: '0', right: '460px', minWidth: '20px', textAlign: 'center' }}>{toArabicDigits(toMonth)}</span>
+                    </div>
 
-                      {/* 4) نص الإقرار */}
-                      <div style={{ marginTop: '22px', fontSize: '11pt', fontWeight: 700, lineHeight: 1.9, color: '#000', textAlign: 'center' }}>
-                        علماً بأن انتدابات المذكور لم تتجاوز ( ٦٠ ) ستون يوماً في السنة المالية الحالية ( &nbsp;&nbsp;&nbsp; ) وعلى مسؤوليتنا.
-                      </div>
-
-                      {/* 5) الرئيس المباشر والتوقيع */}
-                      <div style={{ marginTop: '34px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', fontSize: '12pt', fontWeight: 700, color: '#000' }}>
-                        <div style={{ display: 'flex', alignItems: 'flex-end', gap: '10px' }}>
-                          <span>التوقيع :</span>
-                          {supervisorSignatureUrl && <img src={supervisorSignatureUrl} alt="توقيع" style={{ maxHeight: '45px', maxWidth: '130px' }} crossOrigin="anonymous" />}
+                    {/* السطر الأخير: الاسم + التوقيع + الختم */}
+                    <div style={{ position: 'absolute', top: '880px', right: '92px', left: '92px', fontSize: '10pt', fontWeight: 600, color: '#000', height: '80px' }}>
+                      {/* الاسم - أقصى اليمين */}
+                      <div style={{ position: 'absolute', top: '0', right: '50px', minWidth: '140px', textAlign: 'center' }}>{certifierName}</div>
+                      {/* التوقيع - في المنتصف */}
+                      {certifierSignatureUrl && (
+                        <div style={{ position: 'absolute', top: '-10px', right: '290px', width: '120px', height: '60px' }}>
+                          <img src={certifierSignatureUrl} alt="توقيع" style={{ maxHeight: '60px', maxWidth: '120px' }} crossOrigin="anonymous" />
                         </div>
-                        <div>الرئيس المباشر</div>
-                      </div>
-
-                      {/* 6) شهادة جهة التكليف */}
-                      <div style={{
-                        marginTop: '40px',
-                        border: '1px solid #000',
-                      }}>
-                        <div style={{
-                          textAlign: 'center',
-                          padding: '8px',
-                          fontSize: '13pt',
-                          fontWeight: 800,
-                          borderBottom: '1px solid #000',
-                          background: '#FFFFFF',
-                        }}>
-                          شهادة جهة التكليف
+                      )}
+                      {/* الختم - أقصى اليسار */}
+                      {stampUrl && (
+                        <div style={{ position: 'absolute', top: '-20px', left: '60px', width: '100px', height: '80px' }}>
+                          <img src={stampUrl} alt="ختم" style={{ maxHeight: '80px', maxWidth: '100px' }} crossOrigin="anonymous" />
                         </div>
-                        <div style={{ padding: '14px 16px', fontSize: '11pt', fontWeight: 700, color: '#000', lineHeight: 2 }}>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', alignItems: 'baseline' }}>
-                            <span>تشهد إدارة</span>
-                            <span style={{ borderBottom: '1px dotted #000', minWidth: '120px', display: 'inline-block', textAlign: 'center', fontWeight: 500 }}>{certifyingAdministration}</span>
-                            <span>بأن الموظف /</span>
-                            <span style={{ borderBottom: '1px dotted #000', minWidth: '180px', display: 'inline-block', textAlign: 'center', fontWeight: 500 }}>{employeeNameInCertificate}</span>
-                            <span>قد أنجز المهمة المكلف بها</span>
-                          </div>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', alignItems: 'baseline', marginTop: '8px' }}>
-                            <span>من تاريخ</span>
-                            <span style={{ borderBottom: '1px dotted #000', minWidth: '30px', display: 'inline-block', textAlign: 'center', fontWeight: 500 }}>{toArabicDigits(fromDay)}</span>
-                            <span>/</span>
-                            <span style={{ borderBottom: '1px dotted #000', minWidth: '30px', display: 'inline-block', textAlign: 'center', fontWeight: 500 }}>{toArabicDigits(fromMonth)}</span>
-                            <span>/</span>
-                            <span style={{ borderBottom: '1px dotted #000', minWidth: '40px', display: 'inline-block', textAlign: 'center', fontWeight: 500 }}>{toArabicDigits(fromYear)}</span>
-                            <span>هـ</span>
-                            <span style={{ marginRight: '12px' }}>وغادر بتاريخ</span>
-                            <span style={{ borderBottom: '1px dotted #000', minWidth: '30px', display: 'inline-block', textAlign: 'center', fontWeight: 500 }}>{toArabicDigits(toDay)}</span>
-                            <span>/</span>
-                            <span style={{ borderBottom: '1px dotted #000', minWidth: '30px', display: 'inline-block', textAlign: 'center', fontWeight: 500 }}>{toArabicDigits(toMonth)}</span>
-                            <span>/</span>
-                            <span style={{ borderBottom: '1px dotted #000', minWidth: '40px', display: 'inline-block', textAlign: 'center', fontWeight: 500 }}>{toArabicDigits(toYear)}</span>
-                            <span>هـ</span>
-                          </div>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '28px' }}>
-                            <div style={{ flex: 1, display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                              <span>الاســـــم :</span>
-                              <span style={{ borderBottom: '1px dotted #000', flex: 1, display: 'inline-block', textAlign: 'center', fontWeight: 500, maxWidth: '180px' }}>{certifierName}</span>
-                            </div>
-                            <div style={{ flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                              <span>التوقيع</span>
-                              {certifierSignatureUrl && <img src={certifierSignatureUrl} alt="توقيع" style={{ maxHeight: '40px', maxWidth: '120px' }} crossOrigin="anonymous" />}
-                            </div>
-                            <div style={{ flex: 1, textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                              <span>الختم</span>
-                              {stampUrl && <img src={stampUrl} alt="ختم" style={{ maxHeight: '70px', maxWidth: '100px' }} crossOrigin="anonymous" />}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
+                      )}
                     </div>
                   </div>
                 </div>
