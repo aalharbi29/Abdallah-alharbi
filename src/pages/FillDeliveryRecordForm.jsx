@@ -13,7 +13,7 @@ import EmployeeSearchCombobox from '@/components/employees/EmployeeSearchCombobo
 import DeliveryRecordPreview from '@/components/delivery_record/DeliveryRecordPreview';
 
 const createEmptyItems = () => Array.from({ length: 5 }, (_, index) => ({
-  quantity: '',
+  quantity: index === 0 ? '2 أمبولة (12 جرعة)' : '',
   batchNumber: index === 0 ? 'MH2939' : '',
   expiryDate: index === 0 ? '2026-08-30' : '',
   notes: '',
@@ -295,7 +295,7 @@ export default function FillDeliveryRecordForm() {
           <Card>
             <CardHeader className="no-print pb-3"><CardTitle className="text-base">معاينة النموذج</CardTitle></CardHeader>
             <CardContent>
-              <DeliveryRecordPreview printRef={printRef} scalerRef={scalerRef} previewScale={previewScale} data={previewData} />
+              <DeliveryRecordPreview printRef={printRef} scalerRef={scalerRef} previewScale={previewScale} data={previewData} onItemChange={updateItem} />
             </CardContent>
           </Card>
         </div>

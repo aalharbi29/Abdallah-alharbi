@@ -81,7 +81,7 @@ function FormLogo() {
   );
 }
 
-export default function DeliveryRecordPreview({ printRef, scalerRef, previewScale, data }) {
+export default function DeliveryRecordPreview({ printRef, scalerRef, previewScale, data, onItemChange }) {
   const rows = data.items?.length ? data.items : emptyRows.map(() => ({}));
   const receiverName = data.receiver?.full_name_arabic || '';
   const receiverCenterName = cleanCenterName(data.receiver?.['المركز_الصحي'] || data.center?.اسم_المركز || '');
@@ -170,7 +170,14 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
                     return (
                       <tr key={number} className={`h-[42px] ${index === 0 ? 'text-black' : ''}`}>
                         <td className="border border-[#6c89ad] text-[18px] font-bold">{toArabicDigits(number)}</td>
-                        <td className="border border-[#6c89ad] font-semibold">{toArabicDigits(row.quantity)}</td>
+                        <td className="border border-[#6c89ad] font-semibold">
+                          <input
+                            value={row.quantity || ''}
+                            onChange={(event) => onItemChange?.(index, 'quantity', event.target.value)}
+                            className="w-full bg-transparent text-center font-semibold text-black outline-none print:border-0"
+                            aria-label={`كمية السطر ${number}`}
+                          />
+                        </td>
                         <td className="border border-[#6c89ad] font-semibold">{toArabicDigits(row.batchNumber)}</td>
                         <td className="border border-[#6c89ad] font-semibold">{toArabicDigits(formatGregorianDate(row.expiryDate))}</td>
                         <td className="border border-[#6c89ad] font-semibold">{row.notes || ''}</td>
