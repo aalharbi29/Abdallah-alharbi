@@ -125,7 +125,7 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
               </table>
             </section>
 
-            <section className="mx-10 mt-8 grid grid-cols-[1fr_130px_1fr] items-center gap-8">
+            <section className="mx-10 mt-8 grid grid-cols-[1fr_76px_1fr] items-center gap-4">
               <div className="relative rounded-lg border-2 border-[#07356c] px-8 pb-7 pt-10 text-[14px] leading-9">
                 <div className="absolute -top-4 right-10 w-44 rounded-md bg-[#073f78] py-1 text-center text-sm font-bold text-white">المسلم</div>
                 <div className="flex gap-2"><span>الاسم:</span><span className="flex-1 border-b border-dotted border-gray-500 font-bold">{deliveredByName}</span></div>
@@ -133,7 +133,7 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
                 <div className="mt-1 flex items-center gap-3" dir="ltr"><span>هـ</span><span className="min-w-10 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredYear)}</span><span>/</span><span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredMonth)}</span><span>/</span><span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredDay)}</span><span dir="rtl">التاريخ:</span></div>
               </div>
 
-              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-lg border-2 border-dashed border-[#b7c8dc] text-[14px] font-bold text-[#c5cbd3]">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-lg border-2 border-dashed border-[#b7c8dc] text-[12px] font-bold text-[#c5cbd3]">
                 الختم
               </div>
 
