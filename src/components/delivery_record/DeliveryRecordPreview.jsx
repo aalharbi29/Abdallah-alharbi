@@ -10,6 +10,13 @@ const toArabicDigits = (value) => {
 
 const emptyRows = Array.from({ length: 5 }, (_, index) => index + 1);
 
+const formatGregorianDate = (value) => {
+  if (!value) return '';
+  const [year, month, day] = String(value).split('-');
+  if (!year || !month || !day) return value;
+  return `${day}-${month}-${year}م`;
+};
+
 const cleanCenterName = (value) => {
   return (value || '')
     .replace(/^مركز\s+صحي\s+/i, '')
@@ -149,7 +156,7 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
                         <td className="border border-[#6c89ad] text-[18px] font-bold">{toArabicDigits(number)}</td>
                         <td className="border border-[#6c89ad] font-semibold">{toArabicDigits(row.quantity)}</td>
                         <td className="border border-[#6c89ad] font-semibold">{toArabicDigits(row.batchNumber)}</td>
-                        <td className="border border-[#6c89ad] font-semibold">{toArabicDigits(row.expiryDate)}</td>
+                        <td className="border border-[#6c89ad] font-semibold">{toArabicDigits(formatGregorianDate(row.expiryDate))}</td>
                         <td className="border border-[#6c89ad] font-semibold">{row.notes || ''}</td>
                       </tr>
                     );
