@@ -89,11 +89,11 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
                 </div>
                 <div className="flex items-center gap-5" dir="ltr">
                   <span>هـ</span>
-                  <span className="min-w-7 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.recordYear)}</span>
+                  <span className="min-w-10 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.recordYear)}</span>
                   <span>/</span>
-                  <span className="min-w-4 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.recordMonth)}</span>
+                  <span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.recordMonth)}</span>
                   <span>/</span>
-                  <span className="min-w-4 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.recordDay)}</span>
+                  <span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.recordDay)}</span>
                   <span dir="rtl">التاريخ:</span>
                 </div>
               </div>
@@ -125,24 +125,24 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
               </table>
             </section>
 
-            <section className="mx-10 mt-8 grid grid-cols-[1fr_100px_1fr] items-center gap-3">
-              <div className="relative rounded-lg border-2 border-[#07356c] px-4 pb-4 pt-7 text-[14px] leading-7">
-                <div className="absolute -top-3 right-6 w-32 rounded-md bg-[#073f78] py-0.5 text-center text-sm font-bold text-white">المسلم</div>
-                <div className="flex gap-2"><span>الاسم:</span><span className="inline-block w-32 border-b border-dotted border-gray-500 font-bold">{deliveredByName}</span></div>
-                <div className="flex gap-2"><span>التوقيع:</span><span className="inline-block w-28 border-b border-dotted border-gray-500"></span></div>
-                <div className="mt-1 flex items-center gap-1" dir="ltr"><span>هـ</span><span className="min-w-7 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredYear)}</span><span>/</span><span className="min-w-4 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredMonth)}</span><span>/</span><span className="min-w-4 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredDay)}</span><span dir="rtl">التاريخ:</span></div>
+            <section className="mx-10 mt-8 grid grid-cols-[1fr_76px_1fr] items-center gap-4">
+              <div className="relative rounded-lg border-2 border-[#07356c] px-8 pb-7 pt-10 text-[14px] leading-9">
+                <div className="absolute -top-4 right-10 w-44 rounded-md bg-[#073f78] py-1 text-center text-sm font-bold text-white">المسلم</div>
+                <div className="flex gap-2"><span>الاسم:</span><span className="flex-1 border-b border-dotted border-gray-500 font-bold">{deliveredByName}</span></div>
+                <div className="flex gap-2"><span>التوقيع:</span><span className="flex-1 border-b border-dotted border-gray-500"></span></div>
+                <div className="mt-1 flex items-center gap-3" dir="ltr"><span>هـ</span><span className="min-w-10 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredYear)}</span><span>/</span><span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredMonth)}</span><span>/</span><span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredDay)}</span><span dir="rtl">التاريخ:</span></div>
               </div>
 
-              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-lg border-2 border-dashed border-[#b7c8dc] text-[14px] font-bold text-[#c5cbd3]">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-lg border-2 border-dashed border-[#b7c8dc] text-[12px] font-bold text-[#c5cbd3]">
                 الختم
               </div>
 
-              <div className="relative rounded-lg border-2 border-[#07356c] px-4 pb-4 pt-7 text-[14px] leading-7">
-                <div className="absolute -top-3 left-6 w-32 rounded-md bg-[#073f78] py-0.5 text-center text-sm font-bold text-white">المستلم</div>
-                <div className="flex gap-2"><span>الاسم:</span><span className="inline-block w-32 border-b border-dotted border-gray-500 font-bold">{receiverName}</span></div>
-                <div className="flex gap-2"><span>مدير مركز صحي:</span><span className="inline-block w-32 border-b border-dotted border-gray-500 font-bold">{receiverCenterName}</span></div>
-                <div className="flex gap-2"><span>التوقيع:</span><span className="inline-block w-28 border-b border-dotted border-gray-500"></span></div>
-                <div className="mt-1 flex items-center gap-1" dir="ltr"><span>هـ</span><span className="min-w-7 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedYear)}</span><span>/</span><span className="min-w-4 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedMonth)}</span><span>/</span><span className="min-w-4 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedDay)}</span><span dir="rtl">التاريخ:</span></div>
+              <div className="relative rounded-lg border-2 border-[#07356c] px-8 pb-7 pt-10 text-[14px] leading-9">
+                <div className="absolute -top-4 left-10 w-44 rounded-md bg-[#073f78] py-1 text-center text-sm font-bold text-white">المستلم</div>
+                <div className="flex gap-2"><span>الاسم:</span><span className="flex-1 border-b border-dotted border-gray-500 font-bold">{receiverName}</span></div>
+                <div className="flex gap-2"><span>مدير مركز صحي:</span><span className="flex-1 border-b border-dotted border-gray-500 font-bold">{receiverCenterName}</span></div>
+                <div className="flex gap-2"><span>التوقيع:</span><span className="flex-1 border-b border-dotted border-gray-500"></span></div>
+                <div className="mt-1 flex items-center gap-3" dir="ltr"><span>هـ</span><span className="min-w-10 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedYear)}</span><span>/</span><span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedMonth)}</span><span>/</span><span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedDay)}</span><span dir="rtl">التاريخ:</span></div>
               </div>
             </section>
 
