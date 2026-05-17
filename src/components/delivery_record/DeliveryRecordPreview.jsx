@@ -27,7 +27,7 @@ function FormLogo() {
         <img
           src="https://media.base44.com/images/public/68af5003813e47bd07947b30/b604e8fcf_30-11-1447.png"
           alt="شعار تجمع المدينة المنورة الصحي"
-          className="h-32 w-40 object-contain"
+          className="h-32 w-40 object-contain mix-blend-multiply brightness-110 contrast-125"
         />
       </div>
     </div>
