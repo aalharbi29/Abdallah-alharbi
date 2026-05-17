@@ -23,19 +23,12 @@ function FormLogo() {
         <div>مستشفى الحسو العام</div>
         <div>إدارة المراكز الصحية بالحسو</div>
       </div>
-      <div className="text-center text-[#047b87]">
-        <div className="mx-auto mb-2 h-20 w-24 relative">
-          <div className="absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-[#047b87]" />
-          {[0, 72, 144, 216, 288].map((deg) => (
-            <div
-              key={deg}
-              className="absolute left-1/2 top-1/2 h-9 w-5 origin-bottom rounded-[60%] border-4 border-[#047b87]"
-              style={{ transform: `translate(-50%, -100%) rotate(${deg}deg)` }}
-            />
-          ))}
-        </div>
-        <div className="text-[15px] font-bold leading-5">تجمع المدينة المنورة الصحي</div>
-        <div className="text-[13px] font-semibold">Madinah Health Cluster</div>
+      <div className="text-center">
+        <img
+          src="https://media.base44.com/images/public/68af5003813e47bd07947b30/b604e8fcf_30-11-1447.png"
+          alt="شعار تجمع المدينة المنورة الصحي"
+          className="h-32 w-40 object-contain"
+        />
       </div>
     </div>
   );
