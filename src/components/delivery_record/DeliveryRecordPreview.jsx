@@ -8,6 +8,13 @@ const toArabicDigits = (value) => {
 
 const emptyRows = Array.from({ length: 5 }, (_, index) => index + 1);
 
+const cleanCenterName = (value) => {
+  return (value || '')
+    .replace(/^مركز\s+صحي\s+/i, '')
+    .replace(/^مركز\s+/i, '')
+    .trim();
+};
+
 function FormLogo() {
   return (
     <div className="flex items-start justify-between px-14 pt-12">
@@ -37,6 +44,7 @@ function FormLogo() {
 export default function DeliveryRecordPreview({ printRef, scalerRef, previewScale, data }) {
   const rows = data.items?.length ? data.items : emptyRows.map(() => ({}));
   const receiverName = data.receiver?.full_name_arabic || '';
+  const receiverCenterName = cleanCenterName(data.receiver?.['المركز_الصحي'] || data.center?.اسم_المركز || '');
   const deliveredByName = data.deliveredBy?.full_name_arabic || '';
 
   return (
@@ -132,7 +140,7 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
               <div className="relative rounded-lg border-2 border-[#07356c] px-8 pb-7 pt-10 text-[14px] leading-8">
                 <div className="absolute -top-4 left-10 w-44 rounded-md bg-[#073f78] py-1 text-center text-sm font-bold text-white">المستلم</div>
                 <div className="flex gap-2"><span>الاسم:</span><span className="flex-1 border-b border-dotted border-gray-500 font-bold">{receiverName}</span></div>
-                <div className="flex gap-2"><span>مدير مركز صحي:</span><span className="flex-1 border-b border-dotted border-gray-500 font-bold">{data.center?.اسم_المركز || ''}</span></div>
+                <div className="flex gap-2"><span>مدير مركز صحي:</span><span className="flex-1 border-b border-dotted border-gray-500 font-bold">{receiverCenterName}</span></div>
                 <div className="flex gap-2"><span>التوقيع:</span><span className="flex-1 border-b border-dotted border-gray-500"></span></div>
                 <div className="mt-1 flex items-center gap-3" dir="ltr"><span>هـ</span><span className="min-w-10 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedYear)}</span><span>/</span><span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedMonth)}</span><span>/</span><span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedDay)}</span><span dir="rtl">التاريخ:</span></div>
               </div>
