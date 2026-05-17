@@ -152,7 +152,7 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
                   {emptyRows.map((number, index) => {
                     const row = rows[index] || {};
                     return (
-                      <tr key={number} className="h-[42px]">
+                      <tr key={number} className={`h-[42px] ${index === 0 ? 'text-black' : ''}`}>
                         <td className="border border-[#6c89ad] text-[18px] font-bold">{toArabicDigits(number)}</td>
                         <td className="border border-[#6c89ad] font-semibold">{toArabicDigits(row.quantity)}</td>
                         <td className="border border-[#6c89ad] font-semibold">{toArabicDigits(row.batchNumber)}</td>
