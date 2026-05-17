@@ -51,6 +51,8 @@ export default function FillDeliveryRecordForm() {
     partyHeaderText: '#07356c',
     notesHeaderBg: '#ffffff',
     notesHeaderText: '#07356c',
+    serialHeaderBg: '#ffffff',
+    serialHeaderText: '#07356c',
   });
   const recordDate = useMemo(() => getHijriParts(recordDateValue), [recordDateValue]);
   const deliveredDate = useMemo(() => getHijriParts(deliveredDateValue), [deliveredDateValue]);
@@ -158,6 +160,7 @@ export default function FillDeliveryRecordForm() {
       ...sectionColors,
       partyHeaderBorder: sectionColors.partyHeaderText,
       notesHeaderBorder: sectionColors.notesHeaderText,
+      serialHeaderBorder: sectionColors.serialHeaderText,
     },
   };
 
@@ -269,6 +272,14 @@ export default function FillDeliveryRecordForm() {
                   <div>
                     <Label className="text-xs text-slate-600">نص الملاحظات</Label>
                     <Input type="color" value={sectionColors.notesHeaderText} onChange={(e) => updateSectionColor('notesHeaderText', e.target.value)} className="mt-1 h-10 p-1" />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-slate-600">خلفية خانة م</Label>
+                    <Input type="color" value={sectionColors.serialHeaderBg} onChange={(e) => updateSectionColor('serialHeaderBg', e.target.value)} className="mt-1 h-10 p-1" />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-slate-600">نص خانة م</Label>
+                    <Input type="color" value={sectionColors.serialHeaderText} onChange={(e) => updateSectionColor('serialHeaderText', e.target.value)} className="mt-1 h-10 p-1" />
                   </div>
                 </div>
               </div>
