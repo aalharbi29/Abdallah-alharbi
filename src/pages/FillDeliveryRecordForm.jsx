@@ -274,11 +274,11 @@ export default function FillDeliveryRecordForm() {
                     <Input type="color" value={sectionColors.notesHeaderText} onChange={(e) => updateSectionColor('notesHeaderText', e.target.value)} className="mt-1 h-10 p-1" />
                   </div>
                   <div>
-                    <Label className="text-xs text-slate-600">خلفية خانة م</Label>
+                    <Label className="text-xs text-slate-600">خلفية صف العناوين</Label>
                     <Input type="color" value={sectionColors.serialHeaderBg} onChange={(e) => updateSectionColor('serialHeaderBg', e.target.value)} className="mt-1 h-10 p-1" />
                   </div>
                   <div>
-                    <Label className="text-xs text-slate-600">نص خانة م</Label>
+                    <Label className="text-xs text-slate-600">نص صف العناوين</Label>
                     <Input type="color" value={sectionColors.serialHeaderText} onChange={(e) => updateSectionColor('serialHeaderText', e.target.value)} className="mt-1 h-10 p-1" />
                   </div>
                 </div>

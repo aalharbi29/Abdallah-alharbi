@@ -156,8 +156,8 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
 
               <table className="w-full table-fixed border-collapse overflow-hidden rounded-lg text-center text-[14px]">
                 <thead>
-                  <tr className="bg-[#073f78] text-white">
-                    <th className="w-[8%] py-3" style={serialHeaderStyle}>م</th>
+                  <tr style={serialHeaderStyle}>
+                    <th className="w-[8%] border border-[#6c89ad] py-3">م</th>
                     <th className="w-[22%] border border-[#6c89ad] py-3">الكمية (جرعة)</th>
                     <th className="w-[21%] border border-[#6c89ad] py-3">رقم التشغيلة</th>
                     <th className="w-[22%] border border-[#6c89ad] py-3">تاريخ الانتهاء</th>
