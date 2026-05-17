@@ -46,6 +46,12 @@ export default function FillDeliveryRecordForm() {
   const [recordDateValue, setRecordDateValue] = useState(getTodayGregorian);
   const [deliveredDateValue, setDeliveredDateValue] = useState(getTodayGregorian);
   const [receivedDateValue, setReceivedDateValue] = useState(getTodayGregorian);
+  const [sectionColors, setSectionColors] = useState({
+    partyHeaderBg: '#ffffff',
+    partyHeaderText: '#07356c',
+    notesHeaderBg: '#ffffff',
+    notesHeaderText: '#07356c',
+  });
   const recordDate = useMemo(() => getHijriParts(recordDateValue), [recordDateValue]);
   const deliveredDate = useMemo(() => getHijriParts(deliveredDateValue), [deliveredDateValue]);
   const receivedDate = useMemo(() => getHijriParts(receivedDateValue), [receivedDateValue]);
@@ -91,6 +97,10 @@ export default function FillDeliveryRecordForm() {
 
   const updateItem = (index, field, value) => {
     setItems((prev) => prev.map((item, itemIndex) => itemIndex === index ? { ...item, [field]: value } : item));
+  };
+
+  const updateSectionColor = (field, value) => {
+    setSectionColors((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleExportPDF = async () => {
@@ -144,6 +154,11 @@ export default function FillDeliveryRecordForm() {
     receivedDay: receivedDate.day,
     receivedMonth: receivedDate.month,
     receivedYear: receivedDate.year,
+    sectionColors: {
+      ...sectionColors,
+      partyHeaderBorder: sectionColors.partyHeaderText,
+      notesHeaderBorder: sectionColors.notesHeaderText,
+    },
   };
 
   return (
@@ -233,6 +248,28 @@ export default function FillDeliveryRecordForm() {
                       </div>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              <div className="border-t pt-3">
+                <Label className="font-bold">ألوان العناوين</Label>
+                <div className="mt-2 grid grid-cols-2 gap-3 rounded-md bg-slate-50 p-3">
+                  <div>
+                    <Label className="text-xs text-slate-600">خلفية المسلم/المستلم</Label>
+                    <Input type="color" value={sectionColors.partyHeaderBg} onChange={(e) => updateSectionColor('partyHeaderBg', e.target.value)} className="mt-1 h-10 p-1" />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-slate-600">نص المسلم/المستلم</Label>
+                    <Input type="color" value={sectionColors.partyHeaderText} onChange={(e) => updateSectionColor('partyHeaderText', e.target.value)} className="mt-1 h-10 p-1" />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-slate-600">خلفية الملاحظات</Label>
+                    <Input type="color" value={sectionColors.notesHeaderBg} onChange={(e) => updateSectionColor('notesHeaderBg', e.target.value)} className="mt-1 h-10 p-1" />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-slate-600">نص الملاحظات</Label>
+                    <Input type="color" value={sectionColors.notesHeaderText} onChange={(e) => updateSectionColor('notesHeaderText', e.target.value)} className="mt-1 h-10 p-1" />
+                  </div>
                 </div>
               </div>
 

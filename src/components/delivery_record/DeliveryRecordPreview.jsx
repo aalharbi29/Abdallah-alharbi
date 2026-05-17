@@ -86,6 +86,17 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
   const receiverName = data.receiver?.full_name_arabic || '';
   const receiverCenterName = cleanCenterName(data.receiver?.['المركز_الصحي'] || data.center?.اسم_المركز || '');
   const deliveredByName = data.deliveredBy?.full_name_arabic || '';
+  const sectionColors = data.sectionColors || {};
+  const partyHeaderStyle = {
+    backgroundColor: sectionColors.partyHeaderBg || '#ffffff',
+    color: sectionColors.partyHeaderText || '#07356c',
+    border: `1.5px solid ${sectionColors.partyHeaderBorder || '#07356c'}`,
+  };
+  const notesHeaderStyle = {
+    backgroundColor: sectionColors.notesHeaderBg || '#ffffff',
+    color: sectionColors.notesHeaderText || '#07356c',
+    border: `1.5px solid ${sectionColors.notesHeaderBorder || '#07356c'}`,
+  };
 
   return (
     <div className="print-area flex justify-center">
@@ -167,7 +178,7 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
 
             <section className="mx-10 mt-8 grid grid-cols-[1fr_76px_1fr] items-center gap-4">
               <div className="relative rounded-lg border-2 border-[#07356c] px-8 pb-7 pt-10 text-[14px] leading-9">
-                <div className="absolute -top-4 right-10 w-44 rounded-md bg-[#073f78] py-1 text-center text-sm font-bold text-white">المسلم</div>
+                <div className="absolute -top-4 right-10 w-44 rounded-md py-1 text-center text-sm font-bold" style={partyHeaderStyle}>المسلم</div>
                 <div className="flex gap-2"><span>الاسم:</span><span className="flex-1 border-b border-dotted border-gray-500 text-center font-bold">{deliveredByName}</span></div>
                 <div className="flex gap-2"><span>التوقيع:</span><span className="flex-1 border-b border-dotted border-gray-500 text-center"></span></div>
                 <div className="mt-1 flex items-center justify-center gap-3" dir="ltr"><span>هـ</span><span className="min-w-10 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredYear)}</span><span>/</span><span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredMonth)}</span><span>/</span><span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredDay)}</span><span dir="rtl">التاريخ:</span></div>
@@ -178,7 +189,7 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
               </div>
 
               <div className="relative rounded-lg border-2 border-[#07356c] px-8 pb-7 pt-10 text-[14px] leading-9">
-                <div className="absolute -top-4 left-10 w-44 rounded-md bg-[#073f78] py-1 text-center text-sm font-bold text-white">المستلم</div>
+                <div className="absolute -top-4 left-10 w-44 rounded-md py-1 text-center text-sm font-bold" style={partyHeaderStyle}>المستلم</div>
                 <div className="flex gap-2"><span>الاسم:</span><span className="flex-1 border-b border-dotted border-gray-500 text-center font-bold">{receiverName}</span></div>
                 <div className="flex gap-2"><span>مدير مركز صحي:</span><span className="flex-1 border-b border-dotted border-gray-500 text-center font-bold">{receiverCenterName}</span></div>
                 <div className="flex gap-2"><span>التوقيع:</span><span className="flex-1 border-b border-dotted border-gray-500 text-center"></span></div>
@@ -187,7 +198,7 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
             </section>
 
             <section className="mx-10 mt-5 rounded-lg border-2 border-[#07356c] px-7 pb-6 pt-8 text-[14px] leading-8 relative">
-              <div className="absolute -top-1 right-4 rounded-b-md bg-[#073f78] px-8 py-1 text-sm font-bold text-white">ملاحظات:</div>
+              <div className="absolute -top-1 right-4 rounded-b-md px-8 py-1 text-sm font-bold" style={notesHeaderStyle}>ملاحظات:</div>
               <ul className="mr-12 list-disc">
                 <li>يجب حفظ اللقاح في درجة حرارة من 2-8 درجة مئوية</li>
                 <li>يجب إتلاف اللقاح بعد مرور 10 أسابيع من تاريخ استلامه</li>
