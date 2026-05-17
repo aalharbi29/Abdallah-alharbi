@@ -80,9 +80,8 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
                   </span>
                 </div>
                 <div className="flex items-center gap-5" dir="ltr">
-                  <span>14هـ</span>
-                  <span>/</span>
-                  <span className="min-w-8 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.recordYear)}</span>
+                  <span>هـ</span>
+                  <span className="min-w-10 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.recordYear)}</span>
                   <span>/</span>
                   <span className="min-w-8 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.recordMonth)}</span>
                   <span>/</span>
@@ -123,7 +122,7 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
                 <div className="absolute -top-4 right-10 w-44 rounded-md bg-[#073f78] py-1 text-center text-sm font-bold text-white">المسلم</div>
                 <div className="flex gap-2"><span>الاسم:</span><span className="flex-1 border-b border-dotted border-gray-500 font-bold">{deliveredByName}</span></div>
                 <div className="flex gap-2"><span>التوقيع:</span><span className="flex-1 border-b border-dotted border-gray-500"></span></div>
-                <div className="mt-1 flex items-center gap-4" dir="ltr"><span>14هـ</span><span>/</span><span className="min-w-8 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredYear)}</span><span>/</span><span className="min-w-8 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredMonth)}</span><span>/</span><span className="min-w-8 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredDay)}</span><span dir="rtl">التاريخ:</span></div>
+                <div className="mt-1 flex items-center gap-3" dir="ltr"><span>هـ</span><span className="min-w-10 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredYear)}</span><span>/</span><span className="min-w-8 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredMonth)}</span><span>/</span><span className="min-w-8 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredDay)}</span><span dir="rtl">التاريخ:</span></div>
               </div>
 
               <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-xl border-2 border-dashed border-[#b7c8dc] text-[18px] font-bold text-[#c5cbd3]">
@@ -135,7 +134,7 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
                 <div className="flex gap-2"><span>الاسم:</span><span className="flex-1 border-b border-dotted border-gray-500 font-bold">{receiverName}</span></div>
                 <div className="flex gap-2"><span>مدير مركز صحي:</span><span className="flex-1 border-b border-dotted border-gray-500 font-bold">{data.center?.اسم_المركز || ''}</span></div>
                 <div className="flex gap-2"><span>التوقيع:</span><span className="flex-1 border-b border-dotted border-gray-500"></span></div>
-                <div className="mt-1 flex items-center gap-4" dir="ltr"><span>14هـ</span><span>/</span><span className="min-w-8 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedYear)}</span><span>/</span><span className="min-w-8 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedMonth)}</span><span>/</span><span className="min-w-8 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedDay)}</span><span dir="rtl">التاريخ:</span></div>
+                <div className="mt-1 flex items-center gap-3" dir="ltr"><span>هـ</span><span className="min-w-10 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedYear)}</span><span>/</span><span className="min-w-8 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedMonth)}</span><span>/</span><span className="min-w-8 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedDay)}</span><span dir="rtl">التاريخ:</span></div>
               </div>
             </section>
 

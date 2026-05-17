@@ -14,6 +14,20 @@ import DeliveryRecordPreview from '@/components/delivery_record/DeliveryRecordPr
 
 const createEmptyItems = () => Array.from({ length: 5 }, () => ({ quantity: '', batchNumber: '', expiryDate: '', notes: '' }));
 
+const getTodayHijriParts = () => {
+  const parts = new Intl.DateTimeFormat('en-SA-u-ca-islamic-umalqura', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).formatToParts(new Date());
+
+  return {
+    day: parts.find((part) => part.type === 'day')?.value || '',
+    month: parts.find((part) => part.type === 'month')?.value || '',
+    year: parts.find((part) => part.type === 'year')?.value || '',
+  };
+};
+
 export default function FillDeliveryRecordForm() {
   const [employees, setEmployees] = useState([]);
   const [centers, setCenters] = useState([]);
@@ -21,9 +35,10 @@ export default function FillDeliveryRecordForm() {
   const [deliveredBy, setDeliveredBy] = useState(null);
   const [receiver, setReceiver] = useState(null);
   const [items, setItems] = useState(createEmptyItems);
-  const [recordDate, setRecordDate] = useState({ day: '', month: '', year: '' });
-  const [deliveredDate, setDeliveredDate] = useState({ day: '', month: '', year: '' });
-  const [receivedDate, setReceivedDate] = useState({ day: '', month: '', year: '' });
+  const todayHijri = useMemo(() => getTodayHijriParts(), []);
+  const recordDate = todayHijri;
+  const deliveredDate = todayHijri;
+  const receivedDate = todayHijri;
 
   const printRef = useRef(null);
   const scalerRef = useRef(null);
@@ -164,10 +179,8 @@ export default function FillDeliveryRecordForm() {
                 {selectedCenter && <div className="mt-2 rounded-md bg-blue-50 p-2 text-xs text-blue-900">سيتم تعبئة اسم المركز ومدير المركز تلقائياً عند توفره.</div>}
               </div>
 
-              <div className="grid grid-cols-3 gap-2">
-                <div><Label className="text-xs">يوم المحضر</Label><Input value={recordDate.day} onChange={(e) => setRecordDate({ ...recordDate, day: e.target.value })} /></div>
-                <div><Label className="text-xs">الشهر</Label><Input value={recordDate.month} onChange={(e) => setRecordDate({ ...recordDate, month: e.target.value })} /></div>
-                <div><Label className="text-xs">السنة بعد 14</Label><Input value={recordDate.year} onChange={(e) => setRecordDate({ ...recordDate, year: e.target.value })} /></div>
+              <div className="rounded-md bg-slate-50 p-2 text-xs text-slate-700">
+                التاريخ يُعبأ تلقائياً بتاريخ اليوم الهجري.
               </div>
 
               <div className="border-t pt-3">
@@ -196,15 +209,6 @@ export default function FillDeliveryRecordForm() {
                     </div>
                   ))}
                 </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-2 border-t pt-3">
-                <div><Label className="text-xs">يوم التسليم</Label><Input value={deliveredDate.day} onChange={(e) => setDeliveredDate({ ...deliveredDate, day: e.target.value })} /></div>
-                <div><Label className="text-xs">الشهر</Label><Input value={deliveredDate.month} onChange={(e) => setDeliveredDate({ ...deliveredDate, month: e.target.value })} /></div>
-                <div><Label className="text-xs">السنة</Label><Input value={deliveredDate.year} onChange={(e) => setDeliveredDate({ ...deliveredDate, year: e.target.value })} /></div>
-                <div><Label className="text-xs">يوم الاستلام</Label><Input value={receivedDate.day} onChange={(e) => setReceivedDate({ ...receivedDate, day: e.target.value })} /></div>
-                <div><Label className="text-xs">الشهر</Label><Input value={receivedDate.month} onChange={(e) => setReceivedDate({ ...receivedDate, month: e.target.value })} /></div>
-                <div><Label className="text-xs">السنة</Label><Input value={receivedDate.year} onChange={(e) => setReceivedDate({ ...receivedDate, year: e.target.value })} /></div>
               </div>
 
               <div className="flex flex-wrap gap-2 border-t pt-3">
