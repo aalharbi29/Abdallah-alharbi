@@ -169,11 +169,11 @@ export default function FillDeliveryRecordForm() {
       <style>{`
         @media print {
           @page { size: A4 portrait; margin: 0; }
-          html, body { margin: 0 !important; padding: 0 !important; background: #fff !important; }
+          html, body { margin: 0 !important; padding: 0 !important; width: 210mm !important; height: 297mm !important; overflow: hidden !important; background: #fff !important; }
           body * { visibility: hidden !important; }
           .print-area, .print-area * { visibility: visible !important; }
           .print-area, .preview-scaler { position: static !important; width: auto !important; height: auto !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; display: block !important; }
-          .preview-page { transform: none !important; position: fixed !important; inset: 0 auto auto 0 !important; width: 210mm !important; height: 297mm !important; max-width: 210mm !important; max-height: 297mm !important; box-shadow: none !important; overflow: hidden !important; }
+          .preview-page { position: fixed !important; top: 50% !important; left: 50% !important; right: auto !important; width: 210mm !important; height: 297mm !important; max-width: 210mm !important; max-height: 297mm !important; transform: translate(-50%, -50%) scale(0.985) !important; transform-origin: center center !important; box-shadow: none !important; overflow: hidden !important; }
           .no-print { display: none !important; }
         }
       `}</style>
