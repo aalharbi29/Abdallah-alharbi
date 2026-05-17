@@ -173,7 +173,7 @@ export default function FillDeliveryRecordForm() {
           body * { visibility: hidden !important; }
           .print-area, .print-area * { visibility: visible !important; }
           .print-area, .preview-scaler { position: static !important; width: auto !important; height: auto !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; display: block !important; }
-          .preview-page { transform: none !important; position: fixed !important; top: 0 !important; right: 0 !important; width: 210mm !important; height: 297mm !important; box-shadow: none !important; }
+          .preview-page { transform: none !important; position: fixed !important; inset: 0 auto auto 0 !important; width: 210mm !important; height: 297mm !important; max-width: 210mm !important; max-height: 297mm !important; box-shadow: none !important; overflow: hidden !important; }
           .no-print { display: none !important; }
         }
       `}</style>

@@ -189,8 +189,8 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
               </table>
             </section>
 
-            <section className="mx-10 mt-8 grid grid-cols-[1fr_76px_1fr] items-center gap-4">
-              <div className="relative rounded-lg border-2 border-[#07356c] px-8 pb-7 pt-10 text-[14px] leading-9">
+            <section className="mx-10 mt-6 grid grid-cols-[1fr_70px_1fr] items-center gap-4">
+              <div className="relative rounded-lg border-2 border-[#07356c] px-8 pb-4 pt-9 text-[13px] leading-8">
                 <div className="absolute -top-4 right-10 w-44 rounded-md py-1 text-center text-sm font-bold" style={partyHeaderStyle}>المسلم</div>
                 <div className="flex gap-2"><span>الاسم:</span><span className="flex-1 border-b border-dotted border-gray-500 text-center font-bold">{deliveredByName}</span></div>
                 <div className="flex gap-2"><span>التوقيع:</span><span className="relative flex-1 border-b border-dotted border-gray-500 text-center"><AutoSignature name={deliveredByName} /></span></div>
@@ -201,7 +201,7 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
                 الختم
               </div>
 
-              <div className="relative rounded-lg border-2 border-[#07356c] px-8 pb-7 pt-10 text-[14px] leading-9">
+              <div className="relative rounded-lg border-2 border-[#07356c] px-8 pb-4 pt-9 text-[13px] leading-8">
                 <div className="absolute -top-4 left-10 w-44 rounded-md py-1 text-center text-sm font-bold" style={partyHeaderStyle}>المستلم</div>
                 <div className="flex gap-2"><span>الاسم:</span><span className="flex-1 border-b border-dotted border-gray-500 text-center font-bold">{receiverName}</span></div>
                 <div className="flex gap-2"><span>مدير مركز صحي:</span><span className="flex-1 border-b border-dotted border-gray-500 text-center font-bold">{receiverCenterName}</span></div>
@@ -210,7 +210,7 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
               </div>
             </section>
 
-            <section className="mx-10 mt-5 rounded-lg border-2 border-[#07356c] px-7 pb-6 pt-8 text-[14px] leading-8 relative">
+            <section className="mx-10 mt-4 rounded-lg border-2 border-[#07356c] px-7 pb-4 pt-7 text-[13px] leading-7 relative">
               <div className="absolute -top-1 right-4 rounded-b-md px-8 py-1 text-sm font-bold" style={notesHeaderStyle}>ملاحظات:</div>
               <ul className="mr-12 list-disc">
                 <li>يجب حفظ اللقاح في درجة حرارة من 2-8 درجة مئوية</li>

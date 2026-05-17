@@ -75,7 +75,7 @@ export default function AutoSignature({ name, className = '' }) {
     <img
       src={cleanUrl}
       alt={`توقيع ${signature.name}`}
-      className={`pointer-events-none absolute left-1/2 top-1/2 max-h-16 w-40 -translate-x-1/2 -translate-y-1/2 object-contain ${className}`}
+      className={`pointer-events-none absolute left-1/2 top-1/2 max-h-10 w-28 -translate-x-1/2 -translate-y-1/2 object-contain ${className}`}
     />
   );
 }
