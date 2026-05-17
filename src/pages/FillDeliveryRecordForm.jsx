@@ -71,6 +71,9 @@ export default function FillDeliveryRecordForm() {
   const [recordDateValue, setRecordDateValue] = useState(getTodayGregorian);
   const [deliveredDateValue, setDeliveredDateValue] = useState(getTodayGregorian);
   const [receivedDateValue, setReceivedDateValue] = useState(getTodayGregorian);
+  const [recordDate, setRecordDate] = useState(() => getHijriParts(getTodayGregorian()));
+  const [deliveredDate, setDeliveredDate] = useState(() => getHijriParts(getTodayGregorian()));
+  const [receivedDate, setReceivedDate] = useState(() => getHijriParts(getTodayGregorian()));
   const [sectionColors, setSectionColors] = useState({
     partyHeaderBg: '#ffffff',
     partyHeaderText: '#07356c',
@@ -90,9 +93,14 @@ export default function FillDeliveryRecordForm() {
   const recordNotes = customRecordTitle.trim()
     ? ['يجب التحقق من الكمية وتوثيق الاستلام حسب الأنظمة والتعليمات', 'يجب حفظ وتسليم المادة وفق الاشتراطات المعتمدة']
     : selectedRecordType.notes;
-  const recordDate = useMemo(() => getHijriParts(recordDateValue), [recordDateValue]);
-  const deliveredDate = useMemo(() => getHijriParts(deliveredDateValue), [deliveredDateValue]);
-  const receivedDate = useMemo(() => getHijriParts(receivedDateValue), [receivedDateValue]);
+  const updateHijriPart = (type, field, value) => {
+    const setters = {
+      record: setRecordDate,
+      delivered: setDeliveredDate,
+      received: setReceivedDate,
+    };
+    setters[type]?.((prev) => ({ ...prev, [field]: value }));
+  };
 
   const printRef = useRef(null);
   const scalerRef = useRef(null);
@@ -261,15 +269,30 @@ export default function FillDeliveryRecordForm() {
                 <div className="mt-2 grid grid-cols-1 gap-2">
                   <div>
                     <Label className="text-xs text-slate-600">تاريخ المحضر</Label>
-                    <Input type="date" value={recordDateValue} onChange={(e) => setRecordDateValue(e.target.value)} />
+                    <Input type="date" value={recordDateValue} onChange={(e) => { setRecordDateValue(e.target.value); setRecordDate(getHijriParts(e.target.value)); }} />
+                    <div className="mt-2 grid grid-cols-3 gap-2">
+                      <Input placeholder="اليوم" value={recordDate.day} onChange={(e) => updateHijriPart('record', 'day', e.target.value)} />
+                      <Input placeholder="الشهر" value={recordDate.month} onChange={(e) => updateHijriPart('record', 'month', e.target.value)} />
+                      <Input placeholder="السنة" value={recordDate.year} onChange={(e) => updateHijriPart('record', 'year', e.target.value)} />
+                    </div>
                   </div>
                   <div>
                     <Label className="text-xs text-slate-600">تاريخ المسلم</Label>
-                    <Input type="date" value={deliveredDateValue} onChange={(e) => setDeliveredDateValue(e.target.value)} />
+                    <Input type="date" value={deliveredDateValue} onChange={(e) => { setDeliveredDateValue(e.target.value); setDeliveredDate(getHijriParts(e.target.value)); }} />
+                    <div className="mt-2 grid grid-cols-3 gap-2">
+                      <Input placeholder="اليوم" value={deliveredDate.day} onChange={(e) => updateHijriPart('delivered', 'day', e.target.value)} />
+                      <Input placeholder="الشهر" value={deliveredDate.month} onChange={(e) => updateHijriPart('delivered', 'month', e.target.value)} />
+                      <Input placeholder="السنة" value={deliveredDate.year} onChange={(e) => updateHijriPart('delivered', 'year', e.target.value)} />
+                    </div>
                   </div>
                   <div>
                     <Label className="text-xs text-slate-600">تاريخ المستلم</Label>
-                    <Input type="date" value={receivedDateValue} onChange={(e) => setReceivedDateValue(e.target.value)} />
+                    <Input type="date" value={receivedDateValue} onChange={(e) => { setReceivedDateValue(e.target.value); setReceivedDate(getHijriParts(e.target.value)); }} />
+                    <div className="mt-2 grid grid-cols-3 gap-2">
+                      <Input placeholder="اليوم" value={receivedDate.day} onChange={(e) => updateHijriPart('received', 'day', e.target.value)} />
+                      <Input placeholder="الشهر" value={receivedDate.month} onChange={(e) => updateHijriPart('received', 'month', e.target.value)} />
+                      <Input placeholder="السنة" value={receivedDate.year} onChange={(e) => updateHijriPart('received', 'year', e.target.value)} />
+                    </div>
                   </div>
                 </div>
                 <div className="mt-2 text-xs text-slate-600">سيظهر التاريخ في النموذج بالهجري تلقائياً.</div>
