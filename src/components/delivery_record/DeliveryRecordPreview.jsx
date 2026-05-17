@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
+const DELIVERY_LOGO_URL = 'https://media.base44.com/images/public/68af5003813e47bd07947b30/b604e8fcf_30-11-1447.png';
 
 const toArabicDigits = (value) => {
   if (value === null || value === undefined || value === '') return '';
@@ -15,6 +17,48 @@ const cleanCenterName = (value) => {
     .trim();
 };
 
+function TransparentLogo() {
+  const [processedLogo, setProcessedLogo] = useState(DELIVERY_LOGO_URL);
+
+  useEffect(() => {
+    const image = new Image();
+    image.crossOrigin = 'anonymous';
+    image.onload = () => {
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      canvas.width = image.naturalWidth;
+      canvas.height = image.naturalHeight;
+      context.drawImage(image, 0, 0);
+
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      const pixels = imageData.data;
+
+      for (let i = 0; i < pixels.length; i += 4) {
+        const red = pixels[i];
+        const green = pixels[i + 1];
+        const blue = pixels[i + 2];
+        const isLightBackground = red > 232 && green > 232 && blue > 232;
+
+        if (isLightBackground) {
+          pixels[i + 3] = 0;
+        }
+      }
+
+      context.putImageData(imageData, 0, 0);
+      setProcessedLogo(canvas.toDataURL('image/png'));
+    };
+    image.src = DELIVERY_LOGO_URL;
+  }, []);
+
+  return (
+    <img
+      src={processedLogo}
+      alt="شعار تجمع المدينة المنورة الصحي"
+      className="h-32 w-40 object-contain"
+    />
+  );
+}
+
 function FormLogo() {
   return (
     <div className="flex items-start justify-between px-14 pt-12">
@@ -24,11 +68,7 @@ function FormLogo() {
         <div>إدارة المراكز الصحية بالحسو</div>
       </div>
       <div className="text-center">
-        <img
-          src="https://media.base44.com/images/public/68af5003813e47bd07947b30/b604e8fcf_30-11-1447.png"
-          alt="شعار تجمع المدينة المنورة الصحي"
-          className="h-32 w-40 object-contain mix-blend-multiply brightness-110 contrast-125"
-        />
+        <TransparentLogo />
       </div>
     </div>
   );
