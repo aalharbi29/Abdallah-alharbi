@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import AutoSignature from '@/components/signatures/AutoSignature';
 
 const DELIVERY_LOGO_URL = 'https://media.base44.com/images/public/68af5003813e47bd07947b30/b604e8fcf_30-11-1447.png';
 
@@ -192,7 +193,7 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
               <div className="relative rounded-lg border-2 border-[#07356c] px-8 pb-7 pt-10 text-[14px] leading-9">
                 <div className="absolute -top-4 right-10 w-44 rounded-md py-1 text-center text-sm font-bold" style={partyHeaderStyle}>المسلم</div>
                 <div className="flex gap-2"><span>الاسم:</span><span className="flex-1 border-b border-dotted border-gray-500 text-center font-bold">{deliveredByName}</span></div>
-                <div className="flex gap-2"><span>التوقيع:</span><span className="flex-1 border-b border-dotted border-gray-500 text-center"></span></div>
+                <div className="flex gap-2"><span>التوقيع:</span><span className="relative flex-1 border-b border-dotted border-gray-500 text-center"><AutoSignature name={deliveredByName} /></span></div>
                 <div className="mt-1 flex items-center justify-center gap-3" dir="ltr"><span>هـ</span><span className="min-w-10 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredYear)}</span><span>/</span><span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredMonth)}</span><span>/</span><span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredDay)}</span><span dir="rtl">التاريخ:</span></div>
               </div>
 
@@ -204,7 +205,7 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
                 <div className="absolute -top-4 left-10 w-44 rounded-md py-1 text-center text-sm font-bold" style={partyHeaderStyle}>المستلم</div>
                 <div className="flex gap-2"><span>الاسم:</span><span className="flex-1 border-b border-dotted border-gray-500 text-center font-bold">{receiverName}</span></div>
                 <div className="flex gap-2"><span>مدير مركز صحي:</span><span className="flex-1 border-b border-dotted border-gray-500 text-center font-bold">{receiverCenterName}</span></div>
-                <div className="flex gap-2"><span>التوقيع:</span><span className="flex-1 border-b border-dotted border-gray-500 text-center"></span></div>
+                <div className="flex gap-2"><span>التوقيع:</span><span className="relative flex-1 border-b border-dotted border-gray-500 text-center"><AutoSignature name={receiverName} /></span></div>
                 <div className="mt-1 flex items-center justify-center gap-3" dir="ltr"><span>هـ</span><span className="min-w-10 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedYear)}</span><span>/</span><span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedMonth)}</span><span>/</span><span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.receivedDay)}</span><span dir="rtl">التاريخ:</span></div>
               </div>
             </section>
