@@ -133,7 +133,7 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
                 <div className="mt-1 flex items-center gap-3" dir="ltr"><span>هـ</span><span className="min-w-10 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredYear)}</span><span>/</span><span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredMonth)}</span><span>/</span><span className="min-w-6 border-b border-dotted border-gray-500 text-center">{toArabicDigits(data.deliveredDay)}</span><span dir="rtl">التاريخ:</span></div>
               </div>
 
-              <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-xl border-2 border-dashed border-[#b7c8dc] text-[18px] font-bold text-[#c5cbd3]">
+              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-lg border-2 border-dashed border-[#b7c8dc] text-[14px] font-bold text-[#c5cbd3]">
                 الختم
               </div>
 
@@ -147,7 +147,7 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
             </section>
 
             <section className="mx-10 mt-5 rounded-lg border-2 border-[#07356c] px-7 pb-6 pt-8 text-[14px] leading-8 relative">
-              <div className="absolute -top-1 right-auto left-4 rounded-b-md bg-[#073f78] px-8 py-1 text-sm font-bold text-white">ملاحظات:</div>
+              <div className="absolute -top-1 right-4 rounded-b-md bg-[#073f78] px-8 py-1 text-sm font-bold text-white">ملاحظات:</div>
               <ul className="mr-12 list-disc">
                 <li>يجب حفظ اللقاح في درجة حرارة من 2-8 درجة مئوية</li>
                 <li>يجب إتلاف اللقاح بعد مرور 10 أسابيع من تاريخ استلامه</li>
