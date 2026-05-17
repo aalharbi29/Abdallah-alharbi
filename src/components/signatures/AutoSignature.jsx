@@ -65,16 +65,20 @@ function useCleanSignature(imageUrl) {
   return cleanUrl;
 }
 
-export default function AutoSignature({ name, className = '' }) {
+export default function AutoSignature({ name, employee, className = '' }) {
+  const approvedSignatureUrl = employee?.signature_approved ? employee?.signature_image_url : '';
   const signature = useMemo(() => findSignature(name), [name]);
-  const cleanUrl = useCleanSignature(signature?.imageUrl);
+  const imageUrl = approvedSignatureUrl || signature?.imageUrl;
+  const cleanUrl = useCleanSignature(imageUrl);
+  const signatureName = employee?.full_name_arabic || signature?.name || name;
 
-  if (!signature) return null;
+  if (!imageUrl) return null;
 
   return (
     <img
       src={cleanUrl}
-      alt={`توقيع ${signature.name}`}
+      alt={`توقيع ${signatureName}`}
+      title={approvedSignatureUrl ? 'توقيع معتمد من ملف الموظف' : 'توقيع محفوظ'}
       className={`pointer-events-none absolute left-1/2 top-1/2 max-h-10 w-28 -translate-x-1/2 -translate-y-1/2 object-contain ${className}`}
     />
   );

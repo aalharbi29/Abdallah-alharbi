@@ -27,6 +27,7 @@ import EmployeeProfileExporter from "@/components/export/EmployeeProfileExporter
 import EmployeeProfileCustomExport from "@/components/export/EmployeeProfileCustomExport";
 import HolidayWorkManager from "@/components/employee_profile/HolidayWorkManager";
 import EmployeeIDCard from "@/components/employees/EmployeeIDCard";
+import EmployeeSignatureCard from "@/components/employee_profile/EmployeeSignatureCard";
 
 // Lazy load components for better performance
 const EmployeeDocumentUpload = React.lazy(() => import('../components/employee_profile/EmployeeDocumentUpload'));
@@ -635,6 +636,8 @@ export default function EmployeeProfile() {
             </CardContent>
           </Card>
         </motion.div>
+
+        <EmployeeSignatureCard employee={employee} onUpdated={() => loadEmployeeData(employee.id, employee.__isArchived)} />
 
         {/* المستندات والسجلات */}
         <motion.div
