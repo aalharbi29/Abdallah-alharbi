@@ -12,7 +12,12 @@ import jsPDF from 'jspdf';
 import EmployeeSearchCombobox from '@/components/employees/EmployeeSearchCombobox';
 import DeliveryRecordPreview from '@/components/delivery_record/DeliveryRecordPreview';
 
-const createEmptyItems = () => Array.from({ length: 5 }, () => ({ quantity: '', batchNumber: 'MH2939', expiryDate: '2026-08-30', notes: '' }));
+const createEmptyItems = () => Array.from({ length: 5 }, (_, index) => ({
+  quantity: '',
+  batchNumber: index === 0 ? 'MH2939' : '',
+  expiryDate: index === 0 ? '2026-08-30' : '',
+  notes: '',
+}));
 
 const getTodayGregorian = () => new Date().toISOString().split('T')[0];
 
