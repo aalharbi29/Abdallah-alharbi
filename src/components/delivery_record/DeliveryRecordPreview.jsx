@@ -62,15 +62,15 @@ function TransparentLogo() {
     <img
       src={processedLogo}
       alt="شعار تجمع المدينة المنورة الصحي"
-      className="h-32 w-40 object-contain"
+      className="h-20 w-28 object-contain"
     />
   );
 }
 
 function FormLogo() {
   return (
-    <div className="flex items-start justify-between px-14 pt-12">
-      <div className="text-right text-[#063b75] leading-8 font-semibold text-[18px]">
+    <div className="flex items-start justify-between px-14 pt-6">
+      <div className="text-right text-[#063b75] leading-6 font-semibold text-[16px]">
         <div>تجمع المدينة المنورة الصحي</div>
         <div>مستشفى الحسو العام</div>
         <div>إدارة المراكز الصحية بالحسو</div>
@@ -122,7 +122,7 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
           <div className="relative h-full border-[3px] border-[#07356c] bg-white overflow-hidden">
             <FormLogo />
 
-            <div className="mx-14 mt-11 flex items-center gap-3">
+            <div className="mx-14 mt-5 flex items-center gap-3">
               <div className="h-[2px] flex-1 bg-[#07356c]" />
               <div className="h-2 w-2 rounded-full bg-[#07356c]" />
               <div className="h-[2px] flex-1 bg-[#07356c]" />
