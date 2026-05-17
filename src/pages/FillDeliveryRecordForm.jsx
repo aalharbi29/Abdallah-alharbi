@@ -14,12 +14,15 @@ import DeliveryRecordPreview from '@/components/delivery_record/DeliveryRecordPr
 
 const createEmptyItems = () => Array.from({ length: 5 }, () => ({ quantity: '', batchNumber: '', expiryDate: '', notes: '' }));
 
-const getTodayHijriParts = () => {
+const getTodayGregorian = () => new Date().toISOString().split('T')[0];
+
+const getHijriParts = (dateValue) => {
+  const date = dateValue ? new Date(`${dateValue}T00:00:00`) : new Date();
   const parts = new Intl.DateTimeFormat('en-SA-u-ca-islamic-umalqura', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
-  }).formatToParts(new Date());
+  }).formatToParts(date);
 
   return {
     day: parts.find((part) => part.type === 'day')?.value || '',
@@ -35,10 +38,12 @@ export default function FillDeliveryRecordForm() {
   const [deliveredBy, setDeliveredBy] = useState(null);
   const [receiver, setReceiver] = useState(null);
   const [items, setItems] = useState(createEmptyItems);
-  const todayHijri = useMemo(() => getTodayHijriParts(), []);
-  const recordDate = todayHijri;
-  const deliveredDate = todayHijri;
-  const receivedDate = todayHijri;
+  const [recordDateValue, setRecordDateValue] = useState(getTodayGregorian);
+  const [deliveredDateValue, setDeliveredDateValue] = useState(getTodayGregorian);
+  const [receivedDateValue, setReceivedDateValue] = useState(getTodayGregorian);
+  const recordDate = useMemo(() => getHijriParts(recordDateValue), [recordDateValue]);
+  const deliveredDate = useMemo(() => getHijriParts(deliveredDateValue), [deliveredDateValue]);
+  const receivedDate = useMemo(() => getHijriParts(receivedDateValue), [receivedDateValue]);
 
   const printRef = useRef(null);
   const scalerRef = useRef(null);
@@ -179,8 +184,23 @@ export default function FillDeliveryRecordForm() {
                 {selectedCenter && <div className="mt-2 rounded-md bg-blue-50 p-2 text-xs text-blue-900">سيتم تعبئة اسم المركز ومدير المركز تلقائياً عند توفره.</div>}
               </div>
 
-              <div className="rounded-md bg-slate-50 p-2 text-xs text-slate-700">
-                التاريخ يُعبأ تلقائياً بتاريخ اليوم الهجري.
+              <div className="rounded-md bg-slate-50 p-3">
+                <Label className="font-bold">التواريخ</Label>
+                <div className="mt-2 grid grid-cols-1 gap-2">
+                  <div>
+                    <Label className="text-xs text-slate-600">تاريخ المحضر</Label>
+                    <Input type="date" value={recordDateValue} onChange={(e) => setRecordDateValue(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-slate-600">تاريخ المسلم</Label>
+                    <Input type="date" value={deliveredDateValue} onChange={(e) => setDeliveredDateValue(e.target.value)} />
+                  </div>
+                  <div>
+                    <Label className="text-xs text-slate-600">تاريخ المستلم</Label>
+                    <Input type="date" value={receivedDateValue} onChange={(e) => setReceivedDateValue(e.target.value)} />
+                  </div>
+                </div>
+                <div className="mt-2 text-xs text-slate-600">سيظهر التاريخ في النموذج بالهجري تلقائياً.</div>
               </div>
 
               <div className="border-t pt-3">
@@ -203,7 +223,7 @@ export default function FillDeliveryRecordForm() {
                       <div className="grid grid-cols-2 gap-2">
                         <Input placeholder="الكمية" value={item.quantity} onChange={(e) => updateItem(index, 'quantity', e.target.value)} />
                         <Input placeholder="رقم التشغيلة" value={item.batchNumber} onChange={(e) => updateItem(index, 'batchNumber', e.target.value)} />
-                        <Input placeholder="تاريخ الانتهاء" value={item.expiryDate} onChange={(e) => updateItem(index, 'expiryDate', e.target.value)} />
+                        <Input type="date" placeholder="تاريخ الانتهاء" value={item.expiryDate} onChange={(e) => updateItem(index, 'expiryDate', e.target.value)} />
                         <Input placeholder="ملاحظات" value={item.notes} onChange={(e) => updateItem(index, 'notes', e.target.value)} />
                       </div>
                     </div>
