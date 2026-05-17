@@ -27,6 +27,7 @@ import FillAssetVerificationForm from './pages/FillAssetVerificationForm';
 import FillEidAchievementForm from './pages/FillEidAchievementForm';
 import WorkforceStatistics from './pages/WorkforceStatistics.jsx';
 import FillAssignmentForm from './pages/FillAssignmentForm';
+import FillDeliveryRecordForm from './pages/FillDeliveryRecordForm';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -161,6 +162,11 @@ const AuthenticatedApp = () => {
       <Route path="/FillAssignmentForm" element={
         <LayoutWrapper currentPageName="FillAssignmentForm">
           <FillAssignmentForm />
+        </LayoutWrapper>
+      } />
+      <Route path="/FillDeliveryRecordForm" element={
+        <LayoutWrapper currentPageName="FillDeliveryRecordForm">
+          <FillDeliveryRecordForm />
         </LayoutWrapper>
       } />
       <Route path="*" element={<PageNotFound />} />

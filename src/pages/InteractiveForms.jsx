@@ -149,6 +149,14 @@ const interactiveForms = [
     color: "from-amber-500 to-orange-600",
     link: createPageUrl("FillAssignmentForm"),
     category: "الموارد البشرية"
+  },
+  {
+    title: "محضر تسليم",
+    description: "محضر تسليم لقاح كوفيد-19 مطابق للمرفق مع تعبئة المركز والمدير والمسلم والمستلم تلقائياً من النظام",
+    icon: ClipboardSignature,
+    color: "from-blue-700 to-cyan-700",
+    link: createPageUrl("FillDeliveryRecordForm"),
+    category: "المحاضر"
   }
 ];
 
