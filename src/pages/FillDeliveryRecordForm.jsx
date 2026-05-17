@@ -19,6 +19,29 @@ const createEmptyItems = () => Array.from({ length: 5 }, (_, index) => ({
   notes: '',
 }));
 
+const DELIVERY_RECORD_TYPES = [
+  {
+    key: 'covid',
+    label: 'لقاح كوفيد -19',
+    title: 'محضر تسليم لقاح كوفيد -19',
+    introText: 'نفيدكم بأنه تم تسليم لقاحات كوفيد-19 لمراكز الرعاية الأولية بالحسو حسب البيانات التالية:',
+    notes: [
+      'يجب حفظ اللقاح في درجة حرارة من 2-8 درجة مئوية',
+      'يجب إتلاف اللقاح بعد مرور 10 أسابيع من تاريخ استلامه',
+    ],
+  },
+  {
+    key: 'morphine',
+    label: 'أدوية مخدرة (مورفين)',
+    title: 'محضر تسليم أدوية مخدرة (مورفين)',
+    introText: 'نفيدكم بأنه تم تسليم أدوية مخدرة (مورفين) لمراكز الرعاية الأولية بالحسو حسب البيانات التالية:',
+    notes: [
+      'يجب حفظ الأدوية المخدرة في مكان آمن ومغلق وفق التعليمات المنظمة',
+      'يجب التحقق من الكمية ورقم التشغيلة وتوثيق الاستلام في السجلات الرسمية',
+    ],
+  },
+];
+
 const getTodayGregorian = () => new Date().toISOString().split('T')[0];
 
 const getHijriParts = (dateValue) => {
@@ -43,6 +66,8 @@ export default function FillDeliveryRecordForm() {
   const [deliveredBy, setDeliveredBy] = useState(null);
   const [receiver, setReceiver] = useState(null);
   const [items, setItems] = useState(createEmptyItems);
+  const [recordTypeKey, setRecordTypeKey] = useState('covid');
+  const [customRecordTitle, setCustomRecordTitle] = useState('');
   const [recordDateValue, setRecordDateValue] = useState(getTodayGregorian);
   const [deliveredDateValue, setDeliveredDateValue] = useState(getTodayGregorian);
   const [receivedDateValue, setReceivedDateValue] = useState(getTodayGregorian);
@@ -54,6 +79,17 @@ export default function FillDeliveryRecordForm() {
     serialHeaderBg: '#ffffff',
     serialHeaderText: '#07356c',
   });
+  const selectedRecordType = useMemo(
+    () => DELIVERY_RECORD_TYPES.find((type) => type.key === recordTypeKey) || DELIVERY_RECORD_TYPES[0],
+    [recordTypeKey]
+  );
+  const recordTitle = customRecordTitle.trim() || selectedRecordType.title;
+  const introText = customRecordTitle.trim()
+    ? `نفيدكم بأنه تم تسليم ${customRecordTitle.trim().replace(/^محضر\s+تسليم\s+/, '')} لمراكز الرعاية الأولية بالحسو حسب البيانات التالية:`
+    : selectedRecordType.introText;
+  const recordNotes = customRecordTitle.trim()
+    ? ['يجب التحقق من الكمية وتوثيق الاستلام حسب الأنظمة والتعليمات', 'يجب حفظ وتسليم المادة وفق الاشتراطات المعتمدة']
+    : selectedRecordType.notes;
   const recordDate = useMemo(() => getHijriParts(recordDateValue), [recordDateValue]);
   const deliveredDate = useMemo(() => getHijriParts(deliveredDateValue), [deliveredDateValue]);
   const receivedDate = useMemo(() => getHijriParts(receivedDateValue), [receivedDateValue]);
@@ -112,7 +148,7 @@ export default function FillDeliveryRecordForm() {
     const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF('p', 'mm', 'a4');
     pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
-    pdf.save(`محضر_تسليم_${selectedCenter?.اسم_المركز || 'مركز'}.pdf`);
+    pdf.save(`${recordTitle.replace(/\s+/g, '_')}_${selectedCenter?.اسم_المركز || 'مركز'}.pdf`);
     toast.success('تم تصدير PDF');
   };
 
@@ -128,13 +164,13 @@ export default function FillDeliveryRecordForm() {
     const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF('p', 'mm', 'a4');
     pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
-    const file = new File([pdf.output('blob')], 'محضر_تسليم.pdf', { type: 'application/pdf' });
+    const file = new File([pdf.output('blob')], `${recordTitle}.pdf`, { type: 'application/pdf' });
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     await base44.entities.CenterDocument.create({
       health_center_id: selectedCenter.id,
       health_center_name: selectedCenter['اسم_المركز'],
-      title: 'محضر تسليم لقاح كوفيد-19',
-      document_title: 'محضر تسليم لقاح كوفيد-19',
+      title: recordTitle,
+      document_title: recordTitle,
       document_type: 'other',
       file_url,
       file_name: file.name,
@@ -147,6 +183,9 @@ export default function FillDeliveryRecordForm() {
     deliveredBy,
     receiver,
     items,
+    recordTitle,
+    introText,
+    recordNotes,
     recordDay: recordDate.day,
     recordMonth: recordDate.month,
     recordYear: recordDate.year,
@@ -205,6 +244,16 @@ export default function FillDeliveryRecordForm() {
                   {centers.map((center) => <option key={center.id} value={center.id}>{center['اسم_المركز']}</option>)}
                 </select>
                 {selectedCenter && <div className="mt-2 rounded-md bg-blue-50 p-2 text-xs text-blue-900">سيتم تعبئة اسم المركز ومدير المركز تلقائياً عند توفره.</div>}
+              </div>
+
+              <div className="rounded-md bg-amber-50 p-3 border border-amber-100">
+                <Label className="font-bold">نوع المحضر</Label>
+                <select value={recordTypeKey} onChange={(e) => { setRecordTypeKey(e.target.value); setCustomRecordTitle(''); }} className="mt-1 h-10 w-full rounded-md border border-input bg-white px-3 text-sm">
+                  {DELIVERY_RECORD_TYPES.map((type) => <option key={type.key} value={type.key}>{type.label}</option>)}
+                </select>
+                <Label className="mt-3 block text-xs text-amber-800">عنوان مخصص اختياري</Label>
+                <Input value={customRecordTitle} onChange={(e) => setCustomRecordTitle(e.target.value)} placeholder="مثال: محضر تسليم أدوية مخدرة (مورفين)" className="mt-1" />
+                <div className="mt-2 text-xs text-amber-800">سيتم تحديث عنوان المحضر والنص والملاحظات تلقائياً حسب النوع.</div>
               </div>
 
               <div className="rounded-md bg-slate-50 p-3">

@@ -129,11 +129,11 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
             </div>
 
             <h1 className="mt-8 text-center text-[29px] font-black text-[#07356c]">
-              محضر تسليم لقاح كوفيد -19
+              {data.recordTitle || 'محضر تسليم'}
             </h1>
 
             <p className="mt-7 px-16 text-right text-[15px] leading-8">
-              نفيدكم بأنه تم تسليم لقاحات كوفيد-19 لمراكز الرعاية الأولية بالحسو حسب البيانات التالية:
+              {data.introText || 'نفيدكم بأنه تم التسليم حسب البيانات التالية:'}
             </p>
 
             <section className="mx-10 mt-5 rounded-xl border-2 border-[#07356c] p-2">
@@ -213,8 +213,9 @@ export default function DeliveryRecordPreview({ printRef, scalerRef, previewScal
             <section className="mx-10 mt-4 rounded-lg border-2 border-[#07356c] px-7 pb-4 pt-7 text-[13px] leading-7 relative">
               <div className="absolute -top-1 right-4 rounded-b-md px-8 py-1 text-sm font-bold" style={notesHeaderStyle}>ملاحظات:</div>
               <ul className="mr-12 list-disc">
-                <li>يجب حفظ اللقاح في درجة حرارة من 2-8 درجة مئوية</li>
-                <li>يجب إتلاف اللقاح بعد مرور 10 أسابيع من تاريخ استلامه</li>
+                {(data.recordNotes || []).map((note, index) => (
+                  <li key={index}>{note}</li>
+                ))}
               </ul>
             </section>
 
