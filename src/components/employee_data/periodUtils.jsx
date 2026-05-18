@@ -8,6 +8,8 @@ export const createEmptyAssignmentPeriod = () => ({
 });
 
 export const normalizeAssignmentPeriods = (group = {}) => {
+  group = group || {};
+  group = group || {};
   const source = Array.isArray(group.periods) && group.periods.length > 0
     ? group.periods
     : [{
