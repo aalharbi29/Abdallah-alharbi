@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   Loader2, Sparkles, FileText, FileSpreadsheet, Printer, Mail, MessageCircle,
   Database, MapPin, Columns3, Wand2, Pencil, Save, X, ArrowDownUp, Brain, Mic,
-  LayoutGrid, Table as TableIcon, Image as ImageIcon, Upload, ScanLine
+  LayoutGrid, Table as TableIcon, Image as ImageIcon, Upload, ScanLine, Users
 } from 'lucide-react';
 import { exportAsPoster } from '@/components/smart_commands/posterExporter';
 import SingleRecordDetailCard from '@/components/smart_commands/SingleRecordDetailCard';
@@ -24,6 +24,7 @@ import CentersPicker from '@/components/smart_commands/CentersPicker';
 import FieldGroupPicker from '@/components/smart_commands/FieldGroupPicker';
 import SelectedFieldsReorder from '@/components/smart_commands/SelectedFieldsReorder';
 import FieldValueFilterDialog from '@/components/smart_commands/FieldValueFilterDialog';
+import WorkforceSpecialtySelector, { detectWorkforceSpecialtiesFromText, matchesWorkforceSpecialty, workforceDefaultFields, WORKFORCE_SPECIALTIES } from '@/components/smart_commands/WorkforceSpecialtySelector';
 import BackgroundToggle from '@/components/branding/BackgroundToggle';
 import WatermarkToggle from '@/components/branding/WatermarkToggle';
 
@@ -68,6 +69,7 @@ export default function SmartCommands() {
   const [selectedEntities, setSelectedEntities] = useState([]);
   const [selectedCenters, setSelectedCenters] = useState([]);
   const [selectedFields, setSelectedFields] = useState([]);
+  const [selectedWorkforceSpecialties, setSelectedWorkforceSpecialties] = useState([]);
   const [centersList, setCentersList] = useState([]);
   // فلاتر القيم: { fieldKey: [allowed values] }
   const [valueFilters, setValueFilters] = useState({});
@@ -185,6 +187,18 @@ export default function SmartCommands() {
     setFilterDialog({ open: true, fieldKey, fieldLabel });
   };
 
+  const applyWorkforceSpecialties = (specialties = selectedWorkforceSpecialties) => {
+    if (!specialties.length) {
+      toast.info('اختر تخصصاً واحداً على الأقل.');
+      return;
+    }
+    setSelectedEntities(['Employee']);
+    setSelectedFields(workforceDefaultFields);
+    setFreeMode(false);
+    setPrompt((prev) => prev || `استيراد القوى العاملة حسب التخصص: ${specialties.map((key) => WORKFORCE_SPECIALTIES.find((item) => item.key === key)?.label).filter(Boolean).join('، ')}`);
+    toast.success('تم تجهيز تقرير القوى العاملة حسب التخصص.');
+  };
+
   const applyValueFilter = (fieldKey, values) => {
     setValueFilters((prev) => {
       const next = { ...prev };
@@ -254,6 +268,13 @@ export default function SmartCommands() {
       let finalEntity = primaryEntity;
       let finalFields = [...selectedFields];
       let finalTitle = '';
+      let workforceSpecialtiesForRun = selectedWorkforceSpecialties;
+      const detectedSpecialties = detectWorkforceSpecialtiesFromText(prompt);
+      if (detectedSpecialties.length > 0) {
+        workforceSpecialtiesForRun = Array.from(new Set([...workforceSpecialtiesForRun, ...detectedSpecialties]));
+        if (!finalEntity) finalEntity = 'Employee';
+        if (finalFields.length === 0) finalFields = workforceDefaultFields;
+      }
 
       if (prompt.trim()) {
         const entityDescriptions = ENTITIES_CATALOG.map((e) => `- ${e.value} (${e.label})`).join('\n');
@@ -410,6 +431,14 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
           filtered = allData
             .filter((row) => getCenterOrder(row) !== -1)
             .sort((a, b) => getCenterOrder(a) - getCenterOrder(b));
+        }
+      }
+
+      if (finalEntity === 'Employee' && workforceSpecialtiesForRun.length > 0) {
+        filtered = filtered.filter((row) => matchesWorkforceSpecialty(row, workforceSpecialtiesForRun));
+        if (!finalTitle || finalTitle.startsWith('تقرير')) {
+          const specialtyNames = workforceSpecialtiesForRun.map((key) => WORKFORCE_SPECIALTIES.find((item) => item.key === key)?.label).filter(Boolean).join(' و');
+          finalTitle = `قوى عاملة - ${specialtyNames}`;
         }
       }
 
@@ -679,6 +708,20 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
                 centersList={centersList}
                 selectedCenters={selectedCenters}
                 onChange={setSelectedCenters}
+              />
+            </CollapsibleSection>
+
+            <CollapsibleSection
+              title="تحديد قوى عاملة حسب التخصص"
+              icon={Users}
+              iconColor="text-cyan-700"
+              badgeCount={selectedWorkforceSpecialties.length}
+              defaultOpen={false}
+            >
+              <WorkforceSpecialtySelector
+                selectedSpecialties={selectedWorkforceSpecialties}
+                onChange={setSelectedWorkforceSpecialties}
+                onApply={() => applyWorkforceSpecialties()}
               />
             </CollapsibleSection>
 
