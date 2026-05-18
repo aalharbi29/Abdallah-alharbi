@@ -1746,11 +1746,11 @@ export default function EmployeeDataRequest() {
                           const grouped = [];
                           const usedIds = new Set();
                           assignmentGroups.forEach(group => {
-                            const ids = group.employeeIds.length > 0 ? group.employeeIds : (assignmentGroups.length === 1 ? empList.map(e => e.id) : []);
-                            const grpEmps = empList.filter(e => ids.includes(e.id));
+                            const ids = group.employeeIds.length > 0 ? group.employeeIds : (assignmentGroups.length === 1 ? sortedEmps.map(e => e.id) : []);
+                            const grpEmps = sortedEmps.filter(e => ids.includes(e.id));
                             if (grpEmps.length > 0) { grouped.push({ group, employees: grpEmps }); grpEmps.forEach(e => usedIds.add(e.id)); }
                           });
-                          const ungrouped = empList.filter(e => !usedIds.has(e.id));
+                          const ungrouped = sortedEmps.filter(e => !usedIds.has(e.id));
                           if (ungrouped.length > 0) grouped.push({ group: null, employees: ungrouped });
 
                           const sortedEmps = [];

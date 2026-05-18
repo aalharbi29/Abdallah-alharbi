@@ -71,13 +71,19 @@ export const exportToCSV = async ({
   });
   worksheet.getRow(3).height = 30;
 
+  const sortedEmps = [...selectedEmployees].sort((a, b) => {
+    const centerA = a.المركز_الصحي || '';
+    const centerB = b.المركز_الصحي || '';
+    return centerA.localeCompare(centerB, 'ar');
+  });
+
   const rows = [];
   if (displayMode === 'normal') {
-    selectedEmployees.forEach((emp) => {
+    sortedEmps.forEach((emp) => {
       rows.push(selectedFields.map((key) => getFieldValue ? getFieldValue(emp, key) : (emp[key] || '')));
     });
   } else {
-    selectedEmployees.forEach((emp) => {
+    sortedEmps.forEach((emp) => {
       rows.push(selectedFields.map((key) => getFieldValue ? getFieldValue(emp, key) : (emp[key] || '')));
     });
 
