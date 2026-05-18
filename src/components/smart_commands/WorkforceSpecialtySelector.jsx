@@ -1,7 +1,7 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Users, Stethoscope, HeartPulse, FlaskConical, Pill, Radiation, Briefcase, Sparkles, X } from 'lucide-react';
+import { Users, Stethoscope, HeartPulse, FlaskConical, Pill, Radiation, Briefcase, Sparkles, X, Activity } from 'lucide-react';
 
 export const WORKFORCE_SPECIALTIES = [
   { key: 'doctors', label: 'الأطباء', icon: Stethoscope, keywords: ['طبيب', 'طبيبة', 'استشاري', 'أخصائي طب', 'اخصائي طب', 'طب عام', 'أسنان', 'اسنان'] },
@@ -9,29 +9,44 @@ export const WORKFORCE_SPECIALTIES = [
   { key: 'pharmacy', label: 'الصيدلة', icon: Pill, keywords: ['صيدلي', 'صيدلية', 'صيدلة', 'فني صيدلة'] },
   { key: 'laboratory', label: 'المختبر', icon: FlaskConical, keywords: ['مختبر', 'مختبرات', 'أخصائي مختبر', 'اخصائي مختبر', 'فني مختبر'] },
   { key: 'radiology', label: 'الأشعة', icon: Radiation, keywords: ['أشعة', 'اشعة', 'أخصائي أشعة', 'فني أشعة'] },
+  { key: 'publicHealth', label: 'الصحة العامة والوبائيات', icon: Activity, keywords: ['صحة عامة', 'الصحة العامة', 'وبائيات', 'وبائي', 'وبائية', 'مراقب صحي', 'مكافحة العدوى', 'عدوى', 'فني وبائيات'] },
   { key: 'administrative', label: 'الإداريين', icon: Briefcase, keywords: ['إداري', 'اداري', 'كاتب', 'مساعد إداري', 'سكرتير'] },
 ];
 
 export const workforceDefaultFields = ['full_name_arabic', 'رقم_الموظف', 'المركز_الصحي', 'position', 'department', 'phone', 'qualification'];
 
+const normalizeArabic = (value = '') => String(value)
+  .replace(/[أإآ]/g, 'ا')
+  .replace(/[ى]/g, 'ي')
+  .replace(/[ة]/g, 'ه')
+  .replace(/[\u064B-\u065F\u0670ـ]/g, '')
+  .toLowerCase()
+  .trim();
+
 export function matchesWorkforceSpecialty(employee, selectedKeys) {
   if (!selectedKeys?.length) return true;
-  const text = [employee.position, employee.department, employee.scfhs_classification, employee.job_category, employee.job_category_type]
-    .filter(Boolean)
-    .join(' ')
-    .toLowerCase();
+  const text = normalizeArabic([
+    employee.position,
+    employee.department,
+    employee.scfhs_classification,
+    employee.job_category,
+    employee.job_category_type,
+    employee.qualification,
+    ...(employee.assigned_tasks || []),
+    ...(employee.special_roles || []),
+  ].filter(Boolean).join(' '));
 
   return selectedKeys.some((key) => {
     const specialty = WORKFORCE_SPECIALTIES.find((item) => item.key === key);
-    return specialty?.keywords.some((keyword) => text.includes(keyword.toLowerCase()));
+    return specialty?.keywords.some((keyword) => text.includes(normalizeArabic(keyword)));
   });
 }
 
 export function detectWorkforceSpecialtiesFromText(text) {
   if (!text?.trim()) return [];
-  const normalized = text.toLowerCase();
+  const normalized = normalizeArabic(text);
   return WORKFORCE_SPECIALTIES
-    .filter((specialty) => specialty.keywords.some((keyword) => normalized.includes(keyword.toLowerCase())) || normalized.includes(specialty.label.toLowerCase()))
+    .filter((specialty) => specialty.keywords.some((keyword) => normalized.includes(normalizeArabic(keyword))) || normalized.includes(normalizeArabic(specialty.label)))
     .map((specialty) => specialty.key);
 }
 
