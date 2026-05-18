@@ -38,6 +38,7 @@ import { createEmptyAssignmentPeriod, formatAssignmentPeriodPlain, normalizeAssi
 import BackgroundToggle from '@/components/branding/BackgroundToggle';
 import WatermarkToggle from '@/components/branding/WatermarkToggle';
 import { toast } from 'sonner';
+import { prepareSignaturesForExport } from '@/components/common/signatureTransparency';
 
 const availableFields = [
   { key: 'full_name_arabic', label: 'الاسم الكامل', default: true },
@@ -571,8 +572,7 @@ export default function EmployeeDataRequest() {
 
     if (displayMode === 'normal') {
       selectedEmployees.forEach((emp, idx) => {
-        const bgColor = idx % 2 === 0 ? '#fff' : '#f9fafb';
-        htmlTable += `<tr style="background-color: ${bgColor};">`;
+        htmlTable += `<tr>`;
         selectedFields.forEach(key => {
           htmlTable += `<td style="border: 1px solid #000; padding: ${cellPadding}; text-align: center; white-space: pre-wrap; word-wrap: break-word;">${getFieldValue(emp, key)}</td>`;
         });
@@ -580,7 +580,7 @@ export default function EmployeeDataRequest() {
       });
     } else {
       selectedEmployees.forEach(emp => {
-        htmlTable += '<tr style="background-color: #dbeafe;">';
+        htmlTable += '<tr>';
         selectedFields.forEach(key => {
           htmlTable += `<td style="border: 1px solid #000; padding: ${cellPadding}; text-align: center; white-space: pre-wrap; word-wrap: break-word;">${getFieldValue(emp, key)}</td>`;
         });
@@ -592,8 +592,8 @@ export default function EmployeeDataRequest() {
         if (!processedManagers.has(managerId)) {
           const manager = getManagerWithCenters(managerId, employeeIds);
           if (manager) {
-            htmlTable += `<tr style="background-color: #d1fae5;"><td colspan="${selectedFields.length}" style="border: 1px solid #000; padding: ${cellPadding}; text-align: center; font-weight: bold;">بيانات المدير المباشر</td></tr>`;
-            htmlTable += '<tr style="background-color: #ecfdf5;">';
+            htmlTable += `<tr><td colspan="${selectedFields.length}" style="border: 1px solid #000; padding: ${cellPadding}; text-align: center; font-weight: bold;">بيانات المدير المباشر</td></tr>`;
+            htmlTable += '<tr>';
             selectedFields.forEach(key => {
               htmlTable += `<td style="border: 1px solid #000; padding: ${cellPadding}; text-align: center; white-space: pre-wrap; word-wrap: break-word;">${getFieldValue(manager, key)}</td>`;
             });
@@ -670,10 +670,11 @@ export default function EmployeeDataRequest() {
     });
   };
 
-  const handleExportToHTML = () => {
+  const handleExportToHTML = async () => {
+    const exportSignatures = await prepareSignaturesForExport(signatures, selectedSignatureId);
     const html = generateReportHtml({
       selectedFields, availableFields, reportTitle, reportNarrative, narrativePosition, lineStyles, fontSettings,
-      logoSettings: effectiveLogoSettings, logoPosition, showSignature, selectedSignatureId, signatures,
+      logoSettings: effectiveLogoSettings, logoPosition, showSignature, selectedSignatureId, signatures: exportSignatures,
       signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees,
       displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
       mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, splitPages, rowsPerFirstPage, rowsPerNextPage,
@@ -690,10 +691,11 @@ export default function EmployeeDataRequest() {
     window.URL.revokeObjectURL(url);
   };
 
-  const exportAsReport = () => {
+  const exportAsReport = async () => {
+    const exportSignatures = await prepareSignaturesForExport(signatures, selectedSignatureId);
     const html = generateReportHtml({
       selectedFields, availableFields, reportTitle, reportNarrative, narrativePosition, lineStyles, fontSettings,
-      logoSettings: effectiveLogoSettings, logoPosition, showSignature, selectedSignatureId, signatures,
+      logoSettings: effectiveLogoSettings, logoPosition, showSignature, selectedSignatureId, signatures: exportSignatures,
       signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees,
       displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
       mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, splitPages, rowsPerFirstPage, rowsPerNextPage,
@@ -1740,7 +1742,7 @@ export default function EmployeeDataRequest() {
 
                           if (!hasAssignCol || !assignmentGroups || assignmentGroups.length === 0) {
                             return sortedEmps.map((emp, idx) => (
-                              <tr key={emp.id} style={{ backgroundColor: bgFn ? bgFn(idx) : (idx % 2 === 0 ? '#fff' : '#f9fafb') }}>
+                              <tr key={emp.id}>
                                 {selectedFields.map(key => {
                                   if (mergeWorkplace && key === 'المركز_الصحي') {
                                     if (wSpans[idx] === 0) return null;
@@ -1791,9 +1793,8 @@ export default function EmployeeDataRequest() {
                           let gi = 0;
                           grouped.forEach(({ group, employees: grpEmps }) => {
                             grpEmps.forEach((emp, li) => {
-                              const bg = bgFn ? bgFn(gi) : (gi % 2 === 0 ? '#fff' : '#f9fafb');
                               rows.push(
-                                <tr key={emp.id} style={{ backgroundColor: bg }}>
+                                <tr key={emp.id}>
                                   {selectedFields.map(key => {
                                     if (key === 'فترة_التكليف') {
                                       const previousPeriodText = li > 0 ? formatAssignmentPeriodPlain(group, grpEmps[li - 1].id) : null;
@@ -1802,7 +1803,7 @@ export default function EmployeeDataRequest() {
                                       const periodRowSpan = nextSameCount === -1 ? grpEmps.length - li : nextSameCount;
                                       if (li === 0 || previousPeriodText !== currentPeriodText) {
                                         return (
-                                          <td key="فترة_التكليف" rowSpan={periodRowSpan} style={{ border: '1px solid #000', padding: '6px 4px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px', backgroundColor: '#fff', minWidth: '80px', lineHeight: '1.6', color: '#000' }}>
+                                          <td key="فترة_التكليف" rowSpan={periodRowSpan} style={{ border: '1px solid #000', padding: '6px 4px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px', backgroundColor: 'transparent', minWidth: '80px', lineHeight: '1.6', color: '#000' }}>
                                             {(() => {
                                               if (!group) return '-';
                                               return <span style={{ whiteSpace: 'pre-wrap' }}>{formatAssignmentPeriodPlain(group, emp.id)}</span>;
@@ -1833,7 +1834,7 @@ export default function EmployeeDataRequest() {
                         if (displayMode === 'normal') {
                           return renderMergedRows(selectedEmployees);
                         } else {
-                          const empRows = renderMergedRows(selectedEmployees, () => '#dbeafe');
+                          const empRows = renderMergedRows(selectedEmployees);
                           const managerRows = [];
                           const processedManagers = new Set();
                           Object.entries(groupedByManager).forEach(([managerId, employeeIds]) => {
@@ -1841,14 +1842,14 @@ export default function EmployeeDataRequest() {
                               const manager = getManagerWithCenters(managerId, employeeIds);
                               if (manager) {
                                 managerRows.push(
-                                  <tr key={`mh-${managerId}`} style={{ backgroundColor: '#d1fae5' }}>
+                                  <tr key={`mh-${managerId}`}>
                                     <td colSpan={selectedFields.length} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', fontWeight: 'bold', color: '#000' }}>
                                       بيانات المدير المباشر
                                     </td>
                                   </tr>
                                 );
                                 managerRows.push(
-                                  <tr key={`md-${managerId}`} style={{ backgroundColor: '#ecfdf5' }}>
+                                  <tr key={`md-${managerId}`}>
                                     {selectedFields.map(key => (
                                       <td key={key} style={{ border: '1px solid #000', padding: '8px 16px', textAlign: 'center', color: '#000' }}>
                                         {manager[key] || '-'}
@@ -1869,7 +1870,7 @@ export default function EmployeeDataRequest() {
 
                 {/* نص الطلب */}
                 {finalRequest && (
-                  <div className="p-4 bg-yellow-50 border-2 border-yellow-200 rounded-lg">
+                  <div className="p-4 border-2 border-yellow-200 rounded-lg">
                     <p style={{ color: '#000' }} className="whitespace-pre-wrap leading-relaxed text-right">
                       {finalRequest}
                     </p>

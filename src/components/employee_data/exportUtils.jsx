@@ -116,16 +116,12 @@ export const exportToCSV = async ({
       };
 
       if (isManagerLabel) {
-        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: MHC_XL.managerLabel } };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: MHC_XL.white } };
         cell.font = { name: 'Tajawal', size: 11, bold: true, color: { argb: MHC_XL.navy } };
       } else if (isManagerData) {
-        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: MHC_XL.managerBg } };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: MHC_XL.white } };
       } else {
-        cell.fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: row.number % 2 === 0 ? MHC_XL.rowAlt : MHC_XL.white }
-        };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: MHC_XL.white } };
       }
     });
 
@@ -169,8 +165,7 @@ export const exportToHTML = ({
   let tableRows = '';
   if (displayMode === 'normal') {
     selectedEmployees.forEach((emp, idx) => {
-      const bgColor = idx % 2 === 0 ? '#FFFFFF' : '#F1F8FF';
-      tableRows += `<tr style="background-color: ${bgColor};">`;
+      tableRows += `<tr>`;
       selectedFields.forEach(key => {
         const val = getFieldValue ? getFieldValue(emp, key) : (emp[key] || '-');
         tableRows += `<td style="border: 1px solid #5BC2C7; padding: 8px 16px; text-align: center; white-space: pre-wrap; color: #0F172A;">${val}</td>`;
@@ -179,7 +174,7 @@ export const exportToHTML = ({
     });
   } else {
     selectedEmployees.forEach(emp => {
-      tableRows += '<tr style="background-color: #F1F8FF;">';
+      tableRows += '<tr>';
       selectedFields.forEach(key => {
         const val = getFieldValue ? getFieldValue(emp, key) : (emp[key] || '-');
         tableRows += `<td style="border: 1px solid #5BC2C7; padding: 8px 16px; text-align: center; white-space: pre-wrap; color: #0F172A;">${val}</td>`;
@@ -192,8 +187,8 @@ export const exportToHTML = ({
       if (!processedManagers.has(managerId)) {
         const manager = getManagerWithCenters(managerId, employeeIds);
         if (manager) {
-          tableRows += `<tr style="background-color: #BAE6FD;"><td colspan="${selectedFields.length}" style="border: 1px solid #0B3D91; padding: 8px 16px; text-align: center; font-weight: bold; color: #0B3D91;">بيانات المدير المباشر</td></tr>`;
-          tableRows += '<tr style="background-color: #E0F2FE;">';
+          tableRows += `<tr><td colspan="${selectedFields.length}" style="border: 1px solid #0B3D91; padding: 8px 16px; text-align: center; font-weight: bold; color: #0B3D91;">بيانات المدير المباشر</td></tr>`;
+          tableRows += '<tr>';
           selectedFields.forEach(key => {
             const val = getFieldValue ? getFieldValue(manager, key) : (manager[key] || '-');
             tableRows += `<td style="border: 1px solid #5BC2C7; padding: 8px 16px; text-align: center; white-space: pre-wrap; color: #0F172A; font-weight: 600;">${val}</td>`;
@@ -214,7 +209,7 @@ export const exportToHTML = ({
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap');
     body { font-family: 'Tajawal', 'Cairo', sans-serif; padding: 0; background: #fff; color: #0F172A; }
-    .container { max-width: 210mm; min-height: 297mm; margin: 0 auto; background: #fff; padding: 0 10mm; background-image: url('${MHC_ASSETS.officialLetterhead}'); background-size: 100% 100%; background-position: top center; background-repeat: no-repeat; position: relative; }
+    .container { max-width: 210mm; min-height: 297mm; margin: 0 auto; background: #fff; padding: 0 10mm; background-image: url('${MHC_ASSETS.officialLetterhead}'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat; position: relative; }
     .header-spacer { height: 130px; }
     .body-content { padding: 0; padding-bottom: 110px; }
     h2 { text-align: center; color: #0B3D91; margin-bottom: 20px; }
@@ -222,7 +217,7 @@ export const exportToHTML = ({
     th { background: transparent; color: #0B3D91; border: 1px solid #0B3D91; padding: 12px 16px; text-align: center; font-weight: 800; }
     td { border: 1px solid #5BC2C7; padding: 8px 16px; text-align: center; }
     .greeting { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: #0B3D91; }
-    .request-text { background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%); border-right: 4px solid #1E63D6; padding: 16px 20px; border-radius: 8px; margin: 20px 0; white-space: pre-wrap; color: #0F172A; }
+    .request-text { background: transparent; border-right: 4px solid #1E63D6; padding: 16px 20px; border-radius: 8px; margin: 20px 0; white-space: pre-wrap; color: #0F172A; }
     .closing { margin-top: 30px; }
     @media print { body { background: white; padding: 0; } .container { box-shadow: none; border-radius: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
   </style>
@@ -335,8 +330,7 @@ export const generateReportHtml = ({
     const rows = [];
     if (!hasAssignmentCol || !assignmentGroups || assignmentGroups.length === 0) {
       empList.forEach((emp, idx) => {
-        const bg = bgFn ? bgFn(idx) : (idx % 2 === 0 ? '#FFFFFF' : '#F1F8FF');
-        rows.push({ emp, bg, empIdx: idx, group: null, groupId: null });
+        rows.push({ emp, bg: 'transparent', empIdx: idx, group: null, groupId: null });
       });
       return rows;
     }
@@ -357,15 +351,14 @@ export const generateReportHtml = ({
     let globalIdx = 0;
     grouped.forEach(({ group, employees: grpEmps }) => {
       grpEmps.forEach((emp) => {
-        const bg = bgFn ? bgFn(globalIdx) : (globalIdx % 2 === 0 ? '#FFFFFF' : '#F1F8FF');
-        rows.push({ emp, bg, empIdx: globalIdx, group, groupId: group ? group.id : null });
+        rows.push({ emp, bg: 'transparent', empIdx: globalIdx, group, groupId: group ? group.id : null });
         globalIdx++;
       });
     });
     return rows;
   };
 
-  let allRowsData = buildRowsData(selectedEmployees, displayMode === 'with-manager' ? () => '#E0F2FE' : undefined);
+  let allRowsData = buildRowsData(selectedEmployees);
 
   const workplaceSpans = {};
   const assignmentSpans = {};
@@ -411,8 +404,8 @@ export const generateReportHtml = ({
       if (!processedManagers.has(managerId)) {
         const manager = getManagerWithCenters(managerId, employeeIds);
         if (manager) {
-          let mhRow = `<tr style="background-color: #BAE6FD;"><td colspan="${selectedFields.length}" style="border: 1px solid #0B3D91; padding: 8px 12px; text-align: center; font-weight: bold; color: #0B3D91;">بيانات المدير المباشر</td></tr>`;
-          let mdRow = '<tr style="background-color: #E0F2FE;">';
+          let mhRow = `<tr><td colspan="${selectedFields.length}" style="border: 1px solid #0B3D91; padding: 8px 12px; text-align: center; font-weight: bold; color: #0B3D91;">بيانات المدير المباشر</td></tr>`;
+          let mdRow = '<tr>';
           selectedFields.forEach(key => {
             mdRow += `<td style="border: 1px solid #5BC2C7; padding: 8px 12px; text-align: center; font-size: 13px; color: #0F172A; font-weight: 600;">${getFieldValue(manager, key)}</td>`;
           });
@@ -501,7 +494,7 @@ export const generateReportHtml = ({
         selectedFields.forEach(key => {
           if (key === 'فترة_التكليف') {
             if (li === 0 || previousPeriodText !== periodText) {
-              html += `<td rowspan="${periodRowSpan}" style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: #fff; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
+              html += `<td rowspan="${periodRowSpan}" style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: transparent; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
             }
             return;
           }
@@ -626,26 +619,28 @@ export const generateReportHtml = ({
   @import url('https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Cairo', sans-serif; background: #fff; color: #000; }
-  @page { size: A4; margin: 5mm 10mm 15mm 10mm; }
-  .page-container { max-width: 210mm; margin: 0 auto; padding: 0 10mm; min-height: 297mm; display: flex; flex-direction: column; position: relative; background-image: url('${MHC_ASSETS.officialLetterhead}'); background-size: 100% 100%; background-position: top center; background-repeat: no-repeat; }
+  @page { size: A4; margin: 0; }
+  .page-container { width: 210mm; min-height: 297mm; margin: 0 auto; padding: 0 20mm; display: flex; flex-direction: column; position: relative; overflow: hidden; background: #fff; }
+  .page-container::before { content: ''; position: absolute; inset: 0; background-image: url('${MHC_ASSETS.officialLetterhead}'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat; z-index: 0; }
   .page-content { flex: 1; padding-top: 0; padding-bottom: 110px; position: relative; z-index: 1; }
   .header-spacer { height: 130px; position: relative; }
   .header-side-text { position: absolute; top: 35px; right: 130px; max-width: 380px; text-align: right; font-family: 'Tajawal','Cairo',sans-serif; color: #0B3D91; font-weight: 700; font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
   .report-title { text-align: center; margin-bottom: 20px; margin-top: 10px; }
   .report-title h1 { font-size: 22px; color: #0B3D91; font-weight: 800; margin-bottom: 6px; }
-  .narrative-box { background: #fff; border: none; border-radius: 0; padding: 10px 0; margin-bottom: 20px; line-height: ${fontSettings.lineHeight || '2.0'}; white-space: pre-wrap; }
+  .narrative-box { background: transparent; border: none; border-radius: 0; padding: 10px 0; margin-bottom: 20px; line-height: ${fontSettings.lineHeight || '2.0'}; white-space: pre-wrap; }
   .narrative-box .paragraph { margin-bottom: ${fontSettings.paragraphSpacing || 10}px; }
   .narrative-bold { font-family: '${fontSettings.narrativeBold.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeBold.weight}; font-size: ${fontSettings.narrativeBold.size}px; display: block; line-height: 1.0; }
   .narrative-greeting { font-family: '${fontSettings.narrativeGreeting.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeGreeting.weight}; font-size: ${fontSettings.narrativeGreeting.size}px; display: block; line-height: 1.0; }
   .narrative-body { font-family: '${fontSettings.narrativeBody.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeBody.weight}; font-size: ${fontSettings.narrativeBody.size}px; display: inline; line-height: ${fontSettings.lineHeight || '2.0'}; }
   table { width: 100%; border-collapse: collapse; margin: 15px 0; }
   th { background: transparent; color: #0B3D91; border: 1px solid #0B3D91; padding: 10px 12px; text-align: center; font-family: '${fontSettings.tableHeader.font}', 'Tajawal', 'Cairo', sans-serif; font-weight: ${fontSettings.tableHeader.weight}; font-size: ${fontSettings.tableHeader.size}px; }
+  tr, td, th { background-color: transparent !important; }
   td { border: 1px solid #5BC2C7; padding: 4px 8px; text-align: center; font-family: '${fontSettings.tableBody.font}', 'Tajawal', 'Cairo', sans-serif; font-size: ${fontSettings.tableBody.size}px; font-weight: ${fontSettings.tableBody.weight}; vertical-align: middle; color: #0F172A; }
-  .request-box { background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%); border-right: 4px solid #1E63D6; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; color: #0F172A; }
+  .request-box { background: transparent; border-right: 4px solid #1E63D6; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; color: #0F172A; }
   .signature-section { text-align: ${sigAlign}; margin-top: 50px; padding: 15px 0; }
   .signature-section .sig-name { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 700; font-size: 18px; margin-top: 8px; color: #000; }
   .signature-section .sig-title { font-weight: 700; font-size: 15px; color: #000; margin-top: 0; }
-  .signature-section img { max-height: 120px; ${sigAlign === 'center' ? 'margin: 0 auto;' : ''} display: block; margin-top: -2px; mix-blend-mode: multiply; }
+  .signature-section img { max-height: 120px; ${sigAlign === 'center' ? 'margin: 0 auto;' : ''} display: block; margin-top: -2px; mix-blend-mode: multiply; background: transparent; }
   .footer-banner { text-align: center; padding-top: 15px; border-top: 3px solid #0B3D91; margin-top: auto; }
   .footer-banner p { margin: 4px 0; font-size: 14px; color: #0B3D91; }
   .footer-banner .main-text { font-weight: 800; color: #0B3D91; font-size: 15px; }

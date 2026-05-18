@@ -44,14 +44,25 @@ export const getEmployeePeriods = (group, employeeId) => {
   return assigned.length > 0 || hasAnyPeriodEmployeeSelection ? assigned : periods;
 };
 
+const compactConsecutivePeriods = (periods) => periods.filter((period, index) => {
+  const previous = periods[index - 1];
+  if (!previous) return true;
+  return previous.periodType !== period.periodType ||
+    previous.fromDate !== period.fromDate ||
+    previous.toDate !== period.toDate ||
+    previous.durationText !== period.durationText;
+});
+
+const getPeriodShortLabel = (index) => `ف${index + 1}: `;
+
 export const formatAssignmentPeriodPlain = (group, employeeId) => {
   const suffix = group?.dateType === 'hijri' ? 'هـ' : 'م';
-  const periods = getEmployeePeriods(group, employeeId).filter((period) => period.fromDate || period.toDate || period.durationText);
+  const periods = compactConsecutivePeriods(getEmployeePeriods(group, employeeId).filter((period) => period.fromDate || period.toDate || period.durationText));
 
   if (periods.length === 0) return '-';
 
   const lines = periods.map((period, index) => {
-    const label = periods.length > 1 ? `${getPeriodLabel(index)}: ` : '';
+    const label = periods.length > 1 ? getPeriodShortLabel(index) : '';
     if (period.periodType === 'duration') {
       return `${label}${period.durationText || '...'} اعتباراً من ${period.fromDate || '...'} ${suffix}`;
     }
@@ -67,13 +78,13 @@ export const formatAssignmentPeriodPlain = (group, employeeId) => {
 
 export const formatAssignmentPeriodsHtml = (group, employeeId) => {
   const suffix = group?.dateType === 'hijri' ? 'هـ' : 'م';
-  const periods = getEmployeePeriods(group, employeeId).filter((period) => period.fromDate || period.toDate || period.durationText);
+  const periods = compactConsecutivePeriods(getEmployeePeriods(group, employeeId).filter((period) => period.fromDate || period.toDate || period.durationText));
 
   if (periods.length === 0) return '-';
 
   const html = periods.map((period, index) => {
     const label = periods.length > 1
-      ? `<div style="font-size:10px;color:#0B3D91;font-weight:800;margin-bottom:2px;">${getPeriodLabel(index)}</div>`
+      ? `<div style="font-size:10px;color:#0B3D91;font-weight:800;margin-bottom:2px;">${getPeriodShortLabel(index)}</div>`
       : '';
     const value = period.periodType === 'duration'
       ? `<div>${period.durationText || '...'}</div><div>اعتباراً من ${period.fromDate || '...'} ${suffix}</div>`

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { FileOutput, X, AlignRight, AlignCenter, AlignLeft, Indent, Outdent, ArrowUp, ArrowDown } from 'lucide-react';
 import { MHC_ASSETS } from '@/components/branding/madinahCluster';
 import { formatAssignmentPeriodsHtml } from './periodUtils';
+import TransparentSignatureImage from '@/components/common/TransparentSignatureImage';
 
 export default function ReportPreviewDialog({
   open,
@@ -115,7 +116,7 @@ export default function ReportPreviewDialog({
 
     if (!hasAssignmentField || !assignmentGroups || assignmentGroups.length === 0) {
       return empList.map((emp, idx) => (
-        <tr key={emp.id} style={{ backgroundColor: bgFn ? bgFn(idx) : (idx % 2 === 0 ? '#fff' : '#f9fafb') }}>
+        <tr key={emp.id}>
           {selectedFields.map(key => {
             if (mergeWorkplace && key === 'المركز_الصحي') {
               if (workplaceSpans[idx] === 0) return null;
@@ -193,9 +194,8 @@ export default function ReportPreviewDialog({
     let globalIdx = 0;
     grouped.forEach(({ group, employees: grpEmps }) => {
       grpEmps.forEach((emp, localIdx) => {
-        const bg = bgFn ? bgFn(globalIdx) : (globalIdx % 2 === 0 ? '#fff' : '#f9fafb');
         rows.push(
-          <tr key={emp.id} style={{ backgroundColor: bg }}>
+          <tr key={emp.id}>
             {selectedFields.map(key => {
               if (key === 'فترة_التكليف') {
                 const previousPeriodText = localIdx > 0 ? formatAssignmentPeriodsHtml(group, grpEmps[localIdx - 1].id) : null;
@@ -210,7 +210,7 @@ export default function ReportPreviewDialog({
                       className="border border-gray-300 text-center text-xs font-bold"
                       style={{
                         padding: '4px 8px',
-                        backgroundColor: '#fff',
+                        backgroundColor: 'transparent',
                         minWidth: '80px',
                         lineHeight: '1.6',
                       }}
@@ -307,7 +307,7 @@ export default function ReportPreviewDialog({
     if (displayMode === 'normal') {
       return buildGroupedRows(selectedEmployees);
     } else {
-      const empRows = buildGroupedRows(selectedEmployees, () => '#dbeafe');
+      const empRows = buildGroupedRows(selectedEmployees);
       const managerRows = [];
       const processedManagers = new Set();
       Object.entries(groupedByManager).forEach(([managerId, employeeIds]) => {
@@ -315,14 +315,14 @@ export default function ReportPreviewDialog({
           const manager = getManagerWithCenters(managerId, employeeIds);
           if (manager) {
             managerRows.push(
-              <tr key={`mh-${managerId}`} style={{ backgroundColor: '#d1fae5' }}>
+              <tr key={`mh-${managerId}`}>
                 <td colSpan={selectedFields.length} className="border border-gray-300 text-center font-bold text-xs" style={{ padding: '4px 8px' }}>
                   بيانات المدير المباشر
                 </td>
               </tr>
             );
             managerRows.push(
-              <tr key={`md-${managerId}`} style={{ backgroundColor: '#ecfdf5' }}>
+              <tr key={`md-${managerId}`}>
                 {selectedFields.map(key => (
                   <td key={key} className="border border-gray-300 text-center text-xs font-bold" style={{ padding: '4px 8px' }}>
                     {getFieldValue(manager, key)}
@@ -352,18 +352,20 @@ export default function ReportPreviewDialog({
         </DialogHeader>
 
         <div
-          className="bg-white relative"
+          className="bg-white relative overflow-hidden"
           style={{
             fontFamily: "'Cairo', sans-serif",
-            backgroundImage: `url('https://media.base44.com/images/public/68af5003813e47bd07947b30/43f238675_-.png')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundAttachment: 'fixed',
             padding: '0 10mm 110px 10mm',
             minHeight: '297mm',
           }}
         >
+          <img
+            src={MHC_ASSETS.officialLetterhead}
+            alt="الخلفية الرسمية"
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+            style={{ zIndex: 0 }}
+          />
+          <div className="relative" style={{ zIndex: 1 }}>
           {/* مساحة الترويسة (الشعار جزء من الخلفية) + النص بجانب الشعار */}
           <div style={{ height: 130, position: 'relative' }}>
             {headerSideText && (
@@ -388,7 +390,7 @@ export default function ReportPreviewDialog({
               {renderNarrative()}
 
               {finalRequest && (
-                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-300 rounded-lg text-sm whitespace-pre-wrap">
+                <div className="mt-4 p-3 border border-yellow-300 rounded-lg text-sm whitespace-pre-wrap">
                   {finalRequest}
                 </div>
               )}
@@ -398,13 +400,14 @@ export default function ReportPreviewDialog({
                 <div className={`mt-12 ${sigAlignClass}`}>
                   {signerName && <p className="text-lg" style={{ fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, color: '#000', fontSize: '18px' }}>{signerName}</p>}
                   {signerTitle && <p className="text-sm" style={{ fontWeight: 700, color: '#000', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
-                  {selectedSig && <img src={selectedSig.image_url} alt={selectedSig.name} className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`} style={{ marginTop: '-2px', mixBlendMode: 'multiply' }} />}
+                  {selectedSig && <TransparentSignatureImage src={selectedSig.image_url} alt={selectedSig.name} className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`} style={{ marginTop: '-2px' }} />}
                 </div>
               )}
 
               {/* فاصل صفحات */}
-              <div className="my-6 border-t-4 border-dashed border-sky-300 py-2 text-center text-xs text-sky-500 font-bold">— صفحة 2: الجدول —</div>
+              <div className="my-6 border-t-4 border-dashed border-sky-300 py-2 text-center text-xs text-sky-500 font-bold no-print">— صفحة 2: الجدول —</div>
 
+              <div style={{ height: 130 }}></div>
               <div className="text-center mb-5">
                 <h1 className="text-lg font-bold" style={{ color: '#0284c7' }}>{reportTitle}</h1>
               </div>
@@ -428,7 +431,7 @@ export default function ReportPreviewDialog({
                 <div className={`mt-8 ${sigAlignClass}`}>
                   {signerName && <p className="text-lg" style={{ fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, color: '#000', fontSize: '18px' }}>{signerName}</p>}
                   {signerTitle && <p className="text-sm" style={{ fontWeight: 700, color: '#000', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
-                  {selectedSig && <img src={selectedSig.image_url} alt={selectedSig.name} className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`} style={{ marginTop: '-2px', mixBlendMode: 'multiply' }} />}
+                  {selectedSig && <TransparentSignatureImage src={selectedSig.image_url} alt={selectedSig.name} className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`} style={{ marginTop: '-2px' }} />}
                 </div>
               )}
 
@@ -457,7 +460,7 @@ export default function ReportPreviewDialog({
 
               {/* نص الطلب */}
               {finalRequest && (
-                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-300 rounded-lg text-sm whitespace-pre-wrap">
+                <div className="mt-4 p-3 border border-yellow-300 rounded-lg text-sm whitespace-pre-wrap">
                   {finalRequest}
                 </div>
               )}
@@ -467,12 +470,13 @@ export default function ReportPreviewDialog({
                 <div className={`mt-8 ${sigAlignClass}`}>
                   {signerName && <p className="text-lg" style={{ fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, color: '#000', fontSize: '18px' }}>{signerName}</p>}
                   {signerTitle && <p className="text-sm" style={{ fontWeight: 700, color: '#000', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
-                  {selectedSig && <img src={selectedSig.image_url} alt={selectedSig.name} className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`} style={{ marginTop: '-2px', mixBlendMode: 'multiply' }} />}
+                  {selectedSig && <TransparentSignatureImage src={selectedSig.image_url} alt={selectedSig.name} className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`} style={{ marginTop: '-2px' }} />}
                 </div>
               )}
 
             </>
           )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
