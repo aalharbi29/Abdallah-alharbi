@@ -144,19 +144,19 @@ export default function ReportPreviewDialog({
     }
 
             const sortedInputEmps = [...empList].sort((a, b) => {
-      const centerA = getFieldValue(a, 'المركز_الصحي') || '';
-      const centerB = getFieldValue(b, 'المركز_الصحي') || '';
+      const centerA = getFieldValue(a, 'جهة_التكليف') || '';
+      const centerB = getFieldValue(b, 'جهة_التكليف') || '';
       return centerA.localeCompare(centerB, 'ar');
     });
 
     const centerBuckets = new Map();
     sortedInputEmps.forEach(emp => {
-      const center = getFieldValue(emp, 'المركز_الصحي') || '';
+      const center = getFieldValue(emp, 'جهة_التكليف') || '';
       if (!centerBuckets.has(center)) centerBuckets.set(center, []);
       centerBuckets.get(center).push(emp);
     });
 
-    // ترتيب الموظفين حسب المركز أولاً ثم حسب الفترات داخل كل مركز
+    // ترتيب الموظفين حسب جهة التكليف أولاً ثم حسب الفترات داخل كل جهة
     const grouped = [];
     const usedIds = new Set();
     centerBuckets.forEach((centerEmps) => {

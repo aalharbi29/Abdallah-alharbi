@@ -1750,7 +1750,7 @@ export default function EmployeeDataRequest() {
                           }
                           const centerBuckets = new Map();
                           sortedEmps.forEach(emp => {
-                            const center = getFieldValue(emp, 'المركز_الصحي') || '';
+                            const center = getFieldValue(emp, 'جهة_التكليف') || '';
                             if (!centerBuckets.has(center)) centerBuckets.set(center, []);
                             centerBuckets.get(center).push(emp);
                           });
