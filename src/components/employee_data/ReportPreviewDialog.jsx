@@ -143,22 +143,36 @@ export default function ReportPreviewDialog({
       ));
     }
 
-            // ترتيب الموظفين حسب المجموعات
+            const sortedInputEmps = [...empList].sort((a, b) => {
+      const centerA = getFieldValue(a, 'المركز_الصحي') || '';
+      const centerB = getFieldValue(b, 'المركز_الصحي') || '';
+      return centerA.localeCompare(centerB, 'ar');
+    });
+
+    const centerBuckets = new Map();
+    sortedInputEmps.forEach(emp => {
+      const center = getFieldValue(emp, 'المركز_الصحي') || '';
+      if (!centerBuckets.has(center)) centerBuckets.set(center, []);
+      centerBuckets.get(center).push(emp);
+    });
+
+    // ترتيب الموظفين حسب المركز أولاً ثم حسب الفترات داخل كل مركز
     const grouped = [];
     const usedIds = new Set();
-    assignmentGroups.forEach(group => {
-      const ids = group.employeeIds.length > 0 ? group.employeeIds : (assignmentGroups.length === 1 ? empList.map(e => e.id) : []);
-      const groupEmps = empList.filter(e => ids.includes(e.id));
-      if (groupEmps.length > 0) {
-        grouped.push({ group, employees: groupEmps });
-        groupEmps.forEach(e => usedIds.add(e.id));
+    centerBuckets.forEach((centerEmps) => {
+      assignmentGroups.forEach(group => {
+        const ids = group.employeeIds.length > 0 ? group.employeeIds : (assignmentGroups.length === 1 ? sortedInputEmps.map(e => e.id) : []);
+        const groupEmps = centerEmps.filter(e => ids.includes(e.id));
+        if (groupEmps.length > 0) {
+          grouped.push({ group, employees: groupEmps });
+          groupEmps.forEach(e => usedIds.add(e.id));
+        }
+      });
+      const ungroupedCenterEmps = centerEmps.filter(e => !usedIds.has(e.id));
+      if (ungroupedCenterEmps.length > 0) {
+        grouped.push({ group: null, employees: ungroupedCenterEmps });
       }
     });
-    // موظفون بدون مجموعة
-    const ungrouped = empList.filter(e => !usedIds.has(e.id));
-    if (ungrouped.length > 0) {
-      grouped.push({ group: null, employees: ungrouped });
-    }
 
     // إعادة حساب الدمج بعد الترتيب الجديد
     const sortedEmps = [];

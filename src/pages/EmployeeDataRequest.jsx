@@ -1748,15 +1748,24 @@ export default function EmployeeDataRequest() {
                               </tr>
                             ));
                           }
+                          const centerBuckets = new Map();
+                          sortedEmps.forEach(emp => {
+                            const center = getFieldValue(emp, 'المركز_الصحي') || '';
+                            if (!centerBuckets.has(center)) centerBuckets.set(center, []);
+                            centerBuckets.get(center).push(emp);
+                          });
+
                           const grouped = [];
                           const usedIds = new Set();
-                          assignmentGroups.forEach(group => {
-                            const ids = group.employeeIds.length > 0 ? group.employeeIds : (assignmentGroups.length === 1 ? sortedEmps.map(e => e.id) : []);
-                            const grpEmps = sortedEmps.filter(e => ids.includes(e.id));
-                            if (grpEmps.length > 0) { grouped.push({ group, employees: grpEmps }); grpEmps.forEach(e => usedIds.add(e.id)); }
+                          centerBuckets.forEach((centerEmps) => {
+                            assignmentGroups.forEach(group => {
+                              const ids = group.employeeIds.length > 0 ? group.employeeIds : (assignmentGroups.length === 1 ? sortedEmps.map(e => e.id) : []);
+                              const grpEmps = centerEmps.filter(e => ids.includes(e.id));
+                              if (grpEmps.length > 0) { grouped.push({ group, employees: grpEmps }); grpEmps.forEach(e => usedIds.add(e.id)); }
+                            });
+                            const ungroupedCenterEmps = centerEmps.filter(e => !usedIds.has(e.id));
+                            if (ungroupedCenterEmps.length > 0) grouped.push({ group: null, employees: ungroupedCenterEmps });
                           });
-                          const ungrouped = sortedEmps.filter(e => !usedIds.has(e.id));
-                          if (ungrouped.length > 0) grouped.push({ group: null, employees: ungrouped });
 
                           const orderedEmps = [];
                           grouped.forEach(({ employees: grpEmps }) => orderedEmps.push(...grpEmps));
