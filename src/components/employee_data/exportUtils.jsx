@@ -1,5 +1,6 @@
 import ExcelJS from 'exceljs';
 import { MHC_TEXTS, MHC_ASSETS } from '../branding/madinahCluster';
+import { formatAssignmentPeriodsHtml } from './periodUtils';
 
 // 🎨 ألوان الهوية البصرية لتجمع المدينة المنورة (ARGB لـ ExcelJS)
 const MHC_XL = {
@@ -212,7 +213,7 @@ export const exportToHTML = ({
     .body-content { padding: 0; padding-bottom: 110px; }
     h2 { text-align: center; color: #0B3D91; margin-bottom: 20px; }
     table { width: 100%; border-collapse: collapse; margin: 20px 0; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(11, 61, 145, 0.08); }
-    th { background: linear-gradient(180deg, #0B3D91 0%, #1E63D6 100%); color: #FFFFFF; border: 1px solid #0B3D91; padding: 12px 16px; text-align: center; font-weight: 800; }
+    th { background: transparent; color: #0B3D91; border: 1px solid #0B3D91; padding: 12px 16px; text-align: center; font-weight: 800; }
     td { border: 1px solid #5BC2C7; padding: 8px 16px; text-align: center; }
     .greeting { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: #0B3D91; }
     .request-text { background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%); border-right: 4px solid #1E63D6; padding: 16px 20px; border-radius: 8px; margin: 20px 0; white-space: pre-wrap; color: #0F172A; }
@@ -485,25 +486,16 @@ export const generateReportHtml = ({
     let html = '';
     let idxInPage = 0;
     segments.forEach(seg => {
-      let periodText = '-';
-      if (seg.group) {
-        const suffix = seg.group.dateType === 'hijri' ? 'هـ' : 'م';
-        if (seg.group.periodType === 'duration') {
-          periodText = `<div>${seg.group.durationText || '...'}</div><div>اعتباراً من ${seg.group.fromDate || '...'} ${suffix}</div>`;
-        } else if (seg.group.fromDate || seg.group.toDate) {
-          periodText = `<div>من ${seg.group.fromDate || '...'}</div><div>إلى ${seg.group.toDate || '...'} ${suffix}</div>`;
-        }
-        if (seg.group.specificDays && seg.group.specificDays.length > 0) {
-          periodText += `<div style="font-size: 10px; margin-top: 4px; color: #4b5563;">(أيام: ${seg.group.specificDays.join('، ')})</div>`;
-        }
-      }
-
       seg.rows.forEach((r, li) => {
+        const periodText = seg.group ? formatAssignmentPeriodsHtml(seg.group, r.emp.id) : '-';
+        const previousPeriodText = li > 0 && seg.group ? formatAssignmentPeriodsHtml(seg.group, seg.rows[li - 1].emp.id) : null;
+        const nextSameCount = seg.rows.slice(li).findIndex((candidate, candidateIdx) => candidateIdx > 0 && seg.group && formatAssignmentPeriodsHtml(seg.group, candidate.emp.id) !== periodText);
+        const periodRowSpan = nextSameCount === -1 ? seg.rows.length - li : nextSameCount;
         html += `<tr style="background-color: ${r.bg};">`;
         selectedFields.forEach(key => {
           if (key === 'فترة_التكليف') {
-            if (li === 0) {
-              html += `<td rowspan="${seg.rows.length}" style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: #fff; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
+            if (li === 0 || previousPeriodText !== periodText) {
+              html += `<td rowspan="${periodRowSpan}" style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: #fff; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
             }
             return;
           }
@@ -641,7 +633,7 @@ export const generateReportHtml = ({
   .narrative-greeting { font-family: '${fontSettings.narrativeGreeting.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeGreeting.weight}; font-size: ${fontSettings.narrativeGreeting.size}px; display: block; line-height: 1.0; }
   .narrative-body { font-family: '${fontSettings.narrativeBody.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeBody.weight}; font-size: ${fontSettings.narrativeBody.size}px; display: inline; line-height: ${fontSettings.lineHeight || '2.0'}; }
   table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-  th { background: linear-gradient(180deg, #0B3D91 0%, #1E63D6 100%); color: #FFFFFF; border: 1px solid #0B3D91; padding: 10px 12px; text-align: center; font-family: '${fontSettings.tableHeader.font}', 'Tajawal', 'Cairo', sans-serif; font-weight: ${fontSettings.tableHeader.weight}; font-size: ${fontSettings.tableHeader.size}px; }
+  th { background: transparent; color: #0B3D91; border: 1px solid #0B3D91; padding: 10px 12px; text-align: center; font-family: '${fontSettings.tableHeader.font}', 'Tajawal', 'Cairo', sans-serif; font-weight: ${fontSettings.tableHeader.weight}; font-size: ${fontSettings.tableHeader.size}px; }
   td { border: 1px solid #5BC2C7; padding: 4px 8px; text-align: center; font-family: '${fontSettings.tableBody.font}', 'Tajawal', 'Cairo', sans-serif; font-size: ${fontSettings.tableBody.size}px; font-weight: ${fontSettings.tableBody.weight}; vertical-align: middle; color: #0F172A; }
   .request-box { background: linear-gradient(135deg, #E0F2FE 0%, #BAE6FD 100%); border-right: 4px solid #1E63D6; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; color: #0F172A; }
   .signature-section { text-align: ${sigAlign}; margin-top: 50px; padding: 15px 0; }

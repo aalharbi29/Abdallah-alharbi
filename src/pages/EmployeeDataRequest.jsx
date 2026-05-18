@@ -34,6 +34,7 @@ import EmployeeMultiSelect from '@/components/employee_data/EmployeeMultiSelect'
 import FontSettings from '@/components/employee_data/FontSettings';
 import HijriDatePicker from '@/components/ui/HijriDatePicker';
 import { exportToCSV, exportToHTML, generateReportHtml } from '@/components/employee_data/exportUtils';
+import { createEmptyAssignmentPeriod, formatAssignmentPeriodPlain, normalizeAssignmentPeriods } from '@/components/employee_data/periodUtils';
 import BackgroundToggle from '@/components/branding/BackgroundToggle';
 import WatermarkToggle from '@/components/branding/WatermarkToggle';
 import { toast } from 'sonner';
@@ -93,7 +94,7 @@ export default function EmployeeDataRequest() {
   const [assignmentCenters, setAssignmentCenters] = useState({});
   // مجموعات التكليف - كل مجموعة لها فترة وموظفين
   const [assignmentGroups, setAssignmentGroups] = useState([
-    { id: 1, fromDate: '', toDate: '', dateType: 'hijri', periodType: 'range', durationText: '', specificDays: [], employeeIds: [] }
+    { id: 1, dateType: 'hijri', periods: [createEmptyAssignmentPeriod()], specificDays: [], employeeIds: [] }
   ]);
   const [logoPosition, setLogoPosition] = useState('center');
   const [signaturePosition, setSignaturePosition] = useState('center');
@@ -251,7 +252,7 @@ export default function EmployeeDataRequest() {
       setMergeWorkplaceOrientation('vertical');
       setMergeAssignment(false);
       setMergeAssignmentOrientation('vertical');
-      setAssignmentGroups([{ id: Date.now(), fromDate: '', toDate: '', dateType: 'hijri', periodType: 'range', durationText: '', specificDays: [], employeeIds: [] }]);
+      setAssignmentGroups([{ id: Date.now(), dateType: 'hijri', periods: [createEmptyAssignmentPeriod()], specificDays: [], employeeIds: [] }]);
       setLineStyles({});
       setRowsPerFirstPage(15);
       setRowsPerNextPage(25);
@@ -562,9 +563,9 @@ export default function EmployeeDataRequest() {
 
     // إنشاء الجدول كـ HTML للنسخ بشكل أفضل
     let htmlTable = `<table dir="rtl" style="border-collapse: collapse; ${widthStyle} margin: 0 auto; font-family: Arial, sans-serif; font-size: ${fontSize};">`;
-    htmlTable += '<thead><tr style="background-color: #f3f4f6;">';
+    htmlTable += '<thead><tr>';
     headers.forEach(header => {
-      htmlTable += `<th style="border: 1px solid #000; padding: ${cellPadding}; text-align: center; font-weight: bold; word-wrap: break-word;">${header}</th>`;
+      htmlTable += `<th style="border: 1px solid #000; padding: ${cellPadding}; text-align: center; font-weight: bold; color: #0B3D91; background: transparent; word-wrap: break-word;">${header}</th>`;
     });
     htmlTable += '</tr></thead><tbody>';
 
@@ -728,18 +729,8 @@ export default function EmployeeDataRequest() {
         if (assignmentGroups.length === 1) return true;
         return false;
       });
-      if (!group || (!group.fromDate && !group.toDate && !group.durationText)) return '-';
-      const suffix = group.dateType === 'hijri' ? 'هـ' : 'م';
-      let text = '';
-      if (group.periodType === 'duration') {
-        text = `${group.durationText || '...'} اعتباراً من ${group.fromDate || '...'} ${suffix}`;
-      } else {
-        text = `من ${group.fromDate || '...'} إلى ${group.toDate || '...'} ${suffix}`;
-      }
-      if (group.specificDays && group.specificDays.length > 0) {
-        text += `\n(أيام: ${group.specificDays.join('، ')})`;
-      }
-      return text;
+      if (!group) return '-';
+      return formatAssignmentPeriodPlain(group, emp.id);
     }
     if (key === 'المركز_الصحي') {
       const val = emp[key] || '-';
@@ -1153,7 +1144,7 @@ export default function EmployeeDataRequest() {
                       type="button"
                       size="sm"
                       variant="outline"
-                      onClick={() => setAssignmentGroups(prev => [...prev, { id: Date.now(), fromDate: '', toDate: '', dateType: 'hijri', employeeIds: [] }])}
+                      onClick={() => setAssignmentGroups(prev => [...prev, { id: Date.now(), dateType: 'hijri', periods: [createEmptyAssignmentPeriod()], specificDays: [], employeeIds: [] }])}
                     >
                       + إضافة مجموعة
                     </Button>
@@ -1188,69 +1179,120 @@ export default function EmployeeDataRequest() {
                           </SelectContent>
                         </Select>
 
-                        <Select
-                          value={group.periodType || 'range'}
-                          onValueChange={(val) => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, periodType: val } : g))}
-                        >
-                          <SelectTrigger className="w-32">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="range">من / إلى</SelectItem>
-                            <SelectItem value="duration">لمدة (اعتباراً من)</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <div className="w-full space-y-2">
+                          <div className="flex items-center justify-between">
+                            <Label className="text-xs font-bold text-amber-900">الفترات داخل المجموعة</Label>
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              className="h-7 text-xs bg-white"
+                              onClick={() => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, periods: [...normalizeAssignmentPeriods(g), createEmptyAssignmentPeriod()] } : g))}
+                            >
+                              + إضافة فترة
+                            </Button>
+                          </div>
+                          {normalizeAssignmentPeriods(group).map((period, periodIdx) => (
+                            <div key={period.id} className="flex flex-wrap gap-2 items-center rounded-md border border-amber-200 bg-white/80 p-2">
+                              <span className="text-[11px] font-bold text-blue-700 min-w-20">الفترة {periodIdx + 1}</span>
+                              <Select
+                                value={period.periodType || 'range'}
+                                onValueChange={(val) => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, periods: normalizeAssignmentPeriods(g).map(p => p.id === period.id ? { ...p, periodType: val } : p) } : g))}
+                              >
+                                <SelectTrigger className="w-32 h-8">
+                                  <SelectValue />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="range">من / إلى</SelectItem>
+                                  <SelectItem value="duration">لمدة</SelectItem>
+                                </SelectContent>
+                              </Select>
 
-                        {group.periodType === 'duration' ? (
-                          <>
-                            <div className="flex items-center gap-2">
-                              <Label className="text-xs font-bold">لمدة:</Label>
-                              <Input type="text" placeholder="مثال: شهر" value={group.durationText || ''} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, durationText: e.target.value } : g))} className="w-32" />
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Label className="text-xs font-bold">اعتباراً من:</Label>
-                              {group.dateType === 'gregorian' ? (
-                                <Input type="date" value={group.fromDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, fromDate: e.target.value } : g))} className="w-40" />
+                              {period.periodType === 'duration' ? (
+                                <>
+                                  <Input type="text" placeholder="مثال: شهر" value={period.durationText || ''} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, periods: normalizeAssignmentPeriods(g).map(p => p.id === period.id ? { ...p, durationText: e.target.value } : p) } : g))} className="w-28 h-8" />
+                                  {group.dateType === 'gregorian' ? (
+                                    <Input type="date" value={period.fromDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, periods: normalizeAssignmentPeriods(g).map(p => p.id === period.id ? { ...p, fromDate: e.target.value } : p) } : g))} className="w-40 h-8" />
+                                  ) : (
+                                    <HijriDatePicker
+                                      value={period.fromDate}
+                                      onChange={(val) => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, periods: normalizeAssignmentPeriods(g).map(p => p.id === period.id ? { ...p, fromDate: val } : p) } : g))}
+                                      placeholder="1446/10/01"
+                                      className="flex h-8 w-40 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm text-center"
+                                    />
+                                  )}
+                                </>
                               ) : (
-                                <HijriDatePicker
-                                  value={group.fromDate}
-                                  onChange={(val) => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, fromDate: val } : g))}
-                                  placeholder="مثال: 1446/10/01"
-                                  className="flex h-9 w-44 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm text-center"
-                                />
+                                <>
+                                  <Label className="text-xs">من</Label>
+                                  {group.dateType === 'gregorian' ? (
+                                    <Input type="date" value={period.fromDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, periods: normalizeAssignmentPeriods(g).map(p => p.id === period.id ? { ...p, fromDate: e.target.value } : p) } : g))} className="w-40 h-8" />
+                                  ) : (
+                                    <HijriDatePicker
+                                      value={period.fromDate}
+                                      onChange={(val) => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, periods: normalizeAssignmentPeriods(g).map(p => p.id === period.id ? { ...p, fromDate: val } : p) } : g))}
+                                      placeholder="1446/10/01"
+                                      className="flex h-8 w-40 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm text-center"
+                                    />
+                                  )}
+                                  <Label className="text-xs">إلى</Label>
+                                  {group.dateType === 'gregorian' ? (
+                                    <Input type="date" value={period.toDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, periods: normalizeAssignmentPeriods(g).map(p => p.id === period.id ? { ...p, toDate: e.target.value } : p) } : g))} className="w-40 h-8" />
+                                  ) : (
+                                    <HijriDatePicker
+                                      value={period.toDate}
+                                      onChange={(val) => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, periods: normalizeAssignmentPeriods(g).map(p => p.id === period.id ? { ...p, toDate: val } : p) } : g))}
+                                      placeholder="1446/10/15"
+                                      className="flex h-8 w-40 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm text-center"
+                                    />
+                                  )}
+                                </>
                               )}
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <div className="flex items-center gap-2">
-                              <Label className="text-xs font-bold">من:</Label>
-                              {group.dateType === 'gregorian' ? (
-                                <Input type="date" value={group.fromDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, fromDate: e.target.value } : g))} className="w-40" />
-                              ) : (
-                                <HijriDatePicker
-                                  value={group.fromDate}
-                                  onChange={(val) => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, fromDate: val } : g))}
-                                  placeholder="مثال: 1446/10/01"
-                                  className="flex h-9 w-44 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm text-center"
-                                />
+                              {normalizeAssignmentPeriods(group).length > 1 && (
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="ghost"
+                                  className="h-7 px-2 text-red-500"
+                                  onClick={() => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, periods: normalizeAssignmentPeriods(g).filter(p => p.id !== period.id) } : g))}
+                                >
+                                  <X className="w-3 h-3" />
+                                </Button>
                               )}
+                              <div className="basis-full border-t border-amber-100 pt-2 mt-1">
+                                <Label className="text-[11px] text-gray-600 mb-1 block">موظفو هذه الفترة:</Label>
+                                <div className="flex flex-wrap gap-1">
+                                  {selectedEmployees
+                                    .filter(emp => (group.employeeIds || []).length === 0 || (group.employeeIds || []).includes(emp.id))
+                                    .map(emp => {
+                                      const selected = (period.employeeIds || []).includes(emp.id);
+                                      return (
+                                        <Badge
+                                          key={emp.id}
+                                          variant={selected ? "default" : "outline"}
+                                          className={`cursor-pointer text-[10px] ${selected ? 'bg-blue-600' : 'hover:bg-blue-50'}`}
+                                          onClick={() => setAssignmentGroups(prev => prev.map(g => {
+                                            if (g.id !== group.id) return g;
+                                            return {
+                                              ...g,
+                                              periods: normalizeAssignmentPeriods(g).map(p => {
+                                                if (p.id !== period.id) return p;
+                                                const ids = p.employeeIds || [];
+                                                return { ...p, employeeIds: selected ? ids.filter(id => id !== emp.id) : [...ids, emp.id] };
+                                              })
+                                            };
+                                          }))}
+                                        >
+                                          {emp.full_name_arabic}
+                                        </Badge>
+                                      );
+                                    })}
+                                </div>
+                              </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <Label className="text-xs font-bold">إلى:</Label>
-                              {group.dateType === 'gregorian' ? (
-                                <Input type="date" value={group.toDate} onChange={e => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, toDate: e.target.value } : g))} className="w-40" />
-                              ) : (
-                                <HijriDatePicker
-                                  value={group.toDate}
-                                  onChange={(val) => setAssignmentGroups(prev => prev.map(g => g.id === group.id ? { ...g, toDate: val } : g))}
-                                  placeholder="مثال: 1446/10/15"
-                                  className="flex h-9 w-44 rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm text-center"
-                                />
-                              )}
-                            </div>
-                          </>
-                        )}
+                          ))}
+                          <p className="text-[11px] text-amber-700">إذا لم تحدد موظفين داخل الفترة ستطبق على كل موظفي المجموعة.</p>
+                        </div>
                         
                         <div className="flex items-center gap-2 w-full mt-2">
                           <Label className="text-xs font-bold">أيام محددة (اختياري):</Label>
@@ -1648,7 +1690,7 @@ export default function EmployeeDataRequest() {
                 <div className="overflow-x-auto">
                   <table className="w-full border-collapse" style={{ border: '1px solid #000' }}>
                     <thead>
-                      <tr style={{ backgroundColor: '#f3f4f6' }}>
+                      <tr>
                         {selectedFields.map(key => {
                           const field = availableFields.find(f => f.key === key);
                           return (
@@ -1659,7 +1701,7 @@ export default function EmployeeDataRequest() {
                                 padding: '8px 16px',
                                 textAlign: 'center',
                                 fontWeight: 'bold',
-                                color: '#000'
+                                color: '#0B3D91'
                               }}
                             >
                               {field?.label || key}
@@ -1733,28 +1775,16 @@ export default function EmployeeDataRequest() {
                                 <tr key={emp.id} style={{ backgroundColor: bg }}>
                                   {selectedFields.map(key => {
                                     if (key === 'فترة_التكليف') {
-                                      if (li === 0) {
+                                      const previousPeriodText = li > 0 ? formatAssignmentPeriodPlain(group, grpEmps[li - 1].id) : null;
+                                      const currentPeriodText = formatAssignmentPeriodPlain(group, emp.id);
+                                      const nextSameCount = grpEmps.slice(li).findIndex((candidate, candidateIdx) => candidateIdx > 0 && formatAssignmentPeriodPlain(group, candidate.id) !== currentPeriodText);
+                                      const periodRowSpan = nextSameCount === -1 ? grpEmps.length - li : nextSameCount;
+                                      if (li === 0 || previousPeriodText !== currentPeriodText) {
                                         return (
-                                          <td key="فترة_التكليف" rowSpan={grpEmps.length} style={{ border: '1px solid #000', padding: '6px 4px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px', backgroundColor: '#fff', minWidth: '80px', lineHeight: '1.6', color: '#000' }}>
+                                          <td key="فترة_التكليف" rowSpan={periodRowSpan} style={{ border: '1px solid #000', padding: '6px 4px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px', backgroundColor: '#fff', minWidth: '80px', lineHeight: '1.6', color: '#000' }}>
                                             {(() => {
                                               if (!group) return '-';
-                                              const suffix = group.dateType === 'hijri' ? 'هـ' : 'م';
-                                              let text = '';
-                                              if (group.periodType === 'duration') {
-                                                text = <><div>{group.durationText || '...'}</div><div>اعتباراً من {group.fromDate || '...'} {suffix}</div></>;
-                                              } else if (group.fromDate || group.toDate) {
-                                                text = <><div>من {group.fromDate || '...'}</div><div>إلى {group.toDate || '...'} {suffix}</div></>;
-                                              } else {
-                                                return '-';
-                                              }
-                                              return (
-                                                <>
-                                                  {text}
-                                                  {group.specificDays && group.specificDays.length > 0 && (
-                                                    <div style={{ fontSize: '10px', marginTop: '4px', color: '#4b5563' }}>(أيام: {group.specificDays.join('، ')})</div>
-                                                  )}
-                                                </>
-                                              );
+                                              return <span style={{ whiteSpace: 'pre-wrap' }}>{formatAssignmentPeriodPlain(group)}</span>;
                                             })()}
                                           </td>
                                         );

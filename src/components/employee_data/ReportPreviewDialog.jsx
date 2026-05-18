@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from '@/components/ui/button';
 import { FileOutput, X, AlignRight, AlignCenter, AlignLeft, Indent, Outdent, ArrowUp, ArrowDown } from 'lucide-react';
 import { MHC_ASSETS } from '@/components/branding/madinahCluster';
+import { formatAssignmentPeriodsHtml } from './periodUtils';
 
 export default function ReportPreviewDialog({
   open,
@@ -183,11 +184,15 @@ export default function ReportPreviewDialog({
           <tr key={emp.id} style={{ backgroundColor: bg }}>
             {selectedFields.map(key => {
               if (key === 'فترة_التكليف') {
-                if (localIdx === 0) {
+                const previousPeriodText = localIdx > 0 ? formatAssignmentPeriodsHtml(group, grpEmps[localIdx - 1].id) : null;
+                const currentPeriodText = formatAssignmentPeriodsHtml(group, emp.id);
+                const nextSameCount = grpEmps.slice(localIdx).findIndex((candidate, candidateIdx) => candidateIdx > 0 && formatAssignmentPeriodsHtml(group, candidate.id) !== currentPeriodText);
+                const periodRowSpan = nextSameCount === -1 ? grpEmps.length - localIdx : nextSameCount;
+                if (localIdx === 0 || previousPeriodText !== currentPeriodText) {
                   return (
                     <td
                       key="فترة_التكليف"
-                      rowSpan={grpEmps.length}
+                      rowSpan={periodRowSpan}
                       className="border border-gray-300 text-center text-xs font-bold"
                       style={{
                         padding: '4px 8px',
@@ -200,21 +205,7 @@ export default function ReportPreviewDialog({
                         if (!group) return '-';
                         const suffix = group.dateType === 'hijri' ? 'هـ' : 'م';
                         let text = '';
-                        if (group.periodType === 'duration') {
-                          text = <><div>{group.durationText || '...'}</div><div>اعتباراً من {group.fromDate || '...'} {suffix}</div></>;
-                        } else if (group.fromDate || group.toDate) {
-                          text = <><div>من {group.fromDate || '...'}</div><div>إلى {group.toDate || '...'} {suffix}</div></>;
-                        } else {
-                          return '-';
-                        }
-                        return (
-                          <>
-                            {text}
-                            {group.specificDays && group.specificDays.length > 0 && (
-                              <div style={{ fontSize: '10px', marginTop: '4px', color: '#4b5563' }}>(أيام: {group.specificDays.join('، ')})</div>
-                            )}
-                          </>
-                        );
+                        return <div dangerouslySetInnerHTML={{ __html: formatAssignmentPeriodsHtml(group, emp.id) }} />;
                       })()}
                     </td>
                   );
@@ -409,7 +400,7 @@ export default function ReportPreviewDialog({
                   <thead>
                     <tr>
                       {headers.map((h, i) => (
-                        <th key={i} className="border border-gray-300 px-3 py-2 text-center font-bold text-xs text-black" style={{ backgroundColor: '#e0f2fe' }}>{h}</th>
+                        <th key={i} className="border border-gray-300 px-3 py-2 text-center font-bold text-xs" style={{ color: '#0B3D91', backgroundColor: 'transparent' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -438,7 +429,7 @@ export default function ReportPreviewDialog({
                   <thead>
                     <tr>
                       {headers.map((h, i) => (
-                        <th key={i} className="border border-gray-300 px-3 py-2 text-center font-bold text-xs text-black" style={{ backgroundColor: '#e0f2fe' }}>{h}</th>
+                        <th key={i} className="border border-gray-300 px-3 py-2 text-center font-bold text-xs" style={{ color: '#0B3D91', backgroundColor: 'transparent' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
