@@ -1,17 +1,47 @@
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Users, Stethoscope, HeartPulse, FlaskConical, Pill, Radiation, Briefcase, Sparkles, X, Activity } from 'lucide-react';
+import { MAIN_SPECIALTIES, JOB_TITLES_BY_SPECIALTY } from '@/components/utils/employeeSpecialties';
+import { Users, Stethoscope, HeartPulse, FlaskConical, Pill, Radiation, Briefcase, Sparkles, X, Activity, ShieldCheck, Wrench } from 'lucide-react';
 
-export const WORKFORCE_SPECIALTIES = [
-  { key: 'doctors', label: 'الأطباء', icon: Stethoscope, keywords: ['طبيب', 'طبيبة', 'استشاري', 'أخصائي طب', 'اخصائي طب', 'طب عام', 'أسنان', 'اسنان'] },
-  { key: 'nursing', label: 'التمريض', icon: HeartPulse, keywords: ['تمريض', 'ممرض', 'ممرضة', 'فني تمريض', 'اخصائي تمريض', 'أخصائي تمريض'] },
-  { key: 'pharmacy', label: 'الصيدلة', icon: Pill, keywords: ['صيدلي', 'صيدلية', 'صيدلة', 'فني صيدلة'] },
-  { key: 'laboratory', label: 'المختبر', icon: FlaskConical, keywords: ['مختبر', 'مختبرات', 'أخصائي مختبر', 'اخصائي مختبر', 'فني مختبر'] },
-  { key: 'radiology', label: 'الأشعة', icon: Radiation, keywords: ['أشعة', 'اشعة', 'أخصائي أشعة', 'فني أشعة'] },
-  { key: 'publicHealth', label: 'الصحة العامة والوبائيات', icon: Activity, keywords: ['صحة عامة', 'الصحة العامة', 'وبائيات', 'وبائي', 'وبائية', 'مراقب صحي', 'مكافحة العدوى', 'عدوى', 'فني وبائيات'] },
-  { key: 'administrative', label: 'الإداريين', icon: Briefcase, keywords: ['إداري', 'اداري', 'كاتب', 'مساعد إداري', 'سكرتير'] },
-];
+const SPECIALTY_ICON_MAP = {
+  'تمريض': HeartPulse,
+  'طبيب بشري': Stethoscope,
+  'صيدلة': Pill,
+  'طبيب أسنان': Stethoscope,
+  'مساعد طبيب أسنان': Stethoscope,
+  'مختبر': FlaskConical,
+  'أشعة': Radiation,
+  'علاج طبيعي': Activity,
+  'صحة عامة': Activity,
+  'طب وقائي': Activity,
+  'جودة وسلامة': ShieldCheck,
+  'أمن صحي': ShieldCheck,
+  'إدارة': Briefcase,
+  'خدمات مساندة': Wrench,
+  'أخرى': Users,
+};
+
+const EXTRA_SPECIALTY_KEYWORDS = {
+  'طبيب بشري': ['طبيب', 'طبيبة', 'طب عام', 'طب أسرة', 'طب اسرة', 'استشاري', 'أخصائي طب', 'اخصائي طب'],
+  'طبيب أسنان': ['أسنان', 'اسنان'],
+  'صحة عامة': ['الصحة العامة', 'وبائيات', 'وبائي', 'وبائية', 'مراقب صحي'],
+  'طب وقائي': ['مكافحة العدوى', 'عدوى', 'وبائيات'],
+  'أمن صحي': ['أمن', 'امن', 'مراقب أمن', 'حارس أمن'],
+  'إدارة': ['إداري', 'اداري', 'كاتب', 'مساعد إداري', 'سكرتير', 'مأمور اتصالات'],
+  'خدمات مساندة': ['سائق', 'عامل', 'مستخدم', 'صيانة', 'إسعاف', 'اسعاف', 'طوارئ'],
+};
+
+export const WORKFORCE_SPECIALTIES = MAIN_SPECIALTIES.map((specialty) => ({
+  key: specialty,
+  label: specialty,
+  icon: SPECIALTY_ICON_MAP[specialty] || Users,
+  keywords: [
+    specialty,
+    ...(JOB_TITLES_BY_SPECIALTY[specialty] || []),
+    ...(EXTRA_SPECIALTY_KEYWORDS[specialty] || []),
+  ],
+}));
 
 export const workforceDefaultFields = ['full_name_arabic', 'رقم_الموظف', 'المركز_الصحي', 'position', 'department', 'phone', 'qualification'];
 
@@ -66,7 +96,7 @@ export default function WorkforceSpecialtySelector({ selectedSpecialties, onChan
           <Users className="mt-0.5 h-5 w-5 text-cyan-700" />
           <div>
             <p className="text-sm font-bold text-cyan-900">إضافة قوى عاملة حسب التخصص</p>
-            <p className="text-xs text-slate-600">حدد تخصصاً مثل الأطباء أو التمريض، أو اكتبه في مربع الذكاء الاصطناعي.</p>
+            <p className="text-xs text-slate-600">اختر من جميع التخصصات الموجودة في النظام أو اكتبها في مربع الذكاء الاصطناعي.</p>
           </div>
         </div>
         <Button type="button" size="sm" onClick={onApply} className="bg-cyan-700 hover:bg-cyan-800">
