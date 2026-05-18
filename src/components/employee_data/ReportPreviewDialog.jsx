@@ -341,7 +341,7 @@ export default function ReportPreviewDialog({
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto p-0" dir="rtl">
-        <DialogHeader className="p-4 border-b sticky top-0 bg-white z-10 flex flex-row items-center justify-between">
+        <DialogHeader className="p-4 border-b sticky top-0 flex flex-row items-center justify-between">
           <DialogTitle>معاينة التقرير</DialogTitle>
           <div className="flex gap-2">
             <Button size="sm" onClick={onExport} className="bg-teal-600 hover:bg-teal-700">
