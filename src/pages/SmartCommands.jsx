@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import {
   Loader2, Sparkles, FileText, FileSpreadsheet, Printer, Mail, MessageCircle,
   Database, MapPin, Columns3, Wand2, Pencil, Save, X, ArrowDownUp, Brain, Mic,
-  LayoutGrid, Table as TableIcon, Image as ImageIcon, Upload, ScanLine, Users
+  LayoutGrid, Table as TableIcon, Image as ImageIcon, Upload, ScanLine, Users, Trash2
 } from 'lucide-react';
 import { exportAsPoster } from '@/components/smart_commands/posterExporter';
 import SingleRecordDetailCard from '@/components/smart_commands/SingleRecordDetailCard';
@@ -82,6 +82,8 @@ export default function SmartCommands() {
   const [edits, setEdits] = useState({});
   const [savingEdits, setSavingEdits] = useState(false);
   const [viewMode, setViewMode] = useState('auto'); // 'auto' | 'table' | 'detail'
+  const [deleting, setDeleting] = useState(false);
+  const [selectedForDelete, setSelectedForDelete] = useState(new Set());
 
   // 🆕 رفع صورة أو PDF للطلب وقراءته بالـ AI
   const [imageScanLoading, setImageScanLoading] = useState(false);
@@ -511,6 +513,53 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
 
   const cancelEdits = () => { setEdits({}); setEditMode(false); };
 
+  const toggleSelectForDelete = (rowId) => {
+    const newSet = new Set(selectedForDelete);
+    if (newSet.has(rowId)) {
+      newSet.delete(rowId);
+    } else {
+      newSet.add(rowId);
+    }
+    setSelectedForDelete(newSet);
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedForDelete.size === 0) {
+      toast.info('اختر سجل واحد على الأقل للحذف.');
+      return;
+    }
+    const confirmDelete = window.confirm(`هل تريد حذف ${selectedForDelete.size} سجل؟ هذا الإجراء غير قابل للتراجع.`);
+    if (!confirmDelete) return;
+
+    setDeleting(true);
+    try {
+      let successCount = 0;
+      const rowsToDelete = Array.from(selectedForDelete);
+      for (const rowId of rowsToDelete) {
+        await base44.entities[queryInfo.entity].delete(rowId);
+        successCount++;
+      }
+      setResults((prev) => prev.filter((r) => !selectedForDelete.has(r.id)));
+      setSelectedForDelete(new Set());
+      toast.success(`تم حذف ${successCount} سجل بنجاح.`);
+    } catch (err) {
+      console.error(err);
+      toast.error('فشل حذف بعض السجلات.');
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const selectAllForDelete = () => {
+    if (results?.length > 0) {
+      setSelectedForDelete(new Set(results.map((r) => r.id)));
+    }
+  };
+
+  const clearSelection = () => {
+    setSelectedForDelete(new Set());
+  };
+
   const NA = 'غير متاحة';
   const renderCellValue = (val) => {
     if (val === null || val === undefined || val === '') return NA;
@@ -915,6 +964,17 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
                     </Button>
                   </>
                 )}
+                {selectedForDelete.size > 0 && (
+                  <>
+                    <Button variant="outline" size="sm" onClick={handleDeleteSelected} disabled={deleting} className="border-red-300 bg-red-50 text-red-700 hover:bg-red-100">
+                      {deleting ? <Loader2 className="w-4 h-4 ml-1 animate-spin" /> : <Trash2 className="w-4 h-4 ml-1" />}
+                      حذف ({selectedForDelete.size})
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={clearSelection} disabled={deleting} className="border-slate-200 text-slate-700 hover:bg-slate-100">
+                      <X className="w-4 h-4 ml-1" /> إلغاء التحديد
+                    </Button>
+                  </>
+                )}
                 <Button variant="outline" size="sm" onClick={handleExportExcel} disabled={exporting} className="border-green-200 text-green-700 hover:bg-green-50">
                   {exporting ? <Loader2 className="w-4 h-4 ml-1 animate-spin" /> : <FileSpreadsheet className="w-4 h-4 ml-1" />} Excel
                 </Button>
@@ -935,6 +995,11 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
                 <Button variant="outline" size="sm" onClick={shareEmail} className="border-indigo-200 text-indigo-700 hover:bg-indigo-50">
                   <Mail className="w-4 h-4 ml-1" /> إيميل
                 </Button>
+                {selectedForDelete.size === 0 && (
+                  <Button variant="outline" size="sm" onClick={selectAllForDelete} className="border-red-200 text-red-700 hover:bg-red-50">
+                    <Trash2 className="w-4 h-4 ml-1" /> تحديد للحذف ({results?.length || 0})
+                  </Button>
+                )}
               </div>
             </div>
           </CardHeader>
@@ -955,6 +1020,14 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
                   <thead className="bg-gradient-to-b from-slate-100 to-slate-50 sticky top-0 z-10 shadow-sm">
                     <tr>
                       <th className="p-3 border-b text-slate-600 font-semibold w-12">#</th>
+                      <th className="p-3 border-b text-slate-600 font-semibold w-10">
+                        <input
+                          type="checkbox"
+                          checked={selectedForDelete.size === results.length && results.length > 0}
+                          onChange={(e) => e.target.checked ? selectAllForDelete() : clearSelection()}
+                          className="cursor-pointer"
+                        />
+                      </th>
                       {queryInfo.fields.map((field, idx) => (
                         <th key={idx} className="p-3 border-b text-slate-600 font-semibold whitespace-nowrap">
                           {labelFor(field)}
@@ -967,8 +1040,18 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
                       const rowEdits = edits[row.id] || {};
                       const isRowEdited = Object.keys(rowEdits).length > 0;
                       return (
-                        <tr key={row.id || rIdx} className={`hover:bg-indigo-50/40 transition-colors ${isRowEdited ? 'bg-amber-50/50' : ''}`}>
+                        <tr key={row.id || rIdx} className={`hover:bg-indigo-50/40 transition-colors ${isRowEdited ? 'bg-amber-50/50' : ''} ${selectedForDelete.has(row.id) ? 'bg-red-50' : ''}`}>
                           <td className="p-3 text-slate-500 font-medium">{rIdx + 1}</td>
+                          <td className="p-3 text-center">
+                            {row.id && (
+                              <input
+                                type="checkbox"
+                                checked={selectedForDelete.has(row.id)}
+                                onChange={() => toggleSelectForDelete(row.id)}
+                                className="cursor-pointer"
+                              />
+                            )}
+                          </td>
                           {queryInfo.fields.map((field, fIdx) => {
                             const rawVal = rowEdits[field] !== undefined ? rowEdits[field] : getNestedValue(row, field);
                             const canEdit = editMode && row.id;
