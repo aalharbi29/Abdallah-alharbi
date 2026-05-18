@@ -1716,10 +1716,15 @@ export default function EmployeeDataRequest() {
                         const otherCols = selectedFields.filter(k => k !== 'فترة_التكليف');
 
                         const renderMergedRows = (empList, bgFn) => {
+                          const sortedEmps = [...empList].sort((a, b) => {
+                            const centerA = a.المركز_الصحي || '';
+                            const centerB = b.المركز_الصحي || '';
+                            return centerA.localeCompare(centerB, 'ar');
+                          });
                           const wSpans = {}; const aSpans = {};
                           if (mergeWorkplace || mergeAssignment) {
                             let cw = null, ws = 0, ca = null, as = 0;
-                            empList.forEach((e, i) => {
+                            sortedEmps.forEach((e, i) => {
                               const w = getFieldValue(e, 'المركز_الصحي'); const a = getFieldValue(e, 'جهة_التكليف');
                               if (mergeWorkplace) { if (w !== cw) { cw = w; ws = i; wSpans[i] = 1; } else { wSpans[ws]++; wSpans[i] = 0; } }
                               if (mergeAssignment) { if (a !== ca) { ca = a; as = i; aSpans[i] = 1; } else { aSpans[as]++; aSpans[i] = 0; } }
@@ -1727,7 +1732,7 @@ export default function EmployeeDataRequest() {
                           }
 
                           if (!hasAssignCol || !assignmentGroups || assignmentGroups.length === 0) {
-                            return empList.map((emp, idx) => (
+                            return sortedEmps.map((emp, idx) => (
                               <tr key={emp.id} style={{ backgroundColor: bgFn ? bgFn(idx) : (idx % 2 === 0 ? '#fff' : '#f9fafb') }}>
                                 {selectedFields.map(key => {
                                   if (mergeWorkplace && key === 'المركز_الصحي') {
@@ -1753,13 +1758,13 @@ export default function EmployeeDataRequest() {
                           const ungrouped = sortedEmps.filter(e => !usedIds.has(e.id));
                           if (ungrouped.length > 0) grouped.push({ group: null, employees: ungrouped });
 
-                          const sortedEmps = [];
-                          grouped.forEach(({ employees: grpEmps }) => sortedEmps.push(...grpEmps));
+                          const orderedEmps = [];
+                          grouped.forEach(({ employees: grpEmps }) => orderedEmps.push(...grpEmps));
                           
                           const sortedWSpans = {}; const sortedASpans = {};
                           if (mergeWorkplace || mergeAssignment) {
                             let cw = null, ws = 0, ca = null, as = 0;
-                            sortedEmps.forEach((e, i) => {
+                            orderedEmps.forEach((e, i) => {
                               const w = getFieldValue(e, 'المركز_الصحي'); const a = getFieldValue(e, 'جهة_التكليف');
                               if (mergeWorkplace) { if (w !== cw) { cw = w; ws = i; sortedWSpans[i] = 1; } else { sortedWSpans[ws]++; sortedWSpans[i] = 0; } }
                               if (mergeAssignment) { if (a !== ca) { ca = a; as = i; sortedASpans[i] = 1; } else { sortedASpans[as]++; sortedASpans[i] = 0; } }
