@@ -1789,7 +1789,7 @@ export default function EmployeeDataRequest() {
                                           <td key="فترة_التكليف" rowSpan={periodRowSpan} style={{ border: '1px solid #000', padding: '6px 4px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px', backgroundColor: '#fff', minWidth: '80px', lineHeight: '1.6', color: '#000' }}>
                                             {(() => {
                                               if (!group) return '-';
-                                              return <span style={{ whiteSpace: 'pre-wrap' }}>{formatAssignmentPeriodPlain(group)}</span>;
+                                              return <span style={{ whiteSpace: 'pre-wrap' }}>{formatAssignmentPeriodPlain(group, emp.id)}</span>;
                                             })()}
                                           </td>
                                         );
