@@ -1678,7 +1678,14 @@ export default function EmployeeDataRequest() {
             <CardHeader className="print-hide">
               <CardTitle>النتيجة النهائية</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent style={{
+              backgroundImage: `url('https://media.base44.com/images/public/68af5003813e47bd07947b30/43f238675_-.png')`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat',
+              backgroundAttachment: 'fixed',
+              padding: '40px 20px 20px'
+            }}>
               {/* تنسيق الطلب النهائي */}
               <div className="space-y-6">
                 {/* بعد التحية */}

@@ -355,10 +355,11 @@ export default function ReportPreviewDialog({
           className="bg-white relative"
           style={{
             fontFamily: "'Cairo', sans-serif",
-            backgroundImage: `url('${MHC_ASSETS.officialLetterhead}')`,
-            backgroundSize: '100% 100%',
-            backgroundPosition: 'top center',
+            backgroundImage: `url('https://media.base44.com/images/public/68af5003813e47bd07947b30/43f238675_-.png')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed',
             padding: '0 10mm 110px 10mm',
             minHeight: '297mm',
           }}
