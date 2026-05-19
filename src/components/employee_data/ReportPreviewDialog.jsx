@@ -366,133 +366,102 @@ export default function ReportPreviewDialog({
           </div>
         </DialogHeader>
 
-        <div
-          className="bg-white relative overflow-hidden"
-          style={{
+        {/* مكوّن الصفحة - خلفية مستقلة لكل صفحة */}
+        {(() => {
+          const pageStyle = {
             fontFamily: "'Cairo', sans-serif",
             padding: '0 10mm 110px 10mm',
             minHeight: '297mm',
-          }}
-        >
-          <img
-            src={MHC_ASSETS.officialLetterhead}
-            alt="الخلفية الرسمية"
-            className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
-            style={{ zIndex: 0 }}
-          />
-          <div className="relative" style={{ zIndex: 1 }}>
-          {/* مساحة الترويسة (الشعار جزء من الخلفية) + النص بجانب الشعار */}
-          <div style={{ height: 130, position: 'relative' }}>
-            {headerSideText && (
-              <div style={{
-                position: 'absolute', top: 35, right: 130, maxWidth: 380,
-                textAlign: 'right', color: '#0B3D91', fontWeight: 700,
-                fontSize: 13, lineHeight: 1.7, whiteSpace: 'pre-wrap',
-              }}>
-                {headerSideText}
-              </div>
-            )}
-          </div>
+            position: 'relative',
+            overflow: 'hidden',
+            backgroundColor: '#fff',
+          };
 
-          {/* عنوان */}
-          <div className="text-center mb-5" style={{ marginTop: '60px' }}>
-            <h1 className="text-sm font-bold" style={{ color: '#0284c7' }}>{reportTitle}</h1>
-          </div>
-
-          {splitPages ? (
-            <>
-              {/* صفحة 1: النص التعبيري */}
-              {renderNarrative()}
-
-              {finalRequest && (
-                <div className="mt-4 p-3 border border-yellow-300 rounded-lg text-sm whitespace-pre-wrap">
-                  {finalRequest}
+          const PageWrapper = ({ children, label }) => (
+            <div style={{ marginBottom: 16 }}>
+              {label && <div className="border-t-4 border-dashed border-sky-300 py-2 text-center text-xs text-sky-500 font-bold no-print">{label}</div>}
+              <div style={pageStyle}>
+                <img
+                  src={MHC_ASSETS.officialLetterhead}
+                  alt="الخلفية الرسمية"
+                  className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
+                  style={{ zIndex: 0 }}
+                />
+                <div className="relative" style={{ zIndex: 1 }}>
+                  {/* ترويسة */}
+                  <div style={{ height: 130, position: 'relative' }}>
+                    {headerSideText && (
+                      <div style={{ position: 'absolute', top: 35, right: 130, maxWidth: 380, textAlign: 'right', color: '#0B3D91', fontWeight: 700, fontSize: 13, lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+                        {headerSideText}
+                      </div>
+                    )}
+                  </div>
+                  {/* عنوان */}
+                  <div className="text-center mb-5" style={{ marginTop: '60px' }}>
+                    <h1 className="text-sm font-bold" style={{ color: '#0284c7' }}>{reportTitle}</h1>
+                  </div>
+                  {children}
                 </div>
-              )}
-
-              {/* توقيع صفحة 1 */}
-              {showSignature && (
-                <div className={`mt-12 ${sigAlignClass}`}>
-                  {signerName && <p className="text-lg" style={{ fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, color: '#000', fontSize: '18px' }}>{signerName}</p>}
-                  {signerTitle && <p className="text-sm" style={{ fontWeight: 700, color: '#000', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
-                  {selectedSig && <TransparentSignatureImage src={selectedSig.image_url} alt={selectedSig.name} className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`} style={{ marginTop: '-2px' }} />}
-                </div>
-              )}
-
-              {/* فاصل صفحات */}
-              <div className="my-6 border-t-4 border-dashed border-sky-300 py-2 text-center text-xs text-sky-500 font-bold no-print">— صفحة 2: الجدول —</div>
-
-              <div style={{ height: 130 }}></div>
-              <div className="text-center mb-5" style={{ marginTop: '60px' }}>
-                <h1 className="text-sm font-bold" style={{ color: '#0284c7' }}>{reportTitle}</h1>
               </div>
+            </div>
+          );
 
-              {/* الجدول */}
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse text-xs">
-                  <thead>
-                    <tr>
-                      {headers.map((h, i) => (
-                        <th key={i} className="border border-gray-800 px-2 py-1 text-center font-bold text-xs" style={{ color: '#0B3D91', backgroundColor: 'transparent' }}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>{tableRows}</tbody>
-                </table>
-              </div>
+          const signatureBlock = showSignature && (
+            <div className={`mt-8 ${sigAlignClass}`}>
+              {signerName && <p style={{ fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, color: '#000', fontSize: '18px' }}>{signerName}</p>}
+              {signerTitle && <p style={{ fontWeight: 700, color: '#000', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
+              {selectedSig && <TransparentSignatureImage src={selectedSig.image_url} alt={selectedSig.name} className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`} style={{ marginTop: '-2px' }} />}
+            </div>
+          );
 
-              {/* توقيع صفحة 2 */}
-              {showSignature && (
-                <div className={`mt-8 ${sigAlignClass}`}>
-                  {signerName && <p className="text-lg" style={{ fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, color: '#000', fontSize: '18px' }}>{signerName}</p>}
-                  {signerTitle && <p className="text-sm" style={{ fontWeight: 700, color: '#000', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
-                  {selectedSig && <TransparentSignatureImage src={selectedSig.image_url} alt={selectedSig.name} className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`} style={{ marginTop: '-2px' }} />}
-                </div>
-              )}
+          const tableBlock = (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-xs">
+                <thead>
+                  <tr>
+                    {headers.map((h, i) => (
+                      <th key={i} className="border border-gray-800 px-2 py-1 text-center font-bold text-xs" style={{ color: '#0B3D91', backgroundColor: 'transparent' }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>{tableRows}</tbody>
+              </table>
+            </div>
+          );
 
-            </>
-          ) : (
-            <>
-              {/* نص تعبيري قبل الجدول */}
+          if (splitPages) {
+            return (
+              <>
+                {/* صفحة 1: النص التعبيري والتوقيع */}
+                <PageWrapper>
+                  {renderNarrative()}
+                  {finalRequest && (
+                    <div className="mt-4 p-3 border border-yellow-300 rounded-lg text-sm whitespace-pre-wrap">{finalRequest}</div>
+                  )}
+                  {signatureBlock}
+                </PageWrapper>
+
+                {/* صفحة 2: الجدول والتوقيع */}
+                <PageWrapper label="— صفحة 2: الجدول —">
+                  {tableBlock}
+                  {signatureBlock}
+                </PageWrapper>
+              </>
+            );
+          }
+
+          return (
+            <PageWrapper>
               {narrativePosition === 'before' && renderNarrative()}
-
-              {/* الجدول */}
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse text-xs">
-                  <thead>
-                    <tr>
-                      {headers.map((h, i) => (
-                        <th key={i} className="border border-gray-800 px-2 py-1 text-center font-bold text-xs" style={{ color: '#0B3D91', backgroundColor: 'transparent' }}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>{tableRows}</tbody>
-                </table>
-              </div>
-
-              {/* نص تعبيري بعد الجدول */}
+              {tableBlock}
               {narrativePosition === 'after' && renderNarrative("mt-4 text-sm")}
-
-              {/* نص الطلب */}
               {finalRequest && (
-                <div className="mt-4 p-3 border border-yellow-300 rounded-lg text-sm whitespace-pre-wrap">
-                  {finalRequest}
-                </div>
+                <div className="mt-4 p-3 border border-yellow-300 rounded-lg text-sm whitespace-pre-wrap">{finalRequest}</div>
               )}
-
-              {/* التوقيع */}
-              {showSignature && (
-                <div className={`mt-8 ${sigAlignClass}`}>
-                  {signerName && <p className="text-lg" style={{ fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, color: '#000', fontSize: '18px' }}>{signerName}</p>}
-                  {signerTitle && <p className="text-sm" style={{ fontWeight: 700, color: '#000', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
-                  {selectedSig && <TransparentSignatureImage src={selectedSig.image_url} alt={selectedSig.name} className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`} style={{ marginTop: '-2px' }} />}
-                </div>
-              )}
-
-            </>
-          )}
-          </div>
-        </div>
+              {signatureBlock}
+            </PageWrapper>
+          );
+        })()}
       </DialogContent>
     </Dialog>
   );
