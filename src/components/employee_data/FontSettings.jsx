@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { ChevronDown, ChevronUp, Type } from 'lucide-react';
+import { ChevronDown, ChevronUp, Type, Save, CheckCircle2 } from 'lucide-react';
+import { toast } from 'sonner';
+
+const STORAGE_KEY = 'employee_report_font_settings';
 
 const FONT_OPTIONS = [
   { value: 'Cairo', label: 'Cairo (كايرو)' },
@@ -72,9 +75,32 @@ function FontRow({ label, settings, onChange }) {
 
 export default function FontSettings({ fontSettings, onFontSettingsChange }) {
   const [expanded, setExpanded] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  // تحميل الإعدادات المحفوظة عند أول تحميل
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        onFontSettingsChange(parsed);
+      }
+    } catch {}
+  }, []);
 
   const update = (key, val) => {
     onFontSettingsChange({ ...fontSettings, [key]: val });
+  };
+
+  const handleSave = () => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(fontSettings));
+      setSaved(true);
+      toast.success('تم حفظ إعدادات الخطوط بنجاح');
+      setTimeout(() => setSaved(false), 2000);
+    } catch {
+      toast.error('فشل حفظ الإعدادات');
+    }
   };
 
   return (
@@ -87,7 +113,18 @@ export default function FontSettings({ fontSettings, onFontSettingsChange }) {
           <Type className="w-4 h-4" />
           إعدادات الخطوط والتنسيق
         </span>
-        {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+        <div className="flex items-center gap-2">
+          {expanded && (
+            <span
+              onClick={(e) => { e.stopPropagation(); handleSave(); }}
+              className={`flex items-center gap-1 px-2 py-1 rounded text-xs font-bold cursor-pointer transition-colors ${saved ? 'bg-green-600 text-white' : 'bg-indigo-600 text-white hover:bg-indigo-700'}`}
+            >
+              {saved ? <CheckCircle2 className="w-3 h-3" /> : <Save className="w-3 h-3" />}
+              {saved ? 'تم الحفظ' : 'حفظ'}
+            </span>
+          )}
+          {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+        </div>
       </button>
       
       {expanded && (
