@@ -263,7 +263,7 @@ export const generateReportHtml = ({
   logoSettings, logoPosition, showSignature, selectedSignatureId, signatures,
   signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees,
   displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
-  mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, splitPages, rowsPerFirstPage, rowsPerNextPage,
+  mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, mergeAssignmentPeriods = false, splitPages, rowsPerFirstPage, rowsPerNextPage,
   pageBreakAfterRows, finalRequest
 }) => {
   const headers = selectedFields.map(key =>
@@ -493,6 +493,10 @@ export const generateReportHtml = ({
         html += `<tr style="background-color: ${r.bg};">`;
         selectedFields.forEach(key => {
           if (key === 'فترة_التكليف') {
+            if (!mergeAssignmentPeriods) {
+              html += `<td style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: transparent; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
+              return;
+            }
             if (li === 0 || previousPeriodText !== periodText) {
               html += `<td rowspan="${periodRowSpan}" style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: transparent; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
             }

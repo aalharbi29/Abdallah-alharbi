@@ -111,6 +111,7 @@ export default function EmployeeDataRequest() {
   const [mergeWorkplaceOrientation, setMergeWorkplaceOrientation] = useState('vertical');
   const [mergeAssignment, setMergeAssignment] = useState(false);
   const [mergeAssignmentOrientation, setMergeAssignmentOrientation] = useState('vertical');
+  const [mergeAssignmentPeriods, setMergeAssignmentPeriods] = useState(false);
   const [fontSettings, setFontSettings] = useState({
     narrativeBold: { font: 'PT Sans Caption', size: '17', weight: '900' },
     narrativeGreeting: { font: 'Cairo', size: '16', weight: '700' },
@@ -151,6 +152,7 @@ export default function EmployeeDataRequest() {
         merge_workplace_orientation: mergeWorkplaceOrientation,
         merge_assignment: mergeAssignment,
         merge_assignment_orientation: mergeAssignmentOrientation,
+        merge_assignment_periods: mergeAssignmentPeriods,
         assignment_groups: assignmentGroups,
         line_styles: lineStyles,
         rows_per_first_page: rowsPerFirstPage,
@@ -203,6 +205,7 @@ export default function EmployeeDataRequest() {
       if (t.merge_workplace_orientation) setMergeWorkplaceOrientation(t.merge_workplace_orientation);
       if (t.merge_assignment !== undefined) setMergeAssignment(t.merge_assignment);
       if (t.merge_assignment_orientation) setMergeAssignmentOrientation(t.merge_assignment_orientation);
+      if (t.merge_assignment_periods !== undefined) setMergeAssignmentPeriods(t.merge_assignment_periods);
       if (t.assignment_groups) setAssignmentGroups(t.assignment_groups);
       if (t.line_styles) setLineStyles(t.line_styles);
       if (t.rows_per_first_page) setRowsPerFirstPage(t.rows_per_first_page);
@@ -253,6 +256,7 @@ export default function EmployeeDataRequest() {
       setMergeWorkplaceOrientation('vertical');
       setMergeAssignment(false);
       setMergeAssignmentOrientation('vertical');
+      setMergeAssignmentPeriods(false);
       setAssignmentGroups([{ id: Date.now(), dateType: 'hijri', periods: [createEmptyAssignmentPeriod()], specificDays: [], employeeIds: [] }]);
       setLineStyles({});
       setRowsPerFirstPage(15);
@@ -677,7 +681,7 @@ export default function EmployeeDataRequest() {
       logoSettings: effectiveLogoSettings, logoPosition, showSignature, selectedSignatureId, signatures: exportSignatures,
       signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees,
       displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
-      mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, splitPages, rowsPerFirstPage, rowsPerNextPage,
+      mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, mergeAssignmentPeriods, splitPages, rowsPerFirstPage, rowsPerNextPage,
       pageBreakAfterRows, finalRequest
     });
     const blob = new Blob([html], { type: 'text/html;charset=utf-8;' });
@@ -698,7 +702,7 @@ export default function EmployeeDataRequest() {
       logoSettings: effectiveLogoSettings, logoPosition, showSignature, selectedSignatureId, signatures: exportSignatures,
       signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees,
       displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
-      mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, splitPages, rowsPerFirstPage, rowsPerNextPage,
+      mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, mergeAssignmentPeriods, splitPages, rowsPerFirstPage, rowsPerNextPage,
       pageBreakAfterRows, finalRequest
     });
 
@@ -1414,6 +1418,16 @@ export default function EmployeeDataRequest() {
                       </Select>
                     )}
                   </div>
+                  <div className="flex items-center gap-2">
+                    <Checkbox
+                      id="mergeAssignmentPeriods"
+                      checked={mergeAssignmentPeriods}
+                      onCheckedChange={setMergeAssignmentPeriods}
+                    />
+                    <Label htmlFor="mergeAssignmentPeriods" className="cursor-pointer text-sm">
+                      دمج خلايا "فترة التكليف" المتشابهة المتتالية
+                    </Label>
+                  </div>
                 </div>
               </div>
 
@@ -1562,6 +1576,7 @@ export default function EmployeeDataRequest() {
                   merge_workplace_orientation: mergeWorkplaceOrientation,
                   merge_assignment: mergeAssignment,
                   merge_assignment_orientation: mergeAssignmentOrientation,
+                  merge_assignment_periods: mergeAssignmentPeriods,
                   assignment_groups: assignmentGroups,
                   line_styles: lineStyles,
                   rows_per_first_page: rowsPerFirstPage,
@@ -1592,6 +1607,7 @@ export default function EmployeeDataRequest() {
                   if (t.merge_workplace_orientation) setMergeWorkplaceOrientation(t.merge_workplace_orientation);
                   if (t.merge_assignment !== undefined) setMergeAssignment(t.merge_assignment);
                   if (t.merge_assignment_orientation) setMergeAssignmentOrientation(t.merge_assignment_orientation);
+                  if (t.merge_assignment_periods !== undefined) setMergeAssignmentPeriods(t.merge_assignment_periods);
                   if (t.assignment_groups) setAssignmentGroups(t.assignment_groups);
                   if (t.line_styles) setLineStyles(t.line_styles);
                   if (t.rows_per_first_page) setRowsPerFirstPage(t.rows_per_first_page);
@@ -1797,21 +1813,25 @@ export default function EmployeeDataRequest() {
                                 <tr key={emp.id}>
                                   {selectedFields.map(key => {
                                     if (key === 'فترة_التكليف') {
-                                      const previousPeriodText = li > 0 ? formatAssignmentPeriodPlain(group, grpEmps[li - 1].id) : null;
-                                      const currentPeriodText = formatAssignmentPeriodPlain(group, emp.id);
-                                      const nextSameCount = grpEmps.slice(li).findIndex((candidate, candidateIdx) => candidateIdx > 0 && formatAssignmentPeriodPlain(group, candidate.id) !== currentPeriodText);
-                                      const periodRowSpan = nextSameCount === -1 ? grpEmps.length - li : nextSameCount;
-                                      if (li === 0 || previousPeriodText !== currentPeriodText) {
-                                        return (
-                                          <td key="فترة_التكليف" rowSpan={periodRowSpan} style={{ border: '1px solid #000', padding: '6px 4px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px', backgroundColor: 'transparent', minWidth: '80px', lineHeight: '1.6', color: '#000' }}>
-                                            {(() => {
-                                              if (!group) return '-';
-                                              return <span style={{ whiteSpace: 'pre-wrap' }}>{formatAssignmentPeriodPlain(group, emp.id)}</span>;
-                                            })()}
-                                          </td>
-                                        );
-                                      }
-                                      return null;
+                                    const currentPeriodText = formatAssignmentPeriodPlain(group, emp.id);
+                                    if (!mergeAssignmentPeriods) {
+                                      return (
+                                        <td key="فترة_التكليف" style={{ border: '1px solid #000', padding: '6px 4px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px', backgroundColor: 'transparent', minWidth: '80px', lineHeight: '1.6', color: '#000' }}>
+                                          <span style={{ whiteSpace: 'pre-wrap' }}>{group ? currentPeriodText : '-'}</span>
+                                        </td>
+                                      );
+                                    }
+                                    const previousPeriodText = li > 0 ? formatAssignmentPeriodPlain(group, grpEmps[li - 1].id) : null;
+                                    const nextSameCount = grpEmps.slice(li).findIndex((candidate, candidateIdx) => candidateIdx > 0 && formatAssignmentPeriodPlain(group, candidate.id) !== currentPeriodText);
+                                    const periodRowSpan = nextSameCount === -1 ? grpEmps.length - li : nextSameCount;
+                                    if (li === 0 || previousPeriodText !== currentPeriodText) {
+                                      return (
+                                        <td key="فترة_التكليف" rowSpan={periodRowSpan} style={{ border: '1px solid #000', padding: '6px 4px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px', backgroundColor: 'transparent', minWidth: '80px', lineHeight: '1.6', color: '#000' }}>
+                                          <span style={{ whiteSpace: 'pre-wrap' }}>{group ? currentPeriodText : '-'}</span>
+                                        </td>
+                                      );
+                                    }
+                                    return null;
                                     }
                                     if (mergeWorkplace && key === 'المركز_الصحي') {
                                       if (sortedWSpans[gi] === 0) return null;
@@ -1932,6 +1952,7 @@ export default function EmployeeDataRequest() {
           mergeWorkplaceOrientation={mergeWorkplaceOrientation}
           mergeAssignment={mergeAssignment}
           mergeAssignmentOrientation={mergeAssignmentOrientation}
+          mergeAssignmentPeriods={mergeAssignmentPeriods}
           lineStyles={lineStyles}
           setLineStyles={setLineStyles}
         />

@@ -35,6 +35,7 @@ export default function ReportPreviewDialog({
   mergeWorkplaceOrientation,
   mergeAssignment,
   mergeAssignmentOrientation,
+  mergeAssignmentPeriods = false,
   lineStyles = {},
   setLineStyles,
   headerSideText = '',
@@ -198,8 +199,24 @@ export default function ReportPreviewDialog({
           <tr key={emp.id}>
             {selectedFields.map(key => {
               if (key === 'فترة_التكليف') {
-                const previousPeriodText = localIdx > 0 ? formatAssignmentPeriodsHtml(group, grpEmps[localIdx - 1].id) : null;
                 const currentPeriodText = formatAssignmentPeriodsHtml(group, emp.id);
+                if (!mergeAssignmentPeriods) {
+                  return (
+                    <td
+                      key="فترة_التكليف"
+                      className="border border-gray-300 text-center text-xs font-bold"
+                      style={{
+                        padding: '4px 8px',
+                        backgroundColor: 'transparent',
+                        minWidth: '80px',
+                        lineHeight: '1.6',
+                      }}
+                    >
+                      {group ? <div dangerouslySetInnerHTML={{ __html: currentPeriodText }} /> : '-'}
+                    </td>
+                  );
+                }
+                const previousPeriodText = localIdx > 0 ? formatAssignmentPeriodsHtml(group, grpEmps[localIdx - 1].id) : null;
                 const nextSameCount = grpEmps.slice(localIdx).findIndex((candidate, candidateIdx) => candidateIdx > 0 && formatAssignmentPeriodsHtml(group, candidate.id) !== currentPeriodText);
                 const periodRowSpan = nextSameCount === -1 ? grpEmps.length - localIdx : nextSameCount;
                 if (localIdx === 0 || previousPeriodText !== currentPeriodText) {
@@ -215,12 +232,7 @@ export default function ReportPreviewDialog({
                         lineHeight: '1.6',
                       }}
                     >
-                      {(() => {
-                        if (!group) return '-';
-                        const suffix = group.dateType === 'hijri' ? 'هـ' : 'م';
-                        let text = '';
-                        return <div dangerouslySetInnerHTML={{ __html: formatAssignmentPeriodsHtml(group, emp.id) }} />;
-                      })()}
+                      {group ? <div dangerouslySetInnerHTML={{ __html: currentPeriodText }} /> : '-'}
                     </td>
                   );
                 }
@@ -336,7 +348,7 @@ export default function ReportPreviewDialog({
       });
       return [...empRows, ...managerRows];
     }
-  }, [selectedEmployees, selectedFields, displayMode, groupedByManager, getFieldValue, getManagerWithCenters, assignmentGroups]);
+  }, [selectedEmployees, selectedFields, displayMode, groupedByManager, getFieldValue, getManagerWithCenters, assignmentGroups, mergeAssignmentPeriods]);
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
