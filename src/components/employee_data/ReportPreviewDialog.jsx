@@ -145,9 +145,14 @@ export default function ReportPreviewDialog({
       ));
     }
 
-            const sortedInputEmps = [...empList].sort((a, b) => {
+            const isAdminCenter = (center) => center && center.includes('شؤون');
+
+    const sortedInputEmps = [...empList].sort((a, b) => {
       const centerA = getFieldValue(a, 'جهة_التكليف') || '';
       const centerB = getFieldValue(b, 'جهة_التكليف') || '';
+      // شؤون المراكز دائماً في الأعلى
+      if (isAdminCenter(centerA) && !isAdminCenter(centerB)) return -1;
+      if (!isAdminCenter(centerA) && isAdminCenter(centerB)) return 1;
       return centerA.localeCompare(centerB, 'ar');
     });
 
@@ -192,7 +197,13 @@ export default function ReportPreviewDialog({
         const p = row.group ? formatAssignmentPeriodsHtml(row.group, e.id) : '-';
         if (mergeWorkplace) { if (w !== cw) { cw = w; ws = i; sortedWorkplaceSpans[i] = 1; } else { sortedWorkplaceSpans[ws]++; sortedWorkplaceSpans[i] = 0; } }
         if (mergeAssignment) { if (a !== ca) { ca = a; as = i; sortedAssignmentSpans[i] = 1; } else { sortedAssignmentSpans[as]++; sortedAssignmentSpans[i] = 0; } }
-        if (mergeAssignmentPeriods) { if (p !== cp) { cp = p; ps = i; sortedPeriodSpans[i] = 1; } else { sortedPeriodSpans[ps]++; sortedPeriodSpans[i] = 0; } }
+        if (mergeAssignmentPeriods) {
+          const empCenter = getFieldValue(e, 'جهة_التكليف') || '';
+          const prevEmpCenter = i > 0 ? getFieldValue(sortedRows[i-1].emp, 'جهة_التكليف') || '' : '';
+          // عدم دمج فترة موظفي الإدارة (شؤون المراكز) مع المراكز الصحية
+          const isSameType = isAdminCenter(empCenter) === isAdminCenter(prevEmpCenter);
+          if (p !== cp || !isSameType) { cp = p; ps = i; sortedPeriodSpans[i] = 1; } else { sortedPeriodSpans[ps]++; sortedPeriodSpans[i] = 0; }
+        }
       });
     }
 

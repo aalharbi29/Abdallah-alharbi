@@ -1740,12 +1740,16 @@ export default function EmployeeDataRequest() {
                         const hasAssignCol = selectedFields.includes('فترة_التكليف');
                         const otherCols = selectedFields.filter(k => k !== 'فترة_التكليف');
 
+                        const isAdminCenter = (center) => center && center.includes('شؤون');
+
                         const renderMergedRows = (empList, bgFn) => {
-                          const sortedEmps = [...empList].sort((a, b) => {
-                            const centerA = a.المركز_الصحي || '';
-                            const centerB = b.المركز_الصحي || '';
-                            return centerA.localeCompare(centerB, 'ar');
-                          });
+                        const sortedEmps = [...empList].sort((a, b) => {
+                          const centerA = getFieldValue(a, 'جهة_التكليف') || a.المركز_الصحي || '';
+                          const centerB = getFieldValue(b, 'جهة_التكليف') || b.المركز_الصحي || '';
+                          if (isAdminCenter(centerA) && !isAdminCenter(centerB)) return -1;
+                          if (!isAdminCenter(centerA) && isAdminCenter(centerB)) return 1;
+                          return centerA.localeCompare(centerB, 'ar');
+                        });
                           const wSpans = {}; const aSpans = {};
                           if (mergeWorkplace || mergeAssignment) {
                             let cw = null, ws = 0, ca = null, as = 0;
@@ -1805,7 +1809,12 @@ export default function EmployeeDataRequest() {
                               const p = row.group ? formatAssignmentPeriodPlain(row.group, e.id) : '-';
                               if (mergeWorkplace) { if (w !== cw) { cw = w; ws = i; sortedWSpans[i] = 1; } else { sortedWSpans[ws]++; sortedWSpans[i] = 0; } }
                               if (mergeAssignment) { if (a !== ca) { ca = a; as = i; sortedASpans[i] = 1; } else { sortedASpans[as]++; sortedASpans[i] = 0; } }
-                              if (mergeAssignmentPeriods) { if (p !== cp) { cp = p; ps = i; sortedPeriodSpans[i] = 1; } else { sortedPeriodSpans[ps]++; sortedPeriodSpans[i] = 0; } }
+                              if (mergeAssignmentPeriods) {
+                                const empCenter = getFieldValue(row.emp, 'جهة_التكليف') || '';
+                                const prevCenter = i > 0 ? getFieldValue(orderedRows[i-1].emp, 'جهة_التكليف') || '' : '';
+                                const isSameType = isAdminCenter(empCenter) === isAdminCenter(prevCenter);
+                                if (p !== cp || !isSameType) { cp = p; ps = i; sortedPeriodSpans[i] = 1; } else { sortedPeriodSpans[ps]++; sortedPeriodSpans[i] = 0; }
+                              }
                             });
                           }
 
