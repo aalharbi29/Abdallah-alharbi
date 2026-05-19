@@ -626,9 +626,9 @@ export const generateReportHtml = ({
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Cairo', sans-serif; background: #fff; color: #000; }
   @page { size: A4; margin: 0; }
-  .page-container { width: 210mm; min-height: 297mm; margin: 0 auto; padding: 0 20mm; display: block; position: relative; overflow: hidden; background: #fff; }
-  .page-container::before { content: ''; position: absolute; inset: 0; background-image: url('${MHC_ASSETS.officialLetterhead}'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat; z-index: 0; }
-  .page-content { padding-top: 0; padding-bottom: 30px; position: relative; z-index: 1; }
+  .page-container { width: 210mm; min-height: 297mm; margin: 0 auto; padding: 0 20mm; display: block; position: relative; background: #fff; }
+  .page-container::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; background-image: url('${MHC_ASSETS.officialLetterhead}'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat; z-index: 0; pointer-events: none; }
+  .page-content { padding-top: 0; padding-bottom: 8px; position: relative; z-index: 1; }
   .header-spacer { height: 130px; position: relative; }
   .header-side-text { position: absolute; top: 35px; right: 130px; max-width: 380px; text-align: right; font-family: 'Tajawal','Cairo',sans-serif; color: #0B3D91; font-weight: 700; font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
   .report-title { text-align: center; margin-bottom: 20px; margin-top: 60px; }
@@ -638,23 +638,24 @@ export const generateReportHtml = ({
   .narrative-bold { font-family: '${fontSettings.narrativeBold.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeBold.weight}; font-size: ${fontSettings.narrativeBold.size}px; display: block; line-height: 1.0; }
   .narrative-greeting { font-family: '${fontSettings.narrativeGreeting.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeGreeting.weight}; font-size: ${fontSettings.narrativeGreeting.size}px; display: block; line-height: 1.0; }
   .narrative-body { font-family: '${fontSettings.narrativeBody.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeBody.weight}; font-size: ${fontSettings.narrativeBody.size}px; display: inline; line-height: ${fontSettings.lineHeight || '2.0'}; }
-  table { width: 100%; border-collapse: collapse; margin: 15px 0; table-layout: fixed; }
-  th { background: transparent; color: #0B3D91; border: 1px solid #000; padding: 6px 10px; text-align: center; font-family: '${fontSettings.tableHeader.font}', 'Tajawal', 'Cairo', sans-serif; font-weight: ${fontSettings.tableHeader.weight}; font-size: ${fontSettings.tableHeader.size}px; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; table-layout: auto; }
+  th { background: transparent; color: #0B3D91; border: 1px solid #000; padding: 5px 8px; text-align: center; font-family: '${fontSettings.tableHeader.font}', 'Tajawal', 'Cairo', sans-serif; font-weight: ${fontSettings.tableHeader.weight}; font-size: ${fontSettings.tableHeader.size}px; white-space: nowrap; }
   tr { height: 22px; }
   tr, td, th { background-color: transparent !important; }
-  td { border: 1px solid #000; padding: 2px 4px; text-align: center; font-family: '${fontSettings.tableBody.font}', 'Tajawal', 'Cairo', sans-serif; font-size: ${fontSettings.tableBody.size}px; font-weight: ${fontSettings.tableBody.weight}; vertical-align: middle; color: #0F172A; background-color: transparent !important; overflow: hidden; word-break: break-word; }
-  .request-box { background: transparent; border-right: 4px solid #1E63D6; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; color: #0F172A; }
-  .signature-section { text-align: ${sigAlign}; margin-top: 20px; padding: 10px 0; page-break-inside: avoid; }
-  .signature-section .sig-name { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 700; font-size: 18px; margin-top: 8px; color: #000; }
-  .signature-section .sig-title { font-weight: 700; font-size: 15px; color: #000; margin-top: 0; }
-  .signature-section img { max-height: 120px; ${sigAlign === 'center' ? 'margin: 0 auto;' : ''} display: block; margin-top: -2px; mix-blend-mode: multiply; background: transparent; }
+  td { border: 1px solid #000; padding: 2px 6px; text-align: center; font-family: '${fontSettings.tableBody.font}', 'Tajawal', 'Cairo', sans-serif; font-size: ${fontSettings.tableBody.size}px; font-weight: ${fontSettings.tableBody.weight}; vertical-align: middle; color: #0F172A; background-color: transparent !important; white-space: nowrap; }
+  .request-box { background: transparent; border-right: 4px solid #1E63D6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; color: #0F172A; }
+  .signature-section { text-align: ${sigAlign}; margin-top: 8px; padding: 4px 0; page-break-inside: avoid; }
+  .signature-section .sig-name { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 700; font-size: 15px; margin-top: 4px; color: #000; }
+  .signature-section .sig-title { font-weight: 700; font-size: 12px; color: #000; margin-top: 0; }
+  .signature-section img { max-height: 80px; ${sigAlign === 'center' ? 'margin: 0 auto;' : ''} display: block; margin-top: -2px; mix-blend-mode: multiply; background: transparent; }
   .footer-banner { text-align: center; padding-top: 15px; border-top: 3px solid #0B3D91; margin-top: auto; }
   .footer-banner p { margin: 4px 0; font-size: 14px; color: #0B3D91; }
   .footer-banner .main-text { font-weight: 800; color: #0B3D91; font-size: 15px; }
   .footer-banner .date-text { font-size: 11px; color: #1E63D6; margin-top: 8px; }
   @media print {
     body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .page-container { min-height: 0; }
+    .page-container { min-height: 297mm; page-break-after: always; }
+    .page-container:last-child { page-break-after: avoid; }
     .signature-section { page-break-inside: avoid; page-break-before: avoid; }
   }
 </style>
