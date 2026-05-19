@@ -540,6 +540,21 @@ export default function EmployeeDataRequest() {
     };
   };
 
+  // ترتيب الموظفين: شؤون المراكز أولاً ثم بقية المراكز
+  const sortedSelectedEmployees = useMemo(() => {
+    const isAdmin = (emp) => {
+      const center = assignmentCenters[emp.id] || '';
+      return center.includes('شؤون');
+    };
+    return [...selectedEmployees].sort((a, b) => {
+      if (isAdmin(a) && !isAdmin(b)) return -1;
+      if (!isAdmin(a) && isAdmin(b)) return 1;
+      const ca = assignmentCenters[a.id] || a.المركز_الصحي || '';
+      const cb = assignmentCenters[b.id] || b.المركز_الصحي || '';
+      return ca.localeCompare(cb, 'ar');
+    });
+  }, [selectedEmployees, assignmentCenters]);
+
   const groupedByManager = useMemo(() => {
     const groups = {};
     selectedEmployees.forEach(emp => {
@@ -665,7 +680,7 @@ export default function EmployeeDataRequest() {
     exportToCSV({
       headers,
       displayMode,
-      selectedEmployees,
+      selectedEmployees: sortedSelectedEmployees,
       selectedFields,
       groupedByManager,
       getManagerWithCenters,
@@ -679,7 +694,7 @@ export default function EmployeeDataRequest() {
     const html = generateReportHtml({
       selectedFields, availableFields, reportTitle, reportNarrative, narrativePosition, lineStyles, fontSettings,
       logoSettings: effectiveLogoSettings, logoPosition, showSignature, selectedSignatureId, signatures: exportSignatures,
-      signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees,
+      signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees: sortedSelectedEmployees,
       displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
       mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, mergeAssignmentPeriods, splitPages, rowsPerFirstPage, rowsPerNextPage,
       pageBreakAfterRows, finalRequest
@@ -700,7 +715,7 @@ export default function EmployeeDataRequest() {
     const html = generateReportHtml({
       selectedFields, availableFields, reportTitle, reportNarrative, narrativePosition, lineStyles, fontSettings,
       logoSettings: effectiveLogoSettings, logoPosition, showSignature, selectedSignatureId, signatures: exportSignatures,
-      signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees,
+      signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees: sortedSelectedEmployees,
       displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
       mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, mergeAssignmentPeriods, splitPages, rowsPerFirstPage, rowsPerNextPage,
       pageBreakAfterRows, finalRequest
@@ -1862,9 +1877,9 @@ export default function EmployeeDataRequest() {
                         };
 
                         if (displayMode === 'normal') {
-                          return renderMergedRows(selectedEmployees);
+                          return renderMergedRows(sortedSelectedEmployees);
                         } else {
-                          const empRows = renderMergedRows(selectedEmployees);
+                          const empRows = renderMergedRows(sortedSelectedEmployees);
                           const managerRows = [];
                           const processedManagers = new Set();
                           Object.entries(groupedByManager).forEach(([managerId, employeeIds]) => {
@@ -1944,7 +1959,7 @@ export default function EmployeeDataRequest() {
           narrativePosition={narrativePosition}
           headers={selectedFields.map(key => availableFields.find(f => f.key === key)?.label || key)}
           selectedFields={selectedFields}
-          selectedEmployees={selectedEmployees}
+          selectedEmployees={sortedSelectedEmployees}
           displayMode={displayMode}
           getFieldValue={getFieldValue}
           groupedByManager={groupedByManager}
