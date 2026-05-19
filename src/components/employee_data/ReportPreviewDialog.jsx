@@ -395,8 +395,8 @@ export default function ReportPreviewDialog({
           </div>
 
           {/* عنوان */}
-          <div className="text-center mb-5" style={{ marginTop: '30px' }}>
-            <h1 className="text-lg font-bold" style={{ color: '#0284c7' }}>{reportTitle}</h1>
+          <div className="text-center mb-5" style={{ marginTop: '60px' }}>
+            <h1 className="text-sm font-bold" style={{ color: '#0284c7' }}>{reportTitle}</h1>
           </div>
 
           {splitPages ? (
@@ -423,8 +423,8 @@ export default function ReportPreviewDialog({
               <div className="my-6 border-t-4 border-dashed border-sky-300 py-2 text-center text-xs text-sky-500 font-bold no-print">— صفحة 2: الجدول —</div>
 
               <div style={{ height: 130 }}></div>
-              <div className="text-center mb-5" style={{ marginTop: '30px' }}>
-                <h1 className="text-lg font-bold" style={{ color: '#0284c7' }}>{reportTitle}</h1>
+              <div className="text-center mb-5" style={{ marginTop: '60px' }}>
+                <h1 className="text-sm font-bold" style={{ color: '#0284c7' }}>{reportTitle}</h1>
               </div>
 
               {/* الجدول */}
