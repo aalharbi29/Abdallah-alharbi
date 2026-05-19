@@ -638,10 +638,11 @@ export const generateReportHtml = ({
   .narrative-bold { font-family: '${fontSettings.narrativeBold.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeBold.weight}; font-size: ${fontSettings.narrativeBold.size}px; display: block; line-height: 1.0; }
   .narrative-greeting { font-family: '${fontSettings.narrativeGreeting.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeGreeting.weight}; font-size: ${fontSettings.narrativeGreeting.size}px; display: block; line-height: 1.0; }
   .narrative-body { font-family: '${fontSettings.narrativeBody.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeBody.weight}; font-size: ${fontSettings.narrativeBody.size}px; display: inline; line-height: ${fontSettings.lineHeight || '2.0'}; }
-  table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 15px 0; table-layout: fixed; }
   th { background: transparent; color: #0B3D91; border: 1px solid #000; padding: 6px 10px; text-align: center; font-family: '${fontSettings.tableHeader.font}', 'Tajawal', 'Cairo', sans-serif; font-weight: ${fontSettings.tableHeader.weight}; font-size: ${fontSettings.tableHeader.size}px; }
+  tr { height: 22px; }
   tr, td, th { background-color: transparent !important; }
-  td { border: 1px solid #000; padding: 2px 6px; text-align: center; font-family: '${fontSettings.tableBody.font}', 'Tajawal', 'Cairo', sans-serif; font-size: ${fontSettings.tableBody.size}px; font-weight: ${fontSettings.tableBody.weight}; vertical-align: middle; color: #0F172A; background-color: transparent !important; }
+  td { border: 1px solid #000; padding: 2px 4px; text-align: center; font-family: '${fontSettings.tableBody.font}', 'Tajawal', 'Cairo', sans-serif; font-size: ${fontSettings.tableBody.size}px; font-weight: ${fontSettings.tableBody.weight}; vertical-align: middle; color: #0F172A; background-color: transparent !important; overflow: hidden; word-break: break-word; }
   .request-box { background: transparent; border-right: 4px solid #1E63D6; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; color: #0F172A; }
   .signature-section { text-align: ${sigAlign}; margin-top: 50px; padding: 15px 0; }
   .signature-section .sig-name { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 700; font-size: 18px; margin-top: 8px; color: #000; }
