@@ -631,8 +631,8 @@ export const generateReportHtml = ({
   .page-content { flex: 1; padding-top: 0; padding-bottom: 110px; position: relative; z-index: 1; }
   .header-spacer { height: 130px; position: relative; }
   .header-side-text { position: absolute; top: 35px; right: 130px; max-width: 380px; text-align: right; font-family: 'Tajawal','Cairo',sans-serif; color: #0B3D91; font-weight: 700; font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
-  .report-title { text-align: center; margin-bottom: 20px; margin-top: 10px; }
-  .report-title h1 { font-size: 22px; color: #0B3D91; font-weight: 800; margin-bottom: 6px; }
+  .report-title { text-align: center; margin-bottom: 20px; margin-top: 60px; }
+  .report-title h1 { font-size: 16px; color: #0B3D91; font-weight: 800; margin-bottom: 6px; }
   .narrative-box { background: transparent; border: none; border-radius: 0; padding: 10px 0; margin-bottom: 20px; line-height: ${fontSettings.lineHeight || '2.0'}; white-space: pre-wrap; }
   .narrative-box .paragraph { margin-bottom: ${fontSettings.paragraphSpacing || 10}px; }
   .narrative-bold { font-family: '${fontSettings.narrativeBold.font}', 'Cairo', sans-serif; font-weight: ${fontSettings.narrativeBold.weight}; font-size: ${fontSettings.narrativeBold.size}px; display: block; line-height: 1.0; }
