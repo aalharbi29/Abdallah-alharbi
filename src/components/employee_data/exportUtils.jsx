@@ -644,7 +644,7 @@ export const generateReportHtml = ({
   tr, td, th { background-color: transparent !important; }
   td { border: 1px solid #000; padding: 2px 6px; text-align: center; font-family: '${fontSettings.tableBody.font}', 'Tajawal', 'Cairo', sans-serif; font-size: ${fontSettings.tableBody.size}px; font-weight: ${fontSettings.tableBody.weight}; vertical-align: middle; color: #0F172A; background-color: transparent !important; white-space: nowrap; }
   .request-box { background: transparent; border-right: 4px solid #1E63D6; border-radius: 8px; padding: 12px 16px; margin: 12px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; color: #0F172A; }
-  .signature-section { text-align: ${sigAlign}; margin-top: 8px; padding: 4px 0; page-break-inside: avoid; }
+  .signature-section { text-align: ${sigAlign}; margin-top: 16px; padding: 8px 0; page-break-inside: avoid; }
   .signature-section .sig-name { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 700; font-size: 15px; margin-top: 4px; color: #000; }
   .signature-section .sig-title { font-weight: 700; font-size: 12px; color: #000; margin-top: 0; }
   .signature-section img { max-height: 80px; ${sigAlign === 'center' ? 'margin: 0 auto;' : ''} display: block; margin-top: -2px; mix-blend-mode: multiply; background: transparent; }
