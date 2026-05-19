@@ -177,17 +177,22 @@ export default function ReportPreviewDialog({
     });
 
     // إعادة حساب الدمج بعد الترتيب الجديد
-    const sortedEmps = [];
-    grouped.forEach(({ employees: grpEmps }) => sortedEmps.push(...grpEmps));
+    const sortedRows = [];
+    grouped.forEach(({ group, employees: grpEmps }) => grpEmps.forEach(emp => sortedRows.push({ group, emp })));
+    const sortedEmps = sortedRows.map(row => row.emp);
     
     const sortedWorkplaceSpans = {};
     const sortedAssignmentSpans = {};
-    if (mergeWorkplace || mergeAssignment) {
-      let cw = null, ws = 0, ca = null, as = 0;
-      sortedEmps.forEach((e, i) => {
+    const sortedPeriodSpans = {};
+    if (mergeWorkplace || mergeAssignment || mergeAssignmentPeriods) {
+      let cw = null, ws = 0, ca = null, as = 0, cp = null, ps = 0;
+      sortedRows.forEach((row, i) => {
+        const e = row.emp;
         const w = getFieldValue(e, 'المركز_الصحي'); const a = getFieldValue(e, 'جهة_التكليف');
+        const p = row.group ? formatAssignmentPeriodsHtml(row.group, e.id) : '-';
         if (mergeWorkplace) { if (w !== cw) { cw = w; ws = i; sortedWorkplaceSpans[i] = 1; } else { sortedWorkplaceSpans[ws]++; sortedWorkplaceSpans[i] = 0; } }
         if (mergeAssignment) { if (a !== ca) { ca = a; as = i; sortedAssignmentSpans[i] = 1; } else { sortedAssignmentSpans[as]++; sortedAssignmentSpans[i] = 0; } }
+        if (mergeAssignmentPeriods) { if (p !== cp) { cp = p; ps = i; sortedPeriodSpans[i] = 1; } else { sortedPeriodSpans[ps]++; sortedPeriodSpans[i] = 0; } }
       });
     }
 
@@ -216,17 +221,15 @@ export default function ReportPreviewDialog({
                     </td>
                   );
                 }
-                const previousPeriodText = localIdx > 0 ? formatAssignmentPeriodsHtml(group, grpEmps[localIdx - 1].id) : null;
-                const nextSameCount = grpEmps.slice(localIdx).findIndex((candidate, candidateIdx) => candidateIdx > 0 && formatAssignmentPeriodsHtml(group, candidate.id) !== currentPeriodText);
-                const periodRowSpan = nextSameCount === -1 ? grpEmps.length - localIdx : nextSameCount;
-                if (localIdx === 0 || previousPeriodText !== currentPeriodText) {
+                if (sortedPeriodSpans[globalIdx] !== 0) {
                   return (
                     <td
                       key="فترة_التكليف"
-                      rowSpan={periodRowSpan}
+                      rowSpan={sortedPeriodSpans[globalIdx] || 1}
                       className="border border-gray-300 text-center text-xs font-bold"
                       style={{
                         padding: '4px 8px',
+                        verticalAlign: 'middle',
                         backgroundColor: 'transparent',
                         minWidth: '80px',
                         lineHeight: '1.6',

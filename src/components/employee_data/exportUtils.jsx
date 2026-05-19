@@ -420,13 +420,15 @@ export const generateReportHtml = ({
   const theadHtml = `<thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>`;
 
   const renderPageRowsHtml = (pageRows) => {
-    const pageWSpans = {}; const pageASpans = {};
-    if (mergeWorkplace || mergeAssignment) {
-      let cw = null, ws = 0, ca = null, as = 0;
+    const pageWSpans = {}; const pageASpans = {}; const pagePeriodSpans = {};
+    if (mergeWorkplace || mergeAssignment || mergeAssignmentPeriods) {
+      let cw = null, ws = 0, ca = null, as = 0, cp = null, ps = 0;
       pageRows.forEach((r, i) => {
         const w = getFieldValue(r.emp, 'المركز_الصحي'); const a = getFieldValue(r.emp, 'جهة_التكليف');
+        const p = r.group ? formatAssignmentPeriodsHtml(r.group, r.emp.id) : '-';
         if (mergeWorkplace) { if (w !== cw) { cw = w; ws = i; pageWSpans[i] = 1; } else { pageWSpans[ws]++; pageWSpans[i] = 0; } }
         if (mergeAssignment) { if (a !== ca) { ca = a; as = i; pageASpans[i] = 1; } else { pageASpans[as]++; pageASpans[i] = 0; } }
+        if (mergeAssignmentPeriods) { if (p !== cp) { cp = p; ps = i; pagePeriodSpans[i] = 1; } else { pagePeriodSpans[ps]++; pagePeriodSpans[i] = 0; } }
       });
     }
 
@@ -497,8 +499,8 @@ export const generateReportHtml = ({
               html += `<td style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: transparent; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
               return;
             }
-            if (li === 0 || previousPeriodText !== periodText) {
-              html += `<td rowspan="${periodRowSpan}" style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: transparent; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
+            if (pagePeriodSpans[idxInPage] !== 0) {
+              html += `<td rowspan="${pagePeriodSpans[idxInPage] || 1}" style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; vertical-align: middle; font-size: 11px; font-weight: bold; background-color: transparent; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
             }
             return;
           }

@@ -1792,16 +1792,20 @@ export default function EmployeeDataRequest() {
                             if (ungroupedCenterEmps.length > 0) grouped.push({ group: null, employees: ungroupedCenterEmps });
                           });
 
-                          const orderedEmps = [];
-                          grouped.forEach(({ employees: grpEmps }) => orderedEmps.push(...grpEmps));
+                          const orderedRows = [];
+                          grouped.forEach(({ group, employees: grpEmps }) => grpEmps.forEach(emp => orderedRows.push({ group, emp })));
+                          const orderedEmps = orderedRows.map(row => row.emp);
                           
-                          const sortedWSpans = {}; const sortedASpans = {};
-                          if (mergeWorkplace || mergeAssignment) {
-                            let cw = null, ws = 0, ca = null, as = 0;
-                            orderedEmps.forEach((e, i) => {
+                          const sortedWSpans = {}; const sortedASpans = {}; const sortedPeriodSpans = {};
+                          if (mergeWorkplace || mergeAssignment || mergeAssignmentPeriods) {
+                            let cw = null, ws = 0, ca = null, as = 0, cp = null, ps = 0;
+                            orderedRows.forEach((row, i) => {
+                              const e = row.emp;
                               const w = getFieldValue(e, 'المركز_الصحي'); const a = getFieldValue(e, 'جهة_التكليف');
+                              const p = row.group ? formatAssignmentPeriodPlain(row.group, e.id) : '-';
                               if (mergeWorkplace) { if (w !== cw) { cw = w; ws = i; sortedWSpans[i] = 1; } else { sortedWSpans[ws]++; sortedWSpans[i] = 0; } }
                               if (mergeAssignment) { if (a !== ca) { ca = a; as = i; sortedASpans[i] = 1; } else { sortedASpans[as]++; sortedASpans[i] = 0; } }
+                              if (mergeAssignmentPeriods) { if (p !== cp) { cp = p; ps = i; sortedPeriodSpans[i] = 1; } else { sortedPeriodSpans[ps]++; sortedPeriodSpans[i] = 0; } }
                             });
                           }
 
@@ -1821,12 +1825,9 @@ export default function EmployeeDataRequest() {
                                         </td>
                                       );
                                     }
-                                    const previousPeriodText = li > 0 ? formatAssignmentPeriodPlain(group, grpEmps[li - 1].id) : null;
-                                    const nextSameCount = grpEmps.slice(li).findIndex((candidate, candidateIdx) => candidateIdx > 0 && formatAssignmentPeriodPlain(group, candidate.id) !== currentPeriodText);
-                                    const periodRowSpan = nextSameCount === -1 ? grpEmps.length - li : nextSameCount;
-                                    if (li === 0 || previousPeriodText !== currentPeriodText) {
+                                    if (sortedPeriodSpans[gi] !== 0) {
                                       return (
-                                        <td key="فترة_التكليف" rowSpan={periodRowSpan} style={{ border: '1px solid #000', padding: '6px 4px', textAlign: 'center', fontWeight: 'bold', fontSize: '11px', backgroundColor: 'transparent', minWidth: '80px', lineHeight: '1.6', color: '#000' }}>
+                                        <td key="فترة_التكليف" rowSpan={sortedPeriodSpans[gi] || 1} style={{ border: '1px solid #000', padding: '6px 4px', textAlign: 'center', verticalAlign: 'middle', fontWeight: 'bold', fontSize: '11px', backgroundColor: 'transparent', minWidth: '80px', lineHeight: '1.6', color: '#000' }}>
                                           <span style={{ whiteSpace: 'pre-wrap' }}>{group ? currentPeriodText : '-'}</span>
                                         </td>
                                       );
