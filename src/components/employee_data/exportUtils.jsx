@@ -280,7 +280,7 @@ export const generateReportHtml = ({
     if (!text) return '';
     const paragraphs = text.split(/\n\s*\n/);
     const greetingKeywords = ['السلام', 'التحية', 'وبعد', 'تحية'];
-    const boldKeywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
+    const boldKeywords = ['سعادة', 'المكرم', 'المكرمة'];
     
     return paragraphs.map((paragraph, pi) => {
       const lines = paragraph.split('\n');

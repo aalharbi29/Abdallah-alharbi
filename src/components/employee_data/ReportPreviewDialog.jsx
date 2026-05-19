@@ -291,7 +291,7 @@ export default function ReportPreviewDialog({
           <div key={pi} style={{ marginBottom: `${fontSettings?.paragraphSpacing || 10}px` }}>
             {paragraph.split('\n').map((line, i) => {
               const greetingKeywords = ['السلام', 'التحية', 'وبعد', 'تحية'];
-              const boldKeywords = ['سعادة', 'المكرم', 'المكرمة', 'مدير', 'إدارة', 'الإدارة', 'دائرة', 'الدائرة', 'قسم', 'القسم'];
+              const boldKeywords = ['سعادة', 'المكرم', 'المكرمة'];
               const isGreeting = greetingKeywords.some(kw => line.includes(kw));
               const isBold = boldKeywords.some(kw => line.includes(kw));
               
