@@ -122,7 +122,7 @@ export default function ReportPreviewDialog({
             if (mergeWorkplace && key === 'المركز_الصحي') {
               if (workplaceSpans[idx] === 0) return null;
               return (
-                <td key={key} rowSpan={workplaceSpans[idx]} className="border border-gray-300 px-2 text-center text-xs font-bold" style={getMergedCellStyle(workplaceSpans[idx], mergeWorkplaceOrientation)}>
+                <td key={key} rowSpan={workplaceSpans[idx]} className="border border-black px-2 text-center text-xs font-bold" style={{ ...getMergedCellStyle(workplaceSpans[idx], mergeWorkplaceOrientation), backgroundColor: 'transparent' }}>
                   {renderMergedCellContent(getFieldValue(emp, key), workplaceSpans[idx], mergeWorkplaceOrientation)}
                 </td>
               );
@@ -130,13 +130,13 @@ export default function ReportPreviewDialog({
             if (mergeAssignment && key === 'جهة_التكليف') {
               if (assignmentSpans[idx] === 0) return null;
               return (
-                <td key={key} rowSpan={assignmentSpans[idx]} className="border border-gray-300 px-2 text-center text-xs font-bold" style={getMergedCellStyle(assignmentSpans[idx], mergeAssignmentOrientation)}>
+                <td key={key} rowSpan={assignmentSpans[idx]} className="border border-black px-2 text-center text-xs font-bold" style={{ ...getMergedCellStyle(assignmentSpans[idx], mergeAssignmentOrientation), backgroundColor: 'transparent' }}>
                   {renderMergedCellContent(getFieldValue(emp, key), assignmentSpans[idx], mergeAssignmentOrientation)}
                 </td>
               );
             }
             return (
-              <td key={key} className="border border-gray-300 px-2 text-center text-xs font-bold" style={{ padding: '4px 8px' }}>
+              <td key={key} className="border border-black px-2 text-center text-xs font-bold" style={{ padding: '4px 8px', backgroundColor: 'transparent' }}>
                 {getFieldValue(emp, key)}
               </td>
             );
@@ -209,7 +209,7 @@ export default function ReportPreviewDialog({
                   return (
                     <td
                       key="فترة_التكليف"
-                      className="border border-gray-300 text-center text-xs font-bold"
+                      className="border border-black text-center text-xs font-bold"
                       style={{
                         padding: '4px 8px',
                         backgroundColor: 'transparent',
@@ -226,7 +226,7 @@ export default function ReportPreviewDialog({
                     <td
                       key="فترة_التكليف"
                       rowSpan={sortedPeriodSpans[globalIdx] || 1}
-                      className="border border-gray-300 text-center text-xs font-bold"
+                      className="border border-black text-center text-xs font-bold"
                       style={{
                         padding: '4px 8px',
                         verticalAlign: 'middle',
@@ -245,7 +245,7 @@ export default function ReportPreviewDialog({
               if (mergeWorkplace && key === 'المركز_الصحي') {
                 if (sortedWorkplaceSpans[globalIdx] === 0) return null;
                 return (
-                  <td key={key} rowSpan={sortedWorkplaceSpans[globalIdx]} className="border border-gray-300 text-center text-xs font-bold" style={getMergedCellStyle(sortedWorkplaceSpans[globalIdx], mergeWorkplaceOrientation)}>
+                  <td key={key} rowSpan={sortedWorkplaceSpans[globalIdx]} className="border border-black text-center text-xs font-bold" style={{ ...getMergedCellStyle(sortedWorkplaceSpans[globalIdx], mergeWorkplaceOrientation), backgroundColor: 'transparent' }}>
                     {renderMergedCellContent(getFieldValue(emp, key), sortedWorkplaceSpans[globalIdx], mergeWorkplaceOrientation)}
                   </td>
                 );
@@ -253,13 +253,13 @@ export default function ReportPreviewDialog({
               if (mergeAssignment && key === 'جهة_التكليف') {
                 if (sortedAssignmentSpans[globalIdx] === 0) return null;
                 return (
-                  <td key={key} rowSpan={sortedAssignmentSpans[globalIdx]} className="border border-gray-300 text-center text-xs font-bold" style={getMergedCellStyle(sortedAssignmentSpans[globalIdx], mergeAssignmentOrientation)}>
+                  <td key={key} rowSpan={sortedAssignmentSpans[globalIdx]} className="border border-black text-center text-xs font-bold" style={{ ...getMergedCellStyle(sortedAssignmentSpans[globalIdx], mergeAssignmentOrientation), backgroundColor: 'transparent' }}>
                     {renderMergedCellContent(getFieldValue(emp, key), sortedAssignmentSpans[globalIdx], mergeAssignmentOrientation)}
                   </td>
                 );
               }
               return (
-                <td key={key} className="border border-gray-300 text-center text-xs font-bold" style={{ padding: '4px 8px' }}>
+                <td key={key} className="border border-black text-center text-xs font-bold" style={{ padding: '4px 8px', backgroundColor: 'transparent' }}>
                   {getFieldValue(emp, key)}
                 </td>
               );
@@ -331,7 +331,7 @@ export default function ReportPreviewDialog({
           if (manager) {
             managerRows.push(
               <tr key={`mh-${managerId}`}>
-                <td colSpan={selectedFields.length} className="border border-gray-300 text-center font-bold text-xs" style={{ padding: '4px 8px' }}>
+                <td colSpan={selectedFields.length} className="border border-black text-center font-bold text-xs" style={{ padding: '4px 8px', backgroundColor: 'transparent' }}>
                   بيانات المدير المباشر
                 </td>
               </tr>
@@ -339,7 +339,7 @@ export default function ReportPreviewDialog({
             managerRows.push(
               <tr key={`md-${managerId}`}>
                 {selectedFields.map(key => (
-                  <td key={key} className="border border-gray-300 text-center text-xs font-bold" style={{ padding: '4px 8px' }}>
+                  <td key={key} className="border border-black text-center text-xs font-bold" style={{ padding: '4px 8px', backgroundColor: 'transparent' }}>
                     {getFieldValue(manager, key)}
                   </td>
                 ))}

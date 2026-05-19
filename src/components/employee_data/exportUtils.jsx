@@ -433,7 +433,7 @@ export const generateReportHtml = ({
     }
 
     const getMergedCellStyle = (spanCount, orientation) => {
-      let styleStr = 'border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px; vertical-align: middle;';
+      let styleStr = 'border: 1px solid #000; padding: 8px 12px; text-align: center; font-size: 13px; vertical-align: middle; background-color: transparent;';
       if (spanCount > 1) {
         if (orientation === 'vertical') {
           styleStr += ' writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; width: 40px;';
@@ -467,7 +467,7 @@ export const generateReportHtml = ({
             html += `<td rowspan="${pageASpans[idxInPage]}" style="${getMergedCellStyle(pageASpans[idxInPage], mergeAssignmentOrientation)}">${renderMergedCellContent(getFieldValue(r.emp, key), pageASpans[idxInPage], mergeAssignmentOrientation)}</td>`;
             return;
           }
-          html += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(r.emp, key)}</td>`;
+          html += `<td style="border: 1px solid #000; padding: 8px 12px; text-align: center; font-size: 13px; background-color: transparent;">${getFieldValue(r.emp, key)}</td>`;
         });
         html += '</tr>';
         return html;
@@ -496,11 +496,11 @@ export const generateReportHtml = ({
         selectedFields.forEach(key => {
           if (key === 'فترة_التكليف') {
             if (!mergeAssignmentPeriods) {
-              html += `<td style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: transparent; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
+              html += `<td style="border: 1px solid #000; padding: 6px 4px; text-align: center; font-size: 11px; font-weight: bold; background-color: transparent; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
               return;
             }
             if (pagePeriodSpans[idxInPage] !== 0) {
-              html += `<td rowspan="${pagePeriodSpans[idxInPage] || 1}" style="border: 1px solid #d1d5db; padding: 6px 4px; text-align: center; vertical-align: middle; font-size: 11px; font-weight: bold; background-color: transparent; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
+              html += `<td rowspan="${pagePeriodSpans[idxInPage] || 1}" style="border: 1px solid #000; padding: 6px 4px; text-align: center; vertical-align: middle; font-size: 11px; font-weight: bold; background-color: transparent; min-width: 80px; line-height: 1.6;">${periodText}</td>`;
             }
             return;
           }
@@ -514,7 +514,7 @@ export const generateReportHtml = ({
             html += `<td rowspan="${pageASpans[idxInPage]}" style="${getMergedCellStyle(pageASpans[idxInPage], mergeAssignmentOrientation)}">${renderMergedCellContent(getFieldValue(r.emp, key), pageASpans[idxInPage], mergeAssignmentOrientation)}</td>`;
             return;
           }
-          html += `<td style="border: 1px solid #d1d5db; padding: 8px 12px; text-align: center; font-size: 13px;">${getFieldValue(r.emp, key)}</td>`;
+          html += `<td style="border: 1px solid #000; padding: 8px 12px; text-align: center; font-size: 13px; background-color: transparent;">${getFieldValue(r.emp, key)}</td>`;
         });
         html += '</tr>';
         idxInPage++;
@@ -641,7 +641,7 @@ export const generateReportHtml = ({
   table { width: 100%; border-collapse: collapse; margin: 15px 0; }
   th { background: transparent; color: #0B3D91; border: 1px solid #000; padding: 10px 12px; text-align: center; font-family: '${fontSettings.tableHeader.font}', 'Tajawal', 'Cairo', sans-serif; font-weight: ${fontSettings.tableHeader.weight}; font-size: ${fontSettings.tableHeader.size}px; }
   tr, td, th { background-color: transparent !important; }
-  td { border: 1px solid #5BC2C7; padding: 4px 8px; text-align: center; font-family: '${fontSettings.tableBody.font}', 'Tajawal', 'Cairo', sans-serif; font-size: ${fontSettings.tableBody.size}px; font-weight: ${fontSettings.tableBody.weight}; vertical-align: middle; color: #0F172A; }
+  td { border: 1px solid #000; padding: 4px 8px; text-align: center; font-family: '${fontSettings.tableBody.font}', 'Tajawal', 'Cairo', sans-serif; font-size: ${fontSettings.tableBody.size}px; font-weight: ${fontSettings.tableBody.weight}; vertical-align: middle; color: #0F172A; background-color: transparent !important; }
   .request-box { background: transparent; border-right: 4px solid #1E63D6; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; color: #0F172A; }
   .signature-section { text-align: ${sigAlign}; margin-top: 50px; padding: 15px 0; }
   .signature-section .sig-name { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 700; font-size: 18px; margin-top: 8px; color: #000; }
