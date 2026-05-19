@@ -433,7 +433,7 @@ export default function ReportPreviewDialog({
                   <thead>
                     <tr>
                       {headers.map((h, i) => (
-                        <th key={i} className="border border-gray-300 px-3 py-2 text-center font-bold text-xs" style={{ color: '#0B3D91', backgroundColor: 'transparent' }}>{h}</th>
+                        <th key={i} className="border border-gray-800 px-3 py-2 text-center font-bold text-xs" style={{ color: '#0B3D91', backgroundColor: 'transparent' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -462,7 +462,7 @@ export default function ReportPreviewDialog({
                   <thead>
                     <tr>
                       {headers.map((h, i) => (
-                        <th key={i} className="border border-gray-300 px-3 py-2 text-center font-bold text-xs" style={{ color: '#0B3D91', backgroundColor: 'transparent' }}>{h}</th>
+                        <th key={i} className="border border-gray-800 px-3 py-2 text-center font-bold text-xs" style={{ color: '#0B3D91', backgroundColor: 'transparent' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
