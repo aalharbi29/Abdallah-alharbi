@@ -136,7 +136,7 @@ export default function ReportPreviewDialog({
               );
             }
             return (
-              <td key={key} className="border border-black px-2 text-center text-xs font-bold" style={{ padding: '4px 8px', backgroundColor: 'transparent' }}>
+              <td key={key} className="border border-black px-2 text-center text-xs font-bold" style={{ padding: '2px 6px', backgroundColor: 'transparent' }}>
                 {getFieldValue(emp, key)}
               </td>
             );
@@ -331,7 +331,7 @@ export default function ReportPreviewDialog({
           if (manager) {
             managerRows.push(
               <tr key={`mh-${managerId}`}>
-                <td colSpan={selectedFields.length} className="border border-black text-center font-bold text-xs" style={{ padding: '4px 8px', backgroundColor: 'transparent' }}>
+                <td colSpan={selectedFields.length} className="border border-black text-center font-bold text-xs" style={{ padding: '2px 6px', backgroundColor: 'transparent' }}>
                   بيانات المدير المباشر
                 </td>
               </tr>
@@ -339,7 +339,7 @@ export default function ReportPreviewDialog({
             managerRows.push(
               <tr key={`md-${managerId}`}>
                 {selectedFields.map(key => (
-                  <td key={key} className="border border-black text-center text-xs font-bold" style={{ padding: '4px 8px', backgroundColor: 'transparent' }}>
+                  <td key={key} className="border border-black text-center text-xs font-bold" style={{ padding: '2px 6px', backgroundColor: 'transparent' }}>
                     {getFieldValue(manager, key)}
                   </td>
                 ))}
@@ -433,7 +433,7 @@ export default function ReportPreviewDialog({
                   <thead>
                     <tr>
                       {headers.map((h, i) => (
-                        <th key={i} className="border border-gray-800 px-3 py-2 text-center font-bold text-xs" style={{ color: '#0B3D91', backgroundColor: 'transparent' }}>{h}</th>
+                        <th key={i} className="border border-gray-800 px-2 py-1 text-center font-bold text-xs" style={{ color: '#0B3D91', backgroundColor: 'transparent' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -462,7 +462,7 @@ export default function ReportPreviewDialog({
                   <thead>
                     <tr>
                       {headers.map((h, i) => (
-                        <th key={i} className="border border-gray-800 px-3 py-2 text-center font-bold text-xs" style={{ color: '#0B3D91', backgroundColor: 'transparent' }}>{h}</th>
+                        <th key={i} className="border border-gray-800 px-2 py-1 text-center font-bold text-xs" style={{ color: '#0B3D91', backgroundColor: 'transparent' }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
