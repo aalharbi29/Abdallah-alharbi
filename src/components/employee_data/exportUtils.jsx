@@ -626,9 +626,9 @@ export const generateReportHtml = ({
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Cairo', sans-serif; background: #fff; color: #000; }
   @page { size: A4; margin: 0; }
-  .page-container { width: 210mm; min-height: 297mm; margin: 0 auto; padding: 0 20mm; display: flex; flex-direction: column; position: relative; overflow: hidden; background: #fff; }
+  .page-container { width: 210mm; min-height: 297mm; margin: 0 auto; padding: 0 20mm; display: block; position: relative; overflow: hidden; background: #fff; }
   .page-container::before { content: ''; position: absolute; inset: 0; background-image: url('${MHC_ASSETS.officialLetterhead}'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat; z-index: 0; }
-  .page-content { flex: 1; padding-top: 0; padding-bottom: 110px; position: relative; z-index: 1; }
+  .page-content { padding-top: 0; padding-bottom: 30px; position: relative; z-index: 1; }
   .header-spacer { height: 130px; position: relative; }
   .header-side-text { position: absolute; top: 35px; right: 130px; max-width: 380px; text-align: right; font-family: 'Tajawal','Cairo',sans-serif; color: #0B3D91; font-weight: 700; font-size: 13px; line-height: 1.7; white-space: pre-wrap; }
   .report-title { text-align: center; margin-bottom: 20px; margin-top: 60px; }
@@ -644,7 +644,7 @@ export const generateReportHtml = ({
   tr, td, th { background-color: transparent !important; }
   td { border: 1px solid #000; padding: 2px 4px; text-align: center; font-family: '${fontSettings.tableBody.font}', 'Tajawal', 'Cairo', sans-serif; font-size: ${fontSettings.tableBody.size}px; font-weight: ${fontSettings.tableBody.weight}; vertical-align: middle; color: #0F172A; background-color: transparent !important; overflow: hidden; word-break: break-word; }
   .request-box { background: transparent; border-right: 4px solid #1E63D6; border-radius: 8px; padding: 15px 20px; margin: 20px 0; white-space: pre-wrap; font-size: 14px; line-height: 1.8; color: #0F172A; }
-  .signature-section { text-align: ${sigAlign}; margin-top: 50px; padding: 15px 0; }
+  .signature-section { text-align: ${sigAlign}; margin-top: 20px; padding: 10px 0; page-break-inside: avoid; }
   .signature-section .sig-name { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 700; font-size: 18px; margin-top: 8px; color: #000; }
   .signature-section .sig-title { font-weight: 700; font-size: 15px; color: #000; margin-top: 0; }
   .signature-section img { max-height: 120px; ${sigAlign === 'center' ? 'margin: 0 auto;' : ''} display: block; margin-top: -2px; mix-blend-mode: multiply; background: transparent; }
@@ -654,8 +654,8 @@ export const generateReportHtml = ({
   .footer-banner .date-text { font-size: 11px; color: #1E63D6; margin-top: 8px; }
   @media print {
     body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .page-container { min-height: 100vh; }
-    .footer-banner { margin-top: auto; }
+    .page-container { min-height: 0; }
+    .signature-section { page-break-inside: avoid; page-break-before: avoid; }
   }
 </style>
 </head>
