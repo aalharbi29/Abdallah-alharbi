@@ -1707,7 +1707,7 @@ export default function EmployeeDataRequest() {
 
         {/* Data Table */}
         {selectedEmployees.length > 0 && selectedFields.length > 0 && (
-          <Card className="print-area">
+          <Card className="print-area -mt-6">
             <CardHeader className="print-hide">
               <CardTitle>النتيجة النهائية</CardTitle>
             </CardHeader>
