@@ -77,7 +77,9 @@ export default function MoveEmployeeDialog({ employee, open, onClose, onSuccess 
           return;
         }
         const { id, created_date, updated_date, created_by, ...empData } = employee;
-        await base44.entities.ArchivedEmployee.create({
+
+        // 1️⃣ ننشئ سجل الأرشيف أولاً وننتظر التأكد من نجاحه
+        const archivedRecord = await base44.entities.ArchivedEmployee.create({
           ...empData,
           original_employee_id: employee.id,
           archive_type: targetStatus,
@@ -87,7 +89,20 @@ export default function MoveEmployeeDialog({ employee, open, onClose, onSuccess 
           notes: formData.notes,
           archived_by: 'المستخدم الحالي',
         });
-        await base44.entities.Employee.delete(employee.id);
+
+        // 2️⃣ تحقّق فعلي من وجود السجل في الأرشيف قبل الحذف (حماية ضد الفقد)
+        if (!archivedRecord?.id) {
+          throw new Error('فشل إنشاء سجل الأرشيف — تم إلغاء الحذف لحماية بيانات الموظف');
+        }
+
+        // 3️⃣ نحذف من جدول الموظفين النشطين فقط بعد تأكيد النسخ
+        try {
+          await base44.entities.Employee.delete(employee.id);
+        } catch (deleteErr) {
+          // فشل الحذف بعد نجاح الأرشفة → نحذف سجل الأرشيف لمنع التكرار
+          await base44.entities.ArchivedEmployee.delete(archivedRecord.id).catch(() => {});
+          throw new Error('فشل حذف الموظف من القائمة النشطة. تم التراجع.');
+        }
         toast.success('تم نقل الموظف إلى الأرشيف بنجاح');
       }
       onSuccess?.();
