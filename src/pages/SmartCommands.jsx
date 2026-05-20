@@ -180,7 +180,7 @@ export default function SmartCommands() {
   // جلب عينة بيانات عند تغير الكيان الأساسي — لاستخدامها في dialog فلتر القيم
   useEffect(() => {
     if (!primaryEntity || !base44.entities[primaryEntity]) return;
-    base44.entities[primaryEntity].filter({})
+    base44.entities[primaryEntity].list(undefined, 2000)
       .then((data) => setSampleData(data || []))
       .catch(() => setSampleData([]));
   }, [primaryEntity]);
@@ -346,7 +346,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
       // مهام إضافية للموظفين (قيادية/إشرافية)
       if (finalEntity === 'Employee' && finalFields.includes('__combined_roles')) {
         try {
-          const allCenters = await base44.entities.HealthCenter.filter({});
+          const allCenters = await base44.entities.HealthCenter.list(undefined, 2000);
           allData = allData.map((emp) => ({
             ...emp,
             __combined_roles: getCombinedRolesText(emp, allCenters),
@@ -366,7 +366,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         ];
         if (managerFields.some((f) => finalFields.includes(f))) {
           try {
-            const allEmployees = await base44.entities.Employee.filter({});
+            const allEmployees = await base44.entities.Employee.list(undefined, 2000);
             const empMap = new Map();
             allEmployees.forEach((e) => {
               if (e.id) empMap.set(String(e.id), e);
