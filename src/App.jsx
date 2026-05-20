@@ -29,6 +29,7 @@ import WorkforceStatistics from './pages/WorkforceStatistics.jsx';
 import FillAssignmentForm from './pages/FillAssignmentForm';
 import FillDeliveryRecordForm from './pages/FillDeliveryRecordForm';
 import CenterNameNormalizer from './pages/CenterNameNormalizer';
+import MissingEmployeesImporter from './pages/MissingEmployeesImporter';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -173,6 +174,11 @@ const AuthenticatedApp = () => {
       <Route path="/CenterNameNormalizer" element={
         <LayoutWrapper currentPageName="CenterNameNormalizer">
           <CenterNameNormalizer />
+        </LayoutWrapper>
+      } />
+      <Route path="/MissingEmployeesImporter" element={
+        <LayoutWrapper currentPageName="MissingEmployeesImporter">
+          <MissingEmployeesImporter />
         </LayoutWrapper>
       } />
       <Route path="*" element={<PageNotFound />} />
