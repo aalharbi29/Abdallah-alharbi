@@ -358,7 +358,7 @@ async function resolveComputeTokens(rows) {
   // اجلب البيانات مرة واحدة فقط لكل كيان
   for (const ent of neededEntities) {
     try {
-      entityCache[ent] = await base44.entities[ent].filter({});
+      entityCache[ent] = await base44.entities[ent].list(undefined, 2000);
     } catch (_) {
       entityCache[ent] = [];
     }
@@ -867,12 +867,12 @@ export async function executeFreeReportPlan(plan) {
   }
 
   // جلب الكيان الأساسي
-  let primaryData = await base44.entities[primaryEntity].filter({});
+  let primaryData = await base44.entities[primaryEntity].list(undefined, 2000);
 
   // إذا طُلبت الأدوار المُجمَّعة للموظف
   if (primaryEntity === 'Employee' && plan.fields.some((f) => f === '__combined_roles')) {
     try {
-      const centers = await base44.entities.HealthCenter.filter({});
+      const centers = await base44.entities.HealthCenter.list(undefined, 2000);
       primaryData = primaryData.map((e) => ({ ...e, __combined_roles: getCombinedRolesText(e, centers) }));
     } catch (_) { /* ignore */ }
   }
@@ -896,7 +896,7 @@ export async function executeFreeReportPlan(plan) {
     if (secEntity === primaryEntity) continue;
     if (!base44.entities[secEntity]) continue;
     try {
-      secondaryData[secEntity] = await base44.entities[secEntity].filter({});
+      secondaryData[secEntity] = await base44.entities[secEntity].list(undefined, 2000);
     } catch (_) {
       secondaryData[secEntity] = [];
     }

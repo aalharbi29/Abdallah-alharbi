@@ -50,7 +50,7 @@ export async function mergeMultipleEntities(primaryEntity, primaryData, secondar
     if (secEntity === primaryEntity) continue;
 
     try {
-      const secData = await base44.entities[secEntity].filter({});
+      const secData = await base44.entities[secEntity].list(undefined, 2000);
       if (!secData || secData.length === 0) continue;
 
       // تحديد آلية الربط
