@@ -28,6 +28,7 @@ import FillEidAchievementForm from './pages/FillEidAchievementForm';
 import WorkforceStatistics from './pages/WorkforceStatistics.jsx';
 import FillAssignmentForm from './pages/FillAssignmentForm';
 import FillDeliveryRecordForm from './pages/FillDeliveryRecordForm';
+import CenterNameNormalizer from './pages/CenterNameNormalizer';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -167,6 +168,11 @@ const AuthenticatedApp = () => {
       <Route path="/FillDeliveryRecordForm" element={
         <LayoutWrapper currentPageName="FillDeliveryRecordForm">
           <FillDeliveryRecordForm />
+        </LayoutWrapper>
+      } />
+      <Route path="/CenterNameNormalizer" element={
+        <LayoutWrapper currentPageName="CenterNameNormalizer">
+          <CenterNameNormalizer />
         </LayoutWrapper>
       } />
       <Route path="*" element={<PageNotFound />} />
