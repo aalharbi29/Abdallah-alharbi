@@ -153,19 +153,27 @@ const extractEmployeeNameHints = (prompt) => {
   return Array.from(hints);
 };
 
+// قائمة أسماء المراكز المعروفة — تُستخدم للكشف بدون كلمة "مركز"
+const KNOWN_CENTER_NAMES = [
+  'الحسو', 'هدبان', 'بلغة', 'طلال', 'بطحي', 'الهميج', 'الماوية', 'صخيبرة',
+  'الحناكية', 'العقدة', 'الشقرة', 'الشقران', 'المحفر', 'عرجاء',
+  'النخيل', 'الدبان', 'السلام', 'المصيف', 'العوالي', 'الزاهرة', 'العزيزية',
+  'الرانوناء', 'الجماوات', 'سيد الشهداء', 'التنعيم', 'العسيلة', 'بئر علي',
+  'العاقول', 'مليل', 'الفقير', 'الخاتم', 'أبو شوشه', 'ابو شوشه',
+];
+
 const extractCenterNameHints = (prompt) => {
   const p = String(prompt || '').trim();
   const hints = new Set();
-  // نمط مرن: بعد "مركز" أو "المركز" قد يأتي "صحي/الصحي" ثم الاسم الفعلي
+
+  // نمط 1: بعد "مركز" أو "المركز" + اختياري "صحي"
   const patterns = [
     /(?:ال)?مركز(?:\s+(?:ال)?صحي)?\s+((?:(?!في|عن|على|من|و|أو|لل)[^\s،,.\n])+(?:\s+(?:(?!في|عن|على|من|و|أو|لل)[^\s،,.\n])+){0,2})/g,
   ];
   patterns.forEach((re) => {
     let m;
     while ((m = re.exec(p)) !== null) {
-      // نظّف: أزل stop words من البداية وخذ أول كلمة مفيدة (+ كلمتين بعدها إن وُجدتا)
       const words = m[1].split(/\s+/).filter(Boolean);
-      // تخطَّ stop words في البداية
       while (words.length > 0 && STOP_WORDS.has(words[0])) words.shift();
       if (words.length === 0) continue;
       const name = words.slice(0, 3).join(' ').trim();
@@ -174,6 +182,16 @@ const extractCenterNameHints = (prompt) => {
       }
     }
   });
+
+  // نمط 2: أسماء المراكز المعروفة حتى بدون كلمة "مركز"
+  const pNorm = normalizeArabic(p);
+  KNOWN_CENTER_NAMES.forEach((name) => {
+    const normName = normalizeArabic(name);
+    if (pNorm.includes(normName)) {
+      hints.add(name);
+    }
+  });
+
   return Array.from(hints);
 };
 
