@@ -26,8 +26,8 @@ export default function HRUnifiedSearch() {
       setLoading(true);
       try {
         const [emps, arch] = await Promise.all([
-          base44.entities.Employee.list('-updated_date', 1000).catch(() => []),
-          base44.entities.ArchivedEmployee.list('-archive_date', 1000).catch(() => []),
+          base44.entities.Employee.list('-updated_date', 5000).catch(() => []),
+          base44.entities.ArchivedEmployee.list('-archive_date', 5000).catch(() => []),
         ]);
         if (!cancelled) {
           setActiveEmployees(Array.isArray(emps) ? emps : []);

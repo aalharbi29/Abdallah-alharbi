@@ -885,12 +885,12 @@ export async function executeFreeReportPlan(plan) {
   }
 
   // جلب الكيان الأساسي
-  let primaryData = await base44.entities[primaryEntity].list(undefined, 2000);
+  let primaryData = await base44.entities[primaryEntity].list(undefined, 5000);
 
   // إذا طُلبت الأدوار المُجمَّعة للموظف
   if (primaryEntity === 'Employee' && plan.fields.some((f) => f === '__combined_roles')) {
     try {
-      const centers = await base44.entities.HealthCenter.list(undefined, 2000);
+      const centers = await base44.entities.HealthCenter.list(undefined, 5000);
       primaryData = primaryData.map((e) => ({ ...e, __combined_roles: getCombinedRolesText(e, centers) }));
     } catch (_) { /* ignore */ }
   }
@@ -914,7 +914,7 @@ export async function executeFreeReportPlan(plan) {
     if (secEntity === primaryEntity) continue;
     if (!base44.entities[secEntity]) continue;
     try {
-      secondaryData[secEntity] = await base44.entities[secEntity].list(undefined, 2000);
+      secondaryData[secEntity] = await base44.entities[secEntity].list(undefined, 5000);
     } catch (_) {
       secondaryData[secEntity] = [];
     }

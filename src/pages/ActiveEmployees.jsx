@@ -79,7 +79,7 @@ export default function ActiveEmployees() {
 
     try {
       const [employeesData, centersData, assignmentsData] = await Promise.all([
-        base44.entities.Employee.list("-updated_date", 500),
+        base44.entities.Employee.list("-updated_date", 5000),
         base44.entities.HealthCenter.list().catch(() => []),
         base44.entities.Assignment.list("-created_date", 200).catch(() => [])
       ]);
