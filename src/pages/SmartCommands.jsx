@@ -341,7 +341,7 @@ ${selectedFields.length > 0 ? `الحقول المختارة مسبقاً: ${sel
         finalTitle = `تقرير ${getEntityByValue(finalEntity)?.label || finalEntity}`;
       }
 
-      let allData = await base44.entities[finalEntity].filter({});
+      let allData = await base44.entities[finalEntity].list(undefined, 2000);
 
       // مهام إضافية للموظفين (قيادية/إشرافية)
       if (finalEntity === 'Employee' && finalFields.includes('__combined_roles')) {
