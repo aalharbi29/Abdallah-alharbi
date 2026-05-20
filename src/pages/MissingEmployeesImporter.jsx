@@ -94,14 +94,15 @@ export default function MissingEmployeesImporter() {
       const { validRows, skippedInvalid, skippedDuplicatesInFile } = parseExcelRows(allRows);
       setProgress(50);
 
-      // 3) جلب الموظفين والمراكز الحالية
-      const [existingEmployees, centers] = await Promise.all([
+      // 3) جلب الموظفين النشطين + المؤرشفين + المراكز
+      const [existingEmployees, archivedEmployees, centers] = await Promise.all([
         fetchAllEmployees(),
+        base44.entities.ArchivedEmployee.list("-created_date", 10000).catch(() => []),
         base44.entities.HealthCenter.list("-created_date", 1000),
       ]);
       setProgress(75);
 
-      // 4) بناء فهارس البحث
+      // 4) بناء فهارس البحث (نشط + مؤرشف)
       const existingByNationalId = new Map();
       const existingByEmpNumber = new Map();
       for (const emp of existingEmployees) {
@@ -110,23 +111,32 @@ export default function MissingEmployeesImporter() {
         if (nid) existingByNationalId.set(nid, emp);
         if (enm) existingByEmpNumber.set(enm, emp);
       }
+      const archivedByNationalId = new Map();
+      const archivedByEmpNumber = new Map();
+      for (const emp of archivedEmployees) {
+        const nid = String(emp["رقم_الهوية"] || "").replace(/\D/g, "").trim();
+        const enm = String(emp["رقم_الموظف"] || "").replace(/\D/g, "").trim();
+        if (nid) archivedByNationalId.set(nid, emp);
+        if (enm) archivedByEmpNumber.set(enm, emp);
+      }
       const centerIndex = buildCenterIndex(centers);
 
       // 5) استخراج المفقودين + تطبيع المركز
       const missing = [];
       let duplicatesInDB = 0;
+      let foundInArchive = 0;
       for (const row of validRows) {
         const nid = row.data["رقم_الهوية"];
         const enm = row.data["رقم_الموظف"];
 
-        if (nid && existingByNationalId.has(nid)) {
-          duplicatesInDB++;
-          continue;
-        }
-        if (!nid && enm && existingByEmpNumber.has(enm)) {
-          duplicatesInDB++;
-          continue;
-        }
+        // موجود فعلياً في entity النشطين → تجاهل
+        if (nid && existingByNationalId.has(nid)) { duplicatesInDB++; continue; }
+        if (!nid && enm && existingByEmpNumber.has(enm)) { duplicatesInDB++; continue; }
+
+        // موجود في الأرشيف (تقاعد/استقالة/إنهاء) → تجاهل ولا نضيفه
+        const archivedHit = (nid && archivedByNationalId.get(nid)) ||
+                            (enm && archivedByEmpNumber.get(enm));
+        if (archivedHit) { foundInArchive++; continue; }
 
         const matchedCenter = matchCenter(row._rowCenterRaw, centerIndex);
         const officialCenterName = matchedCenter
@@ -150,6 +160,7 @@ export default function MissingEmployeesImporter() {
         skippedInvalid,
         skippedDuplicatesInFile,
         duplicatesInDB,
+        foundInArchive,
         missingCount: missing.length,
         unmatchedCenters: missing.filter((m) => !m._centerMatched).length,
       });
@@ -255,7 +266,7 @@ export default function MissingEmployeesImporter() {
       {stage === "review" && stats && (
         <>
           {/* إحصائيات */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             <Card>
               <CardContent className="pt-5">
                 <div className="text-2xl font-bold text-slate-700">{stats.totalRowsInFile}</div>
@@ -271,13 +282,19 @@ export default function MissingEmployeesImporter() {
             <Card>
               <CardContent className="pt-5">
                 <div className="text-2xl font-bold text-blue-600">{stats.duplicatesInDB}</div>
-                <div className="text-xs text-muted-foreground">موجود بالفعل</div>
+                <div className="text-xs text-muted-foreground">موجود نشط</div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-5">
+                <div className="text-2xl font-bold text-purple-600">{stats.foundInArchive || 0}</div>
+                <div className="text-xs text-muted-foreground">في الأرشيف</div>
               </CardContent>
             </Card>
             <Card className="border-emerald-300 bg-emerald-50/50">
               <CardContent className="pt-5">
                 <div className="text-2xl font-bold text-emerald-700">{stats.missingCount}</div>
-                <div className="text-xs text-muted-foreground">مفقود (للإضافة)</div>
+                <div className="text-xs text-muted-foreground">مفقود فعلياً</div>
               </CardContent>
             </Card>
           </div>
