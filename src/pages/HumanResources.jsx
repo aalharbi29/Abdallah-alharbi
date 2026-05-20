@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Card, CardContent } from "@/components/ui/card";
-import { Users, Briefcase, Award, UserMinus } from "lucide-react";
+import { Users, Briefcase, Award, UserMinus, UploadCloud, Wrench } from "lucide-react";
 import HRUnifiedSearch from "@/components/hr/HRUnifiedSearch";
 
 /**
@@ -65,6 +65,24 @@ export default function HumanResources() {
         </div>
 
         <HRUnifiedSearch />
+
+        {/* روابط أدوات الصيانة */}
+        <div className="flex flex-wrap justify-center gap-3">
+          <Link
+            to={createPageUrl('MissingEmployeesImporter')}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/90 hover:bg-emerald-500 text-white text-sm font-semibold shadow-lg transition-all"
+          >
+            <UploadCloud className="w-4 h-4" />
+            استيراد الموظفين المفقودين
+          </Link>
+          <Link
+            to={createPageUrl('CenterNameNormalizer')}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-500/90 hover:bg-sky-500 text-white text-sm font-semibold shadow-lg transition-all"
+          >
+            <Wrench className="w-4 h-4" />
+            توحيد أسماء المراكز
+          </Link>
+        </div>
 
         <div>
           <h2 className="text-white font-semibold text-lg mb-3 text-center">فئات الموظفين</h2>
