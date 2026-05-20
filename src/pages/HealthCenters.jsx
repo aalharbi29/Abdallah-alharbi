@@ -59,8 +59,8 @@ export default function HealthCenters() {
       console.log('🔄 بدء تحميل المراكز الصحية والموظفين...');
       
       const [centersData, employeesData] = await Promise.allSettled([
-        retry(() => HealthCenter.list("-updated_date", 500)),
-        retry(() => Employee.list("-updated_date", 500))
+        retry(() => HealthCenter.list("-updated_date", 5000)),
+        retry(() => Employee.list("-updated_date", 10000))
       ]);
 
       console.log('📊 نتائج التحميل الخام:', {
