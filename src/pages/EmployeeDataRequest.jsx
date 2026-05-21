@@ -685,7 +685,11 @@ export default function EmployeeDataRequest() {
       groupedByManager,
       getManagerWithCenters,
       getFieldValue,
-      reportTitle
+      reportTitle,
+      assignmentGroups,
+      mergeWorkplace,
+      mergeAssignment,
+      mergeAssignmentPeriods,
     });
   };
 

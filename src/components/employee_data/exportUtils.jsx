@@ -1,6 +1,6 @@
 import ExcelJS from 'exceljs';
 import { MHC_TEXTS, MHC_ASSETS } from '../branding/madinahCluster';
-import { formatAssignmentPeriodsHtml } from './periodUtils';
+import { formatAssignmentPeriodsHtml, formatAssignmentPeriodPlain } from './periodUtils';
 
 // 🎨 ألوان الهوية البصرية لتجمع المدينة المنورة (ARGB لـ ExcelJS)
 const MHC_XL = {
@@ -25,7 +25,11 @@ export const exportToCSV = async ({
   groupedByManager,
   getManagerWithCenters,
   getFieldValue,
-  reportTitle
+  reportTitle,
+  assignmentGroups = [],
+  mergeWorkplace = false,
+  mergeAssignment = false,
+  mergeAssignmentPeriods = false,
 }) => {
   const workbook = new ExcelJS.Workbook();
   workbook.creator = MHC_TEXTS.arabicName;
@@ -71,29 +75,73 @@ export const exportToCSV = async ({
   });
   worksheet.getRow(3).height = 30;
 
+  // نفس منطق ترتيب الشاشة: شؤون المراكز أولاً ثم الباقي حسب جهة التكليف ثم المركز الصحي
+  const isAdminCenter = (center) => center && center.includes('شؤون');
+  const getValue = (emp, key) => (getFieldValue ? getFieldValue(emp, key) : (emp[key] || ''));
+
   const sortedEmps = [...selectedEmployees].sort((a, b) => {
-    const centerA = a.المركز_الصحي || '';
-    const centerB = b.المركز_الصحي || '';
-    return centerA.localeCompare(centerB, 'ar');
+    const ca = getValue(a, 'جهة_التكليف') || a.المركز_الصحي || '';
+    const cb = getValue(b, 'جهة_التكليف') || b.المركز_الصحي || '';
+    if (isAdminCenter(ca) && !isAdminCenter(cb)) return -1;
+    if (!isAdminCenter(ca) && isAdminCenter(cb)) return 1;
+    return ca.localeCompare(cb, 'ar');
   });
 
-  const rows = [];
-  if (displayMode === 'normal') {
-    sortedEmps.forEach((emp) => {
-      rows.push(selectedFields.map((key) => getFieldValue ? getFieldValue(emp, key) : (emp[key] || '')));
+  // بناء قائمة الموظفين مع مجموعة فترة التكليف لكل صف (مطابق للشاشة)
+  const hasPeriodCol = selectedFields.includes('فترة_التكليف');
+  const rowEntries = [];
+  if (hasPeriodCol && assignmentGroups && assignmentGroups.length > 0) {
+    const centerBuckets = new Map();
+    sortedEmps.forEach(emp => {
+      const c = getValue(emp, 'جهة_التكليف') || '';
+      if (!centerBuckets.has(c)) centerBuckets.set(c, []);
+      centerBuckets.get(c).push(emp);
+    });
+    const usedIds = new Set();
+    centerBuckets.forEach((centerEmps) => {
+      assignmentGroups.forEach(group => {
+        const ids = group.employeeIds.length > 0 ? group.employeeIds : (assignmentGroups.length === 1 ? sortedEmps.map(e => e.id) : []);
+        const grpEmps = centerEmps.filter(e => ids.includes(e.id));
+        grpEmps.forEach(emp => { rowEntries.push({ emp, group }); usedIds.add(emp.id); });
+      });
+      centerEmps.filter(e => !usedIds.has(e.id)).forEach(emp => rowEntries.push({ emp, group: null }));
     });
   } else {
-    sortedEmps.forEach((emp) => {
-      rows.push(selectedFields.map((key) => getFieldValue ? getFieldValue(emp, key) : (emp[key] || '')));
-    });
+    sortedEmps.forEach(emp => rowEntries.push({ emp, group: null }));
+  }
 
+  // حساب فترات الدمج (rowSpans) لكل من جهة العمل، جهة التكليف، فترة التكليف
+  const wSpans = {}, aSpans = {}, pSpans = {};
+  if (mergeWorkplace || mergeAssignment || mergeAssignmentPeriods) {
+    let cw = null, ws = 0, ca = null, as = 0, cp = null, ps = 0;
+    rowEntries.forEach((r, i) => {
+      const w = getValue(r.emp, 'المركز_الصحي');
+      const a = getValue(r.emp, 'جهة_التكليف');
+      const p = r.group ? formatAssignmentPeriodPlain(r.group, r.emp.id) : '-';
+      if (mergeWorkplace) { if (w !== cw) { cw = w; ws = i; wSpans[i] = 1; } else { wSpans[ws]++; wSpans[i] = 0; } }
+      if (mergeAssignment) { if (a !== ca) { ca = a; as = i; aSpans[i] = 1; } else { aSpans[as]++; aSpans[i] = 0; } }
+      if (mergeAssignmentPeriods) {
+        const empCenter = a || '';
+        const prevCenter = i > 0 ? getValue(rowEntries[i-1].emp, 'جهة_التكليف') || '' : '';
+        const isSameType = isAdminCenter(empCenter) === isAdminCenter(prevCenter);
+        if (p !== cp || !isSameType) { cp = p; ps = i; pSpans[i] = 1; } else { pSpans[ps]++; pSpans[i] = 0; }
+      }
+    });
+  }
+
+  const rows = [];
+  rowEntries.forEach(({ emp }) => {
+    rows.push(selectedFields.map((key) => getValue(emp, key)));
+  });
+
+  if (displayMode !== 'normal') {
     const processedManagers = new Set();
     Object.entries(groupedByManager).forEach(([managerId, employeeIds]) => {
       if (!processedManagers.has(managerId)) {
         const manager = getManagerWithCenters(managerId, employeeIds);
         if (manager) {
           rows.push(['بيانات المدير المباشر', ...Array(Math.max(0, selectedFields.length - 1)).fill('')]);
-          rows.push(selectedFields.map((key) => getFieldValue ? getFieldValue(manager, key) : (manager[key] || '')));
+          rows.push(selectedFields.map((key) => getValue(manager, key)));
           processedManagers.add(managerId);
         }
       }
@@ -129,6 +177,25 @@ export const exportToCSV = async ({
       worksheet.mergeCells(row.number, 1, row.number, selectedFields.length);
     }
   });
+
+  // 🔗 دمج الخلايا المتشابهة المتتالية (مطابق للشاشة)
+  // الصفوف تبدأ من رقم 4 (لأن 1-3 للعناوين)
+  const DATA_START_ROW = 4;
+  const applyMerge = (fieldKey, spans) => {
+    const colIdx = selectedFields.indexOf(fieldKey);
+    if (colIdx === -1) return;
+    Object.entries(spans).forEach(([startIdx, span]) => {
+      const s = parseInt(startIdx, 10);
+      if (span > 1) {
+        const startRow = DATA_START_ROW + s;
+        const endRow = startRow + span - 1;
+        worksheet.mergeCells(startRow, colIdx + 1, endRow, colIdx + 1);
+      }
+    });
+  };
+  if (mergeWorkplace) applyMerge('المركز_الصحي', wSpans);
+  if (mergeAssignment) applyMerge('جهة_التكليف', aSpans);
+  if (mergeAssignmentPeriods) applyMerge('فترة_التكليف', pSpans);
 
   worksheet.columns = headers.map((header, index) => {
     const values = [header, ...rows.map((row) => String(row[index] || ''))];
