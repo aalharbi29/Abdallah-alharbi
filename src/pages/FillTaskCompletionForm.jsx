@@ -367,20 +367,9 @@ export default function FillTaskCompletionForm() {
                     border: '1.5px solid #000',
                     boxSizing: 'border-box',
                   }}>
-                    {/* الترويسة: الشعار يمين + العنوان في الوسط */}
-                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '14px' }}>
-                      <div style={{ width: '110px' }} />
-                      <div style={{ flex: 1, textAlign: 'center', paddingTop: '20px' }}>
-                        <div style={{ fontSize: '20pt', fontWeight: 800, color: '#000' }}>(مشهد إنجاز مهمة)</div>
-                      </div>
-                      <div style={{ width: '110px', textAlign: 'left' }}>
-                        <img
-                          src="https://media.base44.com/images/public/68af5003813e47bd07947b30/ec052b844_image.jpg"
-                          alt="شعار تجمع المدينة المنورة الصحي"
-                          crossOrigin="anonymous"
-                          style={{ width: '110px', height: 'auto', objectFit: 'contain' }}
-                        />
-                      </div>
+                    {/* الترويسة */}
+                    <div style={{ textAlign: 'center', marginBottom: '14px', paddingTop: '10px' }}>
+                      <div style={{ fontSize: '20pt', fontWeight: 800, color: '#000' }}>(مشهد إنجاز مهمة)</div>
                     </div>
 
                     {/* جدول بيانات الموظف - 5 أعمدة */}
