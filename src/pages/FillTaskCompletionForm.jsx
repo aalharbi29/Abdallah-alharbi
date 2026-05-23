@@ -362,119 +362,131 @@ export default function FillTaskCompletionForm() {
                     right: 0,
                     transform: `scale(${previewScale})`,
                     transformOrigin: 'top right',
-                    padding: '20mm 15mm',
+                    padding: '12mm 12mm',
                     color: '#000',
+                    border: '1.5px solid #000',
+                    boxSizing: 'border-box',
                   }}>
-                    {/* رأس - مع شعار التجمع */}
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '3px solid #0B3D91', paddingBottom: '10px', marginBottom: '12px' }}>
-                      <div style={{ width: '90px' }}>
+                    {/* الترويسة: الشعار يمين + العنوان في الوسط */}
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '14px' }}>
+                      <div style={{ width: '110px' }} />
+                      <div style={{ flex: 1, textAlign: 'center', paddingTop: '20px' }}>
+                        <div style={{ fontSize: '20pt', fontWeight: 800, color: '#000' }}>(مشهد إنجاز مهمة)</div>
+                      </div>
+                      <div style={{ width: '110px', textAlign: 'left' }}>
                         <img
                           src="https://media.base44.com/images/public/68af5003813e47bd07947b30/ec052b844_image.jpg"
-                          alt="شعار التجمع"
+                          alt="شعار تجمع المدينة المنورة الصحي"
                           crossOrigin="anonymous"
-                          style={{ width: '90px', height: 'auto', objectFit: 'contain' }}
+                          style={{ width: '110px', height: 'auto', objectFit: 'contain' }}
                         />
                       </div>
-                      <div style={{ textAlign: 'center', flex: 1 }}>
-                        <div style={{ fontSize: '16pt', fontWeight: 800, color: '#0B3D91' }}>تجمع المدينة المنورة الصحي</div>
-                        <div style={{ fontSize: '10pt', fontWeight: 600 }}>Madinah Health Cluster</div>
-                        <div style={{ fontSize: '17pt', fontWeight: 800, marginTop: '6px', color: '#000' }}>مشهد إنجاز مهمة</div>
-                      </div>
-                      <div style={{ width: '90px' }} />
                     </div>
 
-                    {/* قسم التعليمات الرسمي */}
-                    <div style={{ border: '1.5px solid #0B3D91', padding: '10px 12px', marginBottom: '12px', background: '#F8FAFF', fontSize: '9.5pt', lineHeight: 1.7, color: '#000' }}>
-                      <div style={{ fontWeight: 800, fontSize: '11pt', marginBottom: '6px', color: '#0B3D91' }}>تعليمات:</div>
-                      <ol style={{ margin: 0, paddingRight: '20px', textAlign: 'justify' }}>
-                        <li style={{ marginBottom: '4px' }}>يشترط تعبئة جميع الحقول وعدم الالتزام بذلك يؤدي إلى إلغاء المشهد. وهذا المشهد للترصيد فقط وأي كشط أو تعديل فيه يعد لاغياً وغير معتمد نظاماً.</li>
-                        <li style={{ marginBottom: '4px' }}>منسوبي التشغيل الذاتي التكليف أيام العطل الرسمية اليوم بيومين بناء على ما ورد في الفقرة (ب) من المادة 86 من لائحة تنظيم العمل لبرامج التشغيل الذاتي.</li>
-                        <li style={{ marginBottom: '4px' }}>منسوبي الخدمة المدنية التكليف أيام العطل الرسمية اليوم بيوم عدا يوم العيد واليومين الذي بعده فيكون التعويض على أساس اليوم بيومين بناء على المادة 129 من اللائحة التنفيذية للموارد البشرية في الخدمة المدنية.</li>
-                        <li style={{ marginBottom: '4px' }}>منسوبي المدن الطبية التكليف أيام العطل الرسمية اليوم الأول من العيد بيومين وباقي الأيام بيوم ونصف بناء على المادة 5-2.5 من لائحة المدن الطبية ما عدا اليوم الوطني ويوم التأسيس اليوم بيوم.</li>
-                        <li style={{ marginBottom: '4px' }}>منسوبي شركة الصحة القابضة يتم التعويض عن تكليف أيام العطل الرسمية وفقاً لما ورد بالمادة 107 من نظام العمل (اليوم بيوم ونصف).</li>
-                        <li>المتعاقدين غير السعوديين اليوم بيوم.</li>
+                    {/* جدول بيانات الموظف - 5 أعمدة */}
+                    <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '14px' }}>
+                      <thead>
+                        <tr>
+                          <th style={{ border: cellBorder, padding: '8px 6px', fontSize: '11pt', fontWeight: 800, background: '#FFFFFF', textAlign: 'center' }}>الاسم</th>
+                          <th style={{ border: cellBorder, padding: '8px 6px', fontSize: '11pt', fontWeight: 800, background: '#FFFFFF', textAlign: 'center' }}>الهوية الوطنية/الاقامة</th>
+                          <th style={{ border: cellBorder, padding: '8px 6px', fontSize: '11pt', fontWeight: 800, background: '#FFFFFF', textAlign: 'center' }}>نوع الوظيفة</th>
+                          <th style={{ border: cellBorder, padding: '8px 6px', fontSize: '11pt', fontWeight: 800, background: '#FFFFFF', textAlign: 'center' }}>الملاك الوظيفي</th>
+                          <th style={{ border: cellBorder, padding: '8px 6px', fontSize: '11pt', fontWeight: 800, background: '#FFFFFF', textAlign: 'center' }}>الجنسية</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style={{ border: cellBorder, padding: '10px 6px', fontSize: '10.5pt', textAlign: 'center', height: '36px' }}>{selectedEmployee?.full_name_arabic || ''}</td>
+                          <td style={{ border: cellBorder, padding: '10px 6px', fontSize: '10.5pt', textAlign: 'center' }}>{nationalId}</td>
+                          <td style={{ border: cellBorder, padding: '10px 6px', fontSize: '10.5pt', textAlign: 'center' }}>{jobType}</td>
+                          <td style={{ border: cellBorder, padding: '10px 6px', fontSize: '10.5pt', textAlign: 'center' }}>{jobGrade}</td>
+                          <td style={{ border: cellBorder, padding: '10px 6px', fontSize: '10.5pt', textAlign: 'center' }}>{nationality}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                    {/* قسم: نوع التكليف */}
+                    <div style={{ border: cellBorder, padding: '10px 12px', marginBottom: '12px' }}>
+                      <div style={{ textAlign: 'left', fontWeight: 800, fontSize: '11.5pt', textDecoration: 'underline', marginBottom: '8px' }}>
+                        نوع التكليف: لعام ( {assignmentYear || ''} )
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px', fontSize: '10.5pt', fontWeight: 600 }}>
+                        {ASSIGNMENT_TYPE_OPTIONS.map(t => (
+                          <span key={t} style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                            <span style={{ display: 'inline-block', width: '13px', height: '13px', border: '1.2px solid #000', textAlign: 'center', lineHeight: '11px', fontWeight: 900, fontSize: '10pt' }}>
+                              {assignmentTypes.includes(t) ? '✓' : ''}
+                            </span>
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* قسم: إقرار التشغيل الذاتي */}
+                    <div style={{ border: cellBorder, padding: '10px 12px', marginBottom: '12px' }}>
+                      <div style={{ textAlign: 'left', fontWeight: 800, fontSize: '11.5pt', textDecoration: 'underline', marginBottom: '8px' }}>
+                        إقــرار ( التشغيل الذاتي ):
+                      </div>
+                      <p style={{ margin: 0, fontSize: '10.5pt', fontWeight: 600, lineHeight: 1.9 }}>
+                        أقر أنا الموظف الموضح اسمي وبياناتي أعلاه بموافقتي على أن يكون التعويض بأيام إجازة تعويضية بدلاً من التعويض المالي وبما لا يتعارض مع الأنظمة والتعليمات ذات الصلة.
+                      </p>
+                      <div style={{ marginTop: '10px', display: 'flex', gap: '30px', fontSize: '10.5pt', fontWeight: 700 }}>
+                        <span>التوقيع : .................................</span>
+                        <span>التاريخ: {employeeSignatureDate || '   /   /   '} 144 هـ</span>
+                      </div>
+                    </div>
+
+                    {/* قسم: مدير الإدارة / رئيس القسم */}
+                    <div style={{ border: cellBorder, padding: '10px 12px', marginBottom: '12px' }}>
+                      <div style={{ textAlign: 'left', fontWeight: 800, fontSize: '11.5pt', textDecoration: 'underline', marginBottom: '8px' }}>
+                        مدير الإدارة / رئيس القسم:
+                      </div>
+                      <p style={{ margin: 0, fontSize: '10.5pt', fontWeight: 600, lineHeight: 1.9 }}>
+                        تشهد إدارة <span style={{ borderBottom: '1px dotted #000', display: 'inline-block', minWidth: '260px', textAlign: 'center', fontWeight: 700 }}>{departmentName || '....................................................'}</span> بأن الموضح اسمه وبياناته أعلاه قد أتم فترة التكليف خلال الفترة المشار لها أدناه وقد تم تحرير هذا المشهد لغرض احتساب الإجازة التعويضية المستحقة له.
+                      </p>
+                      <div style={{ marginTop: '8px', display: 'flex', flexWrap: 'wrap', gap: '18px', fontSize: '10.5pt', fontWeight: 700 }}>
+                        <span>بداية التكليف: {assignmentStart || '  /  /  '} 144 هـ</span>
+                        <span>نهاية التكليف: {assignmentEnd || '  /  /  '} 144 هـ</span>
+                        <span>الأيام الفعلية ( {actualDays || '   '} ) .</span>
+                      </div>
+                      <div style={{ marginTop: '8px', display: 'flex', flexWrap: 'wrap', gap: '12px', fontSize: '10.5pt', fontWeight: 700 }}>
+                        <span>اسم مدير الإدارة / رئيس القسم: <span style={{ borderBottom: '1px dotted #000', display: 'inline-block', minWidth: '160px', textAlign: 'center' }}>{managerName || ''}</span></span>
+                        <span>التوقيع: <span style={{ borderBottom: '1px dotted #000', display: 'inline-block', minWidth: '120px' }}></span></span>
+                        <span>التاريخ: {managerDate || '  /  /  '} 144 هـ</span>
+                      </div>
+                    </div>
+
+                    {/* قسم: خاص بالموارد البشرية */}
+                    <div style={{ border: cellBorder, padding: '10px 12px', marginBottom: '12px' }}>
+                      <div style={{ textAlign: 'left', fontWeight: 800, fontSize: '11.5pt', textDecoration: 'underline', marginBottom: '8px' }}>
+                        خاص إدارة الموارد البشرية:
+                      </div>
+                      <div style={{ fontSize: '10.5pt', fontWeight: 700, lineHeight: 2 }}>
+                        <div>
+                          مسؤول نظام حياك: الاسم: <span style={{ borderBottom: '1px dotted #000', display: 'inline-block', minWidth: '140px', textAlign: 'center' }}>{hayakOfficerName || ''}</span>
+                          {' '}التوقيع: <span style={{ borderBottom: '1px dotted #000', display: 'inline-block', minWidth: '120px' }}></span>
+                          {' '}عدد الأيام الفعلية من واقع نظام حياك ( {hayakDays || '   '} ) يوم
+                        </div>
+                        <div style={{ marginTop: '8px' }}>
+                          مدير الموارد البشرية: الاسم: <span style={{ borderBottom: '1px dotted #000', display: 'inline-block', minWidth: '160px', textAlign: 'center' }}>{hrManagerName || ''}</span>
+                          {' '}التوقيع: <span style={{ borderBottom: '1px dotted #000', display: 'inline-block', minWidth: '140px' }}></span>
+                          {' '}الختم
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* تعليمات */}
+                    <div style={{ fontSize: '8.5pt', lineHeight: 1.6, color: '#000' }}>
+                      <div style={{ fontWeight: 800, fontSize: '10pt', color: '#1565C0', textDecoration: 'underline', marginBottom: '4px' }}>تعليمات:</div>
+                      <ol style={{ margin: 0, paddingRight: '18px', textAlign: 'justify', fontWeight: 700 }}>
+                        <li style={{ marginBottom: '3px' }}>يشترط تعبئة جميع الحقول وعدم الالتزام بذلك يؤدي إلى إلغاء المشهد. وهذا المشهد للترصيد فقط وأي كشط أو تعديل فيه يعد لاغياً وغير معتمد نظاماً.</li>
+                        <li style={{ marginBottom: '3px' }}>منسوبي التشغيل الذاتي التكليف أيام العطل الرسمية اليوم بيومين بناء على ما ورد في الفقرة (ب) من المادة 86 من لائحة تنظيم العمل لبرامج التشغيل الذاتي.</li>
+                        <li style={{ marginBottom: '3px' }}>منسوبي الخدمة المدنية التكليف أيام العطل رسمية اليوم بيوم عدا يوم العيد واليومين الذي بعده فيكون التعويض على أساس اليوم بيومين بناء على المادة 129 من اللائحة التنفيذية للموارد البشرية في الخدمة المدنية.</li>
+                        <li style={{ marginBottom: '3px' }}>منسوبي المدن الطبية التكليف أيام العطل الرسمية اليوم الأول من العيد بيومين وباقي الأيام بيوم ونصف بناء على المادة 5-2.5 من لائحة المدن الطبية ما عدا اليوم الوطني ويوم التأسيس اليوم بيوم.</li>
+                        <li style={{ marginBottom: '3px' }}>منسوبي شركة الصحة القابضة يتم التعويض عن تكليف أيام العطل الرسمية وفقاً لما ورد بالمادة 107 من نظام العمل (اليوم بيوم ونصف).</li>
+                        <li>المتعاقدين الغير سعوديين اليوم بيوم.</li>
                       </ol>
                     </div>
-
-                    {/* القسم 1: بيانات الموظف */}
-                    <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '12px' }}>
-                      <thead>
-                        <tr><th style={sectionHeaderStyle} colSpan={2}>أولاً: بيانات الموظف</th></tr>
-                      </thead>
-                      <tbody>
-                        {renderRow('اسم الموظف', selectedEmployee?.full_name_arabic)}
-                        {renderRow('الهوية الوطنية / الإقامة', nationalId)}
-                        {renderRow('نوع الوظيفة', jobType)}
-                        {renderRow('الملاك الوظيفي', jobGrade)}
-                        {renderRow('الجنسية', nationality)}
-                      </tbody>
-                    </table>
-
-                    {/* القسم 2: التكليف */}
-                    <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '12px' }}>
-                      <thead>
-                        <tr><th style={sectionHeaderStyle} colSpan={2}>ثانياً: تفاصيل التكليف</th></tr>
-                      </thead>
-                      <tbody>
-                        {renderRow('نوع التكليف لعام', `${assignmentYear || ''}هـ`)}
-                        <tr>
-                          <td style={labelCellStyle}>نوع التكليف</td>
-                          <td style={valueCellStyle}>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-                              {ASSIGNMENT_TYPE_OPTIONS.map(t => (
-                                <span key={t} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10.5pt' }}>
-                                  <span style={{ display: 'inline-block', width: '14px', height: '14px', border: '1.5px solid #000', textAlign: 'center', lineHeight: '12px', fontWeight: 900 }}>
-                                    {assignmentTypes.includes(t) ? '✓' : ''}
-                                  </span>
-                                  {t}
-                                </span>
-                              ))}
-                            </div>
-                          </td>
-                        </tr>
-                        {renderRow('تاريخ توقيع الموظف', employeeSignatureDate ? `${employeeSignatureDate}هـ` : '')}
-                      </tbody>
-                    </table>
-
-                    {/* القسم 3: مدير الإدارة */}
-                    <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '12px' }}>
-                      <thead>
-                        <tr><th style={sectionHeaderStyle} colSpan={2}>ثالثاً: اعتماد مدير الإدارة / رئيس القسم</th></tr>
-                      </thead>
-                      <tbody>
-                        {renderRow('اسم الإدارة', departmentName)}
-                        {renderRow('بداية التكليف', assignmentStart ? `${assignmentStart}هـ` : '')}
-                        {renderRow('نهاية التكليف', assignmentEnd ? `${assignmentEnd}هـ` : '')}
-                        {renderRow('الأيام الفعلية', actualDays)}
-                        {renderRow('اسم المدير / رئيس القسم', managerName)}
-                        {renderRow('التاريخ', managerDate ? `${managerDate}هـ` : '')}
-                      </tbody>
-                    </table>
-
-                    {/* القسم 4: حياك */}
-                    <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '12px' }}>
-                      <thead>
-                        <tr><th style={sectionHeaderStyle} colSpan={2}>رابعاً: اعتماد مسؤول نظام حياك</th></tr>
-                      </thead>
-                      <tbody>
-                        {renderRow('اسم المسؤول', hayakOfficerName)}
-                        {renderRow('عدد الأيام الفعلية من نظام حياك', hayakDays)}
-                      </tbody>
-                    </table>
-
-                    {/* القسم 5: HR */}
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                      <thead>
-                        <tr><th style={sectionHeaderStyle} colSpan={2}>خامساً: اعتماد مدير الموارد البشرية</th></tr>
-                      </thead>
-                      <tbody>
-                        {renderRow('الاسم', hrManagerName)}
-                        <tr>
-                          <td style={labelCellStyle}>التوقيع والختم</td>
-                          <td style={{ ...valueCellStyle, height: '70px' }}></td>
-                        </tr>
-                      </tbody>
-                    </table>
                   </div>
                 </div>
               </div>
