@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle, Target, Stethoscope, ShieldCheck, Droplets, FileCheck2, PartyPopper, ClipboardSignature } from 'lucide-react';
+import { Edit, ClipboardList, DollarSign, Award, Package, FilePenLine, FileCheck, Trash2, Recycle, Target, Stethoscope, ShieldCheck, Droplets, FileCheck2, PartyPopper, ClipboardSignature, ClipboardCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { createPageUrl } from '@/utils';
 
@@ -157,6 +157,14 @@ const interactiveForms = [
     color: "from-blue-700 to-cyan-700",
     link: createPageUrl("FillDeliveryRecordForm"),
     category: "المحاضر"
+  },
+  {
+    title: "مشهد إنجاز مهمة عمل",
+    description: "نموذج تفاعلي لإصدار مشهد إنجاز مهمة عمل — تعبئة تلقائية من بيانات الموظف، اعتمادات الإدارة وحياك والموارد البشرية",
+    icon: ClipboardCheck,
+    color: "from-sky-600 to-blue-700",
+    link: createPageUrl("FillTaskCompletionForm"),
+    category: "الموارد البشرية"
   }
 ];
 
