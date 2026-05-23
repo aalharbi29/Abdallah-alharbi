@@ -365,11 +365,35 @@ export default function FillTaskCompletionForm() {
                     padding: '20mm 15mm',
                     color: '#000',
                   }}>
-                    {/* رأس */}
-                    <div style={{ textAlign: 'center', borderBottom: '3px solid #0B3D91', paddingBottom: '10px', marginBottom: '15px' }}>
-                      <div style={{ fontSize: '16pt', fontWeight: 800, color: '#0B3D91' }}>تجمع المدينة المنورة الصحي</div>
-                      <div style={{ fontSize: '10pt', fontWeight: 600 }}>Madinah Health Cluster</div>
-                      <div style={{ fontSize: '18pt', fontWeight: 800, marginTop: '10px', color: '#000' }}>مشهد إنجاز مهمة عمل</div>
+                    {/* رأس - مع شعار التجمع */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '3px solid #0B3D91', paddingBottom: '10px', marginBottom: '12px' }}>
+                      <div style={{ width: '90px' }}>
+                        <img
+                          src="https://media.base44.com/images/public/68af5003813e47bd07947b30/ec052b844_image.jpg"
+                          alt="شعار التجمع"
+                          crossOrigin="anonymous"
+                          style={{ width: '90px', height: 'auto', objectFit: 'contain' }}
+                        />
+                      </div>
+                      <div style={{ textAlign: 'center', flex: 1 }}>
+                        <div style={{ fontSize: '16pt', fontWeight: 800, color: '#0B3D91' }}>تجمع المدينة المنورة الصحي</div>
+                        <div style={{ fontSize: '10pt', fontWeight: 600 }}>Madinah Health Cluster</div>
+                        <div style={{ fontSize: '17pt', fontWeight: 800, marginTop: '6px', color: '#000' }}>مشهد إنجاز مهمة</div>
+                      </div>
+                      <div style={{ width: '90px' }} />
+                    </div>
+
+                    {/* قسم التعليمات الرسمي */}
+                    <div style={{ border: '1.5px solid #0B3D91', padding: '10px 12px', marginBottom: '12px', background: '#F8FAFF', fontSize: '9.5pt', lineHeight: 1.7, color: '#000' }}>
+                      <div style={{ fontWeight: 800, fontSize: '11pt', marginBottom: '6px', color: '#0B3D91' }}>تعليمات:</div>
+                      <ol style={{ margin: 0, paddingRight: '20px', textAlign: 'justify' }}>
+                        <li style={{ marginBottom: '4px' }}>يشترط تعبئة جميع الحقول وعدم الالتزام بذلك يؤدي إلى إلغاء المشهد. وهذا المشهد للترصيد فقط وأي كشط أو تعديل فيه يعد لاغياً وغير معتمد نظاماً.</li>
+                        <li style={{ marginBottom: '4px' }}>منسوبي التشغيل الذاتي التكليف أيام العطل الرسمية اليوم بيومين بناء على ما ورد في الفقرة (ب) من المادة 86 من لائحة تنظيم العمل لبرامج التشغيل الذاتي.</li>
+                        <li style={{ marginBottom: '4px' }}>منسوبي الخدمة المدنية التكليف أيام العطل الرسمية اليوم بيوم عدا يوم العيد واليومين الذي بعده فيكون التعويض على أساس اليوم بيومين بناء على المادة 129 من اللائحة التنفيذية للموارد البشرية في الخدمة المدنية.</li>
+                        <li style={{ marginBottom: '4px' }}>منسوبي المدن الطبية التكليف أيام العطل الرسمية اليوم الأول من العيد بيومين وباقي الأيام بيوم ونصف بناء على المادة 5-2.5 من لائحة المدن الطبية ما عدا اليوم الوطني ويوم التأسيس اليوم بيوم.</li>
+                        <li style={{ marginBottom: '4px' }}>منسوبي شركة الصحة القابضة يتم التعويض عن تكليف أيام العطل الرسمية وفقاً لما ورد بالمادة 107 من نظام العمل (اليوم بيوم ونصف).</li>
+                        <li>المتعاقدين غير السعوديين اليوم بيوم.</li>
+                      </ol>
                     </div>
 
                     {/* القسم 1: بيانات الموظف */}
