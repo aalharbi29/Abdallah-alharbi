@@ -31,6 +31,7 @@ import FillDeliveryRecordForm from './pages/FillDeliveryRecordForm';
 import CenterNameNormalizer from './pages/CenterNameNormalizer';
 import MissingEmployeesImporter from './pages/MissingEmployeesImporter';
 import FillTaskCompletionForm from './pages/FillTaskCompletionForm';
+import OfficialLetterComposer from './pages/OfficialLetterComposer';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -185,6 +186,11 @@ const AuthenticatedApp = () => {
       <Route path="/FillTaskCompletionForm" element={
         <LayoutWrapper currentPageName="FillTaskCompletionForm">
           <FillTaskCompletionForm />
+        </LayoutWrapper>
+      } />
+      <Route path="/OfficialLetterComposer" element={
+        <LayoutWrapper currentPageName="OfficialLetterComposer">
+          <OfficialLetterComposer />
         </LayoutWrapper>
       } />
       <Route path="*" element={<PageNotFound />} />
