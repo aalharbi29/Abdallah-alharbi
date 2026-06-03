@@ -223,21 +223,51 @@ export default function OfficialLetterComposer() {
 
 
 
+                  {/* تحية افتتاح */}
+                  {displayBody && (
+                    <div style={{ marginBottom: 24, fontSize: 15, color: '#1a1a1a', lineHeight: 1.8 }}>
+                      السلام عليكم ورحمة الله وبركاته،
+                    </div>
+                  )}
+
                   {/* جسم الخطاب */}
-                  <div style={{ flex: 1, fontSize: 14, lineHeight: 2.1, color: '#1a1a1a', whiteSpace: 'pre-wrap', textAlign: 'justify' }}>
-                    {displayBody || (
-                      <span style={{ color: '#aaa', fontStyle: 'italic', fontSize: 13 }}>
+                  <div style={{ 
+                    flex: 1, 
+                    fontSize: 15, 
+                    lineHeight: 2, 
+                    color: '#1a1a1a', 
+                    whiteSpace: 'pre-wrap', 
+                    textAlign: 'justify',
+                    fontFamily: "'Cairo','Tajawal',sans-serif",
+                    fontWeight: 400,
+                    letterSpacing: '0.5px'
+                  }}>
+                    {displayBody ? (
+                      displayBody.split('\n').map((para, i) => (
+                        <p key={i} style={{ marginBottom: para.trim() ? 16 : 0 }}>
+                          {para}
+                        </p>
+                      ))
+                    ) : (
+                      <span style={{ color: '#aaa', fontStyle: 'italic', fontSize: 14 }}>
                         أدخل محتوى الخطاب في لوحة التحرير...
                       </span>
                     )}
                   </div>
 
+                  {/* خاتمة */}
+                  {displayBody && (
+                    <div style={{ marginTop: 28, marginBottom: 24, fontSize: 15, color: '#1a1a1a', lineHeight: 1.8 }}>
+                      وتفضلوا بقبول وافر التحية والاحترام،،
+                    </div>
+                  )}
+
                   {/* توقيع */}
                   {displayBody && (
-                    <div style={{ marginTop: 40, display: 'flex', justifyContent: 'flex-end' }}>
+                    <div style={{ marginTop: 48, display: 'flex', justifyContent: 'flex-end' }}>
                       <div style={{ textAlign: 'center', minWidth: 160 }}>
-                        <div style={{ height: 48, borderBottom: '1px solid #555', marginBottom: 6 }} />
-                        <div style={{ fontSize: 12, color: '#555' }}>التوقيع</div>
+                        <div style={{ height: 56, borderBottom: '2px solid #333', marginBottom: 8 }} />
+                        <div style={{ fontSize: 13, color: '#555', fontWeight: 500 }}>التوقيع</div>
                       </div>
                     </div>
                   )}
