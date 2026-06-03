@@ -88,22 +88,24 @@ ${rawText}`,
 
       {/* شريط الأدوات - لا يظهر عند الطباعة */}
       <div className="no-print bg-white border-b shadow-sm sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center gap-3">
-          <h1 className="text-lg font-bold text-gray-800 flex-1">📝 منشئ الخطابات الرسمية</h1>
-          <Button variant="outline" size="sm" onClick={() => setShowHeader(!showHeader)}>
-            {showHeader ? <ChevronUp className="w-4 h-4 ml-1" /> : <ChevronDown className="w-4 h-4 ml-1" />}
-            {showHeader ? 'إخفاء لوحة التحرير' : 'إظهار لوحة التحرير'}
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex flex-wrap items-center gap-2 sm:gap-3">
+          <h1 className="text-base sm:text-lg font-bold text-gray-800 flex-1 min-w-0 truncate">📝 منشئ الخطابات الرسمية</h1>
+          <Button variant="outline" size="sm" onClick={() => setShowHeader(!showHeader)} className="text-xs sm:text-sm px-2 sm:px-3">
+            {showHeader ? <ChevronUp className="w-4 h-4 sm:ml-1" /> : <ChevronDown className="w-4 h-4 sm:ml-1" />}
+            <span className="hidden sm:inline">{showHeader ? 'إخفاء لوحة التحرير' : 'إظهار لوحة التحرير'}</span>
           </Button>
-          <Button variant="outline" size="sm" onClick={handleReset}>
-            <RotateCcw className="w-4 h-4 ml-1" /> مسح
+          <Button variant="outline" size="sm" onClick={handleReset} className="text-xs sm:text-sm px-2 sm:px-3">
+            <RotateCcw className="w-4 h-4 sm:ml-1" />
+            <span className="hidden sm:inline">مسح</span>
           </Button>
-          <Button size="sm" onClick={handlePrint} className="bg-blue-700 hover:bg-blue-800 text-white">
-            <Printer className="w-4 h-4 ml-1" /> طباعة
+          <Button size="sm" onClick={handlePrint} className="bg-blue-700 hover:bg-blue-800 text-white text-xs sm:text-sm px-2 sm:px-3">
+            <Printer className="w-4 h-4 sm:ml-1" />
+            <span className="hidden sm:inline">طباعة</span>
           </Button>
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-6 flex flex-col lg:flex-row gap-6">
+      <div className="max-w-6xl mx-auto px-2 sm:px-4 py-4 sm:py-6 flex flex-col lg:flex-row gap-4 sm:gap-6">
 
         {/* لوحة الإدخال - لا تظهر عند الطباعة */}
         {showHeader && (
@@ -179,10 +181,11 @@ ${rawText}`,
         )}
 
         {/* معاينة الخطاب */}
-        <div className="flex-1">
+        <div className="flex-1 overflow-x-auto">
           <div ref={printRef} id="letter-print-area" className="bg-white shadow-xl mx-auto"
             style={{
               width: '210mm',
+              minWidth: '210mm',
               minHeight: '297mm',
               position: 'relative',
               overflow: 'hidden',
