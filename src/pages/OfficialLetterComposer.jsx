@@ -78,7 +78,56 @@ ${rawText}`,
   };
 
   const handlePrint = () => {
-    window.print();
+    const printContent = document.getElementById('letter-print-area');
+    if (!printContent) return;
+
+    const printWindow = window.open('', '_blank', 'width=900,height=1200');
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html dir="rtl">
+      <head>
+        <meta charset="UTF-8"/>
+        <title>خطاب رسمي</title>
+        <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          @page {
+            size: A4 portrait;
+            margin: 0;
+          }
+          body {
+            font-family: 'Cairo', 'Tajawal', Arial, sans-serif;
+            background: white;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+          }
+          #letter-print-area {
+            width: 210mm;
+            min-height: 297mm;
+            position: relative;
+            overflow: hidden;
+            background: white;
+          }
+          @media print {
+            html, body { width: 210mm; height: 297mm; }
+            #letter-print-area { page-break-after: avoid; }
+          }
+        </style>
+      </head>
+      <body>
+        ${printContent.outerHTML}
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+              window.close();
+            }, 800);
+          };
+        <\/script>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
   };
 
   const displayBody = generatedBody || rawText;
@@ -100,7 +149,7 @@ ${rawText}`,
           </Button>
           <Button size="sm" onClick={handlePrint} className="bg-blue-700 hover:bg-blue-800 text-white text-xs sm:text-sm px-2 sm:px-3">
             <Printer className="w-4 h-4 sm:ml-1" />
-            <span className="hidden sm:inline">طباعة</span>
+            <span className="hidden sm:inline">طباعة الخطاب</span>
           </Button>
         </div>
       </div>
@@ -292,17 +341,21 @@ ${rawText}`,
         </div>
       </div>
 
-      {/* CSS الطباعة */}
+      {/* CSS الطباعة - للطباعة المباشرة من المتصفح */}
       <style>{`
         @media print {
           .no-print { display: none !important; }
-          body { margin: 0; background: white; }
+          body { margin: 0 !important; background: white !important; }
           #letter-print-area {
             width: 210mm !important;
             min-height: 297mm !important;
             margin: 0 !important;
             box-shadow: none !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
           }
+          @page { size: A4 portrait; margin: 0; }
         }
       `}</style>
     </div>
