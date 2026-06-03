@@ -20,9 +20,7 @@ const A4_H = 1123;
 export default function OfficialLetterComposer() {
   const { logoSettings, isLoaded } = useLogoSettings();
 
-  const [subject, setSubject] = useState('');
-  const [refNumber, setRefNumber] = useState('');
-  const [letterDate, setLetterDate] = useState(today());
+
   const [rawText, setRawText] = useState('');
   const [generatedBody, setGeneratedBody] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -63,7 +61,7 @@ export default function OfficialLetterComposer() {
     setIsLoading(true);
     try {
       const res = await base44.integrations.Core.InvokeLLM({
-        prompt: `اكتب خطاباً رسمياً باللغة العربية الفصحى احترافياً. أعد فقط نص الفقرات الرئيسية بدون أي تحية افتتاحية أو خاتمة.\n\n${subject ? `موضوع الخطاب: ${subject}\n` : ''}المحتوى:\n${rawText}`,
+        prompt: `اكتب خطاباً رسمياً باللغة العربية الفصحى احترافياً. أعد فقط نص الفقرات الرئيسية بدون أي تحية افتتاحية أو خاتمة.\n\nالمحتوى:\n${rawText}`,
         response_json_schema: { type: 'object', properties: { body: { type: 'string' } } }
       });
       setGeneratedBody(res.body || rawText);
@@ -76,9 +74,6 @@ export default function OfficialLetterComposer() {
   const handleReset = () => {
     setGeneratedBody('');
     setRawText('');
-    setSubject('');
-    setRefNumber('');
-    setLetterDate(today());
   };
 
   const handlePrint = () => {
@@ -145,20 +140,7 @@ export default function OfficialLetterComposer() {
               <h2 className="font-bold text-gray-700 border-b pb-2 flex items-center gap-2 text-sm">
                 <Edit3 className="w-4 h-4" /> بيانات الخطاب
               </h2>
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <Label className="text-xs text-gray-500 mb-1 block">رقم الخطاب</Label>
-                  <Input value={refNumber} onChange={e => setRefNumber(e.target.value)} placeholder="م/ص/١٢٣" className="text-xs h-8" />
-                </div>
-                <div>
-                  <Label className="text-xs text-gray-500 mb-1 block">التاريخ</Label>
-                  <Input value={letterDate} onChange={e => setLetterDate(e.target.value)} placeholder="YYYY/MM/DD" className="text-xs h-8" />
-                </div>
-              </div>
-              <div>
-                <Label className="text-xs text-gray-500 mb-1 block">الموضوع</Label>
-                <Input value={subject} onChange={e => setSubject(e.target.value)} placeholder="موضوع الخطاب" className="text-xs h-8" />
-              </div>
+
             </div>
 
             <div className="bg-white rounded-xl shadow p-3 space-y-3">
@@ -239,18 +221,7 @@ export default function OfficialLetterComposer() {
                   display: 'flex', flexDirection: 'column',
                 }}>
 
-                  {/* رقم وتاريخ */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20, fontSize: 13 }}>
-                    <div><span style={{ color: '#555' }}>التاريخ: </span><span style={{ fontWeight: 600 }}>{letterDate || '___________'}</span></div>
-                    <div><span style={{ color: '#555' }}>الرقم: </span><span style={{ fontWeight: 600 }}>{refNumber || '___________'}</span></div>
-                  </div>
 
-                  {/* الموضوع */}
-                  {subject && (
-                    <div style={{ marginBottom: 20, fontSize: 14, fontWeight: 700, borderRight: '4px solid #1E63D6', paddingRight: 12 }}>
-                      الموضوع: {subject}
-                    </div>
-                  )}
 
                   {/* جسم الخطاب */}
                   <div style={{ flex: 1, fontSize: 14, lineHeight: 2.1, color: '#1a1a1a', whiteSpace: 'pre-wrap', textAlign: 'justify' }}>
