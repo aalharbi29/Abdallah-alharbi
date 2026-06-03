@@ -88,4 +88,5 @@ export const getNavigationItems = (t) => [
   { name: "تختيم سريع", href: pageUrl("QuickSignArchive"), icon: FileCheck },
   { name: "خطاب تعريف", href: pageUrl("EmployeeIntroductionLetter"), icon: FileText },
   { name: "اعتماد الطلبات", href: pageUrl("ApprovalRequests"), icon: FileCheck },
+  { name: "منشئ الخطابات الرسمية", href: pageUrl("OfficialLetterComposer"), icon: Mail },
 ];
