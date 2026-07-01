@@ -6,49 +6,55 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { 
-  Printer, Download, Search, User, Building2, Calendar,
+import {
+  Printer, Download, Search, User,
   FileText, Loader2, CheckCircle2
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import OfficialLetterHeader from '@/components/official/OfficialLetterHeader';
-import OfficialFooter from '@/components/common/OfficialFooter';
+import AssignmentFormPreview from '@/components/assignment_form/AssignmentFormPreview';
 
 export default function FillOfficialAssignmentForm() {
   const location = useLocation();
-  const formRef = useRef(null);
-  
+  const printRef = useRef(null);
+  const scalerRef = useRef(null);
+  const supSigRef = useRef(null);
+  const certSigRef = useRef(null);
+  const stampInputRef = useRef(null);
+
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
 
-  const [formData, setFormData] = useState({
-    employeeNumber: '',
-    employeeName: '',
-    rank: '',
-    assignmentDestination: '',
-    assignmentValue: '',
-    assignmentDuration: '',
-    assignmentDate: '',
-    assignmentReasons: '',
-    daysNotExceeded: '60',
-    fiscalYear: new Date().getFullYear().toString(),
-    supervisorName: '',
-    // شهادة جهة التكليف
-    certifyingAuthority: '',
-    certifyingName: '',
-    startDateDay: '',
-    startDateMonth: '',
-    startDateYear: '14',
-    endDateDay: '',
-    endDateMonth: '',
-    endDateYear: '14',
-  });
+  // بيانات الجدول
+  const [grade, setGrade] = useState('');
+  const [assignmentEntity, setAssignmentEntity] = useState('');
+  const [assignmentValue, setAssignmentValue] = useState('');
+  const [duration, setDuration] = useState('');
+  const [assignmentDate, setAssignmentDate] = useState('');
+
+  // أسباب التكليف
+  const [reasons, setReasons] = useState('');
+
+  // الرئيس المباشر
+  const [supervisorSignatureUrl, setSupervisorSignatureUrl] = useState('');
+
+  // شهادة جهة التكليف
+  const [certifyingAdministration, setCertifyingAdministration] = useState('');
+  const [employeeNameInCertificate, setEmployeeNameInCertificate] = useState('');
+  const [fromDay, setFromDay] = useState('');
+  const [fromMonth, setFromMonth] = useState('');
+  const [fromYear, setFromYear] = useState('14');
+  const [toDay, setToDay] = useState('');
+  const [toMonth, setToMonth] = useState('');
+  const [toYear, setToYear] = useState('14');
+  const [certifierName, setCertifierName] = useState('');
+  const [certifierSignatureUrl, setCertifierSignatureUrl] = useState('');
+  const [stampUrl, setStampUrl] = useState('');
+
+  const [previewScale, setPreviewScale] = useState(1);
 
   useEffect(() => {
     loadEmployees();
@@ -59,47 +65,56 @@ export default function FillOfficialAssignmentForm() {
     }
   }, [location.search]);
 
+  useEffect(() => {
+    const updateScale = () => {
+      if (!scalerRef.current) return;
+      const containerWidth = scalerRef.current.offsetWidth;
+      const A4_WIDTH_PX = 794;
+      setPreviewScale(containerWidth / A4_WIDTH_PX);
+    };
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, []);
+
   const loadEmployees = async () => {
     try {
-      const data = await base44.entities.Employee.list();
-      setEmployees(data || []);
+      const data = await base44.entities.Employee.list('-updated_date', 1000);
+      setEmployees(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Error loading employees:', error);
     }
   };
 
   const loadEmployeeById = async (id) => {
-    setIsLoading(true);
     try {
       const employee = await base44.entities.Employee.get(id);
-      if (employee) {
-        selectEmployee(employee);
-      }
+      if (employee) selectEmployee(employee);
     } catch (error) {
       console.error('Error loading employee:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const selectEmployee = (employee) => {
     setSelectedEmployee(employee);
-    setFormData(prev => ({
-      ...prev,
-      employeeNumber: employee.رقم_الموظف || '',
-      employeeName: employee.full_name_arabic || '',
-      rank: employee.rank || employee.level || '',
-    }));
+    setGrade(employee.grade || '');
+    setEmployeeNameInCertificate(employee.full_name_arabic || '');
     setSearchTerm('');
   };
 
-  const filteredEmployees = employees.filter(emp => 
-    emp.full_name_arabic?.includes(searchTerm) || 
-    emp.رقم_الموظف?.includes(searchTerm)
+  const filteredEmployees = employees.filter(emp =>
+    emp.full_name_arabic?.includes(searchTerm) ||
+    emp['رقم_الموظف']?.includes(searchTerm)
   ).slice(0, 10);
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleUpload = async (file, setter) => {
+    if (!file) return;
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setter(file_url);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
   };
 
   const handlePrint = () => {
@@ -107,19 +122,19 @@ export default function FillOfficialAssignmentForm() {
   };
 
   const handleExportPDF = async () => {
-    if (!formRef.current) return;
+    if (!printRef.current) return;
     setIsExporting(true);
     try {
-      const canvas = await html2canvas(formRef.current, {
+      const canvas = await html2canvas(printRef.current, {
         scale: 2,
         useCORS: true,
         backgroundColor: '#ffffff'
       });
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save('نموذج_تكليف_مهمة_رسمية.pdf');
     } catch (error) {
       console.error('Error exporting PDF:', error);
@@ -130,11 +145,54 @@ export default function FillOfficialAssignmentForm() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 p-4 md:p-6">
+      <style>{`
+        @media print {
+          @page { size: A4 portrait; margin: 0; }
+          html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+            background: #fff !important;
+            width: 210mm !important;
+            height: 297mm !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          body * { visibility: hidden !important; }
+          .print-area, .print-area * { visibility: visible !important; }
+          .print-area, .preview-scaler {
+            position: static !important;
+            width: auto !important;
+            height: auto !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: visible !important;
+            display: block !important;
+            background: transparent !important;
+            box-shadow: none !important;
+            aspect-ratio: auto !important;
+          }
+          .preview-page {
+            transform: none !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 210mm !important;
+            height: 297mm !important;
+            margin: 0 !important;
+            box-shadow: none !important;
+            overflow: hidden !important;
+          }
+          .no-print { display: none !important; }
+        }
+      `}</style>
+
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-5xl mx-auto mb-6"
+        className="max-w-6xl mx-auto mb-6 no-print"
       >
         <div className="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-2xl p-6 text-white shadow-xl">
           <div className="flex items-center justify-between flex-wrap gap-4">
@@ -147,16 +205,12 @@ export default function FillOfficialAssignmentForm() {
                 <p className="text-teal-100 mt-1">تجمع المدينة المنورة الصحي - إدارة رأس المال البشري</p>
               </div>
             </div>
-            <div className="flex gap-2 no-print">
-              <Button 
-                onClick={handlePrint}
-                variant="secondary"
-                className="rounded-xl"
-              >
+            <div className="flex gap-2">
+              <Button onClick={handlePrint} variant="secondary" className="rounded-xl">
                 <Printer className="w-4 h-4 ml-2" />
                 طباعة
               </Button>
-              <Button 
+              <Button
                 onClick={handleExportPDF}
                 disabled={isExporting}
                 className="bg-white text-teal-700 hover:bg-teal-50 rounded-xl"
@@ -169,15 +223,15 @@ export default function FillOfficialAssignmentForm() {
         </div>
       </motion.div>
 
-      <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* بحث الموظف */}
+      <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* بحث الموظف وبيانات النموذج */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.1 }}
-          className="lg:col-span-1 no-print"
+          className="lg:col-span-1 no-print space-y-4"
         >
-          <Card className="shadow-xl border-0 sticky top-4">
+          <Card className="shadow-xl border-0">
             <CardContent className="p-4">
               <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <User className="w-5 h-5 text-teal-600" />
@@ -201,7 +255,7 @@ export default function FillOfficialAssignmentForm() {
                       className="w-full p-3 text-right bg-gray-50 hover:bg-teal-50 rounded-xl transition-colors border border-transparent hover:border-teal-200"
                     >
                       <p className="font-medium text-gray-800">{emp.full_name_arabic}</p>
-                      <p className="text-xs text-gray-500">{emp.رقم_الموظف} - {emp.position}</p>
+                      <p className="text-xs text-gray-500">{emp['رقم_الموظف']} - {emp.position}</p>
                     </button>
                   ))}
                 </div>
@@ -213,267 +267,123 @@ export default function FillOfficialAssignmentForm() {
                     <span className="text-sm font-medium text-teal-800">تم اختيار الموظف</span>
                   </div>
                   <p className="font-bold text-gray-800">{selectedEmployee.full_name_arabic}</p>
-                  <p className="text-xs text-gray-600">{selectedEmployee.رقم_الموظف}</p>
+                  <p className="text-xs text-gray-600">{selectedEmployee['رقم_الموظف']}</p>
                 </div>
               )}
             </CardContent>
           </Card>
+
+          <Card className="shadow-xl border-0">
+            <CardContent className="p-4 space-y-3">
+              <h3 className="font-bold text-gray-800">بيانات الجدول</h3>
+              <div>
+                <Label className="text-xs text-gray-600">م/ت الدرجة</Label>
+                <Input value={grade} onChange={e => setGrade(e.target.value)} className="mt-1" />
+              </div>
+              <div>
+                <Label className="text-xs text-gray-600">جهة الانتداب</Label>
+                <Input value={assignmentEntity} onChange={e => setAssignmentEntity(e.target.value)} className="mt-1" />
+              </div>
+              <div>
+                <Label className="text-xs text-gray-600">قيمة الانتداب</Label>
+                <Input value={assignmentValue} onChange={e => setAssignmentValue(e.target.value)} className="mt-1" />
+              </div>
+              <div>
+                <Label className="text-xs text-gray-600">مدة الانتداب</Label>
+                <Input value={duration} onChange={e => setDuration(e.target.value)} className="mt-1" placeholder="مثال: ١٤ يوم" />
+              </div>
+              <div>
+                <Label className="text-xs text-gray-600">تاريخ الانتداب</Label>
+                <Input value={assignmentDate} onChange={e => setAssignmentDate(e.target.value)} className="mt-1" placeholder="1447/01/01" />
+              </div>
+
+              <div className="border-t pt-3">
+                <Label className="text-xs text-gray-600">شرح أسباب التكليف</Label>
+                <Textarea value={reasons} onChange={e => setReasons(e.target.value)} rows={3} className="mt-1 text-sm" placeholder="اكتب أسباب التكليف..." />
+              </div>
+
+              <div className="border-t pt-3">
+                <Label className="text-xs text-gray-600">توقيع الرئيس المباشر</Label>
+                <input type="file" accept="image/*" ref={supSigRef} onChange={e => handleUpload(e.target.files[0], setSupervisorSignatureUrl)} className="hidden" />
+                <Button variant="outline" size="sm" className="w-full mt-1" onClick={() => supSigRef.current?.click()}>
+                  {supervisorSignatureUrl ? '✓ تم الرفع' : 'رفع التوقيع'}
+                </Button>
+              </div>
+
+              <div className="border-t pt-3 space-y-2">
+                <Label className="text-sm font-bold">شهادة جهة التكليف</Label>
+                <div>
+                  <Label className="text-xs text-gray-600">تشهد إدارة</Label>
+                  <Input value={certifyingAdministration} onChange={e => setCertifyingAdministration(e.target.value)} className="mt-1" />
+                </div>
+                <div>
+                  <Label className="text-xs text-gray-600">اسم الموظف</Label>
+                  <Input value={employeeNameInCertificate} onChange={e => setEmployeeNameInCertificate(e.target.value)} className="mt-1" />
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <Input value={fromDay} onChange={e => setFromDay(e.target.value)} placeholder="يوم" />
+                  <Input value={fromMonth} onChange={e => setFromMonth(e.target.value)} placeholder="شهر" />
+                  <Input value={fromYear} onChange={e => setFromYear(e.target.value)} placeholder="سنة" />
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <Input value={toDay} onChange={e => setToDay(e.target.value)} placeholder="يوم" />
+                  <Input value={toMonth} onChange={e => setToMonth(e.target.value)} placeholder="شهر" />
+                  <Input value={toYear} onChange={e => setToYear(e.target.value)} placeholder="سنة" />
+                </div>
+                <div>
+                  <Label className="text-xs text-gray-600">اسم المعتمد</Label>
+                  <Input value={certifierName} onChange={e => setCertifierName(e.target.value)} className="mt-1" />
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <input type="file" accept="image/*" ref={certSigRef} onChange={e => handleUpload(e.target.files[0], setCertifierSignatureUrl)} className="hidden" />
+                    <Button variant="outline" size="sm" className="w-full mt-1" onClick={() => certSigRef.current?.click()}>
+                      {certifierSignatureUrl ? '✓ التوقيع' : 'رفع التوقيع'}
+                    </Button>
+                  </div>
+                  <div>
+                    <input type="file" accept="image/*" ref={stampInputRef} onChange={e => handleUpload(e.target.files[0], setStampUrl)} className="hidden" />
+                    <Button variant="outline" size="sm" className="w-full mt-1" onClick={() => stampInputRef.current?.click()}>
+                      {stampUrl ? '✓ الختم' : 'رفع الختم'}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </motion.div>
 
-        {/* النموذج */}
+        {/* المعاينة - النموذج الرسمي طبق الأصل */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="lg:col-span-3"
         >
-          <div 
-            ref={formRef}
-            className="bg-white rounded-2xl shadow-xl overflow-hidden print:shadow-none print:rounded-none"
-            style={{ direction: 'rtl' }}
-          >
-            <div className="p-6 pb-0">
-              <OfficialLetterHeader arabicDepartment="تجمع المدينة المنورة الصحي | إدارة رأس المال البشري" englishDepartment="Human Capital Management | Madinah Health Cluster" />
-            </div>
-
-            {/* Form Content */}
-            <div className="p-6 mr-12">
-              <h3 className="text-xl font-bold text-center text-gray-800 mb-6 py-3 bg-gray-50 rounded-xl">
-                نموذج تكليف مهمه رسمية
-              </h3>
-
-              {/* جدول البيانات الأساسية */}
-              <div className="border border-gray-300 rounded-xl overflow-hidden mb-6">
-                <table className="w-full">
-                  <thead>
-                    <tr className="bg-[#E0F2F1]">
-                      <th className="border-l border-gray-300 p-3 text-sm font-bold text-gray-700">رقم الموظف</th>
-                      <th className="border-l border-gray-300 p-3 text-sm font-bold text-gray-700">الاســــم</th>
-                      <th className="border-l border-gray-300 p-3 text-sm font-bold text-gray-700">م/ت الدرجة</th>
-                      <th className="border-l border-gray-300 p-3 text-sm font-bold text-gray-700">جهة الانتداب</th>
-                      <th className="border-l border-gray-300 p-3 text-sm font-bold text-gray-700">قيمة الانتداب</th>
-                      <th className="border-l border-gray-300 p-3 text-sm font-bold text-gray-700">مدة الانتداب</th>
-                      <th className="p-3 text-sm font-bold text-gray-700">تاريخ الانتداب</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="border-l border-t border-gray-300 p-2">
-                        <Input
-                          value={formData.employeeNumber}
-                          onChange={(e) => handleInputChange('employeeNumber', e.target.value)}
-                          className="border-0 bg-transparent text-center h-10 print:bg-transparent"
-                        />
-                      </td>
-                      <td className="border-l border-t border-gray-300 p-2">
-                        <Input
-                          value={formData.employeeName}
-                          onChange={(e) => handleInputChange('employeeName', e.target.value)}
-                          className="border-0 bg-transparent text-center h-10 print:bg-transparent"
-                        />
-                      </td>
-                      <td className="border-l border-t border-gray-300 p-2">
-                        <Input
-                          value={formData.rank}
-                          onChange={(e) => handleInputChange('rank', e.target.value)}
-                          className="border-0 bg-transparent text-center h-10 print:bg-transparent"
-                        />
-                      </td>
-                      <td className="border-l border-t border-gray-300 p-2">
-                        <Input
-                          value={formData.assignmentDestination}
-                          onChange={(e) => handleInputChange('assignmentDestination', e.target.value)}
-                          className="border-0 bg-transparent text-center h-10 print:bg-transparent"
-                        />
-                      </td>
-                      <td className="border-l border-t border-gray-300 p-2">
-                        <Input
-                          value={formData.assignmentValue}
-                          onChange={(e) => handleInputChange('assignmentValue', e.target.value)}
-                          className="border-0 bg-transparent text-center h-10 print:bg-transparent"
-                        />
-                      </td>
-                      <td className="border-l border-t border-gray-300 p-2">
-                        <Input
-                          value={formData.assignmentDuration}
-                          onChange={(e) => handleInputChange('assignmentDuration', e.target.value)}
-                          className="border-0 bg-transparent text-center h-10 print:bg-transparent"
-                        />
-                      </td>
-                      <td className="border-t border-gray-300 p-2">
-                        <Input
-                          type="date"
-                          value={formData.assignmentDate}
-                          onChange={(e) => handleInputChange('assignmentDate', e.target.value)}
-                          className="border-0 bg-transparent text-center h-10 print:bg-transparent"
-                        />
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              {/* شرح أسباب التكليف */}
-              <div className="mb-6">
-                <Label className="block mb-2 font-bold text-gray-700">شرح أسباب التكليف :</Label>
-                <Textarea
-                  value={formData.assignmentReasons}
-                  onChange={(e) => handleInputChange('assignmentReasons', e.target.value)}
-                  placeholder="اكتب أسباب التكليف هنا..."
-                  className="min-h-[100px] rounded-xl border-gray-300"
-                />
-              </div>
-
-              {/* التأكيد على عدد الأيام */}
-              <div className="mb-6 p-4 bg-gray-50 rounded-xl">
-                <p className="text-gray-700">
-                  علما بان انتدابات المذكور لم تتجاوز ( 
-                  <Input
-                    value={formData.daysNotExceeded}
-                    onChange={(e) => handleInputChange('daysNotExceeded', e.target.value)}
-                    className="w-16 inline-block mx-2 text-center border-gray-300 h-8"
-                  />
-                  ) ستون يوما في السنة المالية الحالية (
-                  <Input
-                    value={formData.fiscalYear}
-                    onChange={(e) => handleInputChange('fiscalYear', e.target.value)}
-                    className="w-20 inline-block mx-2 text-center border-gray-300 h-8"
-                  />
-                  ) وعلي مسئوليتنا.
-                </p>
-              </div>
-
-              {/* توقيع الرئيس المباشر */}
-              <div className="mb-8 flex justify-between items-center p-4 border border-gray-200 rounded-xl">
-                <div className="flex items-center gap-4">
-                  <Label className="font-bold text-gray-700">الرئيس المباشر:</Label>
-                  <Input
-                    value={formData.supervisorName}
-                    onChange={(e) => handleInputChange('supervisorName', e.target.value)}
-                    placeholder="الاسم"
-                    className="w-48 border-gray-300"
-                  />
-                </div>
-                <div className="flex items-center gap-4">
-                  <Label className="font-bold text-gray-700">التوقيع:</Label>
-                  <div className="w-40 h-12 border-b-2 border-gray-400"></div>
-                </div>
-              </div>
-
-              {/* شهادة جهة التكليف */}
-              <div className="border-2 border-[#00796B] rounded-xl overflow-hidden">
-                <div className="bg-[#00796B] p-3">
-                  <h4 className="text-lg font-bold text-white text-center">شهادة جهة التكليف</h4>
-                </div>
-                <div className="p-6 space-y-4">
-                  <div className="flex flex-wrap items-center gap-4">
-                    <span className="font-bold text-gray-700">تشهد ادارة</span>
-                    <Input
-                      value={formData.certifyingAuthority}
-                      onChange={(e) => handleInputChange('certifyingAuthority', e.target.value)}
-                      placeholder="اسم الإدارة"
-                      className="flex-1 min-w-[200px] border-gray-300"
-                    />
-                    <span className="text-gray-700">بأن الموضح أسمه بعالية قد انجز المهمة المكلف بها</span>
-                  </div>
-                  
-                  <div className="flex flex-wrap items-center gap-4">
-                    <span className="text-gray-700">من تاريخ</span>
-                    <div className="flex items-center gap-1">
-                      <Input
-                        value={formData.startDateDay}
-                        onChange={(e) => handleInputChange('startDateDay', e.target.value)}
-                        placeholder="يوم"
-                        className="w-14 text-center border-gray-300"
-                      />
-                      <span>/</span>
-                      <Input
-                        value={formData.startDateMonth}
-                        onChange={(e) => handleInputChange('startDateMonth', e.target.value)}
-                        placeholder="شهر"
-                        className="w-14 text-center border-gray-300"
-                      />
-                      <span>/</span>
-                      <Input
-                        value={formData.startDateYear}
-                        onChange={(e) => handleInputChange('startDateYear', e.target.value)}
-                        className="w-14 text-center border-gray-300"
-                      />
-                      <span className="text-sm text-gray-500">هـ</span>
-                    </div>
-                    
-                    <span className="text-gray-700">وغادر بتاريخ</span>
-                    <div className="flex items-center gap-1">
-                      <Input
-                        value={formData.endDateDay}
-                        onChange={(e) => handleInputChange('endDateDay', e.target.value)}
-                        placeholder="يوم"
-                        className="w-14 text-center border-gray-300"
-                      />
-                      <span>/</span>
-                      <Input
-                        value={formData.endDateMonth}
-                        onChange={(e) => handleInputChange('endDateMonth', e.target.value)}
-                        placeholder="شهر"
-                        className="w-14 text-center border-gray-300"
-                      />
-                      <span>/</span>
-                      <Input
-                        value={formData.endDateYear}
-                        onChange={(e) => handleInputChange('endDateYear', e.target.value)}
-                        className="w-14 text-center border-gray-300"
-                      />
-                      <span className="text-sm text-gray-500">هـ</span>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-6 pt-4 border-t border-gray-200 mt-4">
-                    <div className="text-center">
-                      <Label className="font-bold text-gray-700 mb-2 block">الاســــم :</Label>
-                      <Input
-                        value={formData.certifyingName}
-                        onChange={(e) => handleInputChange('certifyingName', e.target.value)}
-                        className="border-gray-300 text-center"
-                      />
-                    </div>
-                    <div className="text-center">
-                      <Label className="font-bold text-gray-700 mb-2 block">التوقيع</Label>
-                      <div className="h-12 border-b-2 border-gray-400"></div>
-                    </div>
-                    <div className="text-center">
-                      <Label className="font-bold text-gray-700 mb-2 block">الختم</Label>
-                      <div className="h-16 w-16 mx-auto border-2 border-dashed border-gray-400 rounded-full"></div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="px-6 pb-6 mr-12 mt-6">
-              <OfficialFooter />
-            </div>
-          </div>
+          <AssignmentFormPreview
+            printRef={printRef}
+            scalerRef={scalerRef}
+            previewScale={previewScale}
+            data={{
+              selectedEmployee,
+              grade,
+              assignmentEntity,
+              assignmentValue,
+              duration,
+              assignmentDate,
+              reasons,
+              supervisorSignatureUrl,
+              certifyingAdministration,
+              employeeNameInCertificate,
+              fromDay, fromMonth, fromYear,
+              toDay, toMonth, toYear,
+              certifierName,
+              certifierSignatureUrl,
+              stampUrl,
+            }}
+          />
         </motion.div>
       </div>
-
-      {/* Print Styles */}
-      <style>{`
-        @media print {
-          body * {
-            visibility: hidden;
-          }
-          .print-area, .print-area * {
-            visibility: visible;
-          }
-          .no-print {
-            display: none !important;
-          }
-          @page {
-            size: A4;
-            margin: 10mm;
-          }
-        }
-      `}</style>
     </div>
   );
 }
