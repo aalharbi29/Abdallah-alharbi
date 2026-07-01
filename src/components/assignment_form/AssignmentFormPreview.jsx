@@ -7,70 +7,8 @@ const toArabicDigits = (str) => {
   return String(str).replace(/[0-9]/g, (d) => map[+d]);
 };
 
-// الزخرفة الجانبية اليسرى (تطابق النموذج الأصلي)
-const SideDecoration = () => {
-  const lines = Array.from({ length: 38 }, (_, i) =>
-    i % 2 === 0
-      ? <div key={i} style={{ display: 'flex', justifyContent: 'center', gap: '2px' }}><span>ج</span><span style={{ transform: 'scaleX(-1)', display: 'inline-block' }}>ج</span></div>
-      : <div key={i} style={{ display: 'flex', justifyContent: 'center', gap: '2px', marginTop: '-2px' }}><span>∧</span><span>∧</span></div>
-  );
-  return (
-    <div style={{
-      position: 'absolute', left: 0, top: 0, bottom: 0, width: '34px',
-      fontFamily: "'Tajawal','Cairo',serif",
-      fontSize: '13px', color: '#1a5276',
-      lineHeight: '17px', paddingTop: '10px',
-      userSelect: 'none', overflow: 'hidden',
-    }}>
-      {lines}
-    </div>
-  );
-};
-
-// رأس النموذج
-const FormHeader = () => (
-  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'flex-end', padding: '18px 46px 0 46px', gap: '12px' }}>
-    {/* النص يسار الشعار */}
-    <div style={{ textAlign: 'right', flex: 1 }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0', lineHeight: 1.3 }}>
-        <span style={{ fontSize: '17pt', fontWeight: 900, color: '#0F7884' }}>تجمع المدينة المنورة الصحي</span>
-        <span style={{ borderRight: '2.5px solid #0F7884', margin: '0 10px', paddingRight: '10px', fontSize: '13pt', fontWeight: 800, color: '#0F7884' }}>
-          إدارة رأس المال البشري
-        </span>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0', marginTop: '3px' }}>
-        <span style={{ fontSize: '10.5pt', fontWeight: 700, color: '#7DC242' }}>Human capital management</span>
-        <span style={{ borderRight: '2.5px solid #7DC242', margin: '0 10px', paddingRight: '10px', fontSize: '10.5pt', fontWeight: 700, color: '#0F7884' }}>
-          Madinah Health Cluster
-        </span>
-      </div>
-    </div>
-    {/* الشعار */}
-    <img
-      src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/2c0d9aff5_image.png"
-      alt="شعار"
-      style={{ width: '80px', height: 'auto', flexShrink: 0 }}
-      crossOrigin="anonymous"
-      onError={(e) => { e.currentTarget.style.display = 'none'; }}
-    />
-  </div>
-);
-
-// تذييل النموذج
-const FormFooter = () => (
-  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
-    <div style={{ padding: '4px 46px 4px 46px', textAlign: 'right', display: 'flex', alignItems: 'center', gap: '6px' }}>
-      <span style={{ fontSize: '17pt', fontWeight: 900, color: '#0F7884', borderBottom: '2px solid #7DC242', paddingBottom: '1px' }}>صحتكم</span>
-      <span style={{ fontSize: '13pt', color: '#0F7884', margin: '0 2px', fontWeight: 700 }}>...</span>
-      <span style={{ fontSize: '17pt', fontWeight: 900, color: '#0F7884', borderBottom: '2px solid #7DC242', paddingBottom: '1px' }}>غايتنا</span>
-    </div>
-    <div style={{ background: '#0F7884', color: '#fff', padding: '9px 46px', display: 'flex', justifyContent: 'center', gap: '28px', fontSize: '9.5pt', fontWeight: 600 }}>
-      <span>📘 Madinah.Cluster</span>
-      <span>📷 Med_Cluster</span>
-      <span>✉ Med-Cluster@moh.gov.sa</span>
-    </div>
-  </div>
-);
+// خلفية الترويسة الرسمية المستخرجة (شعار + زخرفة جانبية + تذييل)
+const LETTERHEAD_BG_URL = 'https://media.base44.com/images/public/68af5003813e47bd07947b30/b76c02f7a_extracted_letterhead_background.png';
 
 // خط نقاط للأسباب
 const DottedLine = ({ text }) => (
@@ -135,22 +73,19 @@ export default function AssignmentFormPreview({ printRef, scalerRef, previewScal
             right: 0,
             transform: `scale(${previewScale})`,
             transformOrigin: 'top right',
-            background: '#fff',
+            backgroundImage: `url('${LETTERHEAD_BG_URL}')`,
+            backgroundSize: '100% 100%',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'top center',
             overflow: 'hidden',
             color: '#000',
             boxShadow: '0 2px 16px rgba(0,0,0,0.12)',
           }}
         >
-          {/* الزخرفة الجانبية */}
-          <SideDecoration />
-
-          {/* رأس النموذج */}
-          <FormHeader />
-
           {/* العنوان */}
           <div style={{
             textAlign: 'center',
-            marginTop: '22px',
+            marginTop: '150px',
             fontSize: '14pt',
             fontWeight: 900,
             color: '#000',
@@ -314,8 +249,6 @@ export default function AssignmentFormPreview({ printRef, scalerRef, previewScal
             </div>
           </div>
 
-          {/* التذييل */}
-          <FormFooter />
         </div>
       </div>
     </div>
