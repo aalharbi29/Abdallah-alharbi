@@ -27,7 +27,7 @@ export default function EmployeeSearchCombobox({ employees = [], onSelect, place
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[260px] p-0" align="start" sideOffset={4}>
-        <Command>
+        <Command shouldFilter={false}>
           <CommandInput placeholder={placeholder} value={query} onValueChange={setQuery} />
           <CommandList className="max-h-64">
             <CommandEmpty>لا توجد نتائج</CommandEmpty>

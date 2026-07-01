@@ -13,10 +13,12 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Link } from 'react-router-dom';
 import AssignmentFormPreview from '@/components/assignment_form/AssignmentFormPreview';
+import ReasonPresetPicker from '@/components/assignment_form/ReasonPresetPicker';
 
 export default function FillAssignmentForm() {
   const [employees, setEmployees] = useState([]);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [healthCenters, setHealthCenters] = useState([]);
 
   // بيانات الجدول
   const [grade, setGrade] = useState('');
@@ -36,10 +38,10 @@ export default function FillAssignmentForm() {
   const [employeeNameInCertificate, setEmployeeNameInCertificate] = useState('');
   const [fromDay, setFromDay] = useState('');
   const [fromMonth, setFromMonth] = useState('');
-  const [fromYear, setFromYear] = useState('14');
+  const [fromYear, setFromYear] = useState('');
   const [toDay, setToDay] = useState('');
   const [toMonth, setToMonth] = useState('');
-  const [toYear, setToYear] = useState('14');
+  const [toYear, setToYear] = useState('');
   const [certifierName, setCertifierName] = useState('');
   const [certifierSignatureUrl, setCertifierSignatureUrl] = useState('');
   const [stampUrl, setStampUrl] = useState('');
@@ -52,6 +54,7 @@ export default function FillAssignmentForm() {
 
   useEffect(() => {
     loadEmployees();
+    loadHealthCenters();
   }, []);
 
   // حساب scale تلقائياً ليتسع A4 داخل حاوية المعاينة
@@ -78,6 +81,26 @@ export default function FillAssignmentForm() {
     } catch (e) {
       console.error(e);
     }
+  };
+
+  const loadHealthCenters = async () => {
+    try {
+      const data = await base44.entities.HealthCenter.list('اسم_المركز', 500);
+      setHealthCenters(Array.isArray(data) ? data : []);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleAddReason = (text) => {
+    setReasons(prev => {
+      const lines = (prev || '').split('\n').filter(Boolean);
+      if (lines.length >= 3) {
+        toast.error('تم الوصول للحد الأقصى (٣ أسباب)');
+        return prev;
+      }
+      return [...lines, text].join('\n');
+    });
   };
 
   // تعبئة تلقائية لاسم الموظف في شهادة جهة التكليف عند الاختيار
@@ -294,7 +317,10 @@ export default function FillAssignmentForm() {
               {/* أسباب التكليف */}
               <div className="border-t pt-3">
                 <Label className="text-sm font-bold">شرح أسباب التكليف</Label>
-                <Textarea value={reasons} onChange={e => setReasons(e.target.value)} rows={3} className="mt-1 text-sm" placeholder="اكتب أسباب التكليف..." />
+                <Textarea value={reasons} onChange={e => setReasons(e.target.value)} rows={3} className="mt-1 text-sm" placeholder="اكتب أسباب التكليف (سطر لكل سبب، بحد أقصى ٣ أسباب)..." />
+                <div className="mt-2">
+                  <ReasonPresetPicker healthCenters={healthCenters} onAdd={handleAddReason} />
+                </div>
               </div>
 
               {/* الرئيس المباشر */}
@@ -330,8 +356,8 @@ export default function FillAssignmentForm() {
                     <Input value={fromMonth} onChange={e => setFromMonth(e.target.value)} className="mt-1" placeholder="01" />
                   </div>
                   <div>
-                    <Label className="text-xs text-gray-600">سنة (هـ)</Label>
-                    <Input value={fromYear} onChange={e => setFromYear(e.target.value)} className="mt-1" placeholder="1447" />
+                    <Label className="text-xs text-gray-600">آخر رقمين من السنة (بعد ١٤)</Label>
+                    <Input value={fromYear} onChange={e => setFromYear(e.target.value)} className="mt-1" placeholder="47" />
                   </div>
                   <div>
                     <Label className="text-xs text-gray-600">إلى تاريخ - يوم</Label>
@@ -342,8 +368,8 @@ export default function FillAssignmentForm() {
                     <Input value={toMonth} onChange={e => setToMonth(e.target.value)} className="mt-1" placeholder="01" />
                   </div>
                   <div>
-                    <Label className="text-xs text-gray-600">سنة (هـ)</Label>
-                    <Input value={toYear} onChange={e => setToYear(e.target.value)} className="mt-1" placeholder="1447" />
+                    <Label className="text-xs text-gray-600">آخر رقمين من السنة (بعد ١٤)</Label>
+                    <Input value={toYear} onChange={e => setToYear(e.target.value)} className="mt-1" placeholder="47" />
                   </div>
                 </div>
                 <div>

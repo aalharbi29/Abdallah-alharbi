@@ -19,8 +19,10 @@ const DottedLine = ({ text }) => (
     marginBottom: '10px',
     borderBottom: '1px dotted #555',
     fontSize: '10pt',
+    fontWeight: 700,
     lineHeight: 1.4,
     color: '#000',
+    textAlign: 'center',
   }}>
     {text || '\u00A0'}
   </div>
@@ -56,7 +58,7 @@ export default function AssignmentFormPreview({ printRef, scalerRef, previewScal
     border: '1px solid #000',
     padding: '4px 2px',
     fontSize: '9pt',
-    fontWeight: 700,
+    fontWeight: 800,
     textAlign: 'center',
     background: '#fff',
     color: '#000',
@@ -66,7 +68,7 @@ export default function AssignmentFormPreview({ printRef, scalerRef, previewScal
     border: '1px solid #000',
     padding: '6px 2px',
     fontSize: '9pt',
-    fontWeight: 500,
+    fontWeight: 700,
     textAlign: 'center',
     background: '#fff',
     color: '#000',
@@ -98,8 +100,8 @@ export default function AssignmentFormPreview({ printRef, scalerRef, previewScal
             boxShadow: '0 2px 16px rgba(0,0,0,0.12)',
           }}
         >
-          {/* المحتوى - يبدأ بعد منطقة الترويسة في الخلفية (~48mm) */}
-          <div style={{ paddingTop: '48mm', paddingRight: '28mm', paddingLeft: '20mm' }}>
+          {/* المحتوى - يبدأ بعد منطقة الترويسة في الخلفية، مع تفادي الزخرفة الجانبية على اليسار */}
+          <div style={{ paddingTop: '48mm', paddingRight: '12mm', paddingLeft: '34mm', fontWeight: 700 }}>
 
             {/* العنوان الرئيسي */}
             <div style={{
@@ -226,7 +228,8 @@ export default function AssignmentFormPreview({ printRef, scalerRef, previewScal
                   <span>/</span>
                   <FieldLine text={toArabicDigits(fromMonth)} minWidth="20px" />
                   <span>/</span>
-                  <FieldLine text={toArabicDigits(fromYear)} minWidth="28px" />
+                  <span style={{ fontWeight: 700 }}>{toArabicDigits('14')}</span>
+                  <FieldLine text={toArabicDigits(fromYear)} minWidth="20px" />
                   <span style={{ whiteSpace: 'nowrap' }}>هـ</span>
                   <span style={{ marginRight: '8px', fontWeight: 700, whiteSpace: 'nowrap' }}>وغادر بتاريخ</span>
                   <span>/</span>
@@ -234,7 +237,8 @@ export default function AssignmentFormPreview({ printRef, scalerRef, previewScal
                   <span>/</span>
                   <FieldLine text={toArabicDigits(toMonth)} minWidth="20px" />
                   <span>/</span>
-                  <FieldLine text={toArabicDigits(toYear)} minWidth="28px" />
+                  <span style={{ fontWeight: 700 }}>{toArabicDigits('14')}</span>
+                  <FieldLine text={toArabicDigits(toYear)} minWidth="20px" />
                   <span style={{ whiteSpace: 'nowrap' }}>هـ</span>
                 </div>
 
