@@ -166,16 +166,8 @@ export default function AssignmentFormPreview({ printRef, scalerRef, previewScal
             </div>
 
             {/* فقرة الإقرار */}
-            <div style={{ fontSize: '10pt', marginBottom: '6mm', lineHeight: 1.8 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                <span>( وعلى</span>
-                <span>
-                  علماً بان الانتدابات المذكور لم تتجاوز ( {toArabicDigits('60')} ) ستون يوما في السنة المالية الحالية (
-                </span>
-              </div>
-              <div style={{ textAlign: 'center' }}>
-                مسئوليتنا.
-              </div>
+            <div style={{ fontSize: '10pt', marginBottom: '5mm', lineHeight: 1.8, textAlign: 'center' }}>
+              علماً بان الانتدابات المذكور لم تتجاوز ( {toArabicDigits('60')} ) ستون يوما في السنة المالية الحالية ) وعلى مسئوليتنا.
             </div>
 
             {/* الرئيس المباشر والتوقيع - مطابق للنموذج */}
@@ -185,7 +177,9 @@ export default function AssignmentFormPreview({ printRef, scalerRef, previewScal
               alignItems: 'flex-start',
               fontSize: '10.5pt',
               fontWeight: 700,
-              marginBottom: '8mm',
+              marginBottom: '6mm',
+              paddingRight: '10mm',
+              paddingLeft: '10mm',
             }}>
               {/* الرئيس المباشر - يمين */}
               <div style={{ textAlign: 'right' }}>
@@ -207,7 +201,6 @@ export default function AssignmentFormPreview({ printRef, scalerRef, previewScal
             <div style={{ border: '1.5px solid #000', marginTop: '4mm' }}>
               {/* عنوان الصندوق */}
               <div style={{
-                borderBottom: '1.5px solid #000',
                 textAlign: 'center',
                 padding: '4px 8px',
                 fontSize: '11pt',
@@ -260,12 +253,10 @@ export default function AssignmentFormPreview({ printRef, scalerRef, previewScal
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', flex: '1.5' }}>
                     <span style={{ whiteSpace: 'nowrap' }}>الاسـم :</span>
                     <span style={{
-                      borderBottom: '1px solid #000',
                       flex: 1,
                       display: 'inline-block',
                       minWidth: '60px',
                       textAlign: 'center',
-                      paddingBottom: '1px',
                     }}>{certifierName || '\u00A0'}</span>
                   </div>
                   {/* التوقيع - وسط */}
