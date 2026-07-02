@@ -203,73 +203,75 @@ export default function AssignmentFormPreview({ printRef, scalerRef, previewScal
               </div>
             </div>
 
-            {/* صندوق شهادة جهة التكليف - مطابق للنموذج */}
-            <div style={{ border: '1.5px solid #000' }}>
+            {/* صندوق شهادة جهة التكليف - مطابق للنموذج تماماً */}
+            <div style={{ border: '1.5px solid #000', marginTop: '4mm' }}>
               {/* عنوان الصندوق */}
               <div style={{
                 borderBottom: '1.5px solid #000',
                 textAlign: 'center',
-                padding: '5px 8px',
+                padding: '4px 8px',
                 fontSize: '11pt',
                 fontWeight: 900,
-                background: '#fff',
-                letterSpacing: '0.5px',
               }}>
                 شهادة جهة التكليف
               </div>
 
               {/* محتوى الشهادة */}
-              <div style={{ padding: '4mm 6mm 3mm 6mm', fontSize: '10pt', lineHeight: 2 }}>
+              <div style={{ padding: '4mm 6mm 4mm 6mm', fontSize: '10pt', fontWeight: 700 }}>
 
-                {/* السطر الأول: تشهد ادارة ___ بأن الموضح أسمة بعالية قد انجز المهمة المكلف بها */}
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', flexWrap: 'nowrap', marginBottom: '1mm' }}>
-                  <span style={{ fontWeight: 700, whiteSpace: 'nowrap' }}>تشهد ادارة</span>
-                  <span style={{
-                    borderBottom: '1px solid #000',
-                    minWidth: '90px',
-                    display: 'inline-block',
-                    textAlign: 'center',
-                    paddingBottom: '1px',
-                    fontWeight: 700,
-                  }}>{certifyingAdministration || '\u00A0'}</span>
-                  <span style={{ whiteSpace: 'nowrap', fontWeight: 700 }}>بأن الموضح أسمة بعالية قد انجز المهمة المكلف بها</span>
+                {/* السطر الأول: تشهد ادارة [___] بأن الموضح أسمة بعالية قد انجز المهمة المكلف بها */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '3mm' }}>
+                  <span style={{ whiteSpace: 'nowrap' }}>بأن الموضح أسمة بعالية قد انجز المهمة المكلف بها</span>
+                  <span style={{ display: 'flex', alignItems: 'baseline', gap: '4px', whiteSpace: 'nowrap' }}>
+                    <span>تشهد ادارة</span>
+                    <span style={{
+                      borderBottom: '1px solid #000',
+                      minWidth: '80px',
+                      display: 'inline-block',
+                      textAlign: 'center',
+                      paddingBottom: '1px',
+                    }}>{certifyingAdministration || '\u00A0'}</span>
+                  </span>
                 </div>
 
                 {/* السطر الثاني: من تاريخ / / 14هـ وغادر بتاريخ / / 14هـ */}
-                <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', flexWrap: 'nowrap', fontWeight: 700, marginBottom: '2mm' }}>
-                  <span style={{ whiteSpace: 'nowrap' }}>من تاريخ</span>
-                  <span style={{ borderBottom: '1px solid #000', minWidth: '22px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(fromDay) || '\u00A0'}</span>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'baseline', gap: '3px', marginBottom: '4mm' }}>
+                  <span style={{ marginLeft: '4px' }}>هـ</span>
+                  <span style={{ borderBottom: '1px solid #000', minWidth: '20px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(toYear) || '\u00A0'}</span>
+                  <span>١٤</span>
                   <span>/</span>
-                  <span style={{ borderBottom: '1px solid #000', minWidth: '22px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(fromMonth) || '\u00A0'}</span>
+                  <span style={{ borderBottom: '1px solid #000', minWidth: '20px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(toMonth) || '\u00A0'}</span>
                   <span>/</span>
-                  <span style={{ whiteSpace: 'nowrap' }}>١٤{toArabicDigits(fromYear) || '\u00A0\u00A0'}هـ</span>
+                  <span style={{ borderBottom: '1px solid #000', minWidth: '20px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(toDay) || '\u00A0'}</span>
                   <span style={{ marginRight: '6px', marginLeft: '6px' }}>وغادر بتاريخ</span>
-                  <span style={{ borderBottom: '1px solid #000', minWidth: '22px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(toDay) || '\u00A0'}</span>
+                  <span>هـ</span>
+                  <span style={{ borderBottom: '1px solid #000', minWidth: '20px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(fromYear) || '\u00A0'}</span>
+                  <span>١٤</span>
                   <span>/</span>
-                  <span style={{ borderBottom: '1px solid #000', minWidth: '22px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(toMonth) || '\u00A0'}</span>
+                  <span style={{ borderBottom: '1px solid #000', minWidth: '20px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(fromMonth) || '\u00A0'}</span>
                   <span>/</span>
-                  <span style={{ whiteSpace: 'nowrap' }}>١٤{toArabicDigits(toYear) || '\u00A0\u00A0'}هـ</span>
+                  <span style={{ borderBottom: '1px solid #000', minWidth: '20px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(fromDay) || '\u00A0'}</span>
+                  <span style={{ marginLeft: '4px' }}>من تاريخ</span>
                 </div>
 
-                {/* الصف الأخير: الاسم - التوقيع - الختم */}
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '4mm', marginTop: '2mm' }}>
+                {/* الصف الأخير: الاسم - التوقيع - الختم (مطابق للنموذج) */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '6mm' }}>
                   {/* الاسم - يمين */}
-                  <div style={{ flex: '1.2' }}>
-                    <div style={{ fontWeight: 700, marginBottom: '1mm' }}>الاسـم :</div>
-                    <div style={{
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', flex: '1.5' }}>
+                    <span style={{ whiteSpace: 'nowrap' }}>الاسـم :</span>
+                    <span style={{
                       borderBottom: '1px solid #000',
-                      minHeight: '10mm',
-                      display: 'flex',
-                      alignItems: 'flex-end',
+                      flex: 1,
+                      display: 'inline-block',
+                      minWidth: '60px',
+                      textAlign: 'center',
                       paddingBottom: '1px',
-                      fontWeight: 700,
-                      fontSize: '9.5pt',
-                    }}>{certifierName || '\u00A0'}</div>
+                    }}>{certifierName || '\u00A0'}</span>
                   </div>
                   {/* التوقيع - وسط */}
                   <div style={{ flex: '1', textAlign: 'center' }}>
-                    <div style={{ fontWeight: 700, marginBottom: '1mm' }}>التوقيع</div>
-                    <div style={{ borderBottom: '1px solid #000', minHeight: '12mm', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ marginBottom: '2mm' }}>التوقيع</div>
+                    <div style={{ minHeight: '12mm', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {certifierSignatureUrl && (
                         <img src={certifierSignatureUrl} alt="توقيع" style={{ maxHeight: '12mm', maxWidth: '32mm' }} crossOrigin="anonymous" />
                       )}
@@ -277,8 +279,8 @@ export default function AssignmentFormPreview({ printRef, scalerRef, previewScal
                   </div>
                   {/* الختم - يسار */}
                   <div style={{ flex: '1', textAlign: 'center' }}>
-                    <div style={{ fontWeight: 700, marginBottom: '1mm' }}>الختم</div>
-                    <div style={{ borderBottom: '1px solid #000', minHeight: '12mm', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <div style={{ marginBottom: '2mm' }}>الختم</div>
+                    <div style={{ minHeight: '12mm', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       {stampUrl && (
                         <img src={stampUrl} alt="ختم" style={{ maxHeight: '12mm', maxWidth: '24mm' }} crossOrigin="anonymous" />
                       )}
