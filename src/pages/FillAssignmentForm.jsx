@@ -326,11 +326,14 @@ export default function FillAssignmentForm() {
               {/* الرئيس المباشر */}
               <div className="border-t pt-3">
                 <Label className="text-sm font-bold">الرئيس المباشر</Label>
+                <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-blue-800">
+                  <strong>الاسم:</strong> عبدالمجيد سعود الربيقي (ثابت في النموذج)
+                </div>
                 <div className="mt-2">
-                  <Label className="text-xs text-gray-600">التوقيع (صورة)</Label>
+                  <Label className="text-xs text-gray-600">توقيع الرئيس المباشر (صورة اختيارية)</Label>
                   <input type="file" accept="image/*" ref={supSigRef} onChange={e => handleUpload(e.target.files[0], setSupervisorSignatureUrl)} className="hidden" />
                   <Button variant="outline" size="sm" className="w-full mt-1" onClick={() => supSigRef.current?.click()}>
-                    {supervisorSignatureUrl ? '✓ تم الرفع' : 'رفع توقيع الرئيس المباشر'}
+                    {supervisorSignatureUrl ? '✓ تم الرفع' : 'رفع التوقيع'}
                   </Button>
                 </div>
               </div>
