@@ -214,7 +214,6 @@ export default function AssignmentFormPreview({ printRef, scalerRef, previewScal
 
                 {/* السطر الأول: تشهد ادارة [___] بأن الموضح أسمة بعالية قد انجز المهمة المكلف بها */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '3mm' }}>
-                  <span style={{ whiteSpace: 'nowrap' }}>بأن الموضح أسمة بعالية قد انجز المهمة المكلف بها</span>
                   <span style={{ display: 'flex', alignItems: 'baseline', gap: '4px', whiteSpace: 'nowrap' }}>
                     <span>تشهد ادارة</span>
                     <span style={{
@@ -225,26 +224,23 @@ export default function AssignmentFormPreview({ printRef, scalerRef, previewScal
                       paddingBottom: '1px',
                     }}>{certifyingAdministration || '\u00A0'}</span>
                   </span>
+                  <span style={{ whiteSpace: 'nowrap' }}>بأن الموضح أسمة بعالية قد انجز المهمة المكلف بها</span>
                 </div>
 
                 {/* السطر الثاني: من تاريخ / / 14هـ وغادر بتاريخ / / 14هـ */}
-                <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'baseline', gap: '3px', marginBottom: '4mm' }}>
-                  <span style={{ marginLeft: '4px' }}>هـ</span>
-                  <span style={{ borderBottom: '1px solid #000', minWidth: '20px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(toYear) || '\u00A0'}</span>
-                  <span>١٤</span>
-                  <span>/</span>
-                  <span style={{ borderBottom: '1px solid #000', minWidth: '20px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(toMonth) || '\u00A0'}</span>
-                  <span>/</span>
-                  <span style={{ borderBottom: '1px solid #000', minWidth: '20px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(toDay) || '\u00A0'}</span>
-                  <span style={{ marginRight: '6px', marginLeft: '6px' }}>وغادر بتاريخ</span>
-                  <span>هـ</span>
-                  <span style={{ borderBottom: '1px solid #000', minWidth: '20px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(fromYear) || '\u00A0'}</span>
-                  <span>١٤</span>
+                <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'baseline', gap: '3px', marginBottom: '4mm' }}>
+                  <span style={{ whiteSpace: 'nowrap' }}>من تاريخ</span>
+                  <span style={{ borderBottom: '1px solid #000', minWidth: '20px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(fromDay) || '\u00A0'}</span>
                   <span>/</span>
                   <span style={{ borderBottom: '1px solid #000', minWidth: '20px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(fromMonth) || '\u00A0'}</span>
                   <span>/</span>
-                  <span style={{ borderBottom: '1px solid #000', minWidth: '20px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(fromDay) || '\u00A0'}</span>
-                  <span style={{ marginLeft: '4px' }}>من تاريخ</span>
+                  <span style={{ whiteSpace: 'nowrap' }}>١٤{toArabicDigits(fromYear) || '\u00A0\u00A0'}هـ</span>
+                  <span style={{ marginRight: '6px', marginLeft: '6px' }}>وغادر بتاريخ</span>
+                  <span style={{ borderBottom: '1px solid #000', minWidth: '20px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(toDay) || '\u00A0'}</span>
+                  <span>/</span>
+                  <span style={{ borderBottom: '1px solid #000', minWidth: '20px', display: 'inline-block', textAlign: 'center' }}>{toArabicDigits(toMonth) || '\u00A0'}</span>
+                  <span>/</span>
+                  <span style={{ whiteSpace: 'nowrap' }}>١٤{toArabicDigits(toYear) || '\u00A0\u00A0'}هـ</span>
                 </div>
 
                 {/* الصف الأخير: الاسم - التوقيع - الختم (مطابق للنموذج) */}
