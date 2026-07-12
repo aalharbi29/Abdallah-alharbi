@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Trash2, Calendar, Briefcase, Award, Eye, Pin, MessageCircle, User, Phone, IdCard, Building2 } from "lucide-react";
+import { Edit, Trash2, Calendar, Briefcase, Award, Eye, Pin, MessageCircle, User, Phone, IdCard, Building2, Power } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
@@ -21,6 +21,7 @@ export default function MobileEmployeeCard({
   onAddHolidayAssignment,
   onPinEmployee,
   onToggleSelection,
+  onToggleActive,
   normalizePhoneForWhatsApp,
   isEditingLayout,
   cardLayout = {},
@@ -175,6 +176,7 @@ export default function MobileEmployeeCard({
             {onAddAssignment && <Button size="sm" onClick={() => onAddAssignment(employee)} className="h-8 text-xs bg-purple-600 hover:bg-purple-500 rounded-lg"><Briefcase className="w-3.5 h-3.5 ml-1" />تكليف</Button>}
             {onAddHolidayAssignment && <Button size="sm" onClick={() => onAddHolidayAssignment(employee)} className="h-8 text-xs bg-pink-600 hover:bg-pink-500 rounded-lg"><Award className="w-3.5 h-3.5 ml-1" />تكليف إجازة</Button>}
             {onDelete && <Button size="sm" onClick={() => onDelete(employee)} className="col-span-2 h-8 text-xs bg-red-600 hover:bg-red-500 rounded-lg"><Trash2 className="w-3.5 h-3.5 ml-1" />حذف</Button>}
+            {onToggleActive && <Button size="sm" onClick={() => onToggleActive(employee)} className={`col-span-2 h-8 text-xs rounded-lg ${employee.is_active === false ? 'bg-emerald-600 hover:bg-emerald-500' : 'bg-slate-600 hover:bg-slate-500'} text-white`}><Power className="w-3.5 h-3.5 ml-1" />{employee.is_active === false ? 'تنشيط' : 'إيقاف'}</Button>}
           </motion.div>
         </div>
       </CardContent>

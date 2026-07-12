@@ -100,6 +100,7 @@ export default function EmployeeFilters({ onFiltersChange, healthCenters, employ
 
   const statusOptions = [
     { value: 'active', label: 'نشط' },
+    { value: 'inactive', label: 'غير نشط' },
     { value: 'externally_assigned', label: 'مكلف خارجياً' }
   ];
 

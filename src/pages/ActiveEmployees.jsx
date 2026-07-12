@@ -15,6 +15,7 @@ import HumanResourcesToolbar from "../components/hr/HumanResourcesToolbar";
 import HumanResourcesEmptyState from "../components/hr/HumanResourcesEmptyState";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { toast } from "sonner";
 
 import HumanResourcesDialogs from "@/components/hr/HumanResourcesDialogs";
 import { matchScore } from "@/components/utils/arabicSearch";
@@ -161,6 +162,18 @@ export default function ActiveEmployees() {
     });
   };
 
+  const handleToggleActive = async (employee) => {
+    try {
+      const newStatus = employee.is_active === false;
+      await base44.entities.Employee.update(employee.id, { is_active: newStatus });
+      toast.success(newStatus ? 'تم تنشيط الموظف' : 'تم إيقاف الموظف');
+      loadData();
+    } catch (err) {
+      console.error('خطأ في تحديث حالة الموظف:', err);
+      toast.error('فشل في تحديث حالة الموظف');
+    }
+  };
+
   const filteredEmployees = useMemo(() => {
     let result = employees;
     let scored = null;
@@ -184,8 +197,16 @@ export default function ActiveEmployees() {
     if (filters.specialRoles?.length > 0) {
       result = result.filter(emp => emp.special_roles?.some(role => filters.specialRoles.includes(role)));
     }
-    if (filters.statuses?.length > 0 && filters.statuses.includes('externally_assigned')) {
-      result = result.filter(emp => emp.is_externally_assigned === true);
+    if (filters.statuses?.length > 0) {
+      if (filters.statuses.includes('externally_assigned')) {
+        result = result.filter(emp => emp.is_externally_assigned === true);
+      }
+      if (filters.statuses.includes('active')) {
+        result = result.filter(emp => emp.is_active !== false);
+      }
+      if (filters.statuses.includes('inactive')) {
+        result = result.filter(emp => emp.is_active === false);
+      }
     }
     if (filters.holidays?.length > 0) {
       const ids = new Set();
@@ -381,6 +402,7 @@ export default function ActiveEmployees() {
           onPinEmployee={handlePinEmployee}
           selectedEmployees={selectedEmployees}
           onToggleSelection={handleToggleEmployeeSelection}
+          onToggleActive={handleToggleActive}
         />
 
         {filteredEmployees.length === 0 && !isLoading && (

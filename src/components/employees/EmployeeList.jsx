@@ -2,7 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Edit, Trash2, Calendar, Briefcase, Award, Eye, Pin, MessageCircle, CheckSquare, User, Sparkles, Phone, IdCard, CakeIcon, CalendarCheck, Building2, LayoutGrid, RotateCcw, Lock, Unlock, ChevronLeft, ChevronRight } from "lucide-react";
+import { Edit, Trash2, Calendar, Briefcase, Award, Eye, Pin, MessageCircle, CheckSquare, User, Sparkles, Phone, IdCard, CakeIcon, CalendarCheck, Building2, LayoutGrid, RotateCcw, Lock, Unlock, ChevronLeft, ChevronRight, Power } from "lucide-react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
@@ -23,7 +23,8 @@ export default function EmployeeList({
   pinnedEmployees = new Set(),
   onPinEmployee,
   selectedEmployees = new Set(),
-  onToggleSelection
+  onToggleSelection,
+  onToggleActive
 }) {
   const [isEditingLayout, setIsEditingLayout] = React.useState(false);
   const [cardLayout, setCardLayout] = React.useState(() => {
@@ -207,6 +208,7 @@ export default function EmployeeList({
                     isEditingLayout={isEditingLayout}
                     cardLayout={cardLayout}
                     updateLayout={updateLayout}
+                    onToggleActive={onToggleActive}
                   />
                 </div>
 
@@ -338,6 +340,7 @@ export default function EmployeeList({
                           {onEdit && <Button size="sm" onClick={() => onEdit(employee)} className="h-8 text-xs bg-cyan-600 hover:bg-cyan-500 rounded-lg"><Edit className="w-3.5 h-3.5 ml-1" />تعديل</Button>}
                           {onAddLeave && <Button size="sm" onClick={() => onAddLeave(employee)} className="h-8 text-xs bg-amber-600 hover:bg-amber-500 rounded-lg"><Calendar className="w-3.5 h-3.5 ml-1" />إجازة</Button>}
                           {onAddAssignment && <Button size="sm" onClick={() => onAddAssignment(employee)} className="h-8 text-xs bg-purple-600 hover:bg-purple-500 rounded-lg"><Briefcase className="w-3.5 h-3.5 ml-1" />تكليف</Button>}
+                          {onToggleActive && <Button size="sm" onClick={() => onToggleActive(employee)} className={`h-8 text-xs rounded-lg ${employee.is_active === false ? 'bg-emerald-600 hover:bg-emerald-500' : 'bg-slate-600 hover:bg-slate-500'} text-white`}><Power className="w-3.5 h-3.5 ml-1" />{employee.is_active === false ? 'تنشيط' : 'إيقاف'}</Button>}
                         </motion.div>
                       </div>
                     </CardContent>
@@ -514,6 +517,13 @@ export default function EmployeeList({
                           animate={cardLayout['desktop_tags'] || { x: 0, y: 0 }}
                           className={`flex flex-wrap gap-2 ${isEditingLayout ? "cursor-move z-50 relative" : ""}`}
                         >
+                          {employee.is_active === false && (
+                            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }}>
+                              <Badge className="bg-gradient-to-r from-slate-500 to-slate-600 text-white text-[11px] md:text-xs py-1 md:py-1.5 px-2.5 md:px-3 font-black shadow-xl shadow-slate-500/30 border border-slate-300/30 mobile-paragraph compact">
+                                ⏸ غير نشط
+                              </Badge>
+                            </motion.div>
+                          )}
                           {employee.is_externally_assigned && (
                             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: "spring" }}>
                               <Badge className="bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 text-white text-[11px] md:text-xs py-1 md:py-1.5 px-2.5 md:px-3 font-black shadow-xl shadow-orange-500/30 border border-orange-300/30 mobile-paragraph compact">
@@ -675,6 +685,23 @@ export default function EmployeeList({
                               <Button size="sm" onClick={() => onDelete(employee)} className="w-full h-10 text-sm px-4 font-bold bg-gradient-to-r from-red-600 to-rose-700 hover:from-red-500 hover:to-rose-600 text-white rounded-xl shadow-lg shadow-red-500/30 border-0">
                                 <Trash2 className="w-4 h-4 ml-2" />
                                 حذف
+                              </Button>
+                            </motion.div>
+                          )}
+
+                          {onToggleActive && (
+                            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                              <Button
+                                size="sm"
+                                onClick={() => onToggleActive(employee)}
+                                className={`w-full h-10 text-sm px-4 font-bold rounded-xl border-0 ${
+                                  employee.is_active === false
+                                    ? 'bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-500 hover:to-green-500 text-white shadow-lg shadow-emerald-500/30'
+                                    : 'bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-500 hover:to-slate-600 text-white shadow-lg shadow-slate-500/30'
+                                }`}
+                              >
+                                <Power className="w-4 h-4 ml-2" />
+                                {employee.is_active === false ? 'تنشيط' : 'إيقاف'}
                               </Button>
                             </motion.div>
                           )}
