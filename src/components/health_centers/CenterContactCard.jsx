@@ -33,6 +33,19 @@ export default function CenterContactCard({ open, onOpenChange, center, manager,
         <td class="value-cell">${value || "—"}</td>
       </tr>`;
 
+    const rowWithCopy = (icon, label, value) => {
+      const v = value || "";
+      const escaped = v.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+      return `
+      <tr>
+        <td class="label-cell">${icon} ${label}</td>
+        <td class="value-cell">
+          <span class="val-text">${v || "—"}</span>
+          ${v ? `<button class="copy-btn" onclick="copyVal(this, '${escaped}')" title="نسخ ${label}">📋</button>` : ""}
+        </td>
+      </tr>`;
+    };
+
     return `
     <!DOCTYPE html>
     <html dir="rtl" lang="ar">
@@ -46,9 +59,11 @@ export default function CenterContactCard({ open, onOpenChange, center, manager,
             font-family: 'Cairo', 'Tajawal', 'Segoe UI', sans-serif;
             direction: rtl;
             margin: 0;
-            padding: 0;
+            padding: 16px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
           }
           .card {
             width: 9cm;
@@ -67,9 +82,7 @@ export default function CenterContactCard({ open, onOpenChange, center, manager,
           }
           .card-header .title { font-size: 13px; font-weight: 800; }
           .card-header .subtitle { font-size: 9px; opacity: 0.85; margin-top: 2px; }
-          .section {
-            border-bottom: 1px solid #e5e7eb;
-          }
+          .section { border-bottom: 1px solid #e5e7eb; }
           .section-title {
             background: #F1F8FF;
             color: #0B3D91;
@@ -93,7 +106,24 @@ export default function CenterContactCard({ open, onOpenChange, center, manager,
             color: #111827;
             word-break: break-all;
             font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
           }
+          .copy-btn {
+            border: none;
+            background: #e0edff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            padding: 1px 4px;
+            line-height: 1;
+            transition: background 0.2s;
+            flex-shrink: 0;
+          }
+          .copy-btn:hover { background: #b3d4ff; }
+          .copy-btn.copied { background: #c8f7d4; }
           .footer {
             text-align: center;
             padding: 6px;
@@ -101,9 +131,16 @@ export default function CenterContactCard({ open, onOpenChange, center, manager,
             color: #6b7280;
             background: #f9fafb;
           }
+          .hint { font-size: 10px; color: #6b7280; }
+          @media print {
+            .copy-btn, .hint { display: none !important; }
+            body { padding: 0; gap: 0; }
+            .value-cell { display: block; }
+          }
         </style>
       </head>
       <body>
+        <div class="hint">💡 اضغط أيقونة 📋 بجانب أي بيان لنسخه مباشرة</div>
         <div class="card">
           <div class="card-header">
             <div class="title">${center.اسم_المركز || ""}</div>
@@ -113,29 +150,29 @@ export default function CenterContactCard({ open, onOpenChange, center, manager,
           <div class="section">
             <div class="section-title">🏢 بيانات المركز</div>
             <table>
-              ${row("🆔", "كود الصحة", center.seha_id)}
-              ${row("🏛️", "كود الوزارة", center.organization_code)}
-              ${row("📧", "إيميل المركز", center.ايميل_المركز)}
-              ${row("👤", "اسم المستخدم", center.ايميل_المستخدم)}
-              ${row("🔑", "كلمة السر", center.كلمة_سر_الايميل)}
+              ${rowWithCopy("🆔", "كود الصحة", center.seha_id)}
+              ${rowWithCopy("🏛️", "كود الوزارة", center.organization_code)}
+              ${rowWithCopy("📧", "إيميل المركز", center.ايميل_المركز)}
+              ${rowWithCopy("👤", "اسم المستخدم", center.ايميل_المستخدم)}
+              ${rowWithCopy("🔑", "كلمة السر", center.كلمة_سر_الايميل)}
             </table>
           </div>
 
           <div class="section">
             <div class="section-title">👨‍⚕️ مدير المركز</div>
             <table>
-              ${row("👤", "الاسم", manager?.full_name_arabic)}
-              ${row("📱", "الجوال", manager?.phone)}
-              ${row("✉️", "الإيميل", manager?.email)}
+              ${rowWithCopy("👤", "الاسم", manager?.full_name_arabic)}
+              ${rowWithCopy("📱", "الجوال", manager?.phone)}
+              ${rowWithCopy("✉️", "الإيميل", manager?.email)}
             </table>
           </div>
 
           <div class="section">
             <div class="section-title">🔧 المشرف الفني</div>
             <table>
-              ${row("👤", "الاسم", technicalSupervisor?.full_name_arabic)}
-              ${row("📱", "الجوال", technicalSupervisor?.phone)}
-              ${row("✉️", "الإيميل", technicalSupervisor?.email)}
+              ${rowWithCopy("👤", "الاسم", technicalSupervisor?.full_name_arabic)}
+              ${rowWithCopy("📱", "الجوال", technicalSupervisor?.phone)}
+              ${rowWithCopy("✉️", "الإيميل", technicalSupervisor?.email)}
             </table>
           </div>
 
@@ -143,6 +180,18 @@ export default function CenterContactCard({ open, onOpenChange, center, manager,
             تجمع المدينة المنورة الصحي
           </div>
         </div>
+        <script>
+          function copyVal(btn, val) {
+            navigator.clipboard.writeText(val).then(function() {
+              btn.textContent = '✓';
+              btn.classList.add('copied');
+              setTimeout(function() {
+                btn.textContent = '📋';
+                btn.classList.remove('copied');
+              }, 1500);
+            });
+          }
+        </script>
       </body>
     </html>`;
   };
