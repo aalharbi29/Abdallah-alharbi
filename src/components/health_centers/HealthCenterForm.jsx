@@ -25,6 +25,8 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
     خط_الطول: "",
     خط_العرض: "",
     ايميل_المركز: "",
+    ايميل_المستخدم: "",
+    كلمة_سر_الايميل: "",
     هاتف_المركز: "",
     فاكس_المركز: "",
     رقم_الشريحة: "",
@@ -316,6 +318,8 @@ export default function HealthCenterForm({ center, onSubmit, onCancel, employees
             </CardHeader>
             <CardContent className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <div><Label htmlFor="center_email">إيميل المركز</Label><Input id="center_email" type="email" value={formData.ايميل_المركز} onChange={(e) => handleChange("ايميل_المركز", e.target.value)} placeholder="center@health.gov.sa"/></div>
+              <div><Label htmlFor="email_username">اسم المستخدم للإيميل الرسمي</Label><Input id="email_username" value={formData.ايميل_المستخدم || ""} onChange={(e) => handleChange("ايميل_المستخدم", e.target.value)} placeholder="username" dir="ltr" className="text-left"/></div>
+              <div><Label htmlFor="email_password">كلمة السر للإيميل الرسمي</Label><Input id="email_password" type="text" value={formData.كلمة_سر_الايميل || ""} onChange={(e) => handleChange("كلمة_سر_الايميل", e.target.value)} placeholder="••••••••" dir="ltr" className="text-left"/></div>
               <div><Label htmlFor="center_phone">الهاتف الأرضي</Label><Input id="center_phone" value={formData.هاتف_المركز} onChange={(e) => handleChange("هاتف_المركز", e.target.value)} placeholder="011-1234567"/></div>
               <div><Label htmlFor="center_fax">الفاكس</Label><Input id="center_fax" value={formData.فاكس_المركز} onChange={(e) => handleChange("فاكس_المركز", e.target.value)} placeholder="011-7654321"/></div>
 
