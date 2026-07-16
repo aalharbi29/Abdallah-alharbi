@@ -100,6 +100,8 @@ export default function CenterContactCard({ open, onOpenChange, center, manager,
           <div class="section">
             <div class="section-title">🏢 بيانات المركز</div>
             <table>
+              ${row("🆔", "كود الصحة", center.seha_id)}
+              ${row("🏛️", "كود الوزارة", center.organization_code)}
               ${row("📧", "إيميل المركز", center.ايميل_المركز)}
               ${row("👤", "اسم المستخدم", center.ايميل_المستخدم)}
               ${row("🔑", "كلمة السر", center.كلمة_سر_الايميل)}
@@ -158,6 +160,8 @@ export default function CenterContactCard({ open, onOpenChange, center, manager,
               🏢 بيانات المركز
             </div>
             <div className="px-3">
+              <InfoRow icon={Building2} label="كود الصحة" value={center.seha_id} />
+              <InfoRow icon={Building2} label="كود الوزارة" value={center.organization_code} />
               <InfoRow icon={Mail} label="إيميل المركز" value={center.ايميل_المركز} />
               <InfoRow icon={User} label="اسم المستخدم" value={center.ايميل_المستخدم} />
               <InfoRow icon={KeyRound} label="كلمة السر" value={center.كلمة_سر_الايميل} />
