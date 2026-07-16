@@ -29,6 +29,7 @@ import ClinicsSummary from "@/components/health_centers/ClinicsSummary";
 import CenterEmployeeExporter from "@/components/health_centers/CenterEmployeeExporter";
 import CenterDocuments from "@/components/health_centers/CenterDocuments";
 import CenterMedicalEquipmentNew from "@/components/health_centers/CenterMedicalEquipmentNew";
+import CenterContactCard from "@/components/health_centers/CenterContactCard";
 import { getCombinedEmployeeRoles } from "@/components/utils/combinedRoles";
 import CopyableValue from "@/components/common/CopyableValue";
 
@@ -53,6 +54,7 @@ export default function HealthCenterDetails() {
   const [showRoleAssignment, setShowRoleAssignment] = useState(false);
   const [selectedEmployeeForRole, setSelectedEmployeeForRole] = useState(null);
   const [showEmployeeExporter, setShowEmployeeExporter] = useState(false);
+  const [showContactCard, setShowContactCard] = useState(false);
   const [printOptions, setPrintOptions] = useState({
     outputFormat: 'detailed', // New print option
     basicInfo: true,
@@ -1056,6 +1058,10 @@ export default function HealthCenterDetails() {
               <Edit className="w-4 h-4 ml-2" />
               تعديل البيانات
             </Button>
+            <Button onClick={() => setShowContactCard(true)} variant="outline" className="gap-2">
+              <FileText className="w-4 h-4" />
+              بطاقة تواصل
+            </Button>
             <Button onClick={handlePrint} variant="outline">
               <Printer className="w-4 h-4 ml-2" />
               طباعة
@@ -1822,6 +1828,15 @@ export default function HealthCenterDetails() {
         manager={manager}
         center={center}
         deputyManager={deputyManager}
+        technicalSupervisor={technicalSupervisor}
+      />
+
+      {/* Dialog بطاقة التواصل */}
+      <CenterContactCard
+        open={showContactCard}
+        onOpenChange={setShowContactCard}
+        center={center}
+        manager={manager}
         technicalSupervisor={technicalSupervisor}
       />
 

@@ -1,0 +1,204 @@
+import React from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Printer, User, Phone, Mail, KeyRound, Building2 } from "lucide-react";
+
+export default function CenterContactCard({ open, onOpenChange, center, manager, technicalSupervisor }) {
+  if (!center) return null;
+
+  const handlePrint = () => {
+    const printWindow = window.open("", "_blank");
+    printWindow.document.write(generateCardHTML());
+    printWindow.document.close();
+    printWindow.print();
+  };
+
+  const generateCardHTML = () => {
+    const row = (icon, label, value) => `
+      <tr>
+        <td class="label-cell">${icon} ${label}</td>
+        <td class="value-cell">${value || "—"}</td>
+      </tr>`;
+
+    return `
+    <!DOCTYPE html>
+    <html dir="rtl" lang="ar">
+      <head>
+        <meta charset="utf-8">
+        <title>بطاقة تواصل - ${center.اسم_المركز || ""}</title>
+        <style>
+          @page { size: 9cm 14cm; margin: 0; }
+          * { box-sizing: border-box; }
+          body {
+            font-family: 'Cairo', 'Tajawal', 'Segoe UI', sans-serif;
+            direction: rtl;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+          }
+          .card {
+            width: 9cm;
+            min-height: 14cm;
+            border: 2px solid #0B3D91;
+            border-radius: 12px;
+            overflow: hidden;
+            font-size: 11px;
+            color: #1f2937;
+          }
+          .card-header {
+            background: linear-gradient(135deg, #0B3D91, #1E63D6);
+            color: white;
+            text-align: center;
+            padding: 10px 8px;
+          }
+          .card-header .title { font-size: 13px; font-weight: 800; }
+          .card-header .subtitle { font-size: 9px; opacity: 0.85; margin-top: 2px; }
+          .section {
+            border-bottom: 1px solid #e5e7eb;
+          }
+          .section-title {
+            background: #F1F8FF;
+            color: #0B3D91;
+            font-weight: 700;
+            font-size: 10px;
+            padding: 5px 10px;
+            border-bottom: 1px solid #d1e7ff;
+          }
+          table { width: 100%; border-collapse: collapse; }
+          .label-cell {
+            padding: 4px 8px;
+            font-weight: 600;
+            color: #374151;
+            white-space: nowrap;
+            width: 45%;
+            vertical-align: top;
+            font-size: 10px;
+          }
+          .value-cell {
+            padding: 4px 8px;
+            color: #111827;
+            word-break: break-all;
+            font-size: 10px;
+          }
+          .footer {
+            text-align: center;
+            padding: 6px;
+            font-size: 8px;
+            color: #6b7280;
+            background: #f9fafb;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="card">
+          <div class="card-header">
+            <div class="title">${center.اسم_المركز || ""}</div>
+            <div class="subtitle">بطاقة بيانات التواصل</div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">🏢 بيانات المركز</div>
+            <table>
+              ${row("📧", "إيميل المركز", center.ايميل_المركز)}
+              ${row("👤", "اسم المستخدم", center.ايميل_المستخدم)}
+              ${row("🔑", "كلمة السر", center.كلمة_سر_الايميل)}
+            </table>
+          </div>
+
+          <div class="section">
+            <div class="section-title">👨‍⚕️ مدير المركز</div>
+            <table>
+              ${row("👤", "الاسم", manager?.full_name_arabic)}
+              ${row("📱", "الجوال", manager?.phone)}
+              ${row("✉️", "الإيميل", manager?.email)}
+            </table>
+          </div>
+
+          <div class="section">
+            <div class="section-title">🔧 المشرف الفني</div>
+            <table>
+              ${row("👤", "الاسم", technicalSupervisor?.full_name_arabic)}
+              ${row("📱", "الجوال", technicalSupervisor?.phone)}
+              ${row("✉️", "الإيميل", technicalSupervisor?.email)}
+            </table>
+          </div>
+
+          <div class="footer">
+            تجمع المدينة المنورة الصحي
+          </div>
+        </div>
+      </body>
+    </html>`;
+  };
+
+  const InfoRow = ({ icon: Icon, label, value }) => (
+    <div className="flex items-center gap-2 py-1.5 border-b border-gray-100 last:border-0">
+      <Icon className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+      <span className="text-xs font-semibold text-gray-500 w-24 shrink-0">{label}</span>
+      <span className="text-xs text-gray-900 break-all flex-1">{value || "—"}</span>
+    </div>
+  );
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-sm">
+        <DialogHeader>
+          <DialogTitle className="text-center">بطاقة تواصل {center.اسم_المركز}</DialogTitle>
+        </DialogHeader>
+
+        <div className="border-2 border-blue-900 rounded-xl overflow-hidden mx-auto" style={{ width: "9cm", maxWidth: "100%" }}>
+          <div className="bg-gradient-to-br from-blue-900 to-blue-600 text-white text-center py-2">
+            <div className="text-sm font-extrabold">{center.اسم_المركز}</div>
+            <div className="text-[9px] opacity-85">بطاقة بيانات التواصل</div>
+          </div>
+
+          <div className="border-b border-gray-200">
+            <div className="bg-blue-50 text-blue-900 font-bold text-[10px] px-3 py-1.5 border-b border-blue-100">
+              🏢 بيانات المركز
+            </div>
+            <div className="px-3">
+              <InfoRow icon={Mail} label="إيميل المركز" value={center.ايميل_المركز} />
+              <InfoRow icon={User} label="اسم المستخدم" value={center.ايميل_المستخدم} />
+              <InfoRow icon={KeyRound} label="كلمة السر" value={center.كلمة_سر_الايميل} />
+            </div>
+          </div>
+
+          <div className="border-b border-gray-200">
+            <div className="bg-blue-50 text-blue-900 font-bold text-[10px] px-3 py-1.5 border-b border-blue-100">
+              👨‍⚕️ مدير المركز
+            </div>
+            <div className="px-3">
+              <InfoRow icon={User} label="الاسم" value={manager?.full_name_arabic} />
+              <InfoRow icon={Phone} label="الجوال" value={manager?.phone} />
+              <InfoRow icon={Mail} label="الإيميل" value={manager?.email} />
+            </div>
+          </div>
+
+          <div>
+            <div className="bg-blue-50 text-blue-900 font-bold text-[10px] px-3 py-1.5 border-b border-blue-100">
+              🔧 المشرف الفني
+            </div>
+            <div className="px-3">
+              <InfoRow icon={User} label="الاسم" value={technicalSupervisor?.full_name_arabic} />
+              <InfoRow icon={Phone} label="الجوال" value={technicalSupervisor?.phone} />
+              <InfoRow icon={Mail} label="الإيميل" value={technicalSupervisor?.email} />
+            </div>
+          </div>
+
+          <div className="text-center py-1.5 text-[8px] text-gray-500 bg-gray-50">
+            تجمع المدينة المنورة الصحي
+          </div>
+        </div>
+
+        <DialogFooter className="flex gap-2">
+          <Button variant="outline" onClick={() => onOpenChange(false)} className="flex-1">إغلاق</Button>
+          <Button onClick={handlePrint} className="flex-1 gap-2">
+            <Printer className="w-4 h-4" />
+            طباعة البطاقة
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
