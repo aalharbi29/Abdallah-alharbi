@@ -1,7 +1,7 @@
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Printer, User, Phone, Mail, KeyRound, Building2, Copy, Check } from "lucide-react";
+import { Printer, User, Phone, Mail, KeyRound, Building2, Copy, Check, FileCode } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -24,6 +24,20 @@ export default function CenterContactCard({ open, onOpenChange, center, manager,
     printWindow.document.write(generateCardHTML());
     printWindow.document.close();
     printWindow.print();
+  };
+
+  const handleSaveHTML = () => {
+    const html = generateCardHTML();
+    const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `بطاقة-تواصل-${center.اسم_المركز || "المركز"}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.success("تم حفظ ملف HTML");
   };
 
   const generateCardHTML = () => {
@@ -272,6 +286,10 @@ export default function CenterContactCard({ open, onOpenChange, center, manager,
 
         <DialogFooter className="flex gap-2">
           <Button variant="outline" onClick={() => onOpenChange(false)} className="flex-1">إغلاق</Button>
+          <Button variant="secondary" onClick={handleSaveHTML} className="flex-1 gap-2">
+            <FileCode className="w-4 h-4" />
+            حفظ HTML
+          </Button>
           <Button onClick={handlePrint} className="flex-1 gap-2">
             <Printer className="w-4 h-4" />
             طباعة البطاقة
