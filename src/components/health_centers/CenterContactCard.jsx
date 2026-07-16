@@ -1,10 +1,23 @@
 import React from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Printer, User, Phone, Mail, KeyRound, Building2 } from "lucide-react";
+import { Printer, User, Phone, Mail, KeyRound, Building2, Copy, Check } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export default function CenterContactCard({ open, onOpenChange, center, manager, technicalSupervisor }) {
+  const [copiedField, setCopiedField] = useState(null);
+
   if (!center) return null;
+
+  const handleCopy = (label, value) => {
+    if (!value) return;
+    navigator.clipboard.writeText(value).then(() => {
+      setCopiedField(label);
+      toast.success(`تم نسخ ${label}`);
+      setTimeout(() => setCopiedField(null), 1500);
+    });
+  };
 
   const handlePrint = () => {
     const printWindow = window.open("", "_blank");
@@ -135,10 +148,23 @@ export default function CenterContactCard({ open, onOpenChange, center, manager,
   };
 
   const InfoRow = ({ icon: Icon, label, value }) => (
-    <div className="flex items-center gap-2 py-1.5 border-b border-gray-100 last:border-0">
+    <div className="flex items-center gap-2 py-1.5 border-b border-gray-100 last:border-0 group">
       <Icon className="w-3.5 h-3.5 text-blue-600 shrink-0" />
       <span className="text-xs font-semibold text-gray-500 w-24 shrink-0">{label}</span>
-      <span className="text-xs text-gray-900 break-all flex-1">{value || "—"}</span>
+      <span className="text-xs text-gray-900 break-all flex-1" dir="auto">{value || "—"}</span>
+      {value && (
+        <button
+          onClick={() => handleCopy(label, value)}
+          className="shrink-0 p-1 rounded hover:bg-blue-100 transition-colors"
+          title={`نسخ ${label}`}
+        >
+          {copiedField === label ? (
+            <Check className="w-3.5 h-3.5 text-green-600" />
+          ) : (
+            <Copy className="w-3.5 h-3.5 text-gray-400 group-hover:text-blue-600" />
+          )}
+        </button>
+      )}
     </div>
   );
 
