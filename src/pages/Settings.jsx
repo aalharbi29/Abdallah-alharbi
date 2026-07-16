@@ -16,9 +16,11 @@ import {
   Smartphone,
   Layout,
   Eye,
-  Image
+  Image,
+  Building2
 } from 'lucide-react';
 import LogoSettingsManager from '../components/settings/LogoSettingsManager';
+import AdministrationContactManager from '../components/settings/AdministrationContactManager';
 import ThemeSwitcher from '../components/theme/ThemeSwitcher';
 import { useTheme } from '../components/theme/ThemeProvider';
 import { Slider } from "@/components/ui/slider";
@@ -89,6 +91,10 @@ export default function SettingsPage() {
             <TabsTrigger value="logo" className="flex items-center gap-2">
               <Image className="w-4 h-4" />
               الشعار والتذييل
+            </TabsTrigger>
+            <TabsTrigger value="administration" className="flex items-center gap-2">
+              <Building2 className="w-4 h-4" />
+              بيانات الإدارة
             </TabsTrigger>
           </TabsList>
 
@@ -265,6 +271,9 @@ export default function SettingsPage() {
           </TabsContent>
           <TabsContent value="logo">
             <LogoSettingsManager />
+          </TabsContent>
+          <TabsContent value="administration">
+            <AdministrationContactManager />
           </TabsContent>
         </Tabs>
 
