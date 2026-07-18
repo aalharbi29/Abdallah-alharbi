@@ -10,6 +10,43 @@ const cleanText = (v) => {
   return String(v).replace(/\xa0/g, " ").trim();
 };
 
+const toEnglishDigits = (str) => {
+  if (!str) return "";
+  const map = {"٠":"0","١":"1","٢":"2","٣":"3","٤":"4","٥":"5","٦":"6","٧":"7","٨":"8","٩":"9"};
+  return String(str).replace(/[٠-٩]/g, d => map[d] || d);
+};
+
+// يحول قيمة تاريخ من Excel (رقم تسلسلي / كائن Date / نص) إلى صيغة YYYY-MM-DD
+const parseExcelDate = (v) => {
+  if (v === null || v === undefined || v === "") return "";
+  // رقم تسلسلي من Excel
+  if (typeof v === "number") {
+    const epoch = Date.UTC(1899, 11, 30);
+    const date = new Date(epoch + v * 24 * 60 * 60 * 1000);
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+  // كائن Date
+  if (v instanceof Date) {
+    const year = v.getFullYear();
+    const month = String(v.getMonth() + 1).padStart(2, "0");
+    const day = String(v.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+  // نص
+  const s = toEnglishDigits(String(v).trim());
+  if (s.match(/^\d{4}-\d{2}-\d{2}$/)) return s;
+  const m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
+  if (m) {
+    const day = m[1].padStart(2, "0");
+    const month = m[2].padStart(2, "0");
+    return `${m[3]}-${month}-${day}`;
+  }
+  return "";
+};
+
 const cleanId = (v) => {
   if (v === null || v === undefined) return "";
   // نزيل أي رموز ونحتفظ بالأرقام فقط
@@ -116,6 +153,8 @@ export const parseExcelRows = (rows) => {
         email: cleanText(row["إيميل الموظف"]),
         position: cleanText(row["المسمى الوظيفى"]),
         rank: cleanText(row["المرتبة"]),
+        birth_date: parseExcelDate(row["تاريخ الميلاد"] || row["تاريخ الميلاد (ميلادي)"] || row["الميلاد"] || row["تاريخ الميلاد بالميلادي"]),
+        birth_date_hijri: cleanText(row["تاريخ الميلاد (هجري)"] || row["الميلاد هجري"] || row["تاريخ الميلاد بالهجري"]),
         contract_type: mapContractType(row["نوع التوظيف"]),
         job_category_type: mapJobCategoryType(row["فئة الوظيفة"]),
         job_category: cleanText(row["البرنامج"]),

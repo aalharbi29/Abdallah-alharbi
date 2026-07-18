@@ -243,6 +243,7 @@ export default function SmartDateInput({
   const [inputMode, setInputMode] = useState('gregorian');
   const [displayValue, setDisplayValue] = useState('');
   const [convertedValue, setConvertedValue] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   useEffect(() => {
     if (value) {
@@ -257,6 +258,14 @@ export default function SmartDateInput({
   const handleInputChange = (e) => {
     const inputValue = e.target.value;
     setDisplayValue(inputValue);
+    setErrorMsg('');
+
+    // إذا أُفرغ الحقل، أفرغ القيمة المحفوظة
+    if (!inputValue) {
+      setConvertedValue('');
+      onChange('');
+      return;
+    }
 
     if (inputMode === 'gregorian') {
       if (inputValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
@@ -272,6 +281,9 @@ export default function SmartDateInput({
         if (gregorianEquivalent) {
           setConvertedValue(gregorianEquivalent);
           onChange(gregorianEquivalent);
+        } else {
+          setErrorMsg('تعذّر تحويل التاريخ الهجري — تأكد من السنة بين 1356 و1500 هـ');
+          setConvertedValue('');
         }
       }
     }
@@ -332,6 +344,12 @@ export default function SmartDateInput({
                 }
               </span>
             </div>
+          </div>
+        )}
+        
+        {errorMsg && (
+          <div className="text-sm text-red-600 bg-red-50 p-2 rounded border border-red-200">
+            ⚠ {errorMsg}
           </div>
         )}
       </div>
