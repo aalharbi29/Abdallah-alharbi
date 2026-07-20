@@ -53,11 +53,15 @@ export default function ReportPreviewDialog({
   
   const logoJustifyClass = logoPosition === 'right' ? 'justify-end' : logoPosition === 'left' ? 'justify-start' : 'justify-center';
   const sigAlignClass = signaturePosition === 'right' ? 'text-right' : signaturePosition === 'left' ? 'text-left' : 'text-center';
-  const imageStyle = (type) => ({
-    width: `${approvalLayout[`${type}Width`] || (type === 'signature' ? 140 : 100)}px`,
-    transform: `translate(${approvalLayout[`${type}OffsetX`] || 0}px, ${approvalLayout[`${type}OffsetY`] || 0}px)`,
-    marginTop: '-2px',
-  });
+  const imageStyle = (type) => {
+    const size = approvalLayout[`${type}Width`] || (type === 'signature' ? 140 : 100);
+    return {
+      width: `${size}px`,
+      ...(type === 'stamp' ? { height: `${size}px` } : { height: 'auto' }),
+      transform: `translate(${approvalLayout[`${type}OffsetX`] || 0}px, ${approvalLayout[`${type}OffsetY`] || 0}px)`,
+      marginTop: '-2px',
+    };
+  };
 
   const getMergedCellStyle = (spanCount, orientation) => {
     const baseStyle = { padding: '4px 8px', verticalAlign: 'middle' };

@@ -6,7 +6,7 @@ export default function ApprovalLayoutControls({ value, onChange }) {
   const update = (key, nextValue) => onChange({ ...value, [key]: Number(nextValue) });
   const fields = [
     ['signatureWidth', 'عرض التوقيع', 140], ['signatureOffsetX', 'إزاحة التوقيع أفقياً', 0], ['signatureOffsetY', 'إزاحة التوقيع عمودياً', 0],
-    ['stampWidth', 'عرض الختم', 100], ['stampOffsetX', 'إزاحة الختم أفقياً', 0], ['stampOffsetY', 'إزاحة الختم عمودياً', 0],
+    ['stampWidth', 'حجم الختم', 100], ['stampOffsetX', 'إزاحة الختم أفقياً', 0], ['stampOffsetY', 'إزاحة الختم عمودياً', 0],
   ];
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

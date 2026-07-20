@@ -377,7 +377,10 @@ export const generateReportHtml = ({
 
   const logoJustify = logoPosition === 'right' ? 'flex-end' : logoPosition === 'left' ? 'flex-start' : 'center';
   const sigAlign = signaturePosition === 'right' ? 'right' : signaturePosition === 'left' ? 'left' : 'center';
-  const approvalImageStyle = (type) => `width: ${approvalLayout[`${type}Width`] || (type === 'signature' ? 140 : 100)}px; transform: translate(${approvalLayout[`${type}OffsetX`] || 0}px, ${approvalLayout[`${type}OffsetY`] || 0}px);`;
+  const approvalImageStyle = (type) => {
+    const size = approvalLayout[`${type}Width`] || (type === 'signature' ? 140 : 100);
+    return `width: ${size}px; ${type === 'stamp' ? `height: ${size}px;` : 'height: auto;'} transform: translate(${approvalLayout[`${type}OffsetX`] || 0}px, ${approvalLayout[`${type}OffsetY`] || 0}px);`;
+  };
 
   const signatureBlock = showSignature ? `<div class="signature-section">
       ${signerName ? `<p class="sig-name">${signerName}</p>` : ''}
