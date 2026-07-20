@@ -32,6 +32,7 @@ import AIAutoGenerate from '@/components/employee_data/AIAutoGenerate';
 import TemplatesManager from '@/components/employee_data/TemplatesManager';
 import EmployeeMultiSelect from '@/components/employee_data/EmployeeMultiSelect';
 import FontSettings from '@/components/employee_data/FontSettings';
+import ApprovalLayoutControls from '@/components/employee_data/ApprovalLayoutControls';
 import HijriDatePicker from '@/components/ui/HijriDatePicker';
 import { exportToCSV, exportToHTML, generateReportHtml } from '@/components/employee_data/exportUtils';
 import { createEmptyAssignmentPeriod, formatAssignmentPeriodPlain, normalizeAssignmentPeriods } from '@/components/employee_data/periodUtils';
@@ -121,6 +122,7 @@ export default function EmployeeDataRequest() {
     tableBody: { font: 'Cairo', size: '13', weight: '700' },
     paragraphSpacing: 10,
     lineHeight: '2.0',
+    approvalLayout: { signatureWidth: 140, stampWidth: 100, signatureOffsetX: 0, signatureOffsetY: 0, stampOffsetX: 0, stampOffsetY: 0 },
   });
   const [lineStyles, setLineStyles] = useState({});
   const [headerSideText, setHeaderSideText] = useState('');
@@ -255,8 +257,9 @@ export default function EmployeeDataRequest() {
         tableBody: { font: 'Cairo', size: '13', weight: '700' },
         paragraphSpacing: 10,
         lineHeight: '2.0',
-      });
-      setMergeWorkplace(false);
+        approvalLayout: { signatureWidth: 140, stampWidth: 100, signatureOffsetX: 0, signatureOffsetY: 0, stampOffsetX: 0, stampOffsetY: 0 },
+        });
+        setMergeWorkplace(false);
       setMergeWorkplaceOrientation('vertical');
       setMergeAssignment(false);
       setMergeAssignmentOrientation('vertical');
@@ -702,7 +705,7 @@ export default function EmployeeDataRequest() {
     const html = generateReportHtml({
       selectedFields, availableFields, reportTitle, reportNarrative, narrativePosition, lineStyles, fontSettings,
       logoSettings: effectiveLogoSettings, logoPosition, showSignature, selectedSignatureId, selectedStampId, signatures: exportSignatures,
-      signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees: sortedSelectedEmployees,
+      signerName, signerTitle, signaturePosition, approvalLayout: fontSettings.approvalLayout, assignmentGroups, selectedEmployees: sortedSelectedEmployees,
       displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
       mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, mergeAssignmentPeriods, splitPages, rowsPerFirstPage, rowsPerNextPage,
       pageBreakAfterRows, finalRequest
@@ -723,7 +726,7 @@ export default function EmployeeDataRequest() {
     const html = generateReportHtml({
       selectedFields, availableFields, reportTitle, reportNarrative, narrativePosition, lineStyles, fontSettings,
       logoSettings: effectiveLogoSettings, logoPosition, showSignature, selectedSignatureId, selectedStampId, signatures: exportSignatures,
-      signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees: sortedSelectedEmployees,
+      signerName, signerTitle, signaturePosition, approvalLayout: fontSettings.approvalLayout, assignmentGroups, selectedEmployees: sortedSelectedEmployees,
       displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
       mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, mergeAssignmentPeriods, splitPages, rowsPerFirstPage, rowsPerNextPage,
       pageBreakAfterRows, finalRequest
@@ -1567,8 +1570,15 @@ export default function EmployeeDataRequest() {
                         <Input value={signerTitle} onChange={e => setSignerTitle(e.target.value)} className="mt-1" />
                       </div>
                     </div>
+                    <div className="rounded-md border bg-white p-3">
+                      <Label className="text-xs font-bold block mb-2">حجم وموضع التوقيع والختم</Label>
+                      <ApprovalLayoutControls
+                        value={fontSettings.approvalLayout || {}}
+                        onChange={(approvalLayout) => setFontSettings(prev => ({ ...prev, approvalLayout }))}
+                      />
+                    </div>
                     <div>
-                      <Label className="text-xs text-gray-500">موقع التوقيع:</Label>
+                      <Label className="text-xs text-gray-500">موقع مجموعة الاعتماد:</Label>
                       <RadioGroup value={signaturePosition} onValueChange={setSignaturePosition} className="flex gap-4 mt-1">
                         <div className="flex items-center gap-1">
                           <RadioGroupItem value="right" id="sig-right" />
@@ -1993,6 +2003,7 @@ export default function EmployeeDataRequest() {
           signerName={signerName}
           signerTitle={signerTitle}
           signaturePosition={signaturePosition}
+          approvalLayout={fontSettings.approvalLayout}
           assignmentGroups={assignmentGroups}
           splitPages={splitPages}
           fontSettings={fontSettings}

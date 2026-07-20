@@ -328,7 +328,7 @@ export const exportToHTML = ({
 export const generateReportHtml = ({
   selectedFields, availableFields, reportTitle, reportNarrative, narrativePosition, lineStyles, fontSettings,
   logoSettings, logoPosition, showSignature, selectedSignatureId, selectedStampId, signatures,
-  signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees,
+  signerName, signerTitle, signaturePosition, approvalLayout = {}, assignmentGroups, selectedEmployees,
   displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
   mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, mergeAssignmentPeriods = false, splitPages, rowsPerFirstPage, rowsPerNextPage,
   pageBreakAfterRows, finalRequest
@@ -377,13 +377,14 @@ export const generateReportHtml = ({
 
   const logoJustify = logoPosition === 'right' ? 'flex-end' : logoPosition === 'left' ? 'flex-start' : 'center';
   const sigAlign = signaturePosition === 'right' ? 'right' : signaturePosition === 'left' ? 'left' : 'center';
+  const approvalImageStyle = (type) => `width: ${approvalLayout[`${type}Width`] || (type === 'signature' ? 140 : 100)}px; transform: translate(${approvalLayout[`${type}OffsetX`] || 0}px, ${approvalLayout[`${type}OffsetY`] || 0}px);`;
 
   const signatureBlock = showSignature ? `<div class="signature-section">
       ${signerName ? `<p class="sig-name">${signerName}</p>` : ''}
       ${signerTitle ? `<p class="sig-title">${signerTitle}</p>` : ''}
       <div class="approval-images">
-        ${selectedSig ? `<img src="${selectedSig.image_url}" alt="${selectedSig.name}" />` : ''}
-        ${selectedStamp ? `<img src="${selectedStamp.image_url}" alt="${selectedStamp.name}" />` : ''}
+        ${selectedSig ? `<img class="approval-signature" src="${selectedSig.image_url}" alt="${selectedSig.name}" style="${approvalImageStyle('signature')}" />` : ''}
+        ${selectedStamp ? `<img class="approval-stamp" src="${selectedStamp.image_url}" alt="${selectedStamp.name}" style="${approvalImageStyle('stamp')}" />` : ''}
       </div>
     </div>` : '';
 
@@ -751,7 +752,7 @@ export const generateReportHtml = ({
   .signature-section .sig-name { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 700; font-size: 15px; margin-top: 4px; color: #000; }
   .signature-section .sig-title { font-weight: 700; font-size: 12px; color: #000; margin-top: 0; }
   .approval-images { display: flex; gap: 12px; align-items: center; justify-content: ${sigAlign === 'center' ? 'center' : sigAlign === 'left' ? 'flex-start' : 'flex-end'}; }
-  .signature-section img { max-height: 80px; display: block; margin-top: -2px; mix-blend-mode: multiply; background: transparent; }
+  .signature-section img { max-height: 160px; display: block; margin-top: -2px; mix-blend-mode: multiply; background: transparent; }
   .footer-banner { text-align: center; padding-top: 15px; border-top: 3px solid #0B3D91; margin-top: auto; }
   .footer-banner p { margin: 4px 0; font-size: 14px; color: #0B3D91; }
   .footer-banner .main-text { font-weight: 800; color: #0B3D91; font-size: 15px; }

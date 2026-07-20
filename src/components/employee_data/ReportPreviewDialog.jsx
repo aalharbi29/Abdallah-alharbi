@@ -29,6 +29,7 @@ export default function ReportPreviewDialog({
   signerName,
   signerTitle,
   signaturePosition,
+  approvalLayout = {},
   assignmentGroups,
   splitPages,
   fontSettings,
@@ -52,6 +53,11 @@ export default function ReportPreviewDialog({
   
   const logoJustifyClass = logoPosition === 'right' ? 'justify-end' : logoPosition === 'left' ? 'justify-start' : 'justify-center';
   const sigAlignClass = signaturePosition === 'right' ? 'text-right' : signaturePosition === 'left' ? 'text-left' : 'text-center';
+  const imageStyle = (type) => ({
+    width: `${approvalLayout[`${type}Width`] || (type === 'signature' ? 140 : 100)}px`,
+    transform: `translate(${approvalLayout[`${type}OffsetX`] || 0}px, ${approvalLayout[`${type}OffsetY`] || 0}px)`,
+    marginTop: '-2px',
+  });
 
   const getMergedCellStyle = (spanCount, orientation) => {
     const baseStyle = { padding: '4px 8px', verticalAlign: 'middle' };
@@ -423,8 +429,8 @@ export default function ReportPreviewDialog({
               {signerName && <p style={{ fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, color: '#000', fontSize: '18px' }}>{signerName}</p>}
               {signerTitle && <p style={{ fontWeight: 700, color: '#000', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
               <div className={`flex items-center gap-3 ${signaturePosition === 'center' ? 'justify-center' : signaturePosition === 'left' ? 'justify-start' : 'justify-end'}`}>
-                {selectedSig && <TransparentSignatureImage src={selectedSig.image_url} alt={selectedSig.name} className="max-h-24" style={{ marginTop: '-2px' }} />}
-                {selectedStamp && <TransparentSignatureImage src={selectedStamp.image_url} alt={selectedStamp.name} className="max-h-24" style={{ marginTop: '-2px' }} />}
+                {selectedSig && <TransparentSignatureImage src={selectedSig.image_url} alt={selectedSig.name} style={imageStyle('signature')} />}
+                {selectedStamp && <TransparentSignatureImage src={selectedStamp.image_url} alt={selectedStamp.name} style={imageStyle('stamp')} />}
               </div>
             </div>
           );
