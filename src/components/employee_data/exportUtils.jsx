@@ -659,7 +659,7 @@ export const generateReportHtml = ({
     return pages;
   };
 
-  const tablePages = splitRowsIntoPages(allRowsData);
+  const tablePages = splitPages ? splitRowsIntoPages(allRowsData) : [allRowsData];
 
   let bodyContent = '';
   if (splitPages) {
