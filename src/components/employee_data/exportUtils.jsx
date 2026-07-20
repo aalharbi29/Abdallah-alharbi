@@ -380,7 +380,7 @@ export const generateReportHtml = ({
   const approvalImageStyle = (type) => {
     const size = approvalLayout[`${type}Width`] || (type === 'signature' ? 140 : 100);
     const fitStyle = type === 'stamp'
-      ? `height: ${size}px; object-fit: cover; object-position: left center;`
+      ? `height: ${size}px; object-fit: contain; object-position: center;`
       : 'height: auto; object-fit: contain;';
     return `width: ${size}px; ${fitStyle} transform: translate(${approvalLayout[`${type}OffsetX`] || 0}px, ${approvalLayout[`${type}OffsetY`] || 0}px);`;
   };
@@ -758,7 +758,7 @@ export const generateReportHtml = ({
   .signature-section .sig-name { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 700; font-size: 15px; margin-top: 4px; color: #000; }
   .signature-section .sig-title { font-weight: 700; font-size: 12px; color: #000; margin-top: 0; }
   .approval-images { display: flex; gap: 12px; align-items: center; justify-content: ${sigAlign === 'center' ? 'center' : sigAlign === 'left' ? 'flex-start' : 'flex-end'}; }
-  .signature-section img { max-height: 160px; display: block; margin-top: -2px; mix-blend-mode: multiply; background: transparent; }
+  .signature-section img { display: block; margin-top: -2px; mix-blend-mode: multiply; background: transparent; }
   .footer-banner { text-align: center; padding-top: 15px; border-top: 3px solid #0B3D91; margin-top: auto; }
   .footer-banner p { margin: 4px 0; font-size: 14px; color: #0B3D91; }
   .footer-banner .main-text { font-weight: 800; color: #0B3D91; font-size: 15px; }
