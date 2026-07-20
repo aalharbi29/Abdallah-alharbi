@@ -327,7 +327,7 @@ export const exportToHTML = ({
 
 export const generateReportHtml = ({
   selectedFields, availableFields, reportTitle, reportNarrative, narrativePosition, lineStyles, fontSettings,
-  logoSettings, logoPosition, showSignature, selectedSignatureId, signatures,
+  logoSettings, logoPosition, showSignature, selectedSignatureId, selectedStampId, signatures,
   signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees,
   displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
   mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, mergeAssignmentPeriods = false, splitPages, rowsPerFirstPage, rowsPerNextPage,
@@ -342,6 +342,7 @@ export const generateReportHtml = ({
 
   const dateStr = new Date().toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   const selectedSig = showSignature && selectedSignatureId ? signatures.find(s => s.id === selectedSignatureId) : null;
+  const selectedStamp = showSignature && selectedStampId ? signatures.find(s => s.id === selectedStampId) : null;
 
   const processNarrativeHtml = (text) => {
     if (!text) return '';
@@ -380,7 +381,10 @@ export const generateReportHtml = ({
   const signatureBlock = showSignature ? `<div class="signature-section">
       ${signerName ? `<p class="sig-name">${signerName}</p>` : ''}
       ${signerTitle ? `<p class="sig-title">${signerTitle}</p>` : ''}
-      ${selectedSig ? `<img src="${selectedSig.image_url}" alt="${selectedSig.name}" />` : ''}
+      <div class="approval-images">
+        ${selectedSig ? `<img src="${selectedSig.image_url}" alt="${selectedSig.name}" />` : ''}
+        ${selectedStamp ? `<img src="${selectedStamp.image_url}" alt="${selectedStamp.name}" />` : ''}
+      </div>
     </div>` : '';
 
   // الفوتر مدمج ضمن الخلفية الرسمية (شعار التجمع في الأسفل)، لذا لا نضيف فوتر خارجي
@@ -746,7 +750,8 @@ export const generateReportHtml = ({
   .signature-section { text-align: ${sigAlign}; margin-top: 40px; padding: 8px 0; page-break-inside: avoid; }
   .signature-section .sig-name { font-family: 'PT Sans Caption', 'Cairo', sans-serif; font-weight: 700; font-size: 15px; margin-top: 4px; color: #000; }
   .signature-section .sig-title { font-weight: 700; font-size: 12px; color: #000; margin-top: 0; }
-  .signature-section img { max-height: 80px; ${sigAlign === 'center' ? 'margin: 0 auto;' : ''} display: block; margin-top: -2px; mix-blend-mode: multiply; background: transparent; }
+  .approval-images { display: flex; gap: 12px; align-items: center; justify-content: ${sigAlign === 'center' ? 'center' : sigAlign === 'left' ? 'flex-start' : 'flex-end'}; }
+  .signature-section img { max-height: 80px; display: block; margin-top: -2px; mix-blend-mode: multiply; background: transparent; }
   .footer-banner { text-align: center; padding-top: 15px; border-top: 3px solid #0B3D91; margin-top: auto; }
   .footer-banner p { margin: 4px 0; font-size: 14px; color: #0B3D91; }
   .footer-banner .main-text { font-weight: 800; color: #0B3D91; font-size: 15px; }

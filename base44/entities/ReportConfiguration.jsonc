@@ -60,6 +60,9 @@
     "selected_signature_id": {
       "type": "string"
     },
+    "selected_stamp_id": {
+      "type": "string"
+    },
     "split_pages": {
       "type": "boolean"
     },
@@ -71,6 +74,15 @@
       "type": "boolean"
     },
     "merge_assignment": {
+      "type": "boolean"
+    },
+    "merge_workplace_orientation": {
+      "type": "string"
+    },
+    "merge_assignment_orientation": {
+      "type": "string"
+    },
+    "merge_assignment_periods": {
       "type": "boolean"
     },
     "assignment_groups": {

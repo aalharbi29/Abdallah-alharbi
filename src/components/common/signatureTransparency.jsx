@@ -38,15 +38,14 @@ export const makeWhiteTransparentImage = (src) => new Promise((resolve) => {
   image.src = src;
 });
 
-export const prepareSignaturesForExport = async (signatures = [], selectedSignatureId) => {
-  if (!selectedSignatureId) return signatures;
-  const selected = signatures.find((signature) => signature.id === selectedSignatureId);
-  if (!selected?.image_url) return signatures;
+export const prepareSignaturesForExport = async (signatures = [], selectedIds = []) => {
+  const ids = (Array.isArray(selectedIds) ? selectedIds : [selectedIds]).filter(Boolean);
+  if (ids.length === 0) return signatures;
 
-  const transparentUrl = await makeWhiteTransparentImage(selected.image_url);
-  return signatures.map((signature) => (
-    signature.id === selectedSignatureId
-      ? { ...signature, image_url: transparentUrl }
+  const processed = await Promise.all(signatures.map(async (signature) => (
+    ids.includes(signature.id) && signature.image_url
+      ? { ...signature, image_url: await makeWhiteTransparentImage(signature.image_url) }
       : signature
-  ));
+  )));
+  return processed;
 };

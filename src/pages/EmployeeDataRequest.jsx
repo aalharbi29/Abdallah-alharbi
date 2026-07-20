@@ -92,6 +92,7 @@ export default function EmployeeDataRequest() {
   const [showSignature, setShowSignature] = useState(false);
   const [signatures, setSignatures] = useState([]);
   const [selectedSignatureId, setSelectedSignatureId] = useState('');
+  const [selectedStampId, setSelectedStampId] = useState('');
   const [assignmentCenters, setAssignmentCenters] = useState({});
   // مجموعات التكليف - كل مجموعة لها فترة وموظفين
   const [assignmentGroups, setAssignmentGroups] = useState([
@@ -146,6 +147,7 @@ export default function EmployeeDataRequest() {
         signer_title: signerTitle,
         show_signature: showSignature,
         selected_signature_id: selectedSignatureId,
+        selected_stamp_id: selectedStampId,
         split_pages: splitPages,
         font_settings: fontSettings,
         merge_workplace: mergeWorkplace,
@@ -199,6 +201,7 @@ export default function EmployeeDataRequest() {
       if (t.signer_title) setSignerTitle(t.signer_title);
       if (t.show_signature !== undefined) setShowSignature(t.show_signature);
       if (t.selected_signature_id) setSelectedSignatureId(t.selected_signature_id);
+      if (t.selected_stamp_id) setSelectedStampId(t.selected_stamp_id);
       if (t.split_pages !== undefined) setSplitPages(t.split_pages);
       if (t.font_settings) setFontSettings(t.font_settings);
       if (t.merge_workplace !== undefined) setMergeWorkplace(t.merge_workplace);
@@ -242,6 +245,7 @@ export default function EmployeeDataRequest() {
       setSignerTitle('المساعد لشؤون المراكز الصحية بالحسو');
       setShowSignature(false);
       setSelectedSignatureId('');
+      setSelectedStampId('');
       setSplitPages(false);
       setFontSettings({
         narrativeBold: { font: 'PT Sans Caption', size: '17', weight: '900' },
@@ -694,10 +698,10 @@ export default function EmployeeDataRequest() {
   };
 
   const handleExportToHTML = async () => {
-    const exportSignatures = await prepareSignaturesForExport(signatures, selectedSignatureId);
+    const exportSignatures = await prepareSignaturesForExport(signatures, [selectedSignatureId, selectedStampId]);
     const html = generateReportHtml({
       selectedFields, availableFields, reportTitle, reportNarrative, narrativePosition, lineStyles, fontSettings,
-      logoSettings: effectiveLogoSettings, logoPosition, showSignature, selectedSignatureId, signatures: exportSignatures,
+      logoSettings: effectiveLogoSettings, logoPosition, showSignature, selectedSignatureId, selectedStampId, signatures: exportSignatures,
       signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees: sortedSelectedEmployees,
       displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
       mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, mergeAssignmentPeriods, splitPages, rowsPerFirstPage, rowsPerNextPage,
@@ -715,10 +719,10 @@ export default function EmployeeDataRequest() {
   };
 
   const exportAsReport = async () => {
-    const exportSignatures = await prepareSignaturesForExport(signatures, selectedSignatureId);
+    const exportSignatures = await prepareSignaturesForExport(signatures, [selectedSignatureId, selectedStampId]);
     const html = generateReportHtml({
       selectedFields, availableFields, reportTitle, reportNarrative, narrativePosition, lineStyles, fontSettings,
-      logoSettings: effectiveLogoSettings, logoPosition, showSignature, selectedSignatureId, signatures: exportSignatures,
+      logoSettings: effectiveLogoSettings, logoPosition, showSignature, selectedSignatureId, selectedStampId, signatures: exportSignatures,
       signerName, signerTitle, signaturePosition, assignmentGroups, selectedEmployees: sortedSelectedEmployees,
       displayMode, groupedByManager, getManagerWithCenters, getFieldValue,
       mergeWorkplace, mergeWorkplaceOrientation, mergeAssignment, mergeAssignmentOrientation, mergeAssignmentPeriods, splitPages, rowsPerFirstPage, rowsPerNextPage,
@@ -1519,24 +1523,36 @@ export default function EmployeeDataRequest() {
                   />
                   <Label htmlFor="showSignature" className="cursor-pointer flex items-center gap-1 font-bold">
                     <Stamp className="w-4 h-4" />
-                    إضافة التوقيع الرسمي
+                    إضافة اعتماد رسمي (توقيع وختم)
                   </Label>
                 </div>
                 {showSignature && (
                   <>
                     {signatures.length > 0 && (
-                      <Select value={selectedSignatureId} onValueChange={setSelectedSignatureId}>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="اختر التوقيع / الختم" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {signatures.map(sig => (
-                            <SelectItem key={sig.id} value={sig.id}>
-                              {sig.name} - {sig.owner_name || ''} ({sig.type === 'stamp' ? 'ختم' : 'توقيع'})
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <div>
+                          <Label className="text-xs">التوقيع (اختياري)</Label>
+                          <Select value={selectedSignatureId} onValueChange={setSelectedSignatureId}>
+                            <SelectTrigger className="w-full mt-1"><SelectValue placeholder="اختر التوقيع" /></SelectTrigger>
+                            <SelectContent>
+                              {signatures.filter(item => item.type === 'signature').map(item => (
+                                <SelectItem key={item.id} value={item.id}>{item.name} - {item.owner_name || ''}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-xs">الختم (اختياري)</Label>
+                          <Select value={selectedStampId} onValueChange={setSelectedStampId}>
+                            <SelectTrigger className="w-full mt-1"><SelectValue placeholder="اختر الختم" /></SelectTrigger>
+                            <SelectContent>
+                              {signatures.filter(item => item.type === 'stamp').map(item => (
+                                <SelectItem key={item.id} value={item.id}>{item.name} - {item.owner_name || ''}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
                     )}
                     {signatures.length === 0 && (
                       <p className="text-xs text-gray-500">لا توجد أختام مسجلة. سيظهر الاسم فقط.</p>
@@ -1589,6 +1605,7 @@ export default function EmployeeDataRequest() {
                   signer_title: signerTitle,
                   show_signature: showSignature,
                   selected_signature_id: selectedSignatureId,
+                  selected_stamp_id: selectedStampId,
                   split_pages: splitPages,
                   font_settings: fontSettings,
                   merge_workplace: mergeWorkplace,
@@ -1620,6 +1637,7 @@ export default function EmployeeDataRequest() {
                   if (t.signer_title) setSignerTitle(t.signer_title);
                   if (t.show_signature !== undefined) setShowSignature(t.show_signature);
                   if (t.selected_signature_id) setSelectedSignatureId(t.selected_signature_id);
+                  if (t.selected_stamp_id) setSelectedStampId(t.selected_stamp_id);
                   if (t.split_pages !== undefined) setSplitPages(t.split_pages);
                   if (t.font_settings) setFontSettings(t.font_settings);
                   if (t.merge_workplace !== undefined) setMergeWorkplace(t.merge_workplace);
@@ -1971,6 +1989,7 @@ export default function EmployeeDataRequest() {
           finalRequest={finalRequest}
           showSignature={showSignature}
           selectedSig={showSignature && selectedSignatureId ? signatures.find(s => s.id === selectedSignatureId) : null}
+          selectedStamp={showSignature && selectedStampId ? signatures.find(s => s.id === selectedStampId) : null}
           signerName={signerName}
           signerTitle={signerTitle}
           signaturePosition={signaturePosition}

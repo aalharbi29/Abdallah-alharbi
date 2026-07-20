@@ -25,6 +25,7 @@ export default function ReportPreviewDialog({
   finalRequest,
   showSignature,
   selectedSig,
+  selectedStamp,
   signerName,
   signerTitle,
   signaturePosition,
@@ -421,7 +422,10 @@ export default function ReportPreviewDialog({
             <div className={`mt-8 ${sigAlignClass}`}>
               {signerName && <p style={{ fontFamily: "'PT Sans Caption', 'Cairo', sans-serif", fontWeight: 700, color: '#000', fontSize: '18px' }}>{signerName}</p>}
               {signerTitle && <p style={{ fontWeight: 700, color: '#000', fontSize: '15px', marginTop: 0 }}>{signerTitle}</p>}
-              {selectedSig && <TransparentSignatureImage src={selectedSig.image_url} alt={selectedSig.name} className={`max-h-24 ${signaturePosition === 'center' ? 'mx-auto' : ''} block`} style={{ marginTop: '-2px' }} />}
+              <div className={`flex items-center gap-3 ${signaturePosition === 'center' ? 'justify-center' : signaturePosition === 'left' ? 'justify-start' : 'justify-end'}`}>
+                {selectedSig && <TransparentSignatureImage src={selectedSig.image_url} alt={selectedSig.name} className="max-h-24" style={{ marginTop: '-2px' }} />}
+                {selectedStamp && <TransparentSignatureImage src={selectedStamp.image_url} alt={selectedStamp.name} className="max-h-24" style={{ marginTop: '-2px' }} />}
+              </div>
             </div>
           );
 
