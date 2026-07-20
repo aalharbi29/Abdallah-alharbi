@@ -57,7 +57,9 @@ export default function ReportPreviewDialog({
     const size = approvalLayout[`${type}Width`] || (type === 'signature' ? 140 : 100);
     return {
       width: `${size}px`,
-      height: 'auto',
+      height: type === 'stamp' ? `${size}px` : 'auto',
+      objectFit: type === 'stamp' ? 'cover' : 'contain',
+      objectPosition: type === 'stamp' ? 'left center' : 'center',
       transform: `translate(${approvalLayout[`${type}OffsetX`] || 0}px, ${approvalLayout[`${type}OffsetY`] || 0}px)`,
       marginTop: '-2px',
     };
